@@ -201,7 +201,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       params = new HashMap<>();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      proveedores = UISelect.build("TcManticProveedoresDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      proveedores = UISelect.seleccione("TcManticProveedoresDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("proveedoresGeneral", proveedores);
     } // try
     catch (Exception e) {

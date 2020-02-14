@@ -2,8 +2,8 @@ package mx.org.kaana.kajool.procesos.acceso.ayudas.backing;
 
 import java.util.Collections;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
  * @time 03:19:45 PM
  * @author Team Developer 2016 <team.developerkaana.org.mx>
  */
-@ManagedBean(name = "kajoolAccesoAyudasFiltro")
+@Named(value="kajoolAccesoAyudasFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter {
   private static final Log LOG = LogFactory.getLog(Filtro.class);	

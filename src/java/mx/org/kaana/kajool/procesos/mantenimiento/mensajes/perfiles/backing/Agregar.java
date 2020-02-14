@@ -5,8 +5,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.kajool.db.dto.TcJanalMensajesDto;
 import mx.org.kaana.libs.formato.Error;
@@ -29,7 +29,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.perfiles.reglas.Trans
  * @time 09:41:43 AM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@ManagedBean(name="kajoolMensajesPerfilesAgregar")
+@Named(value="kajoolMensajesPerfilesAgregar")
 @ViewScoped
 public class Agregar extends IBaseAttribute implements Serializable {
 
@@ -47,8 +47,8 @@ public class Agregar extends IBaseAttribute implements Serializable {
       this.attrs.put("idGrupo", new Long(-1));
       this.attrs.put("descripcion", "");
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("grupos", UISelect.build("TcJanalGruposDto", this.attrs, "descripcion"));
-      this.attrs.put("prioridades", UISelect.build("TcJanalPrioridadesDto", this.attrs, "descripcion"));
+      this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", this.attrs, "descripcion"));
+      this.attrs.put("prioridades", UISelect.seleccione("TcJanalPrioridadesDto", this.attrs, "descripcion"));
       switch (accion) {
         case AGREGAR:
           this.attrs.put("dto", new TcJanalMensajesDto());
@@ -164,6 +164,6 @@ public class Agregar extends IBaseAttribute implements Serializable {
 
   public void doPerfiles() {
     this.attrs.put("idPerfil", new Long(-1L));
-    this.attrs.put("perfiles", UISelect.build("TcJanalPerfilesDto", "porGrupo", this.attrs, "descripcion"));
+    this.attrs.put("perfiles", UISelect.seleccione("TcJanalPerfilesDto", "porGrupo", this.attrs, "descripcion"));
   }
 }

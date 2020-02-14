@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.faces.event.PhaseId;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-@ManagedBean(name = "kajoolReportesJuntar")
+@Named(value="kajoolReportesJuntar")
 @ViewScoped
 public class Juntar extends BaseReportes implements Serializable {
 

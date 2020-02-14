@@ -5,9 +5,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.kajool.db.dto.TcJanalMensajesDto;
 import mx.org.kaana.libs.formato.Error;
@@ -32,7 +32,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.grupos.reglas.Transac
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@ManagedBean(value="kajoolMantenimientoMensajesGruposAgregar")
+@Named(value="kajoolMantenimientoMensajesGruposAgregar")
 @ViewScoped
 public class Agregar extends IBaseAttribute implements Serializable{
 

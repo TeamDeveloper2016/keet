@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.net.URL;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TcJanalInsumosDto;
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-@ManagedBean(name="kajoolMantenimientoInsumosFiltro")
+@Named(value="kajoolMantenimientoInsumosFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 

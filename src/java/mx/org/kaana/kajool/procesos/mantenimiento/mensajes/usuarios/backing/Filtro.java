@@ -12,8 +12,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -23,7 +23,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 
-@ManagedBean(name="kajoolMensajesUsuariosFiltro")
+@Named(value="kajoolMensajesUsuariosFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 

@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -30,7 +30,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.perfiles.reglas.Trans
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 
-@ManagedBean(name="kajoolMensajesPerfilesFiltro")
+@Named(value="kajoolMensajesPerfilesFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
@@ -42,7 +42,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     this.attrs.put("idGrupo", new Long(-1L));
     this.attrs.put("descripcion", "");
     this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-    this.attrs.put("grupos", UISelect.build("TcJanalGruposDto", this.attrs, "descripcion"));
+    this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", this.attrs, "descripcion"));
   } // init
 
   @Override
@@ -82,7 +82,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public void doPerfiles() {
     this.attrs.put("idPerfil", new Long(-1L));
-    this.attrs.put("perfiles", UISelect.build("TcJanalPerfilesDto", "porGrupo", this.attrs, "descripcion"));
+    this.attrs.put("perfiles", UISelect.seleccione("TcJanalPerfilesDto", "porGrupo", this.attrs, "descripcion"));
   }
 
   public void doEliminar() {

@@ -12,8 +12,8 @@ import java.util.List;
 import java.io.Serializable;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -33,7 +33,7 @@ import org.primefaces.event.NodeUnselectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
-@ManagedBean(name="kajoolMantenimientoGruposperfilesOpcionesEncabezado")
+@Named(value="kajoolMantenimientoGruposperfilesOpcionesEncabezado")
 @ViewScoped
 public class Filtro extends IBaseAttribute implements Serializable {
 

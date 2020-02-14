@@ -10,8 +10,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -25,7 +25,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.grupos.reglas.T
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 
-@ManagedBean(name="kajoolMantenimientoGruposperfilesGruposFiltro")
+@Named(value="kajoolMantenimientoGruposperfilesGruposFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 

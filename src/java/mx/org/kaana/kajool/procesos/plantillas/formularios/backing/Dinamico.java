@@ -12,12 +12,12 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@ManagedBean(name="kajoolPlantillasFormulariosDinamico")
+@Named(value="kajoolPlantillasFormulariosDinamico")
 @ViewScoped
 public class Dinamico implements Serializable {
 

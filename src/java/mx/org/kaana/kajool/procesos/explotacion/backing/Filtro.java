@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.beans.Variable;
 import mx.org.kaana.kajool.procesos.comun.Comun;
@@ -36,11 +36,10 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.pagina.UISelect;
-import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log; 
 import org.apache.commons.logging.LogFactory;
 
-@ManagedBean(name="kajoolExplotacionFiltro")
+@Named(value="kajoolExplotacionFiltro")
 @ViewScoped
 public class Filtro extends Comun implements Serializable {
 

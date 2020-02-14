@@ -12,15 +12,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import mx.org.kaana.kajool.procesos.plantillas.beans.Persona;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@ManagedBean(name="kajoolPlantillasFormulariosCaptura")
+@Named(value="kajoolPlantillasFormulariosCaptura")
 @ViewScoped
 public class Captura implements Serializable {
 

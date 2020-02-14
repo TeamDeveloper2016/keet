@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.kajool.seguridad.filters.control.LockUser;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
@@ -25,7 +25,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log; 
 import org.apache.commons.logging.LogFactory;
 
-@ManagedBean(name="kajoolMantenimientoAplicacionFiltro")
+@Named(value="kajoolMantenimientoAplicacionFiltro")
 @ViewScoped
 public class Filtro extends IBaseAttribute implements Serializable {
 

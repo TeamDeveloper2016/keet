@@ -2,8 +2,8 @@ package mx.org.kaana.kajool.mantenimiento.contadores.backing;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -18,7 +18,7 @@ import mx.org.kaana.libs.formato.Error;
  * @time 05:22:50 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@ManagedBean(name="janalMantenimientoContadoresAyudas")
+@Named(value="janalMantenimientoContadoresAyudas")
 @ViewScoped
 public class Ayudas implements Serializable {
 

@@ -130,7 +130,6 @@
 								</p:selectOneMenu>
                 <p:outputLabel for="idSolicito" value="Solicitó:"/>
 								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
-									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesConfrontasAccion.attrs.personas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
 									<p:column headerText="Nombre(s)">
 										<h:outputText value="#{item.nombres}"/>

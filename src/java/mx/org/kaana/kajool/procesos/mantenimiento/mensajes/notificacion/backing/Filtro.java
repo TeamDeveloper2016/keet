@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -35,7 +35,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.notificacion.reglas.T
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@ManagedBean(name="kajoolMantenimientoMensajesNotificacionFiltro")
+@Named(value="kajoolMantenimientoMensajesNotificacionFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 

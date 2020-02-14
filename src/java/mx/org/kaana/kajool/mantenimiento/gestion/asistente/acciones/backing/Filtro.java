@@ -22,9 +22,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -68,7 +68,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-@ManagedBean(name="kajoolMantenimientoGestionAccionTemplate")
+@Named(value="kajoolMantenimientoGestionAccionTemplate")
 @ViewScoped
 public class Filtro extends IBaseAttribute implements Serializable {
 

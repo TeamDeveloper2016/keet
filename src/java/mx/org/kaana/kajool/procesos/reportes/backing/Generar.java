@@ -13,8 +13,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Error;
@@ -33,7 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.StreamedContent;
 
-@ManagedBean(name = "kajoolReportesGenerar")
+@Named(value="kajoolReportesGenerar")
 @ViewScoped
 public class Generar extends BaseReportes implements Serializable {
 

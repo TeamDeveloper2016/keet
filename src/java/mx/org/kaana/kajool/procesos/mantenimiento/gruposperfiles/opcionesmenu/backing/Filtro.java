@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -34,7 +34,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.opcionesmenu.re
 import mx.org.kaana.kajool.enums.EAccion;
 import org.primefaces.event.NodeSelectEvent;
 
-@ManagedBean(name="kajoolMantenimientoGruposperfilesOpciones")
+@Named(value="kajoolMantenimientoGruposperfilesOpciones")
 @ViewScoped
 public class Filtro extends IBaseAttribute implements Serializable{
   private static final long serialVersionUID=4145363731900920046L;

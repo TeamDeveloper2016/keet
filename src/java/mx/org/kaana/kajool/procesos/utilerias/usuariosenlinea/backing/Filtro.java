@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.procesos.beans.DetalleAcceso;
@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
-@ManagedBean(name="kajoolMantenimientoUtileriasUsuarioFiltro")
+@Named(value="kajoolMantenimientoUtileriasUsuarioFiltro")
 @ViewScoped
 public class Filtro implements Serializable {
 

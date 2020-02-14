@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
@@ -32,7 +32,7 @@ import org.primefaces.model.TreeNode;
  * @time 06:29:09 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@ManagedBean(name="kajoolMantenimientoMenusOpciones")
+@Named(value="kajoolMantenimientoMenusOpciones")
 @ViewScoped
 public class Opciones implements Serializable {
 

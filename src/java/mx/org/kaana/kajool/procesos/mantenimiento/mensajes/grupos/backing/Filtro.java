@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -31,7 +31,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@ManagedBean(value="kajoolMantenimientoMensajesGruposFiltro")
+@Named(value="kajoolMantenimientoMensajesGruposFiltro")
 @ViewScoped
 public class Filtro  extends IBaseFilter implements Serializable{
 

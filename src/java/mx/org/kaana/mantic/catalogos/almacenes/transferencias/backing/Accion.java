@@ -210,7 +210,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
+      List<UISelectEntity> personas= UIEntity.seleccione("VistaAlmacenesTransferenciasDto", "solicito", params, columns, "nombres");
       this.attrs.put("personas", personas);
 			if(personas!= null && this.transferencia.getIdSolicito()!= null && this.transferencia.getIdSolicito()> 0L && !this.accion.equals(EAccion.ACTIVAR)) 
 				this.transferencia.setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(this.transferencia.getIdSolicito()))));

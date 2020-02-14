@@ -10,8 +10,8 @@ package mx.org.kaana.kajool.procesos.mantenimiento.menus.encabezado.backing;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -23,7 +23,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.menus.encabezado.reglas.MenuEn
 import mx.org.kaana.kajool.procesos.mantenimiento.menus.encabezado.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Cadena;
 
-@ManagedBean(name = "kajoolMantenimientoMenusEncabezadoFiltro")
+@Named(value="kajoolMantenimientoMenusEncabezadoFiltro")
 @ViewScoped
 public class Filtro implements Serializable {
 

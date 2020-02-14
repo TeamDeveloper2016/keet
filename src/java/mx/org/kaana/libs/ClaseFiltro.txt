@@ -14,8 +14,8 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
+import javax.faces.view.ViewScoped;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfUtilities;
@@ -31,7 +31,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@ManagedBean(name="{backing}")
+@Named(value="{backing}")
 @ViewScoped
 public class {nombreFiltro} extends IBaseFilter implements Serializable {
 

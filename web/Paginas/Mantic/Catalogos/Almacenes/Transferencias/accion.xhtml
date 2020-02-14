@@ -140,7 +140,6 @@
 								</p:panelGrid>
 								<p:outputLabel for="idSolicito"  value="Solicitó:"/>
 								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt refresh" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
 									<p:column>
 										<h:outputText value="#{item.nombres}"/>

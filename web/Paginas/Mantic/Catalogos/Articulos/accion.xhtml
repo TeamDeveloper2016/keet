@@ -122,7 +122,6 @@
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt proveedores-codigo" value="#{codigo.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
 											<p:ajax update="tablaCodigos" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>				

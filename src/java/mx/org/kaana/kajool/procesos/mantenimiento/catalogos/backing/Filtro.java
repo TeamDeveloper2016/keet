@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -32,7 +32,7 @@ import org.primefaces.component.panelgrid.PanelGrid;
  * @time 13:08:51 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@ManagedBean(name = "kajoolDinamicosFiltro")
+@Named(value= "kajoolDinamicosFiltro")
 @ViewScoped
 public class Filtro extends UIBase implements Serializable {
 

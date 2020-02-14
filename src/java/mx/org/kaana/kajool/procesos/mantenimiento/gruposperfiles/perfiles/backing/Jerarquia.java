@@ -11,8 +11,8 @@ package mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.perfiles.backi
 import java.io.Serializable;
 import java.util.*;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -26,7 +26,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.perfiles.reglas
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 
-@ManagedBean(name="kajoolMantenimientoGruposperfilesPerfilesJerarquia")
+@Named(value="kajoolMantenimientoGruposperfilesPerfilesJerarquia")
 @ViewScoped
 public class Jerarquia implements Serializable {
   

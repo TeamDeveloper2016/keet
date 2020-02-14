@@ -118,7 +118,7 @@ public class Filtro extends Comun implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));			
 			this.attrs.put("empresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
     } // try
     catch (Exception e) {
@@ -142,7 +142,7 @@ public class Filtro extends Comun implements Serializable {
 				params.put("sucursales", empresa.getKey());				
 				columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+				this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "nombre"));
 			} // if
 			else
 				this.attrs.put("almacenes", new ArrayList<>());

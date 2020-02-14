@@ -3,11 +3,11 @@ package mx.org.kaana.kajool.procesos.mantenimiento.temas.backing;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.JsfUtilities;
@@ -28,7 +28,7 @@ import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
  * @time 11:15:25 AM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@ManagedBean(name = "kajoolMantenimientoTemasDisponibles")
+@Named(value="kajoolMantenimientoTemasDisponibles")
 @ViewScoped
 public class Disponibles implements Serializable {
 

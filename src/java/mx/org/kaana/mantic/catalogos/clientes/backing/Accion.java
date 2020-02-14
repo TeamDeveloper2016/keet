@@ -215,7 +215,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			campos= new ArrayList<>();
 			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      entidades = UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+      entidades = UIEntity.seleccione("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
       this.attrs.put("entidades", entidades);
       this.registroCliente.getDomicilio().setIdEntidad(entidades.get(0));
     } // try
@@ -257,7 +257,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				params.put("idEntidad", this.registroCliente.getDomicilio().getIdEntidad().getKey());
 				campos= new ArrayList<>();
 				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				municipios = UIEntity.seleccione("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
 				this.attrs.put("municipios", municipios);
 				this.registroCliente.getDomicilio().setIdMunicipio(municipios.get(0));
 			} // if
@@ -300,7 +300,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				params.put("idMunicipio", this.registroCliente.getDomicilio().getIdMunicipio().getKey());
 				campos= new ArrayList<>();
 				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				localidades = UIEntity.build("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				localidades = UIEntity.seleccione("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
 				this.attrs.put("localidades", localidades);
 				this.registroCliente.getDomicilio().setLocalidad(localidades.get(0));
 				this.registroCliente.getDomicilio().setIdLocalidad(localidades.get(0).getKey());
@@ -414,7 +414,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			domicilios= new ArrayList<>();
 			this.attrs.put("domicilios", domicilios);     
-			this.registroCliente.getDomicilio().setDomicilio(new Entity(-1L));
+			this.registroCliente.getDomicilio().setDomicilio(new Entity(-1L, "SELECCIONE"));
       this.registroCliente.getDomicilio().setIdDomicilio(-1L);
 		} // try
 		catch (Exception e) {		

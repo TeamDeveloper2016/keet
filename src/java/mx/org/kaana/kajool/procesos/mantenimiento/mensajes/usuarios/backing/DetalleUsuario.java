@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Numero;
@@ -29,7 +29,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.db.dto.TcJanalMensajesDto;
 import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.usuarios.reglas.Transaccion;
 
-@ManagedBean(name="kajoolMensajesUsuariosDetalleUsuario")
+@Named(value="kajoolMensajesUsuariosDetalleUsuario")
 @ViewScoped
 public class DetalleUsuario extends IBaseFilter implements Serializable {
 

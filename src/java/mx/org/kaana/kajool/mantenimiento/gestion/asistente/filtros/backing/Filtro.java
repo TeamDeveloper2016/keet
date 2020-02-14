@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -22,9 +21,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -68,7 +67,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-@ManagedBean(name = "kajoolMantenimientoGestionAsistenteFiltrosFiltro")
+@Named(value="kajoolMantenimientoGestionAsistenteFiltrosFiltro")
 @ViewScoped
 public class Filtro extends IBaseAttribute implements Serializable {
 

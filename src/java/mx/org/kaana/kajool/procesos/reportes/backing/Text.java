@@ -6,9 +6,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -34,7 +34,7 @@ import org.primefaces.model.StreamedContent;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@ManagedBean(name="kajoolReportesText")
+@Named(value="kajoolReportesText")
 @ViewScoped
 public class Text implements Serializable{
   

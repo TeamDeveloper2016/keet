@@ -11,8 +11,8 @@ package mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.perfiles.backi
 import java.io.Serializable;
 import java.util.Collections;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Numero;
@@ -28,7 +28,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@ManagedBean(name="kajoolMantenimientoGruposperfilesPerfilesPaginaInicial")
+@Named(value="kajoolMantenimientoGruposperfilesPerfilesPaginaInicial")
 @ViewScoped
 public class paginaInicial extends IBaseFilter implements Serializable {
 

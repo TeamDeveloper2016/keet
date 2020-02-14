@@ -2,8 +2,8 @@ package mx.org.kaana.kajool.procesos.mantenimiento.menus.backing;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * @time 05:08:12 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@ManagedBean(name = "kajoolMantenimientoMenusAgregar")
+@Named(value="kajoolMantenimientoMenusAgregar")
 @ViewScoped
 public class Agregar implements Serializable {
 

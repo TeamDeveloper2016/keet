@@ -12,8 +12,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
@@ -31,7 +31,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.perfiles.reglas
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 
-@ManagedBean(name="kajoolMantenimientoGruposperfilesPerfilesFiltro")
+@Named(value="kajoolMantenimientoGruposperfilesPerfilesFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
   private static final long serialVersionUID=-6536425406528049407L;

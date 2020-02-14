@@ -73,7 +73,7 @@ public class Filtro extends Comun implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empaques", (List<UISelectEntity>) UIEntity.build("TcManticEmpaquesDto", "row", params, columns));
+      this.attrs.put("empaques", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpaquesDto", "row", params, columns, "clave"));
 			this.attrs.put("idEmpaque", new UISelectEntity("-1"));
 			this.doUpdateEmpaque();
     } // try
@@ -130,7 +130,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("unidad", EFormatoDinamicos.MAYUSCULAS));
 			if(!Cadena.isVacio(this.attrs.get("idEmpaque")) && !this.attrs.get("idEmpaque").toString().equals("-1")) {
   			params.put(Constantes.SQL_CONDICION, "tr_mantic_empaque_unidad_medida.id_empaque="+ this.attrs.get("idEmpaque"));
-        this.attrs.put("unidades", (List<UISelectEntity>) UIEntity.build("VistaEmpaquesUnidadesDto", "row", params, columns));
+        this.attrs.put("unidades", (List<UISelectEntity>) UIEntity.seleccione("VistaEmpaquesUnidadesDto", "row", params, columns, "claveUnidad"));
 			} // if	
 			this.attrs.put("idUnidad", new UISelectEntity("-1"));
     } // try

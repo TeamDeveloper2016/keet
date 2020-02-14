@@ -3,6 +3,7 @@ package mx.org.kaana.kajool.seguridad.beanmanager;
 import java.io.Serializable;
 import java.util.Set;
 import javax.faces.bean.*;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,7 +64,7 @@ public class BackingFinder implements Serializable{
 		Reflections reflections= null;		
 		try {									
 			reflections= new Reflections(getPaquete(encuesta));			
-			regresar   = reflections.getTypesAnnotatedWith(ManagedBean.class);			
+			regresar   = reflections.getTypesAnnotatedWith(Named.class);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

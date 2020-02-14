@@ -143,13 +143,13 @@ public class Filtro extends Comun implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
 			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
 			columns.remove(0);
 			params.put(Constantes.SQL_CONDICION, "id_transferencia_estatus>= 3");
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcManticTransferenciasEstatusDto", "row", params, columns, "nombre"));
 			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
 			this.loadPersonas();
     } // try

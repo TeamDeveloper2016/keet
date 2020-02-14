@@ -12,8 +12,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.kajool.db.dto.TcJanalGruposDto;
 import mx.org.kaana.libs.formato.Error;
@@ -24,7 +24,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.grupos.reglas.Transaccion;
 
-@ManagedBean(name="kajoolMantenimientoGruposperfilesGruposAgregar")
+@Named(value="kajoolMantenimientoGruposperfilesGruposAgregar")
 @ViewScoped
 public class Agregar extends IBaseAttribute implements Serializable {
 

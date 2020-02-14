@@ -12,8 +12,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -28,7 +28,7 @@ import mx.org.kaana.kajool.procesos.acceso.reglas.TransaccionRecupera;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@ManagedBean(name="kajoolRecuperar")
+@Named(value="kajoolRecuperar")
 @ViewScoped
 public class Recuperar extends IBaseAttribute implements Serializable{
 

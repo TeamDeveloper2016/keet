@@ -12,9 +12,9 @@ import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.CheckboxTreeNode;
 import org.primefaces.model.TreeNode;
 
-@ManagedBean(name="kajoolPlantillasFormulariosFiltro")
+@Named(value="kajoolPlantillasFormulariosFiltro")
 @ViewScoped
 public class Filtro extends IBaseAttribute implements Serializable {
 
