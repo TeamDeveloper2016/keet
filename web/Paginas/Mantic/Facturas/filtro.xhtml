@@ -73,7 +73,6 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticFacturasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticFacturasFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -154,7 +153,6 @@
 							</p:inputText>	
               <p:outputLabel for="idVentaEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idVentaEstatus" value="#{manticFacturasFiltro.attrs.idVentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticFacturasFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Documento">
                   <h:outputText value="#{item.idTipoDocumento.toLong eq 1? 'ESPECIAL': 'NORMAL'}"/>

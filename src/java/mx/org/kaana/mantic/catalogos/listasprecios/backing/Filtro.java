@@ -48,7 +48,7 @@ public class Filtro extends IBaseFilter implements java.io.Serializable
     try {
       params = new HashMap();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      proveedores = UIEntity.build("TcManticProveedoresDto", "sucursales", params);
+      proveedores = UIEntity.seleccione("TcManticProveedoresDto", "sucursales", params, "clave");
       attrs.put("proveedores", proveedores);
       attrs.put("idProveedor", new UISelectEntity("-1"));
     }

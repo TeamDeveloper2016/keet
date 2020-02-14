@@ -172,7 +172,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
+      List<UISelectEntity> personas= UIEntity.seleccione("VistaAlmacenesTransferenciasDto", "solicito", params, columns, "nombres");
       this.attrs.put("personas", personas);
 			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()> 0L) 
 				((Transferencia)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()))));

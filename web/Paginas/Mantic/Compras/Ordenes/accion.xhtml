@@ -139,7 +139,6 @@
 								</p:selectOneMenu>
                 <p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>

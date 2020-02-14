@@ -145,7 +145,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			sucursales=(List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
 			if(!sucursales.isEmpty()){
 				for(UISelectEntity sucursal: sucursales)
 					allEmpresa= allEmpresa.concat(sucursal.getKey().toString()).concat(",");

@@ -149,7 +149,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));			
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
 			this.doLoadDocumentoEstatus();
@@ -265,7 +265,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			  params.put("idTipoDocumento", "1, 2");
 			else
 			  params.put("idTipoDocumento", this.attrs.get("idTipoDocumento"));
-      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "rows", params, columns));
+      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.seleccione("TcManticVentasEstatusDto", "rows", params, columns, "nombre"));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
 		} // try
 		catch (Exception e) {

@@ -165,6 +165,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     List<UISelectItem> tiposDomicilios = null;
     try {
       tiposDomicilios = new ArrayList<>();
+			tiposDomicilios.add(new UISelectItem(new Entity(-1L, "SELECCIONE")));
       for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) 
         tiposDomicilios.add(new UISelectItem(tipoDomicilio.getKey(), Cadena.reemplazarCaracter(tipoDomicilio.name(), '_', ' ')));      
       this.attrs.put("tiposDomicilios", tiposDomicilios);
@@ -223,7 +224,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			campos= new ArrayList<>();
 			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      entidades = UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+      entidades = UIEntity.seleccione("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
       this.attrs.put("entidades", entidades);
       this.registroProveedor.getDomicilio().setIdEntidad(entidades.get(0));
     } // try
@@ -265,7 +266,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				params.put("idEntidad", this.registroProveedor.getDomicilio().getIdEntidad().getKey());
 				campos= new ArrayList<>();
 				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				municipios = UIEntity.seleccione("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
 				this.attrs.put("municipios", municipios);
 				this.registroProveedor.getDomicilio().setIdMunicipio(municipios.get(0));
 			} // if
@@ -308,7 +309,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				params.put("idMunicipio", this.registroProveedor.getDomicilio().getIdMunicipio().getKey());
 				campos= new ArrayList<>();
 				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				localidades = UIEntity.build("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				localidades = UIEntity.seleccione("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
 				this.attrs.put("localidades", localidades);
 				this.registroProveedor.getDomicilio().setLocalidad(localidades.get(0));
 				this.registroProveedor.getDomicilio().setIdLocalidad(localidades.get(0).getKey());

@@ -87,7 +87,7 @@ public class Filtro extends Comun implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));      
 			estatus= new ArrayList<>();
 			for(EEstatusIncidentes eIncidente: EEstatusIncidentes.values())

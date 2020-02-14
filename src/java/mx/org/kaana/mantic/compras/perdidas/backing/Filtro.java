@@ -148,11 +148,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
 			columns.clear();
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("usuarios", (List<UISelectEntity>) UIEntity.build("VistaFaltantesDto", "usuariosFaltantes", params, columns));
+      this.attrs.put("usuarios", (List<UISelectEntity>) UIEntity.seleccione("VistaFaltantesDto", "usuariosFaltantes", params, columns, "nombreUsuario"));
 			this.attrs.put("idUsuario", new UISelectEntity("-1"));            
 			columns.clear();
     } // try

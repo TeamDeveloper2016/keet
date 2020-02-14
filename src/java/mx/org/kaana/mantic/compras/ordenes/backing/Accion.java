@@ -179,7 +179,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
+      this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", params, columns, "clave"));
       this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			if(!proveedores.isEmpty()) { 

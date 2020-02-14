@@ -1,16 +1,5 @@
 package mx.org.kaana.mantic.consultas.backing;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageConfig;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.itextpdf.text.pdf.qrcode.ErrorCorrectionLevel;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -19,35 +8,20 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
-import javax.imageio.ImageIO;
 import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
-import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
-import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.consultas.reglas.UtilidadArticulosLazy;
-import mx.org.kaana.mantic.enums.ETipoDocumento;
-import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticConsultasArticulos")
@@ -113,9 +87,9 @@ public class Articulos extends Comun implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
 			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {

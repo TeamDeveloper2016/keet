@@ -156,7 +156,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
 			doLoadVendedores();
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -179,7 +179,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 	public void doLoadVendedores(){
 		try {						
 			this.attrs.put("condicionVendedor", !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("idEmpresa") : JsfBase.getAutentifica().getEmpresa().getSucursales());
-			this.attrs.put("vendedores", (List<UISelectItem>) UISelect.build("VistaConsultasDto", "vendedor", this.attrs, "nombre",  EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
+			this.attrs.put("vendedores", (List<UISelectItem>) UISelect.seleccione("VistaConsultasDto", "vendedor", this.attrs, "nombre",  EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
 			this.attrs.put("vendedor", new UISelectEntity("-1"));
 		} // try
 		catch (Exception e) {
@@ -194,7 +194,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
-			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			tiposPagos= UIEntity.seleccione("TcManticTiposMediosPagosDto", "row", params, "nombre");
 			this.attrs.put("tiposPagos", tiposPagos);
 			this.attrs.put("tipoPago", new UISelectEntity("-1"));
 		} // try

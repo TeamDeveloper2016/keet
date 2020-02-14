@@ -45,7 +45,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
+			this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.seleccione("TcManticClientesDto", "sucursales", params, columns, "clave"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);

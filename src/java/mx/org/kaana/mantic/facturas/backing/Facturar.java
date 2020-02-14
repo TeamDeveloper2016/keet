@@ -850,7 +850,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			cfdis= UIEntity.seleccione("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("cfdis", cfdis);
 			this.attrs.put("cfdi", new UISelectEntity("-1"));
 			for(Entity record: cfdis){
@@ -887,7 +887,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			tiposPagos= UIEntity.build("TcManticTiposPagosDto", "row", params);
+			tiposPagos= UIEntity.seleccione("TcManticTiposPagosDto", "row", params, "nombre");
 			this.attrs.put("tiposPagos", tiposPagos);
 			this.attrs.put("tipoPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
 		} // try
