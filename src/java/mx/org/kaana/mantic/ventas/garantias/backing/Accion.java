@@ -568,7 +568,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion());
-			ticketsAbiertos= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			ticketsAbiertos= UIEntity.seleccione("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS, "consecutivo");
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
 			accion= (EAccion) this.attrs.get("accion");
 			if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR)||accion.equals(EAccion.ASIGNAR)){

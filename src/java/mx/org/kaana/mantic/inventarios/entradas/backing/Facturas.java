@@ -199,10 +199,10 @@ public class Facturas extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
 			columns.clear();
-      this.attrs.put("ejercicios", (List<UISelectEntity>) UIEntity.build("TcManticNotasArchivosDto", "ejercicios", params, columns));
+      this.attrs.put("ejercicios", (List<UISelectEntity>) UIEntity.seleccione("TcManticNotasArchivosDto", "ejercicios", params, columns, "idKey"));
 			this.attrs.put("ejercicio", "");
     } // try
     catch (Exception e) {
@@ -221,7 +221,7 @@ public class Facturas extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
 			params =new HashMap<>();
 			params.put("ejercicio", this.attrs.get("ejercicio"));
-      this.attrs.put("meses", (List<UISelectEntity>) UIEntity.build("VistaNotasEntradasDto", "meses", params, columns));
+      this.attrs.put("meses", (List<UISelectEntity>) UIEntity.seleccione("VistaNotasEntradasDto", "meses", params, columns, "nombre"));
 			this.attrs.put("mes", new UISelectEntity("-1"));
 		} // try
 		catch (Exception e) {
@@ -241,7 +241,7 @@ public class Facturas extends IBaseFilter implements Serializable {
 			params =new HashMap<>();
 			params.put("ejercicio", this.attrs.get("ejercicio"));
 			params.put("mes", this.attrs.get("mes"));
-      this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.build("VistaNotasEntradasDto", "surtidores", params, columns));
+      this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.seleccione("VistaNotasEntradasDto", "surtidores", params, columns, "clave"));
 			this.attrs.put("idProveedor", new UISelectEntity("-1"));
 		} // try
 		catch (Exception e) {

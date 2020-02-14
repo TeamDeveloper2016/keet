@@ -206,7 +206,6 @@
 								</p:calendar>								
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasApartadosDevolucionesAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" onstart="loadTicketAbiertos();" update="@(.cotizar) encabezadoVenta" oncomplete="janal.desbloquear();" />
-									<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
 									<f:selectItems value="#{manticVentasApartadosDevolucionesAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: $#{element.precioTotal}"/>
 									<p:column headerText="No.">
 										<h:outputText value="#{item.consecutivo}"/>

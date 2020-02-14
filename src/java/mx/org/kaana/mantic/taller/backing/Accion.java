@@ -211,6 +211,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			clientesBusqueda= (List<UISelectEntity>) this.attrs.get("clientesBusqueda");
 			cliente= clientesBusqueda.get(clientesBusqueda.indexOf(this.clienteBusqueda));
 			clientes= new ArrayList<>();
+			clientes.add(new UISelectEntity(new Entity(-1L, "SELECCIONE")));
 			clientes.add(cliente);
 			motor= new MotorBusqueda(null);
 			this.registroServicio.setCliente(motor.toCliente(cliente.getKey()));

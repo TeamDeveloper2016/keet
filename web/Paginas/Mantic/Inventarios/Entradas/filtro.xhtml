@@ -57,7 +57,6 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticInventariosEntradasFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticInventariosEntradasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticInventariosEntradasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -74,7 +73,6 @@
               <p:inputText id="factura" value="#{manticInventariosEntradasFiltro.attrs.factura}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="idProveedor" value="Proveedor:"/>
               <p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticInventariosEntradasFiltro.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -92,8 +90,7 @@
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticInventariosEntradasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="idNotaEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idNotaEstatus" value="#{manticInventariosEntradasFiltro.attrs.idNotaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticInventariosEntradasFiltro.attrs.catalogo}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <f:selectItems value="#{manticInventariosEntradasFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   

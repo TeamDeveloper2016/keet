@@ -42,7 +42,6 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticInventariosCreditosFacturas.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticInventariosCreditosFacturas.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticInventariosCreditosFacturas.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -59,12 +58,10 @@
               </p:selectOneMenu>
               <p:outputLabel for="mes" value="Meses:"/>
               <p:selectOneMenu id="mes" value="#{manticInventariosCreditosFacturas.attrs.mes}" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticInventariosCreditosFacturas.attrs.meses}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
               </p:selectOneMenu>
               <p:outputLabel for="idTipo" value="Tipo:"/>
               <p:selectOneMenu id="idTipo" value="#{manticInventariosCreditosFacturas.attrs.idTipo}" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticInventariosCreditosFacturas.attrs.tipos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
               </p:selectOneMenu>
 							<p:separator/>

@@ -197,12 +197,12 @@ public class Facturas extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
 			columns.clear();
-      this.attrs.put("tipos", (List<UISelectEntity>) UIEntity.build("TcManticTiposCreditosNotasDto", "todos", params, columns));
+      this.attrs.put("tipos", (List<UISelectEntity>) UIEntity.seleccione("TcManticTiposCreditosNotasDto", "todos", params, columns, "nombre"));
 			this.attrs.put("idTipo", new UISelectEntity("-1"));
-      this.attrs.put("ejercicios", (List<UISelectEntity>) UIEntity.build("TcManticCreditosArchivosDto", "ejercicios", params, columns));
+      this.attrs.put("ejercicios", (List<UISelectEntity>) UIEntity.seleccione("TcManticCreditosArchivosDto", "ejercicios", params, columns, "idKey"));
 			this.attrs.put("ejercicio", "");
     } // try
     catch (Exception e) {
@@ -221,7 +221,7 @@ public class Facturas extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
 			params =new HashMap<>();
 			params.put("ejercicio", this.attrs.get("ejercicio"));
-      this.attrs.put("meses", (List<UISelectEntity>) UIEntity.build("VistaCreditosNotasDto", "meses", params, columns));
+      this.attrs.put("meses", (List<UISelectEntity>) UIEntity.seleccione("VistaCreditosNotasDto", "meses", params, columns, "nombre"));
 			this.attrs.put("mes", new UISelectEntity("-1"));
 		} // try
 		catch (Exception e) {
