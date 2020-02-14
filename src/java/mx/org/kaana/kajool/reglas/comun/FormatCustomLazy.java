@@ -11,10 +11,10 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EFiltersWith;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortOrder;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company Instituto Nacional de Estadistica y Geografia
@@ -58,7 +58,7 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
   }
 	
   @Override
-  public List<IBaseDto> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+  public List<IBaseDto> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filters) {
     this.getParams().put("filters", "");
     if(!this.getParams().containsKey("sortOrder"))
       this.getParams().put("sortOrder", "");
@@ -72,7 +72,7 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
     return super.load(first, pageSize, sortField, sortOrder, filters);
   }
 
-  protected String toFilters(Map<String, Object> filters, EFiltersWith like) {
+  protected String toFilters(Map<String, FilterMeta> filters, EFiltersWith like) {
     StringBuilder regresar= new StringBuilder("");
     Map<String, Object> params = null;
     try {
@@ -98,7 +98,7 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
     return regresar.toString();
   }
 
-  protected String toFilters(Map<String, Object> filters) {
+  protected String toFilters(Map<String, FilterMeta> filters) {
     return toFilters(filters, this.like);
   }
 

@@ -46,7 +46,6 @@ import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 @Named(value= "manticVentasCotizacionFiltro")
@@ -378,13 +377,12 @@ public class Filtro extends IBaseTicket implements Serializable {
   
   public boolean doVerificarReporte() {
     boolean regresar = false;
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
       regresar = true;
     }
 		else{
-			rc.execute("generalHide();");		
+			UIBackingUtilities.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
       regresar = false;
 		} // else

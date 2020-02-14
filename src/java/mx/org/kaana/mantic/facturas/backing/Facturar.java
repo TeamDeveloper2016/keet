@@ -50,7 +50,6 @@ import mx.org.kaana.mantic.facturas.reglas.UnirFacturas;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 import org.apache.commons.logging.Log;
@@ -450,7 +449,6 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		List<UISelectEntity> vendedores= null;
 		Map<String, Object>params      = null;
 		List<Columna> campos           = null;
-		RequestContext rc              = null;
 		try {
 			campos= new ArrayList<>();
 			params= new HashMap<>();
@@ -459,15 +457,14 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			params.put("idUsuario", JsfBase.getIdUsuario());
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			rc= UIBackingUtilities.getCurrentInstance();
 			if(!vendedores.isEmpty()) {
 				this.attrs.put("vendedores", vendedores);
 				this.attrs.put("vendedor", UIBackingUtilities.toFirstKeySelectEntity(vendedores));
-				rc.execute("PF('dlgCloseTicket').show();");
+				UIBackingUtilities.execute("PF('dlgCloseTicket').show();");
 			} // if
 			else{
 				JsfBase.addMessage("Cambio de usuario", "No hay mas usuarios con el mismo perfil", ETipoMensaje.INFORMACION);
-				rc.execute("janal.desbloquear();");
+				UIBackingUtilities.execute("janal.desbloquear();");
 			} // else
 		} // try
 		catch (Exception e) {
@@ -1068,13 +1065,12 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	public boolean doVerificarReporte() {
     boolean regresar = false;
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
-			rc.execute("start(" + this.reporte.getTotal() + ")");	
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
       regresar = true;
     }
 		else{
-			rc.execute("generalHide();");		
+			UIBackingUtilities.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
       regresar = false;
 		} // else

@@ -46,7 +46,6 @@
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosArticulosFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosArticulosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticCatalogosArticulosFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticCatalogosArticulosFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -56,14 +55,13 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="idAlmacen" value="Almacen:"/>
-              <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosArticulosFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+              <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosArticulosFiltro.attrs.idAlmacen}" var="option" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticCatalogosArticulosFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
-                  <h:outputText value="#{item.clave}"/>
+                  <h:outputText value="#{option.clave}"/>
                 </p:column>   
                 <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
+                  <h:outputText value="#{option.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="codigo" value="Código:"/>

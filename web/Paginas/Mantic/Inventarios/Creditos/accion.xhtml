@@ -188,7 +188,7 @@
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.attrs.observaciones}"/>
 							
-							<p:fileUpload fileUploadListener="#{manticInventariosCreditosAccion.doFileUpload}" 
+							<p:fileUpload listener="#{manticInventariosCreditosAccion.doFileUpload}" 
 								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosCreditosAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosCreditosAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>

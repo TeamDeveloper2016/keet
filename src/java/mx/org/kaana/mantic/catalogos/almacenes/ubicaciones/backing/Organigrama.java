@@ -21,7 +21,6 @@ import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.reglas.Transaccion;
 import mx.org.kaana.mantic.enums.ENivelUbicacion;
 import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultOrganigramNode;
 import org.primefaces.model.OrganigramNode;
 
@@ -136,20 +135,18 @@ public class Organigrama extends IBaseFilter implements Serializable {
 	
 	public void doAgregar(String accion) {
     OrganigramUbicacion seleccionado= null;
-    RequestContext rc               = null;
     try {
-      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
         seleccionado= (OrganigramUbicacion) this.node.getData(); 				
         this.attrs.put("tipo", ENivelUbicacion.fromIdNivel(accion.equals("agregar") ? seleccionado.getNivel().getIdNivelUbicacion() : seleccionado.getNivel().getIdNivelUbicacion()-1).name().toLowerCase());        
         this.attrs.put("tipoFormat", Cadena.letraCapital(ENivelUbicacion.fromIdNivel(seleccionado.getNivel().getIdNivelUbicacion()).name().toLowerCase()));        
 				this.attrs.put("seleccionado", seleccionado);
 				this.attrs.put("tituloAccion", Cadena.letraCapital(accion));
-        rc.update("dialogoDetalle");
-        rc.execute("PF('dlgDetalle').show();");
+        UIBackingUtilities.update("dialogoDetalle");
+        UIBackingUtilities.execute("PF('dlgDetalle').show();");
       } // if
       else{
-        rc.execute("janal.desbloquear();");        
+        UIBackingUtilities.execute("janal.desbloquear();");        
         JsfBase.addMessage("Detalle", "Es necesario seleccionar una ubicación para mostrar la informacion.", ETipoMensaje.ERROR);
       } // else
     } // try 
@@ -166,18 +163,16 @@ public class Organigrama extends IBaseFilter implements Serializable {
 	
 	public void doDetalleEliminar() {
     OrganigramUbicacion seleccionado= null;
-    RequestContext rc               = null;
     try {
-      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
         seleccionado= (OrganigramUbicacion) this.node.getData(); 				
         this.attrs.put("tipo", ENivelUbicacion.fromIdNivel(seleccionado.getNivel().getIdNivelUbicacion()-1).name().toLowerCase());                
 				this.attrs.put("seleccionado", seleccionado);
-        rc.update("dialogoEliminar");
-        rc.execute("PF('dlgEliminar').show();");
+        UIBackingUtilities.update("dialogoEliminar");
+        UIBackingUtilities.execute("PF('dlgEliminar').show();");
       } // if
       else{
-        rc.execute("janal.desbloquear();");        
+        UIBackingUtilities.execute("janal.desbloquear();");        
         JsfBase.addMessage("Detalle", "Es necesario seleccionar una ubicación para mostrar la informacion.", ETipoMensaje.ERROR);
       } // else
     } // try 

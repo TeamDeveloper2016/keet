@@ -25,7 +25,6 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.TreeOrden;
 import mx.org.kaana.mantic.compras.ordenes.reglas.MotorBusqueda;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.organigram.OrganigramNodeCollapseEvent;
 import org.primefaces.model.DefaultOrganigramNode;
@@ -173,18 +172,16 @@ public class Estructura extends IBaseFilter implements Serializable {
 	
 	public void doConsultarDetalle() {
     TreeOrden seleccionado= null;
-    RequestContext rc     = null;
     try {
-      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
         seleccionado= (TreeOrden) this.node.getData();
         this.attrs.put("isPrincipal", seleccionado.getProveedor()!= null);
         this.attrs.put("detalle", seleccionado);        
-        rc.update("dialogoDetalle");
-        rc.execute("PF('dlgDetalle').show();");
+        UIBackingUtilities.update("dialogoDetalle");
+        UIBackingUtilities.execute("PF('dlgDetalle').show();");
       } // if
       else{
-        rc.execute("janal.desbloquear();");        
+        UIBackingUtilities.execute("janal.desbloquear();");        
         JsfBase.addMessage("Detalle", "Es necesario seleccionar un documento, para mostrar la informacion.", ETipoMensaje.ERROR);
       } // else
     } // try
@@ -200,9 +197,7 @@ public class Estructura extends IBaseFilter implements Serializable {
 	public String doAccion() {
 		String regresar       = null;
 		TreeOrden seleccionado= null;
-    RequestContext rc     = null;
     try {
-      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null){
 				seleccionado= (TreeOrden) this.node.getData();       
 				switch(seleccionado.getTipo()) {
@@ -216,7 +211,7 @@ public class Estructura extends IBaseFilter implements Serializable {
 				regresar= seleccionado.getTipo().getRuta();
       } // if
       else{
-        rc.execute("janal.desbloquear();");        
+        UIBackingUtilities.execute("janal.desbloquear();");        
         JsfBase.addMessage("Consultar", "Es necesario seleccionar un nodo", ETipoMensaje.ERROR);
       } // else
     } // try

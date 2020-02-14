@@ -114,7 +114,7 @@
 							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticEgresosImportar.attrs.observaciones}"/>
 							<p:spacer height="5px"/>
-							<p:fileUpload fileUploadListener="#{manticEgresosImportar.doFileUpload}" 
+							<p:fileUpload listener="#{manticEgresosImportar.doFileUpload}" 
 							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticEgresosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticEgresosImportar.attrs.formatos}"/>

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -893,9 +894,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		if(this.attrs.get("encontrado")== null) {
 			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
 			if(list!= null) {
-				List<Entity> items= (List<Entity>)list.getWrappedData();
+				List<IBaseDto> items= (List<IBaseDto>)list.getWrappedData();
 				if(items.size()> 0)
-					this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
+					this.attrs.put("encontrado", new UISelectEntity((Entity)items.get(0)));
 			} // if
 		} // if
 	}

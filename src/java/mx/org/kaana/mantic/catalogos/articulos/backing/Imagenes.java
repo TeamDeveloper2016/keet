@@ -28,7 +28,6 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.CodigoArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Replicar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 
 /**

@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.reglas.comun;
 
 import java.util.Comparator;
-
+import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortOrder;
 
 public class LazySorter<T> implements Comparator<T> {

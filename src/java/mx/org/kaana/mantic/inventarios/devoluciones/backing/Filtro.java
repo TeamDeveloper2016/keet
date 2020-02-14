@@ -37,7 +37,6 @@ import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticInventariosDevolucionesFiltro")
 @ViewScoped
@@ -215,11 +214,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doReporte
 	
 	public void doVerificarReporte() {
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
 		else{
-			rc.execute("generalHide();");		
+			UIBackingUtilities.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
 	} // doVerificarReporte		

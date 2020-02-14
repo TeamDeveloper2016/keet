@@ -30,7 +30,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosEmpresasCuentasSaldos")
 @ViewScoped
@@ -213,11 +212,10 @@ public class Saldos extends IBaseFilter implements Serializable {
   } // doReporte
   
   public void doVerificarReporte() {
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
 		else{
-			rc.execute("generalHide();");		
+			UIBackingUtilities.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
 	} // doVerificarReporte		

@@ -116,7 +116,7 @@
 							</p:selectOneMenu>
   						<p:outputLabel for="observacion" value="Observaciones:"/>
 							<p:inputTextarea id="observacion" value="#{manticCatalogosMasivosImportar.masivo.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
-							<p:fileUpload fileUploadListener="#{manticCatalogosMasivosImportar.doFileUpload}" 
+							<p:fileUpload listener="#{manticCatalogosMasivosImportar.doFileUpload}" 
 							  mode="advanced" process="@form" update="contenedorGrupos:tuplas @(.importado)" label="Selecciona XLS" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
 								multiple="false" allowTypes="#{manticCatalogosMasivosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosMasivosImportar.attrs.formatos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>

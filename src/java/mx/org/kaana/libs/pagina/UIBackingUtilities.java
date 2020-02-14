@@ -18,9 +18,8 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Global;
-
+import org.primefaces.PrimeFaces;
 import org.primefaces.component.datatable.DataTable;
-import org.primefaces.context.RequestContext;
 
 public class UIBackingUtilities {
 
@@ -93,28 +92,32 @@ public class UIBackingUtilities {
 	}
 	
 	public static void execute(String script) {
-		if(RequestContext.getCurrentInstance()!= null)
-      RequestContext.getCurrentInstance().execute(script);
+		if(getCurrentInstance()!= null)
+      getCurrentInstance().executeScript(script);
 	}
 	
 	public static void update(String component) {
-		RequestContext.getCurrentInstance().update(component);
+		getCurrentInstance().ajax().update(component);
 	}
 	
 	public static void update(Collection<String> component) {
-		RequestContext.getCurrentInstance().update(component);
+		getCurrentInstance().ajax().update(component);
 	}
 	
 	public static void addCallbackParam(String name, Object params) {
-		RequestContext.getCurrentInstance().addCallbackParam(name, params);
+		getCurrentInstance().ajax().addCallbackParam(name, params);
 	}
 	
 	public static void showMessageInDialog(FacesMessage message) {
-	  RequestContext.getCurrentInstance().showMessageInDialog(message);	
+	  getCurrentInstance().dialog().showMessageDynamic(message);	
 	}
 	
-	public static RequestContext getCurrentInstance() {
-	  return RequestContext.getCurrentInstance();	
+	public static void openDialog(String dialog) {
+		getCurrentInstance().dialog().openDynamic(dialog);
+	}
+	
+  public static PrimeFaces getCurrentInstance() {
+		return PrimeFaces.current();
 	}
 	
 }

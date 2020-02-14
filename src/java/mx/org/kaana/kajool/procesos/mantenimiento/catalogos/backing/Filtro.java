@@ -51,7 +51,7 @@ public class Filtro extends UIBase implements Serializable {
     this.attrs.put("showCatalogos", Cadena.isVacio(JsfBase.getFlashAttribute("idCatalogo")));
     this.attrs.put("idCatalogo", idCatalogo);
     this.attrs.put("descripcion", "");
-    this.attrs.put("catalogos", UISelect.build("TcJanalCatalogosDto", this.attrs, "descripcion"));
+    this.attrs.put("catalogos", UISelect.seleccione("TcJanalCatalogosDto", this.attrs, "descripcion"));
     this.grid = (PanelGrid) new KajoolPanelGrid("grid", 4).create();
     this.grid.setColumnClasses("janal-wid-10, janal-wid-10");
     this.detalle = (PanelGrid) new KajoolPanelGrid("detalle", 2).create();

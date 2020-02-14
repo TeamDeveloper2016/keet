@@ -119,7 +119,7 @@ public class Asociar extends Comun implements Serializable {
 				filePath.mkdirs();
 			if (result.exists())
 				result.delete();			      
-			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();
 			this.importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, genericPath, "", event.getFile().getFileName());      
 			this.image= LoadImages.getFile(genericPath.concat(nameFile));

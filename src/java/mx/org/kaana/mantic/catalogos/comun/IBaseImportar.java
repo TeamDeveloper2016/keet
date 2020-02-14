@@ -126,7 +126,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			if (result.exists())
 				result.delete();			      
 			isXls= event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XLS.name());
-			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();			
 			if(isXls) {
 				if(!this.toVerificaXls(result))
@@ -172,7 +172,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
-			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
 			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName());
   		this.attrs.put("file", this.file.getName()); 			
@@ -204,12 +204,12 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			if (result.exists())
 				result.delete();			      
 			// pasar el archivo a la ruta de trabajo 
-			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			// pasar el archivo a la ruta de las imagenes de forma temporal
 			result= new File(JsfUtilities.getRealPath("/resources/janal/img/proveedores/").concat(nameFile));
 			if (result.exists())
 				result.delete();			      
-			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
 			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", "/img/proveedores", (String)this.attrs.get("observaciones"), event.getFile().getFileName());
   		this.attrs.put("file", this.file.getName()); 	
@@ -568,7 +568,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			if (result.exists())
 				result.delete();			      
 			isXls= event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XLS.name());
-			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();			
 			if(isXls) {
 				if(!this.toCheckHeader(result, masivo, categoria))

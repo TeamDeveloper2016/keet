@@ -45,7 +45,6 @@ import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticComprasOrdenesFiltro")
 @ViewScoped
@@ -273,11 +272,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 } // doReporte
 	
 	public void doVerificarReporte() {
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
 		else{
-			rc.execute("generalHide()");		
+			UIBackingUtilities.execute("generalHide()");		
 			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
 	} // doVerificarReporte		

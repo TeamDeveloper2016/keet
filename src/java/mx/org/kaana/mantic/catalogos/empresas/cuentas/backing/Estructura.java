@@ -25,7 +25,6 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.beans.TreeCuenta;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.MotorBusqueda;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.organigram.OrganigramNodeCollapseEvent;
 import org.primefaces.model.DefaultOrganigramNode;
@@ -177,18 +176,16 @@ public class Estructura extends IBaseFilter implements Serializable {
 	
 	public void doConsultarDetalle() {
     TreeCuenta seleccionado= null;
-    RequestContext rc     = null;
     try {
-      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
         seleccionado= (TreeCuenta) this.node.getData();
         this.attrs.put("isPrincipal", seleccionado.getPago()!= null);
         this.attrs.put("detalle", seleccionado);        
-        rc.update("dialogoDetalle");
-        rc.execute("PF('dlgDetalle').show();");
+        UIBackingUtilities.update("dialogoDetalle");
+        UIBackingUtilities.execute("PF('dlgDetalle').show();");
       } // if
       else{
-        rc.execute("janal.desbloquear();");        
+        UIBackingUtilities.execute("janal.desbloquear();");        
         JsfBase.addMessage("Detalle", "Es necesario seleccionar un documento, para mostrar la informacion.", ETipoMensaje.ERROR);
       } // else
     } // try // try
@@ -203,10 +200,8 @@ public class Estructura extends IBaseFilter implements Serializable {
 	
 	public String doAccion() {
 		String regresar  = null;
-    RequestContext rc= null;
     try {
-      rc= UIBackingUtilities.getCurrentInstance();
-      if(this.node!= null){
+      if(this.node!= null) {
 				regresar= "abono".concat(Constantes.REDIRECIONAR);
 				JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/estructura.jsf".concat(Constantes.REDIRECIONAR));				
 				JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));								
@@ -214,7 +209,7 @@ public class Estructura extends IBaseFilter implements Serializable {
 				JsfBase.setFlashAttribute("idProveedor", this.attrs.get("idProveedorParent"));								
       } // if
       else{
-        rc.execute("janal.desbloquear();");        
+        UIBackingUtilities.execute("janal.desbloquear();");        
         JsfBase.addMessage("Consultar", "Es necesario seleccionar un nodo", ETipoMensaje.ERROR);
       } // else
     } // try

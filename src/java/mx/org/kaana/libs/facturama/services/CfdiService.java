@@ -16,8 +16,9 @@ import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import org.primefaces.util.Base64;
+//import org.primefaces.util.Base64;
 import java.io.FileOutputStream;
+import org.apache.commons.codec.binary.Base64;
 
 public class CfdiService  extends HttpService{ //<mx.org.kaana.libs.facturama.Models.Request.Cfdi,mx.org.kaana.libs.facturama.Models.Response.Cfdi>{
 
@@ -210,7 +211,7 @@ public class CfdiService  extends HttpService{ //<mx.org.kaana.libs.facturama.Mo
         InovoiceFile file = GetFile(id, FileFormat.Pdf, type);
         
         FileOutputStream fos = new FileOutputStream(filePath);                 
-                 fos.write(Base64.decode(file.getContent()));
+                 fos.write(Base64.decodeBase64(file.getContent()));
                  fos.close();                 
     }
     
@@ -234,11 +235,11 @@ public class CfdiService  extends HttpService{ //<mx.org.kaana.libs.facturama.Mo
      * @param id Idenficador del CFDI
      * @param type Tipo del comprobante (payroll | received | issued)
      */
-    public void SaveXml( String filePath, String id, InvoiceType type ) throws Exception{
+    public void SaveXml(String filePath, String id, InvoiceType type) throws Exception{
         InovoiceFile file = GetFile(id, FileFormat.Xml, type);
         
         FileOutputStream fos = new FileOutputStream(filePath);                 
-                 fos.write(Base64.decode(file.getContent()));
+                 fos.write(Base64.decodeBase64(file.getContent()));
                  fos.close();                 
     }
     
@@ -265,7 +266,7 @@ public class CfdiService  extends HttpService{ //<mx.org.kaana.libs.facturama.Mo
         InovoiceFile file = GetFile(id, FileFormat.Html, type);
         
         FileOutputStream fos = new FileOutputStream(filePath);                 
-                 fos.write(Base64.decode(file.getContent()));
+                 fos.write(Base64.decodeBase64(file.getContent()));
                  fos.close();                 
     }
         

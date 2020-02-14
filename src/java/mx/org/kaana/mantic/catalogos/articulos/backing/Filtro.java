@@ -110,9 +110,9 @@ public class Filtro extends Comun implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
 			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
@@ -200,7 +200,7 @@ public class Filtro extends Comun implements Serializable {
 			options.add(accion.name());
 			options.add(idArticulo.toString());
 			params.put("data", options);
-			UIBackingUtilities.getCurrentInstance().openDialog("express");
+			UIBackingUtilities.openDialog("express");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

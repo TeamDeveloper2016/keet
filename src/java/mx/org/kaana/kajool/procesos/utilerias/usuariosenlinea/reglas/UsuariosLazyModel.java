@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.procesos.beans.Usuario;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortOrder;
 
 /**
@@ -40,7 +41,7 @@ public class UsuariosLazyModel extends LazyDataModel<Usuario> implements Seriali
   } // getRowData
 
   @Override
-  public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+  public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filters) {
     int dataSize          = this.usuarios.size();
     List<Usuario> regresar= new ArrayList<>();
     this.setRowCount(dataSize);

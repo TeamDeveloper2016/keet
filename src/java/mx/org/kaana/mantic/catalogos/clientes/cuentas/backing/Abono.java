@@ -276,7 +276,7 @@ public class Abono extends IBasePagos implements Serializable {
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
-			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
 			setFile(new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
   		this.attrs.put("file", getFile().getName()); 			

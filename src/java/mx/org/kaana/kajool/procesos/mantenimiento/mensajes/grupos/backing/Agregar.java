@@ -5,9 +5,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.kajool.db.dto.TcJanalMensajesDto;
 import mx.org.kaana.libs.formato.Error;
@@ -32,7 +32,7 @@ import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.grupos.reglas.Transac
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@ManagedBean(name="kajoolMantenimientoMensajesGruposAgregar")
+@ManagedBean(value="kajoolMantenimientoMensajesGruposAgregar")
 @ViewScoped
 public class Agregar extends IBaseAttribute implements Serializable{
 
@@ -60,8 +60,8 @@ public class Agregar extends IBaseAttribute implements Serializable{
           this.attrs.put("idPrioridad", new Long(-1));
           this.attrs.put("valida", "uno,dos");
           this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-          this.attrs.put("grupos", UISelect.build("TcJanalGruposDto", this.attrs, "descripcion"));
-          this.attrs.put("prioridades", UISelect.build("TcJanalPrioridadesDto", this.attrs, "descripcion"));
+          this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", this.attrs, "descripcion"));
+          this.attrs.put("prioridades", UISelect.seleccione("TcJanalPrioridadesDto", this.attrs, "descripcion"));
           this.attrs.put("dto", new TcJanalMensajesDto());
           this.attrs.put("dtoMensajesGrupos", new TrJanalMensajesGruposDto());
           break;

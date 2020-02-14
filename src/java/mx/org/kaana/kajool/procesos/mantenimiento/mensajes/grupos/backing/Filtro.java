@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -31,7 +31,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@ManagedBean(name="kajoolMantenimientoMensajesGruposFiltro")
+@ManagedBean(value="kajoolMantenimientoMensajesGruposFiltro")
 @ViewScoped
 public class Filtro  extends IBaseFilter implements Serializable{
 
@@ -61,7 +61,7 @@ public class Filtro  extends IBaseFilter implements Serializable{
     this.attrs.put("sortOrder", " order by tc_janal_mensajes.descripcion");
     this.attrs.put("idGrupo", new Long(-1));
     try {
-      this.attrs.put("grupos", UISelect.build("TcJanalGruposDto", "selectGrupos", this.attrs, "clave|descripcion", " ", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", "selectGrupos", this.attrs, "clave|descripcion", " ", EFormatoDinamicos.MAYUSCULAS));
     } //try
     catch (Exception e) {
       JsfUtilities.addMessageError(e);

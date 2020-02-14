@@ -87,7 +87,7 @@ public class Archivo implements Serializable {
       FileOutputStream fileOutputStream=new FileOutputStream(result);
       byte[] buffer=new byte[Constantes.BUFFER_SIZE];
       int bulk;
-      InputStream inputStream=event.getFile().getInputstream();
+      InputStream inputStream=event.getFile().getInputStream();
       while (true) {
         bulk=inputStream.read(buffer);
         if (bulk<0) {

@@ -163,7 +163,7 @@
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt" style="display:#{manticCatalogosEmpresasCuentasAccion.consultar};"/><br style="display:#{manticCatalogosEmpresasCuentasAccion.consultar};"/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAccion.attrs.observaciones}" style="display:#{manticCatalogosEmpresasCuentasAccion.consultar};"/>
 							<p:spacer height="5px"/>
-							<p:fileUpload fileUploadListener="#{manticCatalogosEmpresasCuentasAccion.doFileUpload}" 
+							<p:fileUpload listener="#{manticCatalogosEmpresasCuentasAccion.doFileUpload}" 
 								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticCatalogosEmpresasCuentasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosEmpresasCuentasAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>

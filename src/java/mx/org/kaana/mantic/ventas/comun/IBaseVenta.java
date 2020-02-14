@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -932,9 +933,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		if(this.attrs.get("comprador")== null) {
 			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModelClientes");
 			if(list!= null) {
-				List<Entity> items= (List<Entity>)list.getWrappedData();
+				List<IBaseDto> items= (List<IBaseDto>)list.getWrappedData();
 				if(items.size()> 0)
-					this.toFindCliente(new UISelectEntity(items.get(0)));
+					this.toFindCliente(new UISelectEntity((Entity)items.get(0)));
 			} // if
 		} // else
 	  else

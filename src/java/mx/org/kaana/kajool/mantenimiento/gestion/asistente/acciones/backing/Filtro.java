@@ -394,7 +394,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			this.attrs.put("textoTransaccion", generador.getTextoTransaccion());
 			this.attrs.put("textoBean", generador.getTextoBean());
 			this.attrs.put("archivo",Constantes.ARCHIVO_PATRON_SEPARADOR.concat(this.attrs.get("patron").toString()).concat("Accion.").concat(EFormatos.ZIP.name().toLowerCase() ));
-			if (UIBackingUtilities.getCurrentInstance()!=null) {
+			if (UIBackingUtilities.getCurrentInstance()!= null) {
 				UIBackingUtilities.update("tab:textoPagina");
 				UIBackingUtilities.update("tab:textoBacking");
 				UIBackingUtilities.update("tab:textoTransaccion");

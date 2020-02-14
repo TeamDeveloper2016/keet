@@ -34,7 +34,6 @@ import mx.org.kaana.kajool.procesos.usuarios.delegar.reglas.Transaccion;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.GestorSQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "kajoolUsuariosDelegarGeneral")
 @ViewScoped

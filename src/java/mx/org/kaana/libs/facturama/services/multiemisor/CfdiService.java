@@ -10,7 +10,8 @@ import java.util.List;
 import java.net.URLEncoder;
 import mx.org.kaana.libs.facturama.models.response.InovoiceFile;
 import java.io.FileOutputStream;
-import org.primefaces.util.Base64;
+import org.apache.commons.codec.binary.Base64;
+//import org.primefaces.util.Base64;
 
 public class CfdiService extends HttpService { //<mx.org.kaana.libs.facturama.models.request.Cfdi,mx.org.kaana.libs.facturama.models.response.Cfdi>{
 
@@ -174,7 +175,7 @@ public class CfdiService extends HttpService { //<mx.org.kaana.libs.facturama.mo
 		InovoiceFile file = GetFile(id, FileFormat.Xml, type);
 
 		FileOutputStream fos = new FileOutputStream(filePath);
-		fos.write(Base64.decode(file.getContent()));
+		fos.write(Base64.decodeBase64(file.getContent()));
 		fos.close();
 	}
 

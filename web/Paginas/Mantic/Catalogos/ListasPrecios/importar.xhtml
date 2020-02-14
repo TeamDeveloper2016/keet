@@ -100,7 +100,7 @@
 									<h:panelGrid columns="1" styleClass="janal-wid-100">
 										<p:outputLabel for="nombre" value="Nombre:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}"/>
 										<p:inputText id="nombre" value="#{manticCatalogosListaPreciosImportar.lista.nombre}" styleClass="janal-wid-100-txt involucrados" placeholder="Ej. COFLEX.PDF" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}"/>
-										<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doImageUpload}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}"
+										<p:fileUpload listener="#{manticCatalogosListaPreciosImportar.doImageUpload}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}"
 											mode="advanced" process="@form" update="@(.logotipo)" label="Selecciona logotipo" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
 											multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.logotipos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 involucrados janal-upload-frame"
 											invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.logotipos}" onstart="return janal.bloquear()" oncomplete="$('#source-image').attr('href', $('#contenedorGrupos\\:icon-image').attr('src'));janal.desbloquear();"/>
@@ -166,7 +166,7 @@
 						<p:tab title="Importar">
 							<p:outputLabel for="comentarios" value="Comentarios al archivo:"/><br/>
 							<p:inputTextarea id="comentarios" value="#{manticCatalogosListaPreciosImportar.attrs.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
-							<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doFileUpload}" 
+							<p:fileUpload listener="#{manticCatalogosListaPreciosImportar.doFileUpload}" 
 							  mode="advanced" process="@form" update="@(.importado)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
 								multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.formatos}" onstart="return execute();" oncomplete="janal.desbloquear()"/>

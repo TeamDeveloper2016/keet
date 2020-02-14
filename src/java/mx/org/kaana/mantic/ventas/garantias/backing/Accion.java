@@ -50,7 +50,6 @@ import mx.org.kaana.mantic.ventas.garantias.beans.PagoGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.AdminGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.CreateTicketGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.GestorSQL;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -206,7 +205,6 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // loadDatosCliente
 	
 	public void doValidarDevolucion(){
-		RequestContext rc     = null;
 		String tipoVenta      = null;
 		boolean lanzadoDialogo= true;
 		try {
@@ -214,9 +212,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(tipoVenta.equals("1"))
 				lanzadoDialogo= verificarDevolucionCredito();
 			if(lanzadoDialogo){
-				rc= RequestContext.getCurrentInstance();
-				rc.execute("ventaFinished(".concat(tipoVenta).concat(");"));
-				rc.update("dialogoCerrarVenta");
+				UIBackingUtilities.execute("ventaFinished(".concat(tipoVenta).concat(");"));
+				UIBackingUtilities.update("dialogoCerrarVenta");
 			} // else
 		} // try
 		catch (Exception e) {

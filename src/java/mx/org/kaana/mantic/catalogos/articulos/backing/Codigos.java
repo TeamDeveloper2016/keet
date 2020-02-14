@@ -25,7 +25,6 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.CodigoArticulo;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA

@@ -67,7 +67,6 @@ import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 
@@ -272,18 +271,16 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public void doCleanCaptura(){
 		mx.org.kaana.mantic.ventas.reglas.Transaccion transaccion= null;
-		RequestContext rc= null;
 		try {
-			rc= RequestContext.getCurrentInstance();
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid())
-				rc.execute("jsCaja.validaAccionCaptura();");
+				UIBackingUtilities.execute("jsCaja.validaAccionCaptura();");
 			else {
 				if(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L){
 					transaccion= new mx.org.kaana.mantic.ventas.reglas.Transaccion((TicketVenta)this.getAdminOrden().getOrden());
 					transaccion.ejecutar(EAccion.ELIMINAR);
 				} // if
 				doInitPage();
-				rc.execute("janal.desbloquear();jsArticulos.refreshCobroValidate();");
+				UIBackingUtilities.execute("janal.desbloquear();jsArticulos.refreshCobroValidate();");
 			} // else
 		} // try
 		catch (Exception e) {
@@ -558,13 +555,12 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public boolean doVerificarReporte() {
     boolean regresar = false;
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
-			rc.execute("start(" + this.reporte.getTotal() + ")");	
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
       regresar = true;
     }
 		else{
-			rc.execute("generalHide();");		
+			UIBackingUtilities.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
       regresar = false;
 		} // else
@@ -1208,17 +1204,15 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doValidaCreditoCliente(){
 		Boolean credito   = false;
 		Boolean apartado  = false;
-		RequestContext rc = null;
 		try {
 			credito= (Boolean) this.attrs.get("creditoVenta");
 			apartado= (Boolean) this.attrs.get("apartado");
-			rc= UIBackingUtilities.getCurrentInstance();
 			if(apartado)				
-				rc.execute("jsArticulos.validateApartado(" + Numero.formatear(Numero.NUMERO_CON_DECIMALES, (getAdminOrden().getTotales().getTotal() * Constantes.ANTICIPO)/100) + ");");
+				UIBackingUtilities.execute("jsArticulos.validateApartado(" + Numero.formatear(Numero.NUMERO_CON_DECIMALES, (getAdminOrden().getTotales().getTotal() * Constantes.ANTICIPO)/100) + ");");
 			else if(credito)
-				rc.execute("jsArticulos.validateCredito();");
+				UIBackingUtilities.execute("jsArticulos.validateCredito();");
 			else
-				rc.execute("jsArticulos.refreshCobroValidate();");
+				UIBackingUtilities.execute("jsArticulos.refreshCobroValidate();");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

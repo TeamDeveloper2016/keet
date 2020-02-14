@@ -34,7 +34,6 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 @Named(value= "manticVentasFiltro")
@@ -229,11 +228,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 	} // doReporte
 	
 	public void doVerificarReporte() {
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
 		else{
-			rc.execute("generalHide()");		
+			UIBackingUtilities.execute("generalHide()");		
 			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
 	} // doVerificarReporte		

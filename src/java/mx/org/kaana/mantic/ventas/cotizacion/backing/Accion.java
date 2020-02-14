@@ -38,7 +38,6 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
@@ -592,7 +591,6 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> vendedores= null;
 		Map<String, Object>params      = null;
 		List<Columna> campos           = null;
-		RequestContext rc              = null;
 		try {
 			campos= new ArrayList<>();
 			params= new HashMap<>();
@@ -601,15 +599,14 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idUsuario", JsfBase.getIdUsuario());
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			rc= UIBackingUtilities.getCurrentInstance();
 			if(!vendedores.isEmpty()){
 				this.attrs.put("vendedores", vendedores);
 				this.attrs.put("vendedor", UIBackingUtilities.toFirstKeySelectEntity(vendedores));
-				rc.execute("PF('dlgCloseTicket').show();");
+				UIBackingUtilities.execute("PF('dlgCloseTicket').show();");
 			} // if
 			else{
 				JsfBase.addMessage("Cambio de usuario", "No hay mas usuarios con el mismo perfil", ETipoMensaje.INFORMACION);
-				rc.execute("janal.desbloquear();");
+				UIBackingUtilities.execute("janal.desbloquear();");
 			} // else
 		} // try
 		catch (Exception e) {

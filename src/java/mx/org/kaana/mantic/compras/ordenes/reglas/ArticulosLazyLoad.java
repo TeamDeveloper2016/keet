@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Numero;
+import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortOrder;
 
 /**
@@ -28,7 +29,7 @@ public class ArticulosLazyLoad extends FormatCustomLazy implements Serializable 
 	}
 
 	@Override
-	public List<IBaseDto> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+	public List<IBaseDto> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filters) {
 		List<IBaseDto> regresar= (List<IBaseDto>)super.load(first, pageSize, sortField, sortOrder, filters);
 		Value value= null;
 		for (IBaseDto item: regresar) {

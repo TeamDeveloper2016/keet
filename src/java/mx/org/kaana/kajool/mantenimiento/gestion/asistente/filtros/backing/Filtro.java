@@ -59,7 +59,6 @@ import mx.org.kaana.kajool.mantenimiento.gestion.asistente.filtros.beans.Paramet
 import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;

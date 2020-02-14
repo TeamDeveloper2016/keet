@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortOrder;
 
 
@@ -57,7 +58,7 @@ public class DtoLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 	} // getRowKey
 
   @Override
-  public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+  public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filters) {
     List<T> regresar= null;
 		PageRecords page= null;
     if(pageSize> 0) {

@@ -30,7 +30,7 @@
   <h:form id="#{dialogo}-datos" prependId="true" enctype="multipart/form-data" >
     <p:dialog id="#{dialogo}-lock" widgetVar="#{dialogo}" header="#{archivo.titulo}"  width="900" height="300" position="260,250"    onHide="janal.desbloquear();" closable="false" dynamic="true" >
       <h:panelGrid columns="1" styleClass="janal-content-table" id="contenidoTabla">
-        <p:fileUpload fileUploadListener="#{archivo.doFileUpload}"
+        <p:fileUpload listener="#{archivo.doFileUpload}"
                       mode="advanced"
                       update=":#{dialogo}-datos:contenidoTabla :#{dialogo}-datos:tabla"
                       label="Selecciona"

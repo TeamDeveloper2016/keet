@@ -27,7 +27,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA

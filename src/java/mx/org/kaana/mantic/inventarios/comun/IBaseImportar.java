@@ -134,7 +134,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			if (result.exists())
 				result.delete();			      
 			isXml= event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name());
-			this.toWriteFile(result, event.getFile().getInputstream(), isXml);
+			this.toWriteFile(result, event.getFile().getInputStream(), isXml);
 			fileSize= event.getFile().getSize();			
 			if(isXml) {
 			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
@@ -175,7 +175,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
-			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
 			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
   		this.attrs.put("file", this.file.getName()); 			

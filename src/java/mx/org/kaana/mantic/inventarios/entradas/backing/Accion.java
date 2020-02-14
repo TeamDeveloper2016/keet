@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
-import com.google.common.base.Objects;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
@@ -41,6 +40,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
 import java.util.Random;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -49,9 +49,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
-import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
-import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -652,10 +650,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		if(faltante!= null) { 
 			if(buscado== null) {
 				FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
-				List<Entity> items   = (List<Entity>)list.getWrappedData();
+				List<IBaseDto> items = (List<IBaseDto>)list.getWrappedData();
 				if(items.size()> 0) {
-					buscado= items.get(0);
-					faltante.setIdArticulo(buscado.getKey());
+					faltante.setIdArticulo(items.get(0).getKey());
 				} // if	
 			} // else
 			else

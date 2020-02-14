@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -532,9 +533,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			if(this.attrs.get("encontrado")== null) {
 				FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
 				if(list!= null) {
-					List<Entity> items= (List<Entity>)list.getWrappedData();
+					List<IBaseDto> items= (List<IBaseDto>)list.getWrappedData();
 					if(items.size()> 0)
-						this.updateArticulo(new UISelectEntity(items.get(0)));
+						this.updateArticulo(new UISelectEntity((Entity)items.get(0)));
 				} // if
 			} // else
 			else

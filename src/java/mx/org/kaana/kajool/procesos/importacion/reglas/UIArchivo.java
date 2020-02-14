@@ -144,7 +144,7 @@ public class UIArchivo implements Serializable{
       fileOutputStream=new FileOutputStream(result);
       byte[] buffer=new byte[Constantes.BUFFER_SIZE];
       int bulk;
-      inputStream=event.getFile().getInputstream();
+      inputStream=event.getFile().getInputStream();
       while (true) {
         bulk=inputStream.read(buffer);
         if (bulk<0) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortOrder;
 
 /**
@@ -40,7 +41,7 @@ public class EntityLazyDataModel<T extends IBaseDto> extends LazyDataModel<T>{
 	} // getRowKey
 	
 	@Override
-	public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters){
+	public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filters){
 		List<T> regresar= new ArrayList<T>();
 		regresar = this.dataSource;
 		//rowCount

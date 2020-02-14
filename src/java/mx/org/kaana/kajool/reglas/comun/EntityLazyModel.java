@@ -22,6 +22,7 @@ import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortOrder;
 
 public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
@@ -99,7 +100,7 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 	} // getRowKey
 
 	@Override
-	public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+	public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filters) {
 		PageRecords page=null;
     if(pageSize> 0) {
       try {

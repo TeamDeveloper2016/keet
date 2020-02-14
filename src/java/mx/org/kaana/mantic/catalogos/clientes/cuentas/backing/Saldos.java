@@ -42,7 +42,6 @@ import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosClientesCuentasSaldos")
 @ViewScoped
@@ -313,13 +312,12 @@ public class Saldos extends IBaseFilter implements Serializable {
   
   public boolean doVerificarReporte() {
     boolean regresar = false;
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
       regresar = true;
     } // if
 		else{
-			rc.execute("generalHide();");		
+			UIBackingUtilities.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
       regresar = false;
 		} // else

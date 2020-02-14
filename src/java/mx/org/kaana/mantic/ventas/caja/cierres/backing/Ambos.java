@@ -34,7 +34,6 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
 import mx.org.kaana.mantic.enums.EReportes;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticVentasCajaCierresAmbos")
 @ViewScoped
@@ -252,13 +251,12 @@ public class Ambos extends IBaseFilter implements Serializable {
   
   public boolean doVerificarReporte() {
     boolean regresar = false;
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
       regresar = true;
     }
 		else{
-			rc.execute("generalHide();");		
+			UIBackingUtilities.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
       regresar = false;
 		} // else

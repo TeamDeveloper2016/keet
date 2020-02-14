@@ -35,7 +35,6 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.CorteCaja;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CreateCorteCaja;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticVentasCajaCierresFiltro")
 @ViewScoped
@@ -241,13 +240,12 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   public boolean doVerificarReporte() {
     boolean regresar = false;
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
       regresar = true;
     }
 		else{
-			rc.execute("generalHide();");		
+			UIBackingUtilities.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
       regresar = false;
 		} // else

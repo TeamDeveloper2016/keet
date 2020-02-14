@@ -35,7 +35,6 @@ import mx.org.kaana.mantic.enums.ETipoDocumento;
 import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
-import org.primefaces.context.RequestContext;
 
 @Named(value= "manticConsultasVentas")
 @ViewScoped
@@ -229,11 +228,10 @@ public class Ventas extends IBaseTicket implements Serializable {
 	} // doReporte
 	
 	public void doVerificarReporte() {
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");		
 		else{
-			rc.execute("generalHide()");		
+			UIBackingUtilities.execute("generalHide()");		
 			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
 	} // doVerificarReporte		

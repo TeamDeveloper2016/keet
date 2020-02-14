@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Numero;
+import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortOrder;
 
 /**
@@ -32,7 +33,7 @@ public class FormatTicket extends FormatCustomLazy implements Serializable {
 	}
 
 	@Override
-	public List<IBaseDto> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+	public List<IBaseDto> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filters) {
 		List<IBaseDto> items= super.load(first, pageSize, sortField, sortOrder, filters);
 		if(items!= null) {
 			for (IBaseDto item: items) 
