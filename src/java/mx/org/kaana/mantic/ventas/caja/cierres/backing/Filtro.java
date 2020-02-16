@@ -154,7 +154,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticCierresEstatusDto", "row", params, columns));
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcManticCierresEstatusDto", "row", params, columns, "nombre"));
 			this.attrs.put("idCierreEstatus", new UISelectEntity("-1"));
 			this.toLoadEmpresas();
     } // try
@@ -179,7 +179,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));			
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
 			this.doLoadCajas();
     } // try
@@ -200,7 +200,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
-      this.attrs.put("cajas", (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns));
+      this.attrs.put("cajas", (List<UISelectEntity>) UIEntity.seleccione("TcManticCajasDto", "cajas", params, columns, "clave"));
 			this.attrs.put("idCaja", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {

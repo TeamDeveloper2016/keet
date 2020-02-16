@@ -29,7 +29,6 @@
 					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100, janal-wid-col-40">
 						<p:outputLabel for="cliente" value="Cliente:"/>
 						<p:selectOneMenu id="cliente" value="#{manticVentasAutorizacionFiltro.attrs.cliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="startsWith">
-							<f:selectItem itemLabel="SELECCIONE" itemValue=""/>
 							<f:selectItems value="#{manticVentasAutorizacionFiltro.attrs.unico}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 							<p:column headerText="Clave">
 								<h:outputText value="#{item.clave}"/>
@@ -47,7 +46,6 @@
 						<p:outputLabel for="ticketsAbiertos" value="Ticket:" title="Ticket pendiente de autorizacion"/>
 						<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasAutorizacionFiltro.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 							<p:ajax event="change" onstart="loadTicketAbiertos();" update="" oncomplete="janal.desbloquear();" />
-							<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
 							<f:selectItems value="#{manticVentasAutorizacionFiltro.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: #{element.precioTotal}"/>
 							<p:column headerText="No.">
 								<h:outputText value="#{item.consecutivo}"/>

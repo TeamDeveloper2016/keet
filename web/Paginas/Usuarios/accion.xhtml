@@ -33,7 +33,6 @@
                 <p:outputLabel for="persona"  value="Persona:"/>
                 <p:selectOneMenu  id="persona" value="#{kajoolUsuariosAccion.criteriosBusqueda.persona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{kajoolUsuariosAccion.attrs.nuevo}">
                   <p:ajax event="change" process="@this" update="@(.information)" listener="#{kajoolUsuariosAccion.doBuscar}"/>
-                  <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
                   <f:selectItems value="#{kajoolUsuariosAccion.criteriosBusqueda.listaPersonas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
                   <p:column>
                     <h:outputText value="#{item.nombres}"/>

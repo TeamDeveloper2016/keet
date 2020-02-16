@@ -167,13 +167,13 @@ public class Filtro extends FiltroFactura implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
 			columns.remove(0);
 			columns.remove(1);
 			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (" + EEstatusVentas.PAGADA.getIdEstatusVenta() + ")");
-      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
+      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.seleccione("TcManticVentasEstatusDto", "row", params, columns, "nombre"));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {

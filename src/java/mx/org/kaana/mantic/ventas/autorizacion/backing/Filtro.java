@@ -165,6 +165,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			cliente= listado.get(listado.indexOf(this.encontrado));
 			this.attrs.put("cliente", cliente);						
 			unico  = new ArrayList<>();
+			unico.add(new UISelectEntity(new Entity(-1L, "SELECCIONE")));
 			unico.add(cliente);
 			this.attrs.put("unico", unico);				
 			doLoadTicketAbiertos();
@@ -188,7 +189,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion());
-			ticketsAbiertos= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			ticketsAbiertos= UIEntity.seleccione("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS, "consecutivo");
 			if(!ticketsAbiertos.isEmpty()){
 				this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
 				this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectEntity(ticketsAbiertos));			

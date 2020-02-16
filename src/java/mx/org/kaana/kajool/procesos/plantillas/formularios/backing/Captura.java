@@ -35,6 +35,7 @@ public class Captura implements Serializable {
   @PostConstruct
 	private void init() {
     this.personas= new ArrayList<>();
+		this.personas.add(new Persona()); this.personas.get(this.personas.size()-1).setNombres("SELECCIONE");
     this.personas.add(new Persona()); this.personas.get(this.personas.size()-1).setNombres("Alex");
     this.personas.add(new Persona()); this.personas.get(this.personas.size()-1).setNombres("Yany");
     this.personas.add(new Persona()); this.personas.get(this.personas.size()-1).setNombres("Yare");

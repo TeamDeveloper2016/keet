@@ -79,7 +79,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       params.put(Constantes.SQL_CONDICION, "id_tipo_persona in (1,2,6)");
-      this.criteriosBusqueda.getListaPersonas().addAll(UIEntity.build("TcManticPersonasDto", "row", params, columns));
+      this.criteriosBusqueda.getListaPersonas().addAll(UIEntity.seleccione("TcManticPersonasDto", "row", params, columns, "nombres"));
     } // try
     catch (Exception e) {
       throw e;

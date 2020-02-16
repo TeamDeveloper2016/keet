@@ -187,7 +187,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			campos.add(new Columna("entidad", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
-      regresar = UIEntity.build("VistaDomiciliosCatalogosDto", "domicilios", params, campos, Constantes.SQL_TODOS_REGISTROS);      
+      regresar = UIEntity.seleccione("VistaDomiciliosCatalogosDto", "domicilios", params, campos, Constantes.SQL_TODOS_REGISTROS, "domicilio");      
 			this.attrs.put("resultados", regresar.size());      
     } // try
     catch (Exception e) {
@@ -325,7 +325,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			campos= new ArrayList<>();
 			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      entidades = UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+      entidades = UIEntity.seleccione("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
       this.attrs.put("entidades", entidades);
       this.domicilio.setIdEntidad(entidades.get(0));
     } // try
@@ -367,7 +367,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 				params.put("idEntidad", this.domicilio.getIdEntidad().getKey());
 				campos= new ArrayList<>();
 				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				municipios = UIEntity.seleccione("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
 				this.attrs.put("municipios", municipios);
 				this.domicilio.setIdMunicipio(municipios.get(0));
 			} // if
@@ -410,7 +410,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 				params.put("idMunicipio", this.domicilio.getIdMunicipio().getKey());
 				campos= new ArrayList<>();
 				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				localidades = UIEntity.build("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				localidades = UIEntity.seleccione("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
 				this.attrs.put("localidades", localidades);
 				this.domicilio.setLocalidad(localidades.get(0));
 				this.domicilio.setIdLocalidad(localidades.get(0).getKey());

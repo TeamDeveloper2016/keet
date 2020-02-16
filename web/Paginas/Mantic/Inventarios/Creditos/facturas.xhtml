@@ -53,7 +53,6 @@
               <p:outputLabel for="ejercicio" value="Ejercicios:"/>
               <p:selectOneMenu id="ejercicio" value="#{manticInventariosCreditosFacturas.attrs.ejercicio}" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
 								<p:ajax event="change" process="@this" update="mes" listener="#{manticInventariosCreditosFacturas.doLoadMeses}" />
-								<f:selectItem itemLabel="SELECCIONE" itemValue=""/>
                 <f:selectItems value="#{manticInventariosCreditosFacturas.attrs.ejercicios}" var="element" itemValue="#{element}" itemLabel="#{element.idKey}"/>
               </p:selectOneMenu>
               <p:outputLabel for="mes" value="Meses:"/>

@@ -135,7 +135,7 @@ public class Ambos extends IBaseFilter implements Serializable {
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("usuarios", (List<UISelectEntity>) UIEntity.build("VistaCierresCajasDto", "usuarios", this.attrs, columns));
+      this.attrs.put("usuarios", (List<UISelectEntity>) UIEntity.seleccione("VistaCierresCajasDto", "usuarios", this.attrs, columns, "nombre"));
 			this.attrs.put("idUsuario", new UISelectEntity("-1"));
   		this.toLoadEmpresas();
   } // try

@@ -136,8 +136,8 @@ public class GaleryMenu implements Serializable {
       if(JsfBase.getFacesContext().getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE) || JsfBase.getFacesContext().getCurrentPhaseId().equals(PhaseId.RESTORE_VIEW))		
         doLoadInformacionSistema(false);
       this.systemInfo.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.modulos= UISelect.build("TcJanalModulosDto", "comboModulos", this.systemInfo, "descripcion");
-      this.problematicas= UISelect.build("TcJanalProblematicasDto", "row", this.systemInfo, "descripcion");
+      this.modulos= UISelect.seleccione("TcJanalModulosDto", "comboModulos", this.systemInfo, "descripcion");
+      this.problematicas= UISelect.seleccione("TcJanalProblematicasDto", "row", this.systemInfo, "descripcion");
       this.systemInfo.remove(Constantes.SQL_CONDICION);
       this.trJanalBuzonDto= new TrJanalBuzonDto();
     } // try

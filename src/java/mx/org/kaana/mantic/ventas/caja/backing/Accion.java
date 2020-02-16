@@ -741,7 +741,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion(true));			
-			this.attrs.put("ticketsAbiertos", UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS));
+			this.attrs.put("ticketsAbiertos", UIEntity.seleccione("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS, "consecutivo"));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -1189,7 +1189,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			tiposPagos= UIEntity.build("TcManticTiposPagosDto", "row", params);
+			tiposPagos= UIEntity.seleccione("TcManticTiposPagosDto", "row", params, "nombre");
 			this.attrs.put("tiposPagos", tiposPagos);
 			this.attrs.put("tipoPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
 		} // try
@@ -1337,7 +1337,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 		campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-		List<UISelectEntity> cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+		List<UISelectEntity> cfdis= UIEntity.seleccione("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS, "clave");
 		this.attrs.put("cfdis", cfdis);
 		for(UISelectEntity record: cfdis){
 			if(record.toString("clave").equals(GASTOS_GENERAL_CLAVE))
