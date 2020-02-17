@@ -32,6 +32,8 @@ public class TcManticTiposArchivosDto implements IBaseDto, Serializable {
   private String descripcion;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="id_requerido")
+  private Long idRequerido;
   @Column (name="nombre")
   private String nombre;
 	@Id
@@ -46,16 +48,17 @@ public class TcManticTiposArchivosDto implements IBaseDto, Serializable {
   }
 
   public TcManticTiposArchivosDto(Long key) {
-    this(null, null, null, null);
+    this(null, null, null, null, 2L);
     setKey(key);
   }
 
-  public TcManticTiposArchivosDto(String descripcion, Long idUsuario, String nombre, Long idTipoArchivo) {
+  public TcManticTiposArchivosDto(String descripcion, Long idUsuario, String nombre, Long idTipoArchivo, Long idRequerido) {
     setDescripcion(descripcion);
     setIdUsuario(idUsuario);
     setNombre(nombre);
     setIdTipoArchivo(idTipoArchivo);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this.idRequerido= idRequerido;
   }
 	
   public void setDescripcion(String descripcion) {
@@ -98,6 +101,14 @@ public class TcManticTiposArchivosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getIdRequerido() {
+		return idRequerido;
+	}
+
+	public void setIdRequerido(Long idRequerido) {
+		this.idRequerido=idRequerido;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -122,6 +133,8 @@ public class TcManticTiposArchivosDto implements IBaseDto, Serializable {
 		regresar.append(getIdTipoArchivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdRequerido());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -134,13 +147,14 @@ public class TcManticTiposArchivosDto implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("idTipoArchivos", getIdTipoArchivo());
 		regresar.put("registro", getRegistro());
+		regresar.put("idRequerido", getIdRequerido());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdUsuario(), getNombre(), getIdTipoArchivo(), getRegistro()
+    getDescripcion(), getIdUsuario(), getNombre(), getIdTipoArchivo(), getRegistro(), getIdRequerido()
     };
     return regresar;
   }
