@@ -7,5 +7,437 @@
   </model>
 
   <dml>
+    <unit id="TcKeetBitacorasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_bitacoras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_bitacoras
+        where      
+          id_bitacora = {idBitacora}
+      </select>
+    </unit>		
+    <unit id="TcKeetBitacorasAliasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_bitacoras_alias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_bitacoras_alias
+        where      
+          alias = '{alias}' and tabla = '{tabla}' and campo = '{campo}'
+      </select>
+    </unit>		
+    <unit id="TcKeetClientesContratosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_clientes_contratos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_clientes_contratos
+        where      
+          clave = {clave} and id_cliente = {idCliente} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetContratosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_archivos
+        where      
+          id_cliente_contrato = {idClienteContrato} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetContratosProyectosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_proyectos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_proyectos
+        where      
+          id_cliente_contrato = {idClienteContrato} and clave = '{clave}' and nombre = '{nombre}'
+      </select>
+    </unit>	
+    <unit id="TcKeetDepartamentosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_departamentos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_departamentos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>	
+    <unit id="TcKeetDesarrollosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_desarrollos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_desarrollos
+        where      
+          clave = '{clave}' and nombres = '{nombres}'
+      </select>
+    </unit>	
+    <unit id="TcKeetNominasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas
+        where      
+          id_nomina = {idNomina}
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_bitacora
+        where      
+          id_nomina_bitacota = {idNominaBitacota}
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasConceptosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_conceptos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_conceptos
+        where      
+          id_tipo_concepto = {idTipoConcepto} and id_activo = {idActivo} and clave = '{clave}' and nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcKeetNominasConstantesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_constantes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_constantes
+        where      
+          id_activo = {idActivo} and siglas = '{siglas}' and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasPeriodosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_periodos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_periodos
+        where      
+          orden = {orden} and ejercicio = {ejercicio}
+      </select>
+    </unit>							
+    <unit id="TcKeetNominasPersonasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_personas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_personas
+        where      
+          id_nomina_persona = {idNominaPersona}
+      </select>
+    </unit>		
+    <unit id="TcKeetPersonasBancosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_personas_bancos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_personas_bancos
+        where      
+          id_persona = {idPersona} and cuenta = '{cuenta}' and id_banco = {idBanco}
+      </select>
+    </unit>	
+    <unit id="TcKeetPersonasBeneficiariosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_personas_beneficiarios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_personas_beneficiarios
+        where      
+          id_persona_beneficiario = {idPersonaBeneficiario}
+      </select>
+    </unit>		
+    <unit id="TcKeetPersonasConceptosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_personas_conceptos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_personas_conceptos
+        where      
+          id_persona = {idPersona} and id_activo = {idActivo} and inicio = {inicio} and id_nomina_concepto = {idNominaConcepto}
+      </select>
+    </unit>			
+    <unit id="TcKeetProyectosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_contrato_proyecto = {idContratoProyecto} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_bitacora
+        where      
+          id_proyecto_bitacora = {idProyectoBitacora}
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosLotesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_lotes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_lotes
+        where      
+          manzana = '{manzana}' and lote = {lote} and id_contrato_proyecto = {idContratoProyecto}
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposConceptosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_conceptos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_conceptos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>	
+    <unit id="TcKeetTiposNominasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_nominas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_nominas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposParentescosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_parentescos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_parentescos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>			
   </dml>    
 </process>
