@@ -212,7 +212,4 @@ public class TcKeetNominasBitacoraDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdNominaBitacora() != null ? getIdNominaBitacora().hashCode() : 0);
     return hash;
   }
-
 }
-
-

@@ -1,9 +1,6 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -36,6 +30,8 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="materno")
   private String materno;
+  @Column (name="id_persona")
+  private Long idPersona;
   @Column (name="paterno")
   private String paterno;
   @Column (name="id_tipo_parentesco")
@@ -62,12 +58,13 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPersonasBeneficiariosDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKeetPersonasBeneficiariosDto(String materno, String paterno, Long idTipoParentesco, Long idUsuario, String observaciones, Long idPersonaBeneficiario, String nombre, String rfc, String curp) {
+  public TcKeetPersonasBeneficiariosDto(String materno, Long idPersona, String paterno, Long idTipoParentesco, Long idUsuario, String observaciones, Long idPersonaBeneficiario, String nombre, String rfc, String curp) {
     setMaterno(materno);
+    setIdPersona(idPersona);
     setPaterno(paterno);
     setIdTipoParentesco(idTipoParentesco);
     setIdUsuario(idUsuario);
@@ -85,6 +82,14 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
 
   public String getMaterno() {
     return materno;
+  }
+
+  public void setIdPersona(Long idPersona) {
+    this.idPersona = idPersona;
+  }
+
+  public Long getIdPersona() {
+    return idPersona;
   }
 
   public void setPaterno(String paterno) {
@@ -176,6 +181,8 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getMaterno());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdPersona());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPaterno());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoParentesco());
@@ -201,6 +208,7 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("materno", getMaterno());
+		regresar.put("idPersona", getIdPersona());
 		regresar.put("paterno", getPaterno());
 		regresar.put("idTipoParentesco", getIdTipoParentesco());
 		regresar.put("idUsuario", getIdUsuario());
@@ -216,7 +224,7 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getMaterno(), getPaterno(), getIdTipoParentesco(), getIdUsuario(), getObservaciones(), getIdPersonaBeneficiario(), getNombre(), getRfc(), getCurp(), getRegistro()
+    getMaterno(), getIdPersona(), getPaterno(), getIdTipoParentesco(), getIdUsuario(), getObservaciones(), getIdPersonaBeneficiario(), getNombre(), getRfc(), getCurp(), getRegistro()
     };
     return regresar;
   }
@@ -274,7 +282,4 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdPersonaBeneficiario() != null ? getIdPersonaBeneficiario().hashCode() : 0);
     return hash;
   }
-
 }
-
-
