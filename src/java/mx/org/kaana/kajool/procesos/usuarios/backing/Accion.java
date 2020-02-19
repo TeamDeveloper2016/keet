@@ -8,7 +8,7 @@ package mx.org.kaana.kajool.procesos.usuarios.backing;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>@kaana.org.mx>
  */
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
@@ -100,7 +100,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       usuario= (TcJanalUsuariosDto)this.attrs.get("tcJanalUsuariosDto");
       usuario.setIdPerfil(this.criteriosBusqueda.getPerfil().getKey());
       persona.setEstilo("sentinel");
-      persona.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      persona.setRegistro(LocalDateTime.now());
       transaccion = new Transaccion(usuario, persona);
       if (transaccion.ejecutar(this.accion)) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);

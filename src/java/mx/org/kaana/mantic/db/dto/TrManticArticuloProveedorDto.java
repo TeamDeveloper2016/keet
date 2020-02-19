@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
 	@Column (name="id_articulo_proveedor")
   private Long idArticuloProveedor;
   @Column (name="fecha_compra")
-  private Timestamp fechaCompra;
+  private LocalDateTime fechaCompra;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="cantidad")
@@ -49,18 +49,18 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TrManticArticuloProveedorDto() {
     this(new Long(-1L));
   }
 
   public TrManticArticuloProveedorDto(Long key) {
-    this(null, null, null, null, new Long(-1L), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null);
+    this(null, null, null, null, new Long(-1L), LocalDateTime.now(), null, null, null);
     setKey(key);
   }
 
-  public TrManticArticuloProveedorDto(Long idProveedor, Double precio, Long idUsuario, Double descuento, Long idArticuloProveedor, Timestamp fechaCompra, String observaciones, Double cantidad, Long idArticulo) {
+  public TrManticArticuloProveedorDto(Long idProveedor, Double precio, Long idUsuario, Double descuento, Long idArticuloProveedor, LocalDateTime fechaCompra, String observaciones, Double cantidad, Long idArticulo) {
     setIdProveedor(idProveedor);
     setPrecio(precio);    
     setIdUsuario(idUsuario);
@@ -70,7 +70,7 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdProveedor(Long idProveedor) {
@@ -113,11 +113,11 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
     return idArticuloProveedor;
   }
 
-  public void setFechaCompra(Timestamp fechaCompra) {
+  public void setFechaCompra(LocalDateTime fechaCompra) {
     this.fechaCompra = fechaCompra;
   }
 
-  public Timestamp getFechaCompra() {
+  public LocalDateTime getFechaCompra() {
     return fechaCompra;
   }
 
@@ -145,11 +145,11 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

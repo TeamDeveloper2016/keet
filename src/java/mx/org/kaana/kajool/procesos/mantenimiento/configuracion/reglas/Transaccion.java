@@ -1,6 +1,6 @@
 package mx.org.kaana.kajool.procesos.mantenimiento.configuracion.reglas;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class Transaccion extends IBaseTnx {
 					-1L, 
 					String.valueOf(this.idEmpresa),
 					"SUCURSAL QUE SE TOMARA POR DEFECTO DENTRO DEL SITIO",
-					new Timestamp(Calendar.getInstance().getTimeInMillis()),
+					LocalDateTime.now(),
 					JsfBase.getIdUsuario()
 				);
 				regresar= DaoFactory.getInstance().insert(sesion, configuracion).intValue()>= 0;

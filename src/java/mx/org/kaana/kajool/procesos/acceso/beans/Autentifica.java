@@ -2,9 +2,8 @@ package mx.org.kaana.kajool.procesos.acceso.beans;
 
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -216,7 +215,7 @@ public class Autentifica implements Serializable {
         regresar = isDelegaActivo();
       } // else
       if (regresar) {
-        this.ultimoAcceso= Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona.getUltimoAcceso()== null? new Timestamp(Calendar.getInstance().getTimeInMillis()): this.persona.getUltimoAcceso());        
+        this.ultimoAcceso= Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona!= null && this.persona.getUltimoAcceso()== null? LocalDateTime.now(): this.persona.getUltimoAcceso());        
       } // else
     } // try
     catch (Exception e) {
@@ -258,7 +257,7 @@ public class Autentifica implements Serializable {
       else 
         regresar = isDelegaActivo();
       if (regresar) 
-        this.ultimoAcceso = Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona== null && this.persona.getUltimoAcceso().equals(null) ? new Timestamp(Calendar.getInstance().getTimeInMillis()) : this.persona.getUltimoAcceso());        
+        this.ultimoAcceso = Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona== null && this.persona.getUltimoAcceso()== null? LocalDateTime.now(): this.persona.getUltimoAcceso());        
     } // try
     catch (Exception e) {
       throw e;

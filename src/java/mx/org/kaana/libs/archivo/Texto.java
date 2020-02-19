@@ -8,8 +8,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.page.LinkPage;
@@ -83,13 +84,13 @@ public class Texto extends Tokens implements Serializable{
 							out.write(value.getData()!= null? ((BigDecimal)value.getData()).toString(): "");
 							break;
 						case java.sql.Types.DATE:
-							out.write(value.getData()!= null? Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)value.getData()): "");
+							out.write(value.getData()!= null? Fecha.formatear(Fecha.FECHA_ESTANDAR, (LocalDate)value.getData()): "");
 							break;
 						case java.sql.Types.TIME:
-							out.write(value.getData()!= null? Fecha.formatear(Fecha.FECHA_ESTANDAR, (Time)value.getData()): "");
+							out.write(value.getData()!= null? Fecha.formatear(Fecha.FECHA_ESTANDAR, (LocalTime)value.getData()): "");
 							break;
 						case java.sql.Types.TIMESTAMP:
-							out.write(value.getData()!= null? Fecha.formatear(Fecha.FECHA_ESTANDAR, (Timestamp)value.getData()): "");
+							out.write(value.getData()!= null? Fecha.formatear(Fecha.FECHA_ESTANDAR, (LocalDateTime)value.getData()): "");
 							break;
 						case java.sql.Types.ARRAY:
 						case java.sql.Types.CHAR:

@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.inventarios.almacenes.backing;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -286,7 +286,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
    			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
-				this.attrs.put("ultimo", Global.format(EFormatoDinamicos.DIA_FECHA_HORA_CORTA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
+				this.attrs.put("ultimo", Global.format(EFormatoDinamicos.DIA_FECHA_HORA_CORTA, LocalDateTime.now()));
 			}	// if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo.", ETipoMensaje.ERROR);      			

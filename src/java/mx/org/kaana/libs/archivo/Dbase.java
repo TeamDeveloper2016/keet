@@ -8,8 +8,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -183,13 +185,13 @@ public class Dbase extends Tokens implements Serializable{
 							rowData[count]= value.getData()!= null? value.getData() instanceof Integer? ((Integer)value.getData()).doubleValue(): value.getData() instanceof BigInteger? ((BigInteger)value.getData()).doubleValue(): ((BigDecimal)value.getData()).doubleValue(): null;
 							break;
 						case java.sql.Types.DATE:
-							rowData[count]= value.getData()!= null? new Date(((Date)value.getData()).getTime()):null;
+							rowData[count]= value.getData()!= null? Date.valueOf(((LocalDate)value.getData())):null;
 							break;
 						case java.sql.Types.TIME:
-							rowData[count]= value.getData()!= null? new Date(((Time)value.getData()).getTime()):null;
+							rowData[count]= value.getData()!= null? new Date(((LocalTime)value.getData()).toNanoOfDay()):null;
 							break;
 						case java.sql.Types.TIMESTAMP:
-							rowData[count]= value.getData()!= null? new Date(((Timestamp)value.getData()).getTime()):null;
+							rowData[count]= value.getData()!= null? Date.valueOf(((LocalDateTime)value.getData()).toLocalDate()):null;
 							break;
 						case java.sql.Types.ARRAY:
 						case java.sql.Types.CHAR:

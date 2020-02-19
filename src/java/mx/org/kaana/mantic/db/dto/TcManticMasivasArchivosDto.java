@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class TcManticMasivasArchivosDto implements IBaseDto, Serializable {
   @Column (name="archivo")
   private String archivo;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="tamanio")
   private Long tamanio;
   @Column (name="id_usuario")
@@ -82,7 +82,7 @@ public class TcManticMasivasArchivosDto implements IBaseDto, Serializable {
     setIdTipoMasivo(idTipoMasivo);
     setIdMasivaEstatus(idMasivaEstatus);
     setNombre(nombre);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setTamanio(tamanio);
     setIdUsuario(idUsuario);
     setIdTipoArchivo(idTipoArchivo);
@@ -142,11 +142,11 @@ public class TcManticMasivasArchivosDto implements IBaseDto, Serializable {
 		this.archivo=archivo;
 	}
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

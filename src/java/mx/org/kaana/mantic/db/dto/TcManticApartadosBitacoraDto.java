@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class TcManticApartadosBitacoraDto implements IBaseDto, Serializable {
   @Column (name="id_apartado")
   private Long idApartado;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="porcentaje_retenido")
   private Double porcentajeRetenido;
   @Column (name="cantidad_retenida")
@@ -73,7 +73,7 @@ public class TcManticApartadosBitacoraDto implements IBaseDto, Serializable {
     setPorcentajeRetenido(porcentajeRetenido);
     setCantidadRetenida(cantidadRetenida);
     setImporteDevuelto(importeDevuelto);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 
   public void setIdApartadoBitacora(Long idApartadoBitacora) {
@@ -116,11 +116,11 @@ public class TcManticApartadosBitacoraDto implements IBaseDto, Serializable {
     return idApartado;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

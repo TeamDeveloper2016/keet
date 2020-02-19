@@ -2,7 +2,7 @@ package mx.org.kaana.libs.pagina.convertidores;
 
 import java.sql.Date;
 import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;

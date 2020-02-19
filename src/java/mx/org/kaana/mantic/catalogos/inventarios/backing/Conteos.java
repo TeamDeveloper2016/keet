@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.catalogos.inventarios.backing;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -113,7 +113,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 				vigente.setSalidas(0D);
 				vigente.setStock(0D);
   			vigente.setIdUsuario(JsfBase.getIdUsuario());
-				vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				vigente.setRegistro(LocalDateTime.now());
 			} // if
       this.attrs.put("vigente", vigente);
       this.lazyModel = new FormatCustomLazy("VistaInventariosDto", this.attrs, columns);
@@ -374,7 +374,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 		try {
 			TcManticInventariosDto vigente= (TcManticInventariosDto)this.attrs.get("vigente");
 			vigente.setIdUsuario(JsfBase.getIdUsuario());
-			vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			vigente.setRegistro(LocalDateTime.now());
 			transaccion= new Transaccion(vigente, this.articulo);
 			if(transaccion.ejecutar(vigente.isValid()? EAccion.MODIFICAR: EAccion.AGREGAR)) {
 				JsfBase.addMessage("Inventarios", "Se agregó/modificó de forma correcta el inventario", ETipoMensaje.INFORMACION);
@@ -394,7 +394,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 		try {
 			TcManticInventariosDto vigente= (TcManticInventariosDto)this.attrs.get("vigente");
 			vigente.setIdUsuario(JsfBase.getIdUsuario());
-			vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			vigente.setRegistro(LocalDateTime.now());
 			transaccion= new Transaccion(vigente, this.articulo);
 			if(transaccion.ejecutar(EAccion.PROCESAR)) {
 				JsfBase.addMessage("Inventarios", "Se agregó/modificó de forma correcta el inventario", ETipoMensaje.INFORMACION);

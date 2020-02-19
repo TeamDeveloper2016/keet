@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,24 +49,24 @@ public class TcManticCierresCajasDto implements IBaseDto, Serializable {
   @Column (name="saldo")
   private Double saldo;
   @Column (name="dia")
-  private Date dia;
+  private LocalDate dia;
   @Column (name="importe")
   private Double importe;
   @Column (name="disponible")
   private Double disponible;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticCierresCajasDto() {
     this(new Long(-1L));
   }
 
   public TcManticCierresCajasDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+    this(null, null, null, null, new Long(-1L), null, LocalDate.now(), null, null);
     setKey(key);
   }
 
-  public TcManticCierresCajasDto(Long idTipoMedioPago, Long idCierre, Double acumulado, Long idCaja, Long idCierreCaja, Double saldo, Date dia, Double importe, Double disponible) {
+  public TcManticCierresCajasDto(Long idTipoMedioPago, Long idCierre, Double acumulado, Long idCaja, Long idCierreCaja, Double saldo, LocalDate dia, Double importe, Double disponible) {
     setIdTipoMedioPago(idTipoMedioPago);
     setIdCierre(idCierre);
     setAcumulado(acumulado);
@@ -76,7 +76,7 @@ public class TcManticCierresCajasDto implements IBaseDto, Serializable {
     setDia(dia);
     setImporte(importe);
     setDisponible(disponible);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdTipoMedioPago(Long idTipoMedioPago) {
@@ -127,11 +127,11 @@ public class TcManticCierresCajasDto implements IBaseDto, Serializable {
     return saldo;
   }
 
-  public void setDia(Date dia) {
+  public void setDia(LocalDate dia) {
     this.dia = dia;
   }
 
-  public Date getDia() {
+  public LocalDate getDia() {
     return dia;
   }
 
@@ -151,11 +151,11 @@ public class TcManticCierresCajasDto implements IBaseDto, Serializable {
     return disponible;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.beans;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 	private String descripcion;					
 	private boolean ultimoNivel;  	
 	private ENivelUbicacion nivel;
-	private Timestamp registro;			
+	private LocalDateTime registro;			
 	private Long articulos;
 	private Long idAlmacenUbicacion;
 
@@ -33,10 +33,10 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 	} // OrganigramUbicacion
 
 	public OrganigramUbicacion(Long idKey) {
-		this(idKey, null, -1L, "ALMACENES (ESTRUCTURA)", null, null, null, null, null, false, ENivelUbicacion.EMPRESA, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, 0L, -1L);
+		this(idKey, null, -1L, "ALMACENES (ESTRUCTURA)", null, null, null, null, null, false, ENivelUbicacion.EMPRESA, LocalDateTime.now(), null, 0L, -1L);
 	}	// OrganigramUbicacion
 	
-	public OrganigramUbicacion(Long idKey, String idEmpresa, Long idAlmacen, String empresa, String almacen, String piso, String cuarto, String anaquel, String charola, boolean ultimoNivel, ENivelUbicacion nivel, Timestamp registro, String descripcion, Long articulos, Long idAlmacenUbicacion) {
+	public OrganigramUbicacion(Long idKey, String idEmpresa, Long idAlmacen, String empresa, String almacen, String piso, String cuarto, String anaquel, String charola, boolean ultimoNivel, ENivelUbicacion nivel, LocalDateTime registro, String descripcion, Long articulos, Long idAlmacenUbicacion) {
 		this.idKey      = idKey;
 		this.idEmpresa  = idEmpresa;
 		this.idAlmacen  = idAlmacen;
@@ -144,11 +144,11 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 		this.nivel = nivel;
 	}
 
-	public Timestamp getRegistro() {
+	public LocalDateTime getRegistro() {
 		return registro;
 	}
 
-	public void setRegistro(Timestamp registro) {
+	public void setRegistro(LocalDateTime registro) {
 		this.registro = registro;
 	}	
 

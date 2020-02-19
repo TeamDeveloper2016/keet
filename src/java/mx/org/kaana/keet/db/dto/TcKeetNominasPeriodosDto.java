@@ -2,9 +2,9 @@ package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,35 +39,35 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
 	@Column (name="id_nomina_periodo")
   private Long idNominaPeriodo;
   @Column (name="inicio")
-  private Date inicio;
+  private LocalDate inicio;
   @Column (name="orden")
   private Long orden;
   @Column (name="termino")
-  private Date termino;
+  private LocalDate termino;
   @Column (name="calculo")
-  private Timestamp calculo;
+  private LocalDateTime calculo;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcKeetNominasPeriodosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetNominasPeriodosDto(Long key) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), null);
+    this(new Long(-1L), LocalDate.now(), null, LocalDate.now(), LocalDateTime.now(), null);
     setKey(key);
   }
 
-  public TcKeetNominasPeriodosDto(Long idNominaPeriodo, Date inicio, Long orden, Date termino, Timestamp calculo, Long ejercicio) {
+  public TcKeetNominasPeriodosDto(Long idNominaPeriodo, LocalDate inicio, Long orden, LocalDate termino, LocalDateTime calculo, Long ejercicio) {
     setIdNominaPeriodo(idNominaPeriodo);
     setInicio(inicio);
     setOrden(orden);
     setTermino(termino);
     setCalculo(calculo);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdNominaPeriodo(Long idNominaPeriodo) {
@@ -78,11 +78,11 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
     return idNominaPeriodo;
   }
 
-  public void setInicio(Date inicio) {
+  public void setInicio(LocalDate inicio) {
     this.inicio = inicio;
   }
 
-  public Date getInicio() {
+  public LocalDate getInicio() {
     return inicio;
   }
 
@@ -94,19 +94,19 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
     return orden;
   }
 
-  public void setTermino(Date termino) {
+  public void setTermino(LocalDate termino) {
     this.termino = termino;
   }
 
-  public Date getTermino() {
+  public LocalDate getTermino() {
     return termino;
   }
 
-  public void setCalculo(Timestamp calculo) {
+  public void setCalculo(LocalDateTime calculo) {
     this.calculo = calculo;
   }
 
-  public Timestamp getCalculo() {
+  public LocalDateTime getCalculo() {
     return calculo;
   }
 
@@ -118,11 +118,11 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

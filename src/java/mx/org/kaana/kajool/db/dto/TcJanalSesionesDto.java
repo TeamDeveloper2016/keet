@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,11 +21,11 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="REGISTRO_FIN")
-  private Timestamp registroFin;
+  private LocalDateTime registroFin;
   @Column (name="ID_USUARIO")
   private Long idUsuario;
   @Column (name="REGISTRO_INICIO")
-  private Timestamp registroInicio;
+  private LocalDateTime registroInicio;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
   //@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="idSesion_sequence")
@@ -37,9 +37,9 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
   @Column (name="PATH")
   private String path;
   @Column (name="INICIO")
-  private Timestamp inicio;
+  private LocalDateTime inicio;
   @Column (name="REGISTRO")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="SESION")
   private String sesion;
 
@@ -48,11 +48,11 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
   }
 
   public TcJanalSesionesDto(Long key) {
-    this(new Timestamp(Calendar.getInstance().getTimeInMillis()), null, new Timestamp(Calendar.getInstance().getTimeInMillis()), new Long(-1L), null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null);
+    this(LocalDateTime.now(), null, LocalDateTime.now(), new Long(-1L), null, null, LocalDateTime.now(), null);
     setKey(key);
   }
 
-  public TcJanalSesionesDto(Timestamp registroFin, Long idUsuario, Timestamp registroInicio, Long idSesion, String cuenta, String path, Timestamp inicio, String sesion) {
+  public TcJanalSesionesDto(LocalDateTime registroFin, Long idUsuario, LocalDateTime registroInicio, Long idSesion, String cuenta, String path, LocalDateTime inicio, String sesion) {
     setRegistroFin(registroFin);
     setIdUsuario(idUsuario);
     setRegistroInicio(registroInicio);
@@ -60,15 +60,15 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
     setCuenta(cuenta);
     setPath(path);
     setInicio(inicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setSesion(sesion);
   }
 
-  public void setRegistroFin(Timestamp registroFin) {
+  public void setRegistroFin(LocalDateTime registroFin) {
     this.registroFin = registroFin;
   }
 
-  public Timestamp getRegistroFin() {
+  public LocalDateTime getRegistroFin() {
     return registroFin;
   }
 
@@ -80,11 +80,11 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setRegistroInicio(Timestamp registroInicio) {
+  public void setRegistroInicio(LocalDateTime registroInicio) {
     this.registroInicio = registroInicio;
   }
 
-  public Timestamp getRegistroInicio() {
+  public LocalDateTime getRegistroInicio() {
     return registroInicio;
   }
 
@@ -112,19 +112,19 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
     return path;
   }
 
-  public void setInicio(Timestamp inicio) {
+  public void setInicio(LocalDateTime inicio) {
     this.inicio = inicio;
   }
 
-  public Timestamp getInicio() {
+  public LocalDateTime getInicio() {
     return inicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

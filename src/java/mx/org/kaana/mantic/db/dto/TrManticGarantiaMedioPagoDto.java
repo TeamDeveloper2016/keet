@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
   @Column (name="referencia")
   private String referencia;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TrManticGarantiaMedioPagoDto() {
     this(new Long(-1L));
@@ -70,7 +70,7 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
     setImporte(importe);
     setIdBanco(idBanco);
     setReferencia(referencia);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdGarantia(Long idGarantia) {
@@ -145,11 +145,11 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
     return referencia;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

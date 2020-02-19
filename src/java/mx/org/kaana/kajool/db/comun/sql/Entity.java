@@ -1,9 +1,9 @@
 package mx.org.kaana.kajool.db.comun.sql;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.libs.Constantes;
@@ -215,21 +215,21 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   }
 
   @Override
-  public Date toDate(String name) {
+  public LocalDate toDate(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? (Date) regresar : null;
+    return regresar != null ? (LocalDate) regresar : null;
   }
 
   @Override
-  public Timestamp toTimestamp(String name) {
+  public LocalDateTime toTimestamp(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? (Timestamp) regresar : null;
+    return regresar != null ? (LocalDateTime) regresar : null;
   }
 
   @Override
-  public Time toTime(String name) {
+  public LocalTime toTime(String name) {
     Object regresar = toObject(name);
-    return regresar != null ? (Time) regresar : null;
+    return regresar != null ? (LocalTime) regresar : null;
   }
 
   @Override

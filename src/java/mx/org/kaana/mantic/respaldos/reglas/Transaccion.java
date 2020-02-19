@@ -2,7 +2,7 @@ package mx.org.kaana.mantic.respaldos.reglas;
 
 import java.io.File;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -237,7 +237,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		try {
 			respaldo= (TcManticRespaldosDto) DaoFactory.getInstance().findById(sesion, TcManticRespaldosDto.class, entity.getKey());
 			respaldo.setActivo(EBooleanos.NO.getIdBooleano());
-			respaldo.setEliminado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			respaldo.setEliminado(LocalDateTime.now());
 			regresar= DaoFactory.getInstance().update(sesion, respaldo)>= 1L;
 		} // try
 		catch (Exception e) {			
@@ -253,7 +253,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		try {
 			recordDescarga= (TcManticDescargasDto) DaoFactory.getInstance().findById(sesion, TcManticRespaldosDto.class, entity.getKey());
 			recordDescarga.setActivo(EBooleanos.NO.getIdBooleano());
-			recordDescarga.setEliminado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			recordDescarga.setEliminado(LocalDateTime.now());
 			regresar= DaoFactory.getInstance().update(sesion, recordDescarga)>= 1L;
 		} // try
 		catch (Exception e) {			

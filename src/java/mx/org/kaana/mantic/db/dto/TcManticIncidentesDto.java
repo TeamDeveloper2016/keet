@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
 	@Column (name="id_incidente")
   private Long idIncidente;
   @Column (name="vigencia_inicio")
-  private Date vigenciaInicio;
+  private LocalDate vigenciaInicio;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_incidente_estatus")
@@ -50,22 +50,22 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
   @Column (name="orden")
   private Long orden;
   @Column (name="vigencia_fin")
-  private Date vigenciaFin;
+  private LocalDate vigenciaFin;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticIncidentesDto() {
     this(new Long(-1L));
   }
 
   public TcManticIncidentesDto(Long key) {
-    this(null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
+    this(null, null, null, new Long(-1L), LocalDate.now(), null, null, null, null, LocalDate.now(), null);
     setKey(key);
   }
 
-  public TcManticIncidentesDto(String consecutivo, Long idTipoIncidente, Long idPersona, Long idIncidente, Date vigenciaInicio, Long idUsuario, Long idIncidenteEstatus, String observaciones, Long orden, Date vigenciaFin, Long ejercicio) {
+  public TcManticIncidentesDto(String consecutivo, Long idTipoIncidente, Long idPersona, Long idIncidente, LocalDate vigenciaInicio, Long idUsuario, Long idIncidenteEstatus, String observaciones, Long orden, LocalDate vigenciaFin, Long ejercicio) {
     setConsecutivo(consecutivo);
     setIdTipoIncidente(idTipoIncidente);
     setIdPersona(idPersona);
@@ -77,7 +77,7 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     setOrden(orden);
     setVigenciaFin(vigenciaFin);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -112,11 +112,11 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     return idIncidente;
   }
 
-  public void setVigenciaInicio(Date vigenciaInicio) {
+  public void setVigenciaInicio(LocalDate vigenciaInicio) {
     this.vigenciaInicio = vigenciaInicio;
   }
 
-  public Date getVigenciaInicio() {
+  public LocalDate getVigenciaInicio() {
     return vigenciaInicio;
   }
 
@@ -152,11 +152,11 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     return orden;
   }
 
-  public void setVigenciaFin(Date vigenciaFin) {
+  public void setVigenciaFin(LocalDate vigenciaFin) {
     this.vigenciaFin = vigenciaFin;
   }
 
-  public Date getVigenciaFin() {
+  public LocalDate getVigenciaFin() {
     return vigenciaFin;
   }
 
@@ -168,11 +168,11 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

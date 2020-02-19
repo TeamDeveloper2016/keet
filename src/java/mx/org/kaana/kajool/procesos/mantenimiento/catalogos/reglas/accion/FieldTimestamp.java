@@ -1,6 +1,6 @@
 package mx.org.kaana.kajool.procesos.mantenimiento.catalogos.reglas.accion;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.faces.component.UIComponentBase;
 import mx.org.kaana.libs.formato.Cadena;
@@ -19,7 +19,7 @@ public class FieldTimestamp extends mx.org.kaana.kajool.procesos.mantenimiento.c
   private static final long serialVersionUID = 1327021033647921896L;
 
   public FieldTimestamp(String nombre, String titulo) {
-    super(nombre, titulo, new Timestamp(java.util.Calendar.getInstance().getTimeInMillis()));
+    super(nombre, titulo, LocalDateTime.now());
   }
 
   @Override
@@ -30,7 +30,7 @@ public class FieldTimestamp extends mx.org.kaana.kajool.procesos.mantenimiento.c
   @Override
   public Object getValue() {
     if(Cadena.isVacio(super.getValue()))
-      return new Timestamp(java.util.Calendar.getInstance().getTimeInMillis());
+      return LocalDateTime.now();
     else
       return super.getValue();
   }

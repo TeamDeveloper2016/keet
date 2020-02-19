@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class TcJanalGruposDto implements IBaseDto, Serializable {
   @Column (name="DESCRIPCION")
   private String descripcion;
   @Column (name="REGISTRO")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
   //@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="idGrupo_sequence")
@@ -48,7 +48,7 @@ public class TcJanalGruposDto implements IBaseDto, Serializable {
     setClave(clave);
     setIdUsuario(idUsuario);
     setDescripcion(descripcion);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setIdGrupo(idGrupo);
   }
 	
@@ -76,11 +76,11 @@ public class TcJanalGruposDto implements IBaseDto, Serializable {
     return descripcion;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

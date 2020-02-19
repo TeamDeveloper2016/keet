@@ -2,7 +2,8 @@ package mx.org.kaana.mantic.ventas.caja.cierres.reglas;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	}
 	
 	public Cierre(Long idCaja, Double inicial) {
-		this(idCaja, inicial, new TcManticCierresDto("", -1L, 2L, JsfBase.getIdUsuario(), 1L, "", 0L, new Long(Fecha.getAnioActual()), new Timestamp(Calendar.getInstance().getTimeInMillis())), Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+		this(idCaja, inicial, new TcManticCierresDto("", -1L, 2L, JsfBase.getIdUsuario(), 1L, "", 0L, new Long(Fecha.getAnioActual()), LocalDateTime.now()), Collections.EMPTY_LIST, Collections.EMPTY_LIST);
 	}
 	
 	public Cierre(Long idCaja, Double inicial, TcManticCierresDto cierre, List<Importe> importes, List<Denominacion> denominaciones) {
@@ -99,7 +100,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					this.cierre.setIdCierreEstatus(3L);
 					this.cierre.setIdDiferencias(this.toDiferencias()? 1L: 2L);
-					this.cierre.setTermino(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					this.cierre.setTermino(LocalDateTime.now());
 					regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
 					sesion.flush();
 					for (Importe importe: this.importes) {
@@ -121,7 +122,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					// inicio del nuevo corte de caja con los valores iniciales
 					consecutivo= this.toSiguiente(sesion);
 					TcManticCierresDto apertura= new TcManticCierresDto(
-						consecutivo.getConsecutivo(), -1L, 2L, JsfBase.getIdUsuario(), 1L, "", consecutivo.getOrden(), new Long(Fecha.getAnioActual()), new Timestamp(Calendar.getInstance().getTimeInMillis())
+						consecutivo.getConsecutivo(), -1L, 2L, JsfBase.getIdUsuario(), 1L, "", consecutivo.getOrden(), new Long(Fecha.getAnioActual()), LocalDateTime.now()
 					);
 					regresar= DaoFactory.getInstance().insert(sesion, apertura)>= 1L;
 					this.idApertura= apertura.getIdCierre();					
@@ -129,9 +130,9 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, params, "caja");
 					for (TcManticTiposMediosPagosDto medio : all) {
 						if(medio.getIdTipoMedioPago().equals(1L))
-						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
+						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, LocalDate.now(), 0D, this.inicial);
 						else
-						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
+						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, 0D, LocalDate.now(), 0D, 0D);
 					  DaoFactory.getInstance().insert(sesion, registro);
 					} // for
 					for (Denominacion denominacion: this.denominaciones) {
@@ -254,9 +255,9 @@ public class Cierre extends IBaseTnx implements Serializable  {
       all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, params, "caja");
       for (TcManticTiposMediosPagosDto medio : all) {
         if(medio.getIdTipoMedioPago().equals(1L))
-          registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
+          registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, LocalDate.now(), 0D, this.inicial);
         else
-          registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
+          registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, 0D, LocalDate.now(), 0D, 0D);
         DaoFactory.getInstance().insert(sesion, registro);
       } // for
       if(this.denominaciones!= null && !this.denominaciones.isEmpty())
@@ -339,9 +340,9 @@ public class Cierre extends IBaseTnx implements Serializable  {
 		List<TcManticTiposMediosPagosDto> all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, params, "caja");
 		for (TcManticTiposMediosPagosDto medio : all) {
 			if(medio.getIdTipoMedioPago().equals(1L))
-				registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
+				registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, LocalDate.now(), 0D, this.inicial);
 			else
-				registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
+				registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, 0D, LocalDate.now(), 0D, 0D);
 			DaoFactory.getInstance().insert(sesion, registro);
 		} // for
 		if(this.denominaciones!= null && !this.denominaciones.isEmpty())

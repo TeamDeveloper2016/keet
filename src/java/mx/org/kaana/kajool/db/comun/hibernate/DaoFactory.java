@@ -3019,10 +3019,9 @@ public final class DaoFactory<T extends IBaseDto> {
     List<T> regresar = null;
     NativeQuery query = null;
     try {
-      query = session.createSQLQuery(sql);
-      if (records != Constantes.SQL_TODOS_REGISTROS) {
+      query = session.createNativeQuery(sql);
+      if (records != Constantes.SQL_TODOS_REGISTROS) 
         query.setMaxResults(records.intValue());
-      }
       regresar = query.setResultTransformer(new TransformDto(dto)).list();
     } // try
     catch (Exception e) {

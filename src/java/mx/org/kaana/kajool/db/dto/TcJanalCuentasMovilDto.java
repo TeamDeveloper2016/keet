@@ -2,9 +2,9 @@ package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class TcJanalCuentasMovilDto implements IBaseDto, Serializable {
 	@Column (name="id_cuenta_movil")
   private Long idCuentaMovil;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="contrasenia")
   private String contrasenia;
   @Column (name="cuenta")
@@ -59,7 +59,7 @@ public class TcJanalCuentasMovilDto implements IBaseDto, Serializable {
   public TcJanalCuentasMovilDto(Long idEntidad, Long idCuentaMovil, String contrasenia, String cuenta) {
     setIdEntidad(idEntidad);
     setIdCuentaMovil(idCuentaMovil);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setContrasenia(contrasenia);
     setCuenta(cuenta);
   }
@@ -80,11 +80,11 @@ public class TcJanalCuentasMovilDto implements IBaseDto, Serializable {
     return idCuentaMovil;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

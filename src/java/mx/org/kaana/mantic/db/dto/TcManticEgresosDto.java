@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
   @Column (name="descripcion")
   private String descripcion;
   @Column (name="fecha")
-  private Date fecha;
+  private LocalDate fecha;
   @Column (name="id_egreso_estatus")
   private Long idEgresoEstatus;
   @Id
@@ -57,18 +57,18 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticEgresosDto() {
     this(new Long(-1L));
   }
 
   public TcManticEgresosDto(Long key) {
-    this(null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), null, null, null, null, null);
+    this(null, null, LocalDate.now(), null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticEgresosDto(String consecutivo, String descripcion, Date fecha, Long idEgresoEstatus, Long idEgreso, Long idUsuario, Long idEmpresa, Long orden, Double importe, Long ejercicio) {
+  public TcManticEgresosDto(String consecutivo, String descripcion, LocalDate fecha, Long idEgresoEstatus, Long idEgreso, Long idUsuario, Long idEmpresa, Long orden, Double importe, Long ejercicio) {
     setConsecutivo(consecutivo);
     setDescripcion(descripcion);
     setFecha(fecha);
@@ -79,7 +79,7 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
     setOrden(orden);
     setImporte(importe);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -98,11 +98,11 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
     return descripcion;
   }
 
-  public void setFecha(Date fecha) {
+  public void setFecha(LocalDate fecha) {
     this.fecha = fecha;
   }
 
-  public Date getFecha() {
+  public LocalDate getFecha() {
     return fecha;
   }
 
@@ -162,11 +162,11 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

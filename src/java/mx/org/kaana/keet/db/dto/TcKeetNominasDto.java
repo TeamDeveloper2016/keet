@@ -2,9 +2,9 @@ package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="fecha_dispersion")
-  private Date fechaDispersion;
+  private LocalDate fechaDispersion;
   @Column (name="id_nomina_periodo")
   private Long idNominaPeriodo;
   @Column (name="id_usuario")
@@ -47,34 +47,34 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 	@Column (name="id_nomina")
   private Long idNomina;
   @Column (name="fecha_pago")
-  private Date fechaPago;
+  private LocalDate fechaPago;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcKeetNominasDto() {
     this(new Long(-1L));
   }
 
   public TcKeetNominasDto(Long key) {
-    this(new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()));
+    this(LocalDate.now(), null, null, null, new Long(-1L), LocalDate.now());
     setKey(key);
   }
 
-  public TcKeetNominasDto(Date fechaDispersion, Long idNominaPeriodo, Long idUsuario, Long idTipoNomina, Long idNomina, Date fechaPago) {
+  public TcKeetNominasDto(LocalDate fechaDispersion, Long idNominaPeriodo, Long idUsuario, Long idTipoNomina, Long idNomina, LocalDate fechaPago) {
     setFechaDispersion(fechaDispersion);
     setIdNominaPeriodo(idNominaPeriodo);
     setIdUsuario(idUsuario);
     setIdTipoNomina(idTipoNomina);
     setIdNomina(idNomina);
     setFechaPago(fechaPago);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
-  public void setFechaDispersion(Date fechaDispersion) {
+  public void setFechaDispersion(LocalDate fechaDispersion) {
     this.fechaDispersion = fechaDispersion;
   }
 
-  public Date getFechaDispersion() {
+  public LocalDate getFechaDispersion() {
     return fechaDispersion;
   }
 
@@ -110,19 +110,19 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
     return idNomina;
   }
 
-  public void setFechaPago(Date fechaPago) {
+  public void setFechaPago(LocalDate fechaPago) {
     this.fechaPago = fechaPago;
   }
 
-  public Date getFechaPago() {
+  public LocalDate getFechaPago() {
     return fechaPago;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

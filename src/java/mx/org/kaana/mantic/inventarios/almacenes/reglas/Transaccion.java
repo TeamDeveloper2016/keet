@@ -1,6 +1,6 @@
 package mx.org.kaana.mantic.inventarios.almacenes.reglas;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -107,7 +107,7 @@ public class Transaccion extends IBaseTnx {
 					articulo.setMedioMayoreo(this.articulos.get(1).getPrecio());
 					articulo.setLimiteMayoreo(this.articulos.get(1).getLimite());
 					articulo.setMayoreo(this.articulos.get(2).getPrecio());
-					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					articulo.setActualizado(LocalDateTime.now());
 				  regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(articulo.getIva(), JsfBase.getIdUsuario(), articulo.getMayoreo(), -1L, articulo.getMenudeo(), articulo.getCantidad(), articulo.getIdArticulo(), null, articulo.getMedioMayoreo(), this.precio, articulo.getLimiteMedioMayoreo(), articulo.getLimiteMayoreo(), articulo.getDescuento(), articulo.getExtra());
 					regresar= DaoFactory.getInstance().insert(sesion, movimiento)>= 1L;
@@ -128,13 +128,13 @@ public class Transaccion extends IBaseTnx {
 				case PROCESAR:
 					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
 					articulo.setIdRedondear(this.idRedondear);
-					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					articulo.setActualizado(LocalDateTime.now());
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
 				case COMPLEMENTAR:
 					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
 					articulo.setSat(this.sat);
-					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					articulo.setActualizado(LocalDateTime.now());
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
 				case ASIGNAR:

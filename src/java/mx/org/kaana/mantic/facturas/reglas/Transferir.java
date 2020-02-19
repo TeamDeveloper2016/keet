@@ -2,8 +2,8 @@ package mx.org.kaana.mantic.facturas.reglas;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -146,7 +146,7 @@ public class Transferir extends IBaseTnx {
 			detail.getSubtotal(),  // Double subTotal, 
 			(Cadena.isVacio(detail.getObservations())? "": detail.getObservations())+ " ESTA FACTURA FUE RECUPERADA DE FACTURAMA !",  // String observaciones, 
 			JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L,  //  Long idEmpresa, 
-			new Date(calendar.getTimeInMillis()),  // Date dia, 
+			LocalDate.now(),  // Date dia, 
 			detail.getPaymentAccountNumber(), //  referencia
 			idFactura // id_factura
 		);
@@ -185,12 +185,12 @@ public class Transferir extends IBaseTnx {
 	} // toIdClienteDomicilio
 	
 	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Cfdi detail, Calendar calendar) {
-		Complement complement = detail.getComplement();
-		Calendar certificacion= Fecha.toCalendar(complement.getTaxStamp().getDate().substring(0, 10), complement.getTaxStamp().getDate().substring(11, 19));
+		Complement complement      = detail.getComplement();
+		LocalDateTime certificacion=  Fecha.toLocalDateTime(complement.getTaxStamp().getDate().substring(0, 10), complement.getTaxStamp().getDate().substring(11, 19));
 		TcManticFacturasDto regresar= new TcManticFacturasDto(
 			-1L, // Long idFactura, 
-			new Date(Calendar.getInstance().getTimeInMillis()), // Date ultimoIntento, 
-			new Timestamp(calendar.getTimeInMillis()), // Timestamp timbrado, 
+			LocalDate.now(), // Date ultimoIntento, 
+			LocalDateTime.now(), // Timestamp timbrado, 
 			JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
 			cfdi.getFolio(), // String folio, 
 			0L, // Long intentos, 
@@ -203,7 +203,7 @@ public class Transferir extends IBaseTnx {
 			complement.getTaxStamp().getCfdiSign(), // String selloCfdi
 			complement.getTaxStamp().getSatCertNumber(), // String certificadoSat
 			detail.getCertNumber(), // String certificadoDigital
-			new Timestamp(certificacion.getTimeInMillis()), // Timestamp certificacion
+			certificacion, // Timestamp certificacion
 			complement.getTaxStamp().getUuid(),
 			EEstatusFacturas.TIMBRADA.getIdEstatusFactura()
 		);

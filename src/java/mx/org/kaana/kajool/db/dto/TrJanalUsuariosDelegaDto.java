@@ -8,8 +8,8 @@ package mx.org.kaana.kajool.db.dto;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,24 +43,24 @@ public class TrJanalUsuariosDelegaDto implements IBaseDto, Serializable {
 	@Column(name = "ID_USUARIO_DELEGA")
 	private Long idUsuarioDelega;
 	@Column(name = "VIGENCIA_FIN")
-	private Date vigenciaFin;
+	private LocalDate vigenciaFin;
 	@Column(name = "ACTIVO")
 	private Long activo;
 	@Column(name = "VIGENCIA_INI")
-	private Date vigenciaIni;
+	private LocalDate vigenciaIni;
 	@Column(name = "REGISTRO")
-	private Timestamp registro;
+	private LocalDateTime registro;
 
 	public TrJanalUsuariosDelegaDto() {
 		this(new Long(-1L));
 	}
 
 	public TrJanalUsuariosDelegaDto(Long key) {
-		this(null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()));
+		this(null, null, null, null, new Long(-1L), LocalDate.now(), null, LocalDate.now());
 		setKey(key);
 	}
 
-	public TrJanalUsuariosDelegaDto(Long idEmpleado, String contrasenia, String login, Long idUsuario, Long idUsuarioDelega, Date vigenciaFin, Long activo, Date vigenciaIni) {
+	public TrJanalUsuariosDelegaDto(Long idEmpleado, String contrasenia, String login, Long idUsuario, Long idUsuarioDelega, LocalDate vigenciaFin, Long activo, LocalDate vigenciaIni) {
 		setIdEmpleado(idEmpleado);
 		setContrasenia(contrasenia);
 		setLogin(login);
@@ -69,7 +69,7 @@ public class TrJanalUsuariosDelegaDto implements IBaseDto, Serializable {
 		setVigenciaFin(vigenciaFin);
 		setActivo(activo);
 		setVigenciaIni(vigenciaIni);
-		setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setRegistro(LocalDateTime.now());
 	}
 
   public Long getIdPersona() {
@@ -104,11 +104,11 @@ public class TrJanalUsuariosDelegaDto implements IBaseDto, Serializable {
 		return idUsuarioDelega;
 	}
 
-	public void setVigenciaFin(Date vigenciaFin) {
+	public void setVigenciaFin(LocalDate vigenciaFin) {
 		this.vigenciaFin=vigenciaFin;
 	}
 
-	public Date getVigenciaFin() {
+	public LocalDate getVigenciaFin() {
 		return vigenciaFin;
 	}
 
@@ -120,19 +120,19 @@ public class TrJanalUsuariosDelegaDto implements IBaseDto, Serializable {
 		return activo;
 	}
 
-	public void setVigenciaIni(Date vigenciaIni) {
+	public void setVigenciaIni(LocalDate vigenciaIni) {
 		this.vigenciaIni=vigenciaIni;
 	}
 
-	public Date getVigenciaIni() {
+	public LocalDate getVigenciaIni() {
 		return vigenciaIni;
 	}
 
-	public void setRegistro(Timestamp registro) {
+	public void setRegistro(LocalDateTime registro) {
 		this.registro=registro;
 	}
 
-	public Timestamp getRegistro() {
+	public LocalDateTime getRegistro() {
 		return registro;
 	}
 

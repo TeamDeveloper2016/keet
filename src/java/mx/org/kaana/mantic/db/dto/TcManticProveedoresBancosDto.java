@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class TcManticProveedoresBancosDto implements IBaseDto, Serializable {
   @Column (name="id_banco")
   private Long idBanco;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticProveedoresBancosDto() {
     this(new Long(-1L));
@@ -67,7 +67,7 @@ public class TcManticProveedoresBancosDto implements IBaseDto, Serializable {
     setIdTipoCuenta(idTipoCuenta);
     setClabeReferencia(clabeReferencia);
     setIdBanco(idBanco);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdProveedor(Long idProveedor) {
@@ -134,11 +134,11 @@ public class TcManticProveedoresBancosDto implements IBaseDto, Serializable {
     return idBanco;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

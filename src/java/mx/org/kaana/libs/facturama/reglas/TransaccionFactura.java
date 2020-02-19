@@ -2,7 +2,7 @@ package mx.org.kaana.libs.facturama.reglas;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 import javax.xml.transform.Transformer;
@@ -466,7 +466,7 @@ public class TransaccionFactura extends IBaseTnx {
 		registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "Timbrado de factura.", idUsuario);		
 		factura.setIdFacturama(cfdi.getId());
 		factura.setFolio(cfdi.getFolio());					
-		factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		factura.setTimbrado(LocalDateTime.now());
 		factura.setIntentos(factura.getIntentos()+1L);
 		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
 		return regresar;

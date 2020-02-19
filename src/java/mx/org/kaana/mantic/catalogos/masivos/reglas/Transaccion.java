@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.catalogos.masivos.reglas;
 
 import java.io.File;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -468,7 +468,7 @@ public class Transaccion extends IBaseTnx {
 				regresar.setSalidas(0D);
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdAutomatico(2L);
-				regresar.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				regresar.setRegistro(LocalDateTime.now());
 			} // if
 			regresar.setInicial(stock);
 			regresar.setStock(stock);
@@ -607,7 +607,7 @@ public class Transaccion extends IBaseTnx {
 											costo<= 10? 1L: 2L, // Long idRedondear, 
 											Numero.toAjustarDecimales(menudeo, costo<= 10), // Double menudeo, 
 											null, // String metaTagTeclado, 
-											new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp fecha, 
+											LocalDateTime.now(), // Timestamp fecha, 
 											JsfBase.getIdUsuario(), //  Long idUsuario, 
 											JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 											0D, // Double cantidad, 
@@ -690,7 +690,7 @@ public class Transaccion extends IBaseTnx {
 									} // if
 									else {
 										bitacora.setProcesados(new Long(fila));
-										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										bitacora.setRegistro(LocalDateTime.now());
 										DaoFactory.getInstance().update(sesion, bitacora);
 									} // else
 									this.commit();
@@ -727,7 +727,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 			  else {
 					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					bitacora.setRegistro(LocalDateTime.now());
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
@@ -851,7 +851,7 @@ public class Transaccion extends IBaseTnx {
 										1L, // Long idRedondear, 
 										costo, // Double menudeo, 
 										null, // String metaTagTeclado, 
-										new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp fecha, 
+										LocalDateTime.now(), // Timestamp fecha, 
 										JsfBase.getIdUsuario(), //  Long idUsuario, 
 										JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 										0D, // Double cantidad, 
@@ -936,7 +936,7 @@ public class Transaccion extends IBaseTnx {
 									} // if
 									else {
 										bitacora.setProcesados(new Long(fila));
-										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										bitacora.setRegistro(LocalDateTime.now());
 										DaoFactory.getInstance().update(sesion, bitacora);
 									} // else
 									this.commit();
@@ -972,7 +972,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 			  else {
 					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					bitacora.setRegistro(LocalDateTime.now());
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
@@ -1058,7 +1058,7 @@ public class Transaccion extends IBaseTnx {
 										1L, // Long idRedondear, 
 										costo, // Double menudeo, 
 										null, // String metaTagTeclado, 
-										new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp fecha, 
+										LocalDateTime.now(), // Timestamp fecha, 
 										JsfBase.getIdUsuario(), //  Long idUsuario, 
 										JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 										0D, // Double cantidad, 
@@ -1136,7 +1136,7 @@ public class Transaccion extends IBaseTnx {
 									} // if
 									else {
 										bitacora.setProcesados(new Long(fila));
-										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										bitacora.setRegistro(LocalDateTime.now());
 										DaoFactory.getInstance().update(sesion, bitacora);
 									} // else
 									this.commit();
@@ -1172,7 +1172,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 			  else {
 					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					bitacora.setRegistro(LocalDateTime.now());
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
@@ -1223,7 +1223,7 @@ public class Transaccion extends IBaseTnx {
 								if(egreso!= null) {
 									egreso.setIdUsuario(JsfBase.getIdUsuario());								
 									egreso.setImporte(importe);
-									egreso.setFecha(Fecha.toDateDefault(fecha));										
+									egreso.setFecha(Fecha.toLocalDateDefault(fecha));										
 									DaoFactory.getInstance().update(sesion, egreso);
 								} // if
 								else {
@@ -1231,7 +1231,7 @@ public class Transaccion extends IBaseTnx {
 									egreso= new TcManticEgresosDto(
 										consecutivo.getConsecutivo(), // consecutivo
 										descripcion, // descripcion
-										Fecha.toDateDefault(fecha), // fecha
+										Fecha.toLocalDateDefault(fecha), // fecha
 										1L, // idEgresoEstatus 
 										-1L, // idEgreso
 										JsfBase.getIdUsuario(), // idUsuario
@@ -1257,7 +1257,7 @@ public class Transaccion extends IBaseTnx {
 									} // if
 									else {
 										bitacora.setProcesados(new Long(fila));
-										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										bitacora.setRegistro(LocalDateTime.now());
 										DaoFactory.getInstance().update(sesion, bitacora);
 									} // else
 									this.commit();
@@ -1290,7 +1290,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 			  else {
 					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					bitacora.setRegistro(LocalDateTime.now());
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
@@ -1461,7 +1461,7 @@ public class Transaccion extends IBaseTnx {
 									} // if
 									else {
 										bitacora.setProcesados(new Long(fila));
-										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										bitacora.setRegistro(LocalDateTime.now());
 										DaoFactory.getInstance().update(sesion, bitacora);
 									} // else
 									this.commit();
@@ -1495,7 +1495,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 			  else {
 					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					bitacora.setRegistro(LocalDateTime.now());
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
@@ -1646,7 +1646,7 @@ public class Transaccion extends IBaseTnx {
 									} // if
 									else {
 										bitacora.setProcesados(new Long(fila));
-										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										bitacora.setRegistro(LocalDateTime.now());
 										DaoFactory.getInstance().update(sesion, bitacora);
 									} // else
 									this.commit();
@@ -1680,7 +1680,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 			  else {
 					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					bitacora.setRegistro(LocalDateTime.now());
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
@@ -1765,7 +1765,7 @@ public class Transaccion extends IBaseTnx {
 									} // if
 									else {
 										bitacora.setProcesados(new Long(fila));
-										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										bitacora.setRegistro(LocalDateTime.now());
 										DaoFactory.getInstance().update(sesion, bitacora);
 									} // else
 									this.commit();
@@ -1802,7 +1802,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 			  else {
 					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					bitacora.setRegistro(LocalDateTime.now());
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
@@ -2017,7 +2017,7 @@ public class Transaccion extends IBaseTnx {
 									} // if
 									else {
 										bitacora.setProcesados(new Long(fila));
-										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										bitacora.setRegistro(LocalDateTime.now());
 										DaoFactory.getInstance().update(sesion, bitacora);
 									} // else
 									this.commit();
@@ -2054,7 +2054,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 			  else {
 					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					bitacora.setRegistro(LocalDateTime.now());
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);

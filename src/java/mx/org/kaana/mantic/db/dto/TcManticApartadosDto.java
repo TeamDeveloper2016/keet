@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="materno")
@@ -68,25 +68,25 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
   @Column (name="abonado")
   private Double abonado;
   @Column (name="vencimiento")
-  private Date vencimiento;
+  private LocalDate vencimiento;
 
   public TcManticApartadosDto() {
     this(new Long(-1L));
   }
 
   public TcManticApartadosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
+    this(null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, LocalDate.now());
     setKey(key);
   }
 
-  public TcManticApartadosDto(String paterno, Double saldo, Long idApartado, String nombre, Double importe, Long ejercicio, String consecutivo, String materno, String domicilio, Long idUsuario, Long idApartadoEstatus, String observaciones, String celular, Long orden, String telefono, Long idVenta, Double abonado, Date vencimiento) {
+  public TcManticApartadosDto(String paterno, Double saldo, Long idApartado, String nombre, Double importe, Long ejercicio, String consecutivo, String materno, String domicilio, Long idUsuario, Long idApartadoEstatus, String observaciones, String celular, Long orden, String telefono, Long idVenta, Double abonado, LocalDate vencimiento) {
     setPaterno(paterno);
     setSaldo(saldo);
     setIdApartado(idApartado);
     setNombre(nombre);
     setImporte(importe);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
     setMaterno(materno);
     setDomicilio(domicilio);
@@ -101,11 +101,11 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
 		setVencimiento(vencimiento);
   }
 
-	public Date getVencimiento() {
+	public LocalDate getVencimiento() {
 		return vencimiento;
 	}
 
-	public void setVencimiento(Date vencimiento) {
+	public void setVencimiento(LocalDate vencimiento) {
 		this.vencimiento = vencimiento;
 	}	
 	
@@ -157,11 +157,11 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class TcManticFacturamaBitacoraDto implements IBaseDto, Serializable {
   @Column (name="observacion")
   private String observacion;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticFacturamaBitacoraDto() {
     this(new Long(-1L));
@@ -58,7 +58,7 @@ public class TcManticFacturamaBitacoraDto implements IBaseDto, Serializable {
     setProceso(proceso);
     setIdFacturamaBitacora(idFacturamaBitacora);
     setObservacion(observacion);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdKey(Long idKey) {
@@ -101,11 +101,11 @@ public class TcManticFacturamaBitacoraDto implements IBaseDto, Serializable {
     return observacion;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

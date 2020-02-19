@@ -7,6 +7,10 @@ package mx.org.kaana.libs.formato;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -125,10 +129,10 @@ public  class Fecha {
             fecha.substring(0, 4)).concat(" ").concat(fecha.substring(8,10)).concat(":").concat(
             fecha.substring(10,12));
         break;
-      case HORA_CORTA: // Fecha en hh:mm:ss  12:26
+      case HORA_CORTA: // Fecha en HH:mm:ss  12:26
         fecha = fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12));
         break;
-      case HORA_LARGA: // Fecha en hh:mm:ss  12:26:00
+      case HORA_LARGA: // Fecha en HH:mm:ss  12:26:00
         fecha =
             fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
         break;
@@ -193,6 +197,18 @@ public  class Fecha {
   public static String formatear(String patron, Date fecha) {
     SimpleDateFormat formato = new SimpleDateFormat(patron);
     return formato.format(fecha);
+  } // formatear
+
+  public static String formatear(int patron, LocalDateTime fecha) {
+    return fecha.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssS"));
+  } // formatear
+
+  public static String formatear(int patron, LocalDate fecha) {
+    return fecha.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssS"));
+  } // formatear
+
+  public static String formatear(int patron, LocalTime fecha) {
+    return fecha.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssS"));
   } // formatear
 
   public static String formatear(int patron, Date fecha) {
@@ -570,6 +586,23 @@ public  class Fecha {
 	  return regresar;
   }
 	
+  public static java.time.LocalDate toLocalDateDefault(String fecha) {
+    // DD/MM/YYYY DD-MM-YYYY
+		java.time.LocalDate regresar= null;
+		try {
+			DateTimeFormatter formatter= null;
+			if(fecha.indexOf("-")>= 0)
+			  DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			else
+			  DateTimeFormatter.ofPattern("dd/MM/yyyy");
+      regresar= LocalDate.parse(fecha, formatter);
+		} // try
+		catch(Exception e) {
+			regresar= LocalDate.now();
+		} // catch
+	  return regresar;
+  }
+	
   public static Calendar toCalendar(String date) {
 		// date equals 2018-11-01
 		return toCalendar(date, "00:00:00");
@@ -586,5 +619,54 @@ public  class Fecha {
 		regresar.set(Calendar.SECOND, Integer.parseInt(time.substring(6, 8)));
 		return regresar;
 	}
+	
+	public static LocalDateTime toLocalDateTime(String date, String time) {
+		// date equals 2018-11-01 and time equals 23:59:59
+		LocalDateTime regresar= LocalDateTime.of(
+			Integer.parseInt(date.substring(0, 4)),
+			Integer.parseInt(date.substring(5, 7))- 1,
+			Integer.parseInt(date.substring(8, 10)),
+			Integer.parseInt(time.substring(0, 2)),
+			Integer.parseInt(time.substring(3, 5)),
+			Integer.parseInt(time.substring(6, 8))
+		);
+		return regresar;
+	}
 
+  public static String getLocalDateTimeBD(LocalDateTime date) {
+    String regresar = null;
+    String db = Configuracion.getInstance().getPropiedad("sistema.bd.type");
+    if (db.equalsIgnoreCase("mysql"))
+      regresar = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
+    else if (db.equalsIgnoreCase("oracle"))
+      regresar = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    else
+      regresar = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    return regresar;
+  } // getLocalDateTimeBD
+	
+  public static String getLocalDateBD(LocalDate date) {
+    String regresar = null;
+    String db = Configuracion.getInstance().getPropiedad("sistema.bd.type");
+    if (db.equalsIgnoreCase("mysql"))
+      regresar = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    else if (db.equalsIgnoreCase("oracle"))
+      regresar = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    else
+      regresar = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    return regresar;
+  } // getLocalDateBD
+	
+  public static String getLocalTimeBD(LocalTime date) {
+    String regresar = null;
+    String db = Configuracion.getInstance().getPropiedad("sistema.bd.type");
+    if (db.equalsIgnoreCase("mysql"))
+      regresar = date.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+    else if (db.equalsIgnoreCase("oracle"))
+      regresar = date.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+    else
+      regresar = date.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+    return regresar;
+  } // getLocalTimeBD
+	
 } // Fecha

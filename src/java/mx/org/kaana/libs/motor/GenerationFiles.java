@@ -635,7 +635,7 @@ public abstract class GenerationFiles {
       for(String key: getDetailTable().keySet()) {
         renglon= getDetailTable().get(key);
         if (renglon.getCampo().equalsIgnoreCase("registro"))
-          sb.append(MessageFormat.format("set{0}({1});", new Object[]{renglon.getAtributo().substring(0,1).toUpperCase().concat(renglon.getAtributo().substring(1,renglon.getAtributo().length())), "new Timestamp(Calendar.getInstance().getTimeInMillis())"}));
+          sb.append(MessageFormat.format("set{0}({1});", new Object[]{renglon.getAtributo().substring(0,1).toUpperCase().concat(renglon.getAtributo().substring(1,renglon.getAtributo().length())), "LocalDateTime.now()"}));
         else
           sb.append(MessageFormat.format("set{0}({1});", new Object[]{renglon.getAtributo().substring(0,1).toUpperCase().concat(renglon.getAtributo().substring(1,renglon.getAtributo().length())) , renglon.getAtributo()}));
         if(x< getDetailTable().size())
@@ -712,7 +712,7 @@ public abstract class GenerationFiles {
           else if (renglon.getTipo().equals("Date"))
             typeData= "new Date(Calendar.getInstance().getTimeInMillis())";
           else if (renglon.getTipo().equals("Timestamp"))
-            typeData= "new Timestamp(Calendar.getInstance().getTimeInMillis())";
+            typeData= "LocalDateTime.now()";
           else if (renglon.getTipo().equals("Time"))
             typeData= "new Time(Calendar.getInstance().getTimeInMillis())";
           else if (renglon.getTipo().equals("Long"))

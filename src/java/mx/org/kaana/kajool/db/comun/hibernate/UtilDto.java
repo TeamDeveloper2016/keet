@@ -2,9 +2,9 @@ package mx.org.kaana.kajool.db.comun.hibernate;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.libs.Constantes;
@@ -98,14 +98,14 @@ public final class UtilDto {
 	public static String getFormatType(Object object) {
 		String regresar="NULL";
 		if (object!=null) {
-			if (object instanceof Timestamp) {
-				regresar=Fecha.getFechaHoraBD((java.util.Date) object);
+			if (object instanceof LocalDateTime) {
+				regresar=Fecha.getLocalDateTimeBD((java.time.LocalDateTime) object);
 			}
-			else if (object instanceof Time) {
-				regresar=Fecha.getHoraBD((java.util.Date) object);
+			else if (object instanceof LocalTime) {
+				regresar=Fecha.getLocalTimeBD((java.time.LocalTime) object);
 			}
-			else if (object instanceof Date) {
-				regresar=Fecha.getFechaBD((java.util.Date) object);
+			else if (object instanceof LocalDate) {
+				regresar=Fecha.getLocalDateBD((java.time.LocalDate) object);
 			}
 			else {
 				regresar=object.toString();
@@ -113,4 +113,5 @@ public final class UtilDto {
 		} // if
 		return regresar;
 	}
+	
 }

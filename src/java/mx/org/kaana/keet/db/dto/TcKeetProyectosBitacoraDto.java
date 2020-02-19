@@ -2,9 +2,9 @@ package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
   @Column (name="id_proyecto_lote")
   private Long idProyectoLote;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcKeetProyectosBitacoraDto() {
     this(new Long(-1L));
@@ -64,7 +64,7 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
     setIdUsuario(idUsuario);
     setIdProyectoBitacora(idProyectoBitacora);
     setIdProyectoLote(idProyectoLote);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setJustificacion(String justificacion) {
@@ -107,11 +107,11 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
     return idProyectoLote;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

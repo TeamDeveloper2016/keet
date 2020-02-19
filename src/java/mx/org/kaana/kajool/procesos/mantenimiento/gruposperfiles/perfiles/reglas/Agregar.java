@@ -8,7 +8,7 @@ package mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.perfiles.regla
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.db.dto.TcJanalPerfilesDto;
@@ -32,7 +32,7 @@ public class Agregar {
   public void agregar(EAccion accion) throws Exception{
     try {
       this.tcJanalPerfilesDto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
-      this.tcJanalPerfilesDto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      this.tcJanalPerfilesDto.setRegistro(LocalDateTime.now());
 			this.tcJanalPerfilesDto.setIdMenu(24L);
       if(accion.equals(EAccion.AGREGAR))
         this.tcJanalPerfilesDto.setAcceso(1L);

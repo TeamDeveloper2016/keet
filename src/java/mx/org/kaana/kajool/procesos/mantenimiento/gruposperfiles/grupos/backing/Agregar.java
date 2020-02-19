@@ -9,7 +9,7 @@ package mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.grupos.backing
  */
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -59,7 +59,7 @@ public class Agregar extends IBaseAttribute implements Serializable {
     String regresar = null;
     try {
       ((TcJanalGruposDto) this.attrs.get("dto")).setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
-      ((TcJanalGruposDto) this.attrs.get("dto")).setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      ((TcJanalGruposDto) this.attrs.get("dto")).setRegistro(LocalDateTime.now());
       Transaccion transaccion = new Transaccion((TcJanalGruposDto) (this.attrs.get("dto")));
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
         JsfBase.addMessage("La acción ".concat(((EAccion) this.attrs.get("accion")).getName()).concat(" grupo se realizo con exito"));

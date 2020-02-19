@@ -2,9 +2,9 @@ package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,17 +41,17 @@ public class TcKeetClientesContratosDto implements IBaseDto, Serializable {
   @Column (name="id_domicilio")
   private Long idDomicilio;
   @Column (name="recepcion")
-  private Date recepcion;
+  private LocalDate recepcion;
   @Column (name="aceptacion")
-  private Date aceptacion;
+  private LocalDate aceptacion;
   @Column (name="nombre")
   private String nombre;
   @Column (name="firma")
-  private Date firma;
+  private LocalDate firma;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
   @Id
@@ -72,11 +72,11 @@ public class TcKeetClientesContratosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetClientesContratosDto(Long key) {
-    this(null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, new Long(-1L), null, null, null, null);
+    this(null, null, null, LocalDate.now(), LocalDate.now(), null, LocalDate.now(), null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetClientesContratosDto(Long clave, Long idCliente, Long idDomicilio, Date recepcion, Date aceptacion, String nombre, Date firma, Long ejercicio, String consecutivo, Long idClienteContrato, Long idUsuario, String observaciones, Long idEmpresa, Long orden) {
+  public TcKeetClientesContratosDto(Long clave, Long idCliente, Long idDomicilio, LocalDate recepcion, LocalDate aceptacion, String nombre, LocalDate firma, Long ejercicio, String consecutivo, Long idClienteContrato, Long idUsuario, String observaciones, Long idEmpresa, Long orden) {
     setClave(clave);
     setIdCliente(idCliente);
     setIdDomicilio(idDomicilio);
@@ -85,7 +85,7 @@ public class TcKeetClientesContratosDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setFirma(firma);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
     setIdClienteContrato(idClienteContrato);
     setIdUsuario(idUsuario);
@@ -118,19 +118,19 @@ public class TcKeetClientesContratosDto implements IBaseDto, Serializable {
     return idDomicilio;
   }
 
-  public void setRecepcion(Date recepcion) {
+  public void setRecepcion(LocalDate recepcion) {
     this.recepcion = recepcion;
   }
 
-  public Date getRecepcion() {
+  public LocalDate getRecepcion() {
     return recepcion;
   }
 
-  public void setAceptacion(Date aceptacion) {
+  public void setAceptacion(LocalDate aceptacion) {
     this.aceptacion = aceptacion;
   }
 
-  public Date getAceptacion() {
+  public LocalDate getAceptacion() {
     return aceptacion;
   }
 
@@ -142,11 +142,11 @@ public class TcKeetClientesContratosDto implements IBaseDto, Serializable {
     return nombre;
   }
 
-  public void setFirma(Date firma) {
+  public void setFirma(LocalDate firma) {
     this.firma = firma;
   }
 
-  public Date getFirma() {
+  public LocalDate getFirma() {
     return firma;
   }
 
@@ -158,11 +158,11 @@ public class TcKeetClientesContratosDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

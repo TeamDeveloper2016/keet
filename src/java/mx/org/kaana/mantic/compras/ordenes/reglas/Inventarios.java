@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.compras.ordenes.reglas;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -135,7 +135,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				} // if
 			} // else
 			// siempre se modifica el costo del catalogo de articulo 
-			global.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			global.setActualizado(LocalDateTime.now());
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
 			

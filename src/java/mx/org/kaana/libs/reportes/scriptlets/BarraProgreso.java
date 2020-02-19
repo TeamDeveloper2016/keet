@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.imageio.ImageIO;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -127,12 +127,11 @@ public class BarraProgreso extends DJDefaultScriptlet implements Serializable {
   	} // if	
   }
 
-  public String getFecha(int formato, Timestamp registro) {
-    java.util.Date date = new java.util.Date(registro.getTime());
-    return Fecha.formatear(formato, date);
+  public String getFecha(int formato, LocalDateTime registro) {
+    return Fecha.formatear(formato, registro);
   }
 
-  public String getFecha(Timestamp registro) {
+  public String getFecha(LocalDateTime registro) {
     return getFecha(Fecha.FECHA_LARGA, registro);
   }
 

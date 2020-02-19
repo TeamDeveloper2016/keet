@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class TcJanalUsuariosDto implements IBaseDto, Serializable {
   @Column (name="ACTIVO")
   private Long activo;
   @Column (name="REGISTRO")
-  private Timestamp registro;	
+  private LocalDateTime registro;	
 	@Column (name="ID_PERSONA")
   private Long idPersona;
 	
@@ -51,7 +51,7 @@ public class TcJanalUsuariosDto implements IBaseDto, Serializable {
     setIdUsuarioModifica(idUsuarioModifica);
     setIdUsuario(idUsuario);
     setActivo(activo);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
 		setIdPersona(idPersona);
   }
 
@@ -95,11 +95,11 @@ public class TcJanalUsuariosDto implements IBaseDto, Serializable {
     return activo;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

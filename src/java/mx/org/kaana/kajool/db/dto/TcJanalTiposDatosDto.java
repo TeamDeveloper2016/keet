@@ -2,8 +2,8 @@ package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,11 +26,11 @@ public class TcJanalTiposDatosDto implements IBaseDto, Serializable {
   @Column (name="CADENA")
   private String cadena;
   @Column (name="HORA")
-  private Timestamp hora;
+  private LocalDateTime hora;
   @Column (name="RELACION_BUSQUEDA")
   private Long relacionBusqueda;
   @Column (name="FECHA")
-  private Date fecha;
+  private LocalDate fecha;
   @Column (name="ENTERO")
   private Long entero;
   @Id
@@ -51,7 +51,7 @@ public class TcJanalTiposDatosDto implements IBaseDto, Serializable {
   @Column (name="E_DATO")
   private String edato;
   @Column (name="REGISTRO")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="RELACION")
   private Long relacion;
 
@@ -60,11 +60,11 @@ public class TcJanalTiposDatosDto implements IBaseDto, Serializable {
   }
 
   public TcJanalTiposDatosDto(Long key) {
-    this(null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null);
+    this(null, LocalDateTime.now(), null, LocalDate.now(), null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcJanalTiposDatosDto(String cadena, Timestamp hora, Long relacionBusqueda, Date fecha, Long entero, Long idTipoDato, Double flotante, String texto, Blob archivo, String dtype, String edato, Long relacion) {
+  public TcJanalTiposDatosDto(String cadena, LocalDateTime hora, Long relacionBusqueda, LocalDate fecha, Long entero, Long idTipoDato, Double flotante, String texto, Blob archivo, String dtype, String edato, Long relacion) {
     setCadena(cadena);
     setHora(hora);
     setRelacionBusqueda(relacionBusqueda);
@@ -76,7 +76,7 @@ public class TcJanalTiposDatosDto implements IBaseDto, Serializable {
     setArchivo(archivo);
     setDtype(dtype);
     setEdato(edato);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setRelacion(relacion);
   }
 	
@@ -88,11 +88,11 @@ public class TcJanalTiposDatosDto implements IBaseDto, Serializable {
     return cadena;
   }
 
-  public void setHora(Timestamp hora) {
+  public void setHora(LocalDateTime hora) {
     this.hora = hora;
   }
 
-  public Timestamp getHora() {
+  public LocalDateTime getHora() {
     return hora;
   }
 
@@ -104,11 +104,11 @@ public class TcJanalTiposDatosDto implements IBaseDto, Serializable {
     return relacionBusqueda;
   }
 
-  public void setFecha(Date fecha) {
+  public void setFecha(LocalDate fecha) {
     this.fecha = fecha;
   }
 
-  public Date getFecha() {
+  public LocalDate getFecha() {
     return fecha;
   }
 
@@ -168,11 +168,11 @@ public class TcJanalTiposDatosDto implements IBaseDto, Serializable {
     return edato;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

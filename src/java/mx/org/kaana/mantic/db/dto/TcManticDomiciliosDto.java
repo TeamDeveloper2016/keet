@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
   @Column (name="y_calle")
   private String ycalle;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="longitud")
   private String longitud;
   @Column (name="numero_exterior")
@@ -78,7 +78,7 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
     setIdDomicilio(idDomicilio);
     setNumeroInterior(numeroInterior);
     setYcalle(ycalle);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setLongitud(longitud);
     setNumeroExterior(numeroExterior);
     setIdUsuario(idUsuario);
@@ -157,11 +157,11 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
     return ycalle;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

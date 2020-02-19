@@ -1,8 +1,7 @@
 package mx.org.kaana.mantic.catalogos.articulos.reglas;
 
 import java.io.File;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
@@ -351,7 +350,7 @@ public class Transaccion extends TransaccionFactura {
 											dimencion= this.articulo.getArticuloDimencion();
 											regresar= dimencion.isValid() ? DaoFactory.getInstance().update(sesion, this.articulo.getArticuloDimencion()) >= 0L : true;
 											if(regresar) {
-												this.articulo.getArticulo().setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+												this.articulo.getArticulo().setActualizado(LocalDateTime.now());
 											  this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
 												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L) && this.articulo.isImagen();
 												if(regresar) { 				
@@ -552,8 +551,8 @@ public class Transaccion extends TransaccionFactura {
 				for(Descuento descuento: this.articulo.getArticulosDescuentos()){
 					descuento.setIdArticulo(idArticulo);				
 					descuento.setIdUsuario(JsfBase.getIdUsuario());
-					descuento.setVigenciaInicial(new Timestamp(descuento.getVigenciaIni().getTime()));
-					descuento.setVigenciaFinal(new Timestamp(descuento.getVigenciaFin().getTime()));
+					descuento.setVigenciaInicial(descuento.getVigenciaIni().atTime(12, 0));
+					descuento.setVigenciaFinal(descuento.getVigenciaFin().atTime(12, 0));
 					dto= (TcManticArticulosDescuentosDto) descuento;				
 					sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuento.getSqlAccion();
 					switch(sqlAccion){
@@ -593,8 +592,8 @@ public class Transaccion extends TransaccionFactura {
 				for(DescuentoEspecial descuentoEspecial: this.articulo.getClientesDescuentos()){
 					descuentoEspecial.setIdArticulo(idArticulo);				
 					descuentoEspecial.setIdUsuario(JsfBase.getIdUsuario());
-					descuentoEspecial.setVigenciaInicial(new Timestamp(descuentoEspecial.getVigenciaIni().getTime()));
-					descuentoEspecial.setVigenciaFinal(new Timestamp(descuentoEspecial.getVigenciaFin().getTime()));
+					descuentoEspecial.setVigenciaInicial(descuentoEspecial.getVigenciaIni().atTime(12, 0));
+					descuentoEspecial.setVigenciaFinal(descuentoEspecial.getVigenciaFin().atTime(12, 0));
 					dto= (TrManticArticuloGrupoDescuentoDto) descuentoEspecial;				
 					sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuentoEspecial.getSqlAccion();
 					switch(sqlAccion){

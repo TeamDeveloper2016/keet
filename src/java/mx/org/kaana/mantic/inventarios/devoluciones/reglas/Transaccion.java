@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.inventarios.devoluciones.reglas;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -323,7 +323,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					global.setMayoreo(Numero.toAjustarDecimales(ultimo.getMayoreo()));
 					global.setDescuento(ultimo.getDescuento());
 					global.setExtra(ultimo.getExtras());
-					global.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					global.setActualizado(LocalDateTime.now());
 				} // if	
 			} // if
 			global.setStock(global.getStock()- item.getCantidad());

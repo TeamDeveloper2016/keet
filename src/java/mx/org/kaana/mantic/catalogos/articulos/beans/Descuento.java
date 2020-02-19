@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.catalogos.articulos.beans;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDescuentosDto;
 
@@ -10,8 +9,8 @@ public class Descuento extends TcManticArticulosDescuentosDto{
 	private static final long serialVersionUID = 4981342777621580602L;
 	private ESql sqlAccion;
 	private Boolean nuevo;
-	private Date vigenciaIni;
-	private Date vigenciaFin;
+	private LocalDate vigenciaIni;
+	private LocalDate vigenciaFin;
 
 	public Descuento() {
 		this(-1L);
@@ -29,8 +28,8 @@ public class Descuento extends TcManticArticulosDescuentosDto{
 		super(key);
 		this.sqlAccion  = sqlAccion;
 		this.nuevo      = nuevo;
-		this.vigenciaIni= new Date(Calendar.getInstance().getTimeInMillis());
-		this.vigenciaFin= new Date(Calendar.getInstance().getTimeInMillis());
+		this.vigenciaIni= LocalDate.now();
+		this.vigenciaFin= LocalDate.now();
 	}
 
 	public ESql getSqlAccion() {
@@ -49,19 +48,19 @@ public class Descuento extends TcManticArticulosDescuentosDto{
 		this.nuevo = nuevo;
 	}
 
-	public Date getVigenciaIni() {
+	public LocalDate getVigenciaIni() {
 		return vigenciaIni;
 	}
 
-	public void setVigenciaIni(Date vigenciaIni) {
+	public void setVigenciaIni(LocalDate vigenciaIni) {
 		this.vigenciaIni = vigenciaIni;
 	}
 
-	public Date getVigenciaFin() {
+	public LocalDate getVigenciaFin() {
 		return vigenciaFin;
 	}
 
-	public void setVigenciaFin(Date vigenciaFin) {
+	public void setVigenciaFin(LocalDate vigenciaFin) {
 		this.vigenciaFin = vigenciaFin;
 	}
 }

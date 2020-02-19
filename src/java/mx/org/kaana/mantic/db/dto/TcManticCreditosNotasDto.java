@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="id_credito_estatus")
@@ -62,7 +62,7 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 	@Column (name="id_credito_nota")
   private Long idCreditoNota;
   @Column (name="fecha")
-  private Date fecha;
+  private LocalDate fecha;
   @Column (name="saldo")
   private Double saldo;
 
@@ -71,16 +71,16 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
   }
 
   public TcManticCreditosNotasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), 0.0);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), LocalDate.now(), 0.0);
     setKey(key);
   }
 
-  public TcManticCreditosNotasDto(Long idProveedor, Long idNotaEntrada, Double importe, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idTipoCreditoNota, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota, Date fecha, Double saldo) {
+  public TcManticCreditosNotasDto(Long idProveedor, Long idNotaEntrada, Double importe, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idTipoCreditoNota, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota, LocalDate fecha, Double saldo) {
     setIdProveedor(idProveedor);
     setIdNotaEntrada(idNotaEntrada);
     setImporte(importe);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
     setIdCreditoEstatus(idCreditoEstatus);
     setIdTipoCreditoNota(idTipoCreditoNota);
@@ -127,11 +127,11 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
@@ -215,11 +215,11 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
     return idCreditoNota;
   }
 
-	public Date getFecha() {
+	public LocalDate getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(LocalDate fecha) {
 		this.fecha=fecha;
 	}
 

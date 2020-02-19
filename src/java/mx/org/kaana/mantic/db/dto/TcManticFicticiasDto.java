@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +62,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="id_usuario")
@@ -80,7 +80,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   @Column (name="id_empresa")
   private Long idEmpresa;
   @Column (name="dia")
-  private Date dia;
+  private LocalDate dia;
   @Column (name="referencia")
   private String referencia;
   @Column (name="id_factura")
@@ -98,7 +98,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   @Column (name="utilidad")
   private Double utilidad;
 	@Column (name="vigencia")
-  private Date vigencia;
+  private LocalDate vigencia;
 	@Column (name="ccotizacion")
   private Long ccotizacion;
 	@Column (name="cotizacion")
@@ -109,19 +109,19 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   }
 
   public TcManticFicticiasDto(Long key) {
-    this(null, null, new Long(-1L), "0", null, null, null, 1D, null, null, null, null, "0", null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+    this(null, null, new Long(-1L), "0", null, null, null, 1D, null, null, null, null, "0", null, null, null, null, null, null, null, null, null, null, LocalDate.now(), null, null);
     setKey(key);
   }
 
-  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia, Long idFactura) {
+  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, LocalDate dia, String referencia, Long idFactura) {
 	  this(descuentos, idTipoPago, idFicticia, extras, global, total, idFicticiaEstatus, tipoDeCambio, orden, idTipoMedioPago, idCliente, idClienteDomicilio, descuento, idBanco, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, dia, referencia, idFactura, 1L);
 	}
 	
-  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia, Long idFactura, Long idTipoDocumento) {
+  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, LocalDate dia, String referencia, Long idFactura, Long idTipoDocumento) {
 		this(descuentos, idTipoPago, idFicticia, extras, global, total, idFicticiaEstatus, tipoDeCambio, orden, idTipoMedioPago, idCliente, idClienteDomicilio, descuento, idBanco, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, dia, referencia, idFactura, idTipoDocumento, null, null);
 	}
 	
-  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia, Long idFactura, Long idTipoDocumento, Long ccotizacion, String cotizacion) {
+  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, LocalDate dia, String referencia, Long idFactura, Long idTipoDocumento, Long ccotizacion, String cotizacion) {
     setDescuentos(descuentos);
     setIdTipoPago(idTipoPago);
     setIdFicticia(idFicticia);
@@ -136,8 +136,8 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setDescuento(descuento);
     setIdBanco(idBanco);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-    setVigencia(new Date(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
+    setVigencia(LocalDate.now());
     setConsecutivo(consecutivo);
     setIdUsuario(idUsuario);
     setImpuestos(impuestos);
@@ -288,11 +288,11 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
@@ -360,11 +360,11 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
-  public void setDia(Date dia) {
+  public void setDia(LocalDate dia) {
     this.dia = dia;
   }
 
-  public Date getDia() {
+  public LocalDate getDia() {
     return dia;
   }
 
@@ -432,11 +432,11 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		this.utilidad=utilidad;
 	}
 
-		public Date getVigencia() {
+		public LocalDate getVigencia() {
 		return vigencia;
 	}
 
-	public void setVigencia(Date vigencia) {
+	public void setVigencia(LocalDate vigencia) {
 		this.vigencia = vigencia;
 	}
 	

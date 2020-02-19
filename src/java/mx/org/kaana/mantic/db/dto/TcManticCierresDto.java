@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,9 +47,9 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="termino")
-  private Timestamp termino;
+  private LocalDateTime termino;
 
   public TcManticCierresDto() {
     this(new Long(-1L));
@@ -61,10 +61,10 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
   }
 
   public TcManticCierresDto(String consecutivo, Long idCierre, Long idDiferencias, Long idUsuario, Long idCierreEstatus, String observaciones, Long orden, Long ejercicio) {
-		this(consecutivo, idCierre, idDiferencias, idUsuario, idCierreEstatus, observaciones, orden, ejercicio, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this(consecutivo, idCierre, idDiferencias, idUsuario, idCierreEstatus, observaciones, orden, ejercicio, LocalDateTime.now());
 	}
 	
-  public TcManticCierresDto(String consecutivo, Long idCierre, Long idDiferencias, Long idUsuario, Long idCierreEstatus, String observaciones, Long orden, Long ejercicio, Timestamp termino) {
+  public TcManticCierresDto(String consecutivo, Long idCierre, Long idDiferencias, Long idUsuario, Long idCierreEstatus, String observaciones, Long orden, Long ejercicio, LocalDateTime termino) {
     setConsecutivo(consecutivo);
     setIdCierre(idCierre);
     setIdDiferencias(idDiferencias);
@@ -73,7 +73,7 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setOrden(orden);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setTermino(termino);
   }
 	
@@ -141,19 +141,19 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
-	public Timestamp getTermino() {
+	public LocalDateTime getTermino() {
 		return termino;
 	}
 
-	public void setTermino(Timestamp termino) {
+	public void setTermino(LocalDateTime termino) {
 		this.termino=termino;
 	}
 

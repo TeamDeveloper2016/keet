@@ -138,7 +138,7 @@ public final class Especial implements Serializable {
 			realPath=servletContextEvent.getServletContext().getRealPath("").concat(File.separator);						
 			LOG.info("Path recuperado [".concat(realPath).concat("]"));
 			pos = realPath.lastIndexOf(Constantes.NOMBRE_DE_APLICACION.toUpperCase());			
-			this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
+			this.registro= new Timestamp(Calendar.getInstance().getTimeInMillis());
 			if (pos>-1) {				
 				this.path= realPath.substring(0, pos+Constantes.NOMBRE_DE_APLICACION.length()).concat(File.separator);
 				this.path= Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);

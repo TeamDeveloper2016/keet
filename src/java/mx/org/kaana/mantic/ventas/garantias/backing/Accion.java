@@ -2,7 +2,7 @@ package mx.org.kaana.mantic.ventas.garantias.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;

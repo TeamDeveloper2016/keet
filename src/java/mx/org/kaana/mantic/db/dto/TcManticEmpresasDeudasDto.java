@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,22 +48,22 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
   @Column (name="id_nota_entrada")
   private Long idNotaEntrada;
   @Column (name="limite")
-  private Date limite;
+  private LocalDate limite;
   @Column (name="importe")
   private Double importe;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticEmpresasDeudasDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasDeudasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D);
+    this(null, null, new Long(-1L), null, null, null, null, LocalDate.now(), null, 0D);
     setKey(key);
   }
 
-  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, Date limite, Double importe, Double pagar) {
+  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, LocalDate limite, Double importe, Double pagar) {
     setIdEmpresaEstatus(idEmpresaEstatus);
     setIdUsuario(idUsuario);
     setIdEmpresaDeuda(idEmpresaDeuda);
@@ -73,7 +73,7 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
     setIdNotaEntrada(idNotaEntrada);
     setLimite(limite);
     setImporte(importe);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
 		this.pagar= pagar;
   }
 	
@@ -133,11 +133,11 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
     return idNotaEntrada;
   }
 
-  public void setLimite(Date limite) {
+  public void setLimite(LocalDate limite) {
     this.limite = limite;
   }
 
-  public Date getLimite() {
+  public LocalDate getLimite() {
     return limite;
   }
 
@@ -149,11 +149,11 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
     return importe;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

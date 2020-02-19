@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +57,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   @Column (name="ccotizacion")
   private Long ccotizacion;
   @Column (name="vigencia")
-  private Date vigencia;
+  private LocalDate vigencia;
   @Column (name="id_autorizar")
   private Long idAutorizar;
   @Column (name="id_cliente")
@@ -69,9 +69,9 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="cobro")
-  private Timestamp cobro;
+  private LocalDateTime cobro;
   @Column (name="consecutivo")
   private Long consecutivo;
   @Column (name="cotizacion")
@@ -95,7 +95,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 	@Column (name="id_venta")
   private Long idVenta;
   @Column (name="dia")
-  private Date dia;
+  private LocalDate dia;
   @Column (name="id_venta_estatus")
   private Long idVentaEstatus;
 	@Column (name="id_manual")
@@ -122,23 +122,23 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   }
 
   public TcManticVentasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 2L, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), LocalDate.now(), null, null, null, null, null, LocalDate.now(), 2L, null);
     setKey(key);
   }
 
-	public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, Long idFacturar) {
-		this(descuentos, idFactura, idCredito, extras, null, null, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 2L, idFacturar);
+	public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, LocalDate dia, Long idVentaEstatus, Long idFacturar) {
+		this(descuentos, idFactura, idCredito, extras, null, null, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, null, null, null, null, LocalDate.now(), 2L, idFacturar);
 	}
 	
-  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, Date vigencia, Long idManual, Long idFacturar){
-		this(descuentos, idFactura, idCredito, extras, null, null, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 2L, idFacturar, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, LocalDate dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, LocalDate vigencia, Long idManual, Long idFacturar){
+		this(descuentos, idFactura, idCredito, extras, null, null, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, null, null, null, null, LocalDate.now(), 2L, idFacturar, LocalDateTime.now());
 	}
 	
-  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, Date vigencia, Long idManual, Long idFacturar, Timestamp cobro) {
+  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, LocalDate dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, LocalDate vigencia, Long idManual, Long idFacturar, LocalDateTime cobro) {
 		this(descuentos, idFactura, idCredito, extras, global, utilidad, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, cotizacion, ticket, ccotizacion, cticket, vigencia, idManual, idFacturar, cobro, null, null, null, null, null, 2L, 2L);
 	}
 	
-  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, Date vigencia, Long idManual, Long idFacturar, Timestamp cobro, Long idClienteDomicilio, Long idTipoMedioPago, Long idTipoPago, Long idBanco, String referencia, Long idTipoDocumento, Long candado) {
+  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, LocalDate dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, LocalDate vigencia, Long idManual, Long idFacturar, LocalDateTime cobro, Long idClienteDomicilio, Long idTipoMedioPago, Long idTipoPago, Long idBanco, String referencia, Long idTipoDocumento, Long candado) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setIdCredito(idCredito);
@@ -153,7 +153,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     setIdCliente(idCliente);
     setDescuento(descuento);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
     setIdUsuario(idUsuario);
     setImpuestos(impuestos);
@@ -311,11 +311,11 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
@@ -391,11 +391,11 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     return idVenta;
   }
 
-  public void setDia(Date dia) {
+  public void setDia(LocalDate dia) {
     this.dia = dia;
   }
 
-  public Date getDia() {
+  public LocalDate getDia() {
     return dia;
   }
 
@@ -423,11 +423,11 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		this.ccotizacion = ccotizacion;
 	}
 
-	public Date getVigencia() {
+	public LocalDate getVigencia() {
 		return vigencia;
 	}
 
-	public void setVigencia(Date vigencia) {
+	public void setVigencia(LocalDate vigencia) {
 		this.vigencia = vigencia;
 	}
 
@@ -447,11 +447,11 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		this.cotizacion = cotizacion;
 	}	
 
-	public Timestamp getCobro() {
+	public LocalDateTime getCobro() {
 		return cobro;
 	}
 
-	public void setCobro(Timestamp cobro) {
+	public void setCobro(LocalDateTime cobro) {
 		this.cobro = cobro;
 	}	
 

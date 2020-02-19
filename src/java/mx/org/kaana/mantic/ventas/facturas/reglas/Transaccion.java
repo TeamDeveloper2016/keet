@@ -1,6 +1,6 @@
 package mx.org.kaana.mantic.ventas.facturas.reglas;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -98,7 +98,7 @@ public class Transaccion extends TransaccionFactura {
 							factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, idFactura);
 							factura.setCorreos(this.orden.getCorreos());
 							factura.setComentarios(this.justificacion);
-							factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));							
+							factura.setTimbrado(LocalDateTime.now());							
 							factura.setIdFacturaEstatus(idEstatus);
 							regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
 							this.facturaPrincipal= factura;
@@ -124,7 +124,7 @@ public class Transaccion extends TransaccionFactura {
 						factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 						if(factura!= null && factura.getIdFacturama()!= null) {
 							CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
-							factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+							factura.setCancelada(LocalDateTime.now());
 							factura.setIdFacturaEstatus(idEstatus);
 							regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
 							registrarBitacoraFactura(sesion, factura.getIdFactura(), idEstatus, "Cancelación de factura.");
@@ -166,7 +166,7 @@ public class Transaccion extends TransaccionFactura {
 			factura.setIntentos(0L);
 			factura.setCorreos(this.orden.getCorreos());
 			factura.setComentarios(this.justificacion);
-			factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));			
+			factura.setTimbrado(LocalDateTime.now());			
 			factura.setObservaciones(this.justificacion);
 			factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
 			regresar= DaoFactory.getInstance().insert(sesion, factura);

@@ -1,10 +1,8 @@
 package mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas;
 
 import java.io.File;
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +10,6 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
@@ -49,7 +46,7 @@ public class Transaccion extends IBaseTnx {
 	private Importado pdf;
 	private Long idPago;
 	private Entity detalle;
-	private Date fecha;
+	private LocalDate fecha;
 	private Long idCaja;
 	private Long idEmpresa;
 	private Long idProveedor;
@@ -93,11 +90,11 @@ public class Transaccion extends IBaseTnx {
 		this.notasCredito= notasCredito;
 	} // Transaccion
 	
-	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado pdf, Long idPago, Long idTipoComprobante, Date fecha) {
+	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado pdf, Long idPago, Long idTipoComprobante, LocalDate fecha) {
 		this(deuda, null, pdf, idPago, idTipoComprobante, fecha);
 	}
 	
-	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado xml, Importado pdf, Long idPago, Long idTipoComprobante, Date fecha) {
+	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado xml, Importado pdf, Long idPago, Long idTipoComprobante, LocalDate fecha) {
 		this.deuda = deuda;
 		this.pdf   = pdf;
 		this.xml   = xml;
@@ -106,7 +103,7 @@ public class Transaccion extends IBaseTnx {
 		this.fecha = fecha;
 	} // Transaccion
 
-	public Transaccion(Entity detalle, Date fecha) {
+	public Transaccion(Entity detalle, LocalDate fecha) {
 		this.detalle= detalle;
 		this.fecha  = fecha;
 	} // Transaccion	
@@ -306,7 +303,7 @@ public class Transaccion extends IBaseTnx {
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
           this.xml.getOriginal(),
 					this.idTipoComprobante,
-					new java.sql.Date(this.fecha.getTime())
+					this.fecha
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
@@ -336,7 +333,7 @@ public class Transaccion extends IBaseTnx {
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
           this.pdf.getOriginal(),
 					this.idTipoComprobante,
-					new java.sql.Date(this.fecha.getTime())
+					this.fecha
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
@@ -403,7 +400,7 @@ public class Transaccion extends IBaseTnx {
 			deuda= (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, this.detalle.getKey());
 			if(deuda.isValid()){				
 				importe= Double.valueOf(String.valueOf(this.detalle.get("importe")));
-				deuda.setLimite(new java.sql.Date(this.fecha.getTime()));
+				deuda.setLimite(this.fecha);
 				deuda.setImporte(importe);
 				deuda.setPagar(importe);
 				deuda.setSaldo(-1 * calculateSaldo(sesion, importe, this.detalle.getKey()));
@@ -651,7 +648,7 @@ public class Transaccion extends IBaseTnx {
 					Long.valueOf(Fecha.getMesActual()),
 					this.pdf.getOriginal(),
 					this.idTipoComprobante,
-					new java.sql.Date(this.fecha.getTime())
+					this.fecha
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());

@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,9 +77,9 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   @Column (name="meta_tag_teclado")
   private String metaTagTeclado;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="fecha")
-  private Timestamp fecha;
+  private LocalDateTime fecha;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_empresa")
@@ -103,18 +103,18 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   @Column (name="id_facturama")
   private String idFacturama;
   @Column (name="actualizado")
-  private Timestamp actualizado;
+  private LocalDateTime actualizado;
 
   public TcManticArticulosDto() {
     this(new Long(-1L));
   }
 
   public TcManticArticulosDto(Long key) {
-    this(null, null, null, null, null, null, null, 10D, 16D, 13D, 0D, null, null, new Long(-1L), 0D, 15D, 0D, null, null, 17D, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, 3D, 5D, 3D, 8D, Constantes.CODIGO_SAT, 1L, 2L, "0", "0", null);
+    this(null, null, null, null, null, null, null, 10D, 16D, 13D, 0D, null, null, new Long(-1L), 0D, 15D, 0D, null, null, 17D, null, LocalDateTime.now(), null, null, null, 3D, 5D, 3D, 8D, Constantes.CODIGO_SAT, 1L, 2L, "0", "0", null);
     setKey(key);
   }
 
-  public TcManticArticulosDto(String descripcion, String descuentos, Long idImagen, Long idCategoria, String extras, String metaTag, String nombre, Double precio, Double iva, Double mayoreo, Double desperdicio, String metaTagDescipcion, Long idVigente, Long idArticulo, Double stock, Double medioMayoreo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long idRedondear, Double menudeo, String metaTagTeclado, Timestamp fecha, Long idUsuario, Long idEmpresa, Double cantidad, Double minimo, Double maximo, Double limiteMedioMayoreo, Double limiteMayoreo, String sat, Long idArticuloTipo, Long idBarras, String descuento, String extra, String idFacturama) {
+  public TcManticArticulosDto(String descripcion, String descuentos, Long idImagen, Long idCategoria, String extras, String metaTag, String nombre, Double precio, Double iva, Double mayoreo, Double desperdicio, String metaTagDescipcion, Long idVigente, Long idArticulo, Double stock, Double medioMayoreo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long idRedondear, Double menudeo, String metaTagTeclado, LocalDateTime fecha, Long idUsuario, Long idEmpresa, Double cantidad, Double minimo, Double maximo, Double limiteMedioMayoreo, Double limiteMayoreo, String sat, Long idArticuloTipo, Long idBarras, String descuento, String extra, String idFacturama) {
     setDescripcion(descripcion);
     setDescuentos(descuentos);
     setIdImagen(idImagen);
@@ -138,8 +138,8 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     setIdRedondear(idRedondear);
     setMenudeo(menudeo);
     setMetaTagTeclado(metaTagTeclado);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-    setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
+    setActualizado(LocalDateTime.now());
     setFecha(fecha);
     setIdUsuario(idUsuario);
     setIdEmpresa(idEmpresa);
@@ -338,19 +338,19 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     return metaTagTeclado;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
-  public void setFecha(Timestamp fecha) {
+  public void setFecha(LocalDateTime fecha) {
     this.fecha = fecha;
   }
 
-  public Timestamp getFecha() {
+  public LocalDateTime getFecha() {
     return fecha;
   }
 
@@ -442,11 +442,11 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		this.idFacturama=idFacturama;
 	}
 
-	public Timestamp getActualizado() {
+	public LocalDateTime getActualizado() {
 		return actualizado;
 	}
 
-	public void setActualizado(Timestamp actualizado) {
+	public void setActualizado(LocalDateTime actualizado) {
 		this.actualizado=actualizado;
 	}
 	

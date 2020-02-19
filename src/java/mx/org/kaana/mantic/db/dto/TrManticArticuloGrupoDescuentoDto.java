@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,9 +29,9 @@ public class TrManticArticuloGrupoDescuentoDto implements IBaseDto, Serializable
 		
   private static final long serialVersionUID=1L;
   @Column (name="vigencia_final")
-  private Timestamp vigenciaFinal;
+  private LocalDateTime vigenciaFinal;
   @Column (name="vigencia_inicial")
-  private Timestamp vigenciaInicial;
+  private LocalDateTime vigenciaInicial;
   @Column (name="id_grupo")
   private Long idGrupo;
   @Column (name="id_usuario")
@@ -47,18 +47,18 @@ public class TrManticArticuloGrupoDescuentoDto implements IBaseDto, Serializable
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TrManticArticuloGrupoDescuentoDto() {
     this(new Long(-1L));
   }
 
   public TrManticArticuloGrupoDescuentoDto(Long key) {
-    this(new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, new Long(-1L), null, null);
+    this(LocalDateTime.now(), LocalDateTime.now(), null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TrManticArticuloGrupoDescuentoDto(Timestamp vigenciaFinal, Timestamp vigenciaInicial, Long idGrupo, Long idUsuario, String observaciones, Long idArticuloGrupoDescuento, Double porcentaje, Long idArticulo) {
+  public TrManticArticuloGrupoDescuentoDto(LocalDateTime vigenciaFinal, LocalDateTime vigenciaInicial, Long idGrupo, Long idUsuario, String observaciones, Long idArticuloGrupoDescuento, Double porcentaje, Long idArticulo) {
     setVigenciaFinal(vigenciaFinal);
     setVigenciaInicial(vigenciaInicial);
     setIdGrupo(idGrupo);
@@ -67,22 +67,22 @@ public class TrManticArticuloGrupoDescuentoDto implements IBaseDto, Serializable
     setIdArticuloGrupoDescuento(idArticuloGrupoDescuento);
     setPorcentaje(porcentaje);
     setIdArticulo(idArticulo);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
-  public void setVigenciaFinal(Timestamp vigenciaFinal) {
+  public void setVigenciaFinal(LocalDateTime vigenciaFinal) {
     this.vigenciaFinal = vigenciaFinal;
   }
 
-  public Timestamp getVigenciaFinal() {
+  public LocalDateTime getVigenciaFinal() {
     return vigenciaFinal;
   }
 
-  public void setVigenciaInicial(Timestamp vigenciaInicial) {
+  public void setVigenciaInicial(LocalDateTime vigenciaInicial) {
     this.vigenciaInicial = vigenciaInicial;
   }
 
-  public Timestamp getVigenciaInicial() {
+  public LocalDateTime getVigenciaInicial() {
     return vigenciaInicial;
   }
 
@@ -134,11 +134,11 @@ public class TrManticArticuloGrupoDescuentoDto implements IBaseDto, Serializable
     return idArticulo;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

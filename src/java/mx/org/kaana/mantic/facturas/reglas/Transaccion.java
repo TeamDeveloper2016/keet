@@ -1,9 +1,8 @@
 package mx.org.kaana.mantic.facturas.reglas;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +153,7 @@ public class Transaccion extends TransaccionFactura {
 							if(factura!= null) {
 								params.put("correos", this.correos);
 								params.put("comentarios", this.comentarios);								
-								params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));		
+								params.put("timbrado", LocalDateTime.now());		
 								params.put("intentos", (factura.getIntentos()+1L));
 								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
 								this.generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura(), this.correos);
@@ -166,7 +165,7 @@ public class Transaccion extends TransaccionFactura {
 								factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
 								if(factura!= null && factura.getIdFacturama()!= null) {
 									CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
-									factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+									factura.setCancelada(LocalDateTime.now());
 									regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
 								} // if
 								else
@@ -194,7 +193,7 @@ public class Transaccion extends TransaccionFactura {
 					factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 					if(factura!= null && factura.getIdFacturama()!= null) {
 						CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
-						factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+						factura.setCancelada(LocalDateTime.now());
 						factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
 						regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
 						registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "Cancelación de factura.".concat(this.justificacion));
@@ -519,7 +518,7 @@ public class Transaccion extends TransaccionFactura {
 			Siguiente consecutivo= this.toSiguiente(sesion);			
 			params.put("idVenta", this.orden.getKey());
 			this.orden.setKey(-1L);
-			this.orden.setDia(new Date(Calendar.getInstance().getTimeInMillis()));
+			this.orden.setDia(LocalDate.now());
 			this.orden.setConsecutivo(cuenta.toConsecutivo());			
 			this.orden.setOrden(cuenta.getOrden());
 			this.orden.setTicket(consecutivo.getConsecutivo());			
@@ -528,7 +527,7 @@ public class Transaccion extends TransaccionFactura {
 			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 			this.orden.setIdUsuario(JsfBase.getIdUsuario());
 			this.orden.setObservaciones("");
-			this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			this.orden.setRegistro(LocalDateTime.now());
 			this.orden.setIdTipoDocumento(1L);
 			regresar= DaoFactory.getInstance().insert(sesion, this.orden)> 0L;
 			if(regresar) {
@@ -548,7 +547,7 @@ public class Transaccion extends TransaccionFactura {
 				factura.setIntentos(0L);
 				factura.setIdUsuario(JsfBase.getIdUsuario());
 				factura.setObservaciones(null);
-				factura.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				factura.setRegistro(LocalDateTime.now());
   			regresar= DaoFactory.getInstance().insert(sesion, factura)> 0L;
 				if(regresar) {
 					this.orden.setIdFactura(factura.getIdFactura());

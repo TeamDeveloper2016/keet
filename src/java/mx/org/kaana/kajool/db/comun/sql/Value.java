@@ -1,9 +1,10 @@
 package mx.org.kaana.kajool.db.comun.sql;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import mx.org.kaana.libs.formato.Fecha;
 
 public class Value implements Serializable, Comparable<Value> {
@@ -33,12 +34,12 @@ public class Value implements Serializable, Comparable<Value> {
 
   public String getData$() {
     String regresar = null;
-    if (data instanceof Date)
-      regresar = Fecha.formatear(Fecha.FECHA_CORTA, (Date)data);
-    else if (data instanceof Time)
-      regresar = Fecha.formatear(Fecha.HORA_CORTA, (Time)data);
-    else if (data instanceof Timestamp)
-      regresar = Fecha.formatear(Fecha.FECHA_HORA, (Timestamp)data);
+    if (data instanceof LocalDate)
+			regresar = ((LocalDate)data).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    else if (data instanceof LocalTime)
+      regresar = ((LocalDate)data).format(DateTimeFormatter.ofPattern("hh:mm:ss"));
+    else if (data instanceof LocalDateTime)
+      regresar = ((LocalDate)data).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     else
       regresar = data.toString();
     return regresar;
@@ -99,19 +100,19 @@ public class Value implements Serializable, Comparable<Value> {
     return regresar!=null ? (Boolean)regresar: value;
   }
 
-  public Date toDate(Date value) {
+  public LocalDate toDate(LocalDate value) {
     Object regresar = getData();
-    return regresar!=null? (Date)regresar: value;
+    return regresar!=null? (LocalDate)regresar: value;
   }
 
-  public Timestamp toTimestamp(Timestamp value) {
+  public LocalDateTime toTimestamp(LocalDateTime value) {
     Object regresar = getData();
-    return regresar!=null? (Timestamp)regresar: value;
+    return regresar!=null? (LocalDateTime)regresar: value;
   }
 
-  public Time toTime(Time value) {
+  public LocalTime toTime(LocalTime value) {
     Object regresar = getData();
-    return regresar!=null? (Time)regresar: value;
+    return regresar!=null? (LocalTime)regresar: value;
   }
 
   @Override
@@ -143,15 +144,15 @@ public class Value implements Serializable, Comparable<Value> {
     return toBoolean(null);
   }
 
-  public Date toDate() {
+  public LocalDate toDate() {
     return toDate(null);
   }
 
-  public Timestamp toTimestamp() {
+  public LocalDateTime toTimestamp() {
     return toTimestamp(null);
   }
 
-  public Time toTime() {
+  public LocalTime toTime() {
     return toTime(null);
   }
 
@@ -179,15 +180,15 @@ public class Value implements Serializable, Comparable<Value> {
     return toBoolean(null);
   }
 
-  public Date getToDate() {
+  public LocalDate getToDate() {
     return toDate(null);
   }
 
-  public Timestamp getToTimestamp() {
+  public LocalDateTime getToTimestamp() {
     return toTimestamp(null);
   }
 
-  public Time getToTime() {
+  public LocalTime getToTime() {
     return toTime(null);
   }
 	
@@ -218,15 +219,15 @@ public class Value implements Serializable, Comparable<Value> {
 	}
 
 	@Override
-		public int compareTo(Value o) {
+	public int compareTo(Value o) {
 		int regresar;
 		try {
-	    if (data instanceof Date)
-			regresar= ((Date)this.data).before((Date)o.data) ? -1 :(((Date)this.data).equals(((Date)o.data))  ? 0 : 1);
-    else if (data instanceof Time)
-			regresar= ((Time)this.data).before((Time)o.data) ? -1 :(((Time)this.data).equals(((Time)o.data))  ? 0 : 1);
-    else if (data instanceof Timestamp)
-			regresar= ((Timestamp)this.data).before((Timestamp)o.data) ? -1 :(((Timestamp)this.data).equals(((Timestamp)o.data))  ? 0 : 1);
+	    if (data instanceof LocalDate)
+			regresar= ((LocalDate)this.data).isBefore((LocalDate)o.data) ? -1 :(((LocalDate)this.data).equals(((LocalDate)o.data))  ? 0 : 1);
+    else if (data instanceof LocalTime)
+			regresar= ((LocalTime)this.data).isBefore((LocalTime)o.data) ? -1 :(((LocalTime)this.data).equals(((LocalTime)o.data))  ? 0 : 1);
+    else if (data instanceof LocalDateTime)
+			regresar= ((LocalDateTime)this.data).isBefore((LocalDateTime)o.data) ? -1 :(((LocalDateTime)this.data).equals(((LocalDateTime)o.data))  ? 0 : 1);
     else
 			regresar = this.data.toString().compareTo(o.toString());
 		} // try

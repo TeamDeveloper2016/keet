@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.ventas.apartados.reglas;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +119,7 @@ public class Transaccion extends IBaseTnx{
           //preguntar si al iniciar inserta bitacora, si no cambiar a crear instancia en lugar de consultar
           if(this.bitacora!= null){
             this.bitacora.setIdApartadoEstatus(apartado.getIdApartadoEstatus());
-            this.bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+            this.bitacora.setRegistro(LocalDateTime.now());
             this.bitacora.setIdUsuario(JsfBase.getIdUsuario());
             regresar = insertarBitacora(sesion);
           } // if 
@@ -192,10 +192,8 @@ public class Transaccion extends IBaseTnx{
 			apartado = (TcManticApartadosDto) DaoFactory.getInstance().findById(sesion, TcManticApartadosDto.class, this.bitacora.getIdApartado());
 			apartado.setIdApartadoEstatus(this.bitacora.getIdApartadoEstatus());
 			if(apartado.getIdApartadoEstatus().equals(6L)){
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(apartado.getVencimiento());
-				calendar.add(Calendar.DAY_OF_YEAR, 30);
-				apartado.setVencimiento(new java.sql.Date(calendar.getTime().getTime()));
+				LocalDate calendar= apartado.getVencimiento().plusDays(30L);
+				apartado.setVencimiento(calendar);
 			}
 			regresar= DaoFactory.getInstance().update(sesion, apartado)>= 1L;
 			if(apartado.getIdApartadoEstatus().equals(4L))

@@ -4,7 +4,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import javax.persistence.Column;
@@ -30,7 +30,7 @@ public class TcJanalConfiguracionesDto implements IBaseDto, Serializable {
 	@Column(name="DESCRIPCION")
 	private String descripcion;
 	@Column(name="REGISTRO")
-	private Timestamp registro;
+	private LocalDateTime registro;
 	@Column(name="ID_USUARIO")
 	private Long idUsuario;
   @Column(name="LLAVE")
@@ -45,20 +45,20 @@ public class TcJanalConfiguracionesDto implements IBaseDto, Serializable {
     setKey(key);
 	}
 
-	public TcJanalConfiguracionesDto(String llave, Long idConfiguracion, String valor, String descripcion, Timestamp registro, Long idUsuario) {
+	public TcJanalConfiguracionesDto(String llave, Long idConfiguracion, String valor, String descripcion, LocalDateTime registro, Long idUsuario) {
 		setLlave(llave);
 		setIdConfiguracion(idConfiguracion);
 		setValor(valor);
 		setDescripcion(descripcion);
 		setIdUsuario(idUsuario);
-		setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setRegistro(LocalDateTime.now());
 	}
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 

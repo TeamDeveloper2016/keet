@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class TcManticUnidadesMedidasDto implements IBaseDto, Serializable {
 	@Column (name="id_usuario")
   private Long idUsuario;
 	@Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 	@Column (name="proporcion")
   private Long proporcion;
 
@@ -58,7 +58,7 @@ public class TcManticUnidadesMedidasDto implements IBaseDto, Serializable {
     setClave(clave);
     setIdUnidadMedida(idUnidadMedida);
     setNombre(nombre);
-		setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setRegistro(LocalDateTime.now());
 		setIdUsuario(idUsuario);
 		setDescripcion(descripcion);
 		setProporcion(proporcion);
@@ -104,11 +104,11 @@ public class TcManticUnidadesMedidasDto implements IBaseDto, Serializable {
 		this.idUsuario = idUsuario;
 	}
 
-	public Timestamp getRegistro() {
+	public LocalDateTime getRegistro() {
 		return registro;
 	}
 
-	public void setRegistro(Timestamp registro) {
+	public void setRegistro(LocalDateTime registro) {
 		this.registro = registro;
 	}
 

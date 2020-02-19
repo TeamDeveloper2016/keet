@@ -1,8 +1,8 @@
 package mx.org.kaana.kajool.db.comun.dto;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public interface IValue  {
 
@@ -13,9 +13,9 @@ public interface IValue  {
   public Double    toDouble(String name);
   public Short     toShort(String name);
   public Boolean   toBoolean (String name);
-  public Date      toDate (String name);
-  public Timestamp toTimestamp(String name);
-  public Time      toTime (String name);
+  public LocalDate toDate (String name);
+  public LocalDateTime toTimestamp(String name);
+  public LocalTime toTime (String name);
 
 }
 

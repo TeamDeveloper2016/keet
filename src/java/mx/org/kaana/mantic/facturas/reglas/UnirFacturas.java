@@ -1,6 +1,6 @@
 package mx.org.kaana.mantic.facturas.reglas;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -95,7 +95,7 @@ public class UnirFacturas extends TransaccionFactura {
 									correos= getCorreos(sesion, this.orden.getIdCliente());
 									params.put("correos", correos);
 									params.put("comentarios", this.justificacion);								
-									params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
+									params.put("timbrado", LocalDateTime.now());								
 									params.put("idFacturaEstatus", EEstatusFacturas.TIMBRADA.getIdEstatusFactura());								
 									DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, this.orden.getIdFactura(), params);
 									registrarBitacoraFactura(sesion, this.orden.getIdFactura(), EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), this.justificacion);

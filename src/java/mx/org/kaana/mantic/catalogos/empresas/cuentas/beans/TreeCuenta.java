@@ -1,8 +1,7 @@
 package mx.org.kaana.mantic.catalogos.empresas.cuentas.beans;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
@@ -18,7 +17,7 @@ public class TreeCuenta implements Serializable, IBaseDto {
 	private Long idEmpresa;
 	private Long idEmpresaEstatus;
 	private String persona;	
-	private Timestamp registro;	
+	private LocalDateTime registro;	
 	private String proveedor;	
 	private String almacen;				
 	private String clave;				
@@ -38,10 +37,10 @@ public class TreeCuenta implements Serializable, IBaseDto {
 	}	
 	
 	public TreeCuenta(Long idKey, boolean ultimoNivel) {
-		this(idKey, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, ultimoNivel, null, 0L, -1L);
+		this(idKey, null, null, null, null, null, null, null, LocalDateTime.now(), null, null, null, null, null, ultimoNivel, null, 0L, -1L);
 	}	
 
-	public TreeCuenta(Long idKey, String consecutivo, Double importe, Double saldo, Double pago, Long idEmpresa, Long idEmpresaEstatus, String persona, Timestamp registro, String proveedor, String almacen, String clave, String nombre, Long dias, boolean ultimoNivel, Long idProveedor, Long totalArchivos, Long idEmpresaArchivo) {
+	public TreeCuenta(Long idKey, String consecutivo, Double importe, Double saldo, Double pago, Long idEmpresa, Long idEmpresaEstatus, String persona, LocalDateTime registro, String proveedor, String almacen, String clave, String nombre, Long dias, boolean ultimoNivel, Long idProveedor, Long totalArchivos, Long idEmpresaArchivo) {
 		this.idKey           = idKey;
 		this.consecutivo     = consecutivo;
 		this.importe         = importe;
@@ -126,11 +125,11 @@ public class TreeCuenta implements Serializable, IBaseDto {
 		this.persona = persona;
 	}
 
-	public Timestamp getRegistro() {
+	public LocalDateTime getRegistro() {
 		return registro;
 	}
 
-	public void setRegistro(Timestamp registro) {
+	public void setRegistro(LocalDateTime registro) {
 		this.registro = registro;
 	}
 

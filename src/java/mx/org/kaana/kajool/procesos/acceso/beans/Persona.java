@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.procesos.acceso.beans;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EAmbitos;
@@ -32,13 +32,13 @@ public class Persona implements Serializable, IBaseDto {
   private Long idTipoSexo; 
   private Long idGrupo;
   private String claveGrupo;
-  private Timestamp ultimoAcceso;
+  private LocalDateTime ultimoAcceso;
 
   public Persona() {
     this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
   }
 
-  public Persona(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idPersona, String nombres, String primerApellido, String segundoApellido, Long idTipoSexo, Long idGrupo,Timestamp ultimoAcceso) {
+  public Persona(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idPersona, String nombres, String primerApellido, String segundoApellido, Long idTipoSexo, Long idGrupo, LocalDateTime ultimoAcceso) {
     this.idUsuario = idUsuario;
     this.cuenta = cuenta;
     this.contrasenia = contrasenia;
@@ -64,11 +64,11 @@ public class Persona implements Serializable, IBaseDto {
     this.claveGrupo = claveGrupo;
   }
   
-  public Timestamp getUltimoAcceso() {
+  public LocalDateTime getUltimoAcceso() {
     return ultimoAcceso;
   }
 
-  public void setUltimoAcceso(Timestamp ultimoAcceso) {
+  public void setUltimoAcceso(LocalDateTime ultimoAcceso) {
     this.ultimoAcceso = ultimoAcceso;
   }  
   

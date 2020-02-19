@@ -2,9 +2,9 @@ package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
   @Column (name="curp")
   private String curp;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcKeetPersonasBeneficiariosDto() {
     this(new Long(-1L));
@@ -76,7 +76,7 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setRfc(rfc);
     setCurp(curp);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setMaterno(String materno) {
@@ -151,11 +151,11 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
     return curp;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

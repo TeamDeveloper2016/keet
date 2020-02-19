@@ -1,7 +1,8 @@
 package mx.org.kaana.mantic.ventas.caja.reglas;
 
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -224,7 +225,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		this.cotizacion= cotizacion.getCotizacion();
 		calendar= Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_YEAR, 15);
-		cotizacion.setVigencia(new Date(calendar.getTimeInMillis()));
+		cotizacion.setVigencia(LocalDate.now());
 		cotizacion.setIdVentaEstatus(EEstatusVentas.COTIZACION.getIdEstatusVenta());					
 		cotizacion.setCandado(EBooleanos.NO.getIdBooleano());
 		regresar= DaoFactory.getInstance().update(sesion, cotizacion)>= 1L;		
@@ -336,7 +337,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			} // if
 			calendar= Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_YEAR, 30);
-			this.ventaFinalizada.getDetailApartado().setVencimiento(new Date(calendar.getTimeInMillis()));
+			this.ventaFinalizada.getDetailApartado().setVencimiento(LocalDate.now());
 			idApartado= DaoFactory.getInstance().insert(sesion, this.ventaFinalizada.getDetailApartado());
 			if(idApartado >= 1){
 				bitacora= new TcManticApartadosBitacoraDto();
@@ -556,7 +557,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			getOrden().setIdVentaEstatus(idEstatusVenta);			
 			getOrden().setIdFacturar(this.ventaFinalizada.isFacturar() && validacionEstatus ? SI : NO);
 			getOrden().setIdCredito(this.ventaFinalizada.isCredito() && validacionEstatus ? SI : NO);
-			getOrden().setCobro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			getOrden().setCobro(LocalDateTime.now());
 			if(this.ventaFinalizada.isFacturar() && validacionEstatus){				
 				this.clienteDeault= getOrden().getIdCliente().equals(toClienteDefault(sesion));
 				if(this.clienteDeault){
@@ -1139,7 +1140,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		try {						
 			ventaPivote= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.dto.getKey());
 			ventaPivote.setIdVentaEstatus(idEstatusVenta);						
-			ventaPivote.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			ventaPivote.setRegistro(LocalDateTime.now());
 			if(DaoFactory.getInstance().update(sesion, ventaPivote)>= 1L)
 				regresar= registraBitacora(sesion, ventaPivote.getIdVenta(), idEstatusVenta, "Cambio de cotización a venta");				
 		} // try		
@@ -1190,7 +1191,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		TcManticApartadosBitacoraDto bitacora= new TcManticApartadosBitacoraDto();
 		bitacora.setIdApartado(apartado.getIdApartado());
 		bitacora.setIdApartadoEstatus(apartado.getIdApartadoEstatus());
-		bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		bitacora.setRegistro(LocalDateTime.now());
 		bitacora.setIdUsuario(JsfBase.getIdUsuario());
 		bitacora.setJustificacion("Pago realizado desde el modulo de cajas por la cantidad" + abonado);
 		regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;		

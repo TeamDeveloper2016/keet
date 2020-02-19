@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.procesos.mantenimiento.mensajes.grupos.backing;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +121,7 @@ public class Agregar extends IBaseAttribute implements Serializable{
       dto.setIdPrioridad(Long.valueOf(this.attrs.get("idPrioridad").toString()));
       dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
       dto.setIdUsuarioModifica(JsfBase.getAutentifica().getPersona().getIdUsuario());
-      dto.setFechaRepite(new java.sql.Date((Calendar.getInstance().getTimeInMillis())));
+      dto.setFechaRepite(LocalDate.now());
       dto.setActualizacion("n");
       dtoMensajesGrupos = (TrJanalMensajesGruposDto) this.attrs.get("dtoMensajesGrupos");
       dtoMensajesGrupos.setIdGrupo(Long.valueOf(this.attrs.get("idGrupo").toString()));

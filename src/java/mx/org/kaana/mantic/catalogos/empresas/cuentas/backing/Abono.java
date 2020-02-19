@@ -337,7 +337,7 @@ public class Abono extends IBasePagos implements Serializable {
 		Long fileSize     = 0L;
 		try {
 			Calendar calendar= Calendar.getInstance();
-			calendar.setTimeInMillis(((TcManticEmpresasDeudasDto)this.attrs.get("empresaDeuda")).getRegistro().getTime());
+			calendar.setTimeInMillis(((TcManticEmpresasDeudasDto)this.attrs.get("empresaDeuda")).getRegistro().getNano());
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("pagos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");

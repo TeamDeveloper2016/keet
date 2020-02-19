@@ -1,6 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +61,7 @@ public class Transaccion extends ComunInventarios {
           break;
 				case PROCESAR:
 				case MODIFICAR:
-          this.dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+          this.dto.setRegistro(LocalDateTime.now());
 					this.toFillArticulos(sesion, accion);
           regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
 					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.transferencia.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());

@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class TcManticPedidosDto implements IBaseDto, Serializable {
   @Column (name="id_pedido_estatus")
   private Long idPedidoEstatus;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="total")
@@ -78,7 +78,7 @@ public class TcManticPedidosDto implements IBaseDto, Serializable {
     setExtras(extras);
     setEjercicio(ejercicio);
     setIdPedidoEstatus(idPedidoEstatus);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
     setTotal(total);
     setIdUsuario(idUsuario);
@@ -131,11 +131,11 @@ public class TcManticPedidosDto implements IBaseDto, Serializable {
     return idPedidoEstatus;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

@@ -3,6 +3,7 @@ package mx.org.kaana.libs.pagina;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -64,6 +65,10 @@ public abstract class IBaseAttribute implements Serializable {
   }
 
   public String doFechaEstandar(Timestamp fecha) {
+		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
+	}
+	
+  public String doFechaEstandar(LocalDateTime fecha) {
 		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
 	}
 	
@@ -140,6 +145,10 @@ public abstract class IBaseAttribute implements Serializable {
 	}
 
   public String doRegistro(Timestamp registro) {
+		return Global.format(EFormatoDinamicos.FECHA_HORA, registro);
+	}
+
+  public String doRegistro(LocalDateTime registro) {
 		return Global.format(EFormatoDinamicos.FECHA_HORA, registro);
 	}
 

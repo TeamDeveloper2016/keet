@@ -15,9 +15,10 @@ import mx.org.kaana.kajool.db.comun.page.PageRecords;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.xml.Dml;
 
-import org.hibernate.SQLQuery;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
 
 public abstract class IBaseDao<T extends IBaseDto> {
 
@@ -404,12 +405,12 @@ public abstract class IBaseDao<T extends IBaseDto> {
   }
 
   protected List<T> findViewCriteria(Session session, Class dto, Map params, Long maxRecords, String idXml) throws Exception {
-    List<T> regresar = null;
-    SQLQuery consulta = null;
+    List<T> regresar   = null;
+    NativeQuery consulta= null;
     Dml dml = null;
     try {
       dml = Dml.getInstance();
-      consulta = session.createSQLQuery(dml.getSelect(dto.getSimpleName(), idXml, params)).addEntity(dto);
+      consulta = session.createNativeQuery(dml.getSelect(dto.getSimpleName(), idXml, params)).addEntity(dto);
       if (maxRecords != Constantes.SQL_TODOS_REGISTROS) {
         consulta.setMaxResults(maxRecords.intValue());
       }
@@ -624,10 +625,10 @@ public abstract class IBaseDao<T extends IBaseDto> {
   }
 
   private Long executeQueryAll(Session session, String query) throws Exception {
-    Long regresar = -1L;
-    SQLQuery consulta = null;
+    Long regresar       = -1L;
+    NativeQuery consulta= null;
     try {
-      consulta = session.createSQLQuery(query);
+      consulta = session.createNativeQuery(query);
       regresar = ((Number) consulta.executeUpdate()).longValue();
     } // try
     catch (Exception e) {
@@ -776,14 +777,14 @@ public abstract class IBaseDao<T extends IBaseDto> {
   }
 
   protected PageRecords findPage(Session session, Class dto, Map params, Integer first, Integer records) throws Exception {
-    PageRecords regresar = null;
-    SQLQuery consulta = null;
+    PageRecords regresar= null;
+    NativeQuery consulta= null;
     Dml dml = null;
     Long count = 0L;
     List<IBaseDto> list = null;
     try {
       dml = Dml.getInstance();
-      consulta = session.createSQLQuery(dml.getSelect(dto.getSimpleName(), Constantes.DML_SELECT, params)).addEntity(dto);
+      consulta = session.createNativeQuery(dml.getSelect(dto.getSimpleName(), Constantes.DML_SELECT, params)).addEntity(dto);
       consulta.setFirstResult(first);
       consulta.setMaxResults(records);
       count = size(session, dto, params);

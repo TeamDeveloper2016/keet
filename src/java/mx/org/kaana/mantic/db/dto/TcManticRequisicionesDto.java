@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="fecha_pedido")
-  private Date fechaPedido;
+  private LocalDate fechaPedido;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="observaciones")
@@ -47,7 +47,7 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
   @Column (name="id_requisicion_estatus")
   private Long idRequisicionEstatus;
   @Column (name="fecha_entregada")
-  private Date fechaEntregada;
+  private LocalDate fechaEntregada;
   @Column (name="orden")
   private Long orden;
   @Id
@@ -59,18 +59,18 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticRequisicionesDto() {
     this(new Long(-1L));
   }
 
   public TcManticRequisicionesDto(Long key) {
-    this(null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), null, null);
+    this(null, LocalDate.now(), null, null, null, null, LocalDate.now(), null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticRequisicionesDto(String consecutivo, Date fechaPedido, Long idUsuario, String observaciones, Long idEmpresa, Long idRequisicionEstatus, Date fechaEntregada, Long orden, Long idRequisicion, Long idSolicita, Long ejercicio) {
+  public TcManticRequisicionesDto(String consecutivo, LocalDate fechaPedido, Long idUsuario, String observaciones, Long idEmpresa, Long idRequisicionEstatus, LocalDate fechaEntregada, Long orden, Long idRequisicion, Long idSolicita, Long ejercicio) {
     setConsecutivo(consecutivo);
     setFechaPedido(fechaPedido);
     setIdUsuario(idUsuario);
@@ -82,7 +82,7 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
     setIdRequisicion(idRequisicion);
     setIdSolicita(idSolicita);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -93,11 +93,11 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
     return consecutivo;
   }
 
-  public void setFechaPedido(Date fechaPedido) {
+  public void setFechaPedido(LocalDate fechaPedido) {
     this.fechaPedido = fechaPedido;
   }
 
-  public Date getFechaPedido() {
+  public LocalDate getFechaPedido() {
     return fechaPedido;
   }
 
@@ -133,11 +133,11 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
     return idRequisicionEstatus;
   }
 
-  public void setFechaEntregada(Date fechaEntregada) {
+  public void setFechaEntregada(LocalDate fechaEntregada) {
     this.fechaEntregada = fechaEntregada;
   }
 
-  public Date getFechaEntregada() {
+  public LocalDate getFechaEntregada() {
     return fechaEntregada;
   }
 
@@ -173,11 +173,11 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

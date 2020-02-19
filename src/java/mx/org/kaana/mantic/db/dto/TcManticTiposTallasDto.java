@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class TcManticTiposTallasDto implements IBaseDto, Serializable {
   @Column (name="id_tipo_articulo")
   private Long idTipoArticulo;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticTiposTallasDto() {
     this(new Long(-1L));
@@ -70,7 +70,7 @@ public class TcManticTiposTallasDto implements IBaseDto, Serializable {
     setOrden(orden);
     setNombre(nombre);
     setIdTipoArticulo(idTipoArticulo);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdTipoTalla(Long idTipoTalla) {
@@ -129,11 +129,11 @@ public class TcManticTiposTallasDto implements IBaseDto, Serializable {
     return idTipoArticulo;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

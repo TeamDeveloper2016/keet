@@ -1,8 +1,8 @@
 package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +28,9 @@ public class TcJanalMensajesDto implements IBaseDto, Serializable {
   @Column (name="NOMBRE")
   private String nombre;
   @Column (name="VIGENCIA_FIN")
-  private Date vigenciaFin;
+  private LocalDate vigenciaFin;
   @Column (name="FECHA_REPITE")
-  private Date fechaRepite;
+  private LocalDate fechaRepite;
   @Column (name="ID_USUARIO")
   private Long idUsuario;
   @Column (name="DESCRIPCION")
@@ -50,9 +50,9 @@ public class TcJanalMensajesDto implements IBaseDto, Serializable {
   @Column (name="ID_MENSAJE")
   private Long idMensaje;
   @Column (name="VIGENCIA_INI")
-  private Date vigenciaIni;
+  private LocalDate vigenciaIni;
   @Column (name="REGISTRO")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="ACTUALIZACION")
   private String actualizacion;
   @Column (name="ID_PRIORIDAD")
@@ -63,11 +63,11 @@ public class TcJanalMensajesDto implements IBaseDto, Serializable {
   }
 
   public TcJanalMensajesDto(Long key) {
-    this(null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+    this(null, null, null, LocalDate.now(), LocalDate.now(), null, null, null, null, null, null, new Long(-1L), LocalDate.now(), null, null);
     setKey(key);
   }
 
-  public TcJanalMensajesDto(String dias, Long idTipoMensaje, String nombre, Date vigenciaFin, Date fechaRepite, Long idUsuario, String descripcion, Long periodoRepite, Long periodo, String urlSeguimiento, Long idUsuarioModifica, Long idMensaje, Date vigenciaIni, String actualizacion, Long idPrioridad) {
+  public TcJanalMensajesDto(String dias, Long idTipoMensaje, String nombre, LocalDate vigenciaFin, LocalDate fechaRepite, Long idUsuario, String descripcion, Long periodoRepite, Long periodo, String urlSeguimiento, Long idUsuarioModifica, Long idMensaje, LocalDate vigenciaIni, String actualizacion, Long idPrioridad) {
     setDias(dias);
     setIdTipoMensaje(idTipoMensaje);
     setNombre(nombre);
@@ -81,7 +81,7 @@ public class TcJanalMensajesDto implements IBaseDto, Serializable {
     setIdUsuarioModifica(idUsuarioModifica);
     setIdMensaje(idMensaje);
     setVigenciaIni(vigenciaIni);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setActualizacion(actualizacion);
     setIdPrioridad(idPrioridad);
   }
@@ -110,19 +110,19 @@ public class TcJanalMensajesDto implements IBaseDto, Serializable {
     return nombre;
   }
 
-  public void setVigenciaFin(Date vigenciaFin) {
+  public void setVigenciaFin(LocalDate vigenciaFin) {
     this.vigenciaFin = vigenciaFin;
   }
 
-  public Date getVigenciaFin() {
+  public LocalDate getVigenciaFin() {
     return vigenciaFin;
   }
 
-  public void setFechaRepite(Date fechaRepite) {
+  public void setFechaRepite(LocalDate fechaRepite) {
     this.fechaRepite = fechaRepite;
   }
 
-  public Date getFechaRepite() {
+  public LocalDate getFechaRepite() {
     return fechaRepite;
   }
 
@@ -182,19 +182,19 @@ public class TcJanalMensajesDto implements IBaseDto, Serializable {
     return idMensaje;
   }
 
-  public void setVigenciaIni(Date vigenciaIni) {
+  public void setVigenciaIni(LocalDate vigenciaIni) {
     this.vigenciaIni = vigenciaIni;
   }
 
-  public Date getVigenciaIni() {
+  public LocalDate getVigenciaIni() {
     return vigenciaIni;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

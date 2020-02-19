@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,11 +52,11 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Column(name = "ESTILO")
   private String estilo;  
   @Column(name = "REGISTRO")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column(name = "FECHA_NACIMIENTO")
-  private Date fechaNacimiento;
+  private LocalDate fechaNacimiento;
   @Column(name = "FECHA_INGRESO")
-  private Date fechaIngreso;
+  private LocalDate fechaIngreso;
   @Column(name = "SUELDO")
   private Double sueldo;
   @Column(name = "ID_ESTADO_CIVIL")
@@ -67,22 +67,22 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   }
 
   public TcManticPersonasDto(Long key) {
-    this(null, null, null, null, null, 1L, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
+    this(null, null, null, null, null, 1L, null, null, null, LocalDate.now(), null);
     setKey(key);
   }
 
-  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, Date fechaNacimiento, Long idUsuario) {
-    this(idEmpleado, nombres, paterno, materno, curp, idTipoSexo, estilo, cuenta, contrasenia, fechaNacimiento, idUsuario, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 1L);
+  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, LocalDate fechaNacimiento, Long idUsuario) {
+    this(idEmpleado, nombres, paterno, materno, curp, idTipoSexo, estilo, cuenta, contrasenia, fechaNacimiento, idUsuario, 0D, LocalDate.now(), 1L);
 	}
 	
-  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, Date fechaNacimiento, Long idUsuario, Double sueldo, Date fechaIngreso, Long idEstadoCivil) {
+  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, LocalDate fechaNacimiento, Long idUsuario, Double sueldo, LocalDate fechaIngreso, Long idEstadoCivil) {
     setIdEmpleado(idEmpleado);
     setNombres(nombres);
 		setPaterno(paterno);
 		setMaterno(materno);    
     setIdTipoSexo(idTipoSexo);
     setCurp(curp);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setCuenta(cuenta);
     setContrasenia(contrasenia);   
     setEstilo(estilo);
@@ -93,7 +93,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
 		this.idEstadoCivil= idEstadoCivil;
   }
 
-  public Date getFechaNacimiento() {
+  public LocalDate getFechaNacimiento() {
     return fechaNacimiento;
   }
 
@@ -105,7 +105,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     this.rfc = rfc;
   }
   
-  public void setFechaNacimiento(Date fechaNacimiento) {
+  public void setFechaNacimiento(LocalDate fechaNacimiento) {
     this.fechaNacimiento = fechaNacimiento;
   }
   
@@ -133,11 +133,11 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     this.estilo = estilo;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
@@ -225,11 +225,11 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     this.idTipoSexo = idTipoSexo;
   }
 
-	public Date getFechaIngreso() {
+	public LocalDate getFechaIngreso() {
 		return fechaIngreso;
 	}
 
-	public void setFechaIngreso(Date fechaIngreso) {
+	public void setFechaIngreso(LocalDate fechaIngreso) {
 		this.fechaIngreso=fechaIngreso;
 	}
 

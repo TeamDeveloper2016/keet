@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="id_gasto")
@@ -65,7 +65,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   @Column (name="id_orden_estatus")
   private Long idOrdenEstatus;
   @Column (name="entrega_estimada")
-  private Date entregaEstimada;
+  private LocalDate entregaEstimada;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_almacen")
@@ -90,11 +90,11 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, Date entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
+  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
     setIdProveedorPago(idProveedorPago);
     setDescuentos(descuentos);
     setExcedentes(excedentes);
@@ -104,7 +104,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     setIdOrdenCompra(idOrdenCompra);
     setExtras(extras);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
     setIdGasto(idGasto);
     setTotal(total);
@@ -193,11 +193,11 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
@@ -233,11 +233,11 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     return idOrdenEstatus;
   }
 
-  public void setEntregaEstimada(Date entregaEstimada) {
+  public void setEntregaEstimada(LocalDate entregaEstimada) {
     this.entregaEstimada = entregaEstimada;
   }
 
-  public Date getEntregaEstimada() {
+  public LocalDate getEntregaEstimada() {
     return entregaEstimada;
   }
 

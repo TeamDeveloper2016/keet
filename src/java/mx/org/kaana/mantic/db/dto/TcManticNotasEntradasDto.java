@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   @Column (name="id_nota_tipo")
   private Long idNotaTipo;
   @Column (name="fecha_recepcion")
-  private Date fechaRecepcion;
+  private LocalDate fechaRecepcion;
   @Column (name="extras")
   private String extras;
   @Id
@@ -52,13 +52,13 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 	@Column (name="id_nota_entrada")
   private Long idNotaEntrada;
   @Column (name="fecha_factura")
-  private Date fechaFactura;
+  private LocalDate fechaFactura;
   @Column (name="id_nota_estatus")
   private Long idNotaEstatus;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="total")
@@ -86,7 +86,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   @Column (name="dias_plazo")
   private Long diasPlazo;
   @Column (name="fecha_pago")
-  private Date fechaPago;
+  private LocalDate fechaPago;
   @Column (name="deuda")
   private Double deuda;
   @Column (name="original")
@@ -97,11 +97,11 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   }
 
   public TcManticNotasEntradasDto(Long key) {
-    this(null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, null, 0D);
+    this(null, null, null, null, null, LocalDate.now(), null, new Long(-1L), LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 30L, LocalDate.now(), 0D, null, 0D);
     setKey(key);
   }
 
-  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idNotaTipo, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long diasPlazo, Date fechaPago, Double deuda, Long idProveedorPago, Double original) {
+  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idNotaTipo, LocalDate fechaRecepcion, String extras, Long idNotaEntrada, LocalDate fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long diasPlazo, LocalDate fechaPago, Double deuda, Long idProveedorPago, Double original) {
     setDescuentos(descuentos);
     setExcedentes(excedentes);
     setIdProveedor(idProveedor);
@@ -114,7 +114,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     setFechaFactura(fechaFactura);
     setIdNotaEstatus(idNotaEstatus);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
     setTotal(total);
     setFactura(factura);
@@ -190,11 +190,11 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		this.idNotaTipo=idNotaTipo;
 	}
 
-  public void setFechaRecepcion(Date fechaRecepcion) {
+  public void setFechaRecepcion(LocalDate fechaRecepcion) {
     this.fechaRecepcion = fechaRecepcion;
   }
 
-  public Date getFechaRecepcion() {
+  public LocalDate getFechaRecepcion() {
     return fechaRecepcion;
   }
 
@@ -214,11 +214,11 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     return idNotaEntrada;
   }
 
-  public void setFechaFactura(Date fechaFactura) {
+  public void setFechaFactura(LocalDate fechaFactura) {
     this.fechaFactura = fechaFactura;
   }
 
-  public Date getFechaFactura() {
+  public LocalDate getFechaFactura() {
     return fechaFactura;
   }
 
@@ -238,11 +238,11 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
@@ -350,11 +350,11 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		this.diasPlazo=diasPlazo;
 	}
 
-	public Date getFechaPago() {
+	public LocalDate getFechaPago() {
 		return fechaPago;
 	}
 
-	public void setFechaPago(Date fechaPago) {
+	public void setFechaPago(LocalDate fechaPago) {
 		this.fechaPago=fechaPago;
 	}
 

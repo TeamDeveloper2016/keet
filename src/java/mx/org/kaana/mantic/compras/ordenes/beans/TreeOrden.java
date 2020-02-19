@@ -1,8 +1,7 @@
 package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.mantic.enums.EDocumentosOrden;
@@ -20,12 +19,12 @@ public class TreeOrden implements Serializable, IBaseDto {
 	private String proveedor;
 	private Double importe;
 	private String estatus;
-	private Timestamp registro;	
+	private LocalDateTime registro;	
 	private String factura;	
-	private Timestamp fechaFactura;	
-	private Timestamp fechaRecepcion;	
-	private Timestamp fechaDocumento;	
-	private Timestamp fechaEntrega;	
+	private LocalDateTime fechaFactura;	
+	private LocalDateTime fechaRecepcion;	
+	private LocalDateTime fechaDocumento;	
+	private LocalDateTime fechaEntrega;	
 	private String folio;	
 	private String almacen;	
 	private String persona;	
@@ -41,10 +40,10 @@ public class TreeOrden implements Serializable, IBaseDto {
 	}	
 	
 	public TreeOrden(Long id, boolean ultimoNivel) {
-		this(id, null, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, ultimoNivel);
+		this(id, null, null, null, null, null, null, null, null, LocalDateTime.now(), null, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), null, null, ultimoNivel);
 	}	
 
-	public TreeOrden(Long id, EDocumentosOrden tipo, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, Double importe, String estatus, Timestamp registro, String factura, Timestamp fechaFactura, Timestamp fechaRecepcion, Timestamp fechaDocumento, Timestamp fechaEntrega, String folio, String almacen, boolean ultimoNivel) {
+	public TreeOrden(Long id, EDocumentosOrden tipo, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, Double importe, String estatus, LocalDateTime registro, String factura, LocalDateTime fechaFactura, LocalDateTime fechaRecepcion, LocalDateTime fechaDocumento, LocalDateTime fechaEntrega, String folio, String almacen, boolean ultimoNivel) {
 		this.id=id;
 		this.tipo=tipo;
 		this.claveEmpresa=claveEmpresa;
@@ -155,43 +154,43 @@ public class TreeOrden implements Serializable, IBaseDto {
 		this.factura=factura;
 	}
 
-	public Timestamp getRegistro() {
+	public LocalDateTime getRegistro() {
 		return registro;
 	}
 
-	public void setRegistro(Timestamp registro) {
+	public void setRegistro(LocalDateTime registro) {
 		this.registro=registro;
 	}
 
-	public Timestamp getFechaFactura() {
+	public LocalDateTime getFechaFactura() {
 		return fechaFactura;
 	}
 
-	public void setFechaFactura(Timestamp fechaFactura) {
+	public void setFechaFactura(LocalDateTime fechaFactura) {
 		this.fechaFactura=fechaFactura;
 	}
 
-	public Timestamp getFechaRecepcion() {
+	public LocalDateTime getFechaRecepcion() {
 		return fechaRecepcion;
 	}
 
-	public void setFechaRecepcion(Timestamp fechaRecepcion) {
+	public void setFechaRecepcion(LocalDateTime fechaRecepcion) {
 		this.fechaRecepcion=fechaRecepcion;
 	}
 
-	public Timestamp getFechaDocumento() {
+	public LocalDateTime getFechaDocumento() {
 		return fechaDocumento;
 	}
 
-	public void setFechaDocumento(Timestamp fechaDocumento) {
+	public void setFechaDocumento(LocalDateTime fechaDocumento) {
 		this.fechaDocumento=fechaDocumento;
 	}
 
-	public Timestamp getFechaEntrega() {
+	public LocalDateTime getFechaEntrega() {
 		return fechaEntrega;
 	}
 
-	public void setFechaEntrega(Timestamp fechaEntrega) {
+	public void setFechaEntrega(LocalDateTime fechaEntrega) {
 		this.fechaEntrega=fechaEntrega;
 	}
 

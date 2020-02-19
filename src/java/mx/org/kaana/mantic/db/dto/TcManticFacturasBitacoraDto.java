@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class TcManticFacturasBitacoraDto implements IBaseDto, Serializable {
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="registros")
-  private Timestamp registros;
+  private LocalDateTime registros;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_factura_bitacora")
@@ -48,11 +48,11 @@ public class TcManticFacturasBitacoraDto implements IBaseDto, Serializable {
   }
 
   public TcManticFacturasBitacoraDto(Long key) {
-    this(null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), new Long(-1L));
+    this(null, null, null, null, LocalDateTime.now(), new Long(-1L));
     setKey(key);
   }
 
-  public TcManticFacturasBitacoraDto(Long idFacturaEstatus, Long idFactura, String justificacion, Long idUsuario, Timestamp registros, Long idFacturaBitacora) {
+  public TcManticFacturasBitacoraDto(Long idFacturaEstatus, Long idFactura, String justificacion, Long idUsuario, LocalDateTime registros, Long idFacturaBitacora) {
     setIdFacturaEstatus(idFacturaEstatus);
     setIdFactura(idFactura);
     setJustificacion(justificacion);
@@ -93,11 +93,11 @@ public class TcManticFacturasBitacoraDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setRegistros(Timestamp registros) {
+  public void setRegistros(LocalDateTime registros) {
     this.registros = registros;
   }
 
-  public Timestamp getRegistros() {
+  public LocalDateTime getRegistros() {
     return registros;
   }
 

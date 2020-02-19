@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   @Column (name="id_puesto")
   private Long idPuesto;
   @Column (name="fecha_contratacion")
-  private Date fechaContratacion;
+  private LocalDate fechaContratacion;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Id
@@ -51,18 +51,18 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   @Column (name="id_empresa")
   private Long idEmpresa;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TrManticEmpresaPersonalDto() {
     this(new Long(-1L));
   }
 
   public TrManticEmpresaPersonalDto(Long key) {
-    this(null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), null, null);
+    this(null, null, LocalDate.now(), null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TrManticEmpresaPersonalDto(Long idPersona, Long idPuesto, Date fechaContratacion, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa) {
+  public TrManticEmpresaPersonalDto(Long idPersona, Long idPuesto, LocalDate fechaContratacion, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa) {
     setIdPersona(idPersona);
     setIdPuesto(idPuesto);
     setFechaContratacion(fechaContratacion);
@@ -70,7 +70,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     setIdEmpresaPersona(idEmpresaPersona);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdPersona(Long idPersona) {
@@ -89,11 +89,11 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     return idPuesto;
   }
 
-  public void setFechaContratacion(Date fechaContratacion) {
+  public void setFechaContratacion(LocalDate fechaContratacion) {
     this.fechaContratacion = fechaContratacion;
   }
 
-  public Date getFechaContratacion() {
+  public LocalDate getFechaContratacion() {
     return fechaContratacion;
   }
 
@@ -129,11 +129,11 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

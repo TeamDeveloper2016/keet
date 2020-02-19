@@ -1,8 +1,9 @@
 package mx.org.kaana.kajool.db.comun.hibernate;
 
 import java.lang.reflect.Field;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
@@ -59,11 +60,11 @@ public final class FieldDto {
           if (type.equals("Long")) {
             regresar=new Long(value.toString());
           }
-          else if (type.equals("Date")) {
-            regresar=new Date(Fecha.getFechaCalendar(value.toString()).getTimeInMillis());
+          else if (type.equals("LocalDate")) {
+						regresar= Instant.ofEpochMilli(Fecha.getFechaCalendar(value.toString()).getTimeInMillis()).atZone(ZoneId.systemDefault()).toLocalDate();
           }
-          else if (type.equals("Timestamp")) {
-            regresar=new Timestamp(Fecha.getFechaHora(value.toString()).getTimeInMillis());
+          else if (type.equals("LocalDateTime")) {
+						regresar= LocalDateTime.ofInstant(Instant.ofEpochMilli(Fecha.getFechaHora(value.toString()).getTimeInMillis()), ZoneId.systemDefault());
           }
           else if (type.equals("String")) {
             regresar=value.toString();

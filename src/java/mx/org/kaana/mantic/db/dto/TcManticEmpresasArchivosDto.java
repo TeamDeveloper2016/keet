@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class TcManticEmpresasArchivosDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="tamanio")
   private Long tamanio;
   @Column (name="id_usuario")
@@ -62,23 +62,23 @@ public class TcManticEmpresasArchivosDto implements IBaseDto, Serializable {
   @Column (name="mes")
   private Long mes;
   @Column (name="pago")
-  private Date pago;
+  private LocalDate pago;
 
   public TcManticEmpresasArchivosDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasArchivosDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
+    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, LocalDate.now());
     setKey(key);
   }
 
-  public TcManticEmpresasArchivosDto(String ruta, Long idEmpresaArchivo, String nombre, Long ejercicio, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, Long idEmpresaPago, String alias, Long mes, String archivo, Long idTipoComprobante, Date pago) {
+  public TcManticEmpresasArchivosDto(String ruta, Long idEmpresaArchivo, String nombre, Long ejercicio, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, Long idEmpresaPago, String alias, Long mes, String archivo, Long idTipoComprobante, LocalDate pago) {
     setRuta(ruta);
     setIdEmpresaArchivo(idEmpresaArchivo);
     setNombre(nombre);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setTamanio(tamanio);
     setIdUsuario(idUsuario);
     setIdTipoArchivo(idTipoArchivo);
@@ -132,11 +132,11 @@ public class TcManticEmpresasArchivosDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
@@ -212,11 +212,11 @@ public class TcManticEmpresasArchivosDto implements IBaseDto, Serializable {
 		this.idTipoComprobante = idTipoComprobante;
 	}	
 	
-	public Date getPago() {
+	public LocalDate getPago() {
 		return pago;
 	}
 
-	public void setPago(Date pago) {
+	public void setPago(LocalDate pago) {
 		this.pago = pago;
 	}	
 	

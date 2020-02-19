@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class TrManticOrdenCompraCargoDto implements IBaseDto, Serializable {
   @Column (name="id_cargo_compra")
   private Long idCargoCompra;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TrManticOrdenCompraCargoDto() {
     this(new Long(-1L));
@@ -70,7 +70,7 @@ public class TrManticOrdenCompraCargoDto implements IBaseDto, Serializable {
     setPorcentaje(porcentaje);
     setImporte(importe);
     setIdCargoCompra(idCargoCompra);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdUsuario(Long idUsuario) {
@@ -129,11 +129,11 @@ public class TrManticOrdenCompraCargoDto implements IBaseDto, Serializable {
     return idCargoCompra;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

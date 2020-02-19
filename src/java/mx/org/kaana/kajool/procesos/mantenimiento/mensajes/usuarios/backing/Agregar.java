@@ -8,8 +8,8 @@ package mx.org.kaana.kajool.procesos.mantenimiento.mensajes.usuarios.backing;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -61,9 +61,9 @@ public class Agregar extends IBaseAttribute implements Serializable {
       dto.setIdPrioridad(Long.valueOf(this.attrs.get("idPrioridad").toString()));
       dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
       dto.setIdUsuarioModifica(JsfBase.getAutentifica().getPersona().getIdUsuario());
-      dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      dto.setRegistro(LocalDateTime.now());
       dto.setIdTipoMensaje(ETiposMensajes.USUARIO.getKey());
-      dto.setFechaRepite(new java.sql.Date((Calendar.getInstance().getTimeInMillis())));
+      dto.setFechaRepite(LocalDate.now());
       dto.setActualizacion("n");
       Transaccion transaccion = new Transaccion(dto, Numero.getLong(this.attrs.get("idUsuario").toString()), JsfBase.getAutentifica().getPersona().getIdUsuario());
       if (transaccion.ejecutar(EAccion.AGREGAR)) 

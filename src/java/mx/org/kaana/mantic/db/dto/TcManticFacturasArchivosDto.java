@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
   @Column (name="ruta")
   private String ruta;
   @Column (name="cancelacion")
-  private Timestamp cancelacion;
+  private LocalDateTime cancelacion;
   @Column (name="nombre")
   private String nombre;
   @Column (name="ejercicio")
@@ -47,7 +47,7 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
   @Column (name="folio_cancelacion")
   private String folioCancelacion;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_factura_archivo")
@@ -74,18 +74,18 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
   }
 
   public TcManticFacturasArchivosDto(Long key) {
-    this(null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, new Long(-1L), null, null, null, null, null, null, null, null);
+    this(null, null, LocalDateTime.now(), null, null, null, new Long(-1L), null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticFacturasArchivosDto(Long idFactura, String ruta, Timestamp cancelacion, String nombre, Long ejercicio, String folioCancelacion, Long idFacturaArchivo, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String comentarios) {
+  public TcManticFacturasArchivosDto(Long idFactura, String ruta, LocalDateTime cancelacion, String nombre, Long ejercicio, String folioCancelacion, Long idFacturaArchivo, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String comentarios) {
     setIdFactura(idFactura);
     setRuta(ruta);
     setCancelacion(cancelacion);
     setNombre(nombre);
     setEjercicio(ejercicio);
     setFolioCancelacion(folioCancelacion);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setIdFacturaArchivo(idFacturaArchivo);
     setTamanio(tamanio);
     setIdUsuario(idUsuario);
@@ -113,11 +113,11 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
     return ruta;
   }
 
-  public void setCancelacion(Timestamp cancelacion) {
+  public void setCancelacion(LocalDateTime cancelacion) {
     this.cancelacion = cancelacion;
   }
 
-  public Timestamp getCancelacion() {
+  public LocalDateTime getCancelacion() {
     return cancelacion;
   }
 
@@ -145,11 +145,11 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
     return folioCancelacion;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

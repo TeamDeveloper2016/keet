@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +34,9 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 	@Column (name="id_factura")
   private Long idFactura;
   @Column (name="ultimo_intento")
-  private Date ultimoIntento;
+  private LocalDate ultimoIntento;
   @Column (name="timbrado")
-  private Timestamp timbrado;
+  private LocalDateTime timbrado;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_factura_estatus")
@@ -65,29 +65,29 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   @Column (name="certificado_digital")
   private String certificadoDigital;
   @Column (name="certificacion")
-  private Timestamp certificacion;
+  private LocalDateTime certificacion;
   @Column (name="folio_fiscal")
   private String folioFiscal;
 	
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="cancelada")
-  private Timestamp cancelada;
+  private LocalDateTime cancelada;
 
   public TcManticFacturasDto() {
     this(new Long(-1L));
   }
 
   public TcManticFacturasDto(Long key) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, 0L, null, null, null, null);
+    this(new Long(-1L), LocalDate.now(), null, null, null, 0L, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), timbrado, idUsuario, folio, intentos, correos, comentarios, observaciones, idFacturama, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, 1L);
+  public TcManticFacturasDto(Long idFactura, LocalDate ultimoIntento, LocalDateTime timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama) {
+    this(new Long(-1L), LocalDate.now(), timbrado, idUsuario, folio, intentos, correos, comentarios, observaciones, idFacturama, null, null, null, null, null, LocalDateTime.now(), null, 1L);
 	}
 	
-  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, String cadenaOriginal, String selloSat, String selloCfdi, String certificadoSat, String certificadoDigital, Timestamp certificacion, String folioFiscal, Long idFacturaEstatus) {
+  public TcManticFacturasDto(Long idFactura, LocalDate ultimoIntento, LocalDateTime timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, String cadenaOriginal, String selloSat, String selloCfdi, String certificadoSat, String certificadoDigital, LocalDateTime certificacion, String folioFiscal, Long idFacturaEstatus) {
     setIdFactura(idFactura);
     setUltimoIntento(ultimoIntento);
     setTimbrado(timbrado);
@@ -105,8 +105,8 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		this.certificadoDigital= certificadoDigital;
 		this.certificacion= certificacion;
 		this.folioFiscal= folioFiscal;
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		this.cancelada= new Timestamp(Calendar.getInstance().getTimeInMillis());
+    setRegistro(LocalDateTime.now());
+		this.cancelada= LocalDateTime.now();
 		setIdFacturaEstatus(idFacturaEstatus);
   }
 	
@@ -118,19 +118,19 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
     return idFactura;
   }
 
-  public void setUltimoIntento(Date ultimoIntento) {
+  public void setUltimoIntento(LocalDate ultimoIntento) {
     this.ultimoIntento = ultimoIntento;
   }
 
-  public Date getUltimoIntento() {
+  public LocalDate getUltimoIntento() {
     return ultimoIntento;
   }
 
-  public void setTimbrado(Timestamp timbrado) {
+  public void setTimbrado(LocalDateTime timbrado) {
     this.timbrado = timbrado;
   }
 
-  public Timestamp getTimbrado() {
+  public LocalDateTime getTimbrado() {
     return timbrado;
   }
 
@@ -230,11 +230,11 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		this.certificadoDigital=certificadoDigital;
 	}
 
-	public Timestamp getCertificacion() {
+	public LocalDateTime getCertificacion() {
 		return certificacion;
 	}
 
-	public void setCertificacion(Timestamp certificacion) {
+	public void setCertificacion(LocalDateTime certificacion) {
 		this.certificacion=certificacion;
 	}
 
@@ -246,19 +246,19 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		this.folioFiscal=folioFiscal;
 	}
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
-	public Timestamp getCancelada() {
+	public LocalDateTime getCancelada() {
 		return cancelada;
 	}
 
-	public void setCancelada(Timestamp cancelada) {
+	public void setCancelada(LocalDateTime cancelada) {
 		this.cancelada=cancelada;
 	}
 

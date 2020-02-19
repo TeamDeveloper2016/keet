@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
   @Column (name="diferencia")
   private Double diferencia;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticConfrontasDetallesDto() {
     this(new Long(-1L));
@@ -76,7 +76,7 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setDeclarados(declarados);
     setDiferencia(diferencia);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setCodigo(String codigo) {
@@ -167,11 +167,11 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
     return diferencia;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

@@ -2,9 +2,9 @@ package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,24 +49,24 @@ public class TcKeetNominasConstantesDto implements IBaseDto, Serializable {
   @Column (name="valor")
   private Double valor;
   @Column (name="inicio")
-  private Date inicio;
+  private LocalDate inicio;
   @Column (name="termino")
-  private Date termino;
+  private LocalDate termino;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcKeetNominasConstantesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetNominasConstantesDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), new Date(Calendar.getInstance().getTimeInMillis()), null);
+    this(null, new Long(-1L), null, null, null, null, LocalDate.now(), LocalDate.now(), null);
     setKey(key);
   }
 
-  public TcKeetNominasConstantesDto(String descripcion, Long idNominaConstante, Long idActivo, Long idUsuario, String siglas, Double valor, Date inicio, Date termino, String nombre) {
+  public TcKeetNominasConstantesDto(String descripcion, Long idNominaConstante, Long idActivo, Long idUsuario, String siglas, Double valor, LocalDate inicio, LocalDate termino, String nombre) {
     setDescripcion(descripcion);
     setIdNominaConstante(idNominaConstante);
     setIdActivo(idActivo);
@@ -76,7 +76,7 @@ public class TcKeetNominasConstantesDto implements IBaseDto, Serializable {
     setInicio(inicio);
     setTermino(termino);
     setNombre(nombre);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setDescripcion(String descripcion) {
@@ -127,19 +127,19 @@ public class TcKeetNominasConstantesDto implements IBaseDto, Serializable {
     return valor;
   }
 
-  public void setInicio(Date inicio) {
+  public void setInicio(LocalDate inicio) {
     this.inicio = inicio;
   }
 
-  public Date getInicio() {
+  public LocalDate getInicio() {
     return inicio;
   }
 
-  public void setTermino(Date termino) {
+  public void setTermino(LocalDate termino) {
     this.termino = termino;
   }
 
-  public Date getTermino() {
+  public LocalDate getTermino() {
     return termino;
   }
 
@@ -151,11 +151,11 @@ public class TcKeetNominasConstantesDto implements IBaseDto, Serializable {
     return nombre;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

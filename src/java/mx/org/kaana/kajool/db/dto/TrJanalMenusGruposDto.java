@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class TrJanalMenusGruposDto implements IBaseDto, Serializable {
   @Column (name="ID_MENU")
   private Long idMenu;
   @Column (name="REGISTRO")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="ID_GRUPO")
   private Long idGrupo;
 
@@ -48,7 +48,7 @@ public class TrJanalMenusGruposDto implements IBaseDto, Serializable {
     setIdUsuario(idUsuario);
     setIdMenuGrupo(idMenuGrupo);
     setIdMenu(idMenu);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setIdGrupo(idGrupo);
   }
 	
@@ -76,11 +76,11 @@ public class TrJanalMenusGruposDto implements IBaseDto, Serializable {
     return idMenu;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

@@ -2,9 +2,9 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class TcManticControlRespaldosDto implements IBaseDto, Serializable {
 	@Column (name="id_control_respaldo")
   private Long idControlRespaldo;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticControlRespaldosDto() {
     this(new Long(-1L));
@@ -58,7 +58,7 @@ public class TcManticControlRespaldosDto implements IBaseDto, Serializable {
     setIdUsuario(idUsuario);
     setIdRespaldo(idRespaldo);
     setIdControlRespaldo(idControlRespaldo);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdUsuario(Long idUsuario) {
@@ -85,11 +85,11 @@ public class TcManticControlRespaldosDto implements IBaseDto, Serializable {
     return idControlRespaldo;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

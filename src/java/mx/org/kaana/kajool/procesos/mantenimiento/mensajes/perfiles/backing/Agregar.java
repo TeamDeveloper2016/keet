@@ -1,8 +1,8 @@
 package mx.org.kaana.kajool.procesos.mantenimiento.mensajes.perfiles.backing;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -112,13 +112,13 @@ public class Agregar extends IBaseAttribute implements Serializable {
       dto.setIdPrioridad(Long.valueOf(this.attrs.get("idPrioridad").toString()));
       dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
       dto.setIdUsuarioModifica(JsfBase.getAutentifica().getPersona().getIdUsuario());
-      dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      dto.setRegistro(LocalDateTime.now());
       dto.setIdTipoMensaje(ETiposMensajes.PERFIL.getKey());
-      dto.setFechaRepite(new java.sql.Date((Calendar.getInstance().getTimeInMillis())));
+      dto.setFechaRepite(LocalDate.now());
       dto.setActualizacion("n");
       dtoPerfil.setIdPerfil(Long.valueOf(this.attrs.get("idPerfil").toString()));
       dtoPerfil.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
-      dtoPerfil.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      dtoPerfil.setRegistro(LocalDateTime.now());
       Transaccion transaccion = new Transaccion(dto, dtoPerfil);
       if (transaccion.ejecutar(EAccion.AGREGAR)) {
         idsUsuarios= DaoFactory.getInstance().toEntitySet("TcJanalUsuariosDto", "findIds", this.attrs);

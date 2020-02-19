@@ -10,9 +10,8 @@ package mx.org.kaana.kajool.procesos.menu.backing;
 import com.coolservlets.beans.menu.MenuModel;
 import java.io.File;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -387,7 +386,7 @@ public class GaleryMenu implements Serializable {
     try {
       this.trJanalBuzonDto.setIdUsuario(JsfBase.getIdUsuario());
       this.trJanalBuzonDto.setPagina(JsfBase.getAutentifica().getPaginaActual());
-      this.trJanalBuzonDto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      this.trJanalBuzonDto.setRegistro(LocalDateTime.now());
       transaccion= new Transaccion(this.trJanalBuzonDto);
       transaccion.ejecutar(EAccion.AGREGAR);
       JsfBase.addMsgProperties("janal.accion.ok.agregar");

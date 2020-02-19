@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   @Column (name="caracteristicas")
   private String caracteristicas;
   @Column (name="fecha_estimada")
-  private Date fechaEstimada;
+  private LocalDate fechaEstimada;
   @Column (name="id_tipo_medio_pago")
   private Long idTipoMedioPago;
   @Column (name="id_cliente")
@@ -58,7 +58,7 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="marca")
@@ -95,11 +95,11 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   }
 
   public TcManticServiciosDto(Long key) {
-    this(0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, "0", new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1L, null, null, null);
+    this(0D, null, null, LocalDate.now(), null, null, null, null, "0", new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1L, null, null, null);
     setKey(key);
   }
 
-  public TcManticServiciosDto(Double descuentos, Long idFactura, String caracteristicas, Date fechaEstimada, Long idTipoMedioPago, Long idCliente, String herramienta, Long idServicioEstatus, String descuento, Long idServicio, String modelo, Long ejercicio, String consecutivo, String marca, Double total, Long idUsuario, Double impuestos, String observaciones, Double subTotal, Double efectivo, Long idEmpresa, String reparacion, Long orden, Long idGarantia, Long idParticular, String cliente, String telefonos, Long idVenta) {
+  public TcManticServiciosDto(Double descuentos, Long idFactura, String caracteristicas, LocalDate fechaEstimada, Long idTipoMedioPago, Long idCliente, String herramienta, Long idServicioEstatus, String descuento, Long idServicio, String modelo, Long ejercicio, String consecutivo, String marca, Double total, Long idUsuario, Double impuestos, String observaciones, Double subTotal, Double efectivo, Long idEmpresa, String reparacion, Long orden, Long idGarantia, Long idParticular, String cliente, String telefonos, Long idVenta) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setCaracteristicas(caracteristicas);
@@ -112,7 +112,7 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
     setIdServicio(idServicio);
     setModelo(modelo);
     setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
     setMarca(marca);
     setTotal(total);
@@ -163,11 +163,11 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
     return caracteristicas;
   }
 
-  public void setFechaEstimada(Date fechaEstimada) {
+  public void setFechaEstimada(LocalDate fechaEstimada) {
     this.fechaEstimada = fechaEstimada;
   }
 
-  public Date getFechaEstimada() {
+  public LocalDate getFechaEstimada() {
     return fechaEstimada;
   }
 
@@ -235,11 +235,11 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
     return ejercicio;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

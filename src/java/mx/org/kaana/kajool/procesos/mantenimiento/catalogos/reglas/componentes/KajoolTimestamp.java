@@ -1,6 +1,6 @@
 package mx.org.kaana.kajool.procesos.mantenimiento.catalogos.reglas.componentes;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.el.ValueExpression;
 import javax.faces.convert.Converter;
 import mx.org.kaana.libs.pagina.convertidores.Registro;

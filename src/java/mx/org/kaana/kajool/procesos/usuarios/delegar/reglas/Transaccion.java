@@ -9,13 +9,12 @@ package mx.org.kaana.kajool.procesos.usuarios.delegar.reglas;
  */
 
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.libs.formato.BouncyEncryption;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import org.hibernate.Session;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
@@ -198,7 +197,7 @@ public class Transaccion extends IBaseTnx {
 				duplicado= new TcManticPersonasDto();				
 				duplicado.setIdEmpleado(idEmpleado);
 				duplicado.setIdEmpleado(this.idKey);				
-				duplicado.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));				
+				duplicado.setRegistro(LocalDateTime.now());				
 				regresar= insertDto(sesion, duplicado);
 			} // if			
 		} // try
@@ -226,26 +225,24 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // activarUsuarioDelega
 	
-	private Date vigenciaInicio() throws Exception{		
+	private LocalDate vigenciaInicio() throws Exception{		
 		return vigenciaFin(-1);
 	} // vigenciaInicio
 	
-	private Date vigenciaFin() throws Exception{
+	private LocalDate vigenciaFin() throws Exception{
 		return vigenciaFin(15);
 	} // vigenciaFin
 	
-	private Date vigenciaFin(int dias) throws Exception{
-		Date regresar= null;		
+	private LocalDate vigenciaFin(int dias) throws Exception{
+		LocalDate regresar= null;		
 		try {			
-			regresar= new Date(Calendar.getInstance().getTimeInMillis());
-			Calendar calendar=Calendar.getInstance();
-			calendar.setTime(regresar);
-			calendar.add(Calendar.DATE, dias);
-			regresar= new Date(calendar.getTimeInMillis());
+			regresar= LocalDate.now();
+			regresar.plusDays(dias);
 		} // try
 		catch (Exception e) {						
 			throw e;
 		} // catch	
 		return regresar;
-	} // vigenciaFin				
+	} // vigenciaFin			
+	
 }

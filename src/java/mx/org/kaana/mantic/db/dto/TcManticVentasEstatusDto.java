@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
 	@Column (name="id_venta_estatus")
   private Long idVentaEstatus;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticVentasEstatusDto() {
     this(new Long(-1L));
@@ -61,7 +61,7 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setIdTipoDocumento(idTipoDocumento);
     setIdVentaEstatus(idVentaEstatus);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdJustificacion(Long idJustificacion) {
@@ -112,11 +112,11 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
     return idVentaEstatus;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

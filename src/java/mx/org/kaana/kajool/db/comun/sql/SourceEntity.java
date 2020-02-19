@@ -1,8 +1,8 @@
 package mx.org.kaana.kajool.db.comun.sql;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 /**
  *@company KAANA
@@ -68,17 +68,17 @@ public class SourceEntity extends Entity {
 	}
 
 	@Override
-	public Date toDate(String name) {
+	public LocalDate toDate(String name) {
 		return super.toDate(name.toUpperCase());
 	}
 
 	@Override
-	public Timestamp toTimestamp(String name) {
+	public LocalDateTime toTimestamp(String name) {
 		return super.toTimestamp(name.toUpperCase());
 	}
 
 	@Override
-	public Time toTime(String name) {
+	public LocalTime toTime(String name) {
 		return super.toTime(name.toUpperCase());
 	}
 	

@@ -2,9 +2,9 @@ package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,28 +49,28 @@ public class TcKeetPersonasConceptosDto implements IBaseDto, Serializable {
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="inicio")
-  private Date inicio;
+  private LocalDate inicio;
   @Column (name="formula")
   private String formula;
   @Column (name="id_nomina_concepto")
   private Long idNominaConcepto;
   @Column (name="termino")
-  private Date termino;
+  private LocalDate termino;
   @Column (name="parcialidades")
   private Long parcialidades;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcKeetPersonasConceptosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetPersonasConceptosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
+    this(null, null, new Long(-1L), null, null, null, LocalDate.now(), null, null, LocalDate.now(), null);
     setKey(key);
   }
 
-  public TcKeetPersonasConceptosDto(Long idPersona, Long idActivo, Long idPersonaConcepto, Long contador, Long idUsuario, String observaciones, Date inicio, String formula, Long idNominaConcepto, Date termino, Long parcialidades) {
+  public TcKeetPersonasConceptosDto(Long idPersona, Long idActivo, Long idPersonaConcepto, Long contador, Long idUsuario, String observaciones, LocalDate inicio, String formula, Long idNominaConcepto, LocalDate termino, Long parcialidades) {
     setIdPersona(idPersona);
     setIdActivo(idActivo);
     setIdPersonaConcepto(idPersonaConcepto);
@@ -82,7 +82,7 @@ public class TcKeetPersonasConceptosDto implements IBaseDto, Serializable {
     setIdNominaConcepto(idNominaConcepto);
     setTermino(termino);
     setParcialidades(parcialidades);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdPersona(Long idPersona) {
@@ -133,11 +133,11 @@ public class TcKeetPersonasConceptosDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setInicio(Date inicio) {
+  public void setInicio(LocalDate inicio) {
     this.inicio = inicio;
   }
 
-  public Date getInicio() {
+  public LocalDate getInicio() {
     return inicio;
   }
 
@@ -157,11 +157,11 @@ public class TcKeetPersonasConceptosDto implements IBaseDto, Serializable {
     return idNominaConcepto;
   }
 
-  public void setTermino(Date termino) {
+  public void setTermino(LocalDate termino) {
     this.termino = termino;
   }
 
-  public Date getTermino() {
+  public LocalDate getTermino() {
     return termino;
   }
 
@@ -173,11 +173,11 @@ public class TcKeetPersonasConceptosDto implements IBaseDto, Serializable {
     return parcialidades;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
