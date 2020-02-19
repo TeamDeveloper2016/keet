@@ -1,6 +1,6 @@
 package mx.org.kaana.mantic.ventas.reglas;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -60,7 +60,7 @@ public class Transaccion extends TransaccionFactura {
 	private String messageError;	
 	private String justificacion;
 	private Long idClienteNuevo;
-	private Date vigencia;
+	private LocalDate vigencia;
 	private boolean aplicar;
 	private Long idServicio;
 
@@ -77,26 +77,26 @@ public class Transaccion extends TransaccionFactura {
 	} // Transaccion
 
 	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos) {
-		this(orden, articulos, new Date(Calendar.getInstance().getTimeInMillis()));
+		this(orden, articulos, LocalDate.now());
 	}
 	
 	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, Long idServicio) {
-		this(orden, articulos, "", new Date(Calendar.getInstance().getTimeInMillis()), idServicio);
+		this(orden, articulos, "", LocalDate.now(), idServicio);
 	}
 	
-	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, Date vigencia) {
+	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, LocalDate vigencia) {
 		this(orden, articulos, "", vigencia);
 	}
 	
 	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion) { 
-		this(orden, articulos, justificacion, new Date(Calendar.getInstance().getTimeInMillis()));
+		this(orden, articulos, justificacion, LocalDate.now());
 	}
 	
-	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion, Date vigencia) {
+	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion, LocalDate vigencia) {
 		this(orden, articulos, justificacion, vigencia, -1L);
 	}
 	
-	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion, Date vigencia, Long idServicio) {
+	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion, LocalDate vigencia, Long idServicio) {
 		this.orden        = orden;		
 		this.articulos    = articulos;
 		this.justificacion= justificacion;
@@ -650,18 +650,16 @@ public class Transaccion extends TransaccionFactura {
 		DaoFactory.getInstance().insert(sesion, deuda);		
 	} // registrarDeuda
 	
-	public Date toLimiteCredito(Session sesion) throws Exception{
-		Date regresar              = null;
+	public LocalDate toLimiteCredito(Session sesion) throws Exception{
+		LocalDate regresar         = null;
 		TcManticClientesDto cliente= null;
 		Long addDias               = 15L;
-		Calendar calendar          = null;		
+		LocalDate calendar         = null;		
 		cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
 		addDias= cliente.getPlazoDias();			
-		calendar= Calendar.getInstance();
-		regresar= new Date(calendar.getTimeInMillis());			
-		calendar.setTime(regresar);
-		calendar.add(Calendar.DAY_OF_YEAR, addDias.intValue());
-		regresar= new Date(calendar.getTimeInMillis());		
+		regresar= LocalDate.now();			
+		regresar.plusDays(addDias.intValue());
 		return regresar;
 	} // toLimiteCredito
+	
 } 

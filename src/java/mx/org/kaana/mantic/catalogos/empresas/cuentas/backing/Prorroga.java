@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
+import java.time.LocalDate;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -29,13 +29,13 @@ import org.primefaces.event.TabChangeEvent;
 public class Prorroga extends IBaseImportar implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;	
-	private Date prorroga;
+	private LocalDate prorroga;
 
-	public Date getProrroga() {
+	public LocalDate getProrroga() {
 		return prorroga;
 	}
 
-	public void setProrroga(Date prorroga) {
+	public void setProrroga(LocalDate prorroga) {
 		this.prorroga = prorroga;
 	}		
 	

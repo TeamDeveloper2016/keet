@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.masivos.backing;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -152,7 +153,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		String tuplas= "0";
 		try {
   		this.attrs.put("procesados", 0);
-      this.doFileUploadMasivo(event, this.masivo.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), this.masivo, this.categoria);
+      this.doFileUploadMasivo(event, this.masivo.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), this.masivo, this.categoria);
 			tuplas= Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, this.masivo.getTuplas());
 			this.attrs.put("tuplas", tuplas);
 		} // try

@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.listasprecios.backing;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,12 +140,12 @@ public class Importar extends IBaseImportar implements Serializable {
 			if(Cadena.isVacio(this.proveedor.getClave()))
 				UIBackingUtilities.execute("janal.show([{summary: 'Error:', detail: 'No tiene definido una CLAVE el proveedor, por favor defina una clave.'}]);"); 
 			else
-		    this.doFileUpload(event, this.lista.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), this.proveedor.getClave());
+		    this.doFileUpload(event, this.lista.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), this.proveedor.getClave());
 		} // if	
 		else
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
   			if(!Cadena.isVacio(lista.getNombre()))
-  				this.doFileUpload(event, this.lista.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), lista.getNombre());
+  				this.doFileUpload(event, this.lista.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), lista.getNombre());
 			}	// IF
 	    else
 				UIBackingUtilities.execute("janal.show([{summary: 'Error:', detail: 'Solo se pueden importar catalogos en formato PDF ["+ event.getFile().getFileName().toUpperCase()+ "].'}]);"); 

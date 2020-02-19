@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.inventarios.creditos.backing;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -252,7 +253,7 @@ public class Accion extends IBaseImportar implements Serializable {
 	}
 
 	public void doFileUpload(FileUploadEvent event) {
-		this.doFileUpload(event, this.orden.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos"), (String)this.attrs.get("carpeta"));
+		this.doFileUpload(event, this.orden.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos"), (String)this.attrs.get("carpeta"));
 		if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
 			this.orden.setFolio(this.getFactura().getFolio());
 			this.doCheckFolio();

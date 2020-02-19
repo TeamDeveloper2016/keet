@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -115,7 +115,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			tiposDocumentos= UISelect.build("TcManticTiposComprobantesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("tiposDocumentos", tiposDocumentos);
 			this.attrs.put("tipoDocumento", UIBackingUtilities.toFirstKeySelectItem(tiposDocumentos));
-      this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
+      this.attrs.put("fecha", LocalDate.now());
 			this.idEmpresaDeuda= JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaDeuda");
 			this.deuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, this.idEmpresaDeuda);
 			if(this.deuda!= null) {
@@ -409,9 +409,9 @@ public class Importar extends IBaseAttribute implements Serializable {
 				if(this.getImportado()!= null && Cadena.isVacio(this.getImportado().getObservaciones()))
 					this.getImportado().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
 				if(this.importado.getFormat().equals(EFormatos.PDF))
-					transaccion= new Transaccion(this.deuda, null, this.importado, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (Date)this.attrs.get("fecha"));
+					transaccion= new Transaccion(this.deuda, null, this.importado, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (LocalDate)this.attrs.get("fecha"));
 				else
-					transaccion= new Transaccion(this.deuda, this.importado, null, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (Date)this.attrs.get("fecha"));
+					transaccion= new Transaccion(this.deuda, this.importado, null, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (LocalDate)this.attrs.get("fecha"));
 				if(transaccion.ejecutar(EAccion.REGISTRAR)) {
 					UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");		
 					this.importado= null;			

@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.ventas.beans;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Calendar;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
@@ -28,15 +28,15 @@ public class TicketVenta extends TcManticVentasDto implements Serializable {
 	}
 
 	public TicketVenta(Long key) {
-		super(0D, null, 2L, "0", 0D, -1L, 1D, 1L, 2L, -1L, "0", new Long(Calendar.getInstance().get(Calendar.YEAR)), 1L, -1L, 0D, 3L, 2L, 0D, "", -1L, -1L, new Date(Calendar.getInstance().getTimeInMillis()), 1L, 2L);
+		super(0D, null, 2L, "0", 0D, -1L, 1D, 1L, 2L, -1L, "0", new Long(Calendar.getInstance().get(Calendar.YEAR)), 1L, -1L, 0D, 3L, 2L, 0D, "", -1L, -1L, LocalDate.now(), 1L, 2L);
 		this.idServicio= -1L;
 	}
 	
-	public TicketVenta(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, Long idAutorizar, Long idFacturar) {
+	public TicketVenta(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, LocalDate dia, Long idVentaEstatus, Long idAutorizar, Long idFacturar) {
 		this(descuentos, idFactura, idCredito, extras, total, idAlmacen, tipoDeCambio, orden, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, idAutorizar, idFacturar, -1L);
 	}
 	
-	public TicketVenta(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, Long idAutorizar, Long idFacturar, Long idServicio) {
+	public TicketVenta(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, LocalDate dia, Long idVentaEstatus, Long idAutorizar, Long idFacturar, Long idServicio) {
 		super(descuentos, idFactura, idCredito, extras, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, idFacturar);
 		this.idServicio= idServicio;
 	}

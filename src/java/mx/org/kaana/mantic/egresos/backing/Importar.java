@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -137,7 +138,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 		Long fileSize     = 0L;
 		try {			
 			Calendar calendar= Calendar.getInstance();
-			calendar.setTimeInMillis(this.egreso.getRegistro().getTime());
+			calendar.setTimeInMillis(this.egreso.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("egresos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");

@@ -2,7 +2,9 @@ package mx.org.kaana.mantic.compras.ordenes.backing;
 
 import com.google.common.base.Objects;
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -200,7 +202,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // finally
 	}
 
-	private Date toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
+	private LocalDate toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
 		fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);
 		if(tipoDia== 2) {
 			fechaEstimada.add(Calendar.DATE, ((int)(dias/5)* 2));
@@ -208,7 +210,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			dias= dia== Calendar.SUNDAY? 1: dia== Calendar.SATURDAY? 2: 0;
 			fechaEstimada.add(Calendar.DATE, dias);
 		} // if
-		return new Date(fechaEstimada.getTimeInMillis());
+		return LocalDateTime.ofInstant(fechaEstimada.toInstant(), ZoneId.systemDefault()).toLocalDate();
 	}
 	
 	private void toLoadCondiciones(UISelectEntity proveedor) {
