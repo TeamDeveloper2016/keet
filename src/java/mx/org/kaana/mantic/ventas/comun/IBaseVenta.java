@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.ventas.comun;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -351,15 +352,15 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	public void doAsignaCotizacion(){
 		Map<String, Object>params = null;
-		Date actual               = null;
+		LocalDate actual          = null;
 		try {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("cotizacion"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
 			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
-			actual= new Date(Calendar.getInstance().getTimeInMillis());
-			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
+			actual= LocalDate.now();
+			if(actual.isAfter(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 				generateNewVenta();    	
 			toLoadCatalog();
 			doAsignaClienteTicketAbierto();
@@ -375,17 +376,17 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // doAsignaTicketAbierto	
 	
 	public void doAsignaApartado(){
-		Map<String, Object>params = null;
-		Date actual               = null;
+		Map<String, Object>params= null;
+		LocalDate actual         = null;
 		try {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("apartados"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
 			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
-			asignaAbonoApartado();
-			actual= new Date(Calendar.getInstance().getTimeInMillis());
-			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
+			this.asignaAbonoApartado();
+			actual= LocalDate.now();
+			if(actual.isAfter(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 				generateNewVenta();    				
 			toLoadCatalog();
 			doAsignaClienteTicketAbierto();

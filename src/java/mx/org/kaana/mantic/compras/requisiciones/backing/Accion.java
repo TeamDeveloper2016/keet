@@ -1,9 +1,8 @@
 package mx.org.kaana.mantic.compras.requisiciones.backing;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,8 +85,8 @@ public class Accion extends IBaseArticulos implements Serializable {
       switch (eaccion) {
         case AGREGAR:		
 					this.registroRequisicion= new RegistroRequisicion();
-					this.registroRequisicion.getRequisicion().setPedido(new Date(Calendar.getInstance().getTimeInMillis()));
-					this.registroRequisicion.getRequisicion().setEntrega(new Date(Calendar.getInstance().getTimeInMillis()));
+					this.registroRequisicion.getRequisicion().setPedido(LocalDate.now());
+					this.registroRequisicion.getRequisicion().setEntrega(LocalDate.now());
           this.setAdminOrden(new AdminTickets(new TicketRequisicion(-1L)));					
           break;
         case MODIFICAR:			

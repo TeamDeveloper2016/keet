@@ -33,8 +33,8 @@ public class MotorBusqueda implements Serializable{
 			regresar= new Requisicion();
 			regresar.setConsecutivo(dto.getConsecutivo());
 			regresar.setEjercicio(dto.getEjercicio());
-			regresar.setEntrega(new Date(dto.getFechaEntregada().getTime()));
-			regresar.setPedido(new Date(dto.getFechaPedido().getTime()));
+			regresar.setEntrega(dto.getFechaEntregada());
+			regresar.setPedido(dto.getFechaPedido());
 			regresar.setIdEmpresa(dto.getIdEmpresa());
 			regresar.setIdRequisicion(dto.getIdRequisicion());
 			regresar.setIdRequisicionEstatus(dto.getIdRequisicionEstatus());

@@ -1,8 +1,7 @@
 package mx.org.kaana.mantic.compras.requisiciones.beans;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.Calendar;
+import java.time.LocalDate;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDto;
 
 /**
@@ -26,7 +25,7 @@ public class TicketRequisicion extends TcManticRequisicionesDto implements Seria
 	}
 	
 	public TicketRequisicion(Long idUsuario, String observaciones, Long idEmpresa, Long idRequisicionEstatus, Long orden, Long ejercicio) {
-		super("", new Date(Calendar.getInstance().getTimeInMillis()), idUsuario, observaciones, idEmpresa, idRequisicionEstatus, new Date(Calendar.getInstance().getTimeInMillis()), orden, -1L, -1L, ejercicio);
+		super("", LocalDate.now(), idUsuario, observaciones, idEmpresa, idRequisicionEstatus, LocalDate.now(), orden, -1L, -1L, ejercicio);
 	}
 
 	@Override

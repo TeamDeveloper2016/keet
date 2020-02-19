@@ -1,9 +1,9 @@
 package mx.org.kaana.mantic.ventas.reglas;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -201,21 +201,11 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toVenta
 	
-	public boolean doVerificaVigenciaCotizacion(Long idVenta) throws Exception{
-		boolean regresar       = false;
-		TcManticVentasDto venta= null;
-		Date fecha             = null;
-		Date vigencia          = null;
-		try {
-			venta= toVenta(idVenta);
-			fecha= new Date(Calendar.getInstance().getTimeInMillis());
-			vigencia= venta.getVigencia();
-			regresar= fecha.after(vigencia);
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch		
-		return regresar;
+	public boolean doVerificaVigenciaCotizacion(Long idVenta) throws Exception {
+		TcManticVentasDto venta= toVenta(idVenta);
+		LocalDate fecha        = LocalDate.now();
+		LocalDate vigencia     = venta.getVigencia();
+		return fecha.isAfter(vigencia);
 	} // doVerificaVigenciaCotizacion
 	
 	public List<Entity> pagosVenta() throws Exception{
