@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.ventas.garantias.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -122,8 +123,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("mostrarGarantia", true);
 				this.attrs.put("accion", EAccion.AGREGAR);				
 				this.attrs.put("retorno", JsfBase.getFlashAttribute("retornoVenta"));
-				this.attrs.put("fecha", new Date(((Timestamp)JsfBase.getFlashAttribute("registroVenta")).getTime()));
-				doLoad();								
+				this.attrs.put("fecha", ((LocalDateTime)JsfBase.getFlashAttribute("registroVenta")).toLocalDate());
+				this.doLoad();								
 				this.attrs.put("accion", EAccion.ASIGNAR);				
 				doLoadTicketAbiertos();				
 				doAsignaTicketAbierto();				
@@ -614,10 +615,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private String toCondicion() {
 		StringBuilder regresar= null;
-		Date fecha            = null;
+		LocalDate fecha       = null;
 		EAccion accion        = null;
 		try {
-			fecha= (Date) this.attrs.get("fecha");
+			fecha= (LocalDate)this.attrs.get("fecha");
 			regresar= new StringBuilder();													
 			accion= (EAccion) this.attrs.get("accion");
 			if(accion.equals(EAccion.ASIGNAR)){
