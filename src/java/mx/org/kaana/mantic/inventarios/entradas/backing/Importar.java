@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,7 +117,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doTabChange		
 
 	public void doFileUpload(FileUploadEvent event) {
-		this.doFileUpload(event, this.orden.getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave());
+		this.doFileUpload(event, this.orden.getFechaFactura().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave());
 	} // doFileUpload	
 	
 	public void doViewDocument() {

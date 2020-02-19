@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.ventas.caja.backing;
 import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -299,8 +300,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
 			fechas= DaoFactory.getInstance().toEntitySet("VistaVentasDto", "fechasTicketsAbiertos", params);			
 			if(init){
-				this.attrs.put("fechaInicial", fechas.isEmpty() ? new Date(Calendar.getInstance().getTimeInMillis()) : new Date(fechas.get(0).toTimestamp("registro").getTime()));			
-				this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));			
+				this.attrs.put("fechaInicial", fechas.isEmpty()? LocalDate.now(): fechas.get(0).toTimestamp("registro").toLocalDate());			
+				this.attrs.put("fecha", LocalDate.now());			
 			} // if
 			if(!fechas.isEmpty()){
 				for(Entity day: fechas){
@@ -902,7 +903,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		UISelectEntity ticketAbierto        = null;
 		UISelectEntity ticketAbiertoPivote  = null;
 		List<UISelectEntity> ticketsAbiertos= null;
-		Date actual                         = null;
+		LocalDate actual                    = LocalDate.now();
 		String tipo                         = null;
 		try {			
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
@@ -923,8 +924,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				if(tipo.equals(EEstatusVentas.COTIZACION.name()) || tipo.equals(EEstatusVentas.APARTADOS.name())){					
 					if(tipo.equals(EEstatusVentas.APARTADOS.name()))
 						asignaFechaApartado();
-					actual= new Date(Calendar.getInstance().getTimeInMillis());
-					if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
+					if(actual.isAfter(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 						this.generateNewVenta();					
 				} // if
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
@@ -1318,7 +1318,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(regresar.getApartado()){
 				calendar= Calendar.getInstance();
 				calendar.add(Calendar.DAY_OF_YEAR, 30);
-				regresar.getTicketVenta().setVigencia(new Date(calendar.getTimeInMillis()));
+				regresar.getTicketVenta().setVigencia(LocalDate.now());
 			} // if
 			regresar.setDetailApartado(this.apartado);
 			regresar.setObservaciones((String)this.attrs.get("observaciones"));

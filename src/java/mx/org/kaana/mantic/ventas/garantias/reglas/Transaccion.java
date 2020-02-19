@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.ventas.garantias.reglas;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -614,15 +615,11 @@ public class Transaccion extends IBaseTnx{
 		DaoFactory.getInstance().insert(sesion, deuda);		
 	} // registrarDeuda
 	
-	public Date toLimiteCredito(Session sesion) throws Exception{
+	public LocalDate toLimiteCredito(Session sesion) throws Exception {
 		TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.detalleGarantia.getIdCliente());
 		Long addDias= cliente.getPlazoDias();			
-		Calendar calendar= Calendar.getInstance();
-		Date regresar= new Date(calendar.getTimeInMillis());			
-		calendar.setTime(regresar);
-		calendar.add(Calendar.DAY_OF_YEAR, addDias.intValue());
-		regresar= new Date(calendar.getTimeInMillis());		
-		return regresar;
+		LocalDate regresar= LocalDate.now();			
+		return regresar.plusDays(addDias.intValue());
 	} // toLimiteCredito
 	
 		private List<Entity> toDeudas(Session sesion) throws Exception{

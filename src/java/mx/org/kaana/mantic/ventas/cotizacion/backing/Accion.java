@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.ventas.cotizacion.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -93,7 +94,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
-			this.attrs.put("vigencia", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("vigencia", LocalDate.now());
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
 			doLoad();
@@ -144,7 +145,7 @@ public class Accion extends IBaseVenta implements Serializable {
     try {			
 			this.loadOrdenVenta();
 			eaccion= (EAccion) this.attrs.get("accion");						
-			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), (Date)this.attrs.get("vigencia"));
+			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), (LocalDate)this.attrs.get("vigencia"));
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.GENERAR)) {
 				if(eaccion.equals(EAccion.AGREGAR)) { 				  
@@ -530,13 +531,13 @@ public class Accion extends IBaseVenta implements Serializable {
 	@Override
 	public void doAsignaCotizacion(){
 		Map<String, Object>params = null;
-		Date actual               = null;
+		LocalDate actual          = null;
 		try {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("cotizacion"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
-			actual= new Date(Calendar.getInstance().getTimeInMillis());
-			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
+			actual= LocalDate.now();
+			if(actual.isAfter(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 				generateNewVenta();
 			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));

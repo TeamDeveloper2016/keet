@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.cotizaciones.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -378,7 +379,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private void loadOrdenVenta() {
 		// this.getAdminOrden().toCheckTotales();
 		UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
-		((CotizacionFicticia)this.getAdminOrden().getOrden()).setVigencia((Date)this.attrs.get("vigencia"));
+		((CotizacionFicticia)this.getAdminOrden().getOrden()).setVigencia((LocalDate)this.attrs.get("vigencia"));
 		((CotizacionFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 		((CotizacionFicticia)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
 		((CotizacionFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));

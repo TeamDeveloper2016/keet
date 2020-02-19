@@ -921,21 +921,15 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	} // toPagoCheque	
 	
 	@Override
-	public Date toLimiteCredito(Session sesion) throws Exception{
-		Date regresar              = null;
+	public LocalDate toLimiteCredito(Session sesion) throws Exception{
+		LocalDate regresar         = LocalDate.now();
 		TcManticClientesDto cliente= null;
 		Long addDias               = 15L;
-		Calendar calendar          = null;		
 		if(!this.ventaFinalizada.isFacturar() || (this.ventaFinalizada.isFacturar() && !this.clienteDeault)){
 			cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, getOrden().getIdCliente());
 			addDias= cliente.getPlazoDias();
 		} // if
-		calendar= Calendar.getInstance();
-		regresar= new Date(calendar.getTimeInMillis());			
-		calendar.setTime(regresar);
-		calendar.add(Calendar.DAY_OF_YEAR, addDias.intValue());
-		regresar= new Date(calendar.getTimeInMillis());		
-		return regresar;
+		return regresar.plusDays(addDias.intValue());
 	} // toLimiteCredito
 	
 	private boolean alterarStockArticulos(Session sesion) throws Exception{
