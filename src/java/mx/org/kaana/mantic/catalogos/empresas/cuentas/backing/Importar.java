@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.Date;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -62,7 +63,6 @@ import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 
 /**
  *@company KAANA
@@ -186,7 +186,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 		Long fileSize     = 0L;
 		try {
 			Calendar calendar= Calendar.getInstance();
-			calendar.setTimeInMillis(this.deuda.getRegistro().getTime());
+			calendar.setTimeInMillis(this.deuda.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("pagos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");

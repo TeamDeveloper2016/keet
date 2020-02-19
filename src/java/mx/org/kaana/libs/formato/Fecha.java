@@ -549,7 +549,6 @@ public  class Fecha {
     return getWorkingDaysBetween(startDate, endDate, new ArrayList<Date>());
   }
 
-
   public static int getBetweenDays(Date startDate, Date endDate) {
     Calendar startCal = Calendar.getInstance();
     startCal.setTime(startDate);

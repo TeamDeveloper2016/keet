@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -159,7 +162,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(ordenCompra.getIdAlmacen())));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(ordenCompra.getIdProveedor())));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(new UISelectEntity(new Entity(ordenCompra.getIdProveedorPago())));
-						this.fechaEstimada.setTimeInMillis(ordenCompra.getRegistro().getTime());
+						this.fechaEstimada.setTimeInMillis(ordenCompra.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 					} // else	
           break;
         case MODIFICAR:					
@@ -400,10 +403,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public void doFileUpload(FileUploadEvent event) {
 		this.attrs.put("relacionados", 0);
 		if(this.proveedor!= null) {
-			this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+			this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
-				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
+				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toLocalDateDefault(this.getFactura().getFecha()));
 				((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
 				if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
 					int count= 0;
@@ -586,19 +589,17 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doCalculateFechaPago() {
-		Date fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
-		Calendar calendar= Calendar.getInstance();
-		calendar.setTimeInMillis(fechaFactura.getTime());
+		LocalDate fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
 		if(((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo()== null)
 			((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(1L);
-		calendar.add(Calendar.DATE, ((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
-		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(new Date(calendar.getTimeInMillis()));
+		LocalDate calendar= fechaFactura.plusDays(((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
+		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(calendar);
 	}
 
 	public void doCalculatePagoFecha() {
-		Date fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
-		Date fechaPago   = ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaPago();
-		((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(new Long(Fecha.getBetweenDays(fechaFactura, fechaPago)));
+		LocalDate fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
+		LocalDate fechaPago   = ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaPago();
+		((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(DAYS.between(fechaFactura, fechaPago));
 	}
 
 	public StreamedContent doFileDownload() {

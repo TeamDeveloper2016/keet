@@ -1,6 +1,9 @@
 package mx.org.kaana.mantic.incidentes.reglas;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,13 +62,13 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar         = true;
 		Entity registro          = null;
 		Map<String, Object>params= null;
-		int totalDias            = 0;
-		Date initDate            = null;
+		long totalDias           = 0L;
+		LocalDate initDate       = null;
 		Calendar calendar        = null;
 		try {
 			this.messageError= "No es posible agregar una incidencia del mismo tipo al mismo empleado cuando hay una vigente.";
-			totalDias= Fecha.getBetweenDays(this.incidente.getVigenciaInicio(), this.incidente.getVigenciaFin());
-			initDate= this.incidente.getVigenciaInicio();
+			totalDias= DAYS.between(this.incidente.getVigenciaInicio(), this.incidente.getVigenciaFin());
+			initDate = this.incidente.getVigenciaInicio();
 			if(totalDias== 0)
 				totalDias=1;
 			for(int count=0; count< totalDias; count++){
@@ -79,12 +82,8 @@ public class Transaccion extends IBaseTnx {
 					regresar= false;
 					break;
 				} // if
-				else{
-					calendar= Calendar.getInstance();
-					calendar.setTime(initDate);
-					calendar.add(Calendar.DAY_OF_YEAR, 1);
-					initDate= new Date(calendar.getTimeInMillis());
-				} // else
+				else 
+					initDate= initDate.plusDays(1);
 			} // for
 		} // try
 		catch (Exception e) {			

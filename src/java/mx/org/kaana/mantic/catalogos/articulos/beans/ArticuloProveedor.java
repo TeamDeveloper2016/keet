@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.catalogos.articulos.beans;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloProveedorDto;
 
@@ -10,7 +9,7 @@ public class ArticuloProveedor extends TrManticArticuloProveedorDto{
 	private static final long serialVersionUID = -9204076933249586658L;
 	private ESql sqlAccion;
 	private Boolean nuevo;
-	private Date compra;
+	private LocalDate compra;
 
 	public ArticuloProveedor() {
 		this(-1L);
@@ -28,7 +27,7 @@ public class ArticuloProveedor extends TrManticArticuloProveedorDto{
 		super(key);
 		this.sqlAccion= sqlAccion;
 		this.nuevo    = nuevo;
-		this.compra   = new Date(Calendar.getInstance().getTimeInMillis());
+		this.compra   = LocalDate.now();
 	}
 
 	public ESql getSqlAccion() {
@@ -47,11 +46,11 @@ public class ArticuloProveedor extends TrManticArticuloProveedorDto{
 		this.nuevo = nuevo;
 	}	
 
-	public Date getCompra() {
+	public LocalDate getCompra() {
 		return compra;
 	}
 
-	public void setCompra(Date compra) {
+	public void setCompra(LocalDate compra) {
 		this.compra = compra;
 	}
 }

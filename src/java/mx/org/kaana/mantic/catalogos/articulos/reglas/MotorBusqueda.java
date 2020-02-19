@@ -104,8 +104,8 @@ public class MotorBusqueda implements Serializable{
 			regresar= new ArrayList<>();
 			if(!pivote.isEmpty()){
 				for(Descuento record: pivote){
-					record.setVigenciaIni(record.getVigenciaInicial());
-					record.setVigenciaFin(record.getVigenciaFinal());
+					record.setVigenciaIni(record.getVigenciaInicial().toLocalDate());
+					record.setVigenciaFin(record.getVigenciaFinal().toLocalDate());
 					regresar.add(record);
 				} // for
 			} // if
@@ -130,8 +130,8 @@ public class MotorBusqueda implements Serializable{
 			regresar= new ArrayList<>();
 			if(!pivote.isEmpty()){
 				for(DescuentoEspecial record: pivote){
-					record.setVigenciaIni(record.getVigenciaInicial());
-					record.setVigenciaFin(record.getVigenciaFinal());
+					record.setVigenciaIni(record.getVigenciaInicial().toLocalDate());
+					record.setVigenciaFin(record.getVigenciaFinal().toLocalDate());
 					regresar.add(record);
 				} // for
 			} // if
@@ -173,7 +173,7 @@ public class MotorBusqueda implements Serializable{
 			regresar= new ArrayList<>();
 			if(!pivote.isEmpty()){
 				for(ArticuloProveedor record: pivote){
-					record.setCompra(record.getFechaCompra());
+					record.setCompra(record.getFechaCompra().toLocalDate());
 					regresar.add(record);
 				} // for
 			} // if

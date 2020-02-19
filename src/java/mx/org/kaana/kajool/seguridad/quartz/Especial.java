@@ -4,7 +4,7 @@ package mx.org.kaana.kajool.seguridad.quartz;
 
 import java.io.File;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -37,7 +37,7 @@ public final class Especial implements Serializable {
 	private List<TareaServidor> tareaServidor;
 	private ServletContextEvent servletContextEvent;
 	private String path;
-	private Timestamp registro;	
+	private LocalDateTime registro;	
 	
 	private Especial() {						
 	}
@@ -81,7 +81,7 @@ public final class Especial implements Serializable {
 		this.path= path;
 	}
 
-	public Timestamp getRegistro() {
+	public LocalDateTime getRegistro() {
 		return registro;
 	}		
 /*			
@@ -121,7 +121,7 @@ public final class Especial implements Serializable {
 	}
 	
 	public void refreshPath(ServletContextEvent servletContextEvent) {				
-	  this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
+	  this.registro = LocalDateTime.now();
 		this.path= servletContextEvent.getServletContext().getRealPath("").concat(File.separator);		
 		this.path=Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);		
 		this.path= Cadena.reemplazarCaracter(this.path,'\\',File.separatorChar);	
@@ -138,7 +138,7 @@ public final class Especial implements Serializable {
 			realPath=servletContextEvent.getServletContext().getRealPath("").concat(File.separator);						
 			LOG.info("Path recuperado [".concat(realPath).concat("]"));
 			pos = realPath.lastIndexOf(Constantes.NOMBRE_DE_APLICACION.toUpperCase());			
-			this.registro= new Timestamp(Calendar.getInstance().getTimeInMillis());
+			this.registro= LocalDateTime.now();
 			if (pos>-1) {				
 				this.path= realPath.substring(0, pos+Constantes.NOMBRE_DE_APLICACION.length()).concat(File.separator);
 				this.path= Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);

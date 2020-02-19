@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.catalogos.empresas.cuentas.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -243,11 +245,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", false, this.getAdminOrden().getTipoDeCambio());
 	}
 	
+	//LocalDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+	//LocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 	public void doFileUpload(FileUploadEvent event) {
-		this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), true, this.getAdminOrden().getTipoDeCambio());
+		this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), true, this.getAdminOrden().getTipoDeCambio());
 		if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
-		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
+		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toLocalDateDefault(this.getFactura().getFecha()));
 	  	this.doCheckFolio();
 			this.doCalculatePagoFecha();
 		} // if
@@ -287,19 +291,19 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // doCalculateFechaPago
 	
 	public void doCalculateFechaPagoInit() {		
-		Date fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
+		LocalDate fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
 		Calendar calendar= Calendar.getInstance();
-		calendar.setTimeInMillis(fechaFactura.getTime());
+		calendar.setTimeInMillis(fechaFactura.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
 		if(((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo()== null)
 			((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(1L);
 		calendar.add(Calendar.DATE, ((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
-		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(new Date(calendar.getTimeInMillis()));
+		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(LocalDate.now());
 	}
 
 	public void doCalculatePagoFecha() {
-		Date fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
-		Date fechaPago   = ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaPago();
-		((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(new Long(Fecha.getBetweenDays(fechaFactura, fechaPago)));
+		LocalDate fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
+		LocalDate fechaPago   = ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaPago();
+		((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(DAYS.between(fechaFactura, fechaPago));
 	}
 
 	public StreamedContent doFileDownload() {

@@ -2,7 +2,7 @@ package mx.org.kaana.mantic.catalogos.empresas.cuentas.backing;
 
 import java.io.File;
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -88,7 +88,7 @@ public class Abono extends IBasePagos implements Serializable {
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.attrs.put("paginator", false);
-			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("fecha", LocalDate.now());
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));     
@@ -307,7 +307,7 @@ public class Abono extends IBasePagos implements Serializable {
 		try {
 			if(getFile()!= null){
 				empresaDeuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, (Long) this.attrs.get("idEmpresaDeuda"));
-				transaccion= new Transaccion(empresaDeuda, getFile(), ((Entity)this.attrs.get("pagoCombo")).getKey(), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (Date)this.attrs.get("fecha"));
+				transaccion= new Transaccion(empresaDeuda, getFile(), ((Entity)this.attrs.get("pagoCombo")).getKey(), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (LocalDate)this.attrs.get("fecha"));
 				if(transaccion.ejecutar(EAccion.SUBIR)) {
 					UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");				
 					setFile(null);								
