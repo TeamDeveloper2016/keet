@@ -296,7 +296,4 @@ public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdNominaConcepto() != null ? getIdNominaConcepto().hashCode() : 0);
     return hash;
   }
-
 }
-
-

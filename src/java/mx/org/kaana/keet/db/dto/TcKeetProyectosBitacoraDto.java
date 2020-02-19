@@ -13,9 +13,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -218,7 +215,4 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdProyectoBitacora() != null ? getIdProyectoBitacora().hashCode() : 0);
     return hash;
   }
-
 }
-
-
