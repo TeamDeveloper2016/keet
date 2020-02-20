@@ -1240,7 +1240,8 @@
 		<unit id="TcJanalAyudasDto">
       <select id="row">
         select      
-          *
+          tc_janal_ayudas.id_ayuda as id_key,
+          tc_janal_ayudas.*
         from      
           tc_janal_ayudas
         where 
