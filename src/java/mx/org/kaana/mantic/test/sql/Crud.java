@@ -23,7 +23,7 @@ public class Crud {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-      Entity entity=  (Entity)DaoFactory.getInstance().toEntity("select * from tc_janal_booleanos");
+      Entity entity=  (Entity)DaoFactory.getInstance().toEntity("select tc_janal_booleanos.id_booleano as id_key, tc_janal_booleanos.* from tc_janal_booleanos");
 			System.out.println(entity);
 			
 			TcJanalAyudasDto dto= new TcJanalAyudasDto("Hola", -1L, "ESTO ES UN DEMO");
