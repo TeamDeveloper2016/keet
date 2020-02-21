@@ -28,7 +28,16 @@ public class TransformDto extends Transformer {
     for (int x=0; x<data.length; x++) {
       try {
 				if(data[x]!= null)
-          utilsBean.setProperty(regresar, fields[x], data[x]);
+					if(data[x] instanceof java.sql.Timestamp)
+						utilsBean.setProperty(regresar, fields[x], ((java.sql.Timestamp)data[x]).toLocalDateTime());
+					else	
+					if(data[x] instanceof java.sql.Date)
+						utilsBean.setProperty(regresar, fields[x], ((java.sql.Date)data[x]).toLocalDate());
+					else	
+					if(data[x] instanceof java.sql.Time)
+						utilsBean.setProperty(regresar, fields[x], ((java.sql.Time)data[x]).toLocalTime());
+					else	
+            utilsBean.setProperty(regresar, fields[x], data[x]);
       } // try
       catch(Exception e) {
         Error.mensaje(e, " Class: "+ regresar.getClass());

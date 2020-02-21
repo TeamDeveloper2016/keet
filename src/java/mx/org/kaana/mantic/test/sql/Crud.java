@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.test.sql;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -26,7 +25,7 @@ public class Crud {
       Entity entity=  (Entity)DaoFactory.getInstance().toEntity("select tc_janal_booleanos.id_booleano as id_key, tc_janal_booleanos.* from tc_janal_booleanos");
 			System.out.println(entity);
 			
-			TcJanalAyudasDto dto= new TcJanalAyudasDto("Hola", -1L, "ESTO ES UN DEMO");
+			TcJanalAyudasDto dto= new TcJanalAyudasDto("HOLA", -1L, "ESTO ES UN DEMO");
 			DaoFactory.getInstance().insert(dto);
 			System.out.println(dto);
 			
