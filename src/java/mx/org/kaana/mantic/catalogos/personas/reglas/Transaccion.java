@@ -10,10 +10,12 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.keet.db.dto.TcKeetPersonasBancosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBanco;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
@@ -59,13 +61,13 @@ public class Transaccion  extends IBaseTnx{
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro de la persona");
 			switch(accion){
 				case AGREGAR:
-					regresar = procesarCliente(sesion);					
+					regresar = procesarPersona(sesion);					
 					break;
 				case MODIFICAR:
-					regresar = actualizarCliente(sesion);					
+					regresar = actualizarPersona(sesion);					
 					break;				
 				case ELIMINAR:
-					regresar = eliminarCliente(sesion);					
+					regresar = eliminarPersona(sesion);					
 					break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
@@ -91,7 +93,7 @@ public class Transaccion  extends IBaseTnx{
 		} // catch
 	} // toCuenta
 	
-	private boolean procesarCliente(Session sesion) throws Exception {
+	private boolean procesarPersona(Session sesion) throws Exception {
     boolean regresar= false;
     Long idPersona  = -1L;
     try {
@@ -104,11 +106,13 @@ public class Transaccion  extends IBaseTnx{
         idPersona = DaoFactory.getInstance().insert(sesion, this.persona.getPersona());
 				if(registraPersonaEmpresa(sesion, idPersona)){
 					if (registraPersonasDomicilios(sesion, idPersona)) {
-						regresar = registraPersonasTipoContacto(sesion, idPersona);
-						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
-							regresar= registrarProveedor(sesion, idPersona);
-						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
-							regresar= registrarCliente(sesion, idPersona);
+						if(registraPersonasTipoContacto(sesion, idPersona)){
+							regresar= registraPersonasBancos(sesion, idPersona);
+							if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
+								regresar= registrarProveedor(sesion, idPersona);
+							if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
+								regresar= registrarCliente(sesion, idPersona);
+						} // if
 					} // if
         } // if
       } // if
@@ -119,7 +123,7 @@ public class Transaccion  extends IBaseTnx{
     return regresar;
   } // procesarCliente
 	
-	private boolean actualizarCliente(Session sesion) throws Exception {
+	private boolean actualizarPersona(Session sesion) throws Exception {
     boolean regresar= false;
     Long idPersona  = -1L;
     try {
@@ -127,12 +131,14 @@ public class Transaccion  extends IBaseTnx{
 			this.cuenta= this.persona.getPersona().getCuenta();
       if (registraPersonasDomicilios(sesion, idPersona)) {
 				if (registraPersonasTipoContacto(sesion, idPersona)) {
-					if (actualizaPuestoPersona(sesion, idPersona)) {
-						regresar = DaoFactory.getInstance().update(sesion, this.persona.getPersona()) >= 1L;
-						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
-							regresar= actualizaProveedor(sesion);
-						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
-							regresar= actualizaCliente(sesion);
+					if (registraPersonasBancos(sesion, idPersona)) {
+						if (actualizaPuestoPersona(sesion, idPersona)) {
+							regresar = DaoFactory.getInstance().update(sesion, this.persona.getPersona()) >= 1L;
+							if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
+								regresar= actualizaProveedor(sesion);
+							if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
+								regresar= actualizaCliente(sesion);
+						} // if
 					} // if
 				} // if
       } // if
@@ -143,7 +149,7 @@ public class Transaccion  extends IBaseTnx{
     return regresar;
   } // actualizarCliente
 
-  private boolean eliminarCliente(Session sesion) throws Exception {
+  private boolean eliminarPersona(Session sesion) throws Exception {
     boolean regresar          = false;
     Map<String, Object> params= null;
     try {
@@ -283,14 +289,55 @@ public class Transaccion  extends IBaseTnx{
     return regresar;
   } // registraClientesTipoContacto
 	
+  private boolean registraPersonasBancos(Session sesion, Long idPersona) throws Exception {
+    TcKeetPersonasBancosDto dto= null;
+    ESql sqlAccion             = null;    
+    boolean validate           = false;
+    boolean regresar           = false;
+		int countPrincipal         = 0;
+		int count                  = 0;
+    try {
+			if(this.persona.getPersonasBancos().size()== 1)
+				this.persona.getPersonasBancos().get(0).setIdPrincipal(1L);
+      for (PersonaBanco personaBanco : this.persona.getPersonasBancos()) {
+				if(personaBanco.getIdPrincipal().equals(1L))
+					countPrincipal++;
+				if(countPrincipal== 0 && this.persona.getPersonasBancos().size()-1 == count)
+					personaBanco.setIdPrincipal(1L);
+        personaBanco.setIdPersona(idPersona);
+        personaBanco.setIdUsuario(JsfBase.getIdUsuario());
+        dto = (TcKeetPersonasBancosDto) personaBanco;
+        sqlAccion = personaBanco.getSqlAccion();
+        switch (sqlAccion) {
+          case INSERT:
+            dto.setIdPersonaBanco(-1L);
+            validate = registrar(sesion, dto);
+            break;
+          case UPDATE:
+            validate = actualizar(sesion, dto);
+            break;
+        } // switch
+        if (validate) 
+          count++;        
+      } // for		
+      regresar= (count == this.persona.getPersonasTiposContacto().size());
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar los bancos del empleado, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraClientesTipoContacto
+	
 	private boolean eliminarRegistros(Session sesion) throws Exception {
     boolean regresar = true;
     int count = 0;
     try {
       for (IBaseDto dto : this.persona.getDeleteList()) {
-        if (DaoFactory.getInstance().delete(sesion, dto) >= 1L) {
-          count++;
-        }
+        if (DaoFactory.getInstance().delete(sesion, dto) >= 1L) 
+          count++;        
       } // for
       regresar = count == this.persona.getDeleteList().size();
     } // try
