@@ -105,7 +105,7 @@
               </p:panelGrid>
             </p:tab>						
             <p:tab title="Domicilios">
-              <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-180, janal-wid-100-txt">
+              <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-20, janal-wid-80">
                 <p:dataList id="tablaDomicilios" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresDomicilio}" var="direccion" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
                   <p:commandLink update="contenedorGrupos:formularioDomicilio contenedorGrupos:tablaDomicilios" title="Eliminar" action="#{manticCatalogosProveedoresAccion.doEliminarDomicilio}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{direccion}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorDomicilioSeleccion}" />
