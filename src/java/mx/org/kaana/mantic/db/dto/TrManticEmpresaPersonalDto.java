@@ -1,11 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -246,7 +240,4 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdEmpresaPersona() != null ? getIdEmpresaPersona().hashCode() : 0);
     return hash;
   }
-
 }
-
-
