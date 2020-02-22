@@ -9,14 +9,16 @@ public class ContadoresListas {
 	private static final Long INCREMENTO= 10000L;
 	private Long totalPersonasDomicilios;
 	private Long totalPersonasTipoContacto;	
+	private Long totalPersonasBancos;		
 
 	public ContadoresListas() {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalPersonasDomicilios, Long totalPersonasTipoContacto) {
+	public ContadoresListas(Long totalPersonasDomicilios, Long totalPersonasTipoContacto, Long totalPersonasBancos) {
 		this.totalPersonasDomicilios  = totalPersonasDomicilios;
 		this.totalPersonasTipoContacto= totalPersonasTipoContacto;
+		this.totalPersonasBancos      = totalPersonasBancos;
 	} // ContadoresListas
 
 	public Long getTotalPersonasDomicilios() {
@@ -34,11 +36,20 @@ public class ContadoresListas {
 	public void setTotalPersonasTipoContacto(Long totalPersonasTipoContacto) {
 		this.totalPersonasTipoContacto = totalPersonasTipoContacto;
 	}	
+
+	public Long getTotalPersonasBancos() {
+		return totalPersonasBancos;
+	}
+
+	public void setTotalPersonasBancos(Long totalPersonasBancos) {
+		this.totalPersonasBancos = totalPersonasBancos;
+	}	
 	
 	private void init(){
 		try {
 			this.totalPersonasDomicilios  = toMaxClienteDomicilio();
 			this.totalPersonasTipoContacto= toMaxClienteTiposContactos();			
+			this.totalPersonasBancos      = toMaxPersonasBancos();			
 		} // try
 		catch (Exception e) {
 			mx.org.kaana.libs.formato.Error.mensaje(e);						
@@ -72,4 +83,18 @@ public class ContadoresListas {
 		} // catch				
 		return regresar;
 	} // toMaxClienteTiposContactos
+	
+	private Long toMaxPersonasBancos() throws Exception{
+		Long regresar= 0L;
+		Value maximo = null;
+		try {
+			maximo= DaoFactory.getInstance().toField("TcKeetPersonasBancosDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			if(maximo.getData()!= null)
+				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toMaxPersonasBancos
 }
