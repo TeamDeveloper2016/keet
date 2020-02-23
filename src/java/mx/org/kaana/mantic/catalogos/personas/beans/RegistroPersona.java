@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -23,8 +22,12 @@ public class RegistroPersona implements Serializable{
 	private TcManticPersonasDto persona;
 	private List<PersonaDomicilio> personasDomicilio;
 	private PersonaDomicilio personaDomicilioSelecion;
+	private List<PersonaBeneficiario> personasBeneficiarios;
+	private PersonaBeneficiario personaBeneficiarioSelecion;
 	private List<PersonaTipoContacto> personasTiposContacto;
 	private PersonaTipoContacto personaTipoContactoSeleccion;	
+	private List<PersonaBanco> personasBancos;
+	private PersonaBanco personaBancoSeleccion;	
 	private List<IBaseDto> deleteList;
 	private ContadoresListas contadores;
 	private Long countIndice;
@@ -34,7 +37,7 @@ public class RegistroPersona implements Serializable{
 	private Long idEmpresa;
 	
 	public RegistroPersona() {
-		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio());
+		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio(), new ArrayList<PersonaBanco>(), new ArrayList<PersonaBeneficiario>());
 	}
 	
 	public RegistroPersona(Long idPersona) {
@@ -47,7 +50,7 @@ public class RegistroPersona implements Serializable{
 		init();		
 	}
 	
-	public RegistroPersona(Long idPersona, TcManticPersonasDto persona, List<PersonaDomicilio> personasDomicilio, List<PersonaTipoContacto> personasTiposContacto, Domicilio domicilio) {
+	public RegistroPersona(Long idPersona, TcManticPersonasDto persona, List<PersonaDomicilio> personasDomicilio, List<PersonaTipoContacto> personasTiposContacto, Domicilio domicilio, List<PersonaBanco> personasBancos, List<PersonaBeneficiario> personasBeneficiarios) {
 		this.idPersona             = idPersona;
 		this.persona               = persona;
 		this.personasDomicilio     = personasDomicilio;
@@ -59,6 +62,8 @@ public class RegistroPersona implements Serializable{
 		this.domicilioPivote       = domicilio;
 		this.idPuesto              = -1L;
 		this.idEmpresa             = -1L;
+		this.personasBeneficiarios = personasBeneficiarios;
+		this.personasBancos        = personasBancos;
 	}
 
 	public Long getIdPersona() {
@@ -148,37 +153,65 @@ public class RegistroPersona implements Serializable{
 	public void setIdEmpresa(Long idEmpresa) {
 		this.idEmpresa = idEmpresa;
 	}	
+
+	public List<PersonaBeneficiario> getPersonasBeneficiarios() {
+		return personasBeneficiarios;
+	}
+
+	public void setPersonasBeneficiarios(List<PersonaBeneficiario> personasBeneficiarios) {
+		this.personasBeneficiarios = personasBeneficiarios;
+	}
+
+	public PersonaBeneficiario getPersonaBeneficiarioSelecion() {
+		return personaBeneficiarioSelecion;
+	}
+
+	public void setPersonaBeneficiarioSelecion(PersonaBeneficiario personaBeneficiarioSelecion) {
+		this.personaBeneficiarioSelecion = personaBeneficiarioSelecion;
+	}
+
+	public List<PersonaBanco> getPersonasBancos() {
+		return personasBancos;
+	}
+
+	public void setPersonasBancos(List<PersonaBanco> personasBancos) {
+		this.personasBancos = personasBancos;
+	}
+
+	public PersonaBanco getPersonaBancoSeleccion() {
+		return personaBancoSeleccion;
+	}
+
+	public void setPersonaBancoSeleccion(PersonaBanco personaBancoSeleccion) {
+		this.personaBancoSeleccion = personaBancoSeleccion;
+	}	
 	
 	private void init(){
-		MotorBusqueda motorBusqueda= null;
+		int count          = 0;
+		MotorBusqueda motor= null;
 		try {
-			motorBusqueda= new MotorBusqueda(this.idPersona);
-			this.persona= motorBusqueda.toPersona();									
-			initCollections(motorBusqueda);
+			motor= new MotorBusqueda(this.idPersona);
+			this.persona= motor.toPersona();									
+			this.personasDomicilio= motor.toPersonasDomicilio(true);
+			for(PersonaDomicilio personaDomicilio: this.personasDomicilio){
+				count++;
+				personaDomicilio.setConsecutivo(Long.valueOf(count));
+			} // for				
+			this.personasBeneficiarios= motor.toPersonasBeneficiarios();
+			for(PersonaBeneficiario personaBenefi: this.personasBeneficiarios){
+				count++;
+				personaBenefi.setConsecutivo(Long.valueOf(count));
+			} // for				
+			this.personasTiposContacto= motor.toPersonasTipoContacto();		
+			this.personasBancos= motor.toPersonasBancos();		
+			this.idPuesto= motor.toPuestoPersona();
+			this.idEmpresa= motor.toEmpresaPersona();
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch		
 	} // init
-	
-	private void initCollections(MotorBusqueda motor) throws Exception{
-		int count= 0;
-		try {
-			this.personasDomicilio= motor.toPersonasDomicilio(true);
-			for(PersonaDomicilio personaDomicilio: this.personasDomicilio){
-				count++;
-				personaDomicilio.setConsecutivo(Long.valueOf(count));
-			} // for				
-			this.personasTiposContacto= motor.toPersonasTipoContacto();		
-			this.idPuesto= motor.toPuestoPersona();
-			this.idEmpresa= motor.toEmpresaPersona();
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);			
-			throw e;
-		} // catch		
-	} // initCollections
 	
 	public void doAgregarClienteDomicilio(){
 		PersonaDomicilio personaDomicilio= null;
@@ -261,8 +294,10 @@ public class RegistroPersona implements Serializable{
 					record.setIdPrincipal(0L);
 			} // if
 			personaDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);			
-			personaDomicilio.setDomicilio(this.domicilio.getDomicilio());
-			personaDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
+			if(this.domicilio.getDomicilio()!= null){
+				personaDomicilio.setDomicilio(this.domicilio.getDomicilio());
+				personaDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
+			} // if
 			personaDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			personaDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)
@@ -290,6 +325,21 @@ public class RegistroPersona implements Serializable{
 			personaTipoContacto= new PersonaTipoContacto(this.contadores.getTotalPersonasTipoContacto()+ this.countIndice, ESql.INSERT, true, null);				
 			personaTipoContacto.setOrden(this.personasTiposContacto.size() + 1L);
 			this.personasTiposContacto.add(personaTipoContacto);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarClienteTipoContacto
+	
+	public void doAgregarPersonaBanco(){
+		PersonaBanco personaBanco= null;
+		try {					
+			personaBanco= new PersonaBanco(this.contadores.getTotalPersonasBancos()+ this.countIndice, ESql.INSERT, true, null);							
+			this.personasBancos.add(personaBanco);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -328,15 +378,18 @@ public class RegistroPersona implements Serializable{
 		} // catch		
 	} // addDeleteList
 	
-	private Long registrarDomicilio() throws Exception{
-		Long regresar= -1L;
+	public void doSeleccionarPrincipal(PersonaBanco principal) {
 		try {
-			this.domicilio.setIdUsuario(JsfBase.getIdUsuario());
-			regresar= DaoFactory.getInstance().insert(this.domicilio);
+			for(PersonaBanco perBanco: this.personasBancos) {
+				if(!perBanco.equals(principal)){
+					perBanco.setIdPrincipal(2L);
+					perBanco.setPrincipal(false);
+				} // if					
+			} // for
 		} // try
-		catch (Exception e) {			
-			throw e;
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
 		} // catch		
-		return regresar;
-	} // registrarDomicilio	
+	}
 }

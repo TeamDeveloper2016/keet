@@ -276,6 +276,12 @@
         where      
           id_persona = {idPersona} and cuenta = '{cuenta}' and id_banco = {idBanco}
       </select>
+			<select id="maximo">
+        select      
+          max(id_persona_banco) maximo
+        from      
+          tc_keet_personas_bancos
+      </select>
     </unit>	
     <unit id="TcKeetPersonasBeneficiariosDto">
       <select id="row">

@@ -8,9 +8,12 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.keet.db.dto.TcKeetPersonasBeneficiariosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
+import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBanco;
+import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBeneficiario;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
@@ -163,4 +166,38 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toPuestoPersona
+	
+	public List<PersonaBeneficiario> toPersonasBeneficiarios() throws Exception{
+		List<PersonaBeneficiario> regresar= null;
+		Map<String, Object>params          = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
+			regresar= DaoFactory.getInstance().toEntitySet(TcKeetPersonasBeneficiariosDto.class, "row", params);			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPuestoPersona
+	
+	public List<PersonaBanco> toPersonasBancos() throws Exception {
+		List<PersonaBanco> regresar= null;
+		Map<String, Object>params  = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
+			regresar= DaoFactory.getInstance().toEntitySet(PersonaBanco.class, "TcKeetPersonasBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toClientesTipoContacto	
 }
