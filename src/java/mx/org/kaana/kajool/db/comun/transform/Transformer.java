@@ -1,7 +1,5 @@
 package mx.org.kaana.kajool.db.comun.transform;
 
-
-
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.libs.formato.Cadena;
