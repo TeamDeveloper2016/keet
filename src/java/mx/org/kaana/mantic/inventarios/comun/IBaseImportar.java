@@ -333,7 +333,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		StreamedContent regresar= null;
 		try {
 		  InputStream stream = new FileInputStream(new File(carpeta.concat(this.pdf.getRuta()).concat(this.pdf.getName())));
-	    regresar= new DefaultStreamedContent(stream, "application/pdf", this.pdf.getName());
+			regresar= DefaultStreamedContent.builder().contentType(EFormatos.PDF.getContent()).name(this.pdf.getName()).stream(()-> stream).build();
+	    // regresar= new DefaultStreamedContent(stream, "application/pdf", this.pdf.getName());
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -349,9 +350,9 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			if(reference.exists()) {
 				InputStream stream = new FileInputStream(reference);
 				if(file.toLong("idTipoArchivo").equals(1L))
-					regresar= new DefaultStreamedContent(stream, EFormatos.XML.getContent(), file.toString("nombre"));
+					regresar= DefaultStreamedContent.builder().contentType(EFormatos.XML.getContent()).name(file.toString("nombre")).stream(() -> stream).build();
 				else
-					regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+					regresar= DefaultStreamedContent.builder().contentType(EFormatos.PDF.getContent()).name(file.toString("nombre")).stream(() -> stream).build();
 			} // if	
 			else {
 				LOG.warn("No existe el archivo: "+ file.toString("alias"));
@@ -371,7 +372,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			File reference= new File(file.toString("alias"));
 			if(reference.exists()) {
 				InputStream stream = new FileInputStream(reference);
-				regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+				regresar= DefaultStreamedContent.builder().contentType(EFormatos.PDF.getContent()).name(file.toString("nombre")).stream(()-> stream).build();
+				//regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
 			} // if	
 			else {
 				LOG.warn("No existe el archivo: "+ file.toString("alias"));
@@ -391,7 +393,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			File reference= new File(file.toString("alias"));
 			if(reference.exists()) {
 				InputStream stream = new FileInputStream(reference);
-  			regresar= new DefaultStreamedContent(stream, EFormatos.XML.getContent(), file.toString("nombre"));
+  			regresar= DefaultStreamedContent.builder().contentType(EFormatos.PDF.getContent()).name(file.toString("nombre")).stream(()-> stream).build();
+  			// regresar= new DefaultStreamedContent(stream, EFormatos.XML.getContent(), file.toString("nombre"));
 			} // if	
 			else {
 				LOG.warn("No existe el archivo: "+ file.toString("alias"));

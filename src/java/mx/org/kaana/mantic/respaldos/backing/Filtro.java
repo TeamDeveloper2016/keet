@@ -117,7 +117,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			File reference= new File(file.toString("alias"));
 			if(reference.exists()) {
 		    InputStream stream = new FileInputStream(reference);			
-		    regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), file.toString("nombre"));
+				regresar= DefaultStreamedContent.builder().contentType(EFormatos.ZIP.getContent()).name(file.toString("nombre")).stream(()-> stream).build();
+		    // regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), file.toString("nombre"));
 				this.checkDonwloadBackup(new  TcManticRespaldosDto(file.toLong("idRespaldo")));
 			} // if
 			else {

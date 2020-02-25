@@ -211,7 +211,8 @@ public class Importar extends IBaseAttribute implements Serializable {
 			File reference= new File(file.toString("alias"));
 			if(reference.exists()) {
 				InputStream stream = new FileInputStream(reference);
-  		  regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+  		  // regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+  		  regresar= DefaultStreamedContent.builder().contentType(EFormatos.PDF.getContent()).name(file.toString("nombre")).stream(()-> stream).build();
 	  	} // if
 			else {
 				LOG.warn("No existe el archivo: "+ file.toString("alias"));

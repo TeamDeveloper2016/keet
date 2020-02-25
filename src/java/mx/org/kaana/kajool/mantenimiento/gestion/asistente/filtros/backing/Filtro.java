@@ -686,10 +686,10 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	
 	public StreamedContent getDescargar() throws Exception {
 		Zip zip                 = null;
+		String name             = null;
 		String contentType      = null;
 		StreamedContent regresar= null;
 		String zipName          = null;
-		InputStream inputStream = null;
 		String path             = null;
 		try {
       doAceptar();
@@ -701,9 +701,11 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			path = JsfUtilities.getRealPath(EFormatos.TXT.toPath()).concat(File.separator);
 			zip.compactar(JsfUtilities.getRealPath(zipName), path, this.attrs.get("patron").toString().concat("?"));
 			this.attrs.put("archivo", zipName);
+			name       = this.attrs.get("archivo").toString().substring(this.attrs.get("archivo").toString().lastIndexOf(File.separatorChar)+ 1);
 			contentType= EFormatos.ZIP.getContent();
-			inputStream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.attrs.get("archivo").toString());
-			regresar   = new DefaultStreamedContent(inputStream, contentType, this.attrs.get("archivo").toString().substring(this.attrs.get("archivo").toString().lastIndexOf(File.separatorChar)+ 1));	
+			InputStream inputStream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.attrs.get("archivo").toString());
+			// regresar   = new DefaultStreamedContent(inputStream, contentType, name);	
+			regresar= DefaultStreamedContent.builder().contentType(contentType).name(name).stream(()-> inputStream).build();
 		} // try
 		catch(Exception e) {
 			throw e;			

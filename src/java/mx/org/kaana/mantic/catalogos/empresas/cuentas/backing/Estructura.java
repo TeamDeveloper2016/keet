@@ -256,19 +256,20 @@ public class Estructura extends IBaseFilter implements Serializable {
 	private StreamedContent toZipFile(String[] files) throws Exception {
 		String zipName    = null;
 		String temporal   = Archivo.toFormatNameFile("DOCUMENTOS.").concat(EFormatos.ZIP.name().toLowerCase());
-		InputStream stream= null;
+		DefaultStreamedContent regresar= null;
 		try {
 			Zip zip= new Zip();
 			zipName= "/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.ZIP.name()).concat("/").concat(temporal));
 			zip.setDebug(true);
 			zip.setEliminar(false);
 			zip.especial(JsfBase.getRealPath(zipName), files);
-  	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
+  	  InputStream stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
+			regresar= DefaultStreamedContent.builder().contentType(EFormatos.ZIP.getContent()).name(temporal).stream(()-> stream).build();
 		} // try
 		catch (Exception e) {
 			throw e;
 		} // catch
-    return new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal);		
+    return regresar; // new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal);		
 	}
 
 	@Override

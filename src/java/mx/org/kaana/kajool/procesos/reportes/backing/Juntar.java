@@ -144,7 +144,8 @@ public class Juntar extends BaseReportes implements Serializable {
 			Error.mensaje(e);
 		} // catch
     InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);  
-    return new DefaultStreamedContent(stream, contentType, getArchivo());		
+    // return new DefaultStreamedContent(stream, contentType, getArchivo());		
+    return DefaultStreamedContent.builder().contentType(contentType).name(getArchivo()).stream(()-> stream).build();		
 	}
   
   public String doCancelar() {

@@ -337,7 +337,8 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		StreamedContent regresar= null;
 		try {
 		  InputStream stream = new FileInputStream(new File(carpeta.concat(this.pdf.getRuta()).concat(this.pdf.getName())));
-	    regresar= new DefaultStreamedContent(stream, "application/pdf", this.pdf.getName());
+	    // regresar= new DefaultStreamedContent(stream, "application/pdf", this.pdf.getName());
+	    regresar= DefaultStreamedContent.builder().contentType(EFormatos.PDF.getContent()).name(this.pdf.getName()).stream(()-> stream).build();
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -357,9 +358,11 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			if(reference.exists()) {
 				InputStream stream = new FileInputStream(reference);
 				if(file.toLong("idTipoArchivo").equals(8L))
-					regresar= new DefaultStreamedContent(stream, EFormatos.XLS.getContent(), file.toString("nombre"));
+					regresar= DefaultStreamedContent.builder().contentType(EFormatos.XLS.getContent()).name(file.toString("nombre")).stream(()-> stream).build();
+					// regresar= new DefaultStreamedContent(stream, EFormatos.XLS.getContent(), file.toString("nombre"));
 				else
-					regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+					regresar= DefaultStreamedContent.builder().contentType(EFormatos.PDF.getContent()).name(file.toString("nombre")).stream(()-> stream).build();
+					// regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
 			} // if	
 			else {
 				LOG.warn("No existe el archivo: "+ file.toString("alias"));

@@ -86,7 +86,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(stream== null)
   			JsfBase.addMessage("Error", "El recurso no se encuentra disponible ["+ insumo.toValue("descarga")+ "]");
       else  
-        regresar= new DefaultStreamedContent(stream, Extensions.valueOf((String)insumo.toValue("contenido")).getContenTypeLinux(), (String)insumo.toValue("descarga"));
+				regresar= DefaultStreamedContent.builder().contentType(Extensions.valueOf((String)insumo.toValue("contenido")).getContenTypeLinux()).name((String)insumo.toValue("descarga")).stream(()-> stream).build();
+        // regresar= new DefaultStreamedContent(stream, Extensions.valueOf((String)insumo.toValue("contenido")).getContenTypeLinux(), (String)insumo.toValue("descarga"));
     } // try 
     catch(Exception e) {
 			JsfBase.addMessage("Error", "El recurso no se encuentra disponible ["+ insumo.toValue("descarga")+ "]");

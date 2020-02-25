@@ -102,19 +102,21 @@ public class Facturas extends IBaseFilter implements Serializable {
 	private StreamedContent toZipFile(String[] files) {
 		String zipName    = null;
 		String temporal   = Archivo.toFormatNameFile("FACTURAS.").concat(EFormatos.ZIP.name().toLowerCase());
-		InputStream stream= null;
+		DefaultStreamedContent regresar= null;
 		try {
 			Zip zip= new Zip();
 			zipName= "/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.ZIP.name()).concat("/").concat(temporal));
 			zip.setDebug(true);
 			zip.setEliminar(false);
 			zip.compactar(JsfBase.getRealPath(zipName), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").length(), files);
-  	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
+  	  InputStream stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
+			regresar= DefaultStreamedContent.builder().contentType(EFormatos.ZIP.getContent()).name(temporal).stream(()-> stream).build();
 		} // try // try
 		catch (Exception e) {
 			Error.mensaje(e);
 		} // catch
-    return new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal);		
+    return regresar;
+    // return new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal);		
 	}
 	
 	private StreamedContent toAllFile() {

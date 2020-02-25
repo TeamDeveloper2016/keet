@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -46,8 +47,10 @@ public final class LoadImages {
   		Value alias= (Value)DaoFactory.getInstance().toField("VistaArticulosDto", "imagen", params, "alias");
 			if(alias!= null && !Cadena.isVacio(alias.toString()))
 				regresar= getFile(alias.toString());
-		  else
-				regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png")), "image/png");
+			else {
+				InputStream stream = new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png"));
+        regresar= DefaultStreamedContent.builder().contentType("image/png").stream(()-> stream).build();
+			} // else	
 		} // try
 		finally {
 			Methods.clean(params);
@@ -56,20 +59,28 @@ public final class LoadImages {
 	} 
 	
 	public static DefaultStreamedContent getFile(String name) throws FileNotFoundException {
-		if(Cadena.isVacio(name))
-		  return new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png")), "image/png"); // svg+xml
+		if(Cadena.isVacio(name)) {
+			InputStream stream = new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png"));
+		  return DefaultStreamedContent.builder().contentType("image/png").stream(()-> stream).build(); // svg+xml
+		} // if	
 		else {
-		  File file= new File(name);
-		  return file.exists()? new DefaultStreamedContent(new FileInputStream(name), "image/jpg"): new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
+		  File file         = new File(name);
+			InputStream stream= new FileInputStream(file);
+			InputStream icono = new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg"));
+		  return file.exists()? DefaultStreamedContent.builder().contentType("image/jpg").stream(()-> stream).build(): DefaultStreamedContent.builder().contentType("image/svg+xml").stream(()-> icono).build();
 		} // else	
 	} 
 	
 	private static DefaultStreamedContent toReturnFile(File file) throws FileNotFoundException {
-		DefaultStreamedContent regresar;
-		if(file== null || !file.exists() || file.isDirectory())
-		  regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png")), "image/png");
-		else
-			regresar= new DefaultStreamedContent(new FileInputStream(file.getAbsolutePath()), "image/jpg");
+		DefaultStreamedContent regresar= null;
+		if(file== null || !file.exists() || file.isDirectory()) {
+			InputStream stream = new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png"));
+		  regresar= DefaultStreamedContent.builder().contentType("image/png").stream(()-> stream).build();
+		} // if	
+		else {
+			InputStream stream = new FileInputStream(file.getAbsolutePath());
+			regresar= DefaultStreamedContent.builder().contentType("image/jpg").stream(()-> stream).build();
+		} // else	
 		return regresar;
 	}
 	

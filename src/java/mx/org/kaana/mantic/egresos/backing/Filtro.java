@@ -254,7 +254,6 @@ public class Filtro extends Comun implements Serializable {
 	private StreamedContent toZipFile(List<ZipEgreso> files, String descripcion, Long idEgreso) {
 		String zipName                 = null;		
 		String name                    = null;		
-		InputStream stream             = null;
 		String temporal                = null;
 		DefaultStreamedContent regresar= null;
 		try {
@@ -267,8 +266,9 @@ public class Filtro extends Comun implements Serializable {
 			for(ZipEgreso zipEgreso: files)
 				zipEgreso.setCarpeta(JsfBase.getRealPath(name).concat("/").concat(zipEgreso.getCarpeta()));			
 			zip.compactar(JsfBase.getRealPath(zipName), files, loadNotas(idEgreso));
-  	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
-			regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal.concat(".").concat(EFormatos.ZIP.name().toLowerCase()));		
+  	  InputStream stream= new FileInputStream(new File(JsfBase.getRealPath(zipName)));
+			// regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal.concat(".").concat(EFormatos.ZIP.name().toLowerCase()));		
+			regresar= DefaultStreamedContent.builder().contentType(EFormatos.ZIP.getContent()).name(temporal.concat(".").concat(EFormatos.ZIP.name().toLowerCase())).stream(()-> stream).build();
 		} // try // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

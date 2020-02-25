@@ -307,7 +307,8 @@ public class Reporte extends BaseReportes implements Serializable{
 			Error.mensaje(e);
 		} // catch
     InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name())).concat(File.separator).concat(this.nombre));  
-    return new DefaultStreamedContent(stream, contentType, getArchivo());	
+    // return new DefaultStreamedContent(stream, contentType, getArchivo());	
+    return DefaultStreamedContent.builder().contentType(contentType).name(getArchivo()).stream(()-> stream).build();
 	}
   
   public void clean() {

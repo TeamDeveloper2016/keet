@@ -169,7 +169,6 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 		String contentType      = null;
 		StreamedContent regresar= null;
 		String zipName          = null;
-		InputStream inputStream = null;
 		try {
 			zip= new Zip();
 			if(this.ireporte.getComprimir()) {
@@ -179,8 +178,9 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 				zip.compactar(JsfBase.getRealPath().concat(zipName), JsfBase.getRealPath().concat(this.idFormato.toPath()), getArchivo());
 				this.nombre= zipName;
 				contentType= EFormatos.ZIP.getContent();
-				inputStream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);  
-				regresar   = new DefaultStreamedContent(inputStream, contentType, getArchivo());	
+				InputStream inputStream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);  
+				// regresar   = new DefaultStreamedContent(inputStream, contentType, getArchivo());	
+				regresar= DefaultStreamedContent.builder().contentType(contentType).name(getArchivo()).stream(()-> inputStream).build();
 			} // if	
 		} // try
 		catch(Exception e) {

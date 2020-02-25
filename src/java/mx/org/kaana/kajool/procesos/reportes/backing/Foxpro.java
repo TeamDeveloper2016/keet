@@ -152,8 +152,8 @@ public class Foxpro implements Serializable{
   public StreamedContent getDescargar() {
 		String contentType= EFormatos.ZIP.getContent();
     InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);  
-		StreamedContent regresar= new DefaultStreamedContent(stream, contentType, getArchivo());				
-    return regresar;
+		// StreamedContent regresar= new DefaultStreamedContent(stream, contentType, getArchivo());				
+    return DefaultStreamedContent.builder().contentType(contentType).name(getArchivo()).stream(()-> stream).build();
 	}
   
   public void doCompleto() {
