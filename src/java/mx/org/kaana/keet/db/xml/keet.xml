@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetFamiliasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_familias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_familias
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
     <unit id="TcKeetBitacorasDto">
       <select id="row">
         select      

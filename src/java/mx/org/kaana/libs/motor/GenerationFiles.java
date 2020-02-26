@@ -591,7 +591,19 @@ public abstract class GenerationFiles {
 				if(renglon.getTipo().equals("Blob"))
 					sb.append("@Lob\n  ");
         sb.append(MessageFormat.format(id.concat("@Column (name=\"{0}\"){1}"), new Object[]{renglon.getCampo(), "\n"}));
-        sb.append(MessageFormat.format("  private {0} {1};", new Object[]{renglon.getTipo(), renglon.getAtributo()}));
+				String type= renglon.getTipo();
+				switch (type) {
+					case "Date":
+						type= "LocalDate";
+						break;
+					case "Time":
+						type= "LocalTime";
+						break;
+					case "Timestamp":
+						type= "LocalDateTime";
+						break;
+				}; // switch
+        sb.append(MessageFormat.format("  private {0} {1};", new Object[]{type, renglon.getAtributo()}));
         if(x< getDetailTable().size())
            sb.append("\n  ");
         x++;
@@ -660,11 +672,24 @@ public abstract class GenerationFiles {
         if (x!= 1)
           sb.append("  ");
         // SET
-        sb.append(MessageFormat.format("public void set{0}({1} {2}) ",new Object[]{renglon.getAtributo().substring(0,1).toUpperCase().concat(renglon.getAtributo().substring(1,renglon.getAtributo().length())), renglon.getTipo(), renglon.getAtributo()})).append("{\n");
+				String type= renglon.getTipo();
+				switch (type) {
+					case "Date":
+						type= "LocalDate";
+						break;
+					case "Time":
+						type= "LocalTime";
+						break;
+					case "Timestamp":
+						type= "LocalDateTime";
+						break;
+				}; // switch
+				
+        sb.append(MessageFormat.format("public void set{0}({1} {2}) ",new Object[]{renglon.getAtributo().substring(0,1).toUpperCase().concat(renglon.getAtributo().substring(1,renglon.getAtributo().length())), type, renglon.getAtributo()})).append("{\n");
         sb.append(MessageFormat.format("    this.{0} = {0};\n",new Object[]{renglon.getAtributo()}));
         sb.append(MessageFormat.format("  }\n\n",new Object[]{renglon.getAtributo().substring(0,1).toUpperCase().concat(renglon.getAtributo().substring(1,renglon.getAtributo().length())), renglon.getTipo(),variable}));
         // GET
-        sb.append(MessageFormat.format("  public {1} get{0}() ",new Object[]{renglon.getAtributo().substring(0,1).toUpperCase().concat(renglon.getAtributo().substring(1,renglon.getAtributo().length())), renglon.getTipo()})).append("{\n");
+        sb.append(MessageFormat.format("  public {1} get{0}() ",new Object[]{renglon.getAtributo().substring(0,1).toUpperCase().concat(renglon.getAtributo().substring(1,renglon.getAtributo().length())), type})).append("{\n");
         sb.append(MessageFormat.format("    return {0};\n",new Object[]{renglon.getAtributo()}));
         sb.append("  }");
         if (x< getDetailTable().size())
