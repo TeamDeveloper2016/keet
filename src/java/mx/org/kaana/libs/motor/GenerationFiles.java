@@ -710,11 +710,11 @@ public abstract class GenerationFiles {
           else if (renglon.getTipo().equals("String") || renglon.getTipo().equals("Char"))
             typeData= "null";
           else if (renglon.getTipo().equals("Date"))
-            typeData= "new Date(Calendar.getInstance().getTimeInMillis())";
+            typeData= "LocalDate.now()";
           else if (renglon.getTipo().equals("Timestamp"))
             typeData= "LocalDateTime.now()";
           else if (renglon.getTipo().equals("Time"))
-            typeData= "new Time(Calendar.getInstance().getTimeInMillis())";
+            typeData= "LocalTime.now()";
           else if (renglon.getTipo().equals("Long"))
             typeData= "null";
           else if (renglon.getTipo().equals("Double"))
@@ -799,8 +799,8 @@ public abstract class GenerationFiles {
   }
 
   protected String getCamposSelect() throws Exception {
-    RenglonCampo renglon = null;
-    StringBuilder regresar = new StringBuilder();
+    RenglonCampo renglon  = null;
+    StringBuilder regresar= new StringBuilder();
     try {
       for(String key: getDetailTable().keySet()) {
         renglon = getDetailTable().get(key);
@@ -854,10 +854,19 @@ public abstract class GenerationFiles {
         if((!(renglon.getCampo().equals(getPk())))||(llave== true)) {
           if (sb.length()!= 0)
             sb.append(" and ");
-          if (renglon.getTipo().equals("String"))
+          if(renglon.getTipo().equals("String"))
             sb.append(renglon.getCampo().toLowerCase().concat(" = ").concat("'{").concat(renglon.getAtributo()).concat("}'"));
           else
-            sb.append(renglon.getCampo().toLowerCase().concat(" = ").concat("{").concat(renglon.getAtributo()).concat("}"));
+						if(renglon.getTipo().equals("Date"))
+              sb.append("date_format(").append(renglon.getCampo().toLowerCase()).append(", '%Y%m%d')").append(" = '{").append(renglon.getAtributo()).append("}'");
+					  else		
+						if(renglon.getTipo().equals("Time"))
+              sb.append("date_format(").append(renglon.getCampo().toLowerCase()).append(", '%H%i%S')").append(" = '{").append(renglon.getAtributo()).append("}'");
+					  else		
+						if(renglon.getTipo().equals("Timestamp"))
+              sb.append("date_format(").append(renglon.getCampo().toLowerCase()).append(", '%Y%m%d%H%i%S')").append(" = '{").append(renglon.getAtributo()).append("}'");
+					  else		
+              sb.append(renglon.getCampo().toLowerCase().concat(" = ").concat("{").concat(renglon.getAtributo()).concat("}"));
         } // if
       } // for key
     }
