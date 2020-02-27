@@ -1,11 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -13,9 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -42,8 +35,8 @@ public class TcManticCierresEstatusDto implements IBaseDto, Serializable {
   private Long idCierreEstatus;
   @Column (name="estatus_asociados")
   private String estatusAsociados;
-  @Column (name="decripcion")
-  private String decripcion;
+  @Column (name="descripcion")
+  private String descripcion;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
@@ -54,15 +47,15 @@ public class TcManticCierresEstatusDto implements IBaseDto, Serializable {
   }
 
   public TcManticCierresEstatusDto(Long key) {
-    this(null, new Long(-1L), null, null, null);
+    this(1L, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcManticCierresEstatusDto(Long idJustificacion, Long idCierreEstatus, String estatusAsociados, String decripcion, String nombre) {
+  public TcManticCierresEstatusDto(Long idJustificacion, Long idCierreEstatus, String estatusAsociados, String descripcion, String nombre) {
     setIdJustificacion(idJustificacion);
     setIdCierreEstatus(idCierreEstatus);
     setEstatusAsociados(estatusAsociados);
-    setDecripcion(decripcion);
+    setDescripcion(descripcion);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
@@ -91,12 +84,12 @@ public class TcManticCierresEstatusDto implements IBaseDto, Serializable {
     return estatusAsociados;
   }
 
-  public void setDecripcion(String decripcion) {
-    this.decripcion = decripcion;
+  public void setDescripcion(String descripcion) {
+    this.descripcion = descripcion;
   }
 
-  public String getDecripcion() {
-    return decripcion;
+  public String getDescripcion() {
+    return descripcion;
   }
 
   public void setNombre(String nombre) {
@@ -136,7 +129,7 @@ public class TcManticCierresEstatusDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEstatusAsociados());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getDecripcion());
+		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
@@ -151,7 +144,7 @@ public class TcManticCierresEstatusDto implements IBaseDto, Serializable {
 		regresar.put("idJustificacion", getIdJustificacion());
 		regresar.put("idCierreEstatus", getIdCierreEstatus());
 		regresar.put("estatusAsociados", getEstatusAsociados());
-		regresar.put("decripcion", getDecripcion());
+		regresar.put("descripcion", getDescripcion());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -160,7 +153,7 @@ public class TcManticCierresEstatusDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdJustificacion(), getIdCierreEstatus(), getEstatusAsociados(), getDecripcion(), getNombre(), getRegistro()
+    getIdJustificacion(), getIdCierreEstatus(), getEstatusAsociados(), getDescripcion(), getNombre(), getRegistro()
     };
     return regresar;
   }
@@ -218,7 +211,4 @@ public class TcManticCierresEstatusDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdCierreEstatus() != null ? getIdCierreEstatus().hashCode() : 0);
     return hash;
   }
-
 }
-
-
