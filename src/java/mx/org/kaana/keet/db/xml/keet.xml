@@ -7,6 +7,168 @@
   </model>
 
   <dml>
+    <unit id="TcKeetPrototiposDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_prototipos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prototipos
+        where      
+          id_cliente = {idCliente} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposAtributosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_atributos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_atributos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposFachadasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_fachadas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_fachadas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposObrasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_obras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_obras
+        where      
+          id_tipo_obra = {idTipoObra} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposObrasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_obras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_obras
+        where      
+          nombre = '{nombre}' and id_division = {idDivision}
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposPresupuestosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_presupuestos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_presupuestos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetEstacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_estaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_estaciones
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetEspecialidadesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_especialidades
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_especialidades
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcKeetPlanosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_planos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_planos
+        where      
+          id_especialidad = {idEspecialidad} and nombre = '{nombre}'
+      </select>
+    </unit>				
     <unit id="TcKeetGruposConstructivosDto">
       <select id="row">
         select      

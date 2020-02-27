@@ -23,57 +23,49 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_constructivos")
-public class TcKeetConstructivosDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_planos")
+public class TcKeetPlanosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="descripcion")
-  private String descripcion;
-  @Column (name="id_grupo_constructivo")
-  private Long idGrupoConstructivo;
-  @Column (name="id_usuario")
-  private Long idUsuario;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_constructivo")
-  private Long idConstructivo;
+	@Column (name="id_plano")
+  private Long idPlano;
+  @Column (name="id_usuario")
+  private Long idUsuario;
+  @Column (name="id_especialidad")
+  private Long idEspecialidad;
+  @Column (name="decripcion")
+  private String decripcion;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetConstructivosDto() {
+  public TcKeetPlanosDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetConstructivosDto(Long key) {
-    this(null, null, null, new Long(-1L), null);
+  public TcKeetPlanosDto(Long key) {
+    this(new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetConstructivosDto(String descripcion, Long idGrupoConstructivo, Long idUsuario, Long idConstructivo, String nombre) {
-    setDescripcion(descripcion);
-    setIdGrupoConstructivo(idGrupoConstructivo);
+  public TcKeetPlanosDto(Long idPlano, Long idUsuario, Long idEspecialidad, String decripcion, String nombre) {
+    setIdPlano(idPlano);
     setIdUsuario(idUsuario);
-    setIdConstructivo(idConstructivo);
+    setIdEspecialidad(idEspecialidad);
+    setDecripcion(decripcion);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
 	
-  public void setDescripcion(String descripcion) {
-    this.descripcion = descripcion;
+  public void setIdPlano(Long idPlano) {
+    this.idPlano = idPlano;
   }
 
-  public String getDescripcion() {
-    return descripcion;
-  }
-
-  public void setIdGrupoConstructivo(Long idGrupoConstructivo) {
-    this.idGrupoConstructivo = idGrupoConstructivo;
-  }
-
-  public Long getIdGrupoConstructivo() {
-    return idGrupoConstructivo;
+  public Long getIdPlano() {
+    return idPlano;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -84,12 +76,20 @@ public class TcKeetConstructivosDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdConstructivo(Long idConstructivo) {
-    this.idConstructivo = idConstructivo;
+  public void setIdEspecialidad(Long idEspecialidad) {
+    this.idEspecialidad = idEspecialidad;
   }
 
-  public Long getIdConstructivo() {
-    return idConstructivo;
+  public Long getIdEspecialidad() {
+    return idEspecialidad;
+  }
+
+  public void setDecripcion(String decripcion) {
+    this.decripcion = decripcion;
+  }
+
+  public String getDecripcion() {
+    return decripcion;
   }
 
   public void setNombre(String nombre) {
@@ -111,25 +111,25 @@ public class TcKeetConstructivosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdConstructivo();
+  	return getIdPlano();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idConstructivo = key;
+  	this.idPlano = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getDescripcion());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdGrupoConstructivo());
+		regresar.append(getIdPlano());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdConstructivo());
+		regresar.append(getIdEspecialidad());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDecripcion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
@@ -141,10 +141,10 @@ public class TcKeetConstructivosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("descripcion", getDescripcion());
-		regresar.put("idGrupoConstructivo", getIdGrupoConstructivo());
+		regresar.put("idPlano", getIdPlano());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idConstructivo", getIdConstructivo());
+		regresar.put("idEspecialidad", getIdEspecialidad());
+		regresar.put("decripcion", getDecripcion());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -153,7 +153,7 @@ public class TcKeetConstructivosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdGrupoConstructivo(), getIdUsuario(), getIdConstructivo(), getNombre(), getRegistro()
+    getIdPlano(), getIdUsuario(), getIdEspecialidad(), getDecripcion(), getNombre(), getRegistro()
     };
     return regresar;
   }
@@ -167,8 +167,8 @@ public class TcKeetConstructivosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idConstructivo~");
-    regresar.append(getIdConstructivo());
+    regresar.append("idPlano~");
+    regresar.append(getIdPlano());
     regresar.append("|");
     return regresar.toString();
   }
@@ -176,18 +176,18 @@ public class TcKeetConstructivosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdConstructivo());
+    regresar.append(getIdPlano());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetConstructivosDto.class;
+    return TcKeetPlanosDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdConstructivo()!= null && getIdConstructivo()!=-1L;
+  	return getIdPlano()!= null && getIdPlano()!=-1L;
   }
 
   @Override
@@ -198,8 +198,8 @@ public class TcKeetConstructivosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetConstructivosDto other = (TcKeetConstructivosDto) obj;
-    if (getIdConstructivo() != other.idConstructivo && (getIdConstructivo() == null || !getIdConstructivo().equals(other.idConstructivo))) {
+    final TcKeetPlanosDto other = (TcKeetPlanosDto) obj;
+    if (getIdPlano() != other.idPlano && (getIdPlano() == null || !getIdPlano().equals(other.idPlano))) {
       return false;
     }
     return true;
@@ -208,7 +208,7 @@ public class TcKeetConstructivosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdConstructivo() != null ? getIdConstructivo().hashCode() : 0);
+    hash = 67 * hash + (getIdPlano() != null ? getIdPlano().hashCode() : 0);
     return hash;
   }
 

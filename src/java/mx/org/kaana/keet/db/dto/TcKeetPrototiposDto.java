@@ -23,46 +23,49 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_desarrollos")
-public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_prototipos")
+public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="descripcion")
   private String descripcion;
+  @Column (name="metros2")
+  private Double metros2;
   @Column (name="clave")
   private String clave;
   @Column (name="id_cliente")
   private Long idCliente;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_desarrollo")
-  private Long idDesarrollo;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_domicilio")
-  private Long idDomicilio;
-  @Column (name="nombres")
-  private String nombres;
+  @Column (name="id_constructivo")
+  private Long idConstructivo;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_prototipo")
+  private Long idPrototipo;
+  @Column (name="nombre")
+  private String nombre;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetDesarrollosDto() {
+  public TcKeetPrototiposDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetDesarrollosDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null);
+  public TcKeetPrototiposDto(Long key) {
+    this(null, null, null, null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TcKeetDesarrollosDto(String descripcion, String clave, Long idCliente, Long idDesarrollo, Long idUsuario, Long idDomicilio, String nombres) {
+  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idUsuario, Long idConstructivo, Long idPrototipo, String nombre) {
     setDescripcion(descripcion);
+    setMetros2(metros2);
     setClave(clave);
     setIdCliente(idCliente);
-    setIdDesarrollo(idDesarrollo);
     setIdUsuario(idUsuario);
-    setIdDomicilio(idDomicilio);
-    setNombres(nombres);
+    setIdConstructivo(idConstructivo);
+    setIdPrototipo(idPrototipo);
+    setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -72,6 +75,14 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
 
   public String getDescripcion() {
     return descripcion;
+  }
+
+  public void setMetros2(Double metros2) {
+    this.metros2 = metros2;
+  }
+
+  public Double getMetros2() {
+    return metros2;
   }
 
   public void setClave(String clave) {
@@ -90,14 +101,6 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
     return idCliente;
   }
 
-  public void setIdDesarrollo(Long idDesarrollo) {
-    this.idDesarrollo = idDesarrollo;
-  }
-
-  public Long getIdDesarrollo() {
-    return idDesarrollo;
-  }
-
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
@@ -106,20 +109,28 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdDomicilio(Long idDomicilio) {
-    this.idDomicilio = idDomicilio;
+  public void setIdConstructivo(Long idConstructivo) {
+    this.idConstructivo = idConstructivo;
   }
 
-  public Long getIdDomicilio() {
-    return idDomicilio;
+  public Long getIdConstructivo() {
+    return idConstructivo;
   }
 
-  public void setNombres(String nombres) {
-    this.nombres = nombres;
+  public void setIdPrototipo(Long idPrototipo) {
+    this.idPrototipo = idPrototipo;
   }
 
-  public String getNombres() {
-    return nombres;
+  public Long getIdPrototipo() {
+    return idPrototipo;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getNombre() {
+    return nombre;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -133,12 +144,12 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdDesarrollo();
+  	return getIdPrototipo();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idDesarrollo = key;
+  	this.idPrototipo = key;
   }
 
   @Override
@@ -147,17 +158,19 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMetros2());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getClave());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDesarrollo());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDomicilio());
+		regresar.append(getIdConstructivo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getNombres());
+		regresar.append(getIdPrototipo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -168,12 +181,13 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
+		regresar.put("metros2", getMetros2());
 		regresar.put("clave", getClave());
 		regresar.put("idCliente", getIdCliente());
-		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idDomicilio", getIdDomicilio());
-		regresar.put("nombres", getNombres());
+		regresar.put("idConstructivo", getIdConstructivo());
+		regresar.put("idPrototipo", getIdPrototipo());
+		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -181,7 +195,7 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getClave(), getIdCliente(), getIdDesarrollo(), getIdUsuario(), getIdDomicilio(), getNombres(), getRegistro()
+    getDescripcion(), getMetros2(), getClave(), getIdCliente(), getIdUsuario(), getIdConstructivo(), getIdPrototipo(), getNombre(), getRegistro()
     };
     return regresar;
   }
@@ -195,8 +209,8 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idDesarrollo~");
-    regresar.append(getIdDesarrollo());
+    regresar.append("idPrototipo~");
+    regresar.append(getIdPrototipo());
     regresar.append("|");
     return regresar.toString();
   }
@@ -204,18 +218,18 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdDesarrollo());
+    regresar.append(getIdPrototipo());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetDesarrollosDto.class;
+    return TcKeetPrototiposDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdDesarrollo()!= null && getIdDesarrollo()!=-1L;
+  	return getIdPrototipo()!= null && getIdPrototipo()!=-1L;
   }
 
   @Override
@@ -226,8 +240,8 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetDesarrollosDto other = (TcKeetDesarrollosDto) obj;
-    if (getIdDesarrollo() != other.idDesarrollo && (getIdDesarrollo() == null || !getIdDesarrollo().equals(other.idDesarrollo))) {
+    final TcKeetPrototiposDto other = (TcKeetPrototiposDto) obj;
+    if (getIdPrototipo() != other.idPrototipo && (getIdPrototipo() == null || !getIdPrototipo().equals(other.idPrototipo))) {
       return false;
     }
     return true;
@@ -236,7 +250,7 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdDesarrollo() != null ? getIdDesarrollo().hashCode() : 0);
+    hash = 67 * hash + (getIdPrototipo() != null ? getIdPrototipo().hashCode() : 0);
     return hash;
   }
 

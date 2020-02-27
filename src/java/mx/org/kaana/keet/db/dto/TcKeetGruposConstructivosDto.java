@@ -35,6 +35,8 @@ public class TcKeetGruposConstructivosDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_grupo_constructivo")
   private Long idGrupoConstructivo;
+  @Column (name="id_usuario")
+  private Long idUsuario;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
@@ -45,14 +47,15 @@ public class TcKeetGruposConstructivosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetGruposConstructivosDto(Long key) {
-    this(null, null, new Long(-1L), null);
+    this(null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcKeetGruposConstructivosDto(String descripcion, String clave, Long idGrupoConstructivo, String nombre) {
+  public TcKeetGruposConstructivosDto(String descripcion, String clave, Long idGrupoConstructivo, Long idUsuario, String nombre) {
     setDescripcion(descripcion);
     setClave(clave);
     setIdGrupoConstructivo(idGrupoConstructivo);
+    setIdUsuario(idUsuario);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
@@ -79,6 +82,14 @@ public class TcKeetGruposConstructivosDto implements IBaseDto, Serializable {
 
   public Long getIdGrupoConstructivo() {
     return idGrupoConstructivo;
+  }
+
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
+  public Long getIdUsuario() {
+    return idUsuario;
   }
 
   public void setNombre(String nombre) {
@@ -118,6 +129,8 @@ public class TcKeetGruposConstructivosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdGrupoConstructivo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
@@ -131,6 +144,7 @@ public class TcKeetGruposConstructivosDto implements IBaseDto, Serializable {
 		regresar.put("descripcion", getDescripcion());
 		regresar.put("clave", getClave());
 		regresar.put("idGrupoConstructivo", getIdGrupoConstructivo());
+		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -139,7 +153,7 @@ public class TcKeetGruposConstructivosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getClave(), getIdGrupoConstructivo(), getNombre(), getRegistro()
+    getDescripcion(), getClave(), getIdGrupoConstructivo(), getIdUsuario(), getNombre(), getRegistro()
     };
     return regresar;
   }

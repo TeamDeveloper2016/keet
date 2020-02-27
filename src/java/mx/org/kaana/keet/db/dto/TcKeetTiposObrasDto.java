@@ -23,46 +23,43 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_desarrollos")
-public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_tipos_obras")
+public class TcKeetTiposObrasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="descripcion")
   private String descripcion;
   @Column (name="clave")
   private String clave;
-  @Column (name="id_cliente")
-  private Long idCliente;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_desarrollo")
-  private Long idDesarrollo;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_domicilio")
-  private Long idDomicilio;
-  @Column (name="nombres")
-  private String nombres;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_tipo_obra")
+  private Long idTipoObra;
+  @Column (name="nombre")
+  private String nombre;
+  @Column (name="id_division")
+  private Long idDivision;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetDesarrollosDto() {
+  public TcKeetTiposObrasDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetDesarrollosDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null);
+  public TcKeetTiposObrasDto(Long key) {
+    this(null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcKeetDesarrollosDto(String descripcion, String clave, Long idCliente, Long idDesarrollo, Long idUsuario, Long idDomicilio, String nombres) {
+  public TcKeetTiposObrasDto(String descripcion, String clave, Long idUsuario, Long idTipoObra, String nombre, Long idDivision) {
     setDescripcion(descripcion);
     setClave(clave);
-    setIdCliente(idCliente);
-    setIdDesarrollo(idDesarrollo);
     setIdUsuario(idUsuario);
-    setIdDomicilio(idDomicilio);
-    setNombres(nombres);
+    setIdTipoObra(idTipoObra);
+    setNombre(nombre);
+    setIdDivision(idDivision);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -82,22 +79,6 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
     return clave;
   }
 
-  public void setIdCliente(Long idCliente) {
-    this.idCliente = idCliente;
-  }
-
-  public Long getIdCliente() {
-    return idCliente;
-  }
-
-  public void setIdDesarrollo(Long idDesarrollo) {
-    this.idDesarrollo = idDesarrollo;
-  }
-
-  public Long getIdDesarrollo() {
-    return idDesarrollo;
-  }
-
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
@@ -106,20 +87,28 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdDomicilio(Long idDomicilio) {
-    this.idDomicilio = idDomicilio;
+  public void setIdTipoObra(Long idTipoObra) {
+    this.idTipoObra = idTipoObra;
   }
 
-  public Long getIdDomicilio() {
-    return idDomicilio;
+  public Long getIdTipoObra() {
+    return idTipoObra;
   }
 
-  public void setNombres(String nombres) {
-    this.nombres = nombres;
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
   }
 
-  public String getNombres() {
-    return nombres;
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setIdDivision(Long idDivision) {
+    this.idDivision = idDivision;
+  }
+
+  public Long getIdDivision() {
+    return idDivision;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -133,12 +122,12 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdDesarrollo();
+  	return getIdTipoObra();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idDesarrollo = key;
+  	this.idTipoObra = key;
   }
 
   @Override
@@ -149,15 +138,13 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getClave());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCliente());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDesarrollo());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDomicilio());
+		regresar.append(getIdTipoObra());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getNombres());
+		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDivision());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -169,11 +156,10 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
 		regresar.put("clave", getClave());
-		regresar.put("idCliente", getIdCliente());
-		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idDomicilio", getIdDomicilio());
-		regresar.put("nombres", getNombres());
+		regresar.put("idTipoObra", getIdTipoObra());
+		regresar.put("nombre", getNombre());
+		regresar.put("idDivision", getIdDivision());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -181,7 +167,7 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getClave(), getIdCliente(), getIdDesarrollo(), getIdUsuario(), getIdDomicilio(), getNombres(), getRegistro()
+    getDescripcion(), getClave(), getIdUsuario(), getIdTipoObra(), getNombre(), getIdDivision(), getRegistro()
     };
     return regresar;
   }
@@ -195,8 +181,8 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idDesarrollo~");
-    regresar.append(getIdDesarrollo());
+    regresar.append("idTipoObra~");
+    regresar.append(getIdTipoObra());
     regresar.append("|");
     return regresar.toString();
   }
@@ -204,18 +190,18 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdDesarrollo());
+    regresar.append(getIdTipoObra());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetDesarrollosDto.class;
+    return TcKeetTiposObrasDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdDesarrollo()!= null && getIdDesarrollo()!=-1L;
+  	return getIdTipoObra()!= null && getIdTipoObra()!=-1L;
   }
 
   @Override
@@ -226,8 +212,8 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetDesarrollosDto other = (TcKeetDesarrollosDto) obj;
-    if (getIdDesarrollo() != other.idDesarrollo && (getIdDesarrollo() == null || !getIdDesarrollo().equals(other.idDesarrollo))) {
+    final TcKeetTiposObrasDto other = (TcKeetTiposObrasDto) obj;
+    if (getIdTipoObra() != other.idTipoObra && (getIdTipoObra() == null || !getIdTipoObra().equals(other.idTipoObra))) {
       return false;
     }
     return true;
@@ -236,7 +222,7 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdDesarrollo() != null ? getIdDesarrollo().hashCode() : 0);
+    hash = 67 * hash + (getIdTipoObra() != null ? getIdTipoObra().hashCode() : 0);
     return hash;
   }
 
