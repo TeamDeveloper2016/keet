@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcKeetProyectosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosLotesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_lotes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_lotes
+        where      
+          manzana = '{manzana}' and id_proyecto = {idProyecto} and lote = {lote}
+      </select>
+    </unit>		
     <unit id="TcKeetPrototiposDto">
       <select id="row">
         select      
@@ -23,6 +59,24 @@
           tc_keet_prototipos
         where      
           id_cliente = {idCliente} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetPrototiposArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_prototipos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prototipos_archivos
+        where      
+          id_plano = {idPlano} and id_prototipo = {idPrototipo} and nombre = '{nombre}'
       </select>
     </unit>		
     <unit id="TcKeetTiposAtributosDto">
