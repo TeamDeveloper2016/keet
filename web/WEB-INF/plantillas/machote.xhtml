@@ -49,7 +49,9 @@
           </div>
           <div id="layout-portlets-cover" class="janal-content-center">
             <h:form id="datos" prependId="false">						
-              <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" autoUpdate="true" escape="false" life="15000"/>
+              <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000">
+  	  				  <p:autoUpdate />
+    				  </p:growl>	
               <p:panel styleClass="sticky-body" toggleable="true" style="border:0px;">
                 <p:focus context="principal"/>	
                 <ui:insert name="contenido"/>		

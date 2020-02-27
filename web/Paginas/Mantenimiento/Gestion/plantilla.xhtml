@@ -28,7 +28,9 @@
 				</p:layoutUnit>
 				<p:layoutUnit id="principal" position="center" size="100%" style="border:0;" styleClass="sticky-wrapper" gutter="0">
 					<h:form id="datos" prependId="false">
-						<p:growl id="mensaje" showDetail="true" sticky="true" widgetVar="mensajes" autoUpdate="true" escape="false"/>
+						<p:growl id="mensaje" showDetail="true" sticky="true" widgetVar="mensajes" escape="false">
+						  <p:autoUpdate />
+						</p:growl>	
 						<div id="toggleable" class="ui-panel ui-widget ui-widget-content ui-corner-all" style="margin-bottom:5px" data-widget="panel">
 							<div id="toggleable_header" class="ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all">
 								<span class="ui-panel-title">#{titulo}</span>

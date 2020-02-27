@@ -56,7 +56,9 @@
           </div>	
           <div id="layout-portlets-cover" class="janal-content-center">
             <h:form id="datos" prependId="false">						
-              <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" autoUpdate="true" escape="false" life="15000"/>
+              <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000">
+  	  				  <p:autoUpdate />
+    				  </p:growl>	
               <div id="freeze"/>
               <div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100 lg-pantalla">
                 <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header">
