@@ -452,6 +452,7 @@ public abstract class GenerationFiles {
   public void loadProperties() {
 
     getProperties().put("paquete",getPaquete().replace("/","."));
+    getProperties().put("librerias", getLibraries());
     setVariable( this.tablaDto ? Cadena.toClassNameEspecial(getNombreTabla()): getNombreTabla().toUpperCase());
     getProperties().put("nombreClaseDto", getVariable().concat("Dto"));
     getProperties().put("nombreClaseDao", getVariable().concat("Dao"));
@@ -569,7 +570,6 @@ public abstract class GenerationFiles {
   private String toKeyAndSequence(String keyAttribute) {
     StringBuilder sb = new StringBuilder();
     String nameSeq   = keyAttribute.concat("_sequence");
-
     sb.append("@Id\n");
     if ( !isVista() ) {
       sb.append("  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)\n	");      
@@ -614,7 +614,52 @@ public abstract class GenerationFiles {
     } // try
     return sb.toString();
   }
-
+	
+	// import javax.persistence.GenerationType;
+  // import javax.persistence.SequenceGenerator;
+  private String getLibraries() {
+    StringBuilder sb    = new StringBuilder();
+    RenglonCampo renglon= null;
+		Boolean a= true, b= true, c= true, d= true;
+    try {
+      // LEER CAMPOS DE LA TABLA
+      for(String key: getDetailTable().keySet()) {				
+        renglon = getDetailTable().get(key);
+				String type= renglon.getTipo();
+				switch (type) {
+					case "Blob":
+						if(a) {
+              sb.append("import java.sql.Blob;\n");
+              sb.append("import javax.persistence.Lob;\n");
+							a= !a;
+						} // if	
+						break;
+					case "Date":
+						if(b) { 
+              sb.append("import java.time.LocalDate;\n");
+							b= !b;
+						} // if	
+						break;
+					case "Time":
+						if(c) {
+              sb.append("import java.time.LocalTime;\n");
+							c= !c;
+						} // if	
+						break;
+					case "Timestamp":
+						if(d) {
+              sb.append("import java.time.LocalDateTime;\n");
+							d= !d;
+						} // if	
+						break;
+				} // switch
+      } // for
+    }
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // try
+    return sb.length()> 0? sb.substring(0, sb.length()- 1): sb.toString();
+  }
 
   private String getCodeProperties() {
     StringBuilder sb     = new StringBuilder();

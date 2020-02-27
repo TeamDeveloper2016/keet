@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcKeetGruposConstructivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_grupos_constructivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_grupos_constructivos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetConstructivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_constructivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_constructivos
+        where      
+          id_grupo_constructivo = {idGrupoConstructivo} and nombre = '{nombre}'
+      </select>
+    </unit>		
     <unit id="TcKeetFamiliasDto">
       <select id="row">
         select      

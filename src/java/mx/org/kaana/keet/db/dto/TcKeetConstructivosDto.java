@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -24,36 +23,36 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_familias")
-public class TcKeetFamiliasDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_constructivos")
+public class TcKeetConstructivosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="descripcion")
   private String descripcion;
+  @Column (name="id_grupo_constructivo")
+  private Long idGrupoConstructivo;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_familia")
-  private Long idFamilia;
-  @Column (name="id_usuario")
-  private Long idUsuario;
+	@Column (name="id_constructivo")
+  private Long idConstructivo;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetFamiliasDto() {
+  public TcKeetConstructivosDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetFamiliasDto(Long key) {
-    this(null, new Long(-1L), null, null);
+  public TcKeetConstructivosDto(Long key) {
+    this(null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TcKeetFamiliasDto(String descripcion, Long idFamilia, Long idUsuario, String nombre) {
+  public TcKeetConstructivosDto(String descripcion, Long idGrupoConstructivo, Long idConstructivo, String nombre) {
     setDescripcion(descripcion);
-    setIdFamilia(idFamilia);
-    setIdUsuario(idUsuario);
+    setIdGrupoConstructivo(idGrupoConstructivo);
+    setIdConstructivo(idConstructivo);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
@@ -66,20 +65,20 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
     return descripcion;
   }
 
-  public void setIdFamilia(Long idFamilia) {
-    this.idFamilia = idFamilia;
+  public void setIdGrupoConstructivo(Long idGrupoConstructivo) {
+    this.idGrupoConstructivo = idGrupoConstructivo;
   }
 
-  public Long getIdFamilia() {
-    return idFamilia;
+  public Long getIdGrupoConstructivo() {
+    return idGrupoConstructivo;
   }
 
-  public void setIdUsuario(Long idUsuario) {
-    this.idUsuario = idUsuario;
+  public void setIdConstructivo(Long idConstructivo) {
+    this.idConstructivo = idConstructivo;
   }
 
-  public Long getIdUsuario() {
-    return idUsuario;
+  public Long getIdConstructivo() {
+    return idConstructivo;
   }
 
   public void setNombre(String nombre) {
@@ -101,12 +100,12 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdFamilia();
+  	return getIdConstructivo();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idFamilia = key;
+  	this.idConstructivo = key;
   }
 
   @Override
@@ -115,9 +114,9 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdFamilia());
+		regresar.append(getIdGrupoConstructivo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdUsuario());
+		regresar.append(getIdConstructivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
@@ -130,8 +129,8 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
-		regresar.put("idFamilia", getIdFamilia());
-		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idGrupoConstructivo", getIdGrupoConstructivo());
+		regresar.put("idConstructivo", getIdConstructivo());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -140,7 +139,7 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdFamilia(), getIdUsuario(), getNombre(), getRegistro()
+    getDescripcion(), getIdGrupoConstructivo(), getIdConstructivo(), getNombre(), getRegistro()
     };
     return regresar;
   }
@@ -154,8 +153,8 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idFamilia~");
-    regresar.append(getIdFamilia());
+    regresar.append("idConstructivo~");
+    regresar.append(getIdConstructivo());
     regresar.append("|");
     return regresar.toString();
   }
@@ -163,18 +162,18 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdFamilia());
+    regresar.append(getIdConstructivo());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetFamiliasDto.class;
+    return TcKeetConstructivosDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdFamilia()!= null && getIdFamilia()!=-1L;
+  	return getIdConstructivo()!= null && getIdConstructivo()!=-1L;
   }
 
   @Override
@@ -185,8 +184,8 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetFamiliasDto other = (TcKeetFamiliasDto) obj;
-    if (getIdFamilia() != other.idFamilia && (getIdFamilia() == null || !getIdFamilia().equals(other.idFamilia))) {
+    final TcKeetConstructivosDto other = (TcKeetConstructivosDto) obj;
+    if (getIdConstructivo() != other.idConstructivo && (getIdConstructivo() == null || !getIdConstructivo().equals(other.idConstructivo))) {
       return false;
     }
     return true;
@@ -195,7 +194,7 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdFamilia() != null ? getIdFamilia().hashCode() : 0);
+    hash = 67 * hash + (getIdConstructivo() != null ? getIdConstructivo().hashCode() : 0);
     return hash;
   }
 
