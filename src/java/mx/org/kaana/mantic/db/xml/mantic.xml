@@ -1466,6 +1466,21 @@
         where      
           id_cierre_estatus = {idCierreEstatus} and nombre = '{nombre}'
       </select>
+			<select id="dinamico">
+				select 
+					*
+				from(
+					select      
+						tc_mantic_cierres_estatus.id_cierre_estatus as id_key,
+						tc_mantic_cierres_estatus.*
+					from      
+						tc_mantic_cierres_estatus 
+				) principal
+        where 
+          {condicion} 
+				order by
+				  id_cierre_estatus
+			</select>
     </unit>		
 		<unit id="TcManticRequisicionesBitacoraDto">
       <select id="row">
