@@ -23,12 +23,10 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_prototipos_archivos")
-public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_proyectos_prespuestos")
+public class TcKeetProyectosPrespuestosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="id_plano")
-  private Long idPlano;
   @Column (name="archivo")
   private String archivo;
   @Column (name="ruta")
@@ -37,55 +35,49 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   private Long tamanio;
   @Column (name="id_usuarios")
   private Long idUsuarios;
+  @Column (name="id_proyecto")
+  private Long idProyecto;
   @Column (name="id_tipo_archivo")
   private Long idTipoArchivo;
   @Column (name="observaciones")
   private String observaciones;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_prototipo_archivo")
-  private Long idPrototipoArchivo;
+	@Column (name="id_proyecto_presupuesto")
+  private Long idProyectoPresupuesto;
+  @Column (name="id_tipo_presupuesto")
+  private Long idTipoPresupuesto;
   @Column (name="alias")
   private String alias;
-  @Column (name="id_prototipo")
-  private Long idPrototipo;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetPrototiposArchivosDto() {
+  public TcKeetProyectosPrespuestosDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetPrototiposArchivosDto(Long key) {
+  public TcKeetProyectosPrespuestosDto(Long key) {
     this(null, null, null, null, null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKeetPrototiposArchivosDto(Long idPlano, String archivo, String ruta, Long tamanio, Long idUsuarios, Long idTipoArchivo, String observaciones, Long idPrototipoArchivo, String alias, Long idPrototipo, String nombre) {
-    setIdPlano(idPlano);
+  public TcKeetProyectosPrespuestosDto(String archivo, String ruta, Long tamanio, Long idUsuarios, Long idProyecto, Long idTipoArchivo, String observaciones, Long idProyectoPresupuesto, Long idTipoPresupuesto, String alias, String nombre) {
     setArchivo(archivo);
     setRuta(ruta);
     setTamanio(tamanio);
     setIdUsuarios(idUsuarios);
+    setIdProyecto(idProyecto);
     setIdTipoArchivo(idTipoArchivo);
     setObservaciones(observaciones);
-    setIdPrototipoArchivo(idPrototipoArchivo);
+    setIdProyectoPresupuesto(idProyectoPresupuesto);
+    setIdTipoPresupuesto(idTipoPresupuesto);
     setAlias(alias);
-    setIdPrototipo(idPrototipo);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
 	
-  public void setIdPlano(Long idPlano) {
-    this.idPlano = idPlano;
-  }
-
-  public Long getIdPlano() {
-    return idPlano;
-  }
-
   public void setArchivo(String archivo) {
     this.archivo = archivo;
   }
@@ -118,6 +110,14 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
     return idUsuarios;
   }
 
+  public void setIdProyecto(Long idProyecto) {
+    this.idProyecto = idProyecto;
+  }
+
+  public Long getIdProyecto() {
+    return idProyecto;
+  }
+
   public void setIdTipoArchivo(Long idTipoArchivo) {
     this.idTipoArchivo = idTipoArchivo;
   }
@@ -134,12 +134,20 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setIdPrototipoArchivo(Long idPrototipoArchivo) {
-    this.idPrototipoArchivo = idPrototipoArchivo;
+  public void setIdProyectoPresupuesto(Long idProyectoPresupuesto) {
+    this.idProyectoPresupuesto = idProyectoPresupuesto;
   }
 
-  public Long getIdPrototipoArchivo() {
-    return idPrototipoArchivo;
+  public Long getIdProyectoPresupuesto() {
+    return idProyectoPresupuesto;
+  }
+
+  public void setIdTipoPresupuesto(Long idTipoPresupuesto) {
+    this.idTipoPresupuesto = idTipoPresupuesto;
+  }
+
+  public Long getIdTipoPresupuesto() {
+    return idTipoPresupuesto;
   }
 
   public void setAlias(String alias) {
@@ -148,14 +156,6 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
 
   public String getAlias() {
     return alias;
-  }
-
-  public void setIdPrototipo(Long idPrototipo) {
-    this.idPrototipo = idPrototipo;
-  }
-
-  public Long getIdPrototipo() {
-    return idPrototipo;
   }
 
   public void setNombre(String nombre) {
@@ -177,20 +177,18 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdPrototipoArchivo();
+  	return getIdProyectoPresupuesto();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idPrototipoArchivo = key;
+  	this.idProyectoPresupuesto = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdPlano());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getArchivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRuta());
@@ -199,15 +197,17 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuarios());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProyecto());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoArchivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPrototipoArchivo());
+		regresar.append(getIdProyectoPresupuesto());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoPresupuesto());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getAlias());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPrototipo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
@@ -219,16 +219,16 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idPlano", getIdPlano());
 		regresar.put("archivo", getArchivo());
 		regresar.put("ruta", getRuta());
 		regresar.put("tamanio", getTamanio());
 		regresar.put("idUsuarios", getIdUsuarios());
+		regresar.put("idProyecto", getIdProyecto());
 		regresar.put("idTipoArchivo", getIdTipoArchivo());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("idPrototipoArchivo", getIdPrototipoArchivo());
+		regresar.put("idProyectoPresupuesto", getIdProyectoPresupuesto());
+		regresar.put("idTipoPresupuesto", getIdTipoPresupuesto());
 		regresar.put("alias", getAlias());
-		regresar.put("idPrototipo", getIdPrototipo());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -237,7 +237,7 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdPlano(), getArchivo(), getRuta(), getTamanio(), getIdUsuarios(), getIdTipoArchivo(), getObservaciones(), getIdPrototipoArchivo(), getAlias(), getIdPrototipo(), getNombre(), getRegistro()
+    getArchivo(), getRuta(), getTamanio(), getIdUsuarios(), getIdProyecto(), getIdTipoArchivo(), getObservaciones(), getIdProyectoPresupuesto(), getIdTipoPresupuesto(), getAlias(), getNombre(), getRegistro()
     };
     return regresar;
   }
@@ -251,8 +251,8 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idPrototipoArchivo~");
-    regresar.append(getIdPrototipoArchivo());
+    regresar.append("idProyectoPresupuesto~");
+    regresar.append(getIdProyectoPresupuesto());
     regresar.append("|");
     return regresar.toString();
   }
@@ -260,18 +260,18 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdPrototipoArchivo());
+    regresar.append(getIdProyectoPresupuesto());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetPrototiposArchivosDto.class;
+    return TcKeetProyectosPrespuestosDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdPrototipoArchivo()!= null && getIdPrototipoArchivo()!=-1L;
+  	return getIdProyectoPresupuesto()!= null && getIdProyectoPresupuesto()!=-1L;
   }
 
   @Override
@@ -282,8 +282,8 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetPrototiposArchivosDto other = (TcKeetPrototiposArchivosDto) obj;
-    if (getIdPrototipoArchivo() != other.idPrototipoArchivo && (getIdPrototipoArchivo() == null || !getIdPrototipoArchivo().equals(other.idPrototipoArchivo))) {
+    final TcKeetProyectosPrespuestosDto other = (TcKeetProyectosPrespuestosDto) obj;
+    if (getIdProyectoPresupuesto() != other.idProyectoPresupuesto && (getIdProyectoPresupuesto() == null || !getIdProyectoPresupuesto().equals(other.idProyectoPresupuesto))) {
       return false;
     }
     return true;
@@ -292,7 +292,7 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdPrototipoArchivo() != null ? getIdPrototipoArchivo().hashCode() : 0);
+    hash = 67 * hash + (getIdProyectoPresupuesto() != null ? getIdProyectoPresupuesto().hashCode() : 0);
     return hash;
   }
 

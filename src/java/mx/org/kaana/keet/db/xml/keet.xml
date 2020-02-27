@@ -7,6 +7,60 @@
   </model>
 
   <dml>
+    <unit id="TcKeetTiposGeneradoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_generadores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_generadores
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosGeneradoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_generadores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_generadores
+        where      
+          id_tipo_generador = {idTipoGenerador} and id_proyecto = {idProyecto} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosPrespuestosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_prespuestos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_prespuestos
+        where      
+          id_proyecto = {idProyecto} and id_tipo_archivo = {idTipoArchivo} and id_tipo_presupuesto = {idTipoPresupuesto} and nombre = '{nombre}'
+      </select>
+    </unit>		
     <unit id="TcKeetProyectosDto">
       <select id="row">
         select      
@@ -40,10 +94,10 @@
         from      
           tc_keet_proyectos_lotes
         where      
-          manzana = '{manzana}' and id_proyecto = {idProyecto} and lote = {lote}
+          manzana = '{manzana}' and id_proyecto = {idProyecto} and lote = {lote} 
       </select>
-    </unit>		
-    <unit id="TcKeetPrototiposDto">
+    </unit>
+		<unit id="TcKeetPrototiposDto">
       <select id="row">
         select      
           *

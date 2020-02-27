@@ -23,67 +23,67 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_prototipos_archivos")
-public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_proyectos_generadores")
+public class TcKeetProyectosGeneradoresDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="id_plano")
-  private Long idPlano;
+  @Column (name="id_tipo_generador")
+  private Long idTipoGenerador;
   @Column (name="archivo")
   private String archivo;
   @Column (name="ruta")
   private String ruta;
   @Column (name="tamanio")
   private Long tamanio;
-  @Column (name="id_usuarios")
-  private Long idUsuarios;
+  @Column (name="id_usuario")
+  private Long idUsuario;
+  @Column (name="id_proyecto")
+  private Long idProyecto;
   @Column (name="id_tipo_archivo")
   private Long idTipoArchivo;
-  @Column (name="observaciones")
-  private String observaciones;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_prototipo_archivo")
-  private Long idPrototipoArchivo;
+	@Column (name="id_proyecto_generador")
+  private Long idProyectoGenerador;
+  @Column (name="observaciones")
+  private String observaciones;
   @Column (name="alias")
   private String alias;
-  @Column (name="id_prototipo")
-  private Long idPrototipo;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetPrototiposArchivosDto() {
+  public TcKeetProyectosGeneradoresDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetPrototiposArchivosDto(Long key) {
+  public TcKeetProyectosGeneradoresDto(Long key) {
     this(null, null, null, null, null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKeetPrototiposArchivosDto(Long idPlano, String archivo, String ruta, Long tamanio, Long idUsuarios, Long idTipoArchivo, String observaciones, Long idPrototipoArchivo, String alias, Long idPrototipo, String nombre) {
-    setIdPlano(idPlano);
+  public TcKeetProyectosGeneradoresDto(Long idTipoGenerador, String archivo, String ruta, Long tamanio, Long idUsuario, Long idProyecto, Long idTipoArchivo, Long idProyectoGenerador, String observaciones, String alias, String nombre) {
+    setIdTipoGenerador(idTipoGenerador);
     setArchivo(archivo);
     setRuta(ruta);
     setTamanio(tamanio);
-    setIdUsuarios(idUsuarios);
+    setIdUsuario(idUsuario);
+    setIdProyecto(idProyecto);
     setIdTipoArchivo(idTipoArchivo);
+    setIdProyectoGenerador(idProyectoGenerador);
     setObservaciones(observaciones);
-    setIdPrototipoArchivo(idPrototipoArchivo);
     setAlias(alias);
-    setIdPrototipo(idPrototipo);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
 	
-  public void setIdPlano(Long idPlano) {
-    this.idPlano = idPlano;
+  public void setIdTipoGenerador(Long idTipoGenerador) {
+    this.idTipoGenerador = idTipoGenerador;
   }
 
-  public Long getIdPlano() {
-    return idPlano;
+  public Long getIdTipoGenerador() {
+    return idTipoGenerador;
   }
 
   public void setArchivo(String archivo) {
@@ -110,12 +110,20 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
     return tamanio;
   }
 
-  public void setIdUsuarios(Long idUsuarios) {
-    this.idUsuarios = idUsuarios;
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
   }
 
-  public Long getIdUsuarios() {
-    return idUsuarios;
+  public Long getIdUsuario() {
+    return idUsuario;
+  }
+
+  public void setIdProyecto(Long idProyecto) {
+    this.idProyecto = idProyecto;
+  }
+
+  public Long getIdProyecto() {
+    return idProyecto;
   }
 
   public void setIdTipoArchivo(Long idTipoArchivo) {
@@ -126,6 +134,14 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
     return idTipoArchivo;
   }
 
+  public void setIdProyectoGenerador(Long idProyectoGenerador) {
+    this.idProyectoGenerador = idProyectoGenerador;
+  }
+
+  public Long getIdProyectoGenerador() {
+    return idProyectoGenerador;
+  }
+
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
@@ -134,28 +150,12 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setIdPrototipoArchivo(Long idPrototipoArchivo) {
-    this.idPrototipoArchivo = idPrototipoArchivo;
-  }
-
-  public Long getIdPrototipoArchivo() {
-    return idPrototipoArchivo;
-  }
-
   public void setAlias(String alias) {
     this.alias = alias;
   }
 
   public String getAlias() {
     return alias;
-  }
-
-  public void setIdPrototipo(Long idPrototipo) {
-    this.idPrototipo = idPrototipo;
-  }
-
-  public Long getIdPrototipo() {
-    return idPrototipo;
   }
 
   public void setNombre(String nombre) {
@@ -177,19 +177,19 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdPrototipoArchivo();
+  	return getIdProyectoGenerador();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idPrototipoArchivo = key;
+  	this.idProyectoGenerador = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdPlano());
+		regresar.append(getIdTipoGenerador());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getArchivo());
 		regresar.append(Constantes.SEPARADOR);
@@ -197,17 +197,17 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTamanio());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdUsuarios());
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProyecto());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoArchivo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProyectoGenerador());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPrototipoArchivo());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getAlias());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPrototipo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
@@ -219,16 +219,16 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idPlano", getIdPlano());
+		regresar.put("idTipoGenerador", getIdTipoGenerador());
 		regresar.put("archivo", getArchivo());
 		regresar.put("ruta", getRuta());
 		regresar.put("tamanio", getTamanio());
-		regresar.put("idUsuarios", getIdUsuarios());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idProyecto", getIdProyecto());
 		regresar.put("idTipoArchivo", getIdTipoArchivo());
+		regresar.put("idProyectoGenerador", getIdProyectoGenerador());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("idPrototipoArchivo", getIdPrototipoArchivo());
 		regresar.put("alias", getAlias());
-		regresar.put("idPrototipo", getIdPrototipo());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -237,7 +237,7 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdPlano(), getArchivo(), getRuta(), getTamanio(), getIdUsuarios(), getIdTipoArchivo(), getObservaciones(), getIdPrototipoArchivo(), getAlias(), getIdPrototipo(), getNombre(), getRegistro()
+    getIdTipoGenerador(), getArchivo(), getRuta(), getTamanio(), getIdUsuario(), getIdProyecto(), getIdTipoArchivo(), getIdProyectoGenerador(), getObservaciones(), getAlias(), getNombre(), getRegistro()
     };
     return regresar;
   }
@@ -251,8 +251,8 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idPrototipoArchivo~");
-    regresar.append(getIdPrototipoArchivo());
+    regresar.append("idProyectoGenerador~");
+    regresar.append(getIdProyectoGenerador());
     regresar.append("|");
     return regresar.toString();
   }
@@ -260,18 +260,18 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdPrototipoArchivo());
+    regresar.append(getIdProyectoGenerador());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKeetPrototiposArchivosDto.class;
+    return TcKeetProyectosGeneradoresDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdPrototipoArchivo()!= null && getIdPrototipoArchivo()!=-1L;
+  	return getIdProyectoGenerador()!= null && getIdProyectoGenerador()!=-1L;
   }
 
   @Override
@@ -282,8 +282,8 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetPrototiposArchivosDto other = (TcKeetPrototiposArchivosDto) obj;
-    if (getIdPrototipoArchivo() != other.idPrototipoArchivo && (getIdPrototipoArchivo() == null || !getIdPrototipoArchivo().equals(other.idPrototipoArchivo))) {
+    final TcKeetProyectosGeneradoresDto other = (TcKeetProyectosGeneradoresDto) obj;
+    if (getIdProyectoGenerador() != other.idProyectoGenerador && (getIdProyectoGenerador() == null || !getIdProyectoGenerador().equals(other.idProyectoGenerador))) {
       return false;
     }
     return true;
@@ -292,7 +292,7 @@ public class TcKeetPrototiposArchivosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdPrototipoArchivo() != null ? getIdPrototipoArchivo().hashCode() : 0);
+    hash = 67 * hash + (getIdProyectoGenerador() != null ? getIdProyectoGenerador().hashCode() : 0);
     return hash;
   }
 
