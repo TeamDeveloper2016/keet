@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="#{keetCatalogosDinamicosAccion.attrs.titulo}" />
+	<ui:define name="librerias">    
+		<script type="text/javascript">
+      Janal.Control.fields = {        
+        nombre       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        descripcion  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        estatus      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}        
+      };	
+			
+			$(document).ready(function(){janal.readingMode('#{keetCatalogosDinamicosAccion.attrs.nombreAccion}');});
+    </script> 
+		<style type="text/css">
+      .ui-picklist .ui-picklist-list {
+        width: 490px !important;
+        height: 200px !important;
+      }
+      .ui-picklist .ui-picklist-filter {      
+        width: 94% !important;
+      }
+			.ui-picklist-button-add-all{
+				display: none !important
+			}
+			.ui-picklist-button-remove-all{
+				display: none !important
+			}
+    </style>
+  </ui:define>
+  <ui:define name="contenido">    
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">          
+					<p:panelGrid id="panelGeneral" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">																
+						<p:outputLabel for="nombre" value="Nombre:"/>
+						<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{keetCatalogosDinamicosAccion.attrs.dto.nombre}"/>                    
+						<p:outputLabel for="descripcion" value="Descripción:"/>
+						<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{keetCatalogosDinamicosAccion.attrs.dto.descripcion}" />						
+					</p:panelGrid>
+					<p:outputLabel for="estatus" value="Estatus:" rendered="#{keetCatalogosDinamicosAccion.attrs.estatus}"/>
+					<p:pickList id="estatus" value="#{keetCatalogosDinamicosAccion.selectionItems}" var="itemSelection" converter="janal.convertidor.SelectionItem" itemValue="#{itemSelection}" itemLabel="#{itemSelection.item}" style="width: 30%" rendered="#{keetCatalogosDinamicosAccion.attrs.estatus}">
+						<f:facet  name="sourceCaption">Disponibles</f:facet>  
+						<f:facet name="targetCaption">Asignados</f:facet>  
+						<p:column style="width:100%">  
+							#{itemSelection.item}
+						</p:column>						
+					</p:pickList>
+        </div>
+      </div>
+    </div>			
+  </ui:define>    
+  <ui:define name="acciones">
+    <div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosDinamicosAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@none" action="#{keetCatalogosDinamicosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+    <div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosDinamicosAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@none" action="#{keetCatalogosDinamicosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+  </ui:define>
+</ui:composition>
