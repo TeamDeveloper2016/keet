@@ -37,12 +37,16 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   private Long idCliente;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_constructivo")
-  private Long idConstructivo;
+  @Column (name="id_azotea")
+  private Long idAzotea;
+  @Column (name="id_muro")
+  private Long idMuro;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_prototipo")
   private Long idPrototipo;
+  @Column (name="id_entrepiso")
+  private Long idEntrepiso;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
@@ -53,18 +57,20 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPrototiposDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idUsuario, Long idConstructivo, Long idPrototipo, String nombre) {
+  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idUsuario, Long idAzotea, Long idMuro, Long idPrototipo, Long idEntrepiso, String nombre) {
     setDescripcion(descripcion);
     setMetros2(metros2);
     setClave(clave);
     setIdCliente(idCliente);
     setIdUsuario(idUsuario);
-    setIdConstructivo(idConstructivo);
+    setIdAzotea(idAzotea);
+    setIdMuro(idMuro);
     setIdPrototipo(idPrototipo);
+    setIdEntrepiso(idEntrepiso);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
@@ -109,12 +115,20 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdConstructivo(Long idConstructivo) {
-    this.idConstructivo = idConstructivo;
+  public void setIdAzotea(Long idAzotea) {
+    this.idAzotea = idAzotea;
   }
 
-  public Long getIdConstructivo() {
-    return idConstructivo;
+  public Long getIdAzotea() {
+    return idAzotea;
+  }
+
+  public void setIdMuro(Long idMuro) {
+    this.idMuro = idMuro;
+  }
+
+  public Long getIdMuro() {
+    return idMuro;
   }
 
   public void setIdPrototipo(Long idPrototipo) {
@@ -123,6 +137,14 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 
   public Long getIdPrototipo() {
     return idPrototipo;
+  }
+
+  public void setIdEntrepiso(Long idEntrepiso) {
+    this.idEntrepiso = idEntrepiso;
+  }
+
+  public Long getIdEntrepiso() {
+    return idEntrepiso;
   }
 
   public void setNombre(String nombre) {
@@ -166,9 +188,13 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdConstructivo());
+		regresar.append(getIdAzotea());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdMuro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrototipo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEntrepiso());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
@@ -185,8 +211,10 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 		regresar.put("clave", getClave());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idConstructivo", getIdConstructivo());
+		regresar.put("idAzotea", getIdAzotea());
+		regresar.put("idMuro", getIdMuro());
 		regresar.put("idPrototipo", getIdPrototipo());
+		regresar.put("idEntrepiso", getIdEntrepiso());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -195,7 +223,7 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getMetros2(), getClave(), getIdCliente(), getIdUsuario(), getIdConstructivo(), getIdPrototipo(), getNombre(), getRegistro()
+    getDescripcion(), getMetros2(), getClave(), getIdCliente(), getIdUsuario(), getIdAzotea(), getIdMuro(), getIdPrototipo(), getIdEntrepiso(), getNombre(), getRegistro()
     };
     return regresar;
   }

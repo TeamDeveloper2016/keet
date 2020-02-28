@@ -70,6 +70,7 @@ public class Control extends IBaseAttribute implements Serializable {
       acceso.valida();
       regresar = acceso.toForward();
       this.temaActivo.setName(getCliente().getTemaActivo());     
+      // JsfBase.addMessage("Esto es un demo de los mensajes en el GROWL");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
