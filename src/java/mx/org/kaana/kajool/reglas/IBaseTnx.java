@@ -7,6 +7,7 @@ package mx.org.kaana.kajool.reglas;
  * @time 1:53:33 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
+import com.google.common.base.Objects;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -83,16 +84,16 @@ public abstract class IBaseTnx {
 
   protected final void bitacora(Session sesion, String proceso, IBaseDto newData) throws Exception {
 		if(newData!= null) {
-		 IBaseDto oldData= DaoFactory.getInstance().findById(sesion, newData.getClass(), newData.getKey());
+		  IBaseDto oldData= DaoFactory.getInstance().findById(sesion, newData.getClass(), newData.getKey());
 		  if(oldData!= null) {
 				Map<String, Object> old= oldData.toMap();
 				Map<String, Object> tmp= newData.toMap();
 				for(String key: old.keySet()) {
-          if(old.get(key)!= tmp.get(key)) {
+          if(!Objects.equal(old.get(key),tmp.get(key))) {
 						TcKeetBitacorasDto bitacora= new TcKeetBitacorasDto(
 							oldData.getKey(), //Long idKey, 
 							String.valueOf(tmp.get(key)!= null? tmp.get(key): ""), // String despues, 
-							JsfBase.getIdUsuario(), // Long idUsuario, 
+							1L, // JsfBase.getIdUsuario(), // Long idUsuario, 
 							proceso, // String proceso, 
 							-1L, // Long idBitacora, 
 							newData.getClass().getName(), // String tabla, 
