@@ -7,6 +7,78 @@
   </model>
 
   <dml>
+    <unit id="TcKeetTiposInfraestructurasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_infraestructuras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_infraestructuras
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposViviendasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_viviendas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_viviendas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposBancariosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_bancarios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_bancarios
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposRelacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_relaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_relaciones
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
     <unit id="TcKeetTiposGeneradoresDto">
       <select id="row">
         select      
