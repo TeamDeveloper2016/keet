@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.hibernate.SessionFactoryFacade;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetBitacorasDto;
 import mx.org.kaana.libs.formato.Fecha;
@@ -93,7 +94,7 @@ public abstract class IBaseTnx {
 						TcKeetBitacorasDto bitacora= new TcKeetBitacorasDto(
 							oldData.getKey(), //Long idKey, 
 							String.valueOf(tmp.get(key)!= null? tmp.get(key): ""), // String despues, 
-							1L, // JsfBase.getIdUsuario(), // Long idUsuario, 
+							Configuracion.getInstance().getEtapaServidor().equals(EEtapaServidor.DESARROLLO)? 1L: JsfBase.getIdUsuario(), // Long idUsuario, 
 							proceso, // String proceso, 
 							-1L, // Long idBitacora, 
 							newData.getClass().getName(), // String tabla, 
