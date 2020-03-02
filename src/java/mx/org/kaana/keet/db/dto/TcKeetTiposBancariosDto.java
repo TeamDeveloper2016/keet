@@ -31,6 +31,8 @@ public class TcKeetTiposBancariosDto implements IBaseDto, Serializable {
   private String descripcion;
   @Column (name="id_usuarios")
   private Long idUsuarios;
+	@Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
   @Column (name="id_tipo_bancario")
   private Long idTipoBancario;
   @Column (name="nombre")
