@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.db.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -54,11 +53,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Column(name = "REGISTRO")
   private LocalDateTime registro;
   @Column(name = "FECHA_NACIMIENTO")
-  private LocalDate fechaNacimiento;
-  @Column(name = "FECHA_INGRESO")
-  private LocalDate fechaIngreso;
-  @Column(name = "SUELDO")
-  private Double sueldo;
+  private LocalDate fechaNacimiento;  
   @Column(name = "ID_ESTADO_CIVIL")
   private Long idEstadoCivil;
 
@@ -72,10 +67,10 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   }
 
   public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, LocalDate fechaNacimiento, Long idUsuario) {
-    this(idEmpleado, nombres, paterno, materno, curp, idTipoSexo, estilo, cuenta, contrasenia, fechaNacimiento, idUsuario, 0D, LocalDate.now(), 1L);
+    this(idEmpleado, nombres, paterno, materno, curp, idTipoSexo, estilo, cuenta, contrasenia, fechaNacimiento, idUsuario, 1L);
 	}
 	
-  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, LocalDate fechaNacimiento, Long idUsuario, Double sueldo, LocalDate fechaIngreso, Long idEstadoCivil) {
+  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, LocalDate fechaNacimiento, Long idUsuario, Long idEstadoCivil) {
     setIdEmpleado(idEmpleado);
     setNombres(nombres);
 		setPaterno(paterno);
@@ -87,10 +82,8 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     setContrasenia(contrasenia);   
     setEstilo(estilo);
 		setFechaNacimiento(fechaNacimiento);
-		setIdUsuario(idUsuario);
-		this.sueldo= sueldo;
-		this.fechaIngreso= fechaIngreso;
-		this.idEstadoCivil= idEstadoCivil;
+		setIdUsuario(idUsuario);	
+		setIdEstadoCivil(idEstadoCivil);		
   }
 
   public LocalDate getFechaNacimiento() {
@@ -225,22 +218,6 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     this.idTipoSexo = idTipoSexo;
   }
 
-	public LocalDate getFechaIngreso() {
-		return fechaIngreso;
-	}
-
-	public void setFechaIngreso(LocalDate fechaIngreso) {
-		this.fechaIngreso=fechaIngreso;
-	}
-
-	public Double getSueldo() {
-		return sueldo;
-	}
-
-	public void setSueldo(Double sueldo) {
-		this.sueldo=sueldo;
-	}
-
 	public Long getIdEstadoCivil() {
 		return idEstadoCivil;
 	}
@@ -287,11 +264,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.append(getRegistro());
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getFechaNacimiento());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getFechaIngreso());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getSueldo());
-    regresar.append(Constantes.SEPARADOR);
+    regresar.append(Constantes.SEPARADOR);    
     regresar.append(getIdEstadoCivil());
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getIdUsuario());
@@ -313,9 +286,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.put("contrasenia", getContrasenia());   
     regresar.put("registro", getRegistro());
     regresar.put("estilo", getEstilo());
-    regresar.put("fechaNacimiento", getFechaNacimiento());
-    regresar.put("fechaIngreso", getFechaIngreso());
-    regresar.put("sueldo", getSueldo());
+    regresar.put("fechaNacimiento", getFechaNacimiento());    
     regresar.put("idEstadoCivil", getIdEstadoCivil());
     regresar.put("idUsuario", getIdUsuario());
     return regresar;
@@ -324,7 +295,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getFechaNacimiento(), getFechaIngreso(), getSueldo(), getIdEstadoCivil(), getIdUsuario() 
+      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getFechaNacimiento(), getIdEstadoCivil(), getIdUsuario() 
 		};
     return regresar;
   }
