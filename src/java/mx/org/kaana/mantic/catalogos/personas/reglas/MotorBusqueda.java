@@ -23,6 +23,7 @@ import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 
 	private static final long serialVersionUID= 5366287658013154045L;	
+	private static final Long PRINCIPAL       = 1L;
 	private Long idPersona;
 
 	public MotorBusqueda(Long idPersona) {
@@ -169,11 +170,11 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	
 	public List<PersonaBeneficiario> toPersonasBeneficiarios() throws Exception{
 		List<PersonaBeneficiario> regresar= null;
-		Map<String, Object>params          = null;
+		Map<String, Object>params         = null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
-			regresar= DaoFactory.getInstance().toEntitySet(TcKeetPersonasBeneficiariosDto.class, "row", params);			
+			regresar= DaoFactory.getInstance().toEntitySet(TcKeetPersonasBeneficiariosDto.class, "TcKeetPersonasBeneficiariosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -191,6 +192,12 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
 			regresar= DaoFactory.getInstance().toEntitySet(PersonaBanco.class, "TcKeetPersonasBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			if(!regresar.isEmpty()){
+				for(PersonaBanco personaBanco: regresar){
+					if(personaBanco.getIdPrincipal().equals(PRINCIPAL))
+						personaBanco.setPrincipal(Boolean.TRUE);
+				} // for
+			} // if
 		} // try
 		catch (Exception e) {		
 			throw e;
