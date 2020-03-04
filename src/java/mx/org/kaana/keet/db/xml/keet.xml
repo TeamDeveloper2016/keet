@@ -714,6 +714,12 @@
         where      
           id_persona_beneficiario = {idPersonaBeneficiario}
       </select>
+			<select id="maximo">
+        select      
+          max(id_persona_beneficiario) maximo
+        from      
+          tc_keet_personas_beneficiarios
+      </select>
     </unit>		
     <unit id="TcKeetPersonasConceptosDto">
       <select id="row">
