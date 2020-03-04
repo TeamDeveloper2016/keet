@@ -14,16 +14,20 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
+import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 
 public class RegistroPersona implements Serializable{
 
 	private static final long serialVersionUID= -8922183204418674058L;
 	private Long idPersona;
 	private TcManticPersonasDto persona;
+	private TrManticEmpresaPersonalDto empresaPersona;
 	private List<PersonaDomicilio> personasDomicilio;
-	private PersonaDomicilio personaDomicilioSelecion;
+	private PersonaDomicilio personaDomicilioSeleccion;
 	private List<PersonaBeneficiario> personasBeneficiarios;
-	private PersonaBeneficiario personaBeneficiarioSelecion;
+	private PersonaBeneficiario personaBeneficiarioSeleccion;
+	private PersonaBeneficiario personaBeneficiario;
+	private PersonaBeneficiario beneficiarioPivote;
 	private List<PersonaTipoContacto> personasTiposContacto;
 	private PersonaTipoContacto personaTipoContactoSeleccion;	
 	private List<PersonaBanco> personasBancos;
@@ -37,33 +41,38 @@ public class RegistroPersona implements Serializable{
 	private Long idEmpresa;
 	
 	public RegistroPersona() {
-		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio(), new ArrayList<PersonaBanco>(), new ArrayList<PersonaBeneficiario>());
+		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio(), new ArrayList<PersonaBanco>(), new ArrayList<PersonaBeneficiario>(), new TrManticEmpresaPersonalDto(), new PersonaBeneficiario(), new PersonaBeneficiario());
 	}
 	
 	public RegistroPersona(Long idPersona) {
-		this.idPersona  = idPersona;
-		this.contadores = new ContadoresListas();
-		this.countIndice= 0L;
-		this.deleteList = new ArrayList<>();
-		this.domicilio  = new Domicilio();
-		this.domicilioPivote= new Domicilio();
+		this.idPersona          = idPersona;
+		this.contadores         = new ContadoresListas();
+		this.countIndice        = 0L;
+		this.deleteList         = new ArrayList<>();
+		this.domicilio          = new Domicilio();
+		this.domicilioPivote    = new Domicilio();
+		this.beneficiarioPivote = new PersonaBeneficiario();
+		this.personaBeneficiario= new PersonaBeneficiario();
 		init();		
 	}
 	
-	public RegistroPersona(Long idPersona, TcManticPersonasDto persona, List<PersonaDomicilio> personasDomicilio, List<PersonaTipoContacto> personasTiposContacto, Domicilio domicilio, List<PersonaBanco> personasBancos, List<PersonaBeneficiario> personasBeneficiarios) {
-		this.idPersona             = idPersona;
-		this.persona               = persona;
-		this.personasDomicilio     = personasDomicilio;
-		this.personasTiposContacto = personasTiposContacto;
-		this.deleteList            = new ArrayList<>();
-		this.contadores            = new ContadoresListas();
-		this.countIndice           = 0L;
-		this.domicilio             = domicilio;
-		this.domicilioPivote       = domicilio;
-		this.idPuesto              = -1L;
-		this.idEmpresa             = -1L;
-		this.personasBeneficiarios = personasBeneficiarios;
-		this.personasBancos        = personasBancos;
+	public RegistroPersona(Long idPersona, TcManticPersonasDto persona, List<PersonaDomicilio> personasDomicilio, List<PersonaTipoContacto> personasTiposContacto, Domicilio domicilio, List<PersonaBanco> personasBancos, List<PersonaBeneficiario> personasBeneficiarios, TrManticEmpresaPersonalDto empresaPersona, PersonaBeneficiario beneficiarioPivote, PersonaBeneficiario personaBeneficiario) {
+		this.idPersona            = idPersona;
+		this.persona              = persona;
+		this.personasDomicilio    = personasDomicilio;
+		this.personasTiposContacto= personasTiposContacto;
+		this.deleteList           = new ArrayList<>();
+		this.contadores           = new ContadoresListas();
+		this.countIndice          = 0L;
+		this.domicilio            = domicilio;
+		this.domicilioPivote      = domicilio;
+		this.idPuesto             = -1L;
+		this.idEmpresa            = -1L;
+		this.personasBeneficiarios= personasBeneficiarios;
+		this.personasBancos       = personasBancos;
+		this.empresaPersona       = empresaPersona;
+		this.beneficiarioPivote   = beneficiarioPivote;
+		this.personaBeneficiario  = personaBeneficiario;
 	}
 
 	public Long getIdPersona() {
@@ -90,12 +99,12 @@ public class RegistroPersona implements Serializable{
 		this.personasDomicilio = personasDomicilio;
 	}
 
-	public PersonaDomicilio getPersonaDomicilioSelecion() {
-		return personaDomicilioSelecion;
+	public PersonaDomicilio getPersonaDomicilioSeleccion() {
+		return personaDomicilioSeleccion;
 	}
 
-	public void setPersonaDomicilioSelecion(PersonaDomicilio personaDomicilioSelecion) {
-		this.personaDomicilioSelecion = personaDomicilioSelecion;
+	public void setPersonaDomicilioSeleccion(PersonaDomicilio personaDomicilioSeleccion) {
+		this.personaDomicilioSeleccion = personaDomicilioSeleccion;
 	}
 
 	public List<PersonaTipoContacto> getPersonasTiposContacto() {
@@ -162,12 +171,12 @@ public class RegistroPersona implements Serializable{
 		this.personasBeneficiarios = personasBeneficiarios;
 	}
 
-	public PersonaBeneficiario getPersonaBeneficiarioSelecion() {
-		return personaBeneficiarioSelecion;
+	public PersonaBeneficiario getPersonaBeneficiarioSeleccion() {
+		return personaBeneficiarioSeleccion;
 	}
 
-	public void setPersonaBeneficiarioSelecion(PersonaBeneficiario personaBeneficiarioSelecion) {
-		this.personaBeneficiarioSelecion = personaBeneficiarioSelecion;
+	public void setPersonaBeneficiarioSeleccion(PersonaBeneficiario personaBeneficiarioSeleccion) {
+		this.personaBeneficiarioSeleccion = personaBeneficiarioSeleccion;
 	}
 
 	public List<PersonaBanco> getPersonasBancos() {
@@ -185,6 +194,30 @@ public class RegistroPersona implements Serializable{
 	public void setPersonaBancoSeleccion(PersonaBanco personaBancoSeleccion) {
 		this.personaBancoSeleccion = personaBancoSeleccion;
 	}	
+
+	public TrManticEmpresaPersonalDto getEmpresaPersona() {
+		return empresaPersona;
+	}
+
+	public void setEmpresaPersona(TrManticEmpresaPersonalDto empresaPersona) {
+		this.empresaPersona = empresaPersona;
+	}	
+
+	public PersonaBeneficiario getBeneficiarioPivote() {
+		return beneficiarioPivote;
+	}
+
+	public void setBeneficiarioPivote(PersonaBeneficiario beneficiarioPivote) {
+		this.beneficiarioPivote = beneficiarioPivote;
+	}	
+
+	public PersonaBeneficiario getPersonaBeneficiario() {
+		return personaBeneficiario;
+	}
+
+	public void setPersonaBeneficiario(PersonaBeneficiario personaBeneficiario) {
+		this.personaBeneficiario = personaBeneficiario;
+	}	
 	
 	private void init(){
 		int count          = 0;
@@ -192,6 +225,7 @@ public class RegistroPersona implements Serializable{
 		try {
 			motor= new MotorBusqueda(this.idPersona);
 			this.persona= motor.toPersona();									
+			this.empresaPersona= motor.toDetallePersona();
 			this.personasDomicilio= motor.toPersonasDomicilio(true);
 			for(PersonaDomicilio personaDomicilio: this.personasDomicilio){
 				count++;
@@ -213,7 +247,7 @@ public class RegistroPersona implements Serializable{
 		} // catch		
 	} // init
 	
-	public void doAgregarClienteDomicilio(){
+	public void doAgregarPersonaDomicilio(){
 		PersonaDomicilio personaDomicilio= null;
 		try {								
 			personaDomicilio= new PersonaDomicilio(this.contadores.getTotalPersonasDomicilios() + this.countIndice, ESql.INSERT, true);	
@@ -227,13 +261,13 @@ public class RegistroPersona implements Serializable{
 		finally{			
 			this.countIndice++;
 		} // finally
-	} // doAgregarClienteDomicilio
+	} // doAgregarPersonaDomicilio
 	
-	public void doEliminarClienteDomicilio(){
+	public void doEliminarPersonaDomicilio(){
 		try {			
-			if(this.personasDomicilio.remove(this.personaDomicilioSelecion)){
-				if(!this.personaDomicilioSelecion.getNuevo())
-					addDeleteList(this.personaDomicilioSelecion);
+			if(this.personasDomicilio.remove(this.personaDomicilioSeleccion)){
+				if(!this.personaDomicilioSeleccion.getNuevo())
+					addDeleteList(this.personaDomicilioSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el domicilio", ETipoMensaje.INFORMACION);
 			} // if
 			else
@@ -243,12 +277,12 @@ public class RegistroPersona implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
-	} // doEliminarClienteDomicilio	
+	} // doEliminarPersonaDomicilio	
 	
-	public void doConsultarClienteDomicilio(){
+	public void doConsultarPersonaDomicilio(){
 		PersonaDomicilio pivote= null;
 		try {			
-			pivote= this.personasDomicilio.get(this.personasDomicilio.indexOf(this.personaDomicilioSelecion));
+			pivote= this.personasDomicilio.get(this.personasDomicilio.indexOf(this.personaDomicilioSeleccion));
 			pivote.setModificar(true);
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
@@ -272,12 +306,12 @@ public class RegistroPersona implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // doConsultarClienteDomicilio
+	} // doConsultarPersonaDomicilio
 	
-	public void doActualizarClienteDomicilio(){
+	public void doActualizarPersonaDomicilio(){
 		PersonaDomicilio pivote= null;
 		try {			
-			pivote= this.personasDomicilio.get(this.personasDomicilio.indexOf(this.personaDomicilioSelecion));			
+			pivote= this.personasDomicilio.get(this.personasDomicilio.indexOf(this.personaDomicilioSeleccion));			
 			pivote.setModificar(false);
 			setValuesPersonaDomicilio(pivote, true);						
 		} // try
@@ -285,7 +319,7 @@ public class RegistroPersona implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch				
-	} // doActualizarClienteDomicilio
+	} // doActualizarPersonaDomicilio
 	
 	private void setValuesPersonaDomicilio(PersonaDomicilio personaDomicilio, boolean actualizar) throws Exception{
 		try {
@@ -317,7 +351,88 @@ public class RegistroPersona implements Serializable{
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // setValuesClienteDomicilio
+	} // setValuesPersonaDomicilio
+	
+	public void doAgregarPersonaBeneficiario(){
+		PersonaBeneficiario perBeneficiario= null;
+		try {								
+			perBeneficiario= new PersonaBeneficiario(this.contadores.getTotalPersonasBeneficiarios()+ this.countIndice, ESql.INSERT, true);	
+			setValuesPersonaBeneficiario(perBeneficiario, false);			
+			this.personasBeneficiarios.add(perBeneficiario);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarPersonaBeneficiario
+	
+	public void doEliminarPersonaBeneficiario(){
+		try {			
+			if(this.personasBeneficiarios.remove(this.personaBeneficiarioSeleccion)){
+				if(!this.personaBeneficiarioSeleccion.getNuevo())
+					addDeleteList(this.personaBeneficiarioSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el domicilio", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar el domicilio", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarPersonaBeneficiario	
+	
+	public void doConsultarPersonaBeneficiario(){
+		PersonaBeneficiario pivote= null;
+		try {			
+			pivote= this.personasBeneficiarios.get(this.personasBeneficiarios.indexOf(this.personaBeneficiarioSeleccion));
+			pivote.setModificar(true);
+			this.beneficiarioPivote= new PersonaBeneficiario();
+			this.beneficiarioPivote.setCurp(pivote.getCurp());
+			this.beneficiarioPivote.setIdTipoParentesco(pivote.getIdTipoParentesco());	
+			this.beneficiarioPivote.setMaterno(pivote.getMaterno());
+			this.beneficiarioPivote.setPaterno(pivote.getPaterno());
+			this.beneficiarioPivote.setNombre(pivote.getNombre());
+			this.beneficiarioPivote.setRfc(pivote.getRfc());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doConsultarPersonaBeneficiario
+	
+	public void doActualizarPersonaBeneficiario(){
+		PersonaBeneficiario pivote= null;
+		try {			
+			pivote= this.personasBeneficiarios.get(this.personasBeneficiarios.indexOf(this.personaBeneficiarioSeleccion));			
+			pivote.setModificar(false);
+			setValuesPersonaBeneficiario(pivote, true);						
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch				
+	} // doActualizarPersonaBeneficiario
+	
+	private void setValuesPersonaBeneficiario(PersonaBeneficiario personaBeneficiario, boolean actualizar) throws Exception{
+		try {			
+			personaBeneficiario.setIdUsuario(JsfBase.getIdUsuario());			
+			if(!actualizar)
+				personaBeneficiario.setConsecutivo(this.personasBeneficiarios.size() + 1L);
+			personaBeneficiario.setCurp(this.personaBeneficiario.getCurp());
+			personaBeneficiario.setIdTipoParentesco(this.personaBeneficiario.getIdTipoParentesco());
+			personaBeneficiario.setMaterno(this.personaBeneficiario.getMaterno());
+			personaBeneficiario.setPaterno(this.personaBeneficiario.getPaterno());
+			personaBeneficiario.setNombre(this.personaBeneficiario.getNombre());
+			personaBeneficiario.setRfc(this.personaBeneficiario.getRfc());			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // setValuesPersonaBeneficiario
 	
 	public void doAgregarClienteTipoContacto(){
 		PersonaTipoContacto personaTipoContacto= null;
