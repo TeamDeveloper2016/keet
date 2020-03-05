@@ -856,7 +856,8 @@
     <unit id="TcKeetTiposParentescosDto">
       <select id="row">
         select      
-          *
+					tc_keet_tipos_parentescos.id_tipo_parentesco as id_key,
+          tc_keet_tipos_parentescos.*
         from      
           tc_keet_tipos_parentescos
         where 
