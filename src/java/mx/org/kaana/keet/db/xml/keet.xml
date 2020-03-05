@@ -696,6 +696,9 @@
         from      
           tc_keet_personas_bancos
       </select>
+			<delete id="rows">
+				delete from tc_keet_personas_bancos where id_persona = {idPersona}
+			</delete>
     </unit>	
     <unit id="TcKeetPersonasBeneficiariosDto">
       <select id="row">
@@ -720,6 +723,9 @@
         from      
           tc_keet_personas_beneficiarios
       </select>
+			<delete id="rows">
+				delete from tc_keet_personas_beneficiarios where id_persona = {idPersona}
+			</delete>
     </unit>		
     <unit id="TcKeetPersonasConceptosDto">
       <select id="row">
