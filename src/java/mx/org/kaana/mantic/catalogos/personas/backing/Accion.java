@@ -104,7 +104,26 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadClientes();
 		loadProveedores();
 		loadEstadosCiviles();
+		loadTiposParentescos();
 	} // loadCollections
+	
+	private void loadTiposParentescos(){
+		List<UISelectItem> parentescos= null;
+		Map<String, Object> params    = null;		
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			parentescos= UISelect.build("TcKeetTiposParentescosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("parentescos", parentescos);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally		
+	} // loadTiposParentescos
 	
 	private void loadBancos(){
 		List<UISelectItem> bancos = null;
