@@ -183,15 +183,14 @@ public class Transaccion  extends IBaseTnx{
   } // eliminarCliente
 	
 	private boolean registraPersonaEmpresa(Session sesion, Long idPersona) throws Exception{
-		boolean regresar                          = false;
-		TrManticEmpresaPersonalDto empresaPersonal= null;
+		boolean regresar= false;		
 		try {
-			empresaPersonal= new TrManticEmpresaPersonalDto();
-			empresaPersonal.setIdPersona(idPersona);
-			empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
-			empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
-			empresaPersonal.setIdUsuario(JsfBase.getIdUsuario());
-			regresar= DaoFactory.getInstance().insert(sesion, empresaPersonal)>= 1L;
+			this.persona.getEmpresaPersona().setIdPersona(idPersona);			
+			this.persona.getEmpresaPersona().setIdEmpresa(this.persona.getIdEmpresa());						
+			this.persona.getEmpresaPersona().setIdPuesto(this.persona.getIdPuesto());						
+			this.persona.getEmpresaPersona().setIdUsuario(JsfBase.getIdUsuario());												
+			this.persona.getEmpresaPersona().setObservaciones("Alta de empleado nuevo.");												
+			regresar= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona())>= 1L;
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -207,7 +206,7 @@ public class Transaccion  extends IBaseTnx{
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
 			empresaPersonal= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
-			if(empresaPersonal!= null && empresaPersonal.isValid()){
+			if(empresaPersonal!= null && empresaPersonal.isValid()){												
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
 				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;
