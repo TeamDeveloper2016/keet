@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
+import org.primefaces.event.TabChangeEvent;
 
 
 @Named(value = "manticCatalogosPersonasAccion")
@@ -105,7 +106,26 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadProveedores();
 		loadEstadosCiviles();
 		loadTiposParentescos();
+		loadDepartamentos();
 	} // loadCollections
+	
+	private void loadDepartamentos(){
+		List<UISelectItem> departamentos= null;
+		Map<String, Object> params      = null;		
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			departamentos= UISelect.build("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("departamentos", departamentos);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally		
+	} // loadTiposParentescos
 	
 	private void loadTiposParentescos(){
 		List<UISelectItem> parentescos= null;
@@ -151,7 +171,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
 			sucursales= UISelect.build("TcManticEmpresasDto", "empresas", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("empresas", sucursales);
-			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectItem(sucursales));
+			this.attrs.put("empresa", (Long) sucursales.get(0).getValue());			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -164,7 +184,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params= null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_empresa=" + Long.valueOf(this.attrs.get("idEmpresa").toString()));
+      params.put(Constantes.SQL_CONDICION, "id_empresa=" + this.attrs.get("empresa"));
       puestos = UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!puestos.isEmpty()) {
 				this.attrs.put("puestos", puestos);
@@ -210,7 +230,8 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.registroPersona= new RegistroPersona();			
 					this.loadCollections();
 					if(this.attrs.get("tipoPersona")!= null)
-						this.registroPersona.getPersona().setIdTipoPersona(Long.valueOf(this.attrs.get("tipoPersona").toString()));					
+						this.registroPersona.getPersona().setIdTipoPersona(Long.valueOf(this.attrs.get("tipoPersona").toString()));	
+					this.registroPersona.getEmpresaPersona().setIdActivo(1L);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -222,8 +243,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 						doConsultarPersonaDomicilio();
 					} // if
 					if(!this.registroPersona.getPersonasBeneficiarios().isEmpty())
-						this.registroPersona.setPersonaBeneficiarioSeleccion(this.registroPersona.getPersonasBeneficiarios().get(0));											
-					this.attrs.put("idEmpresa", this.registroPersona.getIdEmpresa());
+						this.registroPersona.setPersonaBeneficiarioSeleccion(this.registroPersona.getPersonasBeneficiarios().get(0));	
+					this.attrs.put("empresa", this.registroPersona.getIdEmpresa());
           break;
       } // switch
 			this.registroPersona.getPersona().setEstilo(TEMA);
@@ -240,8 +261,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
 		EAccion eaccion        = null;		
 		Entity persona         = null;
-    try {						
-			this.registroPersona.setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+    try {					
+			this.registroPersona.setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresaPivote").toString()));
 			eaccion= (EAccion) this.attrs.get("accion");
 			transaccion = new Transaccion(this.registroPersona);
 			if(Boolean.valueOf(this.attrs.get("mostrarProveedores").toString())) {
@@ -930,7 +951,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				for(Entity cliente: clientes){
 					if(cliente.getKey().equals(idCliente))
 						this.attrs.put("cliente", cliente);
-				}	//
+				}	// for
 			} // if				
 			else
 				this.attrs.put("cliente", clientes.get(0));
@@ -953,4 +974,22 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // doActualizaMunicipios
+	
+	public void onTabChange(TabChangeEvent event) {
+		if(this.attrs.get("empresa")!= null)
+			this.attrs.put("idEmpresaPivote", this.attrs.get("empresa"));
+		else if(this.attrs.get("idEmpresaPivote")!= null)
+			this.attrs.put("empresa", this.attrs.get("idEmpresaPivote"));		
+		if(this.attrs.get("empresas")== null)
+			loadEmpresas();
+		if(this.attrs.get("empresa")== null){
+			this.attrs.put("empresa", ((List<UISelectItem>)this.attrs.get("empresas")).get(0).getValue());
+			this.attrs.put("idEmpresaPivote", this.attrs.get("empresa"));
+		} // if
+		if(event.getTab().getTitle().equals("Empresa")){				
+			UIBackingUtilities.update("contenedorGrupos:empresa");			
+			if(((EAccion) this.attrs.get("accion")).equals(EAccion.CONSULTAR))
+				UIBackingUtilities.execute("readingLocalMode('" + this.attrs.get("nombreAccion") + "');");
+		}	// if	
+  } // onTabChange
 }
