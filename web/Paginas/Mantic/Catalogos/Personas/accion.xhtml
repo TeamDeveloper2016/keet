@@ -31,10 +31,10 @@
 				'contenedorGrupos\\:sueldoMensual': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nss'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:infonavit'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:factorInfonavit': {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
-				'contenedorGrupos\\:diarioImss'   : {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
-				'contenedorGrupos\\:mensualImss'  : {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
-				'contenedorGrupos\\:empresa'      : {validaciones: 'requerido', mascara: 'flotante', grupo: 'general'},
+				'contenedorGrupos\\:factorInfonavit': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:diarioImss'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:mensualImss'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:empresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:entidad'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
@@ -63,10 +63,10 @@
 				setTimeout("janal.readingMode('#{manticCatalogosPersonasAccion.attrs.nombreAccion}')", 500);
 			});
 			
-			/*function readingLocalMode(mode){
+			function readingLocalMode(mode){
 				if(mode === 'Consultar')
 					$('#contenedorGrupos\\:empresa').prop('disabled', 'disabled').addClass('ui-state-disabled');				
-			} // readingLocalMode*/
+			} // readingLocalMode
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -74,7 +74,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
-						<p:ajax event="tabChange" process="@this" listener="#{manticCatalogosPersonasAccion.onTabChange}" update="tablaBancos tablaContactos" oncomplete="janal.refresh();"/>
+						<p:ajax event="tabChange" process="@this" listener="#{manticCatalogosPersonasAccion.onTabChange}" update="tablaBancos tablaContactos" oncomplete="janal.refresh();"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
 								<p:outputLabel for="titulo" value="Titulo:"/>
@@ -116,7 +116,7 @@
 									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="cliente proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>									
 								</p:selectOneMenu>
-								<!--p:spacer/><p:separator/-->
+								<p:spacer/><p:separator/>
 								<p:outputLabel for="clave" value="Clave:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.clave}" />                    
 								<p:outputLabel for="contrato" value="Contrato:"/>
@@ -134,9 +134,9 @@
 								<p:outputLabel for="fechaContrato" value="Fecha contratación:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:calendar id="fechaContrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaContratacion}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="sueldoSemanal" value="Sueldo semanal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" />                    
+								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" inputStyle="text-align: right;"/>                    
 								<p:outputLabel for="sueldoMensual" value="Sueldo mensual:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:inputNumber id="sueldoMensual" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoMensual}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>                    
+								<p:inputNumber id="sueldoMensual" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoMensual}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" inputStyle="text-align: right;"/>                    
 								<p:outputLabel for="proveedores" value="Proveedor:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}"/>
 								<p:selectOneMenu id="proveedores" value="#{manticCatalogosPersonasAccion.attrs.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
@@ -170,16 +170,16 @@
 								<p:outputLabel value="Seguro social" style="font-weight: bold"/><p:spacer/>
 								<p:outputLabel for="nss" value="Nss:"/>
 								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}" />                    
-								<p:outputLabel for="diarioImss" value="Sueldo diario:"/>
-								<p:inputText id="diarioImss" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.diarioImss}"/>                    
-								<p:outputLabel for="mensualImss" value="Sueldo mensual:"/>
-								<p:inputText id="mensualImss" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}"/>                    
+								<p:outputLabel for="diarioImss" value="Sueldo diario:"/>								
+								<p:inputNumber id="diarioImss" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.diarioImss}" inputStyle="text-align: right;"/>                    
+								<p:outputLabel for="mensualImss" value="Sueldo mensual:"/>								                 
+								<p:inputNumber id="mensualImss" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}" inputStyle="text-align: right;"/>                    
 								<p:spacer/><p:separator/>
 								<p:outputLabel value="Infonavit" style="font-weight: bold"/><p:spacer/>
 								<p:outputLabel for="infonavit" value="No credito:"/>
 								<p:inputText id="infonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.infonavit}" />                    
-								<p:outputLabel for="factorInfonavit" value="Factor:"/>
-								<p:inputText id="factorInfonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.factorInfonavit}" />                    
+								<p:outputLabel for="factorInfonavit" value="Factor:"/>								
+								<p:inputNumber id="factorInfonavit" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.factorInfonavit}" inputStyle="text-align: right;"/>                    
               </p:panelGrid>
 						</p:tab>	
 						<p:tab title="Domicilios">
