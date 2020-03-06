@@ -72,12 +72,7 @@
 	<ui:define name="contenido">
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12">
-					<!--p:outputLabel for="empresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
-					<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.empresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-						<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="contenedorGrupos:cliente contenedorGrupos:proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								
-						<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>									
-					</p:selectOneMenu-->																	
+				<div class="ui-grid-col-12">					
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
 						<p:ajax event="tabChange" process="@this" listener="#{manticCatalogosPersonasAccion.onTabChange}" update="tablaBancos tablaContactos" oncomplete="janal.refresh();"/>
             <p:tab title="General">							
