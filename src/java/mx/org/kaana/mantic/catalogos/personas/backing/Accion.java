@@ -172,6 +172,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			sucursales= UISelect.build("TcManticEmpresasDto", "empresas", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("empresas", sucursales);
 			this.attrs.put("empresa", (Long) sucursales.get(0).getValue());			
+			this.attrs.put("idEmpresaPivote", (Long) sucursales.get(0).getValue());			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -245,6 +246,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					if(!this.registroPersona.getPersonasBeneficiarios().isEmpty())
 						this.registroPersona.setPersonaBeneficiarioSeleccion(this.registroPersona.getPersonasBeneficiarios().get(0));	
 					this.attrs.put("empresa", this.registroPersona.getIdEmpresa());
+					this.attrs.put("idEmpresaPivote", this.registroPersona.getIdEmpresa());
           break;
       } // switch
 			this.registroPersona.getPersona().setEstilo(TEMA);
@@ -746,8 +748,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAgregarCliente
 
   public void doConsultarPersonaDomicilio() {
-    Domicilio domicilio = null;
-    List<UISelectItem> codigos = null;
+    Domicilio domicilio       = null;
+    List<UISelectItem> codigos= null;
     try {
       this.registroPersona.doConsultarPersonaDomicilio();
 			domicilio = this.registroPersona.getDomicilioPivote();
@@ -896,11 +898,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	private void loadProveedores() throws Exception {
     List<UISelectEntity> proveedores= null;
-    Map<String, Object> params= null;
-		List<Columna>campos= null;
-		EAccion eaccion= null;
-		MotorBusqueda motor= null;
-		Long idProveedor= null;
+    Map<String, Object> params      = null;
+		List<Columna>campos             = null;
+		EAccion eaccion                 = null;
+		MotorBusqueda motor             = null;
+		Long idProveedor                = null;
     try {
       params = new HashMap<>();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
@@ -916,7 +918,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				for(Entity proveedor: proveedores){
 					if(proveedor.getKey().equals(idProveedor))
 						this.attrs.put("proveedor", proveedor);
-				}	//								
+				}	// for								
 			} // if
 			else
 				this.attrs.put("proveedor", proveedores.get(0));
@@ -931,11 +933,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	private void loadClientes() throws Exception {
     List<UISelectEntity> clientes= null;
-    Map<String, Object> params = null;
-		List<Columna>campos= null;
-		EAccion eaccion= null;
-		Long idCliente= null;
-		MotorBusqueda motor= null;
+    Map<String, Object> params   = null;
+		List<Columna>campos          = null;
+		EAccion eaccion              = null;
+		Long idCliente               = null;
+		MotorBusqueda motor          = null;
     try {
       params = new HashMap<>();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
