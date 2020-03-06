@@ -4244,11 +4244,11 @@
 				left join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				where 
-					(tc_mantic_personas.nombres like '%{nombres}%' 
-				or
+					tc_mantic_personas.nombres like '%{nombres}%' 
+				and
 					tc_mantic_personas.paterno like '%{paterno}%'
-				or
-					tc_mantic_personas.materno  like '%{materno}%')
+				and
+					tc_mantic_personas.materno  like '%{materno}%'
 				and 
 					tc_mantic_personas.rfc  like '%{rfc}%'
 				and 
