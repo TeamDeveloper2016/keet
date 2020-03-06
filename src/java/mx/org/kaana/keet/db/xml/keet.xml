@@ -514,7 +514,8 @@
     <unit id="TcKeetDepartamentosDto">
       <select id="row">
         select      
-          *
+          tc_keet_departamentos.id_departamento as id_key,
+					tc_keet_departamentos.*
         from      
           tc_keet_departamentos
         where 
