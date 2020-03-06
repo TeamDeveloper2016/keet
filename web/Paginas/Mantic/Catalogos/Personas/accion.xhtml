@@ -21,15 +21,24 @@
 				'contenedorGrupos\\:idEstadoCivil': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},								
 				'contenedorGrupos\\:tipoPersona'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},				
 				'contenedorGrupos\\:sexo'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:clave'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:contrato'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:puesto'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:departamento' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:fechaIngreso' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:sueldoSemanal': {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
-				'contenedorGrupos\\:sueldoMensual': {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
-				'contenedorGrupos\\:empresa'      : {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
+				'contenedorGrupos\\:fechaContrato': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+				'contenedorGrupos\\:sueldoSemanal': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:sueldoMensual': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:nss'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:infonavit'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:factorInfonavit': {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
+				'contenedorGrupos\\:diarioImss'   : {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
+				'contenedorGrupos\\:mensualImss'  : {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
+				'contenedorGrupos\\:empresa'      : {validaciones: 'requerido', mascara: 'flotante', grupo: 'general'},
 				'contenedorGrupos\\:entidad'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp'           : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:cp'           : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:calle'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:exterior'     : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:interior'     : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
@@ -43,7 +52,7 @@
 				'contenedorGrupos\\:maternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:curpB'        : {validaciones: 'curp', mascara: 'curp', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:rfcB'         : {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:parentesco'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:parentesco'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true}
 			};					
 			
 			fieldsDialog= {
@@ -53,14 +62,24 @@
 			$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticCatalogosPersonasAccion.attrs.nombreAccion}')", 500);
 			});
+			
+			/*function readingLocalMode(mode){
+				if(mode === 'Consultar')
+					$('#contenedorGrupos\\:empresa').prop('disabled', 'disabled').addClass('ui-state-disabled');				
+			} // readingLocalMode*/
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
+					<!--p:outputLabel for="empresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
+					<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.empresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+						<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="contenedorGrupos:cliente contenedorGrupos:proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								
+						<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>									
+					</p:selectOneMenu-->																	
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
-						<p:ajax event="tabChange" process="@this" update="tablaContactos" oncomplete="janal.refresh();"/>
+						<p:ajax event="tabChange" process="@this" listener="#{manticCatalogosPersonasAccion.onTabChange}" update="tablaBancos tablaContactos" oncomplete="janal.refresh();"/>
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
 								<p:outputLabel for="titulo" value="Titulo:"/>
@@ -94,25 +113,35 @@
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.estadosCiviles}"/>
 								</p:selectOneMenu>																			
               </p:panelGrid>
-						</p:tab>	
-            <p:tab title="Empresa">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
+						</p:tab>
+            <p:tab title="Empresa">
+							<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
 								<p:outputLabel for="empresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
-								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="cliente proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>
-								</p:selectOneMenu>																	
-								<p:spacer/><p:separator/>
+								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.empresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="cliente proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>									
+								</p:selectOneMenu>
+								<!--p:spacer/><p:separator/-->
+								<p:outputLabel for="clave" value="Clave:"/>
+								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.clave}" />                    
+								<p:outputLabel for="contrato" value="Contrato:"/>
+								<p:inputText id="contrato" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.contrato}" />                    
+								<p:outputLabel for="departamento" value="Departamento:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:selectOneMenu id="departamento" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idDepartamento}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.departamentos}"/>
+								</p:selectOneMenu>								
 								<p:outputLabel for="puesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
-								</p:selectOneMenu>								
+								</p:selectOneMenu>																
 								<p:outputLabel for="fechaIngreso" value="Fecha ingreso:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:calendar id="fechaIngreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaIngreso}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:outputLabel for="fechaContrato" value="Fecha contratación:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:calendar id="fechaContrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaContratacion}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="sueldoSemanal" value="Sueldo semanal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:inputText id="sueldoSemanal" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>                    
+								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" />                    
 								<p:outputLabel for="sueldoMensual" value="Sueldo mensual:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:inputText id="sueldoMensual" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoMensual}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>                    
+								<p:inputNumber id="sueldoMensual" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoMensual}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>                    
 								<p:outputLabel for="proveedores" value="Proveedor:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}"/>
 								<p:selectOneMenu id="proveedores" value="#{manticCatalogosPersonasAccion.attrs.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
@@ -139,6 +168,23 @@
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 								</p:selectOneMenu>	
+              </p:panelGrid>
+						</p:tab>	
+            <p:tab title="Prestaciones">
+							<p:panelGrid id="panelPrestaciones" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
+								<p:outputLabel value="Seguro social" style="font-weight: bold"/><p:spacer/>
+								<p:outputLabel for="nss" value="Nss:"/>
+								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}" />                    
+								<p:outputLabel for="diarioImss" value="Sueldo diario:"/>
+								<p:inputText id="diarioImss" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.diarioImss}"/>                    
+								<p:outputLabel for="mensualImss" value="Sueldo mensual:"/>
+								<p:inputText id="mensualImss" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}"/>                    
+								<p:spacer/><p:separator/>
+								<p:outputLabel value="Infonavit" style="font-weight: bold"/><p:spacer/>
+								<p:outputLabel for="infonavit" value="No credito:"/>
+								<p:inputText id="infonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.infonavit}" />                    
+								<p:outputLabel for="factorInfonavit" value="Factor:"/>
+								<p:inputText id="factorInfonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.factorInfonavit}" />                    
               </p:panelGrid>
 						</p:tab>	
 						<p:tab title="Domicilios">
@@ -336,7 +382,7 @@
               </p:panelGrid>	
             </p:tab>
 					</p:tabView>
-					<p:remoteCommand name="simpleProcess" process="@this contenedorGrupos:tablaContactos"/>
+					<p:remoteCommand name="simpleProcess" process="@this contenedorGrupos:tablaContactos contenedorGrupos:tablaBancos contenedorGrupos:panelPrestaciones contenedorGrupos:panelEmpresa"/>
 				</div>
 			</div>
 		</div>		
