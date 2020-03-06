@@ -207,6 +207,18 @@ public class Transaccion  extends IBaseTnx{
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
 			empresaPersonal= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
 			if(empresaPersonal!= null && empresaPersonal.isValid()){												
+				empresaPersonal.setClave(this.persona.getEmpresaPersona().getClave());
+				empresaPersonal.setContrato(this.persona.getEmpresaPersona().getContrato());
+				empresaPersonal.setFechaIngreso(this.persona.getEmpresaPersona().getFechaIngreso());
+				empresaPersonal.setFechaContratacion(this.persona.getEmpresaPersona().getFechaContratacion());
+				empresaPersonal.setSueldoSemanal(this.persona.getEmpresaPersona().getSueldoSemanal());
+				empresaPersonal.setSueldoMensual(this.persona.getEmpresaPersona().getSueldoMensual());
+				empresaPersonal.setNss(this.persona.getEmpresaPersona().getNss());
+				empresaPersonal.setDiarioImss(this.persona.getEmpresaPersona().getDiarioImss());
+				empresaPersonal.setSueldoImss(this.persona.getEmpresaPersona().getSueldoImss());
+				empresaPersonal.setInfonavit(this.persona.getEmpresaPersona().getInfonavit());
+				empresaPersonal.setFactorInfonavit(this.persona.getEmpresaPersona().getFactorInfonavit());
+				empresaPersonal.setIdDepartamento(this.persona.getEmpresaPersona().getIdDepartamento());
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
 				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;
