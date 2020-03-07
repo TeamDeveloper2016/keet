@@ -99,8 +99,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadTiposDomicilios();
 		loadEntidades();
 		loadMunicipios();
-		loadLocalidades();
-		loadCodigosPostales();
+		loadLocalidades();		
 		loadDomicilios();
 		loadClientes();
 		loadProveedores();
@@ -348,7 +347,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			campos= new ArrayList<>();
 			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      entidades = UIEntity.seleccione("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
+      entidades = UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("entidades", entidades);    
       this.registroPersona.getDomicilio().setIdEntidad(entidades.get(0));
     } // try
@@ -387,7 +386,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				params.put("idEntidad", this.registroPersona.getDomicilio().getIdEntidad().getKey());
 				campos= new ArrayList<>();
 				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				municipios = UIEntity.seleccione("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
+				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS);
 				this.attrs.put("municipios", municipios);
 				this.registroPersona.getDomicilio().setIdMunicipio(municipios.get(0));
 			} // if
@@ -430,7 +429,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				params.put("idMunicipio", this.registroPersona.getDomicilio().getIdMunicipio().getKey());
 				campos= new ArrayList<>();
 				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				localidades = UIEntity.seleccione("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS, "descripcion");
+				localidades = UIEntity.build("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
 				this.attrs.put("localidades", localidades);
 				this.registroPersona.getDomicilio().setLocalidad(localidades.get(0));
 				this.registroPersona.getDomicilio().setIdLocalidad(localidades.get(0).getKey());
@@ -597,9 +596,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			loadMunicipios();
 			toAsignaMunicipio();
 			loadLocalidades();
-			toAsignaLocalidad();
-			loadCodigosPostales();      
-			toAsignaCodigoPostal();
+			toAsignaLocalidad();			
 			loadAtributosComplemento();			
 		} // try
 		catch (Exception e) {
@@ -633,8 +630,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doActualizaMunicipios() {
     try {
       loadMunicipios();
-      loadLocalidades();
-      loadCodigosPostales();      
+      loadLocalidades();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -644,8 +640,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doActualizaLocalidades() {
     try {
-      loadLocalidades();
-      loadCodigosPostales();
+      loadLocalidades();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -684,9 +679,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				loadMunicipios();
 				toAsignaMunicipio();
 				loadLocalidades();
-				toAsignaLocalidad();
-				loadCodigosPostales();      
-				toAsignaCodigoPostal();
+				toAsignaLocalidad();				
 			} // if
       loadAtributosComplemento();
     } // try
@@ -748,13 +741,15 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAgregarCliente
 
   public void doConsultarPersonaDomicilio() {
-    Domicilio domicilio       = null;
-    List<UISelectItem> codigos= null;
+    Domicilio domicilio= null;    
     try {
       this.registroPersona.doConsultarPersonaDomicilio();
 			domicilio = this.registroPersona.getDomicilioPivote();
       this.registroPersona.getDomicilio().setIdDomicilio(domicilio.getIdDomicilio());
-      this.registroPersona.getDomicilio().setDomicilio(domicilio.getDomicilio());      			
+			if(domicilio.getDomicilio()!= null)
+				this.registroPersona.getDomicilio().setDomicilio(domicilio.getDomicilio());    
+			else
+				this.registroPersona.getDomicilio().setDomicilio(new Entity());
       this.registroPersona.getDomicilio().setIdEntidad(domicilio.getIdEntidad());	
 			this.registroPersona.getDomicilio().getDomicilio().put("idEntidad", new Value("idEntidad", domicilio.getIdEntidad().getKey()));
       toAsignaEntidad();
@@ -766,16 +761,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.registroPersona.getDomicilio().setLocalidad(domicilio.getLocalidad());			
       this.registroPersona.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());			
 			this.registroPersona.getDomicilio().getDomicilio().put("idLocalidad", new Value("idLocalidad", domicilio.getLocalidad().getKey()));
-      toAsignaLocalidad();
-			loadCodigosPostales();
-      codigos = (List<UISelectItem>) this.attrs.get("codigosPostales");
-      for (UISelectItem codigo : codigos) {
-        if (codigo.getLabel().equals(domicilio.getCodigoPostal())) {
-          this.registroPersona.getDomicilio().setIdCodigoPostal((Long) codigo.getValue());
-          this.registroPersona.getDomicilio().setCodigoPostal(codigo.getLabel());
-					this.registroPersona.getDomicilio().setNuevoCp(true);
-        } // if
-      }	// for      
+      toAsignaLocalidad();			
       this.registroPersona.getDomicilio().setCalle(domicilio.getCalle());
       this.registroPersona.getDomicilio().setNumeroExterior(domicilio.getNumeroExterior());
       this.registroPersona.getDomicilio().setNumeroInterior(domicilio.getNumeroInterior());
@@ -784,7 +770,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.registroPersona.getDomicilio().setYcalle(domicilio.getYcalle());
       this.registroPersona.getDomicilio().setIdTipoDomicilio(domicilio.getIdTipoDomicilio());
       this.registroPersona.getDomicilio().setPrincipal(domicilio.getPrincipal());
-			this.registroPersona.getDomicilio().setNuevoCp(domicilio.isNuevoCp());
+      this.registroPersona.getDomicilio().setCodigoPostal(domicilio.getCodigoPostal());			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
