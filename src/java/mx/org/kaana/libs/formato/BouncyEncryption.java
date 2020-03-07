@@ -69,7 +69,7 @@ public final class BouncyEncryption extends Properties {
   }
 
   public static void main(String[] args) {
-    String originalString = "20keet20"; // String to be encrypted.
+    String originalString = "fuentes"; // String to be encrypted.
     try {
       String encryptedString = encrypt(originalString);
       System.out.println("Original String: " + originalString);
