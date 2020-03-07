@@ -287,8 +287,10 @@ public class RegistroPersona implements Serializable{
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
 			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
-			this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
-			this.domicilioPivote.setDomicilio(pivote.getDomicilio());
+			if(pivote.getDomicilio() != null){
+				this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
+				this.domicilioPivote.setDomicilio(pivote.getDomicilio());
+			} // if
 			this.domicilioPivote.setIdEntidad(pivote.getIdEntidad());
 			this.domicilioPivote.setIdMunicipio(pivote.getIdMunicipio());
 			this.domicilioPivote.setLocalidad(pivote.getIdLocalidad());
@@ -299,7 +301,7 @@ public class RegistroPersona implements Serializable{
 			this.domicilioPivote.setNumeroInterior(pivote.getInterior());
 			this.domicilioPivote.setAsentamiento(pivote.getColonia());
 			this.domicilioPivote.setEntreCalle(pivote.getEntreCalle());
-			this.domicilioPivote.setYcalle(pivote.getyCalle());
+			this.domicilioPivote.setYcalle(pivote.getyCalle());			
 			this.domicilioPivote.setNuevoCp(pivote.getCodigoPostal()!= null && !Cadena.isVacio(pivote.getCodigoPostal()));
 		} // try
 		catch (Exception e) {
