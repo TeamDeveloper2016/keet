@@ -46,5 +46,25 @@
 				  {sortOrder}
 			</select>	
 		</unit>
+    <unit id="VistaProyectoDto">
+			<select id="lazy">
+				select 
+          tc_keet_proyectos.id_proyecto id_key,
+          tc_keet_proyectos.clave,
+          tc_keet_proyectos.no_viviendas,
+          tc_keet_proyectos.etapa,
+          tc_mantic_clientes.razon_social,
+          tc_keet_desarrollos.nombres desarrollo,
+          tc_keet_tipos_obras.nombre tipo_obra
+        from 
+          tc_keet_proyectos
+        inner join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
+        inner join tc_keet_desarrollos on tc_keet_desarrollos.id_desarrollo= tc_keet_proyectos.id_desarrollo
+        inner join tc_keet_tipos_obras on tc_keet_tipos_obras.id_tipo_obra= tc_keet_proyectos.id_tipos_obras
+        where
+          {condicion}
+				  {sortOrder}
+			</select>	
+		</unit>
 	</dml>    
 </process>
