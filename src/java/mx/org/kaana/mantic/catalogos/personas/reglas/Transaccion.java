@@ -243,6 +243,8 @@ public class Transaccion  extends IBaseTnx{
       for (PersonaDomicilio personaDomicilio : this.persona.getPersonasDomicilio()) {
 				if(personaDomicilio.getIdPrincipal().equals(1L))
 					countPrincipal++;
+				else
+					personaDomicilio.setIdPrincipal(2L);
 				if(countPrincipal== 0 && this.persona.getPersonasDomicilio().size()-1 == count)
 					personaDomicilio.setIdPrincipal(1L);
         personaDomicilio.setIdPersona(idPersona);
