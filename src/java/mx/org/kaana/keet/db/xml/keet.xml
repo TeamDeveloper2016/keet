@@ -388,7 +388,8 @@
     <unit id="TcKeetConstructivosDto">
       <select id="row">
         select      
-          *
+          tc_keet_constructivos.id_constructivo id_key,
+          tc_keet_constructivos.*
         from      
           tc_keet_constructivos
         where 
