@@ -315,8 +315,10 @@ public class RegistroProveedor implements Serializable{
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
 			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
-			this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
-			this.domicilioPivote.setDomicilio(pivote.getDomicilio());
+			if(pivote.getDomicilio() != null){
+				this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
+				this.domicilioPivote.setDomicilio(pivote.getDomicilio());
+			} // if
 			this.domicilioPivote.setIdEntidad(pivote.getIdEntidad());
 			this.domicilioPivote.setIdMunicipio(pivote.getIdMunicipio());
 			this.domicilioPivote.setLocalidad(pivote.getIdLocalidad());
@@ -355,9 +357,11 @@ public class RegistroProveedor implements Serializable{
 				for(ProveedorDomicilio record: this.proveedoresDomicilio)
 					record.setIdPrincipal(0L);
 			} // if
-			proveedorDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);			
-			proveedorDomicilio.setDomicilio(this.domicilio.getDomicilio());
-			proveedorDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
+			proveedorDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);	
+			if(this.domicilio.getDomicilio()!= null){
+				proveedorDomicilio.setDomicilio(this.domicilio.getDomicilio());
+				proveedorDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
+			} // if
 			proveedorDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			proveedorDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)
