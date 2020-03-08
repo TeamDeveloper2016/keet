@@ -329,12 +329,17 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadTiposContactos
 
   private void loadTiposDomicilios() throws Exception {
-		List<UISelectItem> tiposDomicilios= new ArrayList<>();
-		tiposDomicilios.add(new UISelectItem(-1L, "SELECCIONE"));
-		for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) {
-			tiposDomicilios.add(new UISelectItem(tipoDomicilio.getKey(), Cadena.reemplazarCaracter(tipoDomicilio.name(), '_', ' ')));
-		} // for
-		this.attrs.put("tiposDomicilios", tiposDomicilios);
+		List<UISelectItem> tiposDomicilios = null;
+    try {
+      tiposDomicilios = new ArrayList<>();
+      for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) {
+        tiposDomicilios.add(new UISelectItem(tipoDomicilio.getKey(), Cadena.reemplazarCaracter(tipoDomicilio.name(), '_', ' ')));
+      } // for
+      this.attrs.put("tiposDomicilios", tiposDomicilios);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
   } // loadTiposDomicilios
 
   private void loadEntidades() {
@@ -675,11 +680,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.registroPersona.getDomicilio().setDomicilio(new Entity(-1L));
 					this.registroPersona.getDomicilio().setIdDomicilio(-1L);
 				} // else					
-				toAsignaEntidad();
-				loadMunicipios();
-				toAsignaMunicipio();
-				loadLocalidades();
-				toAsignaLocalidad();				
+				loadEntidades();				
+				loadMunicipios();				
+				loadLocalidades();				
 			} // if
       loadAtributosComplemento();
     } // try
