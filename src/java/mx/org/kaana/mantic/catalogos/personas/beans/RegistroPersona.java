@@ -220,21 +220,22 @@ public class RegistroPersona implements Serializable{
 	}	
 	
 	private void init(){
-		int count          = 0;
-		MotorBusqueda motor= null;
+		int countDomicilio   = 0;
+		int countBeneficiario= 0;
+		MotorBusqueda motor  = null;
 		try {
 			motor= new MotorBusqueda(this.idPersona);
 			this.persona= motor.toPersona();									
 			this.empresaPersona= motor.toDetallePersona();
 			this.personasDomicilio= motor.toPersonasDomicilio(true);
 			for(PersonaDomicilio personaDomicilio: this.personasDomicilio){
-				count++;
-				personaDomicilio.setConsecutivo(Long.valueOf(count));
+				countDomicilio++;
+				personaDomicilio.setConsecutivo(Long.valueOf(countDomicilio));
 			} // for				
 			this.personasBeneficiarios= motor.toPersonasBeneficiarios();
 			for(PersonaBeneficiario personaBenefi: this.personasBeneficiarios){
-				count++;
-				personaBenefi.setConsecutivo(Long.valueOf(count));
+				countBeneficiario++;
+				personaBenefi.setConsecutivo(Long.valueOf(countDomicilio));
 			} // for				
 			this.personasTiposContacto= motor.toPersonasTipoContacto();		
 			this.personasBancos= motor.toPersonasBancos();		
