@@ -4226,7 +4226,8 @@
 				  tc_mantic_personas.cuenta,
 					tc_mantic_empresas.nombre sucursal,
 					tc_mantic_puestos.nombre puesto,
-					tr_mantic_persona_tipo_contacto.valor contacto
+					tr_mantic_persona_tipo_contacto.valor contacto,
+					tr_mantic_empresa_personal.id_activo
 				from 
 					tc_mantic_personas
 				inner join
