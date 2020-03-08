@@ -8,7 +8,6 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
-import mx.org.kaana.keet.db.dto.TcKeetPersonasBeneficiariosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
@@ -174,7 +173,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
-			regresar= DaoFactory.getInstance().toEntitySet(TcKeetPersonasBeneficiariosDto.class, "TcKeetPersonasBeneficiariosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);			
+			regresar= DaoFactory.getInstance().toEntitySet(PersonaBeneficiario.class, "TcKeetPersonasBeneficiariosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);			
 		} // try
 		catch (Exception e) {			
 			throw e;
