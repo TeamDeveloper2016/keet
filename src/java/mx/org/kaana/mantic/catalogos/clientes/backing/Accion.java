@@ -192,7 +192,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       tiposDomicilios = new ArrayList<>();
       for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) {
         tiposDomicilios.add(new UISelectItem(tipoDomicilio.getKey(), Cadena.reemplazarCaracter(tipoDomicilio.name(), '_', ' ')));
-      }
+      } // for
       this.attrs.put("tiposDomicilios", tiposDomicilios);
     } // try
     catch (Exception e) {
@@ -540,12 +540,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 				else{
 					this.registroCliente.getDomicilio().setDomicilio(new Entity(-1L));
 					this.registroCliente.getDomicilio().setIdDomicilio(-1L);
-				} // else					
-				toAsignaEntidad();
-				loadMunicipios();
-				toAsignaMunicipio();
-				loadLocalidades();
-				toAsignaLocalidad();				
+				} // else		
+				loadEntidades();				
+				loadMunicipios();				
+				loadLocalidades();				
 			} // if
       loadAtributosComplemento();
     } // try
