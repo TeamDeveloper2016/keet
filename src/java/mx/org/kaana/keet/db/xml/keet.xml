@@ -10,7 +10,8 @@
     <unit id="TcKeetTiposInfraestructurasDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_infraestructuras.id_tipo_infraestructura as id_key,
+					tc_keet_tipos_infraestructuras.*
         from      
           tc_keet_tipos_infraestructuras
         where 
@@ -28,7 +29,8 @@
     <unit id="TcKeetTiposViviendasDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_viviendas.id_tipo_vivienda as id_key,
+					tc_keet_tipos_viviendas.*
         from      
           tc_keet_tipos_viviendas
         where 
@@ -46,7 +48,8 @@
     <unit id="TcKeetTiposBancariosDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_bancarios.id_tipo_bancario as id_key,
+					tc_keet_tipos_bancarios.*
         from      
           tc_keet_tipos_bancarios
         where 
@@ -64,7 +67,8 @@
     <unit id="TcKeetTiposRelacionesDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_relaciones.id_tipo_relacion as id_key,
+					tc_keet_tipos_relaciones.*
         from      
           tc_keet_tipos_relaciones
         where 
@@ -226,7 +230,8 @@
     <unit id="TcKeetTiposAtributosDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_atributos.id_tipo_atributo as id_key,
+					tc_keet_tipos_atributos.*
         from      
           tc_keet_tipos_atributos
         where 
@@ -244,7 +249,8 @@
     <unit id="TcKeetTiposFachadasDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_fachadas.id_tipo_fachada as id_key,
+					tc_keet_tipos_fachadas.*
         from      
           tc_keet_tipos_fachadas
         where 
@@ -298,7 +304,8 @@
     <unit id="TcKeetTiposPresupuestosDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_presupuestos.id_tipo_presupuesto as id_key, 
+					tc_keet_tipos_presupuestos.*
         from      
           tc_keet_tipos_presupuestos
         where 
@@ -316,7 +323,8 @@
     <unit id="TcKeetEstacionesDto">
       <select id="row">
         select      
-          *
+          tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
         from      
           tc_keet_estaciones
         where 
@@ -334,7 +342,8 @@
     <unit id="TcKeetEspecialidadesDto">
       <select id="row">
         select      
-          *
+          tc_keet_especialidades.id_especialidad as id_key,
+					tc_keet_especialidades.*
         from      
           tc_keet_especialidades
         where 
@@ -370,7 +379,8 @@
     <unit id="TcKeetGruposConstructivosDto">
       <select id="row">
         select      
-          *
+          tc_keet_grupos_constructivos.id_grupo_constructivo as id_key,
+					tc_keet_grupos_constructivos.*
         from      
           tc_keet_grupos_constructivos
         where 
@@ -407,7 +417,8 @@
     <unit id="TcKeetFamiliasDto">
       <select id="row">
         select      
-          *
+          tc_keet_familias.id_familia as id_key,
+					tc_keet_familias.*
         from      
           tc_keet_familias
         where 
@@ -527,6 +538,25 @@
           *
         from      
           tc_keet_departamentos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>	
+    <unit id="TcKeetDivisionesDto">
+      <select id="row">
+        select      
+          tc_keet_divisiones.id_division as id_key,
+					tc_keet_divisiones.*
+        from      
+          tc_keet_divisiones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_divisiones
         where      
           nombre = '{nombre}'
       </select>
@@ -822,7 +852,8 @@
     <unit id="TcKeetTiposConceptosDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_conceptos.id_tipo_concepto as id_key,
+					tc_keet_tipos_conceptos.*
         from      
           tc_keet_tipos_conceptos
         where 
@@ -840,7 +871,8 @@
     <unit id="TcKeetTiposNominasDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_nominas.id_tipo_nomina as id_key,
+					tc_keet_tipos_nominas.*
         from      
           tc_keet_tipos_nominas
         where 
