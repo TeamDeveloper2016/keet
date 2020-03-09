@@ -51,9 +51,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 			catalogoDinamico= (ECatalogosDinamicos) JsfBase.getFlashAttribute("catalogoDinamico");
       this.attrs.put("catalogoDinamico", catalogoDinamico);
 			this.attrs.put("titulo", catalogoDinamico.getTitulo());						
+      this.attrs.put("isClave", catalogoDinamico.getClave());
       this.attrs.put("estatus", JsfBase.getFlashAttribute("estatus"));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("unit", JsfBase.getFlashAttribute("unit"));      
+      this.attrs.put("idXml", JsfBase.getFlashAttribute("idXml"));      
       this.attrs.put("idKey", JsfBase.getFlashAttribute("idKey"));			
       this.doLoad();      
 			if(catalogoDinamico.getEstatus())
@@ -119,7 +121,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 							params.put(Constantes.SQL_CONDICION, "id_key not in (".concat(((String)(((IBaseDto)this.attrs.get("dto")).toValue("estatusAsociados")))).concat(")"));																			
 						break;
 				} // switch						
-				estatus= UISelect.build(this.attrs.get("unit").toString(), "dinamico", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
+				estatus= UISelect.build(this.attrs.get("unit").toString(), this.attrs.get("idXml").toString(), params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
 				for(UISelectItem item: estatus){
 					if (eaccion.equals(EAccion.AGREGAR) || asignados)
 						regresar.add(new SelectionItem(item.getValue().toString(), item.getLabel()));					
