@@ -23,7 +23,7 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresEstatusDto;
 
 public enum ECatalogosDinamicos {
 	
-	CIERRES_ESTATUS (TcManticCierresEstatusDto.class     , "Mantenimiento a estatus de cierres"       , true , false, "121c242736c542db7a8dd01563e47387"), // 7ce4	
+	CIERRES_ESTATUS (TcManticCierresEstatusDto.class     , "Mantenimiento a estatus de cierres"       , true , false, "121c242736c542db7a8dd01563e47387", "dinamico"), // 7ce4	
 	DEPARTAMENTOS   (TcKeetDepartamentosDto.class        , "Mantenimiento a departamentos"            , false, false, "aaa7adb3bb43de6efa72f075f116"),
 	DIVISIONES      (TcKeetDivisionesDto.class           , "Mantenimiento a divisiones"               , false, false, "cd5be572f4050718275e81"),
 	ESPECIALIDADES  (TcKeetEspecialidadesDto.class       , "Mantenimiento a especialidades"           , false, true , "2e3acc53d756d656e31f53a4dd708a"),
@@ -47,13 +47,19 @@ public enum ECatalogosDinamicos {
 	private Boolean estatus;
 	private Boolean clave;
 	private String cifrado;
+	private String idXml;
 
 	private ECatalogosDinamicos(Class clase, String titulo, Boolean estatus, Boolean clave, String cifrado) {
+		this(clase, titulo, estatus, clave, cifrado, "row");
+	}
+	
+	private ECatalogosDinamicos(Class clase, String titulo, Boolean estatus, Boolean clave, String cifrado, String idXml) {
 		this.clase  = clase;
 		this.titulo = titulo;
 		this.estatus= estatus;
 		this.clave  = clave;
 		this.cifrado= cifrado;
+		this.idXml  = idXml;
 	} // ECatalogosDinamicos
 
 	static {
@@ -88,6 +94,10 @@ public enum ECatalogosDinamicos {
 	public String getRuta(){
 		return "/Paginas/Keet/Catalogos/Dinamicos/filtro.jsf?unit=".concat(getCifrado());
 	}
+
+	public String getIdXml() {
+		return idXml;
+	}	
 	
 	public static ECatalogosDinamicos fromId(Long id) {
     return lookup.get(id);
