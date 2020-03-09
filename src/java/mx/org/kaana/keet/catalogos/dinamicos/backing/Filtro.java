@@ -48,6 +48,7 @@ public class Filtro extends Comun implements Serializable {
 			if(unit!= null){			
 				catalogoDinamico= ECatalogosDinamicos.valueOf(unit);
 				this.attrs.put("estatus", catalogoDinamico.getEstatus());			
+				this.attrs.put("idXml", catalogoDinamico.getIdXml());			
 				this.attrs.put("catalogoDinamico", catalogoDinamico);			
 				this.attrs.put("unit", catalogoDinamico.getClase().getSimpleName());						
 				this.attrs.put("titulo", catalogoDinamico.getTitulo());						
@@ -70,7 +71,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
-      this.lazyModel = new FormatLazyModel(this.attrs.get("unit").toString(), "dinamico", params, columns);
+      this.lazyModel = new FormatLazyModel(this.attrs.get("unit").toString(), this.attrs.get("idXml").toString(), params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -107,6 +108,7 @@ public class Filtro extends Comun implements Serializable {
       JsfBase.setFlashAttribute("accion", eaccion);
       JsfBase.setFlashAttribute("estatus", this.attrs.get("estatus"));
       JsfBase.setFlashAttribute("catalogoDinamico", this.attrs.get("catalogoDinamico"));
+      JsfBase.setFlashAttribute("idXml", this.attrs.get("idXml"));            
       JsfBase.setFlashAttribute("unit", this.attrs.get("unit"));            
       JsfBase.setFlashAttribute("idKey", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || eaccion.equals(EAccion.COPIAR) || eaccion.equals(EAccion.ACTIVAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
     } // try
