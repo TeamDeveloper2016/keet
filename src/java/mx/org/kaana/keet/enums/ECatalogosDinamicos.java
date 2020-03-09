@@ -27,7 +27,7 @@ public enum ECatalogosDinamicos {
 	DEPARTAMENTOS   (TcKeetDepartamentosDto.class        , "Mantenimiento a departamentos"            , false, false, "aaa7adb3bb43de6efa72f075f116"),
 	DIVISIONES      (TcKeetDivisionesDto.class           , "Mantenimiento a divisiones"               , false, false, "cd5be572f4050718275e81"),
 	ESPECIALIDADES  (TcKeetEspecialidadesDto.class       , "Mantenimiento a especialidades"           , false, true , "2e3acc53d756d656e31f53a4dd708a"),
-	ESTACIONES			(TcKeetEstacionesDto.class           , "Mantenimiento a estaciones"               , false, false, "d251e574fa73f50b186ff2"),
+	ESTACIONES			(TcKeetEstacionesDto.class           , "Mantenimiento a estaciones"               , false, true, "d251e574fa73f50b186ff2"),
 	FAMILIAS				(TcKeetFamiliasDto.class             , "Mantenimiento a familias"                 , false, false, "bf4fd151d56ff17d91"),
 	CONSTRUCTIVOS   (TcKeetGruposConstructivosDto.class  , "Mantenimiento a constructivos"            , false, true , "848e9ca4b840db7f83e51f45a1a7"),
 	ATRIBUTOS				(TcKeetTiposAtributosDto.class       , "Mantenimiento a atributos"                , false, false, "74fc102c3a31cf6af87e"),
