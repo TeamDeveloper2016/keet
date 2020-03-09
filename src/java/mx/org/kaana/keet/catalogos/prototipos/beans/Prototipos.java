@@ -1,18 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.org.kaana.keet.catalogos.prototipos.beans;
 
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
-/**
- *
- * @author CRISTOBAL.HERRERA
- */
-public class Prototipos  extends TcKeetPrototiposDto{
+public class Prototipos extends TcKeetPrototiposDto {
   
   private UISelectEntity ikCliente;
   private UISelectEntity ikMuro;
@@ -25,6 +16,8 @@ public class Prototipos  extends TcKeetPrototiposDto{
 
   public void setIkCliente(UISelectEntity ikCliente) {
     this.ikCliente = ikCliente;
+		if(this.ikCliente!= null)
+			this.setIdCliente(this.ikCliente.getKey());
   }
 
   public UISelectEntity getIkMuro() {
@@ -33,6 +26,8 @@ public class Prototipos  extends TcKeetPrototiposDto{
 
   public void setIkMuro(UISelectEntity ikMuro) {
     this.ikMuro = ikMuro;
+		if(this.ikMuro!= null)
+			this.setIdSistemaMuro(this.ikMuro.getKey());
   }
 
   public UISelectEntity getIkAzotea() {
@@ -41,6 +36,8 @@ public class Prototipos  extends TcKeetPrototiposDto{
 
   public void setIkAzotea(UISelectEntity ikAzotea) {
     this.ikAzotea = ikAzotea;
+		if(this.ikAzotea!= null)
+			this.setIdSistemaAzotea(this.ikAzotea.getKey());
   }
 
   public UISelectEntity getIkEntrepiso() {
@@ -49,10 +46,13 @@ public class Prototipos  extends TcKeetPrototiposDto{
 
   public void setIkEntrepiso(UISelectEntity ikEntrepiso) {
     this.ikEntrepiso = ikEntrepiso;
+		if(this.ikEntrepiso!= null)
+			this.setIdSistemaEntrepiso(this.ikEntrepiso.getKey());
   }
-  
-  
-  
-  
+
+	@Override
+	public Class toHbmClass() {
+		return TcKeetPrototiposDto.class;
+	}
   
 }
