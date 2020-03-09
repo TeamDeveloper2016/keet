@@ -37,22 +37,17 @@ public class Filtro extends Comun implements Serializable {
   @Override
   protected void init() {
 		ECatalogosDinamicos catalogoDinamico= null;
-		String unit        = null;
-		String estatus     = null;		
+		String unit        = null;			
 		Encriptar encriptar= null;		
     try {    	
 			encriptar= new Encriptar();
-			if(JsfBase.getFlashAttribute("unit")!= null){
-				unit= encriptar.desencriptar((String)JsfBase.getFlashAttribute("unit"));			
-				estatus= encriptar.desencriptar((String)JsfBase.getFlashAttribute("estatus"));			
-			} // if
-			else{
-				unit= encriptar.desencriptar(JsfBase.getParametro("unit"));
-				estatus= encriptar.desencriptar((String)JsfBase.getParametro("estatus"));
-			} // else
+			if(JsfBase.getFlashAttribute("unit")!= null)
+				unit= encriptar.desencriptar((String)JsfBase.getFlashAttribute("unit"));							
+			else
+				unit= encriptar.desencriptar(JsfBase.getParametro("unit"));							
 			if(unit!= null){			
 				catalogoDinamico= ECatalogosDinamicos.valueOf(unit);
-				this.attrs.put("estatus", estatus);			
+				this.attrs.put("estatus", catalogoDinamico.getEstatus());			
 				this.attrs.put("catalogoDinamico", catalogoDinamico);			
 				this.attrs.put("unit", catalogoDinamico.getClase().getSimpleName());						
 				this.attrs.put("titulo", catalogoDinamico.getTitulo());						

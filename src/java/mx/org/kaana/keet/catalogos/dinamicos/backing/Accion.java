@@ -174,8 +174,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			encriptar= new Encriptar();
 			catalogoDinamico= (ECatalogosDinamicos) this.attrs.get("catalogoDinamico");
-			JsfBase.setFlashAttribute("unit", encriptar.encriptar(catalogoDinamico.name()));
-			JsfBase.setFlashAttribute("estatus", encriptar.encriptar(this.attrs.get("estatus").toString()));
+			JsfBase.setFlashAttribute("unit", encriptar.encriptar(catalogoDinamico.name()));			
 			regresar= "filtro".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
