@@ -235,7 +235,7 @@ public class RegistroPersona implements Serializable{
 			this.personasBeneficiarios= motor.toPersonasBeneficiarios();
 			for(PersonaBeneficiario personaBenefi: this.personasBeneficiarios){
 				countBeneficiario++;
-				personaBenefi.setConsecutivo(Long.valueOf(countDomicilio));
+				personaBenefi.setConsecutivo(Long.valueOf(countBeneficiario));
 			} // for				
 			this.personasTiposContacto= motor.toPersonasTipoContacto();		
 			this.personasBancos= motor.toPersonasBancos();		
