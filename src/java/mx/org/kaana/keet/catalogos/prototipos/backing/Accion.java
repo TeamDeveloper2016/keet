@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.catalogos.prototipos.backing;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -8,6 +9,8 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.keet.catalogos.prototipos.beans.Prototipos;
+import mx.org.kaana.keet.catalogos.prototipos.reglas.AdminSistemaConstructivo;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -16,6 +19,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 
 @Named(value = "keetCatalogosPrototiposAccion")
@@ -23,13 +27,13 @@ import mx.org.kaana.libs.pagina.UIEntity;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private TcKeetPrototiposDto prototipo;
+	private Prototipos prototipo;
 
-  public TcKeetPrototiposDto getPrototipo() {
+  public Prototipos getPrototipo() {
     return prototipo;
   }
 
-  public void setPrototipo(TcKeetPrototiposDto prototipo) {
+  public void setPrototipo(Prototipos prototipo) {
     this.prototipo = prototipo;
   }
 
@@ -45,13 +49,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
-      this.attrs.put(Constantes.SQL_CONDICION, "id_grupo_constructivo=1");
-      this.attrs.put("muros", UIEntity.seleccione("TcKeetConstructivosDto", "row",this.attrs, "nombre"));
-      this.attrs.put(Constantes.SQL_CONDICION, "id_grupo_constructivo=2");
-      this.attrs.put("entrepisos", UIEntity.seleccione("TcKeetConstructivosDto","row", this.attrs, "nombre"));
-      this.attrs.put(Constantes.SQL_CONDICION, "id_grupo_constructivo=3");
-      this.attrs.put("azoteas", UIEntity.seleccione("TcKeetConstructivosDto","row", this.attrs, "nombre"));
-      
+      this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      this.attrs.put("constructivos", UIEntity.seleccione("TcKeetConstructivosDto", "row",this.attrs, "nombre"));			
 			doLoad();
     } // try
     catch (Exception e) {
@@ -68,12 +67,14 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
-          this.prototipo= new TcKeetPrototiposDto();
+          this.prototipo= new Prototipos();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
           idPrototipo= (Long)this.attrs.get("idPrototipo");
-          this.prototipo= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, idPrototipo);
+          this.prototipo= (Prototipos)DaoFactory.getInstance().toEntity(Prototipos.class,"TcKeetPrototiposDto","byId", this.attrs);
+					this.prototipo.setIkCliente(((List<UISelectEntity>)this.attrs.get("clientes")).get(((List<UISelectEntity>)this.attrs.get("clientes")).indexOf(this.prototipo.getIdCliente())));
+					this.prototipo.setIkSistemasConstructivos(new AdminSistemaConstructivo(DaoFactory.getInstance().toEntitySet("", "", this.attrs)));
           break;
       } // switch
     } // try
