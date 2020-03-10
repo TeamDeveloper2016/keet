@@ -154,6 +154,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					ids= ids.concat(id.getKey().concat(","));
 				Methods.setValue(dto, "estatusAsociados", new Object[]{ids.substring(0, ids.length()-1)});			
 			} // if
+			Methods.setValue(dto, "idUsuario", new Object[]{JsfBase.getIdUsuario()});			
       transaccion = new Transaccion(dto);			
       if (transaccion.ejecutar(eaccion)) {
         regresar = doCancelar();
