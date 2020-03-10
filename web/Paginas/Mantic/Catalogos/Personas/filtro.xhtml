@@ -16,8 +16,7 @@
         'materno': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},       
         'rfc': {validaciones: 'rfc', mascara: 'fiscal', formatos: 'cambiar-mayusculas'},
         'curp': {validaciones: 'libre', mascara: 'curp', formatos: 'cambiar-mayusculas'},
-        'idTipoSexo': {validaciones: 'libre', mascara: 'libre'},
-        'estatus': {validaciones: 'libre', mascara: 'libre'},
+        'idTipoSexo': {validaciones: 'libre', mascara: 'libre'},        
         'tipoPersona': {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
@@ -32,32 +31,25 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-							<p:outputLabel for="estatus" value="Estatus:"/>
-              <p:selectOneMenu id="estatus" value="#{manticCatalogosPersonasFiltro.attrs.estatus}"  styleClass="janal-wid-90">
-                <f:selectItem itemLabel="SELECCIONE" itemValue="1,2"/>
-                <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
-                <f:selectItem itemLabel="INACTIVO" itemValue="2"/>                
-              </p:selectOneMenu>
               <p:outputLabel for="nombres" value="Nombres:"/>
               <p:inputText id="nombres" value="#{manticCatalogosPersonasFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="paterno" value="Apellido paterno:"/>
               <p:inputText id="paterno" value="#{manticCatalogosPersonasFiltro.attrs.paterno}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="materno" value="Apellido materno:"/>
               <p:inputText id="materno" value="#{manticCatalogosPersonasFiltro.attrs.materno}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="curp" value="CURP:"/>
+							<p:outputLabel for="curp" value="CURP:"/>
               <p:inputText id="curp" value="#{manticCatalogosPersonasFiltro.attrs.curp}" styleClass="janal-wid-100-txt"/>              														
-							<p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosPersonasFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                                                        
-              <p:outputLabel for="departamento" value="Departamento:"/>
-              <p:selectOneMenu  id="departamento" value="#{manticCatalogosPersonasFiltro.attrs.departamento}" styleClass="janal-wid-90">
-                <f:selectItems value="#{manticCatalogosPersonasFiltro.attrs.departamentos}"/>                
-              </p:selectOneMenu>
-              <p:outputLabel for="puesto" value="Puesto:"/>
-              <p:selectOneMenu  id="puesto" value="#{manticCatalogosPersonasFiltro.attrs.puesto}" styleClass="janal-wid-90">
-                <f:selectItems value="#{manticCatalogosPersonasFiltro.attrs.puestos}"/>                
-              </p:selectOneMenu>
-              <p:outputLabel for="idTipoPersona" value="Tipo persona:"/>
-              <p:selectOneMenu  id="idTipoPersona" value="#{manticCatalogosPersonasFiltro.attrs.tipoPersona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90">
+              <p:outputLabel for="rfc" value="RFC:"/>
+              <p:inputText id="rfc" value="#{manticCatalogosPersonasFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
+              <p:outputLabel for="idTipoSexo"  value="Sexo:"/>
+              <p:selectOneMenu  id="idTipoSexo"  value="#{manticCatalogosPersonasFiltro.attrs.idTipoSexo}"  styleClass="janal-wid-96">
+                <f:selectItem itemLabel="TODOS" itemValue="1,2,3"/>
+                <f:selectItem itemLabel="HOMBRE" itemValue="1"/>
+                <f:selectItem itemLabel="MUJER" itemValue="2"/>
+                <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
+              </p:selectOneMenu>         
+							<p:outputLabel for="idTipoPersona" value="Tipo persona:"/>
+							<p:selectOneMenu  id="idTipoPersona" value="#{manticCatalogosPersonasFiltro.attrs.tipoPersona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
                 <f:selectItems value="#{manticCatalogosPersonasFiltro.attrs.tiposPersonas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column>
                   <h:outputText value="#{item.nombre}"/>
@@ -83,64 +75,61 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton action="#{manticCatalogosPersonasFiltro.doAccion('AGREGAR')}" ajax="false" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:commandButton action="#{manticCatalogosPersonasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                 <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
-            </f:facet>	  
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
-							<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idActivo eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Empleado #{filtro.idActivo eq '1' ? '': 'NO '}activo"/>
-						</p:column>						
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.curp}">
+            </f:facet>	            
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.sucursal}">
               <f:facet name="header">
-                <h:outputText value="CURP"/>
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{filtro['sucursal']}"/>
+            </p:column>														
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.curp}">
+              <f:facet name="header">
+                <h:outputText value="Curp"/>
               </f:facet>
               <h:outputText value="#{filtro['curp']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.rfc}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
               <h:outputText value="#{filtro['rfc']}"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.nombres}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombreCompleto}">
               <f:facet name="header">
-                <h:outputText value="Nombre"/>
+                <h:outputText value="Nombres"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombres']} #{filtro['paterno']} #{filtro['materno']}"/>
-            </p:column>			
+              <h:outputText value="#{filtro['nombreCompleto']}"/>
+            </p:column>				
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-4" sortBy="#{filtro.sexo}">
               <f:facet name="header">
                 <h:outputText value="Sexo"/>
               </f:facet>
               <h:outputText value="#{filtro['idTipoSexo'] eq '1' ? 'H' : 'M'}"/>
-            </p:column>					            
+            </p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.telefono}">
+              <f:facet name="header">
+                <h:outputText value="Telefono"/>
+              </f:facet>
+              <h:outputText value="#{filtro['contacto']}"/>
+            </p:column>		
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.tipoPersona}">
               <f:facet name="header">
                 <h:outputText value="Tipo persona"/>
               </f:facet>
               <h:outputText value="#{filtro['tipoPersona']}"/>
-            </p:column>					
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.departamento}">
-              <f:facet name="header">
-                <h:outputText value="Departamento"/>
-              </f:facet>
-              <h:outputText value="#{filtro['departamento']}"/>
-            </p:column>
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.puesto}">
-              <f:facet name="header">
-                <h:outputText value="Puesto"/>
-              </f:facet>
-              <h:outputText value="#{filtro['puesto']}"/>
-            </p:column>					           		           					           		
+            </p:column>	
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosPersonasFiltro.lazyModel==null?0:manticCatalogosPersonasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="consultar" action="#{manticCatalogosPersonasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="consultar" action="#{manticCatalogosPersonasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{manticCatalogosPersonasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="modificar" action="#{manticCatalogosPersonasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>
         </div>
