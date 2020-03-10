@@ -137,7 +137,7 @@ public class Transaccion  extends IBaseTnx{
 				if (registraPersonasBeneficiarios(sesion, idPersona)) {
 					if (registraPersonasTipoContacto(sesion, idPersona)) {
 						if (registraPersonasBancos(sesion, idPersona)) {
-							if (actualizaPuestoPersona(sesion, idPersona)) {
+							if (actualizaPuestoPersona(sesion, idPersona)) {								
 								regresar = DaoFactory.getInstance().update(sesion, this.persona.getPersona()) >= 1L;
 								if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
 									regresar= actualizaProveedor(sesion);
@@ -190,7 +190,7 @@ public class Transaccion  extends IBaseTnx{
 			this.persona.getEmpresaPersona().setIdPuesto(this.persona.getIdPuesto());						
 			this.persona.getEmpresaPersona().setIdUsuario(JsfBase.getIdUsuario());												
 			this.persona.getEmpresaPersona().setObservaciones("Alta de empleado nuevo.");												
-			regresar= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona())>= 1L;
+			regresar= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona())>= 1L;			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -222,6 +222,7 @@ public class Transaccion  extends IBaseTnx{
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
 				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;
+				bitacora(sesion, "Personal", empresaPersonal);
 			} // if			
 		} // try
 		catch (Exception e) {			
@@ -255,12 +256,12 @@ public class Transaccion  extends IBaseTnx{
         switch (sqlAccion) {
           case INSERT:
             dto.setIdPersonaDomicilio(-1L);
-            validate = registrar(sesion, dto);
+            validate = registrar(sesion, dto);						
             break;
           case UPDATE:
             validate = actualizar(sesion, dto);
             break;
-        } // switch
+        } // switch				
         if (validate) {
           count++;
         }
