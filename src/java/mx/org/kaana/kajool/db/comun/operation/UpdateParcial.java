@@ -1,6 +1,7 @@
 package mx.org.kaana.kajool.db.comun.operation;
 
 import java.util.Map;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import org.hibernate.Session;
 
@@ -39,5 +40,10 @@ public class UpdateParcial implements IActions{
     hash = 67 * hash + (this.key != null ? this.key.hashCode() : 0);
     return hash;
   }
+	
+	@Override
+	public IBaseDto getDto() {
+		throw null; //To change body of generated methods, choose Tools | Templates.
+	}
 
 }

@@ -1,5 +1,6 @@
 package mx.org.kaana.kajool.db.comun.operation;
 
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import org.hibernate.Session;
 
@@ -12,6 +13,8 @@ public class DeleteKey implements IActions {
 		this.dto=dto;
 		this.key=key;
 	}
+	
+	
 
 	@Override
   public Long ejecutar(Session session) throws Exception {
@@ -36,5 +39,10 @@ public class DeleteKey implements IActions {
     hash = 67 * hash + (this.key != null ? this.key.hashCode() : 0);
     return hash;
   }
+
+	@Override
+	public IBaseDto getDto() {
+		throw null; //To change body of generated methods, choose Tools | Templates.
+	}
 
 }
