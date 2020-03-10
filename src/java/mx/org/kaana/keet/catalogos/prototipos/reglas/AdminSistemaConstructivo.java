@@ -2,25 +2,20 @@ package mx.org.kaana.keet.catalogos.prototipos.reglas;
 
 import java.util.ArrayList;
 import java.util.List;
-import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
-import mx.org.kaana.kajool.db.comun.operation.Delete;
-import mx.org.kaana.kajool.db.comun.operation.Insert;
-import mx.org.kaana.kajool.db.comun.operation.Update;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 public class AdminSistemaConstructivo {
 	
 	private List<SistemaConstructivo> registros;
 
 	public AdminSistemaConstructivo() {
-		this(new ArrayList<IBaseDto>());
+		this(new ArrayList<SistemaConstructivo>());
 	}
 	
-	public AdminSistemaConstructivo(List<IBaseDto> registros) {
-		this.registros= new ArrayList<>();
-		for(IBaseDto item: registros)
-			this.registros.add(new SistemaConstructivo(new Update(item)));
-			
+	public AdminSistemaConstructivo(List<SistemaConstructivo> registros) {
+		this.registros= registros;
 	}
 
 	public List<SistemaConstructivo> getRegistros() {
@@ -31,17 +26,17 @@ public class AdminSistemaConstructivo {
 		this.registros = registros;
 	}
 	
-	public boolean addSistemaConstructivo(IBaseDto iBaseDto) throws Exception{
+	public boolean addSistemaConstructivo(UISelectEntity uISelectEntity) throws Exception{
 		boolean regresar= false;
 		SistemaConstructivo sistemaConstructivo= null;
 		try {
-			sistemaConstructivo= new SistemaConstructivo(new Update(iBaseDto));
-		  if (this.registros.contains(sistemaConstructivo) && (this.registros.get(this.registros.indexOf(sistemaConstructivo)).getSistema() instanceof Delete)){
-				this.registros.add(this.registros.indexOf(sistemaConstructivo), new SistemaConstructivo(new Update(iBaseDto)));
+			sistemaConstructivo= new SistemaConstructivo(uISelectEntity);
+		  if (this.registros.contains(sistemaConstructivo) && (this.registros.get(this.registros.indexOf(sistemaConstructivo)).getAccion().equals(ESql.DELETE))){
+				this.registros.add(this.registros.indexOf(sistemaConstructivo), new SistemaConstructivo(ESql.UPDATE, uISelectEntity));
 				regresar= true;
 			} // if
 			else {
-				this.registros.add(this.registros.indexOf(sistemaConstructivo), new SistemaConstructivo(new Insert(iBaseDto)));
+				this.registros.add(new SistemaConstructivo(ESql.INSERT, uISelectEntity));
 				regresar= true;
 			} // else
 		} // try
@@ -51,14 +46,14 @@ public class AdminSistemaConstructivo {
 		return regresar;
 	} // addSistemaConstructivo
 	
-	public boolean removeSistemaConstructivo(IBaseDto iBaseDto) throws Exception{
+	public boolean removeSistemaConstructivo(UISelectEntity uISelectEntity) throws Exception{
 		boolean regresar= false;
 		SistemaConstructivo sistemaConstructivo= null;
 		try {
-			sistemaConstructivo= new SistemaConstructivo(new Update(iBaseDto));
+			sistemaConstructivo= new SistemaConstructivo(uISelectEntity);
 		  if (this.registros.contains(sistemaConstructivo)){
-				if( (this.registros.get(this.registros.indexOf(sistemaConstructivo)).getSistema() instanceof Update))
-				  this.registros.add(this.registros.indexOf(sistemaConstructivo), new SistemaConstructivo(new Delete(iBaseDto)));
+				if( (this.registros.get(this.registros.indexOf(sistemaConstructivo)).getAccion().equals(ESql.UPDATE)))
+				  this.registros.add(this.registros.indexOf(sistemaConstructivo), new SistemaConstructivo(ESql.DELETE, uISelectEntity));
 				else
 					this.registros.remove(this.registros.indexOf(sistemaConstructivo));
 				regresar= true;
