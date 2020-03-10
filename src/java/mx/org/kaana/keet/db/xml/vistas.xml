@@ -45,6 +45,30 @@
           {condicion}
 				  {sortOrder}
 			</select>	
+			<select id="constructivosById">
+				select      
+					tc_keet_prototipos_constructivos.id_prototipo_constructivo id_key,
+					tc_keet_prototipos_constructivos.*,
+					tc_keet_constructivos.nombre descripcion,
+					tc_keet_grupos_constructivos.nombre grupo
+				from   
+				tc_keet_prototipos_constructivos
+				inner join tc_keet_constructivos on tc_keet_prototipos_constructivos.id_prototipo=tc_keet_constructivos.id_prototipo
+				inner join tc_keet_grupos_constructivos on tc_keet_constructivos.id_grupo_constructivo= tc_keet_grupos_constructivos.id_grupo_constructivo
+				where
+          tc_keet_prototipos_constructivos.id_prototipo= {idPrototipo}
+			</select>	
+			<select id="constructivosSelect">
+				select      
+					tc_keet_constructivos.id_constructivo id_key,
+					tc_keet_constructivos.nombre descripcion,
+					tc_keet_grupos_constructivos.nombre grupo
+				from   
+				tc_keet_constructivos 
+				inner join tc_keet_grupos_constructivos on tc_keet_constructivos.id_grupo_constructivo= tc_keet_grupos_constructivos.id_grupo_constructivo
+				where
+          {condicion}
+			</select>	
 		</unit>
     <unit id="VistaProyectoDto">
 			<select id="lazy">

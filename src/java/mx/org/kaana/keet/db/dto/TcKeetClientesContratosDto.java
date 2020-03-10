@@ -30,7 +30,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 @Table(name="tc_keet_clientes_contratos")
 public class TcKeetClientesContratosDto implements IBaseDto, Serializable {
 		
-  private static final long serialVersionUID=1L;
+private static final long serialVersionUID=1L;
   @Column (name="clave")
   private Long clave;
   @Column (name="id_cliente")
@@ -50,7 +50,7 @@ public class TcKeetClientesContratosDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private LocalDateTime registro;
   @Column (name="consecutivo")
-  private String consecutivo;
+  private String consecutivo; //toSiguiente  orden de compra
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_cliente_contrato")
