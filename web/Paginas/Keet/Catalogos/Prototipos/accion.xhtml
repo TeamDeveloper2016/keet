@@ -10,18 +10,16 @@
 	<ui:param name="titulo" value="#{keetCatalogosPrototiposAccion.attrs.nombreAccion} al catálogo de protoripos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
-			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:clave'       : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:nombre'      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:idCliente'   : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idMuro'      : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idEntrepiso' : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idAzotea'    : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:metros'      : {validaciones: 'requerido|flotante', mascara: 'libre'},
-				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
-			};						
-			
-			$(document).ready(function(){janal.readingMode('#{keetCatalogosPrototiposAccion.attrs.nombreAccion}');});
+			Janal.Control.fields = {
+				'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:nombre': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:idCliente': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:metros': {validaciones: 'requerido|flotante', mascara: 'libre'},
+				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+			};
+
+			$(document).ready(function () {
+				janal.readingMode('#{keetCatalogosPrototiposAccion.attrs.nombreAccion}');});
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -37,11 +35,11 @@
                 <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposAccion.prototipo.nombre}" />
                 <p:outputLabel for="descripcion" value="Descripción:"/>
                 <p:inputText id="descripcion" styleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosPrototiposAccion.prototipo.descripcion}" />								
-              	<p:outputLabel for="metros" value="Metros cuadrados:"/>
+								<p:outputLabel for="metros" value="Metros cuadrados:"/>
                 <p:inputText id="metros" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposAccion.prototipo.metros2}" />																								
 								<p:spacer width="1px"/><p:separator/>	
                 <p:outputLabel for="idCliente" value="Cliente:"/>
-								<p:selectOneMenu id="idCliente" value="#{keetCatalogosPrototiposAccion.prototipo.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idCliente" value="#{keetCatalogosPrototiposAccion.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -50,30 +48,33 @@
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 								</p:selectOneMenu>
-                <p:outputLabel for="idMuro" value="Tipo de muro:"/>
-                <p:selectOneMenu id="idMuro" value="#{keetCatalogosPrototiposAccion.prototipo.idSistemaMuro}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.muros}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                
+              </p:panelGrid>
+						</p:tab>				
+						<p:tab title="Sistemas constructivos">							
+							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+                <p:outputLabel for="idConstructivo" value="Tipo de sistema:"/>
+								<p:selectOneMenu id="idConstructivo" value="#{keetCatalogosPrototiposAccion.attrs.ikSistema}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.constructivos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>      
 								</p:selectOneMenu>
-                <p:outputLabel for="idEntrepiso" value="Tipo de entrepiso:"/>
-								<p:selectOneMenu id="idEntrepiso" value="#{keetCatalogosPrototiposAccion.prototipo.idSistemaEntrepiso}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.entrepisos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>      
-								</p:selectOneMenu>
-                <p:outputLabel for="idAzotea" value="Tipo de azotea:"/>
-								<p:selectOneMenu id="idAzotea" value="#{keetCatalogosPrototiposAccion.prototipo.idSistemaAzotea}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.azoteas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>      
-								</p:selectOneMenu>
+								<p:commandButton id="agregar" value="Agregar" icon="fa fa-plus" process="@form" action="#{keetCatalogosPrototiposAccion.doAgregar}"  oncomplete="janal.desbloquear()"
 
               </p:panelGrid>
-						</p:tab>						            						            																																																
+							<p:spacer/>
+        <p:dataTable style="width: 800px;" styleClass="janal-content-table" id="tabla" var="row" value="#{keetCatalogosPrototiposAccion.prototipo.ikSistemasConstructivos.registros}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" selection="#{keetCatalogosPrototiposAccion.seleccionado}" rowKey="#{keetCatalogosPrototiposAccion.prototipo.ikSistemasConstructivos.registros.idKey}">
+          <f:facet name="header"  >
+            <div class="janal-column-center">  Archivos cargados</div>
+          </f:facet>
+          <p:column  headerText="No." styleClass="janal-column-right"> #{rowIndex+1} </p:column>
+          <p:column headerText="Descripcion">    #{row.descripcion} </p:column>
+        </p:dataTable>
+        <p:contextMenu for="tabla">
+          <p:menuitem value="Eliminar"  icon="fa fa-trash"  update=":datos:tabla" process="@this :datos:tabla " action="#{archivo.doEliminarLista(kajoolDialogosImportar.seleccionado)}"/>
+        </p:contextMenu>
+						</p:tab>								
 					</p:tabView>
 				</div>
 			</div>
