@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -46,6 +47,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private static final String GERENTE= "GERENTE";
 	private RegistroPersona registroPersona;
 	private UISelectEntity domicilioBusqueda;
+	private FormatLazyModel lazyModelBitacora;
 
 	public RegistroPersona getRegistroPersona() {
 		return registroPersona;
@@ -62,6 +64,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void setDomicilioBusqueda(UISelectEntity domicilioBusqueda) {
 		this.domicilioBusqueda = domicilioBusqueda;
 	}
+
+	public FormatLazyModel getLazyModelBitacora() {
+		return lazyModelBitacora;
+	}
+
+	public void setLazyModelBitacora(FormatLazyModel lazyModelBitacora) {
+		this.lazyModelBitacora = lazyModelBitacora;
+	}	
 	
   @PostConstruct
   @Override
@@ -75,7 +85,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("mostrarEmpresas", JsfBase.isAdminEncuestaOrAdmin() || JsfBase.getAutentifica().getPersona().getDescripcionPerfil().equals(GERENTE));					
 			this.attrs.put("mostrarPuestos", Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.EMPLEADO.getIdTipoPersona()));			
 			this.attrs.put("mostrarProveedores", (Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona())));			
-			this.attrs.put("mostrarClientes", (Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona())));			
+			this.attrs.put("mostrarClientes", (Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona())));						
 			for(ETipoPersona tipoPersona: ETipoPersona.values()){
 				if(tipoPersona.getIdTipoPersona().equals(Long.valueOf(this.attrs.get("tipoPersona").toString())))
 					this.attrs.put("catalogo", Cadena.reemplazarCaracter(tipoPersona.name().toLowerCase(), '_' , ' '));
@@ -225,6 +235,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+			this.attrs.put("mostrarBitacora", !eaccion.equals(EAccion.AGREGAR));			
       switch (eaccion) {
         case AGREGAR:											
           this.registroPersona= new RegistroPersona();			
@@ -985,5 +996,30 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if(((EAccion) this.attrs.get("accion")).equals(EAccion.CONSULTAR))
 				UIBackingUtilities.execute("readingLocalMode('" + this.attrs.get("nombreAccion") + "');");
 		}	// if	
+		else if (event.getTab().getTitle().equals("Bitacora"))
+			loadBitacora();
   } // onTabChange
+	
+	private void loadBitacora(){
+		List<Columna> campos     = null;
+		Map<String, Object>params= null;
+		try {
+			campos= new ArrayList<>();			
+			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			params= new HashMap<>();
+			params.put("idKey", this.registroPersona.getEmpresaPersona().getIdEmpresaPersona());
+			params.put("proceso", "Empleados");
+			params.put("campo", "idActivo");			
+			this.lazyModelBitacora= new FormatLazyModel("TcKeetBitacorasDto", "bitacora", params, campos);
+			UIBackingUtilities.resetDataTable("contenedorGrupos:tablaBitacora");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(campos);
+			Methods.clean(params);
+		} // finally
+	} // loadBitacora
 }

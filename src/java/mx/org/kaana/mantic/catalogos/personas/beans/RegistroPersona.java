@@ -39,6 +39,7 @@ public class RegistroPersona implements Serializable{
 	private Domicilio domicilioPivote;
 	private Long idPuesto;
 	private Long idEmpresa;
+	private boolean activo;
 	
 	public RegistroPersona() {
 		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio(), new ArrayList<PersonaBanco>(), new ArrayList<PersonaBeneficiario>(), new TrManticEmpresaPersonalDto(), new PersonaBeneficiario(), new PersonaBeneficiario());
@@ -73,6 +74,7 @@ public class RegistroPersona implements Serializable{
 		this.empresaPersona       = empresaPersona;
 		this.beneficiarioPivote   = beneficiarioPivote;
 		this.personaBeneficiario  = personaBeneficiario;
+		this.activo               = true;
 	}
 
 	public Long getIdPersona() {
@@ -217,6 +219,15 @@ public class RegistroPersona implements Serializable{
 
 	public void setPersonaBeneficiario(PersonaBeneficiario personaBeneficiario) {
 		this.personaBeneficiario = personaBeneficiario;
+	}	
+
+	public boolean isActivo() {
+		return this.empresaPersona.getIdActivo().equals(1L);
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+		this.empresaPersona.setIdActivo(this.activo ? 1L : 2L);
 	}	
 	
 	private void init(){

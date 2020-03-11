@@ -206,7 +206,8 @@ public class Transaccion  extends IBaseTnx{
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
 			empresaPersonal= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
-			if(empresaPersonal!= null && empresaPersonal.isValid()){												
+			if(empresaPersonal!= null && empresaPersonal.isValid()){						
+				empresaPersonal.setIdActivo(this.persona.getEmpresaPersona().getIdActivo());
 				empresaPersonal.setClave(this.persona.getEmpresaPersona().getClave());
 				empresaPersonal.setContrato(this.persona.getEmpresaPersona().getContrato());
 				empresaPersonal.setFechaIngreso(this.persona.getEmpresaPersona().getFechaIngreso());
@@ -221,8 +222,8 @@ public class Transaccion  extends IBaseTnx{
 				empresaPersonal.setIdDepartamento(this.persona.getEmpresaPersona().getIdDepartamento());
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
-				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;
-				bitacora(sesion, "Personal", empresaPersonal);
+				bitacora(sesion, "Empleados", empresaPersonal);
+				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;				
 			} // if			
 		} // try
 		catch (Exception e) {			
