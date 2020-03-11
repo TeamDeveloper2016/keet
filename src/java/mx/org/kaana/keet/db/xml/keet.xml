@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcKeetClientesPortalesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_clientes_portales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_clientes_portales
+        where      
+          pagina = '{pagina}' and id_cliente = {idCliente}
+      </select>
+    </unit>		
+    <unit id="TcKeetClientesBancosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_clientes_bancos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_clientes_bancos
+        where      
+          id_cliente = {idCliente} and clave_referencia = '{claveReferencia}' and convenio_cuenta = '{convenioCuenta}' and id_tipo_cuenta = {idTipoCuenta} and id_banco = {idBanco}
+      </select>
+    </unit>		
     <unit id="TcKeetTiposInfraestructurasDto">
       <select id="row">
         select      

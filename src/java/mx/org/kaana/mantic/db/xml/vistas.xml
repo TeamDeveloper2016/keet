@@ -6143,6 +6143,23 @@
 					 tc_mantic_proveedores_bancos.id_tipo_cuenta= {idTipoCuenta}
 			</select>
 		</unit>
+		<unit id="VistaPortalClientesDto">
+			<select id="banca">
+				select 
+					tc_mantic_clientes_bancos.id_clientes_banca as id_key,
+					tc_mantic_clientes_bancos.convenio_cuenta,
+					tc_mantic_clientes_bancos.clabe_referencia,
+					tc_mantic_bancos.nombre
+				 from 
+					 tc_mantic_clientes_bancos
+				 inner join
+					 tc_mantic_bancos on tc_mantic_clientes_bancos.id_banco = tc_mantic_bancos.id_banco
+				 where 
+					 tc_mantic_clientes_bancos.id_cliente = {idCliente}
+					and 
+					 tc_mantic_clientes_bancos.id_tipo_cuenta= {idTipoCuenta}
+			</select>
+		</unit>
 		<unit id="VistaEmpresasDto">
 			<select id="saldoFavorEntradas">
 				select      

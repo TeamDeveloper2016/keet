@@ -153,7 +153,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toCondicionesPago
 	
-	public TcManticProveedoresPortalesDto toPortal() throws Exception{
+	public TcManticProveedoresPortalesDto toPortal() throws Exception {
 		TcManticProveedoresPortalesDto regresar= null;
 		Map<String, Object>params= null;
 		try {

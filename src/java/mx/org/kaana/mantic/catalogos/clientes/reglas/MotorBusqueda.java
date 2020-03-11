@@ -7,6 +7,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.keet.db.dto.TcKeetClientesPortalesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
@@ -242,4 +243,24 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toDomicilioCLiente
+	
+	public TcKeetClientesPortalesDto toPortal() throws Exception {
+		TcKeetClientesPortalesDto regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
+			regresar= (TcKeetClientesPortalesDto) DaoFactory.getInstance().toEntity(TcKeetClientesPortalesDto.class, "TcKeetClientesPortalesDto", params);
+			if(regresar== null)
+				regresar= new TcKeetClientesPortalesDto();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPortal
+	
 }

@@ -32,6 +32,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.procesos.mantenimiento.contadores.reglas.Ayudas;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.FillPatternType;
 
 /**
  * @company KAANA
@@ -130,8 +131,8 @@ public class UtilAplicacion {
     HSSFSheet sheet = wb.getSheetAt(0);
     HSSFRow header = sheet.getRow(0);
     HSSFCellStyle cellStyle = wb.createCellStyle();
-    cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
-    cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+    cellStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.GREEN.getIndex());
+    cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
     for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
       HSSFCell cell = header.getCell(i);
       cell.setCellStyle(cellStyle);
