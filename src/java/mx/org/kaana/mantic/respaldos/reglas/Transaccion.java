@@ -121,7 +121,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		if (!result.exists())
 			result.mkdirs();
 		LOG.info("Ruta generada: "+ path.toString());
-		name.append("mantic");
+		name.append(Constantes.ARCHIVO_PATRON_NOMBRE);
     name.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     name.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
     name.append(".");
@@ -133,13 +133,13 @@ public class Transaccion extends IBaseTnx implements Serializable {
   			server= "C:/Software/Server/MariaDB-10_1/bin/mysqldump -h 127.0.0.1 -u mantic --password=mantic --databases mantic ";
 				break;
 			case PRUEBAS:
-        server= "mysqldump -h localhost -u bonanzaj_tester --password=tester2018 --databases bonanzaj_training ";
+        server= "mysqldump -h localhost -u cafujvmh_track --password=20track20 --databases cafujvmh_testing ";
 				break;
 			case CAPACITACION:
-        server= "mysqldump -h localhost -u ferreter_track --password=track2018 --databases ferreter_testing ";
+        server= "mysqldump -h localhost -u cafujvmh_track --password=20track20 --databases cafujvmh_testing ";
 				break;
 			case PRODUCCION:
-        server= "mysqldump -h localhost -u ferreter_super --password=super2018 --databases ferreter_production ";
+        server= "mysqldump -h localhost -u cafujvmh_track --password=20track20 --databases cafujvmh_testing ";
 				break;
 		} // swtich
 		LOG.info("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
