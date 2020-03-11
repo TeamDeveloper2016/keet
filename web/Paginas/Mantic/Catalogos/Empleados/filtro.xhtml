@@ -11,14 +11,16 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombres': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},       
-        'paterno': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},       
-        'materno': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},       
-        'rfc': {validaciones: 'rfc', mascara: 'fiscal', formatos: 'cambiar-mayusculas'},
-        'curp': {validaciones: 'libre', mascara: 'curp', formatos: 'cambiar-mayusculas'},
-        'idTipoSexo': {validaciones: 'libre', mascara: 'libre'},
-        'estatus': {validaciones: 'libre', mascara: 'libre'},
-        'tipoPersona': {validaciones: 'libre', mascara: 'libre'}
+        'nombres'     : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas'},       
+        'paterno'     : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas'},       
+        'materno'     : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas'},       
+        'rfc'         : {validaciones: 'rfc'  , mascara: 'fiscal', formatos: 'cambiar-mayusculas'},
+        'curp'        : {validaciones: 'libre', mascara: 'curp'  , formatos: 'cambiar-mayusculas'},
+        'idTipoSexo'  : {validaciones: 'libre', mascara: 'libre'},
+        'estatus'     : {validaciones: 'libre', mascara: 'libre'},
+        'tipoPersona' : {validaciones: 'libre', mascara: 'libre'},
+				'salarioMenor': {validaciones: 'libre', mascara: 'libre'},
+				'salarioMayor': {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
   </ui:define>
@@ -66,6 +68,10 @@
               <p:selectOneMenu  id="puesto" value="#{manticCatalogosEmpleadosFiltro.attrs.puesto}" styleClass="janal-wid-96">
                 <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.puestos}"/>                
               </p:selectOneMenu>              
+							<p:outputLabel for="salarioMenor" value="Salario menor a:" title="Salario mensual."/>
+              <p:inputNumber id="salarioMenor" value="#{manticCatalogosEmpleadosFiltro.attrs.salarioMenor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right"/>
+							<p:outputLabel for="salarioMayor" value="Salario mayor a:" title="Salario mensual."/>
+              <p:inputNumber id="salarioMayor" value="#{manticCatalogosEmpleadosFiltro.attrs.salarioMayor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right"/>
             </p:panelGrid>
 						<div class="janal-align-right">
 							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticCatalogosEmpleadosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
@@ -90,19 +96,19 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	  						
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.curp}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.curp}">
               <f:facet name="header">
                 <h:outputText value="CURP"/>
               </f:facet>
               <h:outputText value="#{filtro['curp']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.rfc}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
               <h:outputText value="#{filtro['rfc']}"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombres}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.nombres}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
