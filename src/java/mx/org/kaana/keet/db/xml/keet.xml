@@ -496,6 +496,27 @@
         where      
           id_bitacora = {idBitacora}
       </select>
+			<select id="bitacora">
+				select 
+					tc_keet_bitacoras.id_bitacora AS id_key,
+					tc_keet_bitacoras.id_bitacora,
+					tc_keet_bitacoras.proceso,
+					tc_keet_bitacoras.tabla,
+					tc_keet_bitacoras.campo,
+					tc_keet_bitacoras.antes,
+					tc_keet_bitacoras.despues,
+					tc_keet_bitacoras.id_key AS id_principal,
+					tc_keet_bitacoras.id_usuario,
+					tc_keet_bitacoras.registro
+				from 
+					tc_keet_bitacoras
+				where 
+					proceso= '{proceso}'
+				and 
+					campo= '{campo}'
+				and 
+					id_key= {idKey}
+			</select>				
     </unit>		
     <unit id="TcKeetBitacorasAliasDto">
       <select id="row">

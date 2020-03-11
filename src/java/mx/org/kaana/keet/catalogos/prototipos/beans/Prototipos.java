@@ -11,6 +11,7 @@ public class Prototipos extends TcKeetPrototiposDto {
 
 	public Prototipos() {
     super();
+		this.ikSistemasConstructivos= new AdminSistemaConstructivo();
   }
 
 	public AdminSistemaConstructivo getIkSistemasConstructivos() {
