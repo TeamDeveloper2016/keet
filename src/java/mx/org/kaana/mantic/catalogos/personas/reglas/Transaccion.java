@@ -379,7 +379,7 @@ public class Transaccion  extends IBaseTnx{
         if (validate) 
           count++;        
       } // for		
-      regresar= (count == this.persona.getPersonasTiposContacto().size());
+      regresar= (count == this.persona.getPersonasBancos().size());
     } // try
     catch (Exception e) {
       throw e;
