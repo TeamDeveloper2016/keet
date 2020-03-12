@@ -60,13 +60,23 @@
 							<p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosEmpleadosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                                                        
               <p:outputLabel for="departamento" value="Departamento:"/>
-              <p:selectOneMenu  id="departamento" value="#{manticCatalogosEmpleadosFiltro.attrs.departamento}" styleClass="janal-wid-96">
+              <p:selectOneMenu  id="departamento" value="#{manticCatalogosEmpleadosFiltro.attrs.departamento}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.departamentos}"/>                
               </p:selectOneMenu>
               <p:outputLabel for="puesto" value="Puesto:"/>
-              <p:selectOneMenu  id="puesto" value="#{manticCatalogosEmpleadosFiltro.attrs.puesto}" styleClass="janal-wid-96">
+              <p:selectOneMenu  id="puesto" value="#{manticCatalogosEmpleadosFiltro.attrs.puesto}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.puestos}"/>                
-              </p:selectOneMenu>              
+              </p:selectOneMenu> 
+							<p:outputLabel for="contratista" value="Asignado a contratista:"/>
+							<p:selectOneMenu id="contratista" value="#{manticCatalogosEmpleadosFiltro.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+								<f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} - #{element.nombre}"/>
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombres}"/>
+								</p:column>   
+								<p:column headerText="Departamento">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column> 
+							</p:selectOneMenu>																
 							<p:outputLabel for="salarioMenor" value="Salario menor a:" title="Salario mensual."/>
               <p:inputNumber id="salarioMenor" value="#{manticCatalogosEmpleadosFiltro.attrs.salarioMenor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right"/>
 							<p:outputLabel for="salarioMayor" value="Salario mayor a:" title="Salario mensual."/>
@@ -95,6 +105,18 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	  						
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.empresa}">
+              <f:facet name="header">
+                <h:outputText value="Empresa"/>
+              </f:facet>
+              <h:outputText value="#{filtro['sucursal']}"/>
+            </p:column>		
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-7" sortBy="#{filtro.clave}">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{filtro['clave']}"/>
+            </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.curp}">
               <f:facet name="header">
                 <h:outputText value="CURP"/>
@@ -112,13 +134,7 @@
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{filtro['nombres']} #{filtro['paterno']} #{filtro['materno']}"/>
-            </p:column>									
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.tipoPersona}">
-              <f:facet name="header">
-                <h:outputText value="Tipo persona"/>
-              </f:facet>
-              <h:outputText value="#{filtro['tipoPersona']}"/>
-            </p:column>					
+            </p:column>																			
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.departamento}">
               <f:facet name="header">
                 <h:outputText value="Departamento"/>
