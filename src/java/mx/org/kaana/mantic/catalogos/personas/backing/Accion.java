@@ -240,7 +240,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			contratistas= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, campos, Constantes.SQL_TODOS_REGISTROS, "nombre");
+			contratistas= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, campos, Constantes.SQL_TODOS_REGISTROS, "nombres");
 			this.attrs.put("contratistas", contratistas);
 			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
 		} // try
