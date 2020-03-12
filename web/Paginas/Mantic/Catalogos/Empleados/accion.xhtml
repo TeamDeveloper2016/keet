@@ -77,7 +77,7 @@
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
 						<p:ajax event="tabChange" process="@this" listener="#{manticCatalogosPersonasAccion.onTabChange}" update="tablaBancos tablaContactos contenedorGrupos:tablaBitacora" oncomplete="janal.refresh();"/>						
             <p:tab title="General">			
-							<p:panelGrid columns="2" layout="grid" styleClass="keet-main-content janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
 								<p:outputLabel for="estatus" value="Estatus:"/>
 								<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-2, janal-wid-2, janal-wid-90">																		
 									<p:selectBooleanCheckbox id="estatus" value="#{manticCatalogosPersonasAccion.registroPersona.activo}">
@@ -121,8 +121,7 @@
             <p:tab title="Empresa">
 							<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
 								<p:outputLabel for="empresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
-								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.empresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="cliente proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								
+								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.empresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">																		
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>									
 								</p:selectOneMenu>
 								<p:spacer/><p:separator/>
@@ -138,6 +137,16 @@
 								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
 								</p:selectOneMenu>																
+								<p:outputLabel for="contratista" value="Contratista:"/>
+								<p:selectOneMenu id="contratista" value="#{manticCatalogosPersonasAccion.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} - #{element.nombre}"/>
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombres}"/>
+									</p:column>   
+									<p:column headerText="Departamento">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column> 
+								</p:selectOneMenu>	
 								<p:outputLabel for="fechaIngreso" value="Fecha ingreso:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:calendar id="fechaIngreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaIngreso}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="fechaContrato" value="Fecha contratación:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
@@ -145,33 +154,7 @@
 								<p:outputLabel for="sueldoSemanal" value="Sueldo semanal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" inputStyle="text-align: right;"/>                    
 								<p:outputLabel for="sueldoMensual" value="Sueldo mensual:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:inputNumber id="sueldoMensual" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoMensual}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" inputStyle="text-align: right;"/>                    
-								<p:outputLabel for="proveedores" value="Proveedor:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}"/>
-								<p:selectOneMenu id="proveedores" value="#{manticCatalogosPersonasAccion.attrs.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
-									<p:column  styleClass="janal-column-center">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column styleClass="janal-column-left">
-										<h:outputText value="#{item.rfc}"/>
-									</p:column>  
-									<p:column styleClass="janal-column-left">
-										<h:outputText value="#{item.razonSocial}"/>
-									</p:column>  
-								</p:selectOneMenu>	
-								<p:outputLabel for="cliente" value="Cliente:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarClientes}"/>
-								<p:selectOneMenu id="cliente" value="#{manticCatalogosPersonasAccion.attrs.cliente}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarClientes}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
-									<p:column  styleClass="janal-column-center">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column styleClass="janal-column-left">
-										<h:outputText value="#{item.rfc}"/>
-									</p:column>  
-									<p:column styleClass="janal-column-left">
-										<h:outputText value="#{item.razonSocial}"/>
-									</p:column>   
-								</p:selectOneMenu>	
+								<p:inputNumber id="sueldoMensual" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoMensual}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" inputStyle="text-align: right;"/>                    								
               </p:panelGrid>
 						</p:tab>	
             <p:tab title="Prestaciones">

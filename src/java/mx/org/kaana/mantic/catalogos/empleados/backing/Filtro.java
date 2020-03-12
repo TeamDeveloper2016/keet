@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.empleados.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
       this.attrs.put("idTipoPersona", ETipoPersona.EMPLEADO.getIdTipoPersona());
 			loadEmpresas();
 			loadTiposPersonas();
+			loadContratistas();
 			if(JsfBase.getFlashAttribute("idPersona")!= null){
 				this.attrs.put("idPersona", JsfBase.getFlashAttribute("idPersona"));
 				doLoad();
@@ -72,6 +74,23 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			Error.mensaje(e);			
 		} // catch				
 	} // loadEmpresas
+	
+	private void loadContratistas(){
+		List<UISelectEntity>contratistas= null;		
+		List<Columna> campos            = null;
+		try {
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			contratistas= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, campos, Constantes.SQL_TODOS_REGISTROS, "nombres");
+			this.attrs.put("contratistas", contratistas);
+			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // loadContratistas
 	
 	@Override
   public void doLoad() {
@@ -122,6 +141,8 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			if(!Cadena.isVacio(this.attrs.get("curp")))
 				condicion.append("tc_mantic_personas.curp like '%").append(this.attrs.get("curp")).append("%' and ");			
 			condicion.append("tc_mantic_personas.id_tipo_persona in (").append(this.attrs.get("idTipoPersona")).append(") and ");
+			if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey()>= 1L)				
+				condicion.append("tr_mantic_empresa_personal.id_contratista=").append(((UISelectEntity)this.attrs.get("idContratista")).getKey()).append(" and ");
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
 				condicion.append("tr_mantic_empresa_personal.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(") and ");
 			else
