@@ -60,19 +60,20 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>      
 								</p:selectOneMenu>
-								<p:commandButton id="agregar" value="Agregar" icon="fa fa-plus" process="@form" action="#{keetCatalogosPrototiposAccion.doAgregar}"  oncomplete="janal.desbloquear()"
+								<p:commandButton id="agregar" value="Agregar" icon="fa fa-plus" process="@form" action="#{keetCatalogosPrototiposAccion.doAddConstructivo}"  oncomplete="janal.desbloquear()"/>
 
               </p:panelGrid>
 							<p:spacer/>
-        <p:dataTable style="width: 800px;" styleClass="janal-content-table" id="tabla" var="row" value="#{keetCatalogosPrototiposAccion.prototipo.ikSistemasConstructivos.registros}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" selection="#{keetCatalogosPrototiposAccion.seleccionado}" rowKey="#{keetCatalogosPrototiposAccion.prototipo.ikSistemasConstructivos.registros.idKey}">
+        <p:dataTable style="width: 800px;" styleClass="janal-content-table" id="tabla" var="row" value="#{keetCatalogosPrototiposAccion.prototipo.ikSistemasConstructivos.registros}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" selection="#{keetCatalogosPrototiposAccion.attrs.seleccionado}" rowKey="#{keetCatalogosPrototiposAccion.prototipo.ikSistemasConstructivos.registros.idKey}">
           <f:facet name="header"  >
             <div class="janal-column-center">  Archivos cargados</div>
           </f:facet>
           <p:column  headerText="No." styleClass="janal-column-right"> #{rowIndex+1} </p:column>
+          <p:column headerText="Grupo">    #{row.grupo} </p:column>
           <p:column headerText="Descripcion">    #{row.descripcion} </p:column>
         </p:dataTable>
         <p:contextMenu for="tabla">
-          <p:menuitem value="Eliminar"  icon="fa fa-trash"  update=":datos:tabla" process="@this :datos:tabla " action="#{archivo.doEliminarLista(kajoolDialogosImportar.seleccionado)}"/>
+          <p:menuitem value="Eliminar"  icon="fa fa-trash"  update="tabla" process="@this tabla " action="#{archivo.doEliminarLista(kajoolDialogosImportar.seleccionado)}"/>
         </p:contextMenu>
 						</p:tab>								
 					</p:tabView>
