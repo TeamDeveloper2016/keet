@@ -14,43 +14,37 @@
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
     <div class="ui-g ui-grid-row janal-grid-row">
 			<div class="ui-g-1 janal-content-center janal-column-center">
-				<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini"/>
+				<div style="width: 4% !important; text-align: center">
+					<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+				</div>	
 			</div>	
 			<div class="ui-g-11 janal-content-center">
         <div class="ui-g ui-grid-row janal-grid-row">
-					<div class="ui-g-12 janal-content-center">
-						<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-control-acceso janal-column-center janal-wid-col-90">
-  		  		  <h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
-	  		  	  <h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
-							<p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" rendered="false">
-								<span class="fa fa-stack">
-									<i class="fa fa-circle fa-stack-2x janal-color-blue"></i>
-									<i class="fa fa-user fa-stack-1x fa-inverse"></i>
-								</span>
-							</p:commandLink>
-						</p:panelGrid>
-				  </div>	
+					<div class="ui-g-10 janal-content-center">
+  		  		<h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
+						<h1 class="titulo-siglas janal-header-acronym" style="text-align: center;">#{kajoolUtilAplicacion.tituloCorto}</h1>
+					</div>
+					<div class="ui-g-2 janal-column-right" style="display: none">
+      		  <span class="version lg-pantalla" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong>Ayuda</span>
+      		  <span class="version xs-pantalla" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong></span>
+					</div>  
 				</div>	
         <div class="ui-g ui-grid-row janal-grid-row">
 					<div class="ui-g-4 janal-content-center">
 						<span id="reloj" class="fecha lg-pantalla"></span>
-						<span class="fecha xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+						<span class="fecha xs-pantalla Fs14" style="color: white">#{kajoolUtilAplicacion.currentDate}</span>
 					</div>
 					<div class="ui-g-4 janal-content-center margin-desarrollo" style="text-align: center;">
 						<p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
 						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
 					</div>
 					<div class="ui-g-4 janal-content-center margin-version" style="text-align: right;">
-						<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-control-acceso janal-column-right lg-pantalla janal-wid-30">
-							<div>
-							  <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
-							  <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
-							</div>
-							<p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" style="text-decoration: none;" rendered="false">
-								<p:outputLabel value="Iniciar sesión"/>
-							</p:commandLink>
-						</p:panelGrid>
-					</div>
+						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+						<span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+						<p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" style="text-decoration: none;" rendered="false">
+							<p:outputLabel value="Iniciar sesión"/>
+						</p:commandLink>
+					</div>				
 				</div>	
 			</div>
 		</div>	

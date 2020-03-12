@@ -25,7 +25,7 @@
 						<h1 class="titulo-proyecto janal-header-title">#{sessionScope.autentifica.empresa.nombre}</h1>
 					</div>
 					<div class="ui-grid-col-8 xs-pantalla">
-						<h1 class="janal-header-title">#{kajoolUtilAplicacion.tituloCorto}</h1>
+						<h1 class="janal-header-title" style="text-align: center;">#{kajoolUtilAplicacion.tituloCorto}</h1>
 					</div>
 					<div class="ui-grid-col-4 lg-pantalla">
 						<p:graphicImage library="janal" name="img/sistema/bonanza.svg" width="25" style="float:right;margin-right:10px;"/>
@@ -37,7 +37,7 @@
 				<div class="ui-grid-row janal-grid-rows">
 					<div class="ui-grid-col-4 margin-fecha">
 						<span id="reloj" class="fecha janal-text-one-line lg-pantalla"></span>
-						<span class="fecha janal-text-one-line xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+						<span class="fecha janal-text-one-line xs-pantalla Fs14" style="color: white">#{kajoolUtilAplicacion.currentDate}</span>
 					</div>
 					<div class="ui-grid-col-4 margin-desarrollo" style="text-align: center;">
 						<p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
