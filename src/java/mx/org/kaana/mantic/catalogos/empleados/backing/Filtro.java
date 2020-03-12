@@ -97,7 +97,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
     List<Columna> campos     = null;
 		Map<String, Object>params= null;
     try {
-			params= toPrepare();
+			params= this.toPrepare();
       campos = new ArrayList<>();
       campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
@@ -128,6 +128,8 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 				condicion.append("tr_mantic_empresa_personal.sueldo_mensual<").append(this.attrs.get("salarioMenor")).append(" and ");
 			if(!Cadena.isVacio(this.attrs.get("salarioMayor")))
 				condicion.append("tr_mantic_empresa_personal.sueldo_mensual>").append(this.attrs.get("salarioMayor")).append(" and ");
+			if(!Cadena.isVacio(this.attrs.get("clave")))
+				condicion.append("tc_mantic_personas.clave like '%").append(this.attrs.get("clave")).append("%' and ");
 			if(!Cadena.isVacio(this.attrs.get("idPersona")))
 				condicion.append("tc_mantic_personas.id_persona=").append(this.attrs.get("idPersona")).append(" and ");
 			if(!Cadena.isVacio(this.attrs.get("nombres")))

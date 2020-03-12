@@ -264,7 +264,7 @@ div.ui-panelgrid-content {
 	color: blue;
 }	
 .janal-header-title {
-  font-size: 22px;
+  font-size: 21px;
   position: relative;
   font-weight: normal;
   white-space: nowrap;
@@ -394,7 +394,7 @@ div.ui-panelgrid-content {
   width: 180px;
   text-align: center;  
 }
-.janal-logo-mini {width: 98px;}
+.janal-logo-mini {width: 97px;}
 /*==== Media queries =====*/
 /* Smartphones (portrait) ----------- */
 @media  (max-width : 480px) {
@@ -479,7 +479,7 @@ div.ui-panelgrid-content {
   .janal-grid-row {}
   .xs-pantalla{display:block;}
   .lg-pantalla{display: none;}
-  .janal-header-acronym {font-size: 24px;letter-spacing:.3em}
+  .janal-header-acronym {font-size: 23px;letter-spacing:.3em}
   .margin-fecha {padding-left: 0px;}
   .margin-desarrollo {margin-top: 0px !important;}
   .margin-version {margin-top: 0px !important;}
