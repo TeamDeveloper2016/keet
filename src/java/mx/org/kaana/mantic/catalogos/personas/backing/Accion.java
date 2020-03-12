@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.personas.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,11 +112,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadMunicipios();
 		loadLocalidades();		
 		loadDomicilios();
-		loadClientes();
-		loadProveedores();
+		if((boolean)this.attrs.get("mostrarClientes"))
+			loadClientes();
+		if((boolean)this.attrs.get("mostrarProveedores"))
+			loadProveedores();
 		loadEstadosCiviles();
 		loadTiposParentescos();
 		loadDepartamentos();
+		loadContratistas();
 	} // loadCollections
 	
 	private void loadDepartamentos(){
@@ -229,6 +233,23 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	} // loadPuestos
 	
+	private void loadContratistas(){
+		List<UISelectEntity>contratistas= null;		
+		List<Columna> campos            = null;
+		try {
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			contratistas= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, campos, Constantes.SQL_TODOS_REGISTROS, "nombre");
+			this.attrs.put("contratistas", contratistas);
+			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // loadContratistas
+	
   public void doLoad() {
     EAccion eaccion= null;
     Long idPersona = -1L;
@@ -277,6 +298,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		Entity persona         = null;
     try {					
 			this.registroPersona.setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresaPivote").toString()));
+			if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey()>= 1L)
+				this.registroPersona.getEmpresaPersona().setIdContratista(((UISelectEntity)this.attrs.get("idContratista")).getKey());
+			else
+				this.registroPersona.getEmpresaPersona().setIdContratista(null);
 			eaccion= (EAccion) this.attrs.get("accion");
 			transaccion = new Transaccion(this.registroPersona);
 			if(Boolean.valueOf(this.attrs.get("mostrarProveedores").toString())) {
@@ -288,8 +313,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 				transaccion = new Transaccion(this.registroPersona, persona.getKey());
 			} // if
 			if (transaccion.ejecutar(eaccion)) {
+				JsfBase.setFlashAttribute("idPersona", this.registroPersona.getPersona().getKey());
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modifico").concat(" la persona de forma correcta. \nCuenta de acceso [").concat(transaccion.getCuenta()).concat("]"), ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modifico").concat(" la persona de forma correcta.").concat(transaccion.getCuenta()!=null ? "\nCuenta de acceso [" + transaccion.getCuenta() + "]" : ""), ETipoMensaje.INFORMACION);
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la persona.", ETipoMensaje.ERROR);      			
