@@ -84,6 +84,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("idPrincipal", 1L);
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());			
 			params.put("credito", this.attrs.get("credito"));			
+			params.put("sortOrder", this.attrs.get("sortOrder"));			
       this.lazyModel = new FormatCustomLazy("VistaClientesDto", "row", params, campos);
       UIBackingUtilities.resetDataTable();
     } // try

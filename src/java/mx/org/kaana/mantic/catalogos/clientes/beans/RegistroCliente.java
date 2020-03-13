@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.keet.db.dto.TcKeetClientesPortalesDto;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -15,12 +16,18 @@ import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.enums.ETiposCuentas;
 
 public class RegistroCliente implements Serializable{
 	
 	private static final long serialVersionUID = 699751401273986887L;
 	private Long idCliente;
 	private TcManticClientesDto cliente;
+	private TcKeetClientesPortalesDto portal;
+	private List<ClienteBanca> clientesServicio;
+	private ClienteBanca clienteServicioSeleccion;
+	private List<ClienteBanca> clientesTransferencia;
+	private ClienteBanca clienteTransferenciaSeleccion;
 	private List<ClienteDomicilio> clientesDomicilio;
 	private ClienteDomicilio clienteDomicilioSelecion;
 	private List<ClienteTipoContacto> clientesTiposContacto;
@@ -39,7 +46,7 @@ public class RegistroCliente implements Serializable{
 	private boolean habilitarCredito;
 
 	public RegistroCliente() {
-		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio(), new ArrayList<ClienteContactoRepresentante>(), new ClienteContactoRepresentante(), new ClienteContactoRepresentante());
+		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio(), new ArrayList<ClienteContactoRepresentante>(), new ClienteContactoRepresentante(), new ClienteContactoRepresentante(), new TcKeetClientesPortalesDto(), new ArrayList<ClienteBanca>(), new ArrayList<ClienteBanca>());
 	}
 	
 	public RegistroCliente(Long idCliente) {
@@ -54,7 +61,7 @@ public class RegistroCliente implements Serializable{
 		init();		
 	}
 	
-	public RegistroCliente(Long idCliente, TcManticClientesDto cliente, List<ClienteDomicilio> clientesDomicilio, List<ClienteTipoContacto> clientesTiposContacto, List<ClienteRepresentante> clientesRepresentantes, Domicilio domicilio, List<ClienteContactoRepresentante> personasTiposContacto, ClienteContactoRepresentante personaTipoContactoPivote, ClienteContactoRepresentante personaTipoContacto) {
+	public RegistroCliente(Long idCliente, TcManticClientesDto cliente, List<ClienteDomicilio> clientesDomicilio, List<ClienteTipoContacto> clientesTiposContacto, List<ClienteRepresentante> clientesRepresentantes, Domicilio domicilio, List<ClienteContactoRepresentante> personasTiposContacto, ClienteContactoRepresentante personaTipoContactoPivote, ClienteContactoRepresentante personaTipoContacto, TcKeetClientesPortalesDto portal, List<ClienteBanca> clientesServicio, List<ClienteBanca> clientesTransferencia) {
 		this.idCliente             = idCliente;
 		this.cliente               = cliente;
 		this.clientesDomicilio     = clientesDomicilio;
@@ -69,6 +76,9 @@ public class RegistroCliente implements Serializable{
 		this.personaTipoContactoPivote= personaTipoContactoPivote;
 		this.personaTipoContacto   = personaTipoContactoPivote;
 		this.habilitarCredito      = cliente.getIdCredito()!= null && cliente.getIdCredito().equals(1L);
+		this.portal                = portal;
+		this.clientesServicio      = clientesServicio;
+		this.clientesTransferencia = clientesTransferencia;
 	}
 	
 	public Long getIdCliente() {
@@ -199,6 +209,46 @@ public class RegistroCliente implements Serializable{
 		this.habilitarCredito = habilitarCredito;
 		this.cliente.setIdCredito(this.habilitarCredito ? 1L : 2L);
 	}	
+
+	public TcKeetClientesPortalesDto getPortal() {
+		return portal;
+	}
+
+	public void setPortal(TcKeetClientesPortalesDto portal) {
+		this.portal = portal;
+	}	
+
+	public List<ClienteBanca> getClientesServicio() {
+		return clientesServicio;
+	}
+
+	public void setClientesServicio(List<ClienteBanca> clientesServicio) {
+		this.clientesServicio = clientesServicio;
+	}
+
+	public ClienteBanca getClienteServicioSeleccion() {
+		return clienteServicioSeleccion;
+	}
+
+	public void setClienteServicioSeleccion(ClienteBanca clienteServicioSeleccion) {
+		this.clienteServicioSeleccion = clienteServicioSeleccion;
+	}
+
+	public List<ClienteBanca> getClientesTransferencia() {
+		return clientesTransferencia;
+	}
+
+	public void setClientesTransferencia(List<ClienteBanca> clientesTransferencia) {
+		this.clientesTransferencia = clientesTransferencia;
+	}
+
+	public ClienteBanca getClienteTransferenciaSeleccion() {
+		return clienteTransferenciaSeleccion;
+	}
+
+	public void setClienteTransferenciaSeleccion(ClienteBanca clienteTransferenciaSeleccion) {
+		this.clienteTransferenciaSeleccion = clienteTransferenciaSeleccion;
+	}	
 	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
@@ -206,6 +256,7 @@ public class RegistroCliente implements Serializable{
 			motorBusqueda= new MotorBusqueda(this.idCliente);
 			this.cliente= motorBusqueda.toCliente();		
 			this.habilitarCredito= this.cliente.getIdCredito().equals(1L);
+			this.portal= motorBusqueda.toPortal();
 			initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
@@ -225,6 +276,8 @@ public class RegistroCliente implements Serializable{
 			//this.clientesRepresentantes= motor.toClientesRepresentantes();
 			this.clientesTiposContacto= motor.toClientesTipoContacto();			
 			this.personasTiposContacto= motor.toRepresentantes();
+			this.clientesServicio= motor.toServicios();
+			this.clientesTransferencia= motor.toTransferencias();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
@@ -527,4 +580,68 @@ public class RegistroCliente implements Serializable{
 			JsfBase.addMessageError(e);			
 		} // catch	
 	} // doActualizaRepresentante
+	
+	public void doAgregarClienteServicio(){
+		ClienteBanca clienteBanca= null;
+		try {					
+			clienteBanca= new ClienteBanca(this.contadores.getTotalClientesServicio()+ this.countIndice, ESql.INSERT, true);				
+			clienteBanca.setIdTipoCuenta(ETiposCuentas.SERVICIOS.getKey());
+			this.clientesServicio.add(clienteBanca);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarProveedorTipoContacto
+	
+	public void doAgregarClienteTransferencia(){
+		ClienteBanca clienteBanca= null;
+		try {					
+			clienteBanca= new ClienteBanca(this.contadores.getTotalClientesTransferencia()+ this.countIndice, ESql.INSERT, true);				
+			clienteBanca.setIdTipoCuenta(ETiposCuentas.TRANSFERENCIAS.getKey());
+			this.clientesTransferencia.add(clienteBanca);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarProveedorTipoContacto
+	
+	public void doEliminarProveedorServicio(){
+		try {			
+			if(this.clientesServicio.remove(this.clienteServicioSeleccion)){
+				if(!this.clienteServicioSeleccion.getNuevo())
+					addDeleteList(this.clienteServicioSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el registro de servicio", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar el registro de servicio", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarProveedorTipoContacto
+	
+	public void doEliminarProveedorTransferencia(){
+		try {			
+			if(this.clientesTransferencia.remove(this.clienteTransferenciaSeleccion)){
+				if(!this.clienteTransferenciaSeleccion.getNuevo())
+					addDeleteList(this.clienteTransferenciaSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el registro de transferencia", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar el registro de transferencia", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarProveedorTipoContacto
 }

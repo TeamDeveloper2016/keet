@@ -167,7 +167,7 @@
 									<p:selectBooleanCheckbox id="principal" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.principal}" styleClass="janal-wid-100-txt" />                    
                 </p:panelGrid>
               </p:panelGrid>
-            </p:tab>
+            </p:tab>						
             <p:tab title="Contacto">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="contacto" value="#{manticCatalogosClientesAccion.registroCliente.clientesTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																					
@@ -251,6 +251,68 @@
                 <p:outputLabel for="saldo" value="Saldo:"/>
                 <p:inputNumber id="saldo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.saldo}" decimalPlaces="0" disabled="true"/>
 							</p:panelGrid>
+						</p:tab>
+						<p:tab title="Portal" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100-txt">
+								<p:outputLabel for="pagina" value="Pagina:"/>
+                <p:inputText id="pagina" value="#{manticCatalogosClientesAccion.registroCliente.portal.pagina}" styleClass="janal-wid-100-txt"/>                    
+								<p:outputLabel for="cuenta" value="Cuenta:"/>
+                <p:inputText id="cuenta" value="#{manticCatalogosClientesAccion.registroCliente.portal.cuenta}" styleClass="janal-wid-100-txt"/>                    
+								<p:outputLabel for="contrasenia" value="Contraseña:"/>
+                <p:inputText id="contrasenia" value="#{manticCatalogosClientesAccion.registroCliente.portal.contrasenia}" styleClass="janal-wid-100-txt"/>                    
+							</p:panelGrid>
+						</p:tab>
+						<p:tab title="Banca" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
+							<p:fieldset legend="Cuentas de servicios">
+								<p:panelGrid id="panelTablaServicios" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+									<p:dataTable id="tablaServicios" rowIndexVar="index" var="servicio" value="#{manticCatalogosClientesAccion.registroCliente.clientesServicio}" rows="6" paginator="false" reflow="true" rowKey="#{servicio.key}" emptyMessage=" " styleClass="paginated">																					
+										<p:column headerText="Banco">										
+											<p:selectOneMenu id="banco#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.idBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!servicio.nuevo}">
+												<f:selectItems value="#{manticCatalogosClientesAccion.attrs.bancos}"/>
+											</p:selectOneMenu> 				
+										</p:column>	
+										<p:column headerText="Convenio" styleClass="janal-wid-30 bancaconvenio">		
+											<p:inputText id="bancaconvenio#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.convenioCuenta}" disabled="#{!servicio.nuevo}"/>                    																																			
+										</p:column>
+										<p:column headerText="Referencia" styleClass="janal-wid-30 bancavalor">		
+											<p:inputText id="bancavalor#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.claveReferencia}" disabled="#{!servicio.nuevo}"/>                    																																			
+										</p:column>
+										<p:column style="width:32px;text-align: center">
+											<p:commandButton update="tablaServicios" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarClienteServicio}">
+												<f:setPropertyActionListener value="#{servicio}" target="#{manticCatalogosClientesAccion.registroCliente.clienteServicioSeleccion}" />
+											</p:commandButton>
+										</p:column>
+										<f:facet name="footer">
+											<p:commandButton actionListener="#{manticCatalogosClientesAccion.registroCliente.doAgregarClienteServicio}" process="@this tablaServicios" update="tablaServicios" icon="fa fa-plus"/>						
+										</f:facet>
+									</p:dataTable>	
+								</p:panelGrid>	
+							</p:fieldset>
+							<p:fieldset legend="Cuentas de transferencia">
+								<p:panelGrid id="panelTablaTransferia" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+									<p:dataTable id="tablaTransferencia" rowIndexVar="index" var="transferencia" value="#{manticCatalogosClientesAccion.registroCliente.clientesTransferencia}" rows="6" paginator="false" reflow="true" rowKey="#{transferencia.key}" emptyMessage=" " styleClass="paginated">																					
+										<p:column headerText="Banco">										
+											<p:selectOneMenu id="transferencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.idBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!transferencia.nuevo}">
+												<f:selectItems value="#{manticCatalogosClientesAccion.attrs.bancos}"/>
+											</p:selectOneMenu> 				
+										</p:column>	
+										<p:column headerText="Cuenta" styleClass="janal-wid-30 convenio">		
+											<p:inputText id="convenio#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.convenioCuenta}" disabled="#{!transferencia.nuevo}"/>                    																																			
+										</p:column>
+										<p:column headerText="Clave" styleClass="janal-wid-30 referencia">		
+											<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.claveReferencia}" disabled="#{!transferencia.nuevo}"/>                    																																			
+										</p:column>
+										<p:column style="width:32px;text-align: center">
+											<p:commandButton update="tablaTransferencia" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarClienteTransferencia}">
+												<f:setPropertyActionListener value="#{transferencia}" target="#{manticCatalogosClientesAccion.registroCliente.clienteTransferenciaSeleccion}" />
+											</p:commandButton>
+										</p:column>
+										<f:facet name="footer">
+											<p:commandButton actionListener="#{manticCatalogosClientesAccion.registroCliente.doAgregarClienteTransferencia}" process="@this tablaTransferencia" update="tablaTransferencia" icon="fa fa-plus"/>						
+										</f:facet>
+									</p:dataTable>	
+								</p:panelGrid>	
+							</p:fieldset>
 						</p:tab>
             <p:tab title="Observaciones">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">

@@ -68,13 +68,13 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("tipoPersona", this.attrs.get("idTipoPersona"));		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Agentes/filtro");		
+			JsfBase.setFlashAttribute("retorno", "filtro");		
 			JsfBase.setFlashAttribute("idPersona", eaccion.equals(EAccion.MODIFICAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Mantic/Catalogos/Personas/accion".concat(Constantes.REDIRECIONAR);
+		return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 }
