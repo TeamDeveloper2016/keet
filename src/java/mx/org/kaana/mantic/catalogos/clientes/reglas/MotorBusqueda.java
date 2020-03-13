@@ -10,6 +10,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.keet.db.dto.TcKeetClientesPortalesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteBanca;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteRepresentante;
@@ -18,6 +19,7 @@ import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
+import mx.org.kaana.mantic.enums.ETiposCuentas;
 
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 	
@@ -261,6 +263,30 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toPortal
+	} // toPortal	
 	
+	public List<ClienteBanca> toServicios() throws Exception{
+		return toClienteBanca(ETiposCuentas.SERVICIOS);
+	} // toServicios
+	
+	public List<ClienteBanca> toTransferencias() throws Exception{
+		return toClienteBanca(ETiposCuentas.TRANSFERENCIAS);
+	} // toTransferencias
+	
+	private List<ClienteBanca> toClienteBanca(ETiposCuentas tipoCuenta) throws Exception{
+		List<ClienteBanca> regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, " id_cliente=" + this.idCliente + " and id_tipo_cuenta=" + tipoCuenta.getKey());
+			regresar= DaoFactory.getInstance().toEntitySet(ClienteBanca.class, "TcKeetClientesBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedorbanca
 }

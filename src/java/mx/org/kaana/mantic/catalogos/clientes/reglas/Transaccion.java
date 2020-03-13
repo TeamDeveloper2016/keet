@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.keet.db.dto.TcKeetClientesBancosDto;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
@@ -18,6 +19,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteBanca;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
@@ -124,8 +126,16 @@ public class Transaccion extends TransaccionFactura {
 			idCliente = DaoFactory.getInstance().insert(sesion, this.registroCliente.getCliente());
 			if (registraClientesDomicilios(sesion, idCliente)) {
 				if (registraClientesRepresentantes(sesion, idCliente)) {
-					regresar = registraClientesTipoContacto(sesion, idCliente);
-				}
+					if(registraClientesTipoContacto(sesion, idCliente)){
+						if(registraClientesServicios(sesion, idCliente)){
+							if(registraClientesTransferencia(sesion, idCliente)){
+								this.registroCliente.getPortal().setIdCliente(idCliente);								
+								this.registroCliente.getPortal().setIdUsuario(JsfBase.getIdUsuario());								
+								regresar= DaoFactory.getInstance().insert(sesion, this.registroCliente.getPortal())>= 1L;
+							} // if
+						} // if
+					} // if
+				} // if
 			} // if
 		} // if
 		sesion.flush();
@@ -180,13 +190,21 @@ public class Transaccion extends TransaccionFactura {
     Long idCliente = this.registroCliente.getIdCliente();
 		if (registraClientesDomicilios(sesion, idCliente)) {
 			if (registraClientesRepresentantes(sesion, idCliente)) {
-				if (registraClientesTipoContacto(sesion, idCliente)) {
-					regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
-					sesion.flush();
-					actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
-				}
+				if(registraClientesTipoContacto(sesion, idCliente)){
+					if(registraClientesServicios(sesion, idCliente)){
+						if(registraClientesTransferencia(sesion, idCliente)){
+							this.registroCliente.getPortal().setIdCliente(idCliente);
+							this.registroCliente.getPortal().setIdUsuario(JsfBase.getIdUsuario());								
+							if(DaoFactory.getInstance().insert(sesion, this.registroCliente.getPortal())>= 1L){
+								regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
+								sesion.flush();
+								actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
+							} // if									
+						} // if
+					} // if
+				} // if
 			} // if
-		} // if    
+		} // if				
     return regresar;
   } // actualizarCliente
 
@@ -568,4 +586,84 @@ public class Transaccion extends TransaccionFactura {
       } // for
 		} // if
 	} // toDeleteAll
+	
+	private boolean registraClientesServicios(Session sesion, Long idCliente) throws Exception {
+    TcKeetClientesBancosDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (ClienteBanca proveedorBanca : this.registroCliente.getClientesServicio()) {
+				if(proveedorBanca.getConvenioCuenta()!= null && !Cadena.isVacio(proveedorBanca.getConvenioCuenta())){
+					proveedorBanca.setIdCliente(idCliente);
+					proveedorBanca.setIdUsuario(JsfBase.getIdUsuario());
+					dto = (TcKeetClientesBancosDto) proveedorBanca;
+					sqlAccion = proveedorBanca.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdClienteBanco(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
+        if (validate) {
+          count++;
+        }
+      } // for		
+      regresar = count == this.registroCliente.getClientesServicio().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar el servicio de banco, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresServicios
+	
+	private boolean registraClientesTransferencia(Session sesion, Long idCliente) throws Exception {
+    TcKeetClientesBancosDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (ClienteBanca clienteBanca : this.registroCliente.getClientesTransferencia()) {
+				if(clienteBanca.getConvenioCuenta()!= null && !Cadena.isVacio(clienteBanca.getConvenioCuenta())){
+					clienteBanca.setIdCliente(idCliente);
+					clienteBanca.setIdUsuario(JsfBase.getIdUsuario());
+					dto = (TcKeetClientesBancosDto) clienteBanca;
+					sqlAccion = clienteBanca.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdClienteBanco(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
+        if (validate) {
+          count++;
+        }
+      } // for		
+      regresar = count == this.registroCliente.getClientesTransferencia().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar el servicio de banco, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresTransferencia
 }
