@@ -11,16 +11,20 @@ public class ContadoresListas {
 	private Long totalClientesRepresentantes;
 	private Long totalClientesTipoContacto;	
 	private Long totalPersonasTipoContacto;	
+	private Long totalClientesServicio;	
+	private Long totalClientesTransferencia;	
 
 	public ContadoresListas() {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalClientesDomicilios, Long totalClientesRepresentantes, Long totalClientesTipoContacto, Long totalPersonasTipoContacto) {
+	public ContadoresListas(Long totalClientesDomicilios, Long totalClientesRepresentantes, Long totalClientesTipoContacto, Long totalPersonasTipoContacto, Long totalClientesServicio, Long totalClientesTransferencia) {
 		this.totalClientesDomicilios    = totalClientesDomicilios;
 		this.totalClientesRepresentantes= totalClientesRepresentantes;
 		this.totalClientesTipoContacto  = totalClientesTipoContacto;
 		this.totalPersonasTipoContacto  = totalPersonasTipoContacto;	
+		this.totalClientesServicio      = totalClientesServicio;
+		this.totalClientesTransferencia = totalClientesTransferencia;
 	} // ContadoresListas
 
 	public Long getTotalClientesDomicilios() {
@@ -54,6 +58,22 @@ public class ContadoresListas {
 	public void setTotalPersonasTipoContacto(Long totalPersonasTipoContacto) {
 		this.totalPersonasTipoContacto = totalPersonasTipoContacto;
 	}
+
+	public Long getTotalClientesServicio() {
+		return totalClientesServicio;
+	}
+
+	public void setTotalClientesServicio(Long totalClientesServicio) {
+		this.totalClientesServicio = totalClientesServicio;
+	}
+
+	public Long getTotalClientesTransferencia() {
+		return totalClientesTransferencia;
+	}
+
+	public void setTotalClientesTransferencia(Long totalClientesTransferencia) {
+		this.totalClientesTransferencia = totalClientesTransferencia;
+	}	
 	
 	private void init(){
 		try {
@@ -61,6 +81,8 @@ public class ContadoresListas {
 			this.totalClientesRepresentantes= toMaxClienteRepresentantes();
 			this.totalClientesTipoContacto  = toMaxClienteTiposContactos();		
 			this.totalPersonasTipoContacto  = toMaxPersonaTiposContactos();
+			this.totalClientesServicio      = toMaxClienteBanco();
+			this.totalClientesTransferencia = toMaxClienteBanco();
 		} // try
 		catch (Exception e) {
 			mx.org.kaana.libs.formato.Error.mensaje(e);						
@@ -122,4 +144,18 @@ public class ContadoresListas {
 		} // catch				
 		return regresar;
 	} // toMaxClienteTiposContactos
+	
+	private Long toMaxClienteBanco() throws Exception{
+		Long regresar= 0L;
+		Value maximo = null;
+		try {
+			maximo= DaoFactory.getInstance().toField("TcKeetClientesBancosDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			if(maximo.getData()!= null)
+				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toMax
 }
