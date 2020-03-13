@@ -42,6 +42,12 @@
         where      
           id_cliente = {idCliente} and clave_referencia = '{claveReferencia}' and convenio_cuenta = '{convenioCuenta}' and id_tipo_cuenta = {idTipoCuenta} and id_banco = {idBanco}
       </select>
+			<select id="maximo">
+				select      
+          max(id_cliente_banco) maximo
+        from      
+          tc_keet_clientes_bancos
+			</select>
     </unit>		
     <unit id="TcKeetTiposInfraestructurasDto">
       <select id="row">
