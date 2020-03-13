@@ -128,18 +128,18 @@ public class Sentinel extends IBaseMenu implements Serializable {
       regresar.append("<li class=\"Animated05\">");
       regresar.append("<a href=\"").append(context);
       regresar.append("/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-mail\"></i>Mensajes</a></li>");      
-			regresar.append("<li onclick=\"PF('dlgFaltantes').show();\" class=\"Animated05\">");
+			//regresar.append("<li onclick=\"PF('dlgFaltantes').show();\" class=\"Animated05\">");
       // regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-list-numbered\"></i>Faltantes</a></li>");			
 			// regresar.append("<li onclick=\"PF('dlgVerificador').show();\" class=\"Animated05\">");
       // regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-list-numbered\"></i>Precios</a></li>");			
 			// regresar.append("<li onclick=\"PF('dlgCalculadora').show();\" class=\"Animated05\">");
-      regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-calculator\"></i>Calculadora</a></li>");			
+      //regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-calculator\"></i>Calculadora</a></li>");			
 			regresar.append("<li class=\"Animated05\">");
       regresar.append("<a href=\"").append(context);
       regresar.append("/Exclusiones/salir.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-logout\"></i>Salir</a></li>");
       regresar.append("</ul></li>");
-      regresar.append("<li onclick=\"janal.bloquear();PF('wDialogoBuzonSugerencias').show();\" class=\"Fleft BordRadHalf TexAlCenter\"><i class=\"fa fa-inbox fa-1x");
-      regresar.append("\"></i></li>");
+      //regresar.append("<li onclick=\"janal.bloquear();PF('wDialogoBuzonSugerencias').show();\" class=\"Fleft BordRadHalf TexAlCenter\"><i class=\"fa fa-inbox fa-1x");
+      //regresar.append("\"></i></li>");
     } // try
     catch (Exception e) {
       throw e;
