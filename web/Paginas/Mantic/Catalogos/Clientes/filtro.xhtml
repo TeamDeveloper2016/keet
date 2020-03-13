@@ -11,8 +11,8 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'rfc': {validaciones: 'rfc', mascara: 'fiscal', formatos: 'cambiar-mayusculas'}       
+        'clave'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'rfc'        : {validaciones: 'rfc'  , mascara: 'fiscal', formatos: 'cambiar-mayusculas'}       
       };
     </script>		
   </ui:define>
@@ -108,19 +108,7 @@
                 <h:outputText value="Credito"/>
               </f:facet>
               <h:outputText value="#{filtro['credito']}"/>
-            </p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
-							<f:facet name="header">
-								<h:outputText value="Saldo"/>
-							</f:facet>
-							<h:outputText value="#{filtro['saldo']}"/>
-						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.dias}">
-							<f:facet name="header">
-								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
-							</f:facet>
-							<h:outputText value="#{filtro['dias']}"/>
-						</p:column>
+            </p:column>						
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
 							<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idFacturama eq '-1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Cliente #{filtro.idFacturama eq '-1' ? 'NO': ''} registrado en facturama"/>
 						</p:column>
