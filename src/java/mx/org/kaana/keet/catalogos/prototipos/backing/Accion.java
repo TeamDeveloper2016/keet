@@ -74,7 +74,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:					
           idPrototipo= (Long)this.attrs.get("idPrototipo");
           this.prototipo= (Prototipos)DaoFactory.getInstance().toEntity(Prototipos.class,"TcKeetPrototiposDto","byId", this.attrs);
-					this.prototipo.setIkCliente(((List<UISelectEntity>)this.attrs.get("clientes")).get(((List<UISelectEntity>)this.attrs.get("clientes")).indexOf(this.prototipo.getIdCliente())));
+					this.prototipo.setIkCliente(((List<UISelectEntity>)this.attrs.get("clientes")).get(((List<UISelectEntity>)this.attrs.get("clientes")).indexOf(new UISelectEntity(new Entity(this.prototipo.getIdCliente())))));
 					this.prototipo.setIkSistemasConstructivos(new AdminSistemaConstructivo(DaoFactory.getInstance().toEntitySet(SistemaConstructivo.class,"VistaPrototiposDto", "constructivosById", this.attrs)));
           break;
       } // switch
@@ -127,7 +127,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public void doRemoveConstructivo() {  
     try {			
-			this.prototipo.getIkSistemasConstructivos().removeSistemaConstructivo(((Entity)this.attrs.get("seleccionado")).getKey());
+			this.prototipo.getIkSistemasConstructivos().removeSistemaConstructivo(((SistemaConstructivo)this.attrs.get("seleccionado")).getIdConstructivo());
     } // try
     catch (Exception e) {
       Error.mensaje(e);

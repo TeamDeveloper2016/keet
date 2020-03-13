@@ -68,6 +68,8 @@
 				inner join tc_keet_grupos_constructivos on tc_keet_constructivos.id_grupo_constructivo= tc_keet_grupos_constructivos.id_grupo_constructivo
 				where
           {condicion}
+				order by
+				  tc_keet_grupos_constructivos.nombre, tc_keet_constructivos.nombre
 			</select>	
 		</unit>
     <unit id="VistaProyectoDto">
