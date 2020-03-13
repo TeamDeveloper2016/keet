@@ -7,7 +7,6 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.reglas.comun.Condicion;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
