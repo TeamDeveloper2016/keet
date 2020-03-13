@@ -63,6 +63,7 @@ public final class Constantes {
   public static final int SI                   = 1;
   public static final int NO                   = 2;
   public static final double TOPE_COSTO_ARTICULO= 10D;
+  public static final int LENGTH_CLAVE         = 4;
   public static final int LENGTH_CONSECUTIVO   = 6;
   public static final int BUFFER_SIZE          = 6124;
 

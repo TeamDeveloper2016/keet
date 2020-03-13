@@ -259,21 +259,50 @@ $.mask.masks = $.extend($.mask.masks, {
 			for(var x= 0; x< params.cuantos- $.trim(value).length; x++)
 				val= params.cual+ val;
       if (!janal.empty(value))
-				if(value.length< 6)
+				if(value.length< params.cuantos)
           $(element).val(year+ val); 
 			  else 
-  				if(value.length>= 6) {
+  				if(value.length>= params.cuantos) {
 						val= value.substring(4);
 						var count= val.length;
 					  for(var x= 0; x< params.cuantos- count; x++)
 		     		  val= params.cual+ val;
-					  $(element).val(value.substring(0, 4)+ val.substring(0, 6)); 
+					  $(element).val(value.substring(0, 4)+ val.substring(0, params.cuantos)); 
 					} // if
       return true;
     }, function(params, element) {
       return 'No se logro generar el valor del consecutivo.';
     });
     
+ $.validator.addMethod('siguiente', function(value, element, params) {
+      var val= $.trim(value);
+			var params;
+			if(typeof(params)=== 'undefined')
+				params= {cuantos: 4, cual: '0', token: 'C'};
+			if(typeof(params.cuantos)=== 'undefined')
+				params.cuantos= 4;
+			if(typeof(params.cual)=== 'undefined')
+				params.cual= '0';
+			if(typeof(params.token)=== 'undefined')
+				params.token= 'C';
+			for(var x= 0; x< params.cuantos- $.trim(value).length; x++)
+				val= params.cual+ val;
+      if (!janal.empty(value))
+				if(value.length< params.cuantos)
+          $(element).val(params.token+ val); 
+			  else 
+  				if(value.length>= params.token.length) {
+						val= value.substring(params.token.length);
+						var count= val.length;
+					  for(var x= 0; x< params.cuantos- count; x++)
+		     		  val= params.cual+ val;
+					  $(element).val(value.substring(0, params.token.length)+ val.substring(0, params.cuantos)); 
+					} // if
+      return true;
+    }, function(params, element) {
+      return 'No se logro generar el valor de la clave.';
+    });
+		
   $.validator.addMethod('cambiar-mayusculas', function(value, element, params) {
       if (!janal.empty(value))
         $(element).val($(element).val().toUpperCase()); 

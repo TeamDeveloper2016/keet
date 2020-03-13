@@ -16,6 +16,8 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetBitacorasDto;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -110,6 +112,10 @@ public abstract class IBaseTnx {
 
   protected final void bitacora(String proceso, IBaseDto newData) throws Exception {
 		bitacora(this.sesion, proceso, newData);
+	}
+	
+	protected String siguiente(String token, Long idKey) {
+		return token+ Cadena.rellenar(String.valueOf(idKey), Constantes.LENGTH_CLAVE, '0', true);
 	}
 	
 }
