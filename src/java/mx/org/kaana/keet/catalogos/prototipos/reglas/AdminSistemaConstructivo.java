@@ -31,9 +31,13 @@ public class AdminSistemaConstructivo {
 		SistemaConstructivo sistemaConstructivo= null;
 		try {
 			sistemaConstructivo= new SistemaConstructivo(uISelectEntity);
-		  if (this.registros.contains(sistemaConstructivo) && (this.registros.get(this.registros.indexOf(sistemaConstructivo)).getAccion().equals(ESql.DELETE))){
-				this.registros.add(this.registros.indexOf(sistemaConstructivo), new SistemaConstructivo(ESql.UPDATE, uISelectEntity));
-				regresar= true;
+		  if (this.registros.contains(sistemaConstructivo)){
+				if(this.registros.get(this.registros.indexOf(sistemaConstructivo)).getAccion().equals(ESql.DELETE)) {
+				  this.registros.add(this.registros.indexOf(sistemaConstructivo), new SistemaConstructivo(ESql.UPDATE, uISelectEntity));
+				  regresar= true;
+				} // if
+				else
+					regresar= false;
 			} // if
 			else {
 				this.registros.add(new SistemaConstructivo(ESql.INSERT, uISelectEntity));
@@ -47,13 +51,18 @@ public class AdminSistemaConstructivo {
 	} // addSistemaConstructivo
 	
 	public boolean removeSistemaConstructivo(UISelectEntity uISelectEntity) throws Exception{
+		return this.removeSistemaConstructivo(uISelectEntity.getKey());
+	} // removeSistemaConstructivo	
+	
+	public boolean removeSistemaConstructivo(Long idConstructivo) throws Exception{
 		boolean regresar= false;
 		SistemaConstructivo sistemaConstructivo= null;
 		try {
-			sistemaConstructivo= new SistemaConstructivo(uISelectEntity);
+			sistemaConstructivo= new SistemaConstructivo();
+			sistemaConstructivo.setIdConstructivo(idConstructivo);
 		  if (this.registros.contains(sistemaConstructivo)){
 				if( (this.registros.get(this.registros.indexOf(sistemaConstructivo)).getAccion().equals(ESql.UPDATE)))
-				  this.registros.add(this.registros.indexOf(sistemaConstructivo), new SistemaConstructivo(ESql.DELETE, uISelectEntity));
+				  this.registros.get(this.registros.indexOf(sistemaConstructivo)).setAccion(ESql.DELETE);
 				else
 					this.registros.remove(this.registros.indexOf(sistemaConstructivo));
 				regresar= true;

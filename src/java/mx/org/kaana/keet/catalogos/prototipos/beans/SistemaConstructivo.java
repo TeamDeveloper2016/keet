@@ -12,7 +12,7 @@ public class SistemaConstructivo extends TcKeetPrototiposConstructivosDto{
 	 private UISelectEntity ikConstructivo; 
 
 	public SistemaConstructivo() {
-		super();
+		this(null);
 	}
 
 	public SistemaConstructivo(UISelectEntity ikConstructivo) {
@@ -57,10 +57,11 @@ public class SistemaConstructivo extends TcKeetPrototiposConstructivosDto{
 
 	public void setIkConstructivo(UISelectEntity ikConstructivo) {
 		this.ikConstructivo = ikConstructivo;
-		if(this.ikConstructivo!= null)
+		if(this.ikConstructivo!= null){
 			this.setIdConstructivo(this.ikConstructivo.getKey());
-		this.descripcion= ikConstructivo.toString("descripcion");
-		this.grupo= ikConstructivo.toString("grupo");
+		  this.descripcion= ikConstructivo.toString("descripcion");
+		  this.grupo= ikConstructivo.toString("grupo");
+		} // if
 	}
 
 	

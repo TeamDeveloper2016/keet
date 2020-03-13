@@ -6,13 +6,13 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.catalogos.prototipos.beans.Prototipos;
 import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.AdminSistemaConstructivo;
-import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -51,7 +51,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("constructivos", UIEntity.seleccione("VistaPrototiposDto", "constructivosSelect",this.attrs, "nombre"));			
+      this.attrs.put("constructivos", UIEntity.seleccione("VistaPrototiposDto", "constructivosSelect",this.attrs, "descripcion"));			
 			doLoad();
     } // try
     catch (Exception e) {
@@ -74,7 +74,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:					
           idPrototipo= (Long)this.attrs.get("idPrototipo");
           this.prototipo= (Prototipos)DaoFactory.getInstance().toEntity(Prototipos.class,"TcKeetPrototiposDto","byId", this.attrs);
-					this.prototipo.setIkCliente(((List<UISelectEntity>)this.attrs.get("clientes")).get(((List<UISelectEntity>)this.attrs.get("clientes")).indexOf(this.prototipo.getIdCliente())));
+					this.prototipo.setIkCliente(((List<UISelectEntity>)this.attrs.get("clientes")).get(((List<UISelectEntity>)this.attrs.get("clientes")).indexOf(new UISelectEntity(new Entity(this.prototipo.getIdCliente())))));
 					this.prototipo.setIkSistemasConstructivos(new AdminSistemaConstructivo(DaoFactory.getInstance().toEntitySet(SistemaConstructivo.class,"VistaPrototiposDto", "constructivosById", this.attrs)));
           break;
       } // switch
@@ -111,5 +111,28 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doCancelar() {   
     return (String)this.attrs.get("retorno");
   } // doAccion
+	
+	public void doAddConstructivo() {  
+    try {			
+			if(this.prototipo.getIkSistemasConstructivos().addSistemaConstructivo(((List<UISelectEntity>)this.attrs.get("constructivos")).get(((List<UISelectEntity>)this.attrs.get("constructivos")).indexOf((UISelectEntity)this.attrs.get("constructivo")))))
+				JsfBase.addMessage("Agregado correctamente", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("El elemento ya se encuentra agregado", ETipoMensaje.ALERTA);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } // doAddConstructivo
+
+	public void doRemoveConstructivo() {  
+    try {			
+			this.prototipo.getIkSistemasConstructivos().removeSistemaConstructivo(((SistemaConstructivo)this.attrs.get("seleccionado")).getIdConstructivo());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } // doAddConstructivo
 	
 }

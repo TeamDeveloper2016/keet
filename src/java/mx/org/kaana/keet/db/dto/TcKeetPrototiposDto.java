@@ -45,12 +45,6 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="registro")
   private LocalDateTime registro;
-  @Column (name="id_sistema_muro")
-  private Long idSistemaMuro;
-  @Column (name="id_sistemaAzotea")
-  private Long idSistemaAzotea;
-  @Column (name="id_sistema_entrepiso")
-  private Long idSistemaEntrepiso;
   
 
   public TcKeetPrototiposDto() {
@@ -58,12 +52,12 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPrototiposDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
 
-  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idUsuario, Long idPrototipo, String nombre, Long idSistemaMuro, Long idSistemaAzotea, Long idSistemaEntrepiso) {
+  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idUsuario, Long idPrototipo, String nombre) {
     this.descripcion = descripcion;
     this.metros2 = metros2;
     this.clave = clave;
@@ -72,9 +66,6 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
     this.idPrototipo = idPrototipo;
     this.nombre = nombre;
     setRegistro(LocalDateTime.now());
-    this.idSistemaMuro = idSistemaMuro;
-    this.idSistemaAzotea = idSistemaAzotea;
-    this.idSistemaEntrepiso = idSistemaEntrepiso;
   }
   
   
@@ -142,32 +133,6 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   public LocalDateTime getRegistro() {
     return registro;
   }
-
-  public Long getIdSistemaMuro() {
-    return idSistemaMuro;
-  }
-
-  public void setIdSistemaMuro(Long idSistemaMuro) {
-    this.idSistemaMuro = idSistemaMuro;
-  }
-
-  public Long getIdSistemaAzotea() {
-    return idSistemaAzotea;
-  }
-
-  public void setIdSistemaAzotea(Long idSistemaAzotea) {
-    this.idSistemaAzotea = idSistemaAzotea;
-  }
-
-  public Long getIdSistemaEntrepiso() {
-    return idSistemaEntrepiso;
-  }
-
-  public void setIdSistemaEntrepiso(Long idSistemaEntrepiso) {
-    this.idSistemaEntrepiso = idSistemaEntrepiso;
-  }
-  
-  
 
   @Transient
   @Override

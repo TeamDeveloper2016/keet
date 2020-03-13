@@ -53,7 +53,7 @@
 					tc_keet_grupos_constructivos.nombre grupo
 				from   
 				tc_keet_prototipos_constructivos
-				inner join tc_keet_constructivos on tc_keet_prototipos_constructivos.id_prototipo=tc_keet_constructivos.id_prototipo
+				inner join tc_keet_constructivos on tc_keet_prototipos_constructivos.id_constructivo= tc_keet_constructivos.id_constructivo
 				inner join tc_keet_grupos_constructivos on tc_keet_constructivos.id_grupo_constructivo= tc_keet_grupos_constructivos.id_grupo_constructivo
 				where
           tc_keet_prototipos_constructivos.id_prototipo= {idPrototipo}
@@ -68,6 +68,8 @@
 				inner join tc_keet_grupos_constructivos on tc_keet_constructivos.id_grupo_constructivo= tc_keet_grupos_constructivos.id_grupo_constructivo
 				where
           {condicion}
+				order by
+				  tc_keet_grupos_constructivos.nombre, tc_keet_constructivos.nombre
 			</select>	
 		</unit>
     <unit id="VistaProyectoDto">

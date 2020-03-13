@@ -19,7 +19,8 @@
 			};
 
 			$(document).ready(function () {
-				janal.readingMode('#{keetCatalogosPrototiposAccion.attrs.nombreAccion}');});
+				janal.readingMode('#{keetCatalogosPrototiposAccion.attrs.nombreAccion}');
+			});
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -48,33 +49,33 @@
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 								</p:selectOneMenu>
-                
+
               </p:panelGrid>
 						</p:tab>				
 						<p:tab title="Sistemas constructivos">							
 							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
                 <p:outputLabel for="idConstructivo" value="Tipo de sistema:"/>
-								<p:selectOneMenu id="idConstructivo" value="#{keetCatalogosPrototiposAccion.attrs.ikSistema}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.constructivos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+								<p:selectOneMenu id="idConstructivo" value="#{keetCatalogosPrototiposAccion.attrs.constructivo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.constructivos}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
+										<h:outputText value="#{item.descripcion}"/>
 									</p:column>      
 								</p:selectOneMenu>
-								<p:commandButton id="agregar" value="Agregar" icon="fa fa-plus" process="@form" action="#{keetCatalogosPrototiposAccion.doAddConstructivo}"  oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="agregar" value="" icon="fa fa-plus" process="@form" update="tabla" action="#{keetCatalogosPrototiposAccion.doAddConstructivo}"  oncomplete="janal.desbloquear()"/>
 
               </p:panelGrid>
 							<p:spacer/>
-        <p:dataTable style="width: 800px;" styleClass="janal-content-table" id="tabla" var="row" value="#{keetCatalogosPrototiposAccion.prototipo.ikSistemasConstructivos.registros}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" selection="#{keetCatalogosPrototiposAccion.attrs.seleccionado}" rowKey="#{keetCatalogosPrototiposAccion.prototipo.ikSistemasConstructivos.registros.idKey}">
-          <f:facet name="header"  >
-            <div class="janal-column-center">  Archivos cargados</div>
-          </f:facet>
-          <p:column  headerText="No." styleClass="janal-column-right"> #{rowIndex+1} </p:column>
-          <p:column headerText="Grupo">    #{row.grupo} </p:column>
-          <p:column headerText="Descripcion">    #{row.descripcion} </p:column>
-        </p:dataTable>
-        <p:contextMenu for="tabla">
-          <p:menuitem value="Eliminar"  icon="fa fa-trash"  update="tabla" process="@this tabla " action="#{archivo.doEliminarLista(kajoolDialogosImportar.seleccionado)}"/>
-        </p:contextMenu>
+							<p:dataTable styleClass="janal-content-table" id="tabla" var="row" value="#{keetCatalogosPrototiposAccion.prototipo.ikSistemasConstructivos.registros}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" selection="#{keetCatalogosPrototiposAccion.attrs.seleccionado}" rowKey="#{row.idConstructivo}">
+								<f:facet name="header"  >
+									<div class="janal-column-center">  Archivos cargados</div>
+								</f:facet>
+								<p:column visible="#{row.mostrar}"  headerText="No." styleClass="janal-column-right"> #{rowIndex+1} </p:column>
+								<p:column visible="#{row.mostrar}" headerText="Grupo">    #{row.grupo} </p:column>
+								<p:column visible="#{row.mostrar}" headerText="Descripcion">    #{row.descripcion} </p:column>
+							</p:dataTable>
+							<p:contextMenu for="tabla">
+								<p:menuitem value="Eliminar"  icon="fa fa-trash"  update="tabla" process="@this tabla " action="#{keetCatalogosPrototiposAccion.doRemoveConstructivo}"/>
+							</p:contextMenu>
 						</p:tab>								
 					</p:tabView>
 				</div>
