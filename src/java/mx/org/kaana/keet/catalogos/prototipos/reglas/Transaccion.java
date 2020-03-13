@@ -30,8 +30,7 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().insert(sesion, this.prototipo)>= 1L;
 					for(SistemaConstructivo item: this.prototipo.getIkSistemasConstructivos().getRegistros()){
 						item.setIdPrototipo(this.prototipo.getIdPrototipo());
-						item.setIdUsuario(JsfBase.getIdUsuario());
-						regresar= DaoFactory.getInstance().insert(sesion, item)>= 1L;
+						actualizarConstructivo(sesion, item);
 					} // for
 					break;
 				case MODIFICAR:
@@ -58,11 +57,9 @@ public class Transaccion extends IBaseTnx {
 		try {
 			switch(item.getAccion()){
 				case INSERT:
+					item.setIdUsuario(JsfBase.getIdUsuario());
 					DaoFactory.getInstance().insert(sesion, item);
 						break;	
-				case UPDATE:
-					DaoFactory.getInstance().update(sesion, item);
-					break;
 				case DELETE:
 					DaoFactory.getInstance().delete(sesion, item);
 					break;
