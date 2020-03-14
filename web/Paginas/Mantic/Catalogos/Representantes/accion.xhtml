@@ -112,7 +112,7 @@
 								</p:selectOneMenu>																			
               </p:panelGrid>
 						</p:tab>
-            <p:tab title="Empresa">
+            <p:tab title="Empresa" rendered="false">
 							<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
 								<p:outputLabel for="empresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
 								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.empresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">																		

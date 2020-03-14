@@ -6,6 +6,10 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">		
   <script type="text/javascript">
+    	$(document).ready(function() {
+				setTimeout(function(){$('div.keet-top-content').attr('style', 'margin-top: -1px !important;')}, 2000);
+			});
+		
     $(function() {
       janal.fecha();
       $('#banner').addClass('ui-panelgrid');
@@ -14,7 +18,7 @@
     });
   </script>
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-    <div class="ui-grid-row janal-grid-row">
+    <div class="ui-grid-row janal-grid-row keet-top-content">
       <div class="ui-grid-col-4 janal-header-sedesolx" style="display:block"/>
       <div class="ui-grid-col-4">
         <h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
@@ -37,7 +41,7 @@
       </div>
     </div>
   </div>
-	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100 lg-pantalla">
+			<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100 lg-pantalla" style="padding-top: 1px !important;">
 		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header">
 			<span class="ui-panel-title Fs18 lg-pantalla">#{titulo}</span>
 				<div id="layout-header" class="Unselectable fontRegular janal-top-menu">

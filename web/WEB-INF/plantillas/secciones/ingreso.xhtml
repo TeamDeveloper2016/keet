@@ -4,6 +4,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p="http://primefaces.org/ui">		
   <script type="text/javascript">
+		$(document).ready(function() {
+			setTimeout(function(){$('div.keet-top-content').attr('style', 'margin-top: -1px !important;')}, 1000);
+		});
+		
     $(function() {
       janal.fecha();
       $('#banner').addClass('ui-panelgrid');
@@ -12,7 +16,7 @@
     });
   </script>
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-    <div class="ui-g ui-grid-row janal-grid-row">
+    <div class="ui-g ui-grid-row janal-grid-row keet-top-content">
 			<div class="ui-g-1 janal-content-center janal-column-center">
 				<div style="width: 4% !important; text-align: center">
 					<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>

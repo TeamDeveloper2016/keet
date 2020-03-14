@@ -13,6 +13,10 @@
 		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
 		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />
 		<script type="text/javascript">
+    	$(document).ready(function() {
+				setTimeout(function(){$('div.keet-top-content').attr('style', 'margin-top: -1px !important;')}, 2000);
+			});
+			
 			$(function() {
 				janal.fecha();
 				$('#banner').addClass('ui-panelgrid');
@@ -32,7 +36,7 @@
   <p:hotkey bind="esc" handler="if(PF('dlgTeclasAyuda').isVisible()){PF('dlgTeclasAyuda').hide();}"/>		
   <p:inputText id="janalAccessControl" type="hidden" value="1" styleClass="janal-access-control"/>	
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-    <div class="ui-g ui-grid-row janal-grid-row">
+    <div class="ui-g ui-grid-row janal-grid-row keet-top-content">
 			<div class="ui-g-1 janal-content-center janal-column-center">
 				<p:commandLink action="#{kajoolEncabezado.doMovePageStart()}" title="Ir a la página de inicio">
 					<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="35"/>
@@ -66,7 +70,7 @@
 			</div>
 		</div>	
 	</div>
-	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100">
+	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100" style="padding-top: 1px !important;">
 		<ui:include src="/WEB-INF/plantillas/secciones/header.xhtml"/>
 		<ui:include src="/WEB-INF/plantillas/secciones/calculadora.xhtml"/>
 		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
