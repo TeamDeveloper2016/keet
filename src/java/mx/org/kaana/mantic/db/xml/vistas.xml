@@ -4209,15 +4209,21 @@
 				select 
 					tr_mantic_empresa_personal.id_empresa_persona as id_key,
 					concat(nombres, ' ', paterno, ' ', materno) nombres,  
-					tc_keet_departamentos.nombre
+					tc_keet_departamentos.nombre,
+				  tc_mantic_puestos.nombre as puesto
 				from 
 					tc_mantic_personas 
 				inner join 
 					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
 				inner join 
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				inner join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
 				where 
-					tr_mantic_empresa_personal.id_puesto=(select id_puesto from tc_mantic_puestos where nombre='CONTRATISTA')
+					tc_mantic_puestos.nombre='CONTRATISTA'
+				  and tr_mantic_empresa_personal.id_activo= 1
+			  order by
+				  tc_mantic_puestos.nombre
 			</select>
 			<select id="row">
 				select 
