@@ -188,11 +188,11 @@
       </select>
       <update id="updateRegistroFin">
         update
-        tc_janal_sesiones
+         tc_janal_sesiones
         set
-        registro_fin=now()
+         registro_fin=now()
         where
-        path = '{path}' and sesion = '{sesion}'
+         sesion = '{sesion}'
       </update>
       <select id="ultimoAcceso">
         select

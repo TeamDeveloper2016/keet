@@ -6,9 +6,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
+import mx.org.kaana.kajool.procesos.acceso.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +37,8 @@ public class Invalidar implements Serializable {
       session = JsfBase.getSession();
       autentifica = JsfBase.getAutentifica();
       if (autentifica != null) {
+        Transaccion transaccion = new Transaccion(session!= null? session.getId(): "");
+        transaccion.ejecutar(EAccion.COMPLEMENTAR);
 				LOG.warn("Se cerró la sesion: "+ autentifica.getPersona().getCuenta());
         JsfBase.getUsuariosSitio().deleteCuenta(session.getId(), autentifica.getPersona().getCuenta());
         //autentifica.cerrarSession();

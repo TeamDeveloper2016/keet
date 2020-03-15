@@ -11,7 +11,7 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'contenedorGrupos\\:prefijo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:prefijo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -68,8 +68,8 @@
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-180, janal-wid-100-txt">								
                 <p:outputLabel for="clave" value="Clave"/>
                 <p:inputText id="clave" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.clave}"/>                    
-                <p:outputLabel for="prefijo" value="Prefijo:"/>
-                <p:inputText id="prefijo" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.prefijo}"/>                    
+                <p:outputLabel for="prefijo" value="Prefijo:" rendered="false"/>
+                <p:inputText id="prefijo" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.prefijo}" rendered="false"/>
                 <p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="rfc" value="RFC:"/>
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.rfc}"/>                    
@@ -105,7 +105,7 @@
               </p:panelGrid>
             </p:tab>						
             <p:tab title="Domicilios">
-              <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-20, janal-wid-80">
+              <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-130, janal-wid-80">
                 <p:dataList id="tablaDomicilios" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresDomicilio}" var="direccion" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
                   <p:commandLink update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Eliminar" action="#{manticCatalogosProveedoresAccion.doEliminarDomicilio}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{direccion}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorDomicilioSeleccion}" />
@@ -125,7 +125,7 @@
 										</p:commandLink>		              										
                   </f:facet>
                 </p:dataList>
-                <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">
+                <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-180, janal-wid-100-txt">
                   <p:spacer/>
 									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
 									<p:outputLabel for="domicilio" value="Domicilio:"/>
@@ -202,7 +202,7 @@
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>
-            <p:tab id="tabTipoPago" title="Condiciones de pago">
+            <p:tab id="tabTipoPago" title="Condiciones de pago" rendered="false">
               <p:panelGrid id="panelTablaTipoPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaTipoPago" rowIndexVar="index" var="tipoPago" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresCondicionPago}" rows="6" paginator="false" reflow="true" rowKey="#{tipoPago.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Clave" styleClass="janal-wid-30 llave">		
@@ -277,8 +277,8 @@
 								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:panelGrid id="formularioNombreAgentes" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-40, janal-wid-30, janal-wid-30">
 									<p:inputText id="nombreAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.nombres}" styleClass="janal-wid-100-txt" placeholder="Nombres" />
-									<p:inputText id="paternoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.paterno}" styleClass="janal-wid-100-txt" placeholder="Ap. Paterno" />
-									<p:inputText id="maternoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.materno}" styleClass="janal-wid-100-txt" placeholder="Ap. Materno" />
+									<p:inputText id="paternoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.paterno}" styleClass="janal-wid-100-txt" placeholder="1er apellido" />
+									<p:inputText id="maternoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.materno}" styleClass="janal-wid-100-txt" placeholder="2do apellido" />
 								</p:panelGrid>
 								<p:panelGrid id="formularioTablaAgentes" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaContacto" rowIndexVar="index" var="contactoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.contactos}" rows="6" paginator="false" reflow="true" rowKey="#{contactoAgente.key}" emptyMessage=" " styleClass="paginated">
@@ -389,10 +389,12 @@
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoDomicilios" prependId="false">
-				<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
+				<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-col-130, janal-wid-98 janal-column-right">
 					<p:outputLabel for="calleBusqueda" value="Calle:"/>
-					<p:inputText id="calleBusqueda" value="#{manticCatalogosProveedoresAccion.attrs.calle}" styleClass="janal-wid-100-txt"/>
-					<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosProveedoresAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" onstart="return janal.partial('dialogo')"/>
+  				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-98, janal-wid-col-38">
+						<p:inputText id="calleBusqueda" value="#{manticCatalogosProveedoresAccion.attrs.calle}" styleClass="janal-wid-100-txt"/>
+						<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosProveedoresAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" onstart="return janal.partial('dialogo')"/>
+					</h:panelGrid>
 					<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
 					<p:selectOneMenu id="domiciliosBusqueda" value="#{manticCatalogosProveedoresAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 						<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
@@ -409,7 +411,7 @@
 							<h:outputText value="#{item.asentamiento}"/>
 						</p:column>  
 					</p:selectOneMenu>
-					<p:spacer/><p:spacer/><p:spacer/>
+					<p:spacer/>
 					<p:outputLabel id="totalResultados" value="Total [#{manticCatalogosProveedoresAccion.attrs.resultados}]"/>
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
