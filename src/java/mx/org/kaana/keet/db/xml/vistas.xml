@@ -121,6 +121,16 @@
           {condicion}
 				  {sortOrder}
 			</select>	
+			<select id="tiposObraPorDivision">
+				select 
+					tc_keet_tipos_obras.id_tipo_obra id_key,
+					tc_keet_tipos_obras.nombre descripcion,
+					tc_keet_divisiones.nombre grupo
+				from tc_keet_tipos_obras
+				inner join tc_keet_divisiones on tc_keet_tipos_obras.id_division= tc_keet_divisiones.id_division
+				order by
+				  tc_keet_divisiones.nombre, tc_keet_tipos_obras.nombre
+			</select>	
 		</unit>	
     <unit id="VistaPlanosEspecialidaDto">
 

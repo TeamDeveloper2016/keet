@@ -182,7 +182,8 @@
     <unit id="TcKeetProyectosDto">
       <select id="row">
         select      
-          *
+          tc_keet_proyectos.id_proyecto id_key,
+          tc_keet_proyectos.*
         from      
           tc_keet_proyectos
         where 
@@ -196,6 +197,23 @@
         where      
           consecutivo = '{consecutivo}'
       </select>
+			<select id="byId">
+        select      
+				  tc_keet_proyectos.id_proyecto id_key,
+          tc_keet_proyectos.*
+        from      
+          tc_keet_proyectos
+        where 
+          id_proyecto= {idProyecto}
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_proyectos
+				where				  
+				  id_cliente = {idCliente} and ejercicio = {ejercicio}			
+			</select>			
     </unit>		
     <unit id="TcKeetProyectosLotesDto">
       <select id="row">
@@ -637,7 +655,8 @@
     <unit id="TcKeetDesarrollosDto">
       <select id="row">
         select      
-          *
+          tc_keet_desarrollos.id_desarrollo id_key,
+				  tc_keet_desarrollos.*
         from      
           tc_keet_desarrollos
         where 
