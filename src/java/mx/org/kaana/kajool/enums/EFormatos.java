@@ -38,6 +38,7 @@ public enum EFormatos implements IFormatos {
 	SQL("icono-txt",    "icon/acciones/foxpro.png", "text/sql",                                                                  ETipoFormato.LIBRE,     "(MYSQL) Script de la base de datos"),
 	TXT("icono-txt",    "icon/acciones/txt.png",    "text/csv",                                                                  ETipoFormato.LIBRE,     "Formato de texto plano"),
 	ZIP("icono-zip",    "icon/acciones/zip.png",    "application/zip",                                                           ETipoFormato.COMPRIMIDO,"(Phil Katz, PKWARE) Archivo comprimido"),
+	DWG("icono-zip",    "icon/acciones/zip.png",    "application/dwg",                                                           ETipoFormato.COMPRIMIDO,"(Phil Katz, PKWARE) Archivo comprimido"),
 	FREE("icono-zip",   "icon/acciones/zip.png",    "application/zip",                                                           ETipoFormato.LIBRE,     "(Phil Katz, PKWARE) Archivo comprimido");
 	
 	private String icono;
