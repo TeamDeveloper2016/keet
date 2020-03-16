@@ -4,6 +4,35 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaAccesosDto">
+			<select id="lazy">
+				select
+				  tc_janal_sesiones.id_sesion as id_key,
+					tc_mantic_empresas.clave as empresa,  
+					tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_janal_sesiones.sesion,
+					tc_janal_sesiones.registro_inicio as inicio,
+					tc_janal_sesiones.registro_inicio,
+					ifnull(tc_janal_sesiones.registro_fin, tc_janal_sesiones.registro) as termino,
+					ifnull(tc_janal_sesiones.registro_fin, tc_janal_sesiones.registro) as registro_fin,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+					tc_janal_sesiones.cuenta
+				from
+					tc_janal_sesiones
+				inner join
+					tc_janal_usuarios on tc_janal_usuarios.id_usuario= tc_janal_sesiones.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join
+					tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa
+				where
+				  tc_mantic_empresas.id_empresa in ({idEmpresa})
+				  and {condicion}	
+        {sortOrder}
+			</select>
+		</unit>
 		<unit id="VistaPedidosDto">
 			<select id="row">
 				select

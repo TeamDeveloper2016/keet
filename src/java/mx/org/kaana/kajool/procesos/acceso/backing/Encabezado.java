@@ -14,10 +14,12 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.acceso.beans.Faltante;
 import mx.org.kaana.kajool.procesos.acceso.beans.UsuarioMenu;
+import mx.org.kaana.kajool.procesos.acceso.reglas.Transaccion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -487,7 +489,15 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 	
 	public void doCleanFlash() {
-	  JsfBase.cleanFlashParams();
+    Transaccion transaccion= null;
+		try {
+  	  JsfBase.cleanFlashParams();
+      transaccion = new Transaccion(JsfBase.getSession()!= null? JsfBase.getSessionId(): "");
+      transaccion.ejecutar(EAccion.COMPLEMENTAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
 	}
 
 }

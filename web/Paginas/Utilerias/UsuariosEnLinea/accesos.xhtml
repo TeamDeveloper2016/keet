@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Listado de acceso al portal" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'nombre'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'cuenta'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre? '': '-'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="nombre" value="Empleado:"/>
+              <p:inputText id="nombre" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.nombre}" styleClass="janal-wid-100-txt" placeholder="ejemplo: CARLOS CALDERON"/>
+              <p:outputLabel for="cuenta" value="Cuenta acceso:"/>
+              <p:inputText id="cuenta" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.cuenta}" styleClass="janal-wid-100-txt" placeholder="ejemplo: carlos.calderon"/>              
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" placeholder="ejemplo: 14/03/2020" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" placeholder="ejemplo: 14/03/2020" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{kajoolMantenimientoUtileriasUsuarioAccesos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{kajoolMantenimientoUtileriasUsuarioAccesos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.seleccionado}" selectionMode="single" paginator="#{kajoolMantenimientoUtileriasUsuarioAccesos.lazyModel.rowCount gt kajoolMantenimientoUtileriasUsuarioAccesos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <f:facet name="header" >
+              <div class="lg-pantalla">
+                <p:menuButton   value="Opciones">
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>	            
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}" title="Sesión: #{row.sesion}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.cuenta}">
+              <f:facet name="header">
+                <h:outputText value="cuenta"/>
+              </f:facet>
+              <h:outputText value="#{row['cuenta']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
+              <f:facet name="header">
+                <h:outputText value="Empleado"/>
+              </f:facet>
+              <h:outputText value="#{row['usuario']}" title="Sesión: #{row.sesion}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.inicio}">
+              <f:facet name="header">
+                <h:outputText value="Inicio"/>
+              </f:facet>
+              <h:outputText value="#{row['inicio']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.termino}">
+              <f:facet name="header">
+                <h:outputText value="Termino"/>
+              </f:facet>
+              <h:outputText value="#{row['termino']}"/>
+            </p:column>		
+            <p:column class="MarAuto janal-column-right Responsive janal-wid-10">
+              <f:facet name="header">
+                <h:outputText value="Tiempo (min)"/>
+              </f:facet>
+              <h:outputText value="#{kajoolMantenimientoUtileriasUsuarioAccesos.getMinutos(row)}"/>
+            </p:column>		
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{kajoolMantenimientoUtileriasUsuarioAccesos.lazyModel==null?0:kajoolMantenimientoUtileriasUsuarioAccesos.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>   
+  <ui:param name="updateComponent" value="tabla"/>
+</ui:composition>
