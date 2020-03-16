@@ -132,7 +132,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			fileSize= event.getFile().getSize();						
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
   		this.attrs.put("file", this.getFile().getName());
-			tcKeetPrototiposArchivosDto= new TcKeetPrototiposArchivosDto(1L, this.getFile().getName(), this.getFile().getRuta(), this.getFile().getFileSize(), JsfBase.getIdUsuario(), this.getFile().getFormat().getIdTipoArchivo(), this.getFile().getObservaciones(), -1L, this.getFile().getName(), this.prototipo.getIdPrototipo(), this.getFile().getOriginal());
+			tcKeetPrototiposArchivosDto= new TcKeetPrototiposArchivosDto(-1L, this.getFile().getName(), this.getFile().getRuta(), this.getFile().getFileSize(), JsfBase.getIdUsuario(), this.getFile().getFormat().getIdTipoArchivo()<0L? 1L:this.getFile().getFormat().getIdTipoArchivo(), this.getFile().getObservaciones(), -1L, this.getFile().getName(), this.prototipo.getIdPrototipo(), this.getFile().getOriginal());
 			this.prototipo.getDocuemntos().add(tcKeetPrototiposArchivosDto);
 		} // try
 		catch (Exception e) {
@@ -201,7 +201,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	private EFormatos getFileType(String fileName){
 		EFormatos regresar= EFormatos.FREE;
 		try {
-			if(fileName.contains("\\.")){
+			if(fileName.contains(".")){
 			  fileName= fileName.split("\\.")[fileName.split("\\.").length-1].toUpperCase();
 				if (fileName.equals(EFormatos.PDF.name()))
 					regresar= EFormatos.PDF;

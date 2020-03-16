@@ -10,6 +10,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 public class Prototipos extends TcKeetPrototiposDto {
   
   private UISelectEntity ikCliente;
+  private UISelectEntity ikPlano;
   private AdminSistemaConstructivo ikSistemasConstructivos;
 	private List<TcKeetPrototiposArchivosDto> docuemntos;
 
@@ -44,6 +45,15 @@ public class Prototipos extends TcKeetPrototiposDto {
 	public void setDocuemntos(List<TcKeetPrototiposArchivosDto> docuemntos) {
 		this.docuemntos = docuemntos;
 	}
+
+	public UISelectEntity getIkPlano() {
+		return ikPlano;
+	}
+
+	public void setIkPlano(UISelectEntity ikPlano) {
+		this.ikPlano = ikPlano;
+	}
+	
 	
 	
 
