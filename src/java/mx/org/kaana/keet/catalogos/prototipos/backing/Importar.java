@@ -95,7 +95,7 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-		  this.attrs.put("importados", UIEntity.build("VistaContratosDto", "getImportados", this.attrs, columns));
+		  this.attrs.put("importados", UIEntity.build("VistaPrototiposDto", "getImportados", this.attrs, columns));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -201,8 +201,8 @@ public class Importar extends IBaseImportar implements Serializable {
 	private EFormatos getFileType(String fileName){
 		EFormatos regresar= EFormatos.FREE;
 		try {
-			if(fileName.contains(".")){
-			  fileName= fileName.split(".")[fileName.split(".").length-1].toUpperCase();
+			if(fileName.contains("\\.")){
+			  fileName= fileName.split("\\.")[fileName.split("\\.").length-1].toUpperCase();
 				if (fileName.equals(EFormatos.PDF.name()))
 					regresar= EFormatos.PDF;
 				if (fileName.equals(EFormatos.ZIP.name()))
