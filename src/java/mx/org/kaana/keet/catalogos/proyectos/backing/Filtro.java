@@ -74,6 +74,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
       JsfBase.setFlashAttribute("idProyecto", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Proyectos/filtro");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
