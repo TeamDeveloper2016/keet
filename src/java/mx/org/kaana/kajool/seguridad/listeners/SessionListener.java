@@ -26,7 +26,7 @@ public class SessionListener implements HttpSessionListener {
   private void loadUser(HttpSession session) throws Exception {
     String password = BouncyEncryption.decrypt(Configuracion.getInstance().getPropiedad("sistema.autenticar.contrasenia"));
     Autentifica autentifica= new Autentifica();
-		Transaccion transaccion= null;
+//		Transaccion transaccion= null;
     if (autentifica.tieneAccesoBD(Configuracion.getInstance().getPropiedad("sistema.autenticar.cuenta"), password, "127.0.0.1")) {
       LOG.warn("Acceso libre con autentifica [".concat(autentifica.toString()).concat("]"));
       synchronized (session) {
@@ -37,8 +37,8 @@ public class SessionListener implements HttpSessionListener {
         registro.addAutentifica(session);
         registro.addMenuSesion(session);
         registro.addTopMenuSesion(session);
-   			transaccion = new Transaccion(session.getId());
-	  		transaccion.ejecutar(EAccion.AGREGAR);
+//   			transaccion = new Transaccion(session.getId());
+//	  		transaccion.ejecutar(EAccion.AGREGAR);
     } // synchronized
     } // if
   } // loadUser
