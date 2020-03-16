@@ -68,19 +68,24 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
-    EAccion eaccion = null;
+    String regresar= null;
+		EAccion eaccion= null;
     try {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-      JsfBase.setFlashAttribute("idPrototipo", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("idPrototipo", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
       JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Prototipos/filtro");
+			if(eaccion.equals(EAccion.SUBIR))
+				regresar= "importar".concat(Constantes.REDIRECIONAR);
+			else
+				regresar= "accion".concat(Constantes.REDIRECIONAR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    return "accion".concat(Constantes.REDIRECIONAR);
+    return regresar;
   } // doAccion
 
   public void doEliminar() {
