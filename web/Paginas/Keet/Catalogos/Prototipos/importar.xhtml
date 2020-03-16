@@ -111,9 +111,9 @@
 								</p:selectOneMenu>
 							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.file.observaciones}"/>
-							<p:spacer height="5px"/>
+							<p:spacer height="5px"/>	
 							<p:fileUpload listener="#{keetCatalogosPrototiposImportar.doFileUpload}" 
-							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona DWG/ZIP/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+							  mode="advanced" process="@this observaciones idPlano" update="@(.importado)" label="Selecciona DWG/ZIP/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
 								multiple="false" allowTypes="#{keetCatalogosPrototiposImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCatalogosPrototiposImportar.attrs.formatos}"/>														
 							<p:inputText id="file" value="#{keetCatalogosPrototiposImportar.attrs.file}" styleClass="importado" style="display:none"/>
