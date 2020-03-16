@@ -19,14 +19,7 @@
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 				Janal.Control.fields = {				 				
-				'contenedorGrupos\\:clave'       : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:nombre'      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:idCliente'   : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idMuro'      : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idEntrepiso' : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idAzotea'    : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:metros'      : {validaciones: 'requerido|flotante', mascara: 'libre'},
-				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
+				'contenedorGrupos\\observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
 			};						
 			
 			function start() {
@@ -62,18 +55,18 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{keetCatalogosPrototiposImportar.doTabChange}" process="@this" update="@(.importado)"/>						
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
-								<p:outputLabel for="clave" value="Codigo:"/>
-								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.clave}" />			
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-96, janal-wid-col-38">		
+                <p:outputLabel for="clave" value="Codigo:"/>
+								<p:inputText id="clave" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.clave}" />			
 								<p:outputLabel for="nombre" value="Nombre:"/>
-                <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.nombre}" />
+                <p:inputText id="nombre" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.nombre}" />
                 <p:outputLabel for="descripcion" value="Descripción:"/>
-                <p:inputText id="descripcion" styleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosPrototiposImportar.prototipo.descripcion}" />								
-              	<p:outputLabel for="metros" value="Metros cuadrados:"/>
-                <p:inputText id="metros" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.metros2}" />																								
+                <p:inputText id="descripcion" readonly="true" styleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosPrototiposImportar.prototipo.descripcion}" />								
+								<p:outputLabel for="metros" value="Metros cuadrados:"/>
+                <p:inputText id="metros" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.metros2}" />																								
 								<p:spacer width="1px"/><p:separator/>	
                 <p:outputLabel for="idCliente" value="Cliente:"/>
-							<p:selectOneMenu id="idCliente" value="#{keetCatalogosPrototiposImportar.prototipo.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idCliente" readonly="true"  value="#{keetCatalogosPrototiposImportar.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -82,29 +75,7 @@
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 								</p:selectOneMenu>
-                <p:outputLabel for="idMuro" value="Tipo de muro:"/>
-                <p:selectOneMenu id="idMuro" value="#{keetCatalogosPrototiposImportar.prototipo.idSistemaMuro}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.muros}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>      
-								</p:selectOneMenu>
-                <p:outputLabel for="idEntrepiso" value="Tipo de entrepiso:"/>
-								<p:selectOneMenu id="idEntrepiso" value="#{keetCatalogosPrototiposImportar.prototipo.idSistemaEntrepiso}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.entrepisos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>      
-								</p:selectOneMenu>
-                <p:outputLabel for="idAzotea" value="Tipo de azotea:"/>
-								<p:selectOneMenu id="idAzotea" value="#{keetCatalogosPrototiposImportar.prototipo.idSistemaAzotea}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.azoteas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>      
-								</p:selectOneMenu>
-
-								</p:panelGrid>
+              </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">
 							<p:dataTable id="importados" var="row" value="#{keetCatalogosPrototiposImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
@@ -125,33 +96,28 @@
 										<p:fileDownload value="#{keetCatalogosPrototiposImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
-								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandLink  actionListener="#{keetCatalogosPrototiposImportar.doViewFileDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();">
-									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
-									</p:commandLink>										
-								</p:column>
 							</p:dataTable>
 						</p:tab>						            						            																																																
 						<p:tab title="Importar">
-							<p:outputLabel for="documentos" value="Tipo de documento:" styleClass="janal-wid-100-txt"/>
-							<p:selectOneMenu id="documentos" value="#{keetCatalogosPrototiposImportar.attrs.documento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.tiposDocumentos}"  var="element" itemValue="#{element.key}" itemLabel="$#{element.nombre} - #{element.descripcion}"/>
-								<p:column headerText="Pago">
-									<h:outputText value="#{item.nombre}"/>
-								</p:column>   
-								<p:column headerText="Nombre">
-									<h:outputText value="#{item.descripcion}"/>
-								</p:column>   									 									
-							</p:selectOneMenu>
+							 <p:outputLabel for="idPlano" value="Tipo de plano:"/>
+								<p:selectOneMenu id="idPlano" value="#{keetCatalogosPrototiposImportar.attrs.plano}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
+									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.planos}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+									<p:column headerText="Grupo">
+										<h:outputText value="#{item.grupo}"/>
+									</p:column>      
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.descripcion}"/>
+									</p:column>      
+								</p:selectOneMenu>
 							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.file.observaciones}"/>
 							<p:spacer height="5px"/>
 							<p:fileUpload listener="#{keetCatalogosPrototiposImportar.doFileUpload}" 
-							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona PDF/PNG/JPG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona DWG/ZIP/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
 								multiple="false" allowTypes="#{keetCatalogosPrototiposImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCatalogosPrototiposImportar.attrs.formatos}"/>														
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCatalogosPrototiposImportar.attrs.formatos}"/>														
 							<p:inputText id="file" value="#{keetCatalogosPrototiposImportar.attrs.file}" styleClass="importado" style="display:none"/>
-							<p:commandLink value="Archivo importado: #{keetCatalogosPrototiposImportar.file.ruta}#{keetCatalogosPrototiposImportar.file.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty keetCatalogosPrototiposImportar.file)? 'display: none': ''}"/>						
+							<p:commandLink value="Archivo importado: #{keetCatalogosPrototiposImportar.file.ruta}#{keetCatalogosPrototiposImportar.file.name}" onclick="viewDocument();" process="@this idPlano observaciones" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty keetCatalogosPrototiposImportar.file)? 'display: none': ''}"/>						
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -172,16 +138,5 @@
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
-		<h:form prependId="true">
-			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
-				<object type="application/pdf" data="#{keetCatalogosPrototiposImportar.attrs.temporal}" height="490px" width="100%" internalinstanceid="5">
-					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
-				</object>
-  			<hr class="ui-widget-content"/>
-	  		<div class="janal-line-button">
-					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{keetCatalogosPrototiposImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
-			  </div>
-			</p:dialog>			
-		</h:form>
 	</ui:define>
 </ui:composition>

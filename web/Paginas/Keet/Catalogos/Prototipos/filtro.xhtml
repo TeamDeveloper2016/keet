@@ -106,6 +106,8 @@
 						<p:separator/>
             <p:menuitem id="modificar" action="#{keetCatalogosPrototiposFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+						<p:separator/>
+            <p:menuitem id="importar" action="#{keetCatalogosPrototiposFiltro.doAccion('SUBIR')}" icon="fa fa-external-link" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
           </p:contextMenu>
         </div>
       </div>
