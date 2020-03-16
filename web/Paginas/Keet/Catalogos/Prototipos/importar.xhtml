@@ -66,7 +66,7 @@
                 <p:inputText id="metros" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.metros2}" />																								
 								<p:spacer width="1px"/><p:separator/>	
                 <p:outputLabel for="idCliente" value="Cliente:"/>
-								<p:selectOneMenu id="idCliente" readonly="true"  value="#{keetCatalogosPrototiposImportar.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idCliente" disabled="true"  value="#{keetCatalogosPrototiposImportar.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
