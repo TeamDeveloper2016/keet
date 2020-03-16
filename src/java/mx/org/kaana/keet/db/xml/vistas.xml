@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+		Relación de consultas para las vistas de MANTIC
+-->
+<process>
+	<dml> 
+    <unit id="VistaContratosDto">
+			<select id="lazy">
+				select
+          tc_keet_clientes_contratos.id_cliente_contrato as id_key,
+          tc_keet_clientes_contratos.clave,
+          tc_keet_clientes_contratos.nombre,
+          tc_keet_clientes_contratos.recepcion,
+          tc_keet_clientes_contratos.aceptacion,
+          tc_mantic_clientes.razon_social cliente,
+          tc_mantic_empresas.nombre empresa,
+          concat(tc_mantic_domicilios.calle, ", ",tc_mantic_domicilios.numero_exterior) domicilio
+        from
+          tc_keet_clientes_contratos
+        inner join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_clientes_contratos.id_cliente
+        inner join tc_mantic_empresas on tc_mantic_empresas.id_empresa= tc_keet_clientes_contratos.id_empresa
+        inner join tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio= tc_keet_clientes_contratos.id_empresa
+        inner join tc_janal_usuarios on tc_janal_usuarios.id_usuario= tc_keet_clientes_contratos.id_usuario
+        where
+          tc_mantic_empresas.id_empresa in ({sucursales})
+        and 
+          {condicion}
+				order by
+					tc_keet_clientes_contratos.id_cliente_contrato
+			</select>	
+		</unit>
+    <unit id="VistaPrototiposDto">
+			<select id="lazy">
+				select 
+          tc_keet_prototipos.id_prototipo as id_key,
+          tc_keet_prototipos.clave,
+          tc_keet_prototipos.nombre,
+          tc_keet_prototipos.descripcion,
+          tc_keet_prototipos.metros2,
+          tc_mantic_clientes.razon_social
+        from
+          tc_keet_prototipos
+        inner join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_prototipos.id_cliente
+        where
+          {condicion}
+				  {sortOrder}
+			</select>	
+			<select id="constructivosById">
+				select      
+					tc_keet_prototipos_constructivos.id_prototipo_constructivo id_key,
+					tc_keet_prototipos_constructivos.*,
+					tc_keet_constructivos.nombre descripcion,
+					tc_keet_grupos_constructivos.nombre grupo
+				from   
+				tc_keet_prototipos_constructivos
+				inner join tc_keet_constructivos on tc_keet_prototipos_constructivos.id_constructivo= tc_keet_constructivos.id_constructivo
+				inner join tc_keet_grupos_constructivos on tc_keet_constructivos.id_grupo_constructivo= tc_keet_grupos_constructivos.id_grupo_constructivo
+				where
+          tc_keet_prototipos_constructivos.id_prototipo= {idPrototipo}
+			</select>	
+			<select id="constructivosSelect">
+				select      
+					tc_keet_constructivos.id_constructivo id_key,
+					tc_keet_constructivos.nombre descripcion,
+					tc_keet_grupos_constructivos.nombre grupo
+				from   
+				tc_keet_constructivos 
+				inner join tc_keet_grupos_constructivos on tc_keet_constructivos.id_grupo_constructivo= tc_keet_grupos_constructivos.id_grupo_constructivo
+				where
+          {condicion}
+				order by
+				  tc_keet_grupos_constructivos.nombre, tc_keet_constructivos.nombre
+			</select>
+		  <select id="getPlanosEspecialidades">
+				select 
+					tc_keet_planos.id_plano id_key,
+					tc_keet_planos.nombre descripcion,
+					tc_keet_especialidades.nombre grupo 
+				from
+					tc_keet_planos
+				inner join tc_keet_especialidades on tc_keet_planos.id_especialidad= tc_keet_especialidades.id_especialidad
+        where
+          {condicion}
+				order by
+					tc_keet_especialidades.nombre, tc_keet_planos.nombre
+			</select>		
+		  <select id="getImportados">
+				select
+					id_prototipo_archivo id_key,
+					tc_keet_prototipos_archivos.nombre,
+					tc_keet_prototipos_archivos.archivo,
+					tc_keet_prototipos_archivos.ruta,
+					tc_keet_prototipos_archivos.alias,
+					tc_keet_prototipos_archivos.observaciones,
+					tc_keet_prototipos_archivos.registro,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario
+				from
+					tc_keet_prototipos_archivos
+				inner join tc_janal_usuarios on tc_keet_prototipos_archivos.id_usuarios= tc_janal_usuarios.id_usuario
+				inner join tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+				  id_prototipo= {idPrototipo}
+			</select>		
+		</unit>
+    <unit id="VistaProyectoDto">
+			<select id="lazy">
+				select 
+          tc_keet_proyectos.id_proyecto id_key,
+          tc_keet_proyectos.clave,
+          tc_keet_proyectos.no_viviendas,
+          tc_keet_proyectos.etapa,
+          tc_mantic_clientes.razon_social,
+          tc_keet_desarrollos.nombres desarrollo,
+          tc_keet_tipos_obras.nombre tipo_obra
+        from 
+          tc_keet_proyectos
+        inner join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
+        inner join tc_keet_desarrollos on tc_keet_desarrollos.id_desarrollo= tc_keet_proyectos.id_desarrollo
+        inner join tc_keet_tipos_obras on tc_keet_tipos_obras.id_tipo_obra= tc_keet_proyectos.id_tipos_obras
+        where
+          {condicion}
+				  {sortOrder}
+			</select>	
+		</unit>	
+    <unit id="VistaPlanosEspecialidaDto">
+
+		</unit>
+	</dml>    
+</process>
