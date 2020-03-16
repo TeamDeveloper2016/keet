@@ -172,27 +172,27 @@
     <unit id="TcJanalSesionesDto">
       <select id="row">
         select
-        *
+          *
         from
-        tc_janal_sesiones
+          tc_janal_sesiones
         where
-        {condicion}
+          {condicion}
       </select>
       <select id="identically">
         select
-        *
+          *
         from
-        tc_janal_sesiones
+          tc_janal_sesiones
         where
-        id_sesion = {idSesion}
+          id_sesion = {idSesion}
       </select>
-      <update id="updateRegistroFin">
+      <update id="termino">
         update
-         tc_janal_sesiones
+          tc_janal_sesiones
         set
-         registro_fin=now()
+          termino=now()
         where
-         sesion = '{sesion}'
+          sesion = '{sesion}'
       </update>
       <select id="ultimoAcceso">
         select
@@ -202,7 +202,7 @@
         where
           id_usuario = {idUsuario}
         order by 
-          registro_inicio desc
+          inicio desc
       </select>
     </unit>
     <unit id="TcJanalMensajesDto">

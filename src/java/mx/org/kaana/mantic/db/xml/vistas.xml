@@ -11,10 +11,10 @@
 					tc_mantic_empresas.clave as empresa,  
 					tc_mantic_empresas.nombre as nombre_empresa,  
 					tc_janal_sesiones.sesion,
-					tc_janal_sesiones.registro_inicio as inicio,
-					tc_janal_sesiones.registro_inicio,
-					ifnull(tc_janal_sesiones.registro_fin, tc_janal_sesiones.registro) as termino,
-					ifnull(tc_janal_sesiones.registro_fin, tc_janal_sesiones.registro) as registro_fin,
+					tc_janal_sesiones.inicio,
+					tc_janal_sesiones.inicio as comienza,
+					ifnull(tc_janal_sesiones.termino, tc_janal_sesiones.registro) as termino,
+					ifnull(tc_janal_sesiones.termino, tc_janal_sesiones.registro) as termina,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_janal_sesiones.cuenta
 				from

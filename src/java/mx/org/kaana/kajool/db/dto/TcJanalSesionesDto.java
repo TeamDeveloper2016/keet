@@ -2,7 +2,6 @@ package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -20,27 +19,25 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcJanalSesionesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="REGISTRO_FIN")
-  private LocalDateTime registroFin;
-  @Column (name="ID_USUARIO")
+  @Column (name="termino")
+  private LocalDateTime termino;
+  @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="REGISTRO_INICIO")
-  private LocalDateTime registroInicio;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
   //@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="idSesion_sequence")
   //@SequenceGenerator(name="idSesion_sequence",sequenceName="SEQ_TR_JANAL_SESIONES" , allocationSize=1 )
-  @Column (name="ID_SESION")
+  @Column (name="id_sesion")
   private Long idSesion;
-  @Column (name="CUENTA")
+  @Column (name="cuenta")
   private String cuenta;
-  @Column (name="PATH")
+  @Column (name="path")
   private String path;
-  @Column (name="INICIO")
+  @Column (name="inicio")
   private LocalDateTime inicio;
-  @Column (name="REGISTRO")
+  @Column (name="registro")
   private LocalDateTime registro;
-  @Column (name="SESION")
+  @Column (name="sesion")
   private String sesion;
 
   public TcJanalSesionesDto() {
@@ -48,14 +45,13 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
   }
 
   public TcJanalSesionesDto(Long key) {
-    this(LocalDateTime.now(), null, LocalDateTime.now(), new Long(-1L), null, null, LocalDateTime.now(), null);
+    this(LocalDateTime.now(), null, new Long(-1L), null, null, LocalDateTime.now(), null);
     setKey(key);
   }
 
-  public TcJanalSesionesDto(LocalDateTime registroFin, Long idUsuario, LocalDateTime registroInicio, Long idSesion, String cuenta, String path, LocalDateTime inicio, String sesion) {
-    setRegistroFin(registroFin);
+  public TcJanalSesionesDto(LocalDateTime termino, Long idUsuario, Long idSesion, String cuenta, String path, LocalDateTime inicio, String sesion) {
+    setTermino(termino);
     setIdUsuario(idUsuario);
-    setRegistroInicio(registroInicio);
     setIdSesion(idSesion);
     setCuenta(cuenta);
     setPath(path);
@@ -64,12 +60,12 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
     setSesion(sesion);
   }
 
-  public void setRegistroFin(LocalDateTime registroFin) {
-    this.registroFin = registroFin;
+  public void setTermino(LocalDateTime termino) {
+    this.termino = termino;
   }
 
-  public LocalDateTime getRegistroFin() {
-    return registroFin;
+  public LocalDateTime getTermino() {
+    return termino;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -78,14 +74,6 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
 
   public Long getIdUsuario() {
     return idUsuario;
-  }
-
-  public void setRegistroInicio(LocalDateTime registroInicio) {
-    this.registroInicio = registroInicio;
-  }
-
-  public LocalDateTime getRegistroInicio() {
-    return registroInicio;
   }
 
   public void setIdSesion(Long idSesion) {
@@ -151,11 +139,9 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getRegistroFin());
+		regresar.append(getTermino());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistroInicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdSesion());
 		regresar.append(Constantes.SEPARADOR);
@@ -175,9 +161,8 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("registroFin", getRegistroFin());
+		regresar.put("registroFin", getTermino());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("registroInicio", getRegistroInicio());
 		regresar.put("idSesion", getIdSesion());
 		regresar.put("cuenta", getCuenta());
 		regresar.put("path", getPath());
@@ -190,7 +175,7 @@ public class TcJanalSesionesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getRegistroFin(), getIdUsuario(), getRegistroInicio(), getIdSesion(), getCuenta(), getPath(), getInicio(), getRegistro(), getSesion()
+    getTermino(), getIdUsuario(), getIdSesion(), getCuenta(), getPath(), getInicio(), getRegistro(), getSesion()
     };
     return regresar;
   }

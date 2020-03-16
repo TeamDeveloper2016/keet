@@ -53,7 +53,7 @@ public class Accesos extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_janal_sesiones.cuenta, tc_janal_sesiones.registro_inicio desc");
+      params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_janal_sesiones.cuenta, tc_janal_sesiones.inicio desc");
       columns = new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
@@ -123,8 +123,8 @@ public class Accesos extends IBaseFilter implements Serializable {
 	}
 	
   public Long getMinutos(Entity row) {
-		Long start= row.toTimestamp("registroInicio").atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		Long end  = row.toTimestamp("registroFin").atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long start= row.toTimestamp("comienza").atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long end  = row.toTimestamp("termina").atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     return Fecha.diferenciaMinutos(start, end);
   }	
 	

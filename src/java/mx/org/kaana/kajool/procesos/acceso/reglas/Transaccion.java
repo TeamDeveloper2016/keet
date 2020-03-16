@@ -52,7 +52,6 @@ public class Transaccion extends IBaseTnx {
     dto.setSesion(JsfBase.getSessionId());
     dto.setPath(Especial.getInstance().getPath());
     dto.setInicio(Especial.getInstance().getRegistro());
-    dto.setRegistroFin(null);
     dto.setCuenta(autentifica.getCredenciales().getCuenta());
     dto.setIdUsuario(autentifica.getPersona().getIdUsuario());
     return DaoFactory.getInstance().insert(sn, dto) >= 1L;
@@ -65,7 +64,7 @@ public class Transaccion extends IBaseTnx {
     try {
       params = new HashMap<>();
       params.put("sesion", this.session);
-      regresar = DaoFactory.getInstance().execute(ESql.UPDATE, session, "TcJanalSesionesDto", "updateRegistroFin", params) > afectados;
+      regresar = DaoFactory.getInstance().execute(ESql.UPDATE, session, "TcJanalSesionesDto", "termino", params) > afectados;
     } // try
     catch (Exception e) {
       throw e;

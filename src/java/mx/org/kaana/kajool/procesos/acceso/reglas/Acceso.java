@@ -51,7 +51,7 @@ public class Acceso implements Serializable {
       } // if
       else {
         temaActivo = JsfBase.getAutentifica().getPersona().getEstilo();
-        transaccion = new Transaccion();
+        transaccion = new Transaccion(JsfBase.getSessionId());
         transaccion.ejecutar(EAccion.AGREGAR);
         this.cliente.setTemaActivo( temaActivo != null ? temaActivo : Constantes.TEMA_INICIAL);        
 				// ** verificar si no recupera pagaina default colocar una y mandar al log que no existe esa opcion del menu asociada al perfil
