@@ -3,9 +3,7 @@ package mx.org.kaana.keet.catalogos.prototipos.backing;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -24,10 +22,10 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.keet.catalogos.prototipos.beans.Prototipos;
+import mx.org.kaana.keet.catalogos.prototipos.beans.Prototipo;
+import mx.org.kaana.keet.catalogos.prototipos.beans.RegistroPrototipo;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposArchivosDto;
-import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -48,14 +46,15 @@ import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 @ViewScoped
 public class Importar extends IBaseImportar implements Serializable {
 
-	private static final Log LOG= LogFactory.getLog(Importar.class);
-  private Prototipos prototipo;
+	private static final Log LOG              = LogFactory.getLog(Importar.class);
+	private static final long serialVersionUID= 2672741451185244787L;
+  private RegistroPrototipo prototipo;
 
-	public Prototipos getPrototipo() {
+	public RegistroPrototipo getPrototipo() {
 		return prototipo;
 	}
 
-	public void setPrototipo(Prototipos prototipo) {
+	public void setPrototipo(RegistroPrototipo prototipo) {
 		this.prototipo = prototipo;
 	}
 
@@ -76,9 +75,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
 			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			this.attrs.put("planos", UIEntity.seleccione("VistaPrototiposDto", "getPlanosEspecialidades",this.attrs, "descripcion"));			
-			this.prototipo= (Prototipos)DaoFactory.getInstance().toEntity(Prototipos.class,"TcKeetPrototiposDto","byId", this.attrs);
-			this.prototipo.setIkCliente(((List<UISelectEntity>)this.attrs.get("clientes")).get(((List<UISelectEntity>)this.attrs.get("clientes")).indexOf(new UISelectEntity(new Entity(this.prototipo.getIdCliente())))));
-			
+			this.prototipo= new RegistroPrototipo(Long.valueOf(this.attrs.get("idPrototipo").toString()));						
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -114,11 +111,15 @@ public class Importar extends IBaseImportar implements Serializable {
     File result       = null;		
 		Long fileSize     = 0L;
 		TcKeetPrototiposArchivosDto tcKeetPrototiposArchivosDto= null;
+		List<UISelectEntity>clientes   = null;
+		UISelectEntity clienteSeleccion= null;
 		try {			
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("documentos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");
-      temp.append(this.prototipo.getIkCliente().toString("clave"));
+			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+			clienteSeleccion= clientes.get(clientes.indexOf(this.prototipo.getPrototipo().getIkCliente()));
+      temp.append(clienteSeleccion.toString("clave"));
       temp.append("/");      
 			path.append(temp.toString());
 			result= new File(path.toString());		
@@ -133,7 +134,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
   		this.attrs.put("file", this.getFile().getName());
 			tcKeetPrototiposArchivosDto= new TcKeetPrototiposArchivosDto(-1L, this.getFile().getName(), this.getFile().getRuta(), this.getFile().getFileSize(), JsfBase.getIdUsuario(), this.getFile().getFormat().getIdTipoArchivo()<0L? 1L:this.getFile().getFormat().getIdTipoArchivo(), this.getFile().getObservaciones(), -1L, this.getFile().getName(), this.prototipo.getIdPrototipo(), this.getFile().getOriginal());
-			this.prototipo.getDocuemntos().add(tcKeetPrototiposArchivosDto);
+			this.prototipo.getDocumentos().add(tcKeetPrototiposArchivosDto);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
