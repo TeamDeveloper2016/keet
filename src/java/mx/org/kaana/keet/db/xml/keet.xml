@@ -278,6 +278,12 @@
 				where      
 				  id_constructivo = {idConstructivo} and id_prototipo = {idPrototipo}
 			</select>
+			<select id="maximo">
+        select      
+          max(id_prototipo_constructivo) maximo
+        from      
+          tc_keet_prototipos_constructivos
+      </select>
 		</unit>		
     <unit id="TcKeetPrototiposArchivosDto">
       <select id="row">
