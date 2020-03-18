@@ -72,9 +72,22 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
-    EAccion eaccion = null;
+    EAccion eaccion= null;
+		String regresar= null; 
     try {
+			regresar= "accion".concat(Constantes.REDIRECIONAR);
       eaccion = EAccion.valueOf(accion.toUpperCase());
+			switch(eaccion){
+				case SUBIR:
+					regresar= "importar".concat(Constantes.REDIRECIONAR);
+					break;
+				case PROCESAR:
+					regresar= "generadores".concat(Constantes.REDIRECIONAR);
+					break;
+				case COPIAR:
+					regresar= "presupuestos".concat(Constantes.REDIRECIONAR);
+					break;
+			} // switch
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
       JsfBase.setFlashAttribute("idProyecto", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
@@ -84,7 +97,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    return "accion".concat(Constantes.REDIRECIONAR);
+    return regresar;
   } // doAccion  
 	
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
