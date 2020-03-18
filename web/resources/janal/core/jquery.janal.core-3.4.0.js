@@ -679,6 +679,7 @@
     renovate: function(id, value) {
       $janal.console('janal.renovate');
       if($janal.fields[id]) {
+				$janal.required(id, value.validaciones, false);
         $janal.blank(id, value);
         $janal.refresh(id);
       } // if  
@@ -778,6 +779,8 @@
             $(this).text($(this).text().indexOf('*')>= 0? $(this).text().substring(1): $(this).text());
         });
       } // if
+			else
+				$(this).text($(this).text().indexOf('*')>= 0? $(this).text().substring(1): $(this).text());
     }, // required
     validate: function(value, names) {
       return names.indexOf(value)>= 0;

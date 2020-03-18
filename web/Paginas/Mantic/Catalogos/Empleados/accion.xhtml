@@ -140,7 +140,7 @@
 								</p:selectOneMenu>								
 								<p:outputLabel for="contratista" value="Contratista:"/>
 								<p:selectOneMenu id="contratista" value="#{manticCatalogosPersonasAccion.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.puesto or element.puesto eq ''? '': '-'} #{element.nombre}"/>
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.puesto or element.puesto eq ''? '': '-'} #{element.nombres}"/>
 									<p:column headerText="Puesto">
 										<h:outputText value="#{item.puesto}"/>
 									</p:column> 
