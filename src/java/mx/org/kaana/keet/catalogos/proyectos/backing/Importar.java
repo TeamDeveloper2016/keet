@@ -51,7 +51,7 @@ public class Importar extends IBaseImportacion implements Serializable {
 			this.registroProyecto.getProyecto().getIdProyecto(),
 			this.getFile().getOriginal(),
 			-1L,
-			LocalDateTime.now(),
+			null,
 			this.getFile().getFileSize(), 			
 			JsfBase.getIdUsuario(), 			
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 			
