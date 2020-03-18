@@ -38,6 +38,7 @@ public class RegistroPrototipo implements Serializable {
 	
 	public RegistroPrototipo(Long idPrototipo){	
 		this.idPrototipo= idPrototipo;
+		this.documentos = new ArrayList<>();
 		this.contadores = new ContadoresListas();
 		this.countIndice= 0L;
 		initCollections(idPrototipo);
