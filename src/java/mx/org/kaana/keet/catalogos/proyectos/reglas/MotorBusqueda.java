@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Lote;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Proyecto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
