@@ -140,6 +140,10 @@
 						<p:menuitem id="consultar" action="#{keetCatalogosProyectosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
             <p:menuitem id="modificar" action="#{keetCatalogosProyectosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					            
+						<p:separator/>
+            <p:menuitem id="importar" action="#{keetCatalogosProyectosFiltro.doAccion('SUBIR')}" icon="fa fa-file-o" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="generadores" action="#{keetCatalogosProyectosFiltro.doAccion('PROCESAR')}" icon="fa fa-file-pdf-o" ajax="false" value="Generadores" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="presupuestos" action="#{keetCatalogosProyectosFiltro.doAccion('COPIAR')}" icon="fa fa-file-text-o" ajax="false" value="Presupuestos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
           </p:contextMenu>
         </div>
       </div>
