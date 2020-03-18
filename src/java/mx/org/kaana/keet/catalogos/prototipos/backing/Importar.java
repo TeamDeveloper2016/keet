@@ -7,8 +7,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -22,7 +20,6 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.keet.catalogos.prototipos.beans.Prototipo;
 import mx.org.kaana.keet.catalogos.prototipos.beans.RegistroPrototipo;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposArchivosDto;
@@ -57,7 +54,6 @@ public class Importar extends IBaseImportar implements Serializable {
 	public void setPrototipo(RegistroPrototipo prototipo) {
 		this.prototipo = prototipo;
 	}
-
 	
 	@PostConstruct
   @Override
@@ -102,7 +98,6 @@ public class Importar extends IBaseImportar implements Serializable {
       Methods.clean(columns);
     }// finally
 	} // doLoad
-
 	
 	public void doFileUpload(FileUploadEvent event) {				
 		StringBuilder path= new StringBuilder();  
