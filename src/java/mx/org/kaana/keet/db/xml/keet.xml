@@ -218,11 +218,21 @@
     <unit id="TcKeetProyectosLotesDto">
       <select id="row">
         select      
-          *
+				  tc_keet_proyectos_lotes.id_proyecto_lote id_key,
+          tc_keet_proyectos_lotes.*
         from      
           tc_keet_proyectos_lotes
         where 
           {condicion} 
+      </select>
+      <select id="byProyecto">
+        select      
+				  tc_keet_proyectos_lotes.id_proyecto_lote id_key,
+          tc_keet_proyectos_lotes.*
+        from      
+          tc_keet_proyectos_lotes
+        where 
+          id_proyecto= {idProyecto} 
       </select>
       <select id="identically">
         select      
