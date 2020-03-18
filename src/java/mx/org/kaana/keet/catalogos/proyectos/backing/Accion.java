@@ -60,17 +60,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
       this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", this.attrs, "nombre"));
-      this.attrs.put("tipoObras", UIEntity.seleccione("VistaProyectoDto", "tiposObraPorDivision", this.attrs, "descripcion"));
+      this.attrs.put("tipoObras", UIEntity.seleccione("VistaTiposObrasDto", "catalogo", this.attrs, "tipoObra"));
 			doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	}
+	} // loadCombos
 
   public void doLoad() {
-    EAccion eaccion    = null;
+    EAccion eaccion= null;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
@@ -117,9 +117,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-    return (String)this.attrs.get("retorno");
-  } // doAccion
-	
-
-	
+    return (String) this.attrs.get("retorno");
+  } // doAccion	
 }

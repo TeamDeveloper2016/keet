@@ -3,12 +3,12 @@ package mx.org.kaana.keet.catalogos.proyectos.beans;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
-
 public class Proyecto extends TcKeetProyectosDto{
-	
-	 private UISelectEntity ikCliente;
-	 private UISelectEntity ikDesarrollo;
-	 private UISelectEntity ikTipoObra;
+
+	private static final long serialVersionUID = -2978341734389180932L;	
+	private UISelectEntity ikCliente;
+	private UISelectEntity ikDesarrollo;
+	private UISelectEntity ikTipoObra;
 
 	public Proyecto() {
 		super();
@@ -42,8 +42,5 @@ public class Proyecto extends TcKeetProyectosDto{
 		this.ikTipoObra = ikTipoObra;
 		if(this.ikTipoObra!= null)
 			this.setIdTiposObras(this.ikTipoObra.getKey());
-	}
-
-	
-	
+	}	
 }
