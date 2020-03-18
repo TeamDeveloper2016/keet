@@ -27,12 +27,12 @@
 				'contenedorGrupos\\:departamento' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:fechaIngreso' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:fechaContrato': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:sueldoSemanal': {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:sueldoMensual': {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nss'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:infonavit'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:factorInfonavit': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:diarioImss'   : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:factorInfonavit': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:sueldoSemanal': {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:sueldoMensual': {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
+				// 'contenedorGrupos\\:diarioImss'   : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:mensualImss'  : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:empresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:entidad'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
@@ -51,7 +51,7 @@
 				'contenedorGrupos\\:paternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:maternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:curpB'        : {validaciones: 'curp', mascara: 'curp', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:rfcB'         : {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:rfcB'         : {validaciones: 'rfc', mascara: 'fiscal', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:parentesco'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true}
 			};					
 			
@@ -99,10 +99,10 @@
 								<p:inputText id="materno" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.materno}" />              
 								<p:outputLabel for="nacimiento" value="Fecha de nacimiento:"/>
 								<p:calendar id="nacimiento" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.persona.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>																						
-								<p:outputLabel for="curp" value="CURP:"/>
-								<p:inputText id="curp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.curp}" />                    								
 								<p:outputLabel for="rfc" value="RFC:"/>
 								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.rfc}" />                    								
+								<p:outputLabel for="curp" value="CURP:"/>
+								<p:inputText id="curp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.curp}" />                    								
 								<p:outputLabel for="tipoPersona" value="Tipo persona:" rendered="#{manticCatalogosPersonasAccion.attrs.general}"/>
 								<p:selectOneMenu id="tipoPersona" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idTipoPersona}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.general}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.tiposPersonas}"/>
@@ -130,17 +130,17 @@
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.clave}" />                    
 								<p:outputLabel for="contrato" value="Contrato:"/>
 								<p:inputText id="contrato" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.contrato}" />                    
-								<p:outputLabel for="departamento" value="Departamento:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:selectOneMenu id="departamento" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idDepartamento}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.departamentos}"/>
-								</p:selectOneMenu>								
 								<p:outputLabel for="puesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
 								</p:selectOneMenu>																
+								<p:outputLabel for="departamento" value="Departamento:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:selectOneMenu id="departamento" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idDepartamento}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.departamentos}"/>
+								</p:selectOneMenu>								
 								<p:outputLabel for="contratista" value="Contratista:"/>
 								<p:selectOneMenu id="contratista" value="#{manticCatalogosPersonasAccion.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.puesto? '': '-'} #{element.nombre}"/>
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.puesto or element.puesto eq ''? '': '-'} #{element.nombre}"/>
 									<p:column headerText="Puesto">
 										<h:outputText value="#{item.puesto}"/>
 									</p:column> 
@@ -152,13 +152,9 @@
 									</p:column>   
 								</p:selectOneMenu>	
 								<p:outputLabel for="fechaIngreso" value="Fecha ingreso:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:calendar id="fechaIngreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaIngreso}" placeholder="ejemplo 12/03/2019" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:calendar id="fechaIngreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaIngreso}" placeholder="ejemplo 12/03/2019" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="fechaContrato" value="Fecha contratación:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:calendar id="fechaContrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaContratacion}" placeholder="ejemplo 12/03/2019"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:outputLabel for="sueldoSemanal" value="Sueldo semanal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>                    
-								<p:outputLabel for="sueldoMensual" value="Sueldo mensual:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:inputNumber id="sueldoMensual" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoMensual}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>                    								
+								<p:calendar id="fechaContrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaContratacion}" placeholder="ejemplo 12/03/2019"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
               </p:panelGrid>
 						</p:tab>	
             <p:tab title="Prestaciones">
@@ -166,16 +162,18 @@
 								<p:outputLabel value="Seguro social" style="font-weight: bold"/><p:spacer/>
 								<p:outputLabel for="nss" value="Nss:"/>
 								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}" />                    
-								<p:outputLabel for="diarioImss" value="Sueldo diario:"/>								
-								<p:inputNumber id="diarioImss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.diarioImss}"/>                    
-								<p:outputLabel for="mensualImss" value="Sueldo mensual:"/>								                 
+								<p:outputLabel for="sueldoSemanal" value="Sueldo semanal:"/>								
+								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}"/>                    
+								<p:outputLabel for="sueldoMensual" value="Sueldo mensual:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:inputNumber id="sueldoMensual" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoMensual}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>                    
+								<p:outputLabel for="mensualImss" value="Sueldo IMSS:"/>								                 
 								<p:inputNumber id="mensualImss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}"/>                    
 								<p:spacer/><p:separator/>
 								<p:outputLabel value="Infonavit" style="font-weight: bold"/><p:spacer/>
 								<p:outputLabel for="infonavit" value="No credito:"/>
-								<p:inputText id="infonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.infonavit}" />                    
+								<p:inputText id="infonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.infonavit}" onblur="$('#contenedorGrupos\\:infonavit').val().trim().length> 0? janal.renovate('contenedorGrupos\\:factorInfonavit', {validaciones: 'requerido', mascara: 'libre'}): janal.renovate('contenedorGrupos\\:factorInfonavit', {validaciones: 'libre', mascara: 'libre'});" />
 								<p:outputLabel for="factorInfonavit" value="Factor:"/>								
-								<p:inputNumber id="factorInfonavit" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.factorInfonavit}" inputStyle="text-align: right;"/>                    
+								<p:inputNumber id="factorInfonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.factorInfonavit}"/>                    
               </p:panelGrid>
 						</p:tab>	
 						<p:tab title="Domicilios">
@@ -277,7 +275,7 @@
               </p:panelGrid>
             </p:tab>
 						<p:tab title="Beneficiarios">
-              <p:panelGrid id="panelTablaBeneficiarios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-150, janal-wid-80">
+              <p:panelGrid id="panelTablaBeneficiarios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-180, janal-wid-80">
                 <p:dataList id="tablaBeneficiarios" value="#{manticCatalogosPersonasAccion.registroPersona.personasBeneficiarios}" var="beneficiario" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
                   <p:commandLink update="contenedorGrupos:formularioBeneficiario tablaBeneficiarios contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:curpB contenedorGrupos:rfcB contenedorGrupos:parentesco" title="Eliminar" action="#{manticCatalogosPersonasAccion.doEliminarBeneficiario}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{beneficiario}" target="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiarioSeleccion}" />
@@ -297,17 +295,17 @@
 										</p:commandLink>		              										
                   </f:facet>
                 </p:dataList>
-                <p:panelGrid id="formularioBeneficiario" columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-15, janal-wid-100-txt">                                                      
+                <p:panelGrid id="formularioBeneficiario" columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-col-150, janal-wid-100-txt">                                                      
                   <p:outputLabel for="nombreB" value="Nombre:"/>
                   <p:inputText id="nombreB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.nombre}" />
                   <p:outputLabel for="paternoB" value="Apellido paterno:"/>
                   <p:inputText id="paternoB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.materno}" />
                   <p:outputLabel for="maternoB" value="Apellido materno:"/>
                   <p:inputText id="maternoB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.paterno}"/>	
-                  <p:outputLabel for="curpB" value="Curp:"/>
-                  <p:inputText id="curpB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.curp}"/>	
                   <p:outputLabel for="rfcB" value="Rfc:"/>
                   <p:inputText id="rfcB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.rfc}"/>	                  
+                  <p:outputLabel for="curpB" value="Curp:"/>
+                  <p:inputText id="curpB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.curp}"/>	
                   <p:outputLabel for="parentesco" value="Parentesco:"/>
                   <p:selectOneMenu id="parentesco" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.idTipoParentesco}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.parentescos}"/>

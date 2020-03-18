@@ -202,7 +202,7 @@
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>
-            <p:tab id="tabTipoPago" title="Condiciones de pago" rendered="false">
+            <p:tab id="tabTipoPago" title="Condiciones de pago">
               <p:panelGrid id="panelTablaTipoPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaTipoPago" rowIndexVar="index" var="tipoPago" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresCondicionPago}" rows="6" paginator="false" reflow="true" rowKey="#{tipoPago.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Clave" styleClass="janal-wid-30 llave">		

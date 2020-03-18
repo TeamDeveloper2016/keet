@@ -113,7 +113,7 @@ $.mask.rules = $.extend($.mask.rules, {
   'c': /[a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1]/,
   'd': /[a-zA-Z\u00D10-9]/,
   'e': /[a-zA-Z\u00D10-9.]/,
-  'f': /[HM]/,
+  'f': /[HhMm]/,
   'g': /[0-9a-zA-Z\u00F1\u00D1]/,
   'h': /[0-9aA]/,
   'i': /[0-9a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1,.;:¿?¡!"(){}@#%&_]/,
