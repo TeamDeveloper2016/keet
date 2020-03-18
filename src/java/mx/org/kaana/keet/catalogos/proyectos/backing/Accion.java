@@ -57,13 +57,25 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
       this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", this.attrs, "nombre"));
       this.attrs.put("tipoObras", UIEntity.seleccione("VistaTiposObrasDto", "catalogo", this.attrs, "tipoObra"));
-			doLoad();
+      this.attrs.put("fachadas", UIEntity.seleccione("TcKeetTiposFachadasDto", "row", this.attrs, "nombre"));
+      this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
 	} // loadCombos
+	
+	public void doLoadPrototipos(){
+		try {
+			this.attrs.put("idCliente", this.proyecto.getProyecto().getIdCliente());
+      this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	} // doLoadPrototipos
 
   public void doLoad() {
     EAccion eaccion= null;
