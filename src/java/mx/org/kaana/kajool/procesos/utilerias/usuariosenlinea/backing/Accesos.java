@@ -58,8 +58,8 @@ public class Accesos extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_HORA_CORTA));      
-      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_HORA));      
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA));      
       this.lazyModel = new FormatCustomLazy("VistaAccesosDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try

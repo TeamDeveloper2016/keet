@@ -29,7 +29,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre? '': '-'} #{element.nombre}"/>
+                <f:selectItems value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -85,13 +85,13 @@
               </f:facet>
               <h:outputText value="#{row['usuario']}" title="Sesión: #{row.sesion}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.inicio}">
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-15" sortBy="#{row.inicio}">
               <f:facet name="header">
                 <h:outputText value="Inicio"/>
               </f:facet>
               <h:outputText value="#{row['inicio']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.termino}">
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-15" sortBy="#{row.termino}">
               <f:facet name="header">
                 <h:outputText value="Termino"/>
               </f:facet>
