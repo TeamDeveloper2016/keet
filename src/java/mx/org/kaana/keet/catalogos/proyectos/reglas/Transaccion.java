@@ -7,39 +7,37 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.keet.catalogos.proyectos.beans.Proyecto;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
+import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
-
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
-	private Proyecto proyecto;	
+	private RegistroProyecto proyecto;	
 
-	public Transaccion(Proyecto proyecto) {
-		this.proyecto    = proyecto;	
+	public Transaccion(RegistroProyecto proyecto) {
+		this.proyecto= proyecto;	
 	}
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
-		Siguiente siguiente       = null;
+		boolean regresar   = false;
+		Siguiente siguiente= null;
 		try {
 			switch(accion){
-				case AGREGAR:
-					this.proyecto.setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
+				case AGREGAR:					
 					siguiente= toSiguiente(sesion);
-					this.proyecto.setConsecutivo(siguiente.getConsecutivo());
-					this.proyecto.setOrden(siguiente.getOrden());
-					regresar= DaoFactory.getInstance().insert(sesion, this.proyecto)>= 1L;
+					this.proyecto.getProyecto().setConsecutivo(siguiente.getConsecutivo());
+					this.proyecto.getProyecto().setOrden(siguiente.getOrden());
+					this.proyecto.getProyecto().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
+					regresar= DaoFactory.getInstance().insert(sesion, this.proyecto.getProyecto())>= 1L;
 					break;
 				case MODIFICAR:
-					regresar= DaoFactory.getInstance().update(sesion, this.proyecto)>= 1L;
+					regresar= DaoFactory.getInstance().update(sesion, this.proyecto.getProyecto())>= 1L;
 					break;				
 				case ELIMINAR:
-					regresar= DaoFactory.getInstance().delete(sesion, this.proyecto)>= 1L;
+					regresar= DaoFactory.getInstance().delete(sesion, this.proyecto.getProyecto())>= 1L;
 					break;
 				/*case SUBIR:
 					for(TcKeetProyectosArchivosDto item: this.proyecto.getDocuemntos()){
@@ -55,13 +53,13 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 	
-		private Siguiente toSiguiente(Session sesion) throws Exception {
+	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
-			params.put("idCliente", this.proyecto.getIdCliente());
+			params.put("idCliente", this.proyecto.getProyecto().getIdCliente());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKeetProyectosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
@@ -75,7 +73,5 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	}
-
-	
+	} // toSiguiente
 }
