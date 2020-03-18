@@ -560,60 +560,6 @@
           alias = '{alias}' and tabla = '{tabla}' and campo = '{campo}'
       </select>
     </unit>		
-    <unit id="TcKeetClientesContratosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_keet_clientes_contratos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_clientes_contratos
-        where      
-          clave = {clave} and id_cliente = {idCliente} and nombre = '{nombre}'
-      </select>
-    </unit>		
-    <unit id="TcKeetContratosArchivosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_keet_contratos_archivos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_contratos_archivos
-        where      
-          id_cliente_contrato = {idClienteContrato} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
-      </select>
-    </unit>		
-    <unit id="TcKeetContratosProyectosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_keet_contratos_proyectos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_contratos_proyectos
-        where      
-          id_cliente_contrato = {idClienteContrato} and clave = '{clave}' and nombre = '{nombre}'
-      </select>
-    </unit>	
     <unit id="TcKeetDepartamentosDto">
       <select id="row">
         select      
