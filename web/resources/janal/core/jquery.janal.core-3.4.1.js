@@ -770,17 +770,13 @@
       }); // each
     }, // rules
     required: function(id, method, colocate) {
-      if(method.indexOf('requerido')>= 0) {
-        var titles= $janal.labels(id);
-        $.each(titles, function() {
-          if(colocate)
-            $(this).text(($(this).text().indexOf('*')< 0? '*': '')+ $(this).text());
-          else
-            $(this).text($(this).text().indexOf('*')>= 0? $(this).text().substring(1): $(this).text());
-        });
-      } // if
-			else
-				$(this).text($(this).text().indexOf('*')>= 0? $(this).text().substring(1): $(this).text());
+			var titles= $janal.labels(id);
+			$.each(titles, function() {
+				if(colocate && method.indexOf('requerido')>= 0)
+					$(this).text(($(this).text().indexOf('*')< 0? '*': '')+ $(this).text());
+				else
+					$(this).text($(this).text().indexOf('*')>= 0? $(this).text().substring(1): $(this).text());
+			});
     }, // required
     validate: function(value, names) {
       return names.indexOf(value)>= 0;
