@@ -109,11 +109,14 @@
 					tc_keet_prototipos_archivos.alias,
 					tc_keet_prototipos_archivos.observaciones,
 					tc_keet_prototipos_archivos.registro,
-					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
+					tc_keet_prototipos_archivos.id_tipo_archivo
 				from
 					tc_keet_prototipos_archivos
-				inner join tc_janal_usuarios on tc_keet_prototipos_archivos.id_usuarios= tc_janal_usuarios.id_usuario
-				inner join tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_janal_usuarios on tc_keet_prototipos_archivos.id_usuarios= tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 				  id_prototipo= {idPrototipo}
 			</select>		
