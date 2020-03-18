@@ -1,6 +1,12 @@
 package mx.org.kaana.keet.catalogos.proyectos.reglas;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -11,6 +17,7 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Lote;
 import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
+import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -104,6 +111,7 @@ public class Transaccion extends IBaseTnx {
 					item.setIdProyecto(this.proyecto.getProyecto().getIdProyecto());
 					item.setIdUsuario(JsfBase.getIdUsuario());
 					DaoFactory.getInstance().insert(sesion, item);
+					cargarPlanos(sesion, (List<TcKeetProyectosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetProyectosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toProyectos", item.toMap()));
 					break;
 				case UPDATE:
 					DaoFactory.getInstance().update(sesion, item);
@@ -115,6 +123,41 @@ public class Transaccion extends IBaseTnx {
 		} // try
 		catch (Exception e) {			
 			throw new Exception(e);
-		} // catch		
+		} // catch	
 	} // actualizarConstructivo
+
+	private void cargarPlanos(Session sesion, List<TcKeetProyectosArchivosDto> planos) throws Exception {
+		String nuevaRuta = null;
+		File origen      = null;
+    File destino     = null;
+		InputStream in   = null;
+		OutputStream out = null;		
+		byte[] buf       = new byte[1024];
+    int len          = 0;      
+		try {
+			for (TcKeetProyectosArchivosDto tcKeetProyectosArchivosDto : planos) {
+				tcKeetProyectosArchivosDto.setIdUsuario(JsfBase.getIdUsuario());
+				tcKeetProyectosArchivosDto.setIdProyecto(this.proyecto.getProyecto().getIdProyecto());
+				nuevaRuta = tcKeetProyectosArchivosDto.getAlias().replaceAll("prototipos", "proyectos");
+				origen      = new File(tcKeetProyectosArchivosDto.getAlias());
+        destino     = new File(nuevaRuta.substring(0, nuevaRuta.lastIndexOf("/")));	
+			  if (!destino.exists())
+				  destino.mkdirs();
+				destino     = new File(nuevaRuta);
+				if (!destino.exists() || DaoFactory.getInstance().findIdentically(sesion, TcKeetProyectosArchivosDto.class, tcKeetProyectosArchivosDto.toMap())==null){
+					in = new FileInputStream(origen);
+					out= new FileOutputStream(destino);
+					while ((len = in.read(buf)) > 0) 
+						out.write(buf, 0, len);
+					in.close();
+          out.close();
+					tcKeetProyectosArchivosDto.setAlias(nuevaRuta);
+					DaoFactory.getInstance().insert(sesion, tcKeetProyectosArchivosDto);
+				} // if
+			} // for
+		} // try
+		catch (Exception e) {
+			throw new Exception(e);
+		} // catch	
+	} // cargarPlanos
 }
