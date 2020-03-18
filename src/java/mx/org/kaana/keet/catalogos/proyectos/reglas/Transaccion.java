@@ -97,6 +97,7 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case UPDATE:
 					DaoFactory.getInstance().update(sesion, item);
+					break;
 				case DELETE:
 					DaoFactory.getInstance().delete(sesion, item);
 					break;
