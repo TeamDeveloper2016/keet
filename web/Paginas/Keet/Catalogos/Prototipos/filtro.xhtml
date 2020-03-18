@@ -11,7 +11,7 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombre'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'nombre'     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
     </script>		
@@ -73,7 +73,7 @@
               </f:facet>
               <h:outputText value="#{row['clave']}"/>
             </p:column>														
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
@@ -91,7 +91,7 @@
               </f:facet>
               <h:outputText value="#{row['descripcion']}"/>
             </p:column>	
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-20" sortBy="#{row.metros2}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.metros2}">
               <f:facet name="header">
                 <h:outputText value="Metros cuadrados" />
               </f:facet>

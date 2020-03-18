@@ -295,7 +295,4 @@ public class TcKeetProyectosGeneradoresDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdProyectoGenerador() != null ? getIdProyectoGenerador().hashCode() : 0);
     return hash;
   }
-
 }
-
-

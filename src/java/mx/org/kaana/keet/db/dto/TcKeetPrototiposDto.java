@@ -41,6 +41,8 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_prototipo")
   private Long idPrototipo;
+	@Column (name="dias_construccion")
+  private Long diasConstruccion;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
@@ -52,24 +54,23 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPrototiposDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
 
-  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idUsuario, Long idPrototipo, String nombre) {
-    this.descripcion = descripcion;
-    this.metros2 = metros2;
-    this.clave = clave;
-    this.idCliente = idCliente;
-    this.idUsuario = idUsuario;
-    this.idPrototipo = idPrototipo;
-    this.nombre = nombre;
-    setRegistro(LocalDateTime.now());
+  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idUsuario, Long idPrototipo, String nombre, Long diasConstruccion) {
+    this.descripcion     = descripcion;
+    this.metros2         = metros2;
+    this.clave           = clave;
+    this.idCliente       = idCliente;
+    this.idUsuario       = idUsuario;
+    this.idPrototipo     = idPrototipo;
+    this.nombre          = nombre;		
+		this.diasConstruccion= diasConstruccion;
+		this.registro        = LocalDateTime.now();    
   }
   
-  
-	
   public void setDescripcion(String descripcion) {
     this.descripcion = descripcion;
   }
@@ -134,6 +135,14 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getDiasConstruccion() {
+		return diasConstruccion;
+	}
+
+	public void setDiasConstruccion(Long diasConstruccion) {
+		this.diasConstruccion = diasConstruccion;
+	}
+	
   @Transient
   @Override
   public Long getKey() {
@@ -164,6 +173,8 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDiasConstruccion());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -179,13 +190,14 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 		regresar.put("idPrototipo", getIdPrototipo());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
+		regresar.put("diasConstruccion", getDiasConstruccion());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getMetros2(), getClave(), getIdCliente(), getIdUsuario(), getIdPrototipo(), getNombre(), getRegistro()
+			getDescripcion(), getMetros2(), getClave(), getIdCliente(), getIdUsuario(), getIdPrototipo(), getNombre(), getRegistro(), getDiasConstruccion()
     };
     return regresar;
   }
@@ -243,7 +255,4 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdPrototipo() != null ? getIdPrototipo().hashCode() : 0);
     return hash;
   }
-
 }
-
-

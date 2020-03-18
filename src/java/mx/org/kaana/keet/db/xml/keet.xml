@@ -252,6 +252,17 @@
         where 
           id_prototipo= {idPrototipo} 
       </select>
+			<select id="byCliente">
+        select      
+				  tc_keet_prototipos.id_prototipo id_key,
+          tc_keet_prototipos.*
+        from      
+          tc_keet_prototipos
+        where 
+          id_cliente= {idCliente}
+				order by
+				  nombre 
+      </select>
       <select id="identically">
         select      
           *
@@ -278,6 +289,12 @@
 				where      
 				  id_constructivo = {idConstructivo} and id_prototipo = {idPrototipo}
 			</select>
+			<select id="maximo">
+        select      
+          max(id_prototipo_constructivo) maximo
+        from      
+          tc_keet_prototipos_constructivos
+      </select>
 		</unit>		
     <unit id="TcKeetPrototiposArchivosDto">
       <select id="row">

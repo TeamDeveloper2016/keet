@@ -32,15 +32,18 @@ public class Filtro extends IBaseFilter implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
+		List<UISelectEntity> tiposObras= null;
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			tiposObras= UIEntity.seleccione("VistaTiposObrasDto", "catalogo", "tipoObra");
+			this.attrs.put("tipoObras", tiposObras);
+			this.attrs.put("tipoObra", UIBackingUtilities.toFirstKeySelectEntity(tiposObras));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
   } // init
-
 
   @Override
   public void doLoad() {
@@ -54,6 +57,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaProyectoDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -81,33 +85,21 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     return "accion".concat(Constantes.REDIRECIONAR);
-  } // doAccion
-
-  public void doEliminar() {
-    /*Transaccion transaccion = null;
-    try {
-      transaccion = new Transaccion(new TcManticProveedoresDto(((Entity)this.attrs.get("seleccionado")).getKey()));
-      transaccion.ejecutar(EAccion.ELIMINAR);
-      JsfBase.addMessage("Eliminar proveedor", "El proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		*/
-  } // doEliminar
+  } // doAccion  
 	
-public List<UISelectEntity> doCompleteCliente(String codigo) {
+	public List<UISelectEntity> doCompleteCliente(String codigo) {
  		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> params= null;
 		boolean buscaPorCodigo    = false;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
-  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
@@ -130,8 +122,7 @@ public List<UISelectEntity> doCompleteCliente(String codigo) {
       Methods.clean(params);
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}	
-	
+	}	// doCompleteCliente	
 	
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar  = new HashMap<>();	
@@ -144,24 +135,25 @@ public List<UISelectEntity> doCompleteCliente(String codigo) {
 			sb.append("(tc_keet_proyectos.etapa like '%").append(this.attrs.get("etapa")).append("%') and ");
     if(provedores!= null && cliente!= null && provedores.indexOf(cliente)>= 0) 
 			sb.append("(tc_mantic_clientes.razon_social like '%").append(provedores.get(provedores.indexOf(cliente)).toString("razonSocial")).append("%') and ");
-		else
+		else{
  		  if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
-			  sb.append("(tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");
-    /*if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("sucursales", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());*/
+			  sb.append("(tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");    
+		} // else
+		if(!Cadena.isVacio(this.attrs.get("viviendasMenor")))
+			sb.append("tc_keet_proyectos.no_viviendas < ").append(this.attrs.get("viviendasMenor")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("viviendasMayor")))
+			sb.append("tc_keet_proyectos.no_viviendas > ").append(this.attrs.get("viviendasMayor")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("tipoObra")) && ((UISelectEntity)this.attrs.get("tipoObra")).getKey()>= 1L)				
+			sb.append("tc_keet_proyectos.id_tipos_obras=").append(((UISelectEntity)this.attrs.get("tipoObra")).getKey()).append(" and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		
-	}
+	} // toPrepare
 
   public String doMasivo() {
-    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Proyectos/filtro");
-    //JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PROVEEDORES.getId());
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Proyectos/filtro"); 
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
-
 }

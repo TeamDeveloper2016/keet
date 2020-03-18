@@ -1,12 +1,9 @@
 package mx.org.kaana.keet.catalogos.proyectos.backing;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -16,9 +13,8 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.keet.catalogos.proyectos.reglas.Transaccion;
-import mx.org.kaana.keet.catalogos.proyectos.beans.Proyecto;
+import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 
 
 @Named(value = "keetCatalogosProyectosAccion")
@@ -26,13 +22,13 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private Proyecto proyecto;
+	private RegistroProyecto proyecto;
 
-	public Proyecto getProyecto() {
+	public RegistroProyecto getProyecto() {
 		return proyecto;
 	}
 
-	public void setProyecto(Proyecto proyecto) {
+	public void setProyecto(RegistroProyecto proyecto) {
 		this.proyecto = proyecto;
 	}
 	
@@ -60,31 +56,40 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
       this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", this.attrs, "nombre"));
-      this.attrs.put("tipoObras", UIEntity.seleccione("VistaProyectoDto", "tiposObraPorDivision", this.attrs, "descripcion"));
-			doLoad();
+      this.attrs.put("tipoObras", UIEntity.seleccione("VistaTiposObrasDto", "catalogo", this.attrs, "tipoObra"));
+      this.attrs.put("fachadas", UIEntity.seleccione("TcKeetTiposFachadasDto", "row", this.attrs, "nombre"));
+      this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	}
+	} // loadCombos
+	
+	public void doLoadPrototipos(){
+		try {
+			this.attrs.put("idCliente", this.proyecto.getProyecto().getIdCliente());
+      this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	} // doLoadPrototipos
 
   public void doLoad() {
-    EAccion eaccion    = null;
+    EAccion eaccion= null;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
-          this.proyecto= new Proyecto();
+          this.proyecto= new RegistroProyecto();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
         case SUBIR:					
-          this.proyecto= (Proyecto)DaoFactory.getInstance().toEntity(Proyecto.class,"TcKeetProyectosDto","byId", this.attrs);
-					this.proyecto.setIkCliente(((List<UISelectEntity>)this.attrs.get("clientes")).get(((List<UISelectEntity>)this.attrs.get("clientes")).indexOf(new UISelectEntity(new Entity(this.proyecto.getIdCliente())))));
-					this.proyecto.setIkDesarrollo(((List<UISelectEntity>)this.attrs.get("desarrollos")).get(((List<UISelectEntity>)this.attrs.get("desarrollos")).indexOf(new UISelectEntity(new Entity(this.proyecto.getIdDesarrollo())))));
-					this.proyecto.setIkTipoObra(((List<UISelectEntity>)this.attrs.get("tipoObras")).get(((List<UISelectEntity>)this.attrs.get("tipoObras")).indexOf(new UISelectEntity(new Entity(this.proyecto.getIdTiposObras())))));
+          this.proyecto= new RegistroProyecto(Long.valueOf(this.attrs.get("idProyecto").toString()));					
           break;
       } // switch
     } // try
@@ -100,8 +105,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
-      this.proyecto.setIdUsuario(JsfBase.getIdUsuario());
-			transaccion = new Transaccion(this.proyecto);
+      this.proyecto.getProyecto().setIdUsuario(JsfBase.getIdUsuario());
+			transaccion= new Transaccion(this.proyecto);
 			if (transaccion.ejecutar(eaccion)) {
 				regresar =  this.attrs.get("retorno")!=null? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el proyecto de forma correcta."), ETipoMensaje.INFORMACION);
@@ -117,9 +122,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-    return (String)this.attrs.get("retorno");
-  } // doAccion
-	
-
-	
+    return (String) this.attrs.get("retorno");
+  } // doAccion	
 }

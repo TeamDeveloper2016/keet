@@ -4,6 +4,22 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaTiposObrasDto">
+			<select id="catalogo">
+				select
+					tc_keet_tipos_obras.id_tipo_obra AS id_key,
+					tc_keet_tipos_obras.id_division,
+					tc_keet_tipos_obras.clave,
+					tc_keet_tipos_obras.nombre tipo_obra,
+					tc_keet_divisiones.nombre tipo_division
+				from
+					tc_keet_tipos_obras
+				inner join
+					tc_keet_divisiones ON tc_keet_tipos_obras.id_division = tc_keet_divisiones.id_division
+				order by
+					tc_keet_tipos_obras.id_division, tc_keet_tipos_obras.clave
+			</select>			
+		</unit>
     <unit id="VistaContratosDto">
 			<select id="lazy">
 				select
@@ -111,15 +127,19 @@
           tc_keet_proyectos.etapa,
           tc_mantic_clientes.razon_social,
           tc_keet_desarrollos.nombres desarrollo,
-          tc_keet_tipos_obras.nombre tipo_obra
+          tc_keet_tipos_obras.nombre tipo_obra,
+					tc_keet_proyectos.registro
         from 
           tc_keet_proyectos
-        inner join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
-        inner join tc_keet_desarrollos on tc_keet_desarrollos.id_desarrollo= tc_keet_proyectos.id_desarrollo
-        inner join tc_keet_tipos_obras on tc_keet_tipos_obras.id_tipo_obra= tc_keet_proyectos.id_tipos_obras
+        inner join 
+					tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
+        inner join 
+					tc_keet_desarrollos on tc_keet_desarrollos.id_desarrollo= tc_keet_proyectos.id_desarrollo
+        inner join 
+					tc_keet_tipos_obras on tc_keet_tipos_obras.id_tipo_obra= tc_keet_proyectos.id_tipos_obras
         where
           {condicion}
-				  {sortOrder}
+				{sortOrder}
 			</select>	
 			<select id="tiposObraPorDivision">
 				select 
