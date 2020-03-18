@@ -57,6 +57,7 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 			this.attrs.put("file", "");
 			this.attrs.put("tipoArchivo", tipoArchivo);
 			setFile(new Importado());
+			loadCombos();
 			this.registroProyecto= new RegistroProyecto(Long.valueOf(this.attrs.get("idProyecto").toString()));
 		} // try
 		catch (Exception e) {			
@@ -64,6 +65,18 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 		} // catch		
 	}	// initBase	
 
+	private void loadCombos(){
+		try {			
+      this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", this.attrs, "nombre"));
+      this.attrs.put("tipoObras", UIEntity.seleccione("VistaTiposObrasDto", "catalogo", this.attrs, "tipoObra"));
+      this.attrs.put("fachadas", UIEntity.seleccione("TcKeetTiposFachadasDto", "row", this.attrs, "nombre"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	} // loadCombos
+	
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoad();		
