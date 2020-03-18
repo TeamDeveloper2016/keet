@@ -104,17 +104,12 @@ public class Importar extends IBaseImportar implements Serializable {
 		StringBuilder temp= new StringBuilder();  
 		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result       = null;		
-		Long fileSize     = 0L;
-		TcKeetPrototiposArchivosDto tcKeetPrototiposArchivosDto= null;
-		List<UISelectEntity>clientes   = null;
-		UISelectEntity clienteSeleccion= null;
+		Long fileSize     = 0L;			
 		try {			
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("documentos"));
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("prototipos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
-      temp.append("/");
-			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
-			clienteSeleccion= clientes.get(clientes.indexOf(this.prototipo.getPrototipo().getIkCliente()));
-      temp.append(clienteSeleccion.toString("clave"));
+      temp.append("/");			
+      temp.append(toClave());
       temp.append("/");      
 			path.append(temp.toString());
 			result= new File(path.toString());		
@@ -127,9 +122,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
-  		this.attrs.put("file", this.getFile().getName());
-			tcKeetPrototiposArchivosDto= new TcKeetPrototiposArchivosDto(-1L, this.getFile().getName(), this.getFile().getRuta(), this.getFile().getFileSize(), JsfBase.getIdUsuario(), this.getFile().getFormat().getIdTipoArchivo()<0L? 1L:this.getFile().getFormat().getIdTipoArchivo(), this.getFile().getObservaciones(), -1L, this.getFile().getName(), this.prototipo.getIdPrototipo(), this.getFile().getOriginal());
-			this.prototipo.getDocumentos().add(tcKeetPrototiposArchivosDto);
+  		this.attrs.put("file", this.getFile().getName());			
+			this.prototipo.getDocumentos().add(toProtipoArchivo());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -139,10 +133,43 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
 	} // doFileUpload	
 	
+	private String toClave(){
+		String regresar                = null;
+		List<UISelectEntity>clientes   = null;
+		UISelectEntity clienteSeleccion= null;
+		try {
+			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+			clienteSeleccion= clientes.get(clientes.indexOf(this.prototipo.getPrototipo().getIkCliente()));
+			regresar= clienteSeleccion.toString("clave");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toClave
+	
+	private TcKeetPrototiposArchivosDto toProtipoArchivo(){
+		TcKeetPrototiposArchivosDto regresar= null;
+		regresar= new TcKeetPrototiposArchivosDto(
+			-1L, 
+			this.getFile().getName(), 
+			this.getFile().getRuta(), 
+			this.getFile().getFileSize(), 
+			JsfBase.getIdUsuario(), 
+			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 
+			this.getFile().getObservaciones(), 
+			-1L, 			
+			Configuracion.getInstance().getPropiedadSistemaServidor("prototipos").concat(this.getFile().getRuta()).concat(this.getFile().getName()),
+			this.prototipo.getIdPrototipo(), 
+			this.getFile().getOriginal()
+		);
+		return regresar;
+	} // toPrototipoArchivo
+	
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoad();
-	/*	else
+		/*else
 		  if(event.getTab().getTitle().equals("Importar")) 
 				this.doLoadFiles();*/
 	}	// doTabChange	
@@ -172,10 +199,9 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doLoadFiles	*/
 
   public String doCancelar() {   
-//  	JsfBase.setFlashAttribute("idClienteDeuda", this.idClienteDeuda);
+		//JsfBase.setFlashAttribute("idClienteDeuda", this.idClienteDeuda);
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
-	
 	
 	public String doAceptar() {
 		String regresar        = null;
