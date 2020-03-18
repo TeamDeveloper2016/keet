@@ -7,22 +7,22 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{keetCatalogosProyectosAccion.attrs.noViviendasAccion} al catálogo de proyectos" />
+	<ui:param name="titulo" value="#{keetCatalogosProyectosAccion.attrs.nombreAccion} al catálogo de proyectos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:noViviendas': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\etapa': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:etapa': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idCliente': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idTipoObra': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idDesarrollo': {validaciones: 'requerido', mascara: 'libre'}
 			};
 
 			$(document).ready(function () {
-				janal.readingMode('#{keetCatalogosProyectosAccion.attrs.noViviendasAccion}');
+				janal.readingMode('#{keetCatalogosProyectosAccion.attrs.nombreAccion}');
 			});
-		</script>   
+		</script>
 	</ui:define>
 	<ui:define name="contenido">
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -31,17 +31,20 @@
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-96, janal-wid-col-38">		
-                <p:outputLabel for="clave" value="Codigo:"/>
-								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.clave}" />			
-								<p:outputLabel for="noViviendas" value="No.	 viviendas"/>
-                <p:inputText id="noViviendas" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.noViviendas}" />
-                <p:outputLabel for="etapa" value="Descripción:"/>
-                <p:inputText id="etapa" styleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosProyectosAccion.proyecto.etapa}" />								
+                <p:outputLabel for="clave" value="Clave:"/>
+								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.clave}" />											
+                <p:outputLabel for="etapa" value="Etapa:"/>
+                <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.etapa}" />								
+								<p:outputLabel for="noViviendas" value="No. viviendas"/>
+                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosProyectosAccion.proyecto.noViviendas}"/>
                 <p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" value="#{keetCatalogosProyectosAccion.proyecto.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="RFC">
+										<h:outputText value="#{item.rfc}"/>
 									</p:column>   
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.razonSocial}"/>
@@ -56,17 +59,19 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="idTipoObra" value="Tipo de obra:"/>
                 <p:selectOneMenu id="idTipoObra" value="#{keetCatalogosProyectosAccion.proyecto.ikTipoObra}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.tipoObras}"  var="element" itemValue="#{element}" itemLabel="#{element.grupo} - #{element.descripcion}"/>
-									<p:column headerText="Grupo">
-										<h:outputText value="#{item.grupo}"/>
-									</p:column>      
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.descripcion}"/>
-									</p:column>      
+									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.tipoObras}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.tipoObra} - #{element.tipoDivision}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Tipo obra">
+										<h:outputText value="#{item.tipoObra}"/>
+									</p:column> 
+									<p:column headerText="Tipo división">
+										<h:outputText value="#{item.tipoDivision}"/>
+									</p:column>     
 								</p:selectOneMenu>
               </p:panelGrid>
-						</p:tab>				
-													
+						</p:tab>																	
 					</p:tabView>
 				</div>
 			</div>
