@@ -147,13 +147,14 @@ public List<UISelectEntity> doCompleteCliente(String codigo) {
 			sb.append("(tc_keet_prototipos.nombre like '%").append(this.attrs.get("nombre")).append("%') and ");
     if(provedores!= null && cliente!= null && provedores.indexOf(cliente)>= 0) 
 			sb.append("(tc_mantic_clientes.razon_social like '%").append(provedores.get(provedores.indexOf(cliente)).toString("razonSocial")).append("%') and ");
-		else
+		else{
  		  if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
 			  sb.append("(tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");
-    /*if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("sucursales", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());*/
+		} // else
+    if(!Cadena.isVacio(this.attrs.get("metrosMenor")))
+			sb.append("tc_keet_prototipos.metros2 < ").append(this.attrs.get("metrosMenor")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("metrosMayor")))
+			sb.append("tc_keet_prototipos.metros2 > ").append(this.attrs.get("metrosMayor")).append(" and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
