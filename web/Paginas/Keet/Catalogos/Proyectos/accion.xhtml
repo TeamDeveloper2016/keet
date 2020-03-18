@@ -37,7 +37,7 @@
                 <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.etapa}" />								
 								<p:outputLabel for="noViviendas" value="No. viviendas"/>
                 <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.noViviendas}"/>
-                <p:outputLabel for="idCliente" value="Cliente:"/>
+                <!--p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
@@ -49,7 +49,7 @@
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
-								</p:selectOneMenu>
+								</p:selectOneMenu-->
 								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
                 <p:selectOneMenu id="idDesarrollo" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
@@ -71,7 +71,60 @@
 									</p:column>     
 								</p:selectOneMenu>
               </p:panelGrid>
-						</p:tab>																	
+						</p:tab>		
+						<p:tab title="Siembra" >	
+							<p:outputLabel for="idCliente" value="Cliente:"/>
+							<p:selectOneMenu id="idCliente" value="#{keetCatalogosProyectosAccion.proyecto.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+								<p:ajax event="change" listener="#{keetCatalogosProyectosAccion.doLoadPrototipos()}" process="@this" update="tablaLotes" />
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.razonSocial}"/>
+								</p:column>   
+							</p:selectOneMenu>
+							<p:outputLabel value="*Selecciona el cliente para cargar sus prototipos"/>
+							<p:spacer/>
+							<p:dataTable id="tablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosProyectosAccion.proyecto.lotes}" rows="6" paginator="false" reflow="true" rowKey="#{lote.key}" emptyMessage=" " styleClass="paginated">																					
+								<p:column headerText="Codigo">										
+									<p:inputText value="#{lote.clave}" styleClass="janal-wid-100-txt"/>
+								</p:column>	
+								<p:column headerText="Prototipo" class="janal-wid-30">										
+									<p:selectOneMenu value="#{lote.ikPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
+										<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+										<p:column headerText="Nombre">
+										  <h:outputText value="#{item.nombre}"/>
+									  </p:column>  
+									</p:selectOneMenu>			
+								</p:column>	                  
+								<p:column headerText="Manzana">										
+									<p:inputText value="#{lote.manzana}" styleClass="janal-wid-100-txt"/>
+								</p:column>
+                <p:column headerText="Lote">										
+									<p:inputText value="#{lote.lote}" styleClass="janal-wid-100-txt"/>
+								</p:column>	
+                <p:column headerText="Tipo de fachada" class="janal-wid-30">										
+									<p:selectOneMenu value="#{lote.ikFachada}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
+										<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.fachadas}"  var="element" itemValue="#{element}" itemLabel="#{element.grupo} - #{element.nombre}"/>
+										<p:column headerText="Nombre">
+										  <h:outputText value="#{item.nombre}"/>
+									  </p:column>  
+									</p:selectOneMenu>			
+								</p:column>	                  
+								<p:column headerText="Atributos">										
+									<p:inputText value="#{lote.atributos}" styleClass="janal-wid-100-txt"/>
+								</p:column>								
+								<p:column style="width:35px;text-align: center">
+									<p:commandButton update="tablaLotes" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosProyectosAccion.proyecto.doRemoveLote}">
+										<f:setPropertyActionListener value="#{lote}" target="#{keetCatalogosProyectosAccion.proyecto.LoteSeleccion}" />
+									</p:commandButton>
+								</p:column>
+								<f:facet name="footer">
+									<p:commandButton actionListener="#{keetCatalogosProyectosAccion.proyecto.doAddLote}" process="@this tablaLotes" update="tablaLotes" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+								</f:facet>
+							</p:dataTable>	
+						</p:tab>	
 					</p:tabView>
 				</div>
 			</div>
