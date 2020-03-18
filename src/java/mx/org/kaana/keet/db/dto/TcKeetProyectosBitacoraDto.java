@@ -1,13 +1,9 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

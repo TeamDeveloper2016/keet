@@ -23,8 +23,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_keet_proyectos_prespuestos")
-public class TcKeetProyectosPrespuestosDto implements IBaseDto, Serializable {
+@Table(name="tc_keet_proyectos_presupuestos")
+public class TcKeetProyectosPresupuestosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="archivo")
@@ -54,16 +54,16 @@ public class TcKeetProyectosPrespuestosDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcKeetProyectosPrespuestosDto() {
+  public TcKeetProyectosPresupuestosDto() {
     this(new Long(-1L));
   }
 
-  public TcKeetProyectosPrespuestosDto(Long key) {
+  public TcKeetProyectosPresupuestosDto(Long key) {
     this(null, null, null, null, null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKeetProyectosPrespuestosDto(String archivo, String ruta, Long tamanio, Long idUsuarios, Long idProyecto, Long idTipoArchivo, String observaciones, Long idProyectoPresupuesto, Long idTipoPresupuesto, String alias, String nombre) {
+  public TcKeetProyectosPresupuestosDto(String archivo, String ruta, Long tamanio, Long idUsuarios, Long idProyecto, Long idTipoArchivo, String observaciones, Long idProyectoPresupuesto, Long idTipoPresupuesto, String alias, String nombre) {
     setArchivo(archivo);
     setRuta(ruta);
     setTamanio(tamanio);
@@ -266,7 +266,7 @@ public class TcKeetProyectosPrespuestosDto implements IBaseDto, Serializable {
 
   @Override
   public Class toHbmClass() {
-    return TcKeetProyectosPrespuestosDto.class;
+    return TcKeetProyectosPresupuestosDto.class;
   }
 
   @Override
@@ -282,7 +282,7 @@ public class TcKeetProyectosPrespuestosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKeetProyectosPrespuestosDto other = (TcKeetProyectosPrespuestosDto) obj;
+    final TcKeetProyectosPresupuestosDto other = (TcKeetProyectosPresupuestosDto) obj;
     if (getIdProyectoPresupuesto() != other.idProyectoPresupuesto && (getIdProyectoPresupuesto() == null || !getIdProyectoPresupuesto().equals(other.idProyectoPresupuesto))) {
       return false;
     }
@@ -295,7 +295,4 @@ public class TcKeetProyectosPrespuestosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdProyectoPresupuesto() != null ? getIdProyectoPresupuesto().hashCode() : 0);
     return hash;
   }
-
 }
-
-

@@ -267,7 +267,4 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdProyectoLote() != null ? getIdProyectoLote().hashCode() : 0);
     return hash;
   }
-
 }
-
-
