@@ -36,20 +36,7 @@
                 <p:outputLabel for="etapa" value="Etapa:"/>
                 <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.etapa}" />								
 								<p:outputLabel for="noViviendas" value="No. viviendas"/>
-                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.noViviendas}"/>
-                <!--p:outputLabel for="idCliente" value="Cliente:"/>
-								<p:selectOneMenu id="idCliente" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="RFC">
-										<h:outputText value="#{item.rfc}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.razonSocial}"/>
-									</p:column>   
-								</p:selectOneMenu-->
+                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.noViviendas}"/>                
 								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
                 <p:selectOneMenu id="idDesarrollo" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
@@ -79,6 +66,9 @@
 								<p:ajax event="change" listener="#{keetCatalogosProyectosAccion.doLoadPrototipos()}" process="@this" update="tablaLotes" />
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="RFC">
+									<h:outputText value="#{item.rfc}"/>
 								</p:column>   
 								<p:column headerText="Nombre">
 									<h:outputText value="#{item.razonSocial}"/>
