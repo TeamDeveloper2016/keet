@@ -107,10 +107,10 @@ public class Transaccion  extends IBaseTnx{
         this.persona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
         idPersona = DaoFactory.getInstance().insert(sesion, this.persona.getPersona());
 				if(registraPersonaEmpresa(sesion, idPersona)){
-					if (registraPersonasBeneficiarios(sesion, idPersona)) {
+					if (registraPersonasBeneficiarios(sesion, this.persona.getEmpresaPersona().getIdEmpresaPersona())) {
 						if (registraPersonasDomicilios(sesion, idPersona)) {
 							if(registraPersonasTipoContacto(sesion, idPersona)){
-								regresar= registraPersonasBancos(sesion, idPersona);
+								regresar= registraPersonasBancos(sesion, this.persona.getEmpresaPersona().getIdEmpresaPersona());
 								if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
 									regresar= registrarProveedor(sesion, idPersona);
 								if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
@@ -134,9 +134,9 @@ public class Transaccion  extends IBaseTnx{
       idPersona= this.persona.getIdPersona();
 			this.cuenta= this.persona.getPersona().getCuenta();
       if (registraPersonasDomicilios(sesion, idPersona)) {
-				if (registraPersonasBeneficiarios(sesion, idPersona)) {
+				if (registraPersonasBeneficiarios(sesion, this.persona.getEmpresaPersona().getIdEmpresaPersona())) {
 					if (registraPersonasTipoContacto(sesion, idPersona)) {
-						if (registraPersonasBancos(sesion, idPersona)) {
+						if (registraPersonasBancos(sesion, this.persona.getEmpresaPersona().getIdEmpresaPersona())) {
 							if (actualizaPuestoPersona(sesion, idPersona)) {								
 								regresar = DaoFactory.getInstance().update(sesion, this.persona.getPersona()) >= 1L;
 								if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
@@ -278,7 +278,7 @@ public class Transaccion  extends IBaseTnx{
     return regresar;
   } // registraClientesDomicilios
 	
-	private boolean registraPersonasBeneficiarios(Session sesion, Long idPersona) throws Exception {
+	private boolean registraPersonasBeneficiarios(Session sesion, Long idEmpresaPersona) throws Exception {
     TcKeetPersonasBeneficiariosDto dto= null;
     ESql sqlAccion  = null;
     int count       = 0;
@@ -286,7 +286,7 @@ public class Transaccion  extends IBaseTnx{
     boolean regresar= false;
     try {			
       for (PersonaBeneficiario personaBeneficiario : this.persona.getPersonasBeneficiarios()) {								
-        personaBeneficiario.setIdPersona(idPersona);
+        personaBeneficiario.setIdEmpresaPersona(idEmpresaPersona);
         personaBeneficiario.setIdUsuario(JsfBase.getIdUsuario());				
         dto = (TcKeetPersonasBeneficiariosDto) personaBeneficiario;
         sqlAccion = personaBeneficiario.getSqlAccion();
@@ -348,7 +348,7 @@ public class Transaccion  extends IBaseTnx{
     return regresar;
   } // registraClientesTipoContacto
 	
-  private boolean registraPersonasBancos(Session sesion, Long idPersona) throws Exception {
+  private boolean registraPersonasBancos(Session sesion, Long idEmpresaPersona) throws Exception {
     TcKeetPersonasBancosDto dto= null;
     ESql sqlAccion             = null;    
     boolean validate           = false;
@@ -363,7 +363,7 @@ public class Transaccion  extends IBaseTnx{
 					countPrincipal++;
 				if(countPrincipal== 0 && this.persona.getPersonasBancos().size()-1 == count)
 					personaBanco.setIdPrincipal(1L);
-        personaBanco.setIdPersona(idPersona);
+        personaBanco.setIdEmpresaPersona(idEmpresaPersona);
         personaBanco.setIdUsuario(JsfBase.getIdUsuario());
         dto = (TcKeetPersonasBancosDto) personaBanco;
         sqlAccion = personaBanco.getSqlAccion();

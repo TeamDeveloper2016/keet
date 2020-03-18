@@ -16,7 +16,7 @@ import mx.org.kaana.mantic.catalogos.personas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 
-public class RegistroPersona implements Serializable{
+public class RegistroPersona implements Serializable {
 
 	private static final long serialVersionUID= -8922183204418674058L;
 	private Long idPersona;

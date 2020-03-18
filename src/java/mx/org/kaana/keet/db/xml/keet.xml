@@ -785,7 +785,7 @@
         from      
           tc_keet_personas_bancos
         where      
-          id_persona = {idPersona} and cuenta = '{cuenta}' and id_banco = {idBanco}
+          id_empresa_persona = {idEmpresaPersona} and cuenta = '{cuenta}' and id_banco = {idBanco}
       </select>
 			<select id="maximo">
         select      
@@ -794,7 +794,7 @@
           tc_keet_personas_bancos
       </select>
 			<delete id="rows">
-				delete from tc_keet_personas_bancos where id_persona = {idPersona}
+				delete from tc_keet_personas_bancos where id_empresa_persona = {idEmpresaPersona}
 			</delete>
     </unit>	
     <unit id="TcKeetPersonasBeneficiariosDto">
@@ -821,7 +821,7 @@
           tc_keet_personas_beneficiarios
       </select>
 			<delete id="rows">
-				delete from tc_keet_personas_beneficiarios where id_persona = {idPersona}
+				delete from tc_keet_personas_beneficiarios where id_empresa_persona = {idEmpresaPersona}
 			</delete>
     </unit>		
     <unit id="TcKeetPersonasConceptosDto">

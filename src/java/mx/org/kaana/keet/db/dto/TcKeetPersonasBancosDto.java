@@ -27,8 +27,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcKeetPersonasBancosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="id_persona")
-  private Long idPersona;
+  @Column (name="id_empresa_persona")
+  private Long idEmpresaPersona;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="cuenta")
@@ -57,8 +57,8 @@ public class TcKeetPersonasBancosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetPersonasBancosDto(Long idPersona, Long idUsuario, String cuenta, Long idPrincipal, String observaciones, Long idPersonaBanco, Long idBanco, String clabe) {
-    setIdPersona(idPersona);
+  public TcKeetPersonasBancosDto(Long idEmpresaPersona, Long idUsuario, String cuenta, Long idPrincipal, String observaciones, Long idPersonaBanco, Long idBanco, String clabe) {
+    setIdEmpresaPersona(idEmpresaPersona);
     setIdUsuario(idUsuario);
     setCuenta(cuenta);
     setIdPrincipal(idPrincipal);
@@ -68,15 +68,15 @@ public class TcKeetPersonasBancosDto implements IBaseDto, Serializable {
     setClabe(clabe);
     setRegistro(LocalDateTime.now());
   }
+
+	public Long getIdEmpresaPersona() {
+		return idEmpresaPersona;
+	}
+
+	public void setIdEmpresaPersona(Long idEmpresaPersona) {
+		this.idEmpresaPersona=idEmpresaPersona;
+	}
 	
-  public void setIdPersona(Long idPersona) {
-    this.idPersona = idPersona;
-  }
-
-  public Long getIdPersona() {
-    return idPersona;
-  }
-
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
@@ -156,7 +156,7 @@ public class TcKeetPersonasBancosDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdPersona());
+		regresar.append(getIdEmpresaPersona());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
@@ -180,7 +180,7 @@ public class TcKeetPersonasBancosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idPersona", getIdPersona());
+		regresar.put("idPersona", getIdEmpresaPersona());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("cuenta", getCuenta());
 		regresar.put("idPrincipal", getIdPrincipal());
@@ -195,7 +195,7 @@ public class TcKeetPersonasBancosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdPersona(), getIdUsuario(), getCuenta(), getIdPrincipal(), getObservaciones(), getIdPersonaBanco(), getIdBanco(), getClabe(), getRegistro()
+    getIdEmpresaPersona(), getIdUsuario(), getCuenta(), getIdPrincipal(), getObservaciones(), getIdPersonaBanco(), getIdBanco(), getClabe(), getRegistro()
     };
     return regresar;
   }

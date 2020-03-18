@@ -942,7 +942,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("proveedoresGeneral", proveedores);
 			eaccion= (EAccion) this.attrs.get("accion");
 			if(eaccion.equals(EAccion.MODIFICAR)){
-				motor= new MotorBusqueda(this.registroPersona.getIdPersona());
+				motor= new MotorBusqueda(this.registroPersona.getIdPersona(), this.registroPersona.getEmpresaPersona().getIdEmpresaPersona());
 				idProveedor= motor.toProveedorAgente();
 				for(Entity proveedor: proveedores){
 					if(proveedor.getKey().equals(idProveedor))
@@ -977,7 +977,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("clientes", clientes);
 			eaccion= (EAccion) this.attrs.get("accion");
 			if(eaccion.equals(EAccion.MODIFICAR)){
-				motor= new MotorBusqueda(this.registroPersona.getIdPersona());
+				motor= new MotorBusqueda(this.registroPersona.getIdPersona(), this.registroPersona.getEmpresaPersona().getIdEmpresaPersona());
 				idCliente= motor.toProveedorAgente();
 				for(Entity cliente: clientes){
 					if(cliente.getKey().equals(idCliente))

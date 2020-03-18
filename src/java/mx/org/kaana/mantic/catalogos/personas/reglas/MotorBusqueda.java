@@ -24,9 +24,15 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	private static final long serialVersionUID= 5366287658013154045L;	
 	private static final Long PRINCIPAL       = 1L;
 	private Long idPersona;
+	private Long idEmpresaPersona;
 
 	public MotorBusqueda(Long idPersona) {
-		this.idPersona = idPersona;
+	  this(idPersona, -1L);
+	}
+	
+	public MotorBusqueda(Long idPersona, Long idEmpresaPersona) {
+		this.idPersona       = idPersona;
+		this.idEmpresaPersona= idEmpresaPersona;
 	}
 
 	public TcManticPersonasDto toPersona() throws Exception {
@@ -157,6 +163,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
 			regresar= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);			
+			if(regresar!= null)
+			this.idEmpresaPersona= regresar.getIdEmpresaPersona();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -172,7 +180,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		Map<String, Object>params         = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
+			params.put(Constantes.SQL_CONDICION, "id_empresa_persona=" + this.idEmpresaPersona);
 			regresar= DaoFactory.getInstance().toEntitySet(PersonaBeneficiario.class, "TcKeetPersonasBeneficiariosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);			
 		} // try
 		catch (Exception e) {			
@@ -189,7 +197,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		Map<String, Object>params  = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
+			params.put(Constantes.SQL_CONDICION, "id_empresa_persona=" + this.idEmpresaPersona);
 			regresar= DaoFactory.getInstance().toEntitySet(PersonaBanco.class, "TcKeetPersonasBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			if(!regresar.isEmpty()){
 				for(PersonaBanco personaBanco: regresar){
