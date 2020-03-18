@@ -315,6 +315,23 @@
         where 
           {condicion} 
       </select>
+      <select id="toProyectos">
+        select 
+					-1 id_proyecto_archivo,
+					id_prototipo,
+					id_plano,
+					id_tipo_archivo,
+					nombre,
+					archivo,
+					ruta,
+					alias,
+					tamanio,
+					observaciones
+				 from
+					 tc_keet_prototipos_archivos
+				where
+					id_prototipo= {idPrototipo}
+      </select>
       <select id="identically">
         select      
           *
@@ -857,7 +874,7 @@
         from      
           tc_keet_proyectos_archivos
         where      
-          id_tipo_archivo = {idTipoArchivo} and id_contrato_proyecto = {idContratoProyecto} and nombre = '{nombre}'
+          id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
       </select>
     </unit>		
     <unit id="TcKeetProyectosBitacoraDto">
@@ -911,7 +928,7 @@
         from      
           tc_keet_proyectos_lotes
         where      
-          manzana = '{manzana}' and lote = {lote} and id_contrato_proyecto = {idContratoProyecto}
+          manzana = '{manzana}' and lote = {lote}
       </select>
     </unit>		
     <unit id="TcKeetTiposConceptosDto">
