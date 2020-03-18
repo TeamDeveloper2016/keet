@@ -155,8 +155,71 @@
 				  tc_keet_divisiones.nombre, tc_keet_tipos_obras.nombre
 			</select>	
 		</unit>	
-    <unit id="VistaPlanosEspecialidaDto">
-
-		</unit>
+		<unit id="VistaProyectosArchivosDto">
+			<select id="getImportados">
+				select
+					tc_keet_proyectos_archivos.id_proyecto_archivo id_key,
+					tc_keet_proyectos_archivos.nombre,
+					tc_keet_proyectos_archivos.archivo,
+					tc_keet_proyectos_archivos.ruta,
+					tc_keet_proyectos_archivos.alias,
+					tc_keet_proyectos_archivos.observaciones,
+					tc_keet_proyectos_archivos.registro,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
+					tc_keet_proyectos_archivos.id_tipo_archivo
+				from
+					tc_keet_proyectos_archivos
+				inner join 
+					tc_janal_usuarios on tc_keet_proyectos_archivos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  tc_keet_proyectos_archivos.id_proyecto= {idProyecto}
+			</select>
+		</unit>		
+		<unit id="VistaProyectosGeneradoresDto">
+			<select id="getImportados">
+				select
+					tc_keet_proyectos_generadores.id_proyecto_generador id_key,
+					tc_keet_proyectos_generadores.nombre,
+					tc_keet_proyectos_generadores.archivo,
+					tc_keet_proyectos_generadores.ruta,
+					tc_keet_proyectos_generadores.alias,
+					tc_keet_proyectos_generadores.observaciones,
+					tc_keet_proyectos_generadores.registro,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
+					tc_keet_proyectos_generadores.id_tipo_archivo
+				from
+					tc_keet_proyectos_generadores
+				inner join 
+					tc_janal_usuarios on tc_keet_proyectos_generadores.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+				  tc_keet_proyectos_generadores.id_proyecto= {idProyecto}
+			</select>
+		</unit>		
+		<unit id="VistaProyectosPresupuestosDto">
+			<select id="getImportados">
+				select
+					tc_keet_proyectos_presupuestos.id_proyecto_presupuesto id_key,
+					tc_keet_proyectos_presupuestos.nombre,
+					tc_keet_proyectos_presupuestos.archivo,
+					tc_keet_proyectos_presupuestos.ruta,
+					tc_keet_proyectos_presupuestos.alias,
+					tc_keet_proyectos_presupuestos.observaciones,
+					tc_keet_proyectos_presupuestos.registro,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
+					tc_keet_proyectos_presupuestos.id_tipo_archivo
+				from
+					tc_keet_proyectos_presupuestos
+				inner join 
+					tc_janal_usuarios on tc_keet_proyectos_presupuestos.id_usuarios = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  tc_keet_proyectos_presupuestos.id_proyecto= {idProyecto}
+			</select>
+		</unit>		
 	</dml>    
 </process>
