@@ -77,36 +77,36 @@
 							<p:outputLabel value="*Selecciona el cliente para cargar sus prototipos"/>
 							<p:spacer/>
 							<p:dataTable id="tablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.lotes}" rows="6" paginator="false" reflow="true" rowKey="#{lote.key}" emptyMessage=" " styleClass="paginated">																					
-								<p:column headerText="Codigo">										
-									<p:inputText value="#{lote.clave}" styleClass="janal-wid-100-txt"/>
+								<p:column  headerText="Codigo">										
+									<p:inputText rendered="#{lote.mostar}" value="#{lote.clave}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
-								<p:column headerText="Prototipo" class="janal-wid-30">										
-									<p:selectOneMenu value="#{lote.ikPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
+								<p:column  headerText="Prototipo" class="janal-wid-30">										
+									<p:selectOneMenu rendered="#{lote.mostar}" value="#{lote.ikPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
 										<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.prototipos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 										<p:column headerText="Nombre">
 										  <h:outputText value="#{item.nombre}"/>
 									  </p:column>  
 									</p:selectOneMenu>			
 								</p:column>	                  
-								<p:column headerText="Manzana">										
-									<p:inputText value="#{lote.manzana}" styleClass="janal-wid-100-txt"/>
+								<p:column  headerText="Manzana">										
+									<p:inputText rendered="#{lote.mostar}" value="#{lote.manzana}" styleClass="janal-wid-100-txt"/>
 								</p:column>
-                <p:column headerText="Lote">										
-									<p:inputText value="#{lote.lote}" styleClass="janal-wid-100-txt"/>
+                <p:column  headerText="Lote">										
+									<p:inputText rendered="#{lote.mostar}" value="#{lote.lote}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
-                <p:column headerText="Tipo de fachada" class="janal-wid-30">										
-									<p:selectOneMenu value="#{lote.ikFachada}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
+                <p:column  headerText="Tipo de fachada" class="janal-wid-30">										
+									<p:selectOneMenu rendered="#{lote.mostar}" value="#{lote.ikFachada}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
 										<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.fachadas}"  var="element" itemValue="#{element}" itemLabel="#{element.grupo} - #{element.nombre}"/>
 										<p:column headerText="Nombre">
 										  <h:outputText value="#{item.nombre}"/>
 									  </p:column>  
 									</p:selectOneMenu>			
 								</p:column>	                  
-								<p:column headerText="Atributos" >										
-									<p:inputText value="#{lote.atributos}" styleClass="janal-wid-100-txt"/>
+								<p:column  headerText="Atributos" >										
+									<p:inputText rendered="#{lote.mostar}" value="#{lote.atributos}" styleClass="janal-wid-100-txt"/>
 								</p:column>								
-								<p:column style="width:35px;text-align: center" >
-									<p:commandButton update="tablaLotes" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosProyectosAccion.proyecto.proyecto.doRemoveLote}">
+								<p:column  style="width:35px;text-align: center" >
+									<p:commandButton rendered="#{lote.mostar}" update="tablaLotes" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosProyectosAccion.proyecto.proyecto.doRemoveLote}">
 										<f:setPropertyActionListener value="#{lote}" target="#{keetCatalogosProyectosAccion.proyecto.proyecto.loteSeleccion}" />
 									</p:commandButton>
 								</p:column>
