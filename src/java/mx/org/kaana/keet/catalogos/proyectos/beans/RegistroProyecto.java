@@ -44,6 +44,7 @@ public class RegistroProyecto implements Serializable {
 		try {
 			motor= new MotorBusqueda(idProyecto);
 			this.proyecto= motor.toProyecto();
+			this.proyecto.setLotes(motor.toLotes());
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);

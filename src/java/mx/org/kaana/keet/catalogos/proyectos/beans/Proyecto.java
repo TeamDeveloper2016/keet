@@ -2,6 +2,7 @@ package mx.org.kaana.keet.catalogos.proyectos.beans;
 
 import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -12,7 +13,8 @@ public class Proyecto extends TcKeetProyectosDto{
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikTipoObra;
-   private List<Lote> lotes;
+  private List<Lote> lotes;
+	private Lote loteSeleccion;
 	 
 	public Proyecto() {
 		this(new UISelectEntity(-1L), new UISelectEntity(-1L), new UISelectEntity(-1L));
@@ -63,11 +65,18 @@ public class Proyecto extends TcKeetProyectosDto{
 	public void setLotes(List<Lote> lotes) {
 		this.lotes = lotes;
 	}
+
+	public Lote getLoteSeleccion() {
+		return loteSeleccion;
+	}
+
+	public void setLoteSeleccion(Lote loteSeleccion) {
+		this.loteSeleccion = loteSeleccion;
+	}
 	
   public boolean addLote(Lote lote) throws Exception{
 		boolean regresar= false;
 		try {
-			lote.setAccion(ESql.INSERT);
 			this.lotes.add(lote);
 			regresar= true;
 		} // try
@@ -77,16 +86,37 @@ public class Proyecto extends TcKeetProyectosDto{
 		return regresar;
 	} // addLote
 	
-	public boolean removeLote(Lote lote) throws Exception{
+	public boolean doRemoveLote() throws Exception{
 		boolean regresar= false;
 		try {
-		  if (this.lotes.contains(lote)){
-				if( (this.lotes.get(this.lotes.indexOf(lote)).getAccion().equals(ESql.UPDATE)))
-				  this.lotes.get(this.lotes.indexOf(lote)).setAccion(ESql.DELETE);
+		  if (this.lotes.contains(loteSeleccion)){
+				if( (this.lotes.get(this.lotes.indexOf(loteSeleccion)).getAccion().equals(ESql.UPDATE)))
+				  this.lotes.get(this.lotes.indexOf(loteSeleccion)).setAccion(ESql.DELETE);
 				else
-					this.lotes.remove(this.lotes.indexOf(lote));
+					this.lotes.remove(this.lotes.indexOf(loteSeleccion));
 				regresar= true;
 			} // if
+		} // try
+		catch(Exception e){
+			throw e;
+		} // catch
+		return regresar;
+	} // removeLote	
+	
+	public void doAddLote() throws Exception{
+		this.addLote(new Lote(ESql.INSERT, (this.lotes.size()+1)*(-1L)));
+	}
+	
+	public boolean validaPrototipos(List<UISelectEntity> uISelectEntitys) throws Exception{
+		boolean regresar= true;
+		try {
+		  for(Lote item: this.lotes){
+				if(!uISelectEntitys.contains(new UISelectEntity(new Entity(item.getIdPrototipo())))){
+					this.loteSeleccion= item;
+					doRemoveLote();
+					regresar= false;
+				} // if
+			} // for
 		} // try
 		catch(Exception e){
 			throw e;

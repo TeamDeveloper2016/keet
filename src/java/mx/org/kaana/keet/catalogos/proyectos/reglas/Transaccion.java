@@ -5,9 +5,12 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Lote;
 import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.hibernate.Session;
@@ -32,11 +35,19 @@ public class Transaccion extends IBaseTnx {
 					this.proyecto.getProyecto().setOrden(siguiente.getOrden());
 					this.proyecto.getProyecto().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
 					regresar= DaoFactory.getInstance().insert(sesion, this.proyecto.getProyecto())>= 1L;
+					for(Lote item:this.proyecto.getProyecto().getLotes())
+						actualizarLote(sesion, item);
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.proyecto.getProyecto())>= 1L;
+					for(Lote item:this.proyecto.getProyecto().getLotes())
+						actualizarLote(sesion, item);
 					break;				
 				case ELIMINAR:
+					for(Lote item:this.proyecto.getProyecto().getLotes()){
+						item.setAccion(ESql.DELETE);
+						actualizarLote(sesion, item);
+					} // for
 					regresar= DaoFactory.getInstance().delete(sesion, this.proyecto.getProyecto())>= 1L;
 					break;
 				/*case SUBIR:
@@ -74,4 +85,25 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toSiguiente
+	
+	private void actualizarLote(Session sesion, Lote item) throws Exception {
+		try {
+			switch(item.getAccion()){
+				case INSERT:
+          item.setIdProyectoLote(-1L);
+					item.setIdProyecto(this.proyecto.getProyecto().getIdProyecto());
+					item.setIdUsuario(JsfBase.getIdUsuario());
+					DaoFactory.getInstance().insert(sesion, item);
+					break;
+				case UPDATE:
+					DaoFactory.getInstance().update(sesion, item);
+				case DELETE:
+					DaoFactory.getInstance().delete(sesion, item);
+					break;
+			} // switch
+		} // try
+		catch (Exception e) {			
+			throw new Exception(e);
+		} // catch		
+	} // actualizarConstructivo
 }

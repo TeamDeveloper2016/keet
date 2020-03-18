@@ -14,13 +14,14 @@ public class Lote extends TcKeetProyectosLotesDto{
 
 
 	public Lote() {
-		this(ESql.UPDATE);
+		this(ESql.UPDATE, -1L);
 	}
-	
-	public Lote(ESql accion) {
-		super();
+
+	public Lote(ESql accion, Long key) {
+		super(key);
 		this.accion = accion;
 	}
+	
 	
 	public UISelectEntity getIkPrototipo() {
 		return ikPrototipo;
@@ -51,7 +52,11 @@ public class Lote extends TcKeetProyectosLotesDto{
 		this.accion = accion;
 	}
 
-	@Override
+	public boolean isMostar() {
+		return !this.accion.equals(ESql.DELETE);
+	}
+
+/*	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
       return false;
@@ -60,13 +65,14 @@ public class Lote extends TcKeetProyectosLotesDto{
       return false;
     }
     final Lote other = (Lote) obj;
+		//if (getIdProyectoLote() != other.idProyectoLote && (getIdProyectoLote() == null || !getIdProyectoLote().equals(other.idProyectoLote)))
     if ((getManzana() != other.getManzana() && (getManzana() == null || !getManzana().equals(other.getManzana())))
 		&&
 		(!Objects.equals(getLote(), other.getLote()) && (getLote() == null || !getLote().equals(other.getLote())))){
       return false;
     }
     return true;
-	}
+	}*/
 
 	@Override
 	public int hashCode() {

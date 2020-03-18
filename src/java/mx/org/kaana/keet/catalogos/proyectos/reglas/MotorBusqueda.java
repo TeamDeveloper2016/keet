@@ -2,8 +2,12 @@ package mx.org.kaana.keet.catalogos.proyectos.reglas;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Lote;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Proyecto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -38,4 +42,23 @@ public class MotorBusqueda implements Serializable{
 		} // finally
 		return regresar;
 	} // toPrototipo	
+	
+	public List<Lote> toLotes() throws Exception{
+		List<Lote> regresar= null;
+		Map<String, Object>params         = null;
+		try {
+		  params= new HashMap<>();
+			params.put("idProyecto", this.idProyecto);
+			regresar= DaoFactory.getInstance().toEntitySet(Lote.class, "TcKeetProyectosLotesDto", "byProyecto", params);			
+			for(Lote item: regresar)
+				item.setAccion(ESql.UPDATE);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toConstructivos
 }
