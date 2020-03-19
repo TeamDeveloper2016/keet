@@ -199,13 +199,20 @@
 					tc_keet_proyectos_generadores.observaciones,
 					tc_keet_proyectos_generadores.registro,
 					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
-					tc_keet_proyectos_generadores.id_tipo_archivo
+					tc_keet_proyectos_generadores.id_tipo_archivo,
+					tc_keet_tipos_generadores.clave clave_generador,
+					tc_keet_tipos_generadores.nombre nombre_generador,
+					tc_keet_estaciones.nombre nombre_estacion
 				from
 					tc_keet_proyectos_generadores
 				inner join 
 					tc_janal_usuarios on tc_keet_proyectos_generadores.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_keet_tipos_generadores on tc_keet_proyectos_generadores.id_tipo_generador = tc_keet_tipos_generadores.id_tipo_generador
+				inner join 
+					tc_keet_estaciones on tc_keet_tipos_generadores.id_estacion = tc_keet_estaciones.id_estacion
 				where
 				  tc_keet_proyectos_generadores.id_proyecto= {idProyecto}
 			</select>
