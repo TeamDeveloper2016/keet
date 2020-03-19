@@ -32,8 +32,8 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   private String clave;
   @Column (name="id_puesto")
   private Long idPuesto;
-  @Column (name="contrato")
-  private String contrato;
+  @Column (name="idContrato")
+  private Long idContrato;
   @Column (name="factor_infonavit")
   private Double factorInfonavit;
   @Column (name="diario_imss")
@@ -82,10 +82,10 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, String contrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate fechaContratacion, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate fechaIngreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss) {
+  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, Long idContrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate fechaContratacion, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate fechaIngreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss) {
     setClave(clave);
     setIdPuesto(idPuesto);
-    setContrato(contrato);
+    setIdContrato(idContrato);
     setFactorInfonavit(factorInfonavit);
     setDiarioImss(diarioImss);
     setIdContratista(idContratista);
@@ -122,13 +122,13 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     return idPuesto;
   }
 
-  public void setContrato(String contrato) {
-    this.contrato = contrato;
-  }
+	public Long getIdContrato() {
+		return idContrato;
+	}
 
-  public String getContrato() {
-    return contrato;
-  }
+	public void setIdContrato(Long idContrato) {
+		this.idContrato=idContrato;
+	}
 
   public void setFactorInfonavit(Double factorInfonavit) {
     this.factorInfonavit = factorInfonavit;
@@ -293,7 +293,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPuesto());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getContrato());
+		regresar.append(getIdContrato());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFactorInfonavit());
 		regresar.append(Constantes.SEPARADOR);
@@ -339,7 +339,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("clave", getClave());
 		regresar.put("idPuesto", getIdPuesto());
-		regresar.put("contrato", getContrato());
+		regresar.put("idContrato", getIdContrato());
 		regresar.put("factorInfonavit", getFactorInfonavit());
 		regresar.put("diarioImss", getDiarioImss());
 		regresar.put("idContratista", getIdContratista());
@@ -364,7 +364,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getIdPuesto(), getContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getFechaContratacion(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getFechaIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss()
+    getClave(), getIdPuesto(), getIdContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getFechaContratacion(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getFechaIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss()
     };
     return regresar;
   }

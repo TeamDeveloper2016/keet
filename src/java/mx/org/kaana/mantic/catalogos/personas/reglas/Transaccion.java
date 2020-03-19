@@ -209,7 +209,7 @@ public class Transaccion  extends IBaseTnx{
 			if(empresaPersonal!= null && empresaPersonal.isValid()){						
 				empresaPersonal.setIdActivo(this.persona.getEmpresaPersona().getIdActivo());
 				empresaPersonal.setClave(this.persona.getEmpresaPersona().getClave());
-				empresaPersonal.setContrato(this.persona.getEmpresaPersona().getContrato());
+				empresaPersonal.setIdContrato(this.persona.getEmpresaPersona().getIdContrato());
 				empresaPersonal.setFechaIngreso(this.persona.getEmpresaPersona().getFechaIngreso());
 				empresaPersonal.setFechaContratacion(this.persona.getEmpresaPersona().getFechaContratacion());
 				empresaPersonal.setSueldoSemanal(this.persona.getEmpresaPersona().getSueldoSemanal());
