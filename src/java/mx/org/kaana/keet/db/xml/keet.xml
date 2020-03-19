@@ -128,7 +128,8 @@
     <unit id="TcKeetTiposGeneradoresDto">
       <select id="row">
         select      
-          *
+          tc_keet_tipos_generadores.id_tipo_generador as id_key,
+					tc_keet_tipos_generadores.*
         from      
           tc_keet_tipos_generadores
         where 
