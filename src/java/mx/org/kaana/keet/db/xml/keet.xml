@@ -164,10 +164,11 @@
     </unit>		
     <unit id="TcKeetProyectosPrespuestosDto">
       <select id="row">
-        select      
-          *
-        from      
-          tc_keet_proyectos_prespuestos
+        select
+          tc_keet_proyectos_presupuestos.id_proyecto_presupuesto as id_key,
+					tc_keet_proyectos_presupuestos.*
+        from
+          tc_keet_proyectos_presupuestos;
         where 
           {condicion} 
       </select>
