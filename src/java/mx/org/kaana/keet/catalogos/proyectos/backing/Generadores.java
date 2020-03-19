@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.keet.catalogos.proyectos.comun.IBaseImportacion;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosGeneradoresDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 /**
  *@company KAANA
@@ -44,7 +45,7 @@ public class Generadores extends IBaseImportacion implements Serializable {
 	public TcKeetProyectosGeneradoresDto toArchivo(){
 		EArchivosProyectos tipoArchivo= (EArchivosProyectos) this.attrs.get("tipoArchivo");
 		TcKeetProyectosGeneradoresDto regresar= new TcKeetProyectosGeneradoresDto(		
-			Long.valueOf(this.attrs.get("idTipoGenerador").toString()),			 						
+			((UISelectEntity)this.attrs.get("tipoGenerador")).getKey(),
 			this.getFile().getName(), 			
 			this.getFile().getRuta(), 			
 			this.getFile().getFileSize(), 			
@@ -52,7 +53,7 @@ public class Generadores extends IBaseImportacion implements Serializable {
 			this.registroProyecto.getProyecto().getIdProyecto(),
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 			
 			-1L,
-			this.getFile().getObservaciones(), 						
+			this.attrs.get("observaciones").toString(), 
 			Configuracion.getInstance().getPropiedadSistemaServidor(tipoArchivo.getPath()).concat(this.getFile().getRuta()).concat(this.getFile().getName()),						
 			this.getFile().getOriginal()	
 		);				
