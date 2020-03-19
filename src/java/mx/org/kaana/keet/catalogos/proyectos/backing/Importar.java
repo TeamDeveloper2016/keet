@@ -1,7 +1,6 @@
 package mx.org.kaana.keet.catalogos.proyectos.backing;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -13,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.keet.catalogos.proyectos.comun.IBaseImportacion;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 /**
  *@company KAANA
@@ -45,7 +45,7 @@ public class Importar extends IBaseImportacion implements Serializable {
 	public TcKeetProyectosArchivosDto toArchivo(){
 		EArchivosProyectos tipoArchivo= (EArchivosProyectos) this.attrs.get("tipoArchivo");
 		TcKeetProyectosArchivosDto regresar= new TcKeetProyectosArchivosDto(		
-			Long.valueOf(this.attrs.get("idPlano").toString()),			 						
+			((UISelectEntity)this.attrs.get("plano")).getKey(),
 			this.getFile().getName(), 			
 			this.getFile().getRuta(), 			
 			this.registroProyecto.getProyecto().getIdProyecto(),
@@ -55,9 +55,9 @@ public class Importar extends IBaseImportacion implements Serializable {
 			this.getFile().getFileSize(), 			
 			JsfBase.getIdUsuario(), 			
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 			
-			this.getFile().getObservaciones(), 
+			this.attrs.get("observaciones").toString(), 
 			Configuracion.getInstance().getPropiedadSistemaServidor(tipoArchivo.getPath()).concat(this.getFile().getRuta()).concat(this.getFile().getName()),			
-			Long.valueOf(this.attrs.get("idPrototipo").toString())
+			((UISelectEntity)this.attrs.get("prototipo")).getKey()
 		);		
 		return regresar;
 	} // toPrototipoArchivo	
