@@ -73,6 +73,23 @@ public class Transaccion extends IBaseTnx {
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dtoDelete)>= 1L;
 					break;
+				case SUBIR:					
+					switch(this.tipoArchivo){
+						case DOCUMENTOS:
+							for(IBaseDto dto: this.proyecto.getDocumentos())
+								DaoFactory.getInstance().insert(sesion, dto);
+							break;
+						case GENERADORES:
+							for(IBaseDto dto: this.proyecto.getGeneradores())
+								DaoFactory.getInstance().insert(sesion, dto);
+							break;
+						case PRESUPUESTOS:
+							for(IBaseDto dto: this.proyecto.getPresupuestos())
+								DaoFactory.getInstance().insert(sesion, dto);
+							break;
+					} // switch
+					regresar= true;
+					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
