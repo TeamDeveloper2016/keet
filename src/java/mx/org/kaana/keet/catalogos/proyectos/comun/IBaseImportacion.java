@@ -75,10 +75,17 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 		List<UISelectEntity> tiposObras    = null;
 		List<UISelectEntity> fachadas      = null;		
 		List<UISelectEntity> prototipos    = null;		
+		List<UISelectEntity> estaciones    = null;		
 		TcManticClientesDto cliente        = null;
+		UISelectEntity estacion       = null;
 		try {			
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			estaciones= UIEntity.seleccione("TcKeetEstacionesDto", "row", params, "nombre");
+      this.attrs.put("estaciones", estaciones);
+			estacion= UIBackingUtilities.toFirstKeySelectEntity(estaciones);
+			this.attrs.put("estacion", estacion);
+			doActualizaTiposGeneradores();
 			desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, "nombre");
       this.attrs.put("desarrollos", desarrollos);
 			tiposObras= UIEntity.seleccione("VistaTiposObrasDto", "catalogo", params, "tipoObra");
@@ -116,6 +123,27 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 			params.put(Constantes.SQL_CONDICION, "id_especialidad=" + especialidad.getKey());
 			planos= UIEntity.seleccione("TcKeetPlanosDto", "row", params, "nombre");
       this.attrs.put("planos", planos);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doActualizaPlanos
+	
+	public void doActualizaTiposGeneradores(){
+		List<UISelectEntity> tiposGeneradores= null;
+		Map<String, Object>params            = null;
+		UISelectEntity estacion              = null;
+		try {
+			params= new HashMap<>();
+			estacion= (UISelectEntity) this.attrs.get("estacion");
+			params.put(Constantes.SQL_CONDICION, "id_estacion=" + estacion.getKey());
+			tiposGeneradores= UIEntity.seleccione("TcKeetTiposGeneradoresDto", "row", params, "nombre");
+      this.attrs.put("tiposGeneradores", tiposGeneradores);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
