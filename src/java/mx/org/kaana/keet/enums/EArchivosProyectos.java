@@ -16,7 +16,7 @@ public enum EArchivosProyectos {
 	private String path;	
 
 	private EArchivosProyectos(String unit, String path) {
-		this(unit, path, "getImportados");
+		this(unit, path, "importados");
 	}
 	
 	private EArchivosProyectos(String unit, String path, String idXml) {				
