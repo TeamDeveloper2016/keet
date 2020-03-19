@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Importar los planos del prototipo"/>
+	<ui:param name="titulo" value="Importar archivos de proyectos"/>
 	<ui:define name="librerias">
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
 		<h:outputStylesheet library="janal" name="css/shCore.css"/>
@@ -19,7 +19,9 @@
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				'contenedorGrupos\\:idPlano'      : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:especialidad' : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:plano'        : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:prototipo'    : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
 			};						
 			
@@ -33,7 +35,7 @@
 			
 			function load() {
 			  SyntaxHighlighter.highlight();	
-			}
+			}			
 		</script>
 		<style>
 			.janal-upload-frame {
@@ -92,14 +94,23 @@
 								</p:column>   								
 								<p:column styleClass="janal-wid-20" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
-								</p:column>   
-								<p:column styleClass="janal-wid-25" headerText="Usuario">
+								</p:column>   								
+								<p:column headerText="Prototipo">
+									<h:outputText value="[#{row.clavePrototipo}] #{row.nombrePrototipo}"/>
+								</p:column>      
+								<p:column headerText="Especialidad">
+									<h:outputText value="[#{row.claveEspecialidad}] #{row.nombreEspecialidad}"/>
+								</p:column>      
+								<p:column headerText="Plano">
+									<h:outputText value="#{row.nombrePlano}"/>
+								</p:column>  
+								<p:column styleClass="janal-wid-20" headerText="Usuario">
 									<h:outputText value="#{row.usuario}"/>
 								</p:column>    
-								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
+								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
-								<p:column  styleClass="janal-wid-col-30 janal-column-center">
+								<p:column styleClass="janal-wid-col-40 janal-column-center">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 										<p:fileDownload value="#{keetCatalogosProyectosImportar.doFileDownload(row)}" />
 									</p:commandButton>
@@ -107,21 +118,42 @@
 							</p:dataTable>
 						</p:tab>						            						            																																																
 						<p:tab title="Importar">
-							<!--p:outputLabel for="idPlano" value="Tipo de plano:"/>
-							<p:selectOneMenu id="idPlano" value="#{keetCatalogosProyectosImportar.prototipo.prototipo.ikPlano}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-								<f:selectItems value="#{keetCatalogosProyectosImportar.attrs.planos}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
-								<p:column headerText="Grupo">
-									<h:outputText value="#{item.grupo}"/>
+							<p:outputLabel for="prototipo" value="Prototipo:"/>
+							<p:selectOneMenu id="prototipo" value="#{keetCatalogosProyectosImportar.attrs.prototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt import-local-file">
+								<f:selectItems value="#{keetCatalogosProyectosImportar.attrs.prototipos}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombre}"/>
+								<p:ajax event="change" process="@this prototipo" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
 								</p:column>      
 								<p:column headerText="Nombre">
-									<h:outputText value="#{item.descripcion}"/>
+									<h:outputText value="#{item.nombre}"/>
 								</p:column>      
-							</p:selectOneMenu-->
+							</p:selectOneMenu>
+							<p:outputLabel for="especialidad" value="Especialidad:"/>
+							<p:selectOneMenu id="especialidad" value="#{keetCatalogosProyectosImportar.attrs.especialidad}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt import-local-file">
+								<f:selectItems value="#{keetCatalogosProyectosImportar.attrs.especialidades}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombre}"/>
+								<p:ajax event="change" process="@this especialidad" listener="#{keetCatalogosProyectosImportar.doActualizaPlanos}" update="plano" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>      
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>      								    
+							</p:selectOneMenu>
+							<p:outputLabel for="plano" value="Plano:"/>
+							<p:selectOneMenu id="plano" value="#{keetCatalogosProyectosImportar.attrs.plano}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt import-local-file">
+								<f:selectItems value="#{keetCatalogosProyectosImportar.attrs.planos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>								
+								<p:ajax event="change" process="@this plano" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>      
+							</p:selectOneMenu>
 							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
-							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosImportar.file.observaciones}"/>
+							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt import-local-file" value="#{keetCatalogosProyectosImportar.attrs.observaciones}" onblur="procesDataFile();"/>
+							<p:remoteCommand name="procesDataFile" process="@this contenedorGrupos:observaciones"/>
 							<p:spacer height="5px"/>	
-							<p:fileUpload listener="#{keetCatalogosProyectosImportar.doFileUpload}" onstart="return janal.execute()"
-							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona DWG/ZIP/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+							<p:fileUpload listener="#{keetCatalogosProyectosImportar.doFileUpload}" onstart="return janal.execute();"
+							  mode="advanced" process="@this contenedorGrupos:observaciones" update="@(.importado)" label="Selecciona DWG/ZIP/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
 								multiple="false" allowTypes="#{keetCatalogosProyectosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCatalogosProyectosImportar.attrs.formatos}"/>														
 							<p:dataTable id="importado" var="row" value="#{keetCatalogosProyectosImportar.registroProyecto.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
