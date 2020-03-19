@@ -475,7 +475,8 @@
     <unit id="TcKeetPlanosDto">
       <select id="row">
         select      
-          *
+          tc_keet_planos.id_plano as id_key,
+					tc_keet_planos.*
         from      
           tc_keet_planos
         where 

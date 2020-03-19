@@ -156,7 +156,7 @@
 			</select>	
 		</unit>	
 		<unit id="VistaProyectosArchivosDto">
-			<select id="getImportados">
+			<select id="importados">
 				select
 					tc_keet_proyectos_archivos.id_proyecto_archivo id_key,
 					tc_keet_proyectos_archivos.nombre,
@@ -166,19 +166,30 @@
 					tc_keet_proyectos_archivos.observaciones,
 					tc_keet_proyectos_archivos.registro,
 					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
-					tc_keet_proyectos_archivos.id_tipo_archivo
+					tc_keet_proyectos_archivos.id_tipo_archivo,
+					tc_keet_prototipos.clave clave_prototipo,
+					tc_keet_prototipos.nombre nombre_prototipo,
+					tc_keet_especialidades.clave clave_especialidad,
+					tc_keet_especialidades.nombre nombre_especialidad,
+					tc_keet_planos.nombre nombre_plano
 				from
 					tc_keet_proyectos_archivos
 				inner join 
 					tc_janal_usuarios on tc_keet_proyectos_archivos.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 
 					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				inner join 
+					tc_keet_prototipos on tc_keet_proyectos_archivos.id_prototipo = tc_keet_prototipos.id_prototipo
+				inner join 
+					tc_keet_planos on tc_keet_proyectos_archivos.id_plano = tc_keet_planos.id_plano
+				inner join 
+					tc_keet_especialidades on tc_keet_planos.id_especialidad = tc_keet_especialidades.id_especialidad
 				where
 				  tc_keet_proyectos_archivos.id_proyecto= {idProyecto}
 			</select>
 		</unit>		
 		<unit id="VistaProyectosGeneradoresDto">
-			<select id="getImportados">
+			<select id="importados">
 				select
 					tc_keet_proyectos_generadores.id_proyecto_generador id_key,
 					tc_keet_proyectos_generadores.nombre,
@@ -200,7 +211,7 @@
 			</select>
 		</unit>		
 		<unit id="VistaProyectosPresupuestosDto">
-			<select id="getImportados">
+			<select id="importados">
 				select
 					tc_keet_proyectos_presupuestos.id_proyecto_presupuesto id_key,
 					tc_keet_proyectos_presupuestos.nombre,
