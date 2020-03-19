@@ -228,13 +228,16 @@
 					tc_keet_proyectos_presupuestos.observaciones,
 					tc_keet_proyectos_presupuestos.registro,
 					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
-					tc_keet_proyectos_presupuestos.id_tipo_archivo
+					tc_keet_proyectos_presupuestos.id_tipo_archivo,
+					tc_keet_tipos_presupuestos.nombre tipo_presupuesto
 				from
 					tc_keet_proyectos_presupuestos
 				inner join 
 					tc_janal_usuarios on tc_keet_proyectos_presupuestos.id_usuarios = tc_janal_usuarios.id_usuario
 				inner join 
 					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				inner join
+					tc_keet_tipos_presupuestos on tc_keet_proyectos_presupuestos.id_tipo_presupuesto = tc_keet_tipos_presupuestos.id_tipo_presupuesto
 				where
 				  tc_keet_proyectos_presupuestos.id_proyecto= {idProyecto}
 			</select>
