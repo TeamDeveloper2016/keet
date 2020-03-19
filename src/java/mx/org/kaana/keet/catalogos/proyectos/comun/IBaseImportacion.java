@@ -76,13 +76,16 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 		List<UISelectEntity> fachadas      = null;		
 		List<UISelectEntity> prototipos    = null;		
 		List<UISelectEntity> estaciones    = null;		
+		List<UISelectEntity> presupuestos  = null;		
 		TcManticClientesDto cliente        = null;
-		UISelectEntity estacion       = null;
+		UISelectEntity estacion            = null;
 		try {			
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			estaciones= UIEntity.seleccione("TcKeetEstacionesDto", "row", params, "nombre");
       this.attrs.put("estaciones", estaciones);
+			presupuestos= UIEntity.seleccione("TcKeetTiposPresupuestosDto", "row", params, "nombre");
+      this.attrs.put("presupuestos", presupuestos);
 			estacion= UIBackingUtilities.toFirstKeySelectEntity(estaciones);
 			this.attrs.put("estacion", estacion);
 			doActualizaTiposGeneradores();
