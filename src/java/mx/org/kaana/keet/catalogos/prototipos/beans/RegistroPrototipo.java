@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -12,6 +13,7 @@ import mx.org.kaana.keet.catalogos.prototipos.reglas.MotorBusqueda;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposArchivosDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 public class RegistroPrototipo implements Serializable {
 
@@ -137,4 +139,14 @@ public class RegistroPrototipo implements Serializable {
 			throw e;
 		} // catch		
 	} // addDeleteList
+
+	public void selectConstructivo(List<UISelectEntity> elementos) {
+		try {
+			for(SistemaConstructivo item: this.constructivos)
+			  item.setIkConstructivo(elementos.get(elementos.indexOf(new UISelectEntity(new Entity(item.getIdConstructivo())))));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	}
 }

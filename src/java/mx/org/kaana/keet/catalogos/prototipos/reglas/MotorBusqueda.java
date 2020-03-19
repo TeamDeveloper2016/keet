@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.catalogos.prototipos.beans.Prototipo;
 import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -44,7 +45,9 @@ public class MotorBusqueda implements Serializable{
 		try {
 		  params= new HashMap<>();
 			params.put("idPrototipo", this.idPrototipo);
-			regresar= DaoFactory.getInstance().toEntitySet(SistemaConstructivo.class, "VistaPrototiposDto", "constructivosById", params);			
+			regresar= DaoFactory.getInstance().toEntitySet(SistemaConstructivo.class, "VistaPrototiposDto", "constructivosById", params);
+      for(SistemaConstructivo item: regresar)
+				item.setAccion(ESql.UPDATE);
 		} // try
 		catch (Exception e) {			
 			throw e;

@@ -19,6 +19,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 
 @Named(value = "keetCatalogosPrototiposAccion")
@@ -81,7 +82,8 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-					this.prototipo= new RegistroPrototipo(Long.valueOf(this.attrs.get("idPrototipo").toString()));          										
+					this.prototipo= new RegistroPrototipo(Long.valueOf(this.attrs.get("idPrototipo").toString()));
+					this.prototipo.selectConstructivo((List<UISelectEntity>)this.attrs.get("constructivos"));
           break;
       } // switch
     } // try
