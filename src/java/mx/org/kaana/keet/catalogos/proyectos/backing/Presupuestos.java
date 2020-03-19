@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.keet.catalogos.proyectos.comun.IBaseImportacion;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosPresupuestosDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 /**
  *@company KAANA
@@ -50,9 +51,9 @@ public class Presupuestos extends IBaseImportacion implements Serializable {
 			JsfBase.getIdUsuario(), 			
 			this.registroProyecto.getProyecto().getIdProyecto(),
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 			
-			this.getFile().getObservaciones(), 
-			-1L,
-			Long.valueOf(this.attrs.get("idTipoPresupuesto").toString()),
+			this.attrs.get("observaciones").toString(), 
+			-1L,			
+			((UISelectEntity)this.attrs.get("presupuesto")).getKey(),
 			Configuracion.getInstance().getPropiedadSistemaServidor(tipoArchivo.getPath()).concat(this.getFile().getRuta()).concat(this.getFile().getName()),						
 			this.getFile().getOriginal()						
 		);				
