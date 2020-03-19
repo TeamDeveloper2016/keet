@@ -15,6 +15,8 @@
 				'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idCliente'  : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:metros'     : {validaciones: 'requerido|flotante', mascara: 'libre'},
+				'contenedorGrupos\\:diasConstruccion': {validaciones: 'requerido|flotante', mascara: 'libre'},
+				'contenedorGrupos\\:idTipoDia'  : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
 
@@ -40,6 +42,12 @@
                 <p:inputText id="metros" styleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.metros2}" />																								
 								<p:outputLabel for="diasConstruccion" value="Días construccion:"/>
                 <p:inputText id="diasConstruccion" styleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.diasConstruccion}" />																								
+								<p:outputLabel for="idTipoDia" value="Tipo de día:"/>
+								<p:selectOneMenu id="idTipoDia" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.idTipoDia}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+									<f:selectItem itemValue="1" itemLabel="NATURALES"/>
+									<f:selectItem itemValue="2" itemLabel="HABILES"/>
+								</p:selectOneMenu>	
 								<p:spacer width="1px"/><p:separator/>	
                 <p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
