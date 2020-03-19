@@ -3,8 +3,11 @@ package mx.org.kaana.keet.catalogos.proyectos.comun;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -26,6 +29,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -51,14 +55,12 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? "filtro" : JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_PLANOS);
-			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
-			this.attrs.put("planos", UIEntity.seleccione("VistaPrototiposDto", "getPlanosEspecialidades",this.attrs, "descripcion"));
+			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
 			this.attrs.put("file", "");
 			this.attrs.put("tipoArchivo", tipoArchivo);
-			setFile(new Importado());
-			loadCombos();
+			setFile(new Importado());			
 			this.registroProyecto= new RegistroProyecto(Long.valueOf(this.attrs.get("idProyecto").toString()));
+			loadCombos();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -66,16 +68,64 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 	}	// initBase	
 
 	private void loadCombos(){
+		Map<String, Object>params          = null;
+		UISelectEntity especialidad        = null;
+		List<UISelectEntity> especialidades= null;
+		List<UISelectEntity> desarrollos   = null;
+		List<UISelectEntity> tiposObras    = null;
+		List<UISelectEntity> fachadas      = null;		
+		List<UISelectEntity> prototipos    = null;		
+		TcManticClientesDto cliente        = null;
 		try {			
-      this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", this.attrs, "nombre"));
-      this.attrs.put("tipoObras", UIEntity.seleccione("VistaTiposObrasDto", "catalogo", this.attrs, "tipoObra"));
-      this.attrs.put("fachadas", UIEntity.seleccione("TcKeetTiposFachadasDto", "row", this.attrs, "nombre"));
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, "nombre");
+      this.attrs.put("desarrollos", desarrollos);
+			tiposObras= UIEntity.seleccione("VistaTiposObrasDto", "catalogo", params, "tipoObra");
+      this.attrs.put("tipoObras", tiposObras);
+			fachadas= UIEntity.seleccione("TcKeetTiposFachadasDto", "row", params, "nombre");
+      this.attrs.put("fachadas", fachadas);					
+			especialidades= UIEntity.seleccione("TcKeetEspecialidadesDto", "row", params, "nombre");
+      this.attrs.put("especialidades", especialidades);			
+      especialidad= UIBackingUtilities.toFirstKeySelectEntity(especialidades);		
+			this.attrs.put("especialidad", especialidad);			
+			doActualizaPlanos();			
+			params.clear();
+			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.registroProyecto.getProyecto().getIdCliente());
+			prototipos= UIEntity.seleccione("TcKeetPrototiposDto", "row", params, "nombre");
+      this.attrs.put("prototipos", prototipos);	
+			cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(TcManticClientesDto.class, this.registroProyecto.getProyecto().getIdCliente());
+			this.attrs.put("claveCliente", cliente.getClave());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 	} // loadCombos
+	
+	public void doActualizaPlanos(){
+		List<UISelectEntity> planos= null;
+		Map<String, Object>params  = null;
+		UISelectEntity especialidad= null;
+		try {
+			params= new HashMap<>();
+			especialidad= (UISelectEntity) this.attrs.get("especialidad");
+			params.put(Constantes.SQL_CONDICION, "id_especialidad=" + especialidad.getKey());
+			planos= UIEntity.seleccione("TcKeetPlanosDto", "row", params, "nombre");
+      this.attrs.put("planos", planos);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doActualizaPlanos
 	
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
@@ -102,22 +152,7 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
     finally {
       Methods.clean(columns);
     }// finally
-	} // doLoad
-	
-	protected String toClave(){
-		String regresar                = null;
-		List<UISelectEntity>clientes   = null;
-		UISelectEntity clienteSeleccion= null;
-		try {
-			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
-			clienteSeleccion= clientes.get(clientes.indexOf(this.registroProyecto.getProyecto().getIkCliente()));
-			regresar= clienteSeleccion.toString("clave");
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toClave
+	} // doLoad	
 	
 	public void doFileUpload(FileUploadEvent event) {				
 		StringBuilder path     = new StringBuilder();  
@@ -131,7 +166,7 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor(tipo.getPath()));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");			
-      temp.append(toClave());
+      temp.append(this.attrs.get("claveCliente").toString());
       temp.append("/");      
 			path.append(temp.toString());
 			result= new File(path.toString());		
