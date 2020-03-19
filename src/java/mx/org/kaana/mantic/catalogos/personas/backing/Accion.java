@@ -102,6 +102,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private void loadCollections() throws Exception{
 		if(Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()))
 			loadEmpresas();
+		else{
+			this.attrs.put("empresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
+			this.attrs.put("idEmpresaPivote", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
+		} // else
 		loadBancos();
 		loadPuestos();
 		loadTitulos();
