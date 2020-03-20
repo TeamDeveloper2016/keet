@@ -1009,6 +1009,28 @@
         where      
           id_prototipo_dia = {idPrototipoDia} and id_nombre_dia = {idNombreDia} and id_prototipo = {idPrototipo}
       </select>
+			<delete id="byIdPrototipo">
+				delete from tc_keet_prototipos_dias where id_prototipo= {idPrototipo}
+			</delete>
+    </unit>
+		<unit id="TcKeetNombresDiasDto">
+      <select id="row">
+        select      
+          tc_keet_nombres_dias.id_nombre_dia as id_key,
+					tc_keet_nombres_dias.*
+        from      
+          tc_keet_nombres_dias
+        where 
+          {condicion} 
+      </select>      
+			<select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nombres_dias
+        where      
+          id_nombre_dia = {idNombreDia} and nombre = '{nombre}'
+      </select>
     </unit>
   </dml>    
 </process>
