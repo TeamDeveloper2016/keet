@@ -14,6 +14,7 @@
 				'contenedorGrupos\\:clave'      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idCliente'  : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:dias'       : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:metros'     : {validaciones: 'requerido|flotante', mascara: 'libre'},
 				'contenedorGrupos\\:diasConstruccion': {validaciones: 'requerido|flotante', mascara: 'libre'},
 				'contenedorGrupos\\:idTipoDia'  : {validaciones: 'requerido', mascara: 'libre'},
@@ -24,6 +25,14 @@
 				janal.readingMode('#{keetCatalogosPrototiposAccion.attrs.nombreAccion}');
 			});
 		</script>   
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>
 	</ui:define>
 	<ui:define name="contenido">
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -48,6 +57,10 @@
 									<f:selectItem itemValue="1" itemLabel="NATURALES"/>
 									<f:selectItem itemValue="2" itemLabel="HABILES"/>
 								</p:selectOneMenu>	
+								<h:outputLabel for="dias" value="Dias:" />
+								<p:selectCheckboxMenu id="dias" value="#{keetCatalogosPrototiposAccion.prototipo.diasSeleccionados}" label="Dias" styleClass="janal-wid-99" multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width:250px">										
+									<f:selectItems value="#{keetCatalogosPrototiposAccion.prototipo.diasDefault}"/>
+								</p:selectCheckboxMenu>
 								<p:spacer width="1px"/><p:separator/>	
                 <p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
