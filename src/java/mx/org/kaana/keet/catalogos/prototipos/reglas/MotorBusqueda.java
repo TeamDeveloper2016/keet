@@ -8,6 +8,8 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.catalogos.prototipos.beans.Prototipo;
 import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
+import mx.org.kaana.keet.db.dto.TcKeetNombresDiasDto;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
@@ -48,6 +50,23 @@ public class MotorBusqueda implements Serializable{
 			regresar= DaoFactory.getInstance().toEntitySet(SistemaConstructivo.class, "VistaPrototiposDto", "constructivosById", params);
       for(SistemaConstructivo item: regresar)
 				item.setAccion(ESql.UPDATE);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toConstructivos
+	
+	public List<TcKeetNombresDiasDto> toDias() throws Exception{
+		List<TcKeetNombresDiasDto> regresar= null;
+		Map<String, Object>params         = null;
+		try {
+		  params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_prototipo=" + this.idPrototipo);
+			regresar= DaoFactory.getInstance().toEntitySet(TcKeetNombresDiasDto.class, "VistaNombresDiasDto", "dias", params);      
 		} // try
 		catch (Exception e) {			
 			throw e;
