@@ -242,5 +242,18 @@
 				  tc_keet_proyectos_presupuestos.id_proyecto= {idProyecto}
 			</select>
 		</unit>		
+		<unit id="VistaNombresDiasDto">
+			<select id="dias">
+				select      
+          tc_keet_nombres_dias.id_nombre_dia as id_key,
+					tc_keet_nombres_dias.*
+        from      
+          tc_keet_nombres_dias
+				inner join 
+					tc_keet_prototipos_dias on tc_keet_nombres_dias.id_nombre_dia = tc_keet_prototipos_dias.id_nombre_dia
+        where 
+          {condicion} 
+			</select>
+		</unit>
 	</dml>    
 </process>
