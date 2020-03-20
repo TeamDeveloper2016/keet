@@ -991,5 +991,24 @@
           nombre = '{nombre}'
       </select>
     </unit>			
+		<unit id="TcKeetPrototiposDiasDto">
+      <select id="row">
+        select      
+          tc_keet_prototipos_dias.id_prototipo_dia as id_key,
+					tc_keet_prototipos_dias.*
+        from      
+          tc_keet_prototipos_dias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prototipos_dias
+        where      
+          id_prototipo_dia = {idPrototipoDia} and id_nombre_dia = {idNombreDia} and id_prototipo = {idPrototipo}
+      </select>
+    </unit>
   </dml>    
 </process>
