@@ -14,7 +14,8 @@ public enum EDiasSemana {
 	SABADO   ("SAB", "SABADO"),
 	DOMINGO  ("DOM", "DOMINGO");
 	
-	private static final Map<Long, EDiasSemana> lookup= new HashMap<>();	
+	private static final Map<Long, EDiasSemana> lookup      = new HashMap<>();	
+	private static final Map<String, EDiasSemana> lookupName= new HashMap<>();	
 	private String clave;
 	private String nombre;			
 
@@ -24,8 +25,10 @@ public enum EDiasSemana {
 	}	
 
 	static {
-    for (EDiasSemana item: EnumSet.allOf(EDiasSemana.class)) 
+    for (EDiasSemana item: EnumSet.allOf(EDiasSemana.class)) {
       lookup.put(item.getKey(), item);    
+      lookupName.put(item.getNombre(), item);    
+		} //for
   } // static
 	
 	public Long getKey(){
@@ -42,5 +45,9 @@ public enum EDiasSemana {
 		
 	public static EDiasSemana fromId(Long id) {
     return lookup.get(id);
+  } // fromIdEstatusEgreso	
+	
+	public static EDiasSemana fromName(String name) {
+    return lookupName.get(name);
   } // fromIdEstatusEgreso	
 }
