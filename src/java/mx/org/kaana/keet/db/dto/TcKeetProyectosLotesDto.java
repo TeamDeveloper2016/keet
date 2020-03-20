@@ -3,6 +3,7 @@ package mx.org.kaana.keet.db.dto;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,45 +32,54 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
   private String manzana;
   @Column (name="clave")
   private String clave;
-  @Column (name="id_usuario")
-  private Long idUsuario;
+  @Column (name="fecha_inicio")
+  private LocalDate fechaInicio;
   @Column (name="id_proyecto")
   private Long idProyecto;
   @Column (name="lote")
   private Long lote;
-  @Column (name="id_tipo_fachada")
-  private Long idTipoFachada;
-  @Column (name="id_prototipo")
-  private Long idPrototipo;
+  @Column (name="fecha_termino")
+  private LocalDate fechaTermino;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_proyecto_lote")
   private Long idProyectoLote;
-  @Column (name="atributos")
-  private String atributos;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="id_usuario")
+  private Long idUsuario;
+  @Column (name="id_tipo_fachada")
+  private Long idTipoFachada;
+  @Column (name="dias_construccion")
+  private Long diasConstruccion;
+  @Column (name="id_prototipo")
+  private Long idPrototipo;
+  @Column (name="atributos")
+  private String atributos;
 
   public TcKeetProyectosLotesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetProyectosLotesDto(Long key) {
-    this(null, null, null, null, null, null, null, new Long(-1L), null);
+    this(null, null, LocalDate.now(), null, null, LocalDate.now(), new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetProyectosLotesDto(String manzana, String clave, Long idUsuario, Long idProyecto, Long lote, Long idTipoFachada, Long idPrototipo, Long idProyectoLote, String atributos) {
+  public TcKeetProyectosLotesDto(String manzana, String clave, LocalDate fechaInicio, Long idProyecto, Long lote, LocalDate fechaTermino, Long idProyectoLote, Long idUsuario, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, String atributos) {
     setManzana(manzana);
     setClave(clave);
-    setIdUsuario(idUsuario);
+    setFechaInicio(fechaInicio);
     setIdProyecto(idProyecto);
     setLote(lote);
-    setIdTipoFachada(idTipoFachada);
-    setIdPrototipo(idPrototipo);
+    setFechaTermino(fechaTermino);
     setIdProyectoLote(idProyectoLote);
-    setAtributos(atributos);
     setRegistro(LocalDateTime.now());
+    setIdUsuario(idUsuario);
+    setIdTipoFachada(idTipoFachada);
+    setDiasConstruccion(diasConstruccion);
+    setIdPrototipo(idPrototipo);
+    setAtributos(atributos);
   }
 	
   public void setManzana(String manzana) {
@@ -88,12 +98,12 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     return clave;
   }
 
-  public void setIdUsuario(Long idUsuario) {
-    this.idUsuario = idUsuario;
+  public void setFechaInicio(LocalDate fechaInicio) {
+    this.fechaInicio = fechaInicio;
   }
 
-  public Long getIdUsuario() {
-    return idUsuario;
+  public LocalDate getFechaInicio() {
+    return fechaInicio;
   }
 
   public void setIdProyecto(Long idProyecto) {
@@ -112,20 +122,12 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     return lote;
   }
 
-  public void setIdTipoFachada(Long idTipoFachada) {
-    this.idTipoFachada = idTipoFachada;
+  public void setFechaTermino(LocalDate fechaTermino) {
+    this.fechaTermino = fechaTermino;
   }
 
-  public Long getIdTipoFachada() {
-    return idTipoFachada;
-  }
-
-  public void setIdPrototipo(Long idPrototipo) {
-    this.idPrototipo = idPrototipo;
-  }
-
-  public Long getIdPrototipo() {
-    return idPrototipo;
+  public LocalDate getFechaTermino() {
+    return fechaTermino;
   }
 
   public void setIdProyectoLote(Long idProyectoLote) {
@@ -136,20 +138,52 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     return idProyectoLote;
   }
 
-  public void setAtributos(String atributos) {
-    this.atributos = atributos;
-  }
-
-  public String getAtributos() {
-    return atributos;
-  }
-
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
   public LocalDateTime getRegistro() {
     return registro;
+  }
+
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
+  public Long getIdUsuario() {
+    return idUsuario;
+  }
+
+  public void setIdTipoFachada(Long idTipoFachada) {
+    this.idTipoFachada = idTipoFachada;
+  }
+
+  public Long getIdTipoFachada() {
+    return idTipoFachada;
+  }
+
+  public void setDiasConstruccion(Long diasConstruccion) {
+    this.diasConstruccion = diasConstruccion;
+  }
+
+  public Long getDiasConstruccion() {
+    return diasConstruccion;
+  }
+
+  public void setIdPrototipo(Long idPrototipo) {
+    this.idPrototipo = idPrototipo;
+  }
+
+  public Long getIdPrototipo() {
+    return idPrototipo;
+  }
+
+  public void setAtributos(String atributos) {
+    this.atributos = atributos;
+  }
+
+  public String getAtributos() {
+    return atributos;
   }
 
   @Transient
@@ -171,21 +205,27 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getClave());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdUsuario());
+		regresar.append(getFechaInicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProyecto());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getLote());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoFachada());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPrototipo());
+		regresar.append(getFechaTermino());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProyectoLote());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getAtributos());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoFachada());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDiasConstruccion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdPrototipo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getAtributos());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -195,21 +235,24 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("manzana", getManzana());
 		regresar.put("clave", getClave());
-		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("fechaInicio", getFechaInicio());
 		regresar.put("idProyecto", getIdProyecto());
 		regresar.put("lote", getLote());
-		regresar.put("idTipoFachada", getIdTipoFachada());
-		regresar.put("idPrototipo", getIdPrototipo());
+		regresar.put("fechaTermino", getFechaTermino());
 		regresar.put("idProyectoLote", getIdProyectoLote());
-		regresar.put("atributos", getAtributos());
 		regresar.put("registro", getRegistro());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idTipoFachada", getIdTipoFachada());
+		regresar.put("diasConstruccion", getDiasConstruccion());
+		regresar.put("idPrototipo", getIdPrototipo());
+		regresar.put("atributos", getAtributos());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getManzana(), getClave(), getIdUsuario(), getIdProyecto(), getLote(), getIdTipoFachada(), getIdPrototipo(), getIdProyectoLote(), getAtributos(), getRegistro()
+    getManzana(), getClave(), getFechaInicio(), getIdProyecto(), getLote(), getFechaTermino(), getIdProyectoLote(), getRegistro(), getIdUsuario(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getAtributos()
     };
     return regresar;
   }
@@ -267,4 +310,7 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdProyectoLote() != null ? getIdProyectoLote().hashCode() : 0);
     return hash;
   }
+
 }
+
+
