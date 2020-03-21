@@ -14,6 +14,7 @@
         'contenedorGrupos\\:prefijo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:nombreComercial': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:descuento': {validaciones: 'porcentaje', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
@@ -75,6 +76,8 @@
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.rfc}"/>                    
                 <p:outputLabel for="razonSocial" value="Razón social:"/>
                 <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" maxlength="255" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.razonSocial}"/>                    
+                <p:outputLabel for="nombreComercial" value="Nombre comercial:"/>
+                <p:inputText id="nombreComercial" styleClass="janal-wid-100-txt" maxlength="255" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.nombreComercial}"/>                    
                 <p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="idTipoProveedor"  value="Tipo proveedor:"/>
                 <p:selectOneMenu  id="idTipoProveedor" value="#{manticCatalogosProveedoresAccion.attrs.tipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
