@@ -22,6 +22,11 @@
 			$(document).ready(function () {
 				janal.readingMode('#{keetCatalogosProyectosAccion.attrs.nombreAccion}');
 			});
+			
+			function myFunction() {
+			 if (confirm("Precaución, si cambia el cliente seleccionado se eliminaráfn los lotes asignados que no pertenescan al cliente"))
+				 alert("yes")
+			}
 		</script>
 	</ui:define>
 	<ui:define name="contenido">
@@ -83,15 +88,27 @@
 								<p:column  headerText="Prototipo" class="janal-wid-30">										
 									<p:selectOneMenu rendered="#{lote.mostar}" value="#{lote.ikPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
 										<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.prototipos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+										<p:ajax event="change" listener="#{keetCatalogosProyectosAccion.proyecto.proyecto.doCalculateFecha(lote)}" process="@this tablaLotes" update="tablaLotes" />
 										<p:column headerText="Nombre">
 										  <h:outputText value="#{item.nombre}"/>
 									  </p:column>  
 									</p:selectOneMenu>			
 								</p:column>	                  
-								<p:column  headerText="Manzana">										
+								<p:column  headerText="Fecha inicio" class="janal-wid-20">										
+									<p:calendar rendered="#{lote.mostar}" id="fechaInicial" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.fechaInicio}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" >
+									  <p:ajax event="dateSelect" listener="#{keetCatalogosProyectosAccion.proyecto.proyecto.doCalculateFecha(lote)}" process="@this tablaLotes" update="fechaTermino"/>
+									</p:calendar>
+								</p:column>
+								<p:column  headerText="Dias de construccion" class="janal-wid-10">										
+									<p:inputText rendered="#{lote.mostar}" value="#{lote.diasConstruccion}" styleClass="janal-wid-100-txt" readonly="true"/>
+								</p:column>
+								<p:column  headerText="Fecha termino" class="janal-wid-20">										
+									<p:calendar rendered="#{lote.mostar}" id="fechaTermino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.fechaTermino}"  pattern="dd/MM/yyyy" locale="es" readonly="true" disabled="true"/>
+								</p:column>
+								<p:column  headerText="Manzana" class="janal-wid-10">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.manzana}" styleClass="janal-wid-100-txt"/>
 								</p:column>
-                <p:column  headerText="Lote">										
+                <p:column  headerText="Lote" class="janal-wid-10">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.lote}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
                 <p:column  headerText="Tipo de fachada" class="janal-wid-30">										
