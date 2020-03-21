@@ -1486,7 +1486,10 @@
 					text= params.name+ "\n"+ data.toLocaleString('en-US'); // 1,234,567.123
 			} // switch
 			return text;
-		}		
+		},
+		alignCp:function(){
+			$('#contenedorGrupos\\:cp').css('text-align','left');
+		} // alignCp
   });
   window.Janal= Janal;
 })(window);
