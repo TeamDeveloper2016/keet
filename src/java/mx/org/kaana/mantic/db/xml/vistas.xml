@@ -4325,6 +4325,7 @@
 					tr_mantic_persona_tipo_contacto.valor contacto,
 					tr_mantic_empresa_personal.id_activo,
 					tr_mantic_empresa_personal.clave,
+					if(tr_mantic_empresa_personal.nss is null, '', tr_mantic_empresa_personal.nss) nss,		
 					tc_keet_departamentos.nombre departamento
 				from 
 					tc_mantic_personas
