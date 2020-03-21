@@ -123,6 +123,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       transaccion = new Transaccion(this.registroEmpresa);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
+				JsfBase.setFlashAttribute("idEmpresaProcess", this.registroEmpresa.getEmpresa().getIdEmpresa());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro la empresa de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
@@ -137,6 +138,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {
+		JsfBase.setFlashAttribute("idEmpresaProcess", this.registroEmpresa.getEmpresa().getIdEmpresa());
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
