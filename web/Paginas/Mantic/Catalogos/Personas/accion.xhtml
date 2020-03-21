@@ -120,7 +120,7 @@
 								<p:outputLabel for="clave" value="Clave:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.clave}" />                    
 								<p:outputLabel for="contrato" value="Contrato:"/>
-								<p:inputText id="contrato" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.contrato}" />                    
+								<p:inputText id="contrato" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idContrato}" />                    
 								<p:outputLabel for="departamento" value="Departamento:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:selectOneMenu id="departamento" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idDepartamento}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.departamentos}"/>
