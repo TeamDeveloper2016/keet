@@ -41,6 +41,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       loadTiposProveedores();
+			if(JsfBase.getFlashAttribute("idProveedorProcess")!= null){
+				this.attrs.put("idProveedorProcess", JsfBase.getFlashAttribute("idProveedorProcess"));
+				doLoad();
+				this.attrs.put("idProveedorProcess", null);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -159,6 +164,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
 		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+		if(this.attrs.get("idProveedorProcess")!= null && !Cadena.isVacio(this.attrs.get("idProveedorProcess")))
+			sb.append("tc_mantic_proveedores.id_proveedor =").append(this.attrs.get("idProveedorProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
 			sb.append("(tc_mantic_proveedores.clave like '%").append(this.attrs.get("clave")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("rfc")))

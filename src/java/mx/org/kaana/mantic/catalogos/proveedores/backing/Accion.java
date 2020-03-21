@@ -126,6 +126,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       transaccion= new Transaccion(this.registroProveedor);
 			this.registroProveedor.getProveedor().setIdTipoProveedor(((UISelectEntity)this.attrs.get("tipoProveedor")).getKey());
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
+				JsfBase.setFlashAttribute("idProveedorProcess", this.registroProveedor.getProveedor().getIdProveedor());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el proveedor de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
@@ -140,6 +141,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {
+		JsfBase.setFlashAttribute("idProveedorProcess", this.registroProveedor.getProveedor().getIdProveedor());
     return "filtro";
   } // doAccion
 	
