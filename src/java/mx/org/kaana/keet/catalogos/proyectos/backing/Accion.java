@@ -71,6 +71,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void doLoadPrototipos(){
 		try {
+			loadPrototipos();
+			this.proyecto.getProyecto().validaPrototipos((List<UISelectEntity>)this.attrs.get("prototipos"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	} // doLoadPrototipos
+	
+	private void loadPrototipos(){
+	  try {
 			this.attrs.put("idCliente", this.proyecto.getProyecto().getIdCliente());
       this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre"));
 			this.proyecto.getProyecto().validaPrototipos((List<UISelectEntity>)this.attrs.get("prototipos"));
@@ -94,7 +105,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:					
         case SUBIR:					
           this.proyecto= new RegistroProyecto(Long.valueOf(this.attrs.get("idProyecto").toString()));
-					doLoadPrototipos();
+					loadPrototipos();
           for(Lote item:this.proyecto.getProyecto().getLotes()){
 			      item.setIkPrototipo(((List<UISelectEntity>)this.attrs.get("prototipos")).get(((List<UISelectEntity>)this.attrs.get("prototipos")).indexOf(new UISelectEntity(new Entity(item.getIdPrototipo())))));
 			      item.setIkFachada(((List<UISelectEntity>)this.attrs.get("fachadas")).get(((List<UISelectEntity>)this.attrs.get("fachadas")).indexOf(new UISelectEntity(new Entity(item.getIdTipoFachada())))));
@@ -133,4 +144,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doCancelar() {   
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion	
+	
+	
+
+	
 }
