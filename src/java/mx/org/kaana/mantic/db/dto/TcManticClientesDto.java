@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.mantic.enums.ETipoVenta;
 
 /**
  *@company KAANA
@@ -66,7 +67,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesDto(Long key) {
-    this(null, 0L, new Long(-1L), 0D, null, null, 0.0D, null, null, 3L, null, null, null, null);
+    this(null, 0L, new Long(-1L), 0D, 2L, null, 0.0D, null, null, 3L, null, null, ETipoVenta.MENUDEO.getIdTipoVenta(), null);
     setKey(key);
   }
 
