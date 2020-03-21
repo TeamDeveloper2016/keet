@@ -120,6 +120,16 @@
 				where
 				  id_prototipo= {idPrototipo}
 			</select>		
+		  <select id="getDias">
+				select
+					id_prototipo_dia id_key,
+					nombre 
+				 from
+					 tc_keet_prototipos_dias
+				 inner join tc_keet_nombres_dias on tc_keet_nombres_dias.id_nombre_dia= tc_keet_prototipos_dias.id_nombre_dia
+				where
+				  id_prototipo= {idPrototipo}
+			</select>		
 		</unit>
     <unit id="VistaProyectoDto">
 			<select id="lazy">
