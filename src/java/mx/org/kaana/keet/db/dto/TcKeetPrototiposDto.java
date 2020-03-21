@@ -55,7 +55,7 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPrototiposDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, 1L);
+    this(null, 120D, null, null, null, new Long(-1L), null, 35L, 1L);
     setKey(key);
   }
 

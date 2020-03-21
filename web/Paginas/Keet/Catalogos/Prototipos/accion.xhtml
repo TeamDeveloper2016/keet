@@ -40,7 +40,7 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-96, janal-wid-col-38">		
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
                 <p:outputLabel for="clave" value="Codigo:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.clave}" />			
 								<p:outputLabel for="nombre" value="Nombre:"/>
@@ -48,17 +48,18 @@
                 <p:outputLabel for="descripcion" value="Descripción:"/>
                 <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.descripcion}" />								
 								<p:outputLabel for="metros" value="Metros cuadrados:"/>
-                <p:inputText id="metros" styleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.metros2}" />																								
+                <p:inputText id="metros" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.metros2}" />																								
 								<p:outputLabel for="diasConstruccion" value="Días construccion:"/>
-                <p:inputText id="diasConstruccion" styleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.diasConstruccion}" />																								
-								<p:outputLabel for="idTipoDia" value="Tipo de día:"/>
+                <p:inputText id="diasConstruccion" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.diasConstruccion}" />																								
+								<p:outputLabel for="idTipoDia" value="Tipo de día:" styleClass="diasSemana"/>
 								<p:selectOneMenu id="idTipoDia" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.idTipoDia}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" process="@this" update="@(.diasSemana)"/>
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 									<f:selectItem itemValue="1" itemLabel="NATURALES"/>
 									<f:selectItem itemValue="2" itemLabel="HABILES"/>
 								</p:selectOneMenu>	
-								<h:outputLabel for="dias" value="Dias:" />
-								<p:selectCheckboxMenu id="dias" value="#{keetCatalogosPrototiposAccion.prototipo.diasSeleccionados}" label="Dias" styleClass="janal-wid-99" multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width:250px">										
+								<p:outputLabel for="dias" value="Dias:" style="display: #{keetCatalogosPrototiposAccion.prototipo.prototipo.idTipoDia eq 2? '': 'none'}" styleClass="diasSemana"/>
+								<p:selectCheckboxMenu id="dias" value="#{keetCatalogosPrototiposAccion.prototipo.diasSeleccionados}" label="Dias" styleClass="janal-wid-99 diasSemana" multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width:250px" style="display: #{keetCatalogosPrototiposAccion.prototipo.prototipo.idTipoDia eq 2? '': 'none'}">
 									<f:selectItems value="#{keetCatalogosPrototiposAccion.prototipo.diasDefault}"/>
 								</p:selectCheckboxMenu>
 								<p:spacer width="1px"/><p:separator/>	
@@ -75,7 +76,7 @@
               </p:panelGrid>
 						</p:tab>										
 						<p:tab title="Sistemas constructivos">
-              <p:panelGrid id="panelTablaConstructivos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+              <p:panelGrid id="panelTablaConstructivos" columns="1" layout="grid" styleClass="janal-wid-100-txt janal-panel-tabla" columnClasses="janal-wid-100-txt">
                 <p:dataTable id="tablaConstructivos" rowIndexVar="index" var="constructivo" value="#{keetCatalogosPrototiposAccion.prototipo.constructivos}" rows="6" paginator="false" reflow="true" rowKey="#{constructivo.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Tipo de sistema (Grupo - Nombre)" class="janal-wid-30">										
                     <p:selectOneMenu value="#{constructivo.ikConstructivo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
