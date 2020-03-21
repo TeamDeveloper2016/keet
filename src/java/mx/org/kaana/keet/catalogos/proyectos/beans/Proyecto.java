@@ -134,10 +134,11 @@ public class Proyecto extends TcKeetProyectosDto{
 			if(lote.getIkPrototipo()!= null && lote.getIdPrototipo()>0L){
 			  tcKeetPrototiposDto= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, lote.getIdPrototipo());
 				lote.setDiasConstruccion(tcKeetPrototiposDto.getDiasConstruccion());
-				if(tcKeetPrototiposDto.getIdTipoDia().equals(1L))
+				if(tcKeetPrototiposDto.getIdTipoDia().equals(1L)) // dias naturales
 				  lote.setFechaTermino(lote.getFechaInicio().plusDays(tcKeetPrototiposDto.getDiasConstruccion()));
-				else
+				else{
 					lote.setFechaTermino(lote.getFechaInicio().plusDays(tcKeetPrototiposDto.getDiasConstruccion()));
+				} // else
 				//lote.getFechaInicio().
 			} // if
     } // try
