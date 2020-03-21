@@ -32,7 +32,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   private String clave;
   @Column (name="id_puesto")
   private Long idPuesto;
-  @Column (name="idContrato")
+  @Column (name="id_contrato")
   private Long idContrato;
   @Column (name="factor_infonavit")
   private Double factorInfonavit;

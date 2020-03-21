@@ -240,8 +240,10 @@ public class RegistroEmpresa implements Serializable{
 					record.setIdPrincipal(0L);
 			} // if
 			empresaDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);			
-			empresaDomicilio.setDomicilio(this.domicilio.getDomicilio());
-			empresaDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
+			if(this.domicilio.getDomicilio()!= null){
+				empresaDomicilio.setDomicilio(this.domicilio.getDomicilio());
+				empresaDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
+			} // if
 			empresaDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			empresaDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)

@@ -2,9 +2,13 @@ package mx.org.kaana.keet.catalogos.proyectos.beans;
 
 import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
 public class Proyecto extends TcKeetProyectosDto{
@@ -123,6 +127,25 @@ public class Proyecto extends TcKeetProyectosDto{
 		} // catch
 		return regresar;
 	} // removeLote	
+	
+	public void doCalculateFecha(Lote lote){
+		TcKeetPrototiposDto tcKeetPrototiposDto= null;
+	  try {
+			if(lote.getIkPrototipo()!= null && lote.getIdPrototipo()>0L){
+			  tcKeetPrototiposDto= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, lote.getIdPrototipo());
+				lote.setDiasConstruccion(tcKeetPrototiposDto.getDiasConstruccion());
+				if(tcKeetPrototiposDto.getIdTipoDia().equals(1L)) // dias naturales
+				  lote.setFechaTermino(lote.getFechaInicio().plusDays(tcKeetPrototiposDto.getDiasConstruccion()));
+				else{
+					lote.setFechaTermino(lote.getFechaInicio().plusDays(tcKeetPrototiposDto.getDiasConstruccion()));
+				} // else
+				//lote.getFechaInicio().
+			} // if
+    } // try
+    catch (Exception e) {
+      JsfBase.addMessageError(e);
+    } // catch		
+	} // doCalculateFecha
 	
   @Override
   public Class toHbmClass() {

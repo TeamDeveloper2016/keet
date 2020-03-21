@@ -22,7 +22,7 @@
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:codigoPostal': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:cp': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:cp': {validaciones: 'requerido', mascara: 'numero', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:interior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
@@ -57,7 +57,7 @@
         <div class="ui-grid-col-12">					          
 					<p:spacer/>
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">            
-            <p:ajax event="tabChange" process="@this" update="tablaContactos" oncomplete="janal.refresh();"/>
+            <p:ajax event="tabChange" process="@this" update="tablaContactos" oncomplete="janal.refresh();janal.alignCp();"/>
             <p:tab title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave:"/>
@@ -66,8 +66,8 @@
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" />                    
                 <p:outputLabel for="razonSocial" value="Razon social:"/>
                 <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.razonSocial}"/>                                    
-								<p:outputLabel for="tipoVenta" value="Tipo de venta:" rendered="#{manticCatalogosClientesAccion.attrs.admin}"/>
-								<p:selectOneMenu id="tipoVenta" value="#{manticCatalogosClientesAccion.registroCliente.cliente.idTipoVenta}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
+								<p:outputLabel for="tipoVenta" value="Tipo de venta:"/>
+								<p:selectOneMenu id="tipoVenta" value="#{manticCatalogosClientesAccion.registroCliente.cliente.idTipoVenta}" styleClass="janal-wid-100-txt">
 									<f:selectItems value="#{manticCatalogosClientesAccion.attrs.tiposVentas}"/>
 								</p:selectOneMenu>
               </p:panelGrid>
@@ -75,20 +75,20 @@
             <p:tab title="Domicilios">
               <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-130, janal-wid-80">
                 <p:dataList id="tablaDomicilios" value="#{manticCatalogosClientesAccion.registroCliente.clientesDomicilio}" var="domicilio" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
-                  <p:commandLink update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Eliminar" action="#{manticCatalogosClientesAccion.doEliminarDomicilio}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
+                  <p:commandLink update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Eliminar" action="#{manticCatalogosClientesAccion.doEliminarDomicilio}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();">                    
 										<f:setPropertyActionListener value="#{domicilio}" target="#{manticCatalogosClientesAccion.registroCliente.clienteDomicilioSelecion}" />
 										<i class="fa fa-minus-square fa-lg"></i>   
                   </p:commandLink>		
-									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Actualizar" action="#{manticCatalogosClientesAccion.doActualizaDomicilio}" rendered="#{domicilio.modificar}">
+									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();" update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Actualizar" action="#{manticCatalogosClientesAccion.doActualizaDomicilio}" rendered="#{domicilio.modificar}">
                     <f:setPropertyActionListener value="#{domicilio}" target="#{manticCatalogosClientesAccion.registroCliente.clienteDomicilioSelecion}" />
 										<i class="fa fa-check-square fa-lg"></i>
                   </p:commandLink>																				
-									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Domicilio #{domicilio.consecutivo} #{domicilio.idPrincipal eq 1 ? '[Principal]' : ''}" action="#{manticCatalogosClientesAccion.doConsultarClienteDomicilio}">
+									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();" update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Domicilio #{domicilio.consecutivo} #{domicilio.idPrincipal eq 1 ? '[Principal]' : ''}" action="#{manticCatalogosClientesAccion.doConsultarClienteDomicilio}">
                     <f:setPropertyActionListener value="#{domicilio}" target="#{manticCatalogosClientesAccion.registroCliente.clienteDomicilioSelecion}" />		
 										<p:outputLabel value="Dirección #{domicilio.consecutivo} #{domicilio.idPrincipal eq 1 ? ' * ' : ''}"/>
                   </p:commandLink>                                                                        
                   <f:facet name="footer" class="alinear-izquierda">																
-                    <p:commandLink title="Agregar domicilio" action="#{manticCatalogosClientesAccion.doAgregarCliente}" process="@this contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" update="contenedorGrupos:tablaDomicilios contenedorGrupos:formularioDomicilio" onstart="return janal.partial('domicilio', true);" oncomplete="janal.refresh();janal.desbloquear();">
+                    <p:commandLink title="Agregar domicilio" action="#{manticCatalogosClientesAccion.doAgregarCliente}" process="@this contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" update="contenedorGrupos:tablaDomicilios contenedorGrupos:formularioDomicilio" onstart="return janal.partial('domicilio', true);" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();">
 											<i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar dirección"/></i>
 										</p:commandLink>		              										
                   </f:facet>
@@ -243,7 +243,7 @@
 									</p:panelGrid>
 							</p:panelGrid>
             </p:tab>          
-            <p:tab title="Credito" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
+            <p:tab title="Credito">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 								<p:outputLabel for="habilitarCredito" value="Habilitar credito:"/>
                 <p:selectBooleanCheckbox id="habilitarCredito" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.habilitarCredito}"/>
@@ -255,7 +255,7 @@
                 <p:inputNumber id="saldo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.saldo}" decimalPlaces="0" disabled="true"/>
 							</p:panelGrid>
 						</p:tab>
-						<p:tab title="Portal" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
+						<p:tab title="Portal">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100-txt">
 								<p:outputLabel for="pagina" value="Pagina:"/>
                 <p:inputText id="pagina" value="#{manticCatalogosClientesAccion.registroCliente.portal.pagina}" styleClass="janal-wid-100-txt"/>                    
@@ -265,7 +265,7 @@
                 <p:inputText id="contrasenia" value="#{manticCatalogosClientesAccion.registroCliente.portal.contrasenia}" styleClass="janal-wid-100-txt"/>                    
 							</p:panelGrid>
 						</p:tab>
-						<p:tab title="Banca" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
+						<p:tab title="Banca">
 							<p:fieldset legend="Cuentas de servicios">
 								<p:panelGrid id="panelTablaServicios" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaServicios" rowIndexVar="index" var="servicio" value="#{manticCatalogosClientesAccion.registroCliente.clientesServicio}" rows="6" paginator="false" reflow="true" rowKey="#{servicio.key}" emptyMessage=" " styleClass="paginated">																					
@@ -368,7 +368,7 @@
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" update="contenedorGrupos:panelTablaDomicilios"  value="Aceptar" action="#{manticCatalogosClientesAccion.doAsignaDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();janal.refresh();"/>
+					<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" update="contenedorGrupos:panelTablaDomicilios"  value="Aceptar" action="#{manticCatalogosClientesAccion.doAsignaDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();janal.refresh();janal.alignCp();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
