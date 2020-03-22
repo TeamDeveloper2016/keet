@@ -151,7 +151,7 @@ public class Importar extends IBaseImportar implements Serializable {
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("prototipos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");			
-      temp.append(toClave());
+      temp.append(this.toClave());
       temp.append("/");      
 			path.append(temp.toString());
 			result= new File(path.toString());		
@@ -182,7 +182,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		try {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
 			clienteSeleccion= clientes.get(clientes.indexOf(this.prototipo.getPrototipo().getIkCliente()));
-			regresar= clienteSeleccion.toString("clave");
+			regresar= String.valueOf(clienteSeleccion.getKey());
 		} // try
 		catch (Exception e) {			
 			throw e;
