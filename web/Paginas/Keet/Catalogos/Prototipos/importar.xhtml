@@ -57,15 +57,6 @@
             <p:ajax event="tabChange" listener="#{keetCatalogosPrototiposImportar.doTabChange}" process="@this" update="@(.importado)"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-96, janal-wid-col-38">		
-                <p:outputLabel for="clave" value="Codigo:"/>
-								<p:inputText id="clave" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.clave}" />			
-								<p:outputLabel for="nombre" value="Nombre:"/>
-                <p:inputText id="nombre" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.nombre}" />
-                <p:outputLabel for="descripcion" value="Descripción:"/>
-                <p:inputText id="descripcion" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.descripcion}" />								
-								<p:outputLabel for="metros" value="Metros cuadrados:"/>
-                <p:inputNumber id="metros" readonly="true" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.metros2}" />																								
-								<p:spacer width="1px"/><p:separator/>	
                 <p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" disabled="true"  value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
@@ -76,6 +67,15 @@
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 								</p:selectOneMenu>
+								<p:spacer width="1px"/><p:separator/>	
+                <p:outputLabel for="clave" value="Codigo:"/>
+								<p:inputText id="clave" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.clave}" />			
+								<p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.nombre}" />
+                <p:outputLabel for="descripcion" value="Descripción:"/>
+                <p:inputText id="descripcion" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.descripcion}" />								
+								<p:outputLabel for="metros" value="Metros cuadrados:"/>
+                <p:inputNumber id="metros" readonly="true" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.metros2}" />																								
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">
