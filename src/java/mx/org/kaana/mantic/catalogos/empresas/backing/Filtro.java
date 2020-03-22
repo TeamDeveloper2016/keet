@@ -38,6 +38,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("titulo", "");
       this.attrs.put("sortOrder", "order by tc_mantic_empresas.nombre");
 			loadTiposEmpresa();
+			if(JsfBase.getFlashAttribute("idEmpresaProcess") != null){
+				this.attrs.put("sortOrder", " and tc_mantic_empresas.id_empresa=" + JsfBase.getFlashAttribute("idEmpresaProcess") + " order by tc_mantic_empresas.nombre");
+				doLoad();
+				this.attrs.put("sortOrder", "order by tc_mantic_empresas.nombre");
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -74,6 +79,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			} // for
 			tiposEmpresas.add(0, new UISelectItem(all.substring(0, all.length()-1), "TODOS"));
 			this.attrs.put("tiposEmpresa", tiposEmpresas);
+			this.attrs.put("tipoEmpresa", UIBackingUtilities.toFirstKeySelectItem(tiposEmpresas));
 		} // try
 		catch (Exception e) {			
 			throw e;

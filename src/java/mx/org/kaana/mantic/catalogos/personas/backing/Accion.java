@@ -15,6 +15,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.enums.ESemaforos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
@@ -288,6 +289,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       } // switch
 			this.registroPersona.getPersona().setEstilo(TEMA);
 			this.registroPersona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
+			doActualizaIconEstatus();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -295,6 +297,15 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doLoad
 
+	public void doActualizaIconEstatus(){
+		String icon= ESemaforos.ROJO.getNombre();
+		if(this.registroPersona.isActivo() && !Cadena.isVacio(this.registroPersona.getEmpresaPersona().getNss()))
+			icon= ESemaforos.VERDE.getNombre();
+		else if(this.registroPersona.isActivo() && Cadena.isVacio(this.registroPersona.getEmpresaPersona().getNss()))
+			icon= ESemaforos.AMARILLO.getNombre();
+		this.attrs.put("iconEstatus", icon);
+	} // doActualizaIconEstatus
+	
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
@@ -1021,6 +1032,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("empresa", ((List<UISelectItem>)this.attrs.get("empresas")).get(0).getValue());
 			this.attrs.put("idEmpresaPivote", this.attrs.get("empresa"));
 		} // if
+		if(event.getTab().getTitle().equals("General"))
+			doActualizaIconEstatus();		
 		if(event.getTab().getTitle().equals("Empresa")){				
 			UIBackingUtilities.update("contenedorGrupos:empresa");			
 			if(((EAccion) this.attrs.get("accion")).equals(EAccion.CONSULTAR))

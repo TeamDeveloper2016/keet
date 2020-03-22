@@ -156,6 +156,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       transaccion = new Transaccion(this.registroCliente);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 				JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
+				JsfBase.setFlashAttribute("idClienteProcess", this.registroCliente.getCliente().getIdCliente());				
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
@@ -172,6 +173,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public String doCancelar() {
 		JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
+		JsfBase.setFlashAttribute("idClienteProcess", this.registroCliente.getCliente().getIdCliente());				
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion
 

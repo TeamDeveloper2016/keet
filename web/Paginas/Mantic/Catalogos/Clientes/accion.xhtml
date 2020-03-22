@@ -112,7 +112,7 @@
 									<p:spacer height="5px"/><p:spacer height="5px"/>
 									<p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
-                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();"/>
 										<f:selectItems value="#{manticCatalogosClientesAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
@@ -123,7 +123,7 @@
                   </p:selectOneMenu>								
                   <p:outputLabel for="municipio" value="Municipio:"/>
                   <p:selectOneMenu id="municipio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
-                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doActualizaLocalidades}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doActualizaLocalidades}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();"/>
 										<f:selectItems value="#{manticCatalogosClientesAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
@@ -260,32 +260,7 @@
                 <p:inputText id="contrasenia" value="#{manticCatalogosClientesAccion.registroCliente.portal.contrasenia}" styleClass="janal-wid-100-txt"/>                    
 							</p:panelGrid>
 						</p:tab>
-						<p:tab title="Banca">
-							<p:fieldset legend="Cuentas de servicios">
-								<p:panelGrid id="panelTablaServicios" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-									<p:dataTable id="tablaServicios" rowIndexVar="index" var="servicio" value="#{manticCatalogosClientesAccion.registroCliente.clientesServicio}" rows="6" paginator="false" reflow="true" rowKey="#{servicio.key}" emptyMessage=" " styleClass="paginated">																					
-										<p:column headerText="Banco">										
-											<p:selectOneMenu id="banco#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.idBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!servicio.nuevo}">
-												<f:selectItems value="#{manticCatalogosClientesAccion.attrs.bancos}"/>
-											</p:selectOneMenu> 				
-										</p:column>	
-										<p:column headerText="Convenio" styleClass="janal-wid-30 bancaconvenio">		
-											<p:inputText id="bancaconvenio#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.convenioCuenta}" disabled="#{!servicio.nuevo}"/>                    																																			
-										</p:column>
-										<p:column headerText="Referencia" styleClass="janal-wid-30 bancavalor">		
-											<p:inputText id="bancavalor#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.claveReferencia}" disabled="#{!servicio.nuevo}"/>                    																																			
-										</p:column>
-										<p:column style="width:32px;text-align: center">
-											<p:commandButton update="tablaServicios" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarClienteServicio}">
-												<f:setPropertyActionListener value="#{servicio}" target="#{manticCatalogosClientesAccion.registroCliente.clienteServicioSeleccion}" />
-											</p:commandButton>
-										</p:column>
-										<f:facet name="footer">
-											<p:commandButton actionListener="#{manticCatalogosClientesAccion.registroCliente.doAgregarClienteServicio}" process="@this tablaServicios" update="tablaServicios" icon="fa fa-plus"/>						
-										</f:facet>
-									</p:dataTable>	
-								</p:panelGrid>	
-							</p:fieldset>
+						<p:tab title="Banca">							
 							<p:fieldset legend="Cuentas de transferencia">
 								<p:panelGrid id="panelTablaTransferia" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaTransferencia" rowIndexVar="index" var="transferencia" value="#{manticCatalogosClientesAccion.registroCliente.clientesTransferencia}" rows="6" paginator="false" reflow="true" rowKey="#{transferencia.key}" emptyMessage=" " styleClass="paginated">																					

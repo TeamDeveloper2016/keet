@@ -34,6 +34,11 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			if(JsfBase.getFlashAttribute("idPrototipoProcess")!= null){
+				this.attrs.put("idPrototipoProcess", JsfBase.getFlashAttribute("idPrototipoProcess"));
+				doLoad();
+				this.attrs.put("idPrototipoProcess", null);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -143,6 +148,8 @@ public List<UISelectEntity> doCompleteCliente(String codigo) {
 		StringBuilder sb              = new StringBuilder();
     UISelectEntity cliente        = (UISelectEntity)this.attrs.get("cliente");
     List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("clientes");
+		if(this.attrs.get("idPrototipoProcess")!= null && !Cadena.isVacio(this.attrs.get("idPrototipoProcess")))
+			sb.append("tc_keet_prototipos.id_prototipo=").append(this.attrs.get("idPrototipoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
 			sb.append("(tc_keet_prototipos.nombre like '%").append(this.attrs.get("nombre")).append("%') and ");
     if(provedores!= null && cliente!= null && provedores.indexOf(cliente)>= 0) 
@@ -167,5 +174,4 @@ public List<UISelectEntity> doCompleteCliente(String codigo) {
     //JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PROVEEDORES.getId());
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
-
 }

@@ -48,6 +48,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idPrincipal", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());     
 			this.loadCreditos();
+			if(JsfBase.getFlashAttribute("idClienteProcess")!= null){
+				this.attrs.put("idClienteProcess", JsfBase.getFlashAttribute("idClienteProcess"));
+				doLoad();
+				this.attrs.put("idClienteProcess", null);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -115,6 +120,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 				condicion.append("tc_mantic_clientes.rfc like '%").append(this.attrs.get("rfc")).append("%' and ");
 			if(!Cadena.isVacio(this.attrs.get("clave")))
 				condicion.append("tc_mantic_clientes.clave like '%").append(this.attrs.get("clave")).append("%' and ");
+			if(this.attrs.get("idClienteProcess")!= null && !Cadena.isVacio(this.attrs.get("idClienteProcess")))
+				condicion.append("tc_mantic_clientes.id_cliente =").append(this.attrs.get("idClienteProcess")).append(" and ");
 			if(Cadena.isVacio(condicion))
 				regresar= Constantes.SQL_VERDADERO;
 			else
