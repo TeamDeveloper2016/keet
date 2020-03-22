@@ -41,6 +41,17 @@
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
+                <p:outputLabel for="idCliente" value="Cliente:"/>
+								<p:selectOneMenu id="idCliente" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.razonSocial}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:spacer width="1px"/><p:separator/>	
                 <p:outputLabel for="clave" value="Codigo:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.clave}" />			
 								<p:outputLabel for="nombre" value="Nombre:"/>
@@ -62,17 +73,6 @@
 								<p:selectCheckboxMenu id="dias" value="#{keetCatalogosPrototiposAccion.prototipo.diasSeleccionados}" label="Dias" styleClass="janal-wid-99 diasSemana" multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width:250px" style="display: #{keetCatalogosPrototiposAccion.prototipo.prototipo.idTipoDia eq 2? '': 'none'}">
 									<f:selectItems value="#{keetCatalogosPrototiposAccion.prototipo.diasDefault}"/>
 								</p:selectCheckboxMenu>
-								<p:spacer width="1px"/><p:separator/>	
-                <p:outputLabel for="idCliente" value="Cliente:"/>
-								<p:selectOneMenu id="idCliente" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.razonSocial}"/>
-									</p:column>   
-								</p:selectOneMenu>
               </p:panelGrid>
 						</p:tab>										
 						<p:tab title="Sistemas constructivos">
