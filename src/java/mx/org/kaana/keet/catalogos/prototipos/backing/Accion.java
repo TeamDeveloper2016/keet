@@ -101,6 +101,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");      
 			transaccion = new Transaccion(this.prototipo);
 			if (transaccion.ejecutar(eaccion)) {
+				JsfBase.setFlashAttribute("idPrototipoProcess", this.prototipo.getPrototipo().getIdPrototipo());
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);				
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el prototipo de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
@@ -115,7 +116,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-		JsfBase.setFlashAttribute("idPrototipo", this.prototipo.getIdPrototipo());
+		JsfBase.setFlashAttribute("idPrototipoProcess", this.prototipo.getPrototipo().getIdPrototipo());
     return (String) this.attrs.get("retorno");
   } // doCancelar	
 }

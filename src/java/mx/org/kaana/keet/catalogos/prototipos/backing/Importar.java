@@ -3,7 +3,9 @@ package mx.org.kaana.keet.catalogos.prototipos.backing;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -58,8 +60,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {		
-    try {
-      //this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
+    try {      
 			if(JsfBase.getFlashAttribute("idPrototipo")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.attrs.put("idPrototipo", JsfBase.getFlashAttribute("idPrototipo"));
@@ -69,8 +70,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			setFile(new Importado());
 			this.attrs.put("file", ""); 
 			this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
-			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			this.attrs.put("planos", UIEntity.seleccione("VistaPrototiposDto", "getPlanosEspecialidades",this.attrs, "descripcion"));			
+			loadCombos();
 			this.prototipo= new RegistroPrototipo(Long.valueOf(this.attrs.get("idPrototipo").toString()));						
     } // try
     catch (Exception e) {
@@ -78,6 +78,48 @@ public class Importar extends IBaseImportar implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init
+	
+	public void loadCombos(){
+		List<UISelectEntity> especialidades= null;
+		UISelectEntity especialidad        = null;
+		Map<String, Object>params          = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			especialidades= UIEntity.seleccione("TcKeetEspecialidadesDto", "row", params, "nombre");
+      this.attrs.put("especialidades", especialidades);			
+      especialidad= UIBackingUtilities.toFirstKeySelectEntity(especialidades);		
+			this.attrs.put("especialidad", especialidad);			
+			doActualizaPlanos();			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadCombos
+	
+	public void doActualizaPlanos(){
+		List<UISelectEntity> planos= null;
+		Map<String, Object>params  = null;
+		UISelectEntity especialidad= null;
+		try {
+			params= new HashMap<>();
+			especialidad= (UISelectEntity) this.attrs.get("especialidad");
+			params.put(Constantes.SQL_CONDICION, "id_especialidad=" + especialidad.getKey());
+			planos= UIEntity.seleccione("TcKeetPlanosDto", "row", params, "nombre");
+      this.attrs.put("planos", planos);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doActualizaPlanos
 	
 	@Override
 	public void doLoad() {
@@ -88,7 +130,7 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-		  this.attrs.put("importados", UIEntity.build("VistaPrototiposDto", "getImportados", this.attrs, columns));
+		  this.attrs.put("importados", UIEntity.build("VistaPrototiposDto", "importados", this.attrs, columns));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -151,13 +193,13 @@ public class Importar extends IBaseImportar implements Serializable {
 	private TcKeetPrototiposArchivosDto toProtipoArchivo(){
 		TcKeetPrototiposArchivosDto regresar= null;
 		regresar= new TcKeetPrototiposArchivosDto(
-			-1L, 
+			((UISelectEntity)this.attrs.get("plano")).getKey(),
 			this.getFile().getName(), 
 			this.getFile().getRuta(), 
 			this.getFile().getFileSize(), 
 			JsfBase.getIdUsuario(), 
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 
-			this.getFile().getObservaciones(), 
+			this.attrs.get("observaciones").toString(), 
 			-1L, 			
 			Configuracion.getInstance().getPropiedadSistemaServidor("prototipos").concat(this.getFile().getRuta()).concat(this.getFile().getName()),
 			this.prototipo.getIdPrototipo(), 
@@ -168,38 +210,11 @@ public class Importar extends IBaseImportar implements Serializable {
 	
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoad();
-		/*else
-		  if(event.getTab().getTitle().equals("Importar")) 
-				this.doLoadFiles();*/
+			this.doLoad();		
 	}	// doTabChange	
 
-	/*private void doLoadFiles() {
-		TcKeetPrototiposArchivosDto tmp= null;
-		if(1> 0) {
-			Map<String, Object> params=null;
-			try {
-				params=new HashMap<>();
-				//params.put("idClienteDeuda", this.idClienteDeuda);				
-				params.put("idTipoArchivo", 2L);
-					tmp= (TcKeetPrototiposArchivosDto) DaoFactory.getInstance().toEntity(TcKeetPrototiposArchivosDto.class, "VistaClientesDto", "existsPagos", params); 
-				if(tmp!= null) {
-					setFile(new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones()));
-  				this.attrs.put("file", getFile().getName()); 
-				} // if	
-			} // try
-			catch (Exception e) {
-				Error.mensaje(e);
-				JsfBase.addMessageError(e);
-			} // catch
-			finally {
-				Methods.clean(params);
-			} // finally
-		} // if
-	} // doLoadFiles	*/
-
   public String doCancelar() {   
-		//JsfBase.setFlashAttribute("idClienteDeuda", this.idClienteDeuda);
+		JsfBase.setFlashAttribute("idPrototipoProcess", this.prototipo.getIdPrototipo());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
