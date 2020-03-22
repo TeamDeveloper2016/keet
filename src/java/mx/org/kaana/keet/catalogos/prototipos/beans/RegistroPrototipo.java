@@ -28,7 +28,7 @@ public class RegistroPrototipo implements Serializable {
 	private Prototipo prototipo;
 	private List<SistemaConstructivo> constructivos;
 	private SistemaConstructivo constructivoSeleccion;
-	private List<TcKeetPrototiposArchivosDto> documentos;
+	private List<Documento> documentos;
 	private List<String> dias;
 	private List<String> diasDefault;
 	private String[] diasSeleccionados;
@@ -39,7 +39,7 @@ public class RegistroPrototipo implements Serializable {
 		this(-1L, new Prototipo(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	} // RegistroPrototipo
 	
-	public RegistroPrototipo(Long idPrototipo, Prototipo prototipo, List<SistemaConstructivo> constructivos, List<TcKeetPrototiposArchivosDto> documentos, List<String> dias) {
+	public RegistroPrototipo(Long idPrototipo, Prototipo prototipo, List<SistemaConstructivo> constructivos, List<Documento> documentos, List<String> dias) {
 		this.prototipo    = prototipo;
 		this.constructivos= constructivos;
 		this.documentos   = documentos;		
@@ -99,11 +99,11 @@ public class RegistroPrototipo implements Serializable {
 		this.constructivos = constructivos;
 	}	
 
-	public List<TcKeetPrototiposArchivosDto> getDocumentos() {
+	public List<Documento> getDocumentos() {
 		return documentos;
 	}
 
-	public void setDocumentos(List<TcKeetPrototiposArchivosDto> documentos) {
+	public void setDocumentos(List<Documento> documentos) {
 		this.documentos = documentos;
 	}
 

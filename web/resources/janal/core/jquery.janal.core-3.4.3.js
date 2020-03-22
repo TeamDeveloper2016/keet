@@ -685,7 +685,13 @@
       } // if  
       else
         $janal.show([{summary: 'No existe el ID', detail: 'El elemento llamado['+ id+ '] no existe !!!'}]);
-    }, // refresh
+    }, // renovate
+    renovates: function(items) {
+      $janal.console('janal.renovates');
+			$.each(items, function() {
+				$janal.renovate(this.id, this.value) 
+			});
+    }, // renovates
     whatIsIt: function(object) {
       var stringConstructor = "janal".constructor;
       var arrayConstructor = [].constructor;

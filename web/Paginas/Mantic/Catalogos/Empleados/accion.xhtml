@@ -30,10 +30,10 @@
 				'contenedorGrupos\\:nss'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:infonavit'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:factorInfonavit': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:sueldoSemanal': {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:sueldoSemanal': {validaciones: 'libre|flotante', mascara: 'libre', grupo: 'general'},
 				// 'contenedorGrupos\\:sueldoMensual': {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				// 'contenedorGrupos\\:diarioImss'   : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:mensualImss'  : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:mensualImss'  : {validaciones: 'libre|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idNomina'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:empresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:entidad'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
@@ -167,7 +167,7 @@
 							<p:panelGrid id="panelPrestaciones" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
 								<p:outputLabel value="Seguro social" style="font-weight: bold"/><p:spacer/>
 								<p:outputLabel for="nss" value="Nss:"/>
-								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}" />                    
+								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}" onblur="$('#contenedorGrupos\\:nss').val().trim().length> 0? janal.renovates([{id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'requerido|flotante', mascara: 'libre'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'requerido|flotante', mascara: 'libre'}}]): janal.renovates([{id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'libre', mascara: 'libre'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'libre', mascara: 'libre'}}]);"/>
 								<p:outputLabel for="sueldoSemanal" value="Deposito semanal:"/>								
 								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}"/>                    
 								<p:outputLabel for="mensualImss" value="Sueldo IMSS semanal:"/>								                 

@@ -42,9 +42,9 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			this.attrs.put("curp", "");
       this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");     
       this.attrs.put("idTipoPersona", ETipoPersona.EMPLEADO.getIdTipoPersona());
-			loadEmpresas();
-			loadTiposPersonas();
-			loadContratistas();
+			this.loadEmpresas();
+			this.loadTiposPersonas();
+			this.loadContratistas();
 			if(JsfBase.getFlashAttribute("idPersona")!= null){
 				this.attrs.put("idPersona", JsfBase.getFlashAttribute("idPersona"));
 				doLoad();
@@ -57,7 +57,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
     } // catch		
   } // init
   
-	private void loadEmpresas(){
+	private void loadEmpresas() {
 		Map<String, Object>params= null;
 		List<Columna> columns    = null;
 		try {

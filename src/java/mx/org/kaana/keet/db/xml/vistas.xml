@@ -56,7 +56,8 @@
           tc_mantic_clientes.razon_social
         from
           tc_keet_prototipos
-        inner join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_prototipos.id_cliente
+        inner 
+				  join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_prototipos.id_cliente
         where
           {condicion}
 				  {sortOrder}

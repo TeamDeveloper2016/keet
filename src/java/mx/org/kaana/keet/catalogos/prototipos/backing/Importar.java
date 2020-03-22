@@ -22,6 +22,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.keet.catalogos.prototipos.beans.Documento;
 import mx.org.kaana.keet.catalogos.prototipos.beans.RegistroPrototipo;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposArchivosDto;
@@ -70,7 +71,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			setFile(new Importado());
 			this.attrs.put("file", ""); 
 			this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
-			loadCombos();
+			this.loadCombos();
 			this.prototipo= new RegistroPrototipo(Long.valueOf(this.attrs.get("idPrototipo").toString()));						
     } // try
     catch (Exception e) {
@@ -79,7 +80,7 @@ public class Importar extends IBaseImportar implements Serializable {
     } // catch		
   } // init
 	
-	public void loadCombos(){
+	public void loadCombos() {
 		List<UISelectEntity> especialidades= null;
 		UISelectEntity especialidad        = null;
 		Map<String, Object>params          = null;
@@ -90,7 +91,7 @@ public class Importar extends IBaseImportar implements Serializable {
       this.attrs.put("especialidades", especialidades);			
       especialidad= UIBackingUtilities.toFirstKeySelectEntity(especialidades);		
 			this.attrs.put("especialidad", especialidad);			
-			doActualizaPlanos();			
+			this.doActualizaPlanos();			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -100,7 +101,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // finally
 	} // loadCombos
 	
-	public void doActualizaPlanos(){
+	public void doActualizaPlanos() {
 		List<UISelectEntity> planos= null;
 		Map<String, Object>params  = null;
 		UISelectEntity especialidad= null;
@@ -190,10 +191,22 @@ public class Importar extends IBaseImportar implements Serializable {
 		return regresar;
 	} // toClave
 	
-	private TcKeetPrototiposArchivosDto toProtipoArchivo(){
-		TcKeetPrototiposArchivosDto regresar= null;
-		regresar= new TcKeetPrototiposArchivosDto(
-			((UISelectEntity)this.attrs.get("plano")).getKey(),
+	private Documento toProtipoArchivo(){
+		UISelectEntity especialidad= (UISelectEntity)this.attrs.get("especialidad");
+		List<UISelectEntity> especialidades= (List<UISelectEntity>)this.attrs.get("especialidades");
+		if(especialidad!= null && especialidades.indexOf(especialidad)>= 0)
+			especialidad= especialidades.get(especialidades.indexOf(especialidad));
+		else
+			especialidad= especialidades.get(0);
+		UISelectEntity plano= (UISelectEntity)this.attrs.get("plano");
+		List<UISelectEntity> planos= (List<UISelectEntity>)this.attrs.get("planos");
+		if(plano!= null && planos.indexOf(plano)>= 0)
+			plano= planos.get(planos.indexOf(plano));
+		else
+			plano= planos.get(0);
+		Documento regresar= null;
+		regresar= new Documento(
+			plano.getKey(),
 			this.getFile().getName(), 
 			this.getFile().getRuta(), 
 			this.getFile().getFileSize(), 
@@ -203,7 +216,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			-1L, 			
 			Configuracion.getInstance().getPropiedadSistemaServidor("prototipos").concat(this.getFile().getRuta()).concat(this.getFile().getName()),
 			this.prototipo.getIdPrototipo(), 
-			this.getFile().getOriginal()
+			this.getFile().getOriginal(),
+			especialidad.toString("nombre"),
+			plano.toString("nombre")
 		);
 		return regresar;
 	} // toPrototipoArchivo

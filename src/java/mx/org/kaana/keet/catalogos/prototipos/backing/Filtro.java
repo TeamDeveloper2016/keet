@@ -33,12 +33,13 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			if(JsfBase.getFlashAttribute("idPrototipoProcess")!= null){
 				this.attrs.put("idPrototipoProcess", JsfBase.getFlashAttribute("idPrototipoProcess"));
-				doLoad();
+				this.doLoad();
 				this.attrs.put("idPrototipoProcess", null);
 			} // if
+      this.loadEmpresas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -71,6 +72,24 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(columns);
     } // finally		
   } // doLoad
+
+	private void loadEmpresas() {
+		Map<String, Object>params= null;
+		List<Columna> columns    = null;
+		try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();			
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // loadEmpresas
 
   public String doAccion(String accion) {
     String regresar= null;
@@ -148,6 +167,10 @@ public List<UISelectEntity> doCompleteCliente(String codigo) {
 		StringBuilder sb              = new StringBuilder();
     UISelectEntity cliente        = (UISelectEntity)this.attrs.get("cliente");
     List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("clientes");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
+			sb.append("(tc_mantic_clientes.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
+		else
+			sb.append("(tc_mantic_clientes.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
 		if(this.attrs.get("idPrototipoProcess")!= null && !Cadena.isVacio(this.attrs.get("idPrototipoProcess")))
 			sb.append("tc_keet_prototipos.id_prototipo=").append(this.attrs.get("idPrototipoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
