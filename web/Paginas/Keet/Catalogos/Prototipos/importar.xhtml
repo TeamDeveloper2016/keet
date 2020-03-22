@@ -64,7 +64,7 @@
                 <p:outputLabel for="descripcion" value="Descripción:"/>
                 <p:inputText id="descripcion" readonly="true" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.descripcion}" />								
 								<p:outputLabel for="metros" value="Metros cuadrados:"/>
-                <p:inputNumber id="metros" readonly="true" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.metros2}" />																								
+                <p:inputNumber id="metros" readonly="true" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.metros2}" />																								
 								<p:spacer width="1px"/><p:separator/>	
                 <p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" disabled="true"  value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
