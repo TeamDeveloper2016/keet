@@ -43,7 +43,7 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
                 <p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" value="#{keetCatalogosPrototiposAccion.prototipo.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+									<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '-'} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -78,7 +78,7 @@
 						<p:tab title="Sistemas constructivos">
               <p:panelGrid id="panelTablaConstructivos" columns="1" layout="grid" styleClass="janal-wid-100-txt janal-panel-tabla" columnClasses="janal-wid-100-txt">
                 <p:dataTable id="tablaConstructivos" rowIndexVar="index" var="constructivo" value="#{keetCatalogosPrototiposAccion.prototipo.constructivos}" rows="6" paginator="false" reflow="true" rowKey="#{constructivo.key}" emptyMessage=" " styleClass="paginated">																					
-                  <p:column headerText="Tipo de sistema (Grupo - Nombre)" class="janal-wid-30">										
+                  <p:column headerText="Tipo de sistema" class="janal-wid-30">										
                     <p:selectOneMenu value="#{constructivo.ikConstructivo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
 											<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.constructivos}"  var="element" itemValue="#{element}" itemLabel="#{element.grupo} - #{element.descripcion}"/>
 											<p:column headerText="Grupo">

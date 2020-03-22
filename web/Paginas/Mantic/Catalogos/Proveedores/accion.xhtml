@@ -128,7 +128,7 @@
 										</p:commandLink>		              										
                   </f:facet>
                 </p:dataList>
-                <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-180, janal-wid-100-txt">
+                <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-200, janal-wid-100-txt">
 									<p:outputLabel for="domicilio" value="Domicilio:"/>
                   <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-96, janal-wid-col-38">
 										<p:selectOneMenu id="domicilio" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
@@ -235,7 +235,7 @@
                 </p:dataTable>	
               </p:panelGrid>	
             </p:tab>
-            <p:tab id="tabTablaContactos" title="Contacto">
+            <p:tab id="tabTablaContactos" title="Telefono(s)">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="tipoContacto" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresTipoContacto}" rows="6" paginator="false" reflow="true" rowKey="#{tipoContacto.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Tipo contacto">										

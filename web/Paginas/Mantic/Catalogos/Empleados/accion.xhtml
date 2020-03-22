@@ -158,9 +158,9 @@
 									</p:column>   
 								</p:selectOneMenu>	
 								<p:outputLabel for="fechaIngreso" value="Fecha ingreso:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:calendar id="fechaIngreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaIngreso}" placeholder="ejemplo 12/03/2019" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:calendar id="fechaIngreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaIngreso}" placeholder="ejemplo 12/03/2019" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="fechaContrato" value="Fecha contratación:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:calendar id="fechaContrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaContratacion}" placeholder="ejemplo 12/03/2019"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:calendar id="fechaContrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaContratacion}" placeholder="ejemplo 12/03/2019"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
               </p:panelGrid>
 						</p:tab>	
             <p:tab title="Prestaciones">
@@ -354,7 +354,7 @@
                 </p:dataTable>	
               </p:panelGrid>	
             </p:tab>
-						<p:tab title="Contacto">
+						<p:tab title="Telefono(s)">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="contacto" value="#{manticCatalogosPersonasAccion.registroPersona.personasTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Tipo contacto">										
