@@ -150,8 +150,8 @@
               </f:facet>
               <h:outputText value="#{filtro['puesto']}"/>
             </p:column>		
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
-							<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idActivo eq '1' and filtro.nss != '' ? 'circulo-verde.png' : (filtro.idActivo eq '1' and filtro.nss eq '' ? 'circulo-amarillo.png' : 'circulo-rojo.png')}" title="Empleado #{filtro.idActivo eq '1' ? '': 'NO '}activo"/>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">							
+							<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idActivo eq '2' ? 'circulo-rojo' : (filtro.idActivo eq '1' and filtro.nss != '' and filtro.idNomina eq '2' ? 'circulo-azul' : (filtro.idActivo eq '1' and filtro.nss eq '' ? 'circulo-amarillo' : 'circulo-verde'))}.png" title="Empleado #{filtro.idActivo eq '1' ? '': 'NO '}activo"/>
 						</p:column>												
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosEmpleadosFiltro.lazyModel==null?0:manticCatalogosEmpleadosFiltro.lazyModel.rowCount}] registros"/>
