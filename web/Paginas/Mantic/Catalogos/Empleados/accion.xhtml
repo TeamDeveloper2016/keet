@@ -34,6 +34,7 @@
 				// 'contenedorGrupos\\:sueldoMensual': {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				// 'contenedorGrupos\\:diarioImss'   : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:mensualImss'  : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idNomina'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:empresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:entidad'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
@@ -319,6 +320,12 @@
             </p:tab>
 						<p:tab title="Cuentas bancarias">
               <p:panelGrid id="panelTablaBancos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+								<p:outputLabel for="idNomina" value="Se deposita nómina:"/>
+								<p:selectOneMenu id="idNomina" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idNomina}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+									<f:selectItem itemValue="1" itemLabel="SI"/>
+									<f:selectItem itemValue="2" itemLabel="NO"/>
+								</p:selectOneMenu>	
                 <p:dataTable id="tablaBancos" rowIndexVar="index" var="banco" value="#{manticCatalogosPersonasAccion.registroPersona.personasBancos}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Banco">										
                     <p:selectOneMenu id="contacto#{banco.key}" styleClass="janal-wid-100-txt" value="#{banco.idBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!banco.nuevo}" onblur="simpleProcess();">

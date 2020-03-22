@@ -3971,12 +3971,12 @@
           id_orden_compra = {idOrdenCompra} 
       </select>
     </unit>
-	  <unit id="TcManticPersonaDomicilioDto">
+	  <unit id="TcManticPersonasDomiciliosDto">
       <select id="row">
         select      
           *
         from      
-          tc_mantic_persona_domicilio
+          tc_mantic_personas_domicilios
         where 
           {condicion} 
       </select>
@@ -3984,7 +3984,7 @@
         select      
           *
         from      
-          tc_mantic_persona_domicilio
+          tc_mantic_personas_domicilios
         where      
           id_persona = {idPersona} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
       </select>

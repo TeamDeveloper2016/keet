@@ -72,17 +72,19 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   private Double sueldoMensual;
   @Column (name="sueldo_imss")
   private Double sueldoImss;
+  @Column (name="id_nomina")
+  private Long idNomina;
 
   public TrManticEmpresaPersonalDto() {
     this(new Long(-1L));
   }
 
   public TrManticEmpresaPersonalDto(Long key) {
-    this(null, null, null, null, 0D, null, null, null, null, null, LocalDate.now(), null, null, new Long(-1L), null, null, LocalDate.now(), 0D, 0D, 0D);
+    this(null, null, null, null, 0D, null, null, null, null, null, LocalDate.now(), null, null, new Long(-1L), null, null, LocalDate.now(), 0D, 0D, 0D, 2L);
     setKey(key);
   }
 
-  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, Long idContrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate fechaContratacion, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate fechaIngreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss) {
+  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, Long idContrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate fechaContratacion, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate fechaIngreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss, Long idNomina) {
     setClave(clave);
     setIdPuesto(idPuesto);
     setIdContrato(idContrato);
@@ -104,6 +106,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     setSueldoSemanal(sueldoSemanal);
     setSueldoMensual(sueldoMensual);
     setSueldoImss(sueldoImss);
+		this.idNomina= idNomina;
   }
 	
   public void setClave(String clave) {
@@ -274,6 +277,14 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     return sueldoImss;
   }
 
+	public Long getIdNomina() {
+		return idNomina;
+	}
+
+	public void setIdNomina(Long idNomina) {
+		this.idNomina=idNomina;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -330,6 +341,8 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.append(getSueldoMensual());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSueldoImss());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdNomina());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -358,13 +371,14 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.put("sueldoSemanal", getSueldoSemanal());
 		regresar.put("sueldoMensual", getSueldoMensual());
 		regresar.put("sueldoImss", getSueldoImss());
+		regresar.put("idNomina", getIdNomina());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getIdPuesto(), getIdContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getFechaContratacion(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getFechaIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss()
+    getClave(), getIdPuesto(), getIdContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getFechaContratacion(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getFechaIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss(), getIdNomina()
     };
     return regresar;
   }

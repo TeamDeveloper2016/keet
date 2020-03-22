@@ -30,8 +30,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_persona_domicilio")
-public class TcManticPersonaDomicilioDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_personas_domicilios")
+public class TcManticPersonasDomiciliosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="id_persona")
@@ -53,16 +53,16 @@ public class TcManticPersonaDomicilioDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcManticPersonaDomicilioDto() {
+  public TcManticPersonasDomiciliosDto() {
     this(new Long(-1L));
   }
 
-  public TcManticPersonaDomicilioDto(Long key) {
+  public TcManticPersonasDomiciliosDto(Long key) {
     this(null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticPersonaDomicilioDto(Long idPersona, Long idPersonaDomicilio, Long idUsuario, Long idTipoDomicilio, Long idDomicilio, Long idPrincipal, String observaciones) {
+  public TcManticPersonasDomiciliosDto(Long idPersona, Long idPersonaDomicilio, Long idUsuario, Long idTipoDomicilio, Long idDomicilio, Long idPrincipal, String observaciones) {
     setIdPersona(idPersona);
     setIdPersonaDomicilio(idPersonaDomicilio);
     setIdUsuario(idUsuario);
@@ -217,7 +217,7 @@ public class TcManticPersonaDomicilioDto implements IBaseDto, Serializable {
 
   @Override
   public Class toHbmClass() {
-    return TcManticPersonaDomicilioDto.class;
+    return TcManticPersonasDomiciliosDto.class;
   }
 
   @Override
@@ -233,7 +233,7 @@ public class TcManticPersonaDomicilioDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticPersonaDomicilioDto other = (TcManticPersonaDomicilioDto) obj;
+    final TcManticPersonasDomiciliosDto other = (TcManticPersonasDomiciliosDto) obj;
     if (getIdPersonaDomicilio() != other.idPersonaDomicilio && (getIdPersonaDomicilio() == null || !getIdPersonaDomicilio().equals(other.idPersonaDomicilio))) {
       return false;
     }
