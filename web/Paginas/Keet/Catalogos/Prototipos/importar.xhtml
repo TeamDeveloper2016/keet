@@ -19,7 +19,7 @@
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				'contenedorGrupos\\:idPlano'      : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:plano'        : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
 			};						
 			
@@ -86,13 +86,19 @@
 								<p:column styleClass="janal-wid-20" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
+								<p:column headerText="Especialidad">
+									<h:outputText value="[#{row.claveEspecialidad}] #{row.nombreEspecialidad}"/>
+								</p:column>      
+								<p:column headerText="Plano">
+									<h:outputText value="#{row.nombrePlano}"/>
+								</p:column> 
 								<p:column styleClass="janal-wid-25" headerText="Usuario">
 									<h:outputText value="#{row.usuario}"/>
 								</p:column>    
 								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
-								<p:column  styleClass="janal-wid-col-30 janal-column-center">
+								<p:column  styleClass="janal-wid-col-40 janal-column-center">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 										<p:fileDownload value="#{keetCatalogosPrototiposImportar.doFileDownload(row)}" />
 									</p:commandButton>
@@ -100,21 +106,31 @@
 							</p:dataTable>
 						</p:tab>						            						            																																																
 						<p:tab title="Importar">
-							 <p:outputLabel for="idPlano" value="Tipo de plano:"/>
-								<p:selectOneMenu id="idPlano" value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.ikPlano}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.planos}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
-									<p:column headerText="Grupo">
-										<h:outputText value="#{item.grupo}"/>
-									</p:column>      
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.descripcion}"/>
-									</p:column>      
-								</p:selectOneMenu>
+							<p:outputLabel for="especialidad" value="Especialidad:"/>
+							<p:selectOneMenu id="especialidad" value="#{keetCatalogosPrototiposImportar.attrs.especialidad}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt import-local-file">
+								<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.especialidades}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombre}"/>
+								<p:ajax event="change" process="@this especialidad" listener="#{keetCatalogosPrototiposImportar.doActualizaPlanos}" update="plano" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>      
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>      								    
+							</p:selectOneMenu>
+							<p:outputLabel for="plano" value="Plano:"/>
+							<p:selectOneMenu id="plano" value="#{keetCatalogosPrototiposImportar.attrs.plano}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt import-local-file">
+								<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.planos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>								
+								<p:ajax event="change" process="@this plano" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>      
+							</p:selectOneMenu>							 
 							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
-							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.file.observaciones}"/>
+							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosPrototiposImportar.attrs.observaciones}" onblur="procesDataFile();"/>
+							<p:remoteCommand name="procesDataFile" process="@this contenedorGrupos:observaciones"/>
 							<p:spacer height="5px"/>	
 							<p:fileUpload listener="#{keetCatalogosPrototiposImportar.doFileUpload}" onstart="return janal.execute()"
-							  mode="advanced" process="@this observaciones idPlano" update="@(.importado)" label="Selecciona DWG/ZIP/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+							  mode="advanced" process="@this observaciones plano" update="@(.importado)" label="Selecciona DWG/ZIP/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
 								multiple="false" allowTypes="#{keetCatalogosPrototiposImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCatalogosPrototiposImportar.attrs.formatos}"/>														
 							<p:dataTable id="importado" var="row" value="#{keetCatalogosPrototiposImportar.prototipo.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
