@@ -299,7 +299,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public void doActualizaIconEstatus(){
 		String icon= ESemaforos.ROJO.getNombre();
-		if(this.registroPersona.isActivo() && !Cadena.isVacio(this.registroPersona.getEmpresaPersona().getNss()))
+		if(this.registroPersona.isActivo() && !Cadena.isVacio(this.registroPersona.getEmpresaPersona().getNss()) && this.registroPersona.getEmpresaPersona().getIdNomina().equals(2L))
+			icon= ESemaforos.AZUL.getNombre();
+		else if(this.registroPersona.isActivo() && !Cadena.isVacio(this.registroPersona.getEmpresaPersona().getNss()))
 			icon= ESemaforos.VERDE.getNombre();
 		else if(this.registroPersona.isActivo() && Cadena.isVacio(this.registroPersona.getEmpresaPersona().getNss()))
 			icon= ESemaforos.AMARILLO.getNombre();
