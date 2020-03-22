@@ -40,8 +40,8 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
   private Long diasEntrega;
   @Column (name="descuento")
   private String descuento;
-  @Column (name="prefijo")
-  private String prefijo;
+  @Column (name="grupo")
+  private String grupo;
   @Column (name="razon_social")
   private String razonSocial;
   @Column (name="nombre_comercial")
@@ -70,13 +70,13 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticProveedoresDto(Long idTipoProveedor, Long idProveedor, String clave, Long diasEntrega, String descuento, String prefijo, String razonSocial, String rfc, Long idTipoDia, Long idUsuario, Long idTipoMoneda, String observaciones, Long idEmpresa, String nombreComercial) {
+  public TcManticProveedoresDto(Long idTipoProveedor, Long idProveedor, String clave, Long diasEntrega, String descuento, String grupo, String razonSocial, String rfc, Long idTipoDia, Long idUsuario, Long idTipoMoneda, String observaciones, Long idEmpresa, String nombreComercial) {
     setIdTipoProveedor(idTipoProveedor);
     setIdProveedor(idProveedor);
     setClave(clave);
     setDiasEntrega(diasEntrega);
     setDescuento(descuento);
-    setPrefijo(prefijo);
+    setGrupo(grupo);
     setRazonSocial(razonSocial);
     setRfc(rfc);
     setRegistro(LocalDateTime.now());
@@ -128,13 +128,13 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
     return descuento;
   }
 
-  public void setPrefijo(String prefijo) {
-    this.prefijo = prefijo;
-  }
+	public String getGrupo() {
+		return grupo;
+	}
 
-  public String getPrefijo() {
-    return prefijo;
-  }
+	public void setGrupo(String grupo) {
+		this.grupo=grupo;
+	}
 
   public void setRazonSocial(String razonSocial) {
     this.razonSocial = razonSocial;
@@ -233,7 +233,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuento());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPrefijo());
+		regresar.append(getGrupo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRazonSocial());
 		regresar.append(Constantes.SEPARADOR);
@@ -264,7 +264,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
 		regresar.put("clave", getClave());
 		regresar.put("diasEntrega", getDiasEntrega());
 		regresar.put("descuento", getDescuento());
-		regresar.put("prefijo", getPrefijo());
+		regresar.put("grupo", getGrupo());
 		regresar.put("razonSocial", getRazonSocial());
 		regresar.put("rfc", getRfc());
 		regresar.put("registro", getRegistro());
@@ -280,7 +280,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoProveedor(), getIdProveedor(), getClave(), getDiasEntrega(), getDescuento(), getPrefijo(), getRazonSocial(), getRfc(), getRegistro(), getIdTipoDia(), getIdUsuario(), getIdTipoMoneda(), getObservaciones(), getIdEmpresa(), getNombreComercial()
+    getIdTipoProveedor(), getIdProveedor(), getClave(), getDiasEntrega(), getDescuento(), getGrupo(), getRazonSocial(), getRfc(), getRegistro(), getIdTipoDia(), getIdUsuario(), getIdTipoMoneda(), getObservaciones(), getIdEmpresa(), getNombreComercial()
     };
     return regresar;
   }

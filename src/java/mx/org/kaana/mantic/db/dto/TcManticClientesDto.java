@@ -2,7 +2,6 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -31,6 +30,8 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="clave")
   private String clave;
+  @Column (name="grupo")
+  private String grupo;
   @Column (name="plazo_dias")
   private Long plazoDias;
   @Id
@@ -67,11 +68,11 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesDto(Long key) {
-    this(null, 0L, new Long(-1L), 0D, 2L, null, 0.0D, null, null, 3L, null, null, ETipoVenta.MENUDEO.getIdTipoVenta(), null);
+    this(null, 0L, new Long(-1L), 0D, 2L, null, 0.0D, null, null, 3L, null, null, ETipoVenta.MENUDEO.getIdTipoVenta(), null, null);
     setKey(key);
   }
 
-  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, Long idUsoCfdi, String observaciones, Long idEmpresa, Long idTipoVenta, String idFacturama) {
+  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, Long idUsoCfdi, String observaciones, Long idEmpresa, Long idTipoVenta, String idFacturama, String grupo) {
     setClave(clave);
     setPlazoDias(plazoDias);
     setIdCliente(idCliente);
@@ -87,6 +88,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setIdTipoVenta(idTipoVenta);
 		this.idFacturama= idFacturama;
+		this.grupo= grupo;
   }
 	
   public void setClave(String clave) {
@@ -209,6 +211,14 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		this.idFacturama=idFacturama;
 	}
 
+	public String getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(String grupo) {
+		this.grupo=grupo;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -253,6 +263,8 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.append(getIdTipoVenta());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdFacturama());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getGrupo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -275,13 +287,14 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idTipoVenta", getIdTipoVenta());
 		regresar.put("idFacturama", getIdFacturama());
+		regresar.put("grupo", getGrupo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getIdUsoCfdi(), getObservaciones(), getIdEmpresa(), getIdTipoVenta(), getIdFacturama()
+    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getIdUsoCfdi(), getObservaciones(), getIdEmpresa(), getIdTipoVenta(), getIdFacturama(), getGrupo()
     };
     return regresar;
   }
