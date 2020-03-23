@@ -97,6 +97,12 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Empresa"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>														
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
@@ -114,13 +120,7 @@
                 <h:outputText value="Razón social"/>
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
-            </p:column>	      
-						<p:column class="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.telefono}">
-              <f:facet name="header">
-                <h:outputText value="Contacto" title="Telefono/Celular"/>
-              </f:facet>
-              <h:outputText value="#{row['telefono']}"/>
-            </p:column>														
+            </p:column>	      						
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.agente}">
               <f:facet name="header">
                 <h:outputText value="Agente"/>
@@ -131,7 +131,7 @@
               <f:facet name="header">
                 <h:outputText value="Contacto" title="Telefono/Celular"/>
               </f:facet>
-              <h:outputText value="#{row['celular']}"/>
+              <h:outputText value="#{row['telefono']} , #{row['celular']}"/>
             </p:column>														
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosProveedoresFiltro.lazyModel==null?0:manticCatalogosProveedoresFiltro.lazyModel.rowCount}] registros"/>
