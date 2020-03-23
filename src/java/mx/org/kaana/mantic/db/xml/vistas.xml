@@ -3623,7 +3623,8 @@
 				  if(tc_mantic_clientes.id_facturama is null, -1, tc_mantic_clientes.id_facturama) id_facturama,
 					tc_mantic_empresas.clave clave_empresa,
 					tc_mantic_empresas.nombre nombre_empresa,
-					tc_mantic_empresas.titulo titulo_empresa
+					tc_mantic_empresas.titulo titulo_empresa,
+					tc_mantic_clientes.id_activo
 				from
 					tc_mantic_clientes 		
 				inner join 
