@@ -14,6 +14,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.enums.ESemaforos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -896,4 +897,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doCreateMessage
+	
+	public void doActualizaIconEstatus() {
+		String icon= ESemaforos.ROJO.getNombre();
+		if(this.registroCliente.isActivo())
+			icon= ESemaforos.VERDE.getNombre();
+		this.attrs.put("iconEstatus", icon);
+	} // doActualizaIconEstatus
+	
 }

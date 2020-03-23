@@ -11,7 +11,8 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'clave'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'clave'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas|siguiente({"cuantos":3,"cual":"0","token":"PV"})'},
+        'grupo'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'rfc'        : {validaciones: 'rfc', mascara: 'fiscal', formatos: 'cambiar-mayusculas'},      
         'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
@@ -39,6 +40,8 @@
               </p:selectOneMenu>
 							<p:outputLabel for="clave" value="Clave:"/>
               <p:inputText id="clave" value="#{manticCatalogosProveedoresFiltro.attrs.clave}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="grupo" value="Grupo ó familia:"/>
+              <p:inputText id="grupo" value="#{manticCatalogosProveedoresFiltro.attrs.grupo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosProveedoresFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>

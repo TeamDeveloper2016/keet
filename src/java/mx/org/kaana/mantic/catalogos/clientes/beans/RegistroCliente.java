@@ -44,6 +44,7 @@ public class RegistroCliente implements Serializable{
 	private ClienteContactoRepresentante personaTipoContactoPivote;	
 	private ClienteContactoRepresentante personaTipoContacto;	
 	private boolean habilitarCredito;
+	private boolean activo;
 
 	public RegistroCliente() {
 		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio(), new ArrayList<ClienteContactoRepresentante>(), new ClienteContactoRepresentante(), new ClienteContactoRepresentante(), new TcKeetClientesPortalesDto(), new ArrayList<ClienteBanca>(), new ArrayList<ClienteBanca>());
@@ -57,7 +58,8 @@ public class RegistroCliente implements Serializable{
 		this.domicilio  = new Domicilio();
 		this.domicilioPivote= new Domicilio();
 		this.personaTipoContactoPivote= new ClienteContactoRepresentante();
-		this.personaTipoContacto= new ClienteContactoRepresentante();		
+		this.personaTipoContacto      = new ClienteContactoRepresentante();		
+		this.activo                   = true;
 		init();		
 	}
 	
@@ -79,6 +81,7 @@ public class RegistroCliente implements Serializable{
 		this.portal                = portal;
 		this.clientesServicio      = clientesServicio;
 		this.clientesTransferencia = clientesTransferencia;
+		this.activo               = true;
 	}
 	
 	public Long getIdCliente() {
@@ -249,6 +252,15 @@ public class RegistroCliente implements Serializable{
 	public void setClienteTransferenciaSeleccion(ClienteBanca clienteTransferenciaSeleccion) {
 		this.clienteTransferenciaSeleccion = clienteTransferenciaSeleccion;
 	}	
+	
+	public boolean isActivo() {
+		return this.cliente.getIdActivo().equals(1L);
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+		this.cliente.setIdActivo(this.activo ? 1L : 2L);
+	}		
 	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
@@ -644,4 +656,5 @@ public class RegistroCliente implements Serializable{
 			JsfBase.addMessageError(e);			
 		} // catch			
 	} // doEliminarProveedorTipoContacto
+	
 }

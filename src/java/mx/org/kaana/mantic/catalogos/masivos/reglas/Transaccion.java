@@ -1399,7 +1399,8 @@ public class Transaccion extends IBaseTnx {
 										JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 										1L, // Long idTipoVenta, 
 										null, // String idFacturama
-										null // String grupo
+										null, // String grupo
+										1L // Long idActivo
 									);
 									DaoFactory.getInstance().insert(sesion, cliente);
 

@@ -62,17 +62,19 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   private Long idTipoVenta;
   @Column (name="id_facturama")
   private String idFacturama;
+  @Column (name="id_activo")
+  private Long idActivo;
 
   public TcManticClientesDto() {
     this(new Long(-1L));
   }
 
   public TcManticClientesDto(Long key) {
-    this(null, 0L, new Long(-1L), 0D, 2L, null, 0.0D, null, null, 3L, null, null, ETipoVenta.MENUDEO.getIdTipoVenta(), null, null);
+    this(null, 0L, new Long(-1L), 0D, 2L, null, 0.0D, null, null, 3L, null, null, ETipoVenta.MENUDEO.getIdTipoVenta(), null, null, 1L);
     setKey(key);
   }
 
-  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, Long idUsoCfdi, String observaciones, Long idEmpresa, Long idTipoVenta, String idFacturama, String grupo) {
+  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, Long idUsoCfdi, String observaciones, Long idEmpresa, Long idTipoVenta, String idFacturama, String grupo, Long idActivo) {
     setClave(clave);
     setPlazoDias(plazoDias);
     setIdCliente(idCliente);
@@ -89,6 +91,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
     setIdTipoVenta(idTipoVenta);
 		this.idFacturama= idFacturama;
 		this.grupo= grupo;
+		this.idActivo= idActivo;
   }
 	
   public void setClave(String clave) {
@@ -219,6 +222,14 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		this.grupo=grupo;
 	}
 
+	public Long getIdActivo() {
+		return idActivo;
+	}
+
+	public void setIdActivo(Long idActivo) {
+		this.idActivo=idActivo;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -265,6 +276,8 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.append(getIdFacturama());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getGrupo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdActivo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -288,13 +301,14 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.put("idTipoVenta", getIdTipoVenta());
 		regresar.put("idFacturama", getIdFacturama());
 		regresar.put("grupo", getGrupo());
+		regresar.put("idActivo", getIdActivo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getIdUsoCfdi(), getObservaciones(), getIdEmpresa(), getIdTipoVenta(), getIdFacturama(), getGrupo()
+    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getIdUsoCfdi(), getObservaciones(), getIdEmpresa(), getIdTipoVenta(), getIdFacturama(), getGrupo(), getIdActivo()
     };
     return regresar;
   }

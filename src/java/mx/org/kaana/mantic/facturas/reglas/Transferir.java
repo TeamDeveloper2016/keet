@@ -333,7 +333,8 @@ public class Transferir extends IBaseTnx {
 					JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L, //  Long idEmpresa, 
 					1L, // Long idTipoVenta, 
 					client.getId(), // String idFacturama
-					null // String grupo
+					null, // String grupo
+					1L // String idActivo
 				);
 				DaoFactory.getInstance().insert(sesion, cliente);
 				if(!Cadena.isVacio(client.getEmail())) {

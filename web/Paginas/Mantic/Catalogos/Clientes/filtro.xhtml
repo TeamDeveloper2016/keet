@@ -10,9 +10,11 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'clave'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'rfc'        : {validaciones: 'rfc'  , mascara: 'fiscal', formatos: 'cambiar-mayusculas'}       
+        'clave'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas|siguiente({"cuantos":3,"cual":"0","token":"CT"})'},
+        'grupo'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'estatus'    : {validaciones: 'libre', mascara: 'libre'},
+        'rfc'        : {validaciones: 'rfc'  , mascara: 'fiscal', formatos: 'cambiar-mayusculas'},
+        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
     </script>		
   </ui:define>
@@ -36,8 +38,16 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+							<p:outputLabel for="estatus" value="Estatus:"/>
+              <p:selectOneMenu id="estatus" value="#{manticCatalogosClientesFiltro.attrs.estatus}"  styleClass="janal-wid-96">
+                <f:selectItem itemLabel="SELECCIONE" itemValue="1,2"/>
+                <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
+                <f:selectItem itemLabel="INACTIVO" itemValue="2"/>                
+              </p:selectOneMenu>
 							<p:outputLabel for="clave" value="Clave:"/>
               <p:inputText id="clave" value="#{manticCatalogosClientesFiltro.attrs.clave}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="grupo" value="Grupo ó familia:"/>
+              <p:inputText id="grupo" value="#{manticCatalogosClientesFiltro.attrs.grupo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosClientesFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
