@@ -39,8 +39,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      loadTiposProveedores();
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+      this.loadEmpresas();
+      this.loadTiposProveedores();
 			if(JsfBase.getFlashAttribute("idProveedorProcess")!= null){
 				this.attrs.put("idProveedorProcess", JsfBase.getFlashAttribute("idProveedorProcess"));
 				doLoad();
@@ -53,6 +54,24 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
+	private void loadEmpresas() {
+		Map<String, Object>params= null;
+		List<Columna> columns    = null;
+		try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();			
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // loadEmpresas
+	
   private void loadTiposProveedores() throws Exception {
     Gestor gestor = new Gestor();
     gestor.loadTiposProveedores();
@@ -75,7 +94,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns    = null;
 		Map<String, Object>params= null;
     try {
-      params= toPrepare();	
+      params= this.toPrepare();	
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipoProveedor", EFormatoDinamicos.MAYUSCULAS));
@@ -177,8 +196,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  sb.append("(tc_mantic_proveedores.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("idTipoProveedor")) && !this.attrs.get("idTipoProveedor").toString().equals("-1"))
   		sb.append("(tc_mantic_proveedores.id_tipo_proveedor= ").append(this.attrs.get("idTipoProveedor")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+		if(this.attrs.get("idEmpresa")!= null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)
+		  regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(sb.length()== 0)

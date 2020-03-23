@@ -58,9 +58,7 @@ public class Transaccion extends IBaseTnx {
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar = false;
-    try {
-			if(this.registroProveedor!= null)
-				this.registroProveedor.getProveedor().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+    try {			
       switch (accion) {
         case AGREGAR:
           regresar = procesarProveedor(sesion);
@@ -91,8 +89,7 @@ public class Transaccion extends IBaseTnx {
     try {
       this.messageError = "Error al registrar el articulo";
       if (eliminarRegistros(sesion)) {
-        this.registroProveedor.getProveedor().setIdUsuario(JsfBase.getIdUsuario());
-        this.registroProveedor.getProveedor().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+        this.registroProveedor.getProveedor().setIdUsuario(JsfBase.getIdUsuario());        
         idProveedor = DaoFactory.getInstance().insert(sesion, this.registroProveedor.getProveedor());
         if (registraProveedoresDomicilios(sesion, idProveedor)) {
           if (registraProveedoresAgentes(sesion, idProveedor)) {

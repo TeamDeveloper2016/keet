@@ -20,6 +20,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -63,6 +64,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   public void init() {
     try {
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
@@ -75,6 +77,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // initload
   
 	private void loadCollections(){
+		loadEmpresas();
 		loadBancos();
 		loadTiposProveedores();
 		loadTipoPago();
@@ -110,6 +113,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroProveedor.setPersonaTipoContacto(this.registroProveedor.getPersonasTiposContacto().get(0));
 						this.registroProveedor.doConsultarAgente();
 					} // if
+					this.attrs.put("idEmpresa", new UISelectEntity(this.registroProveedor.getProveedor().getIdEmpresa()));
           break;
       } // switch      
     } // try
@@ -124,6 +128,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
     try {
       transaccion= new Transaccion(this.registroProveedor);
+			this.registroProveedor.getProveedor().setIdEmpresa(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			this.registroProveedor.getProveedor().setIdTipoProveedor(((UISelectEntity)this.attrs.get("tipoProveedor")).getKey());
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 				JsfBase.setFlashAttribute("idProveedorProcess", this.registroProveedor.getProveedor().getIdProveedor());
@@ -144,6 +149,24 @@ public class Accion extends IBaseAttribute implements Serializable {
 		JsfBase.setFlashAttribute("idProveedorProcess", this.registroProveedor.getProveedor().getIdProveedor());
     return "filtro";
   } // doAccion
+	
+	private void loadEmpresas() {
+		Map<String, Object>params= null;
+		List<Columna> columns    = null;
+		try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();			
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // loadEmpresas
 	
 	private void loadTiposContactos() {
     List<UISelectItem> tiposContactos = null;
