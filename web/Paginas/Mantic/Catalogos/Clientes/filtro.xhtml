@@ -94,7 +94,13 @@
 								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
-            </f:facet>												
+            </f:facet>		
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Empresa"/>
+              </f:facet>
+              <h:outputText value="#{filtro['nombreEmpresa']}"/>
+            </p:column>														
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
