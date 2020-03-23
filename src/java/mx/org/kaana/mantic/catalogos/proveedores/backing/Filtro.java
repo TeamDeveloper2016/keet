@@ -187,6 +187,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("tc_mantic_proveedores.id_proveedor =").append(this.attrs.get("idProveedorProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
 			sb.append("(tc_mantic_proveedores.clave like '%").append(this.attrs.get("clave")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("grupo")))
+			sb.append("(tc_mantic_proveedores.grupo like '%").append(this.attrs.get("grupo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("rfc")))
 			sb.append("(tc_mantic_proveedores.rfc like '%").append(this.attrs.get("rfc")).append("%') and ");
 		if(provedores!= null && proveedor!= null && provedores.indexOf(proveedor)>= 0) 

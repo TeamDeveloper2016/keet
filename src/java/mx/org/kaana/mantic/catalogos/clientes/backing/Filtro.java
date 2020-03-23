@@ -135,6 +135,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 			else 
 				if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
 					condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+			if(!Cadena.isVacio(this.attrs.get("estatus")))
+				condicion.append("tc_mantic_clientes.id_activo in (").append(this.attrs.get("estatus")).append(") and ");			
+			if(!Cadena.isVacio(this.attrs.get("grupo")))
+				condicion.append("tc_mantic_clientes.grupo like '%").append(this.attrs.get("grupo")).append("%' and ");
 			if(!Cadena.isVacio(this.attrs.get("rfc")))
 				condicion.append("tc_mantic_clientes.rfc like '%").append(this.attrs.get("rfc")).append("%' and ");
 			if(!Cadena.isVacio(this.attrs.get("clave")))
