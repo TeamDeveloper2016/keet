@@ -80,9 +80,7 @@ public class Transaccion extends TransaccionFactura {
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar = false;
-    try {
-			if(this.registroCliente!= null)
-				this.registroCliente.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+    try {			
       switch (accion) {
         case AGREGAR:
           regresar = procesarCliente(sesion);
@@ -121,8 +119,7 @@ public class Transaccion extends TransaccionFactura {
     Long idCliente   = -1L;    
 		this.messageError= "Error al registrar el cliente";
 		if (eliminarRegistros(sesion)) {
-			this.registroCliente.getCliente().setIdUsuario(JsfBase.getIdUsuario());
-			this.registroCliente.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.registroCliente.getCliente().setIdUsuario(JsfBase.getIdUsuario());			
 			idCliente = DaoFactory.getInstance().insert(sesion, this.registroCliente.getCliente());
 			if (registraClientesDomicilios(sesion, idCliente)) {
 				if (registraClientesRepresentantes(sesion, idCliente)) {

@@ -19,6 +19,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -66,6 +67,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {
     try {
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("puntoVenta", JsfBase.getFlashAttribute("puntoVenta"));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
@@ -102,6 +104,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // loadBancos
 	
 	private void loadCollections(){
+		loadEmpresas();
 		loadBancos();
 		loadRepresentantes();
 		loadTiposContactos();
@@ -140,6 +143,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroCliente.setPersonaTipoContacto(this.registroCliente.getPersonasTiposContacto().get(0));
 						this.registroCliente.doConsultarRepresentante();
 					} // if
+					this.attrs.put("idEmpresa", new UISelectEntity(this.registroCliente.getCliente().getIdEmpresa()));
           break;
       } // switch 			
     } // try
@@ -154,6 +158,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar = null;
     try {
       transaccion = new Transaccion(this.registroCliente);
+			this.registroCliente.getCliente().setIdEmpresa(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 				JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
 				JsfBase.setFlashAttribute("idClienteProcess", this.registroCliente.getCliente().getIdCliente());				
@@ -177,6 +182,24 @@ public class Accion extends IBaseAttribute implements Serializable {
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
+	private void loadEmpresas() {
+		Map<String, Object>params= null;
+		List<Columna> columns    = null;
+		try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();			
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // loadEmpresas
+	
   private void loadRepresentantes() {
     List<UISelectItem> representantes = null;
     Map<String, Object> params = null;

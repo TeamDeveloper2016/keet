@@ -43,10 +43,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Object puntoVenta= null;		
     try {
 			puntoVenta= JsfBase.getFlashAttribute("puntoVenta");			
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("puntoVenta", puntoVenta!= null);
       this.attrs.put("sortOrder", "order by tc_mantic_clientes.razon_social");
       this.attrs.put("idPrincipal", 1L);
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());     
+      this.loadEmpresas();
 			this.loadCreditos();
 			if(JsfBase.getFlashAttribute("idClienteProcess")!= null){
 				this.attrs.put("idClienteProcess", JsfBase.getFlashAttribute("idClienteProcess"));
@@ -60,6 +61,24 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
+	private void loadEmpresas() {
+		Map<String, Object>params= null;
+		List<Columna> columns    = null;
+		try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();			
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // loadEmpresas
+	
 	private void loadCreditos() {
 		List<UISelectItem>creditos= null;
 		try {
@@ -87,7 +106,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));    
 			params.put(Constantes.SQL_CONDICION, toCondicion());
 			params.put("idPrincipal", 1L);
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+			params.put("idEmpresa", this.attrs.get("idEmpresa")!= null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey() >= 1L ? ((UISelectEntity)this.attrs.get("idEmpresa")).getKey() : JsfBase.getAutentifica().getEmpresa().getSucursales());			
 			params.put("credito", this.attrs.get("credito"));			
 			params.put("sortOrder", this.attrs.get("sortOrder"));			
       this.lazyModel = new FormatCustomLazy("VistaClientesDto", "row", params, campos);
