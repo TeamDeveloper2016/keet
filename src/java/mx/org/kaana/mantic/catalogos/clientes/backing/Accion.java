@@ -147,6 +147,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.attrs.put("idEmpresa", new UISelectEntity(this.registroCliente.getCliente().getIdEmpresa()));
           break;
       } // switch 			
+			doActualizaIconEstatus();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -900,9 +901,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void doActualizaIconEstatus() {
 		String icon= ESemaforos.ROJO.getNombre();
-		if(this.registroCliente.isActivo())
+		if(this.registroCliente.isActivo() && !Cadena.isVacio(this.registroCliente.getCliente().getIdFacturama()))
 			icon= ESemaforos.VERDE.getNombre();
+		if(this.registroCliente.isActivo() && Cadena.isVacio(this.registroCliente.getCliente().getIdFacturama()))
+			icon= ESemaforos.AMARILLO.getNombre();
 		this.attrs.put("iconEstatus", icon);
-	} // doActualizaIconEstatus
-	
+	} // doActualizaIconEstatus	
 }
