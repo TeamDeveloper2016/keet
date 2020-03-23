@@ -78,13 +78,13 @@ public class Accion extends IBaseAttribute implements Serializable {
   @PostConstruct
   @Override
   protected void init() {		
-    try {
+    try {			
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("tipoPersona", JsfBase.getFlashAttribute("tipoPersona"));
       this.attrs.put("idPersona", JsfBase.getFlashAttribute("idPersona"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("general", this.attrs.get("tipoPersona")== null);
-			this.attrs.put("mostrarEmpresas", JsfBase.isAdminEncuestaOrAdmin() || JsfBase.getAutentifica().getPersona().getDescripcionPerfil().equals(GERENTE));					
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());					
 			this.attrs.put("mostrarPuestos", Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.EMPLEADO.getIdTipoPersona()));			
 			this.attrs.put("mostrarProveedores", (Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona())));			
 			this.attrs.put("mostrarClientes", (Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona())));						
@@ -100,15 +100,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void loadCollections() throws Exception{
-		if(Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()))
-			loadEmpresas();
-		else{
-			this.attrs.put("empresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
-			this.attrs.put("idEmpresaPivote", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
-		} // else
+	private void loadCollections() throws Exception{		
+		loadEmpresas();		
 		loadBancos();
-		loadPuestos();
+		doLoadPuestos();
 		loadTitulos();
 		loadTiposPersonas();   
 		loadTiposContactos();
@@ -181,29 +176,30 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // finally
 	} // loadBancos
 	
-	private void loadEmpresas() {				
-		List<UISelectItem> sucursales= null;
-		Map<String, Object>params    = null;
+	private void loadEmpresas() {
+		Map<String, Object>params= null;
+		List<Columna> columns    = null;
 		try {
 			params= new HashMap<>();
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
-			sucursales= UISelect.build("TcManticEmpresasDto", "empresas", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
-			this.attrs.put("empresas", sucursales);
-			this.attrs.put("empresa", (Long) sucursales.get(0).getValue());			
-			this.attrs.put("idEmpresaPivote", (Long) sucursales.get(0).getValue());			
+			columns= new ArrayList<>();			
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));			
 		} // try
 		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch	
-	} // loadEncuestas
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // loadEmpresas
 	
-	private void loadPuestos() {
+	public void doLoadPuestos() {
 		List<UISelectItem> puestos= null;
     Map<String, Object> params= null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_empresa=" + this.attrs.get("empresa"));
+      params.put(Constantes.SQL_CONDICION, "id_empresa=" + ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
       puestos = UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!puestos.isEmpty()) {
 				this.attrs.put("puestos", puestos);
@@ -283,8 +279,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroPersona.setPersonaBeneficiarioSeleccion(this.registroPersona.getPersonasBeneficiarios().get(0));	
 						doConsultarBeneficiario();
 					} // if
-					this.attrs.put("empresa", this.registroPersona.getIdEmpresa());
-					this.attrs.put("idEmpresaPivote", this.registroPersona.getIdEmpresa());
+					this.attrs.put("idEmpresa", new UISelectEntity(this.registroPersona.getIdEmpresa()));					
           break;
       } // switch
 			this.registroPersona.getPersona().setEstilo(TEMA);
@@ -314,7 +309,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = null;		
 		Entity persona         = null;
     try {					
-			this.registroPersona.setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresaPivote").toString()));
+			this.registroPersona.setIdEmpresa(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey()>= 1L)
 				this.registroPersona.getEmpresaPersona().setIdContratista(((UISelectEntity)this.attrs.get("idContratista")).getKey());
 			else
@@ -1023,24 +1018,9 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doActualizaMunicipios
 	
-	public void onTabChange(TabChangeEvent event) {
-		if(this.attrs.get("empresa")!= null)
-			this.attrs.put("idEmpresaPivote", this.attrs.get("empresa"));
-		else if(this.attrs.get("idEmpresaPivote")!= null)
-			this.attrs.put("empresa", this.attrs.get("idEmpresaPivote"));		
-		if(this.attrs.get("empresas")== null)
-			loadEmpresas();
-		if(this.attrs.get("empresa")== null){
-			this.attrs.put("empresa", ((List<UISelectItem>)this.attrs.get("empresas")).get(0).getValue());
-			this.attrs.put("idEmpresaPivote", this.attrs.get("empresa"));
-		} // if
+	public void onTabChange(TabChangeEvent event) {		
 		if(event.getTab().getTitle().equals("General"))
-			doActualizaIconEstatus();		
-		if(event.getTab().getTitle().equals("Empresa")){				
-			UIBackingUtilities.update("contenedorGrupos:empresa");			
-			if(((EAccion) this.attrs.get("accion")).equals(EAccion.CONSULTAR))
-				UIBackingUtilities.execute("readingLocalMode('" + this.attrs.get("nombreAccion") + "');");
-		}	// if	
+			doActualizaIconEstatus();				
 		else if (event.getTab().getTitle().equals("Bitacora"))
 			loadBitacora();
   } // onTabChange
