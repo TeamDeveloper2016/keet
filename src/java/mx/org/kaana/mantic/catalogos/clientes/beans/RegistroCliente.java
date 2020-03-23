@@ -51,37 +51,36 @@ public class RegistroCliente implements Serializable{
 	}
 	
 	public RegistroCliente(Long idCliente) {
-		this.idCliente  = idCliente;
-		this.contadores = new ContadoresListas();
-		this.countIndice= 0L;
-		this.deleteList = new ArrayList<>();
-		this.domicilio  = new Domicilio();
-		this.domicilioPivote= new Domicilio();
+		this.idCliente                = idCliente;
+		this.contadores               = new ContadoresListas();
+		this.countIndice              = 0L;
+		this.deleteList               = new ArrayList<>();
+		this.domicilio                = new Domicilio();
+		this.domicilioPivote          = new Domicilio();
 		this.personaTipoContactoPivote= new ClienteContactoRepresentante();
-		this.personaTipoContacto      = new ClienteContactoRepresentante();		
-		this.activo                   = true;
+		this.personaTipoContacto      = new ClienteContactoRepresentante();				
 		init();		
 	}
 	
 	public RegistroCliente(Long idCliente, TcManticClientesDto cliente, List<ClienteDomicilio> clientesDomicilio, List<ClienteTipoContacto> clientesTiposContacto, List<ClienteRepresentante> clientesRepresentantes, Domicilio domicilio, List<ClienteContactoRepresentante> personasTiposContacto, ClienteContactoRepresentante personaTipoContactoPivote, ClienteContactoRepresentante personaTipoContacto, TcKeetClientesPortalesDto portal, List<ClienteBanca> clientesServicio, List<ClienteBanca> clientesTransferencia) {
-		this.idCliente             = idCliente;
-		this.cliente               = cliente;
-		this.clientesDomicilio     = clientesDomicilio;
-		this.clientesTiposContacto = clientesTiposContacto;
-		this.clientesRepresentantes= clientesRepresentantes;
-		this.deleteList            = new ArrayList<>();
-		this.contadores            = new ContadoresListas();
-		this.countIndice           = 0L;
-		this.domicilio             = domicilio;
-		this.domicilioPivote       = domicilio;
-		this.personasTiposContacto = personasTiposContacto;
+		this.idCliente                = idCliente;
+		this.cliente                  = cliente;
+		this.clientesDomicilio        = clientesDomicilio;
+		this.clientesTiposContacto    = clientesTiposContacto;
+		this.clientesRepresentantes   = clientesRepresentantes;
+		this.deleteList               = new ArrayList<>();
+		this.contadores               = new ContadoresListas();
+		this.countIndice              = 0L;
+		this.domicilio                = domicilio;
+		this.domicilioPivote          = domicilio;
+		this.personasTiposContacto    = personasTiposContacto;
 		this.personaTipoContactoPivote= personaTipoContactoPivote;
-		this.personaTipoContacto   = personaTipoContactoPivote;
-		this.habilitarCredito      = cliente.getIdCredito()!= null && cliente.getIdCredito().equals(1L);
-		this.portal                = portal;
-		this.clientesServicio      = clientesServicio;
-		this.clientesTransferencia = clientesTransferencia;
-		this.activo               = true;
+		this.personaTipoContacto      = personaTipoContactoPivote;
+		this.habilitarCredito         = cliente.getIdCredito()!= null && cliente.getIdCredito().equals(1L);
+		this.portal                   = portal;
+		this.clientesServicio         = clientesServicio;
+		this.clientesTransferencia    = clientesTransferencia;
+		this.activo                   = true;
 	}
 	
 	public Long getIdCliente() {
@@ -269,6 +268,7 @@ public class RegistroCliente implements Serializable{
 			this.cliente= motorBusqueda.toCliente();		
 			this.habilitarCredito= this.cliente.getIdCredito().equals(1L);
 			this.portal= motorBusqueda.toPortal();
+			this.activo= this.cliente.getIdActivo().equals(1L);
 			initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
