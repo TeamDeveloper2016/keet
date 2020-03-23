@@ -35,7 +35,7 @@
 				// 'contenedorGrupos\\:diarioImss'   : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:mensualImss'  : {validaciones: 'libre|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idNomina'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:empresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:entidad'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
@@ -123,11 +123,21 @@
 						</p:tab>
             <p:tab title="Empresa">
 							<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
-								<p:outputLabel for="empresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
-								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.empresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">																		
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>									
+								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
+								<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doLoadPuestos}" process="@this idEmpresa" update="contenedorGrupos:puesto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+									<p:column headerText="Titulo">
+										<h:outputText value="#{item.titulo}"/>
+									</p:column>   
 								</p:selectOneMenu>
-								<p:spacer rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/><p:separator rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
+								<p:spacer rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/><p:separator rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
 								<p:outputLabel for="clave" value="Clave:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.clave}" />                    
 								<p:outputLabel for="idContrato" value="Contrato firmado:"/>
