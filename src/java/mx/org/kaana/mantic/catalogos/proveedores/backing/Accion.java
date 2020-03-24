@@ -762,4 +762,63 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaCodigo		
+	
+	public void doAgregarProveedorMaterial(){
+		List<UISelectEntity> articulos= null;
+		UISelectEntity articulo       = null;
+		try {
+			articulos= (List<UISelectEntity>)this.attrs.get("articulos");	    
+			articulo= articulos.get(articulos.indexOf((UISelectEntity)this.attrs.get("custom")));			
+			this.registroProveedor.doAgregarProveedorMaterial(articulo.getKey(), articulo.toString("nombre"), articulo.toString("propio"), articulo.toString("unidadMedida"));			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarProveedorMaterial
+	
+	public List<UISelectEntity> doCompleteArticulo(String query) {		
+		this.attrs.put("codigo", query);
+    this.doUpdateArticulos();		
+		return (List<UISelectEntity>)this.attrs.get("articulos");
+	}	// doCompleteArticulo
+	
+	public void doUpdateArticulos() {
+		List<Columna> columns         = null;
+    Map<String, Object> params    = new HashMap<>();
+		List<UISelectEntity> articulos= null;
+		boolean buscaPorCodigo        = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			String search= new String((String)this.attrs.get("codigo")); 
+			if(!Cadena.isVacio(search)) {
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= search.startsWith(".");
+				if(buscaPorCodigo)
+					search= search.trim().substring(1);
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);
+			if(buscaPorCodigo)
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
+			else
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 40L);
+      this.attrs.put("articulos", articulos);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}	// doUpdateArticulos
 }

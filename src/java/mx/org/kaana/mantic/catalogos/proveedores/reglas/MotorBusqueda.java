@@ -8,12 +8,14 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorBanca;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorCondicionPago;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorContactoAgente;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDomicilio;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorMaterial;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
@@ -187,6 +189,26 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, " id_proveedor=" + this.idProveedor + " and id_tipo_cuenta=" + tipoCuenta.getKey());
 			regresar= DaoFactory.getInstance().toEntitySet(ProveedorBanca.class, "TcManticProveedoresBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedorbanca
+	
+	public List<ProveedorMaterial> toMateriales() throws Exception{
+		List<ProveedorMaterial> regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idProveedor", this.idProveedor);
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());  		
+			params.put("codigo", "");
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorMaterial.class, "VistaProveedoresBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
 			throw e;
