@@ -152,7 +152,7 @@
 						<div class="ui-grid-col-12">
 							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosFiltro.attrs.custom}" completeMethod="#{manticCatalogosArticulosFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<p:ajax event="itemSelect" oncomplete="$('#replace').click();"/>
-								<f:facet name="itemtip">c
+								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<f:facet name="header" class="TexAlCenter">
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
