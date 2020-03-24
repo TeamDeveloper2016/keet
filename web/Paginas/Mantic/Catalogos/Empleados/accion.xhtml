@@ -83,8 +83,7 @@
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
 						<p:ajax event="tabChange" process="@this" listener="#{manticCatalogosPersonasAccion.onTabChange}" update="tablaBancos tablaContactos contenedorGrupos:tablaBitacora contenedorGrupos:imageEstatus" oncomplete="janal.refresh();janal.alignCp();"/>						
             <p:tab title="General">			
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
-								<p:outputLabel for="estatus" value="Estatus:"/>
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-2, janal-wid-2, janal-wid-90">																		
 									<p:selectBooleanCheckbox id="estatus" value="#{manticCatalogosPersonasAccion.registroPersona.activo}">
 										<p:ajax process="@this" listener="#{manticCatalogosPersonasAccion.doActualizaIconEstatus}" update="imageEstatus labelEstatus"/>
@@ -126,7 +125,7 @@
               </p:panelGrid>
 						</p:tab>
             <p:tab title="Empresa">
-							<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
+							<p:panelGrid id="panelEmpresa" columns="1" layout="grid" styleClass="janal-wid-100">										
 								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
 								<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doLoadPuestos}" process="@this idEmpresa" update="contenedorGrupos:puesto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
@@ -141,7 +140,8 @@
 										<h:outputText value="#{item.titulo}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:spacer rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/><p:separator rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
+								<p:spacer height="2px" rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
+								<p:separator rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
 								<p:outputLabel for="clave" value="Clave:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.clave}" />                    
 								<p:outputLabel for="idContrato" value="Contrato firmado:"/>
@@ -178,9 +178,9 @@
               </p:panelGrid>
 						</p:tab>	
             <p:tab title="Prestaciones">
-							<p:panelGrid id="panelPrestaciones" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">																			
-								<p:outputLabel value="Seguro social" style="font-weight: bold"/><p:spacer/>
-								<p:spacer/><p:separator/>
+							<p:panelGrid id="panelPrestaciones" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">																			
+								<p:outputLabel value="Seguro social" styleClass="janal-color-blue FontBold"/>
+								<p:separator/>
 								<p:outputLabel for="idSeguro" value="Tiene seguro:"/>
 								<p:selectOneMenu id="idSeguro" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idSeguro}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="janal.convertidor.EnteroLargo">
 									<p:ajax event="change" process="@this idSeguro" oncomplete="refreshValidateNss();"/>									
@@ -193,8 +193,9 @@
 								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}"/>                    
 								<p:outputLabel for="mensualImss" value="Sueldo IMSS semanal:"/>								                 
 								<p:inputNumber id="mensualImss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}"/>                    
-								<p:outputLabel value="Infonavit" style="font-weight: bold"/><p:spacer/>
-								<p:spacer/><p:separator/>
+								<p:spacer height="2px"/>
+								<p:outputLabel value="Infonavit" styleClass="janal-color-blue FontBold"/>
+								<p:separator/>
 								<p:outputLabel for="infonavit" value="No credito:"/>
 								<p:inputText id="infonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.infonavit}" onblur="$('#contenedorGrupos\\:infonavit').val().trim().length> 0? janal.renovate('contenedorGrupos\\:factorInfonavit', {validaciones: 'requerido', mascara: 'libre'}): janal.renovate('contenedorGrupos\\:factorInfonavit', {validaciones: 'libre', mascara: 'libre'});" />
 								<p:outputLabel for="factorInfonavit" value="Factor:"/>								
