@@ -47,7 +47,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			this.loadContratistas();
 			if(JsfBase.getFlashAttribute("idPersona")!= null){
 				this.attrs.put("idPersona", JsfBase.getFlashAttribute("idPersona"));
-				doLoad();
+				this.doLoad();
 				this.attrs.put("idPersona", null);
 			} // if
     } // try
@@ -149,8 +149,10 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 				condicion.append("tr_mantic_empresa_personal.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(") and ");
 			else
 				condicion.append("tr_mantic_empresa_personal.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(") and ");
-			if(!Cadena.isVacio(this.attrs.get("estatus")))
-				condicion.append("tr_mantic_empresa_personal.id_activo in (").append(this.attrs.get("estatus")).append(") and ");			
+			if(!Cadena.isVacio(this.attrs.get("idActivo")))
+				condicion.append("tr_mantic_empresa_personal.id_activo in (").append(this.attrs.get("idActivo")).append(") and ");			
+			if(!Cadena.isVacio(this.attrs.get("idSeguro")))
+				condicion.append("tr_mantic_empresa_personal.id_seguro in (").append(this.attrs.get("idSeguro")).append(") and ");			
 			if(!Cadena.isVacio(this.attrs.get("departamento")) && Long.valueOf(this.attrs.get("departamento").toString())>=1)
 				condicion.append("tr_mantic_empresa_personal.id_departamento=").append(this.attrs.get("departamento")).append(" and ");
 			if(!Cadena.isVacio(this.attrs.get("puesto")) && Long.valueOf(this.attrs.get("puesto").toString())>=1)

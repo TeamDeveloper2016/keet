@@ -4335,6 +4335,8 @@
 					tc_mantic_puestos.nombre puesto,
 					tr_mantic_persona_tipo_contacto.valor contacto,
 					tr_mantic_empresa_personal.id_activo,
+				  if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,
+				  if(tr_mantic_empresa_personal.id_seguro= 1, 'SI', 'NO') as seguro,
 					tr_mantic_empresa_personal.clave,
 					tr_mantic_empresa_personal.id_nomina,
 					if(tr_mantic_empresa_personal.nss is null, '', tr_mantic_empresa_personal.nss) nss,		
