@@ -54,8 +54,8 @@
 							<p:outputLabel for="idSeguro" value="Asegurado:"/>
               <p:selectOneMenu id="idSeguro" value="#{manticCatalogosEmpleadosFiltro.attrs.seguro}"  styleClass="janal-wid-96">
                 <f:selectItem itemLabel="SELECCIONE" itemValue="1,2"/>
-                <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
-                <f:selectItem itemLabel="INACTIVO" itemValue="2"/>                
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>                
               </p:selectOneMenu>
 							<p:outputLabel for="contratista" value="Asignado a contratista:"/>
 							<p:selectOneMenu id="contratista" value="#{manticCatalogosEmpleadosFiltro.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
