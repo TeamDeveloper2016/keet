@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.proveedores.beans;
 
 import java.util.Collections;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 
@@ -14,12 +15,13 @@ public class ContadoresListas {
 	private Long totalPersonasTipoContacto;	
 	private Long totalProveedoresServicio;	
 	private Long totalProveedoresTransferencia;	
+	private Long totalProveedoresMateriales;	
 	
 	public ContadoresListas() {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalProveedoresDomicilios, Long totalProveedoresAgentes, Long totalProveedoresTipoContacto, Long totalPersonasTipoContacto, Long totalProveedoresPago, Long totalProveedoresServicio, Long totalProveedoresTransferencia) {
+	public ContadoresListas(Long totalProveedoresDomicilios, Long totalProveedoresAgentes, Long totalProveedoresTipoContacto, Long totalPersonasTipoContacto, Long totalProveedoresPago, Long totalProveedoresServicio, Long totalProveedoresTransferencia, Long totalProveedoresMateriales) {
 		this.totalProveedoresDomicilios   = totalProveedoresDomicilios;
 		this.totalProveedoresAgentes      = totalProveedoresAgentes;
 		this.totalProveedoresTipoContacto = totalProveedoresTipoContacto;
@@ -27,6 +29,7 @@ public class ContadoresListas {
 		this.totalProveedoresPago         = totalProveedoresPago;
 		this.totalProveedoresServicio     = totalProveedoresServicio;
 		this.totalProveedoresTransferencia= totalProveedoresTransferencia;
+		this.totalProveedoresMateriales   = totalProveedoresMateriales;
 	} // ContadoresListas
 
 	public Long getTotalProveedoresDomicilios() {
@@ -84,6 +87,14 @@ public class ContadoresListas {
 	public void setTotalProveedoresTransferencia(Long totalProveedoresTransferencia) {
 		this.totalProveedoresTransferencia = totalProveedoresTransferencia;
 	}
+
+	public Long getTotalProveedoresMateriales() {
+		return totalProveedoresMateriales;
+	}
+
+	public void setTotalProveedoresMateriales(Long totalProveedoresMateriales) {
+		this.totalProveedoresMateriales = totalProveedoresMateriales;
+	}	
 	
 	private void init(){
 		try {
@@ -94,9 +105,10 @@ public class ContadoresListas {
 			this.totalProveedoresPago         = toMaxProveedorPago();
 			this.totalProveedoresServicio     = toMaxProveedorBanco();
 			this.totalProveedoresTransferencia= toMaxProveedorBanco();
+			this.totalProveedoresMateriales   = toMaxProveedorMaterial();
 		} // try
 		catch (Exception e) {
-			mx.org.kaana.libs.formato.Error.mensaje(e);						
+			Error.mensaje(e);						
 		} // catch		
 	} // init
 	
@@ -123,6 +135,10 @@ public class ContadoresListas {
 	private Long toMaxProveedorBanco() throws Exception{		
 		return toMax("TcManticProveedoresBancosDto");
 	} // toMaxProveedorTiposContactos
+	
+	private Long toMaxProveedorMaterial() throws Exception{		
+		return toMax("TcKeetProveedoresMaterialesDto");
+	} // toMaxProveedorMaterial
 	
 	private Long toMax(String vista) throws Exception{
 		Long regresar= 0L;
