@@ -1088,5 +1088,33 @@
         delete from tc_keet_clientes_viviendas where id_cliente={idCliente}
       </delete>
     </unit>
+		<unit id="TcKeetProveedoresMaterialesDto">
+      <select id="row">
+        select      
+					tc_keet_proveedores_materiales.id_proveedor_material as id_key,
+          tc_keet_proveedores_materiales.*
+        from      
+          tc_keet_proveedores_materiales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proveedores_materiales
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_material = {idProveedorMaterial} and id_articulo = {idArticulo}
+      </select>
+			<select id="maximo">
+				select      
+          max(id_proveedor_material) maximo
+        from      
+          tc_keet_proveedores_materiales
+			</select>
+			<delete id="rows">
+        delete from tc_keet_proveedores_materiales where id_proveedor={idProveedor}
+      </delete>
+    </unit>
   </dml>    
 </process>
