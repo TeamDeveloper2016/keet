@@ -270,7 +270,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:					
         case CONSULTAR:					
           idPersona= Long.valueOf(this.attrs.get("idPersona").toString());					
-          this.registroPersona= new RegistroPersona(idPersona);
+          this.registroPersona= new RegistroPersona(idPersona);					
 					this.loadCollections();
 					if(!this.registroPersona.getPersonasDomicilio().isEmpty()){
 						this.registroPersona.setPersonaDomicilioSeleccion(this.registroPersona.getPersonasDomicilio().get(0));
@@ -279,8 +279,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 					if(!this.registroPersona.getPersonasBeneficiarios().isEmpty()){
 						this.registroPersona.setPersonaBeneficiarioSeleccion(this.registroPersona.getPersonasBeneficiarios().get(0));	
 						doConsultarBeneficiario();
-					} // if
+					} // if					
 					this.attrs.put("idEmpresa", new UISelectEntity(this.registroPersona.getIdEmpresa()));					
+					doLoadPuestos();
           break;
       } // switch
 			this.registroPersona.getPersona().setEstilo(TEMA);
@@ -1022,6 +1023,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			doActualizaIconEstatus();				
 		else if (event.getTab().getTitle().equals("Bitacora"))
 			loadBitacora();
+		else if (event.getTab().getTitle().equals("Prestaciones"))
+			UIBackingUtilities.execute("refreshValidateNss();");
   } // onTabChange
 	
 	private void loadBitacora(){
