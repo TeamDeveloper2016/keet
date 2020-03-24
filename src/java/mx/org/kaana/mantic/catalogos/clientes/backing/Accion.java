@@ -106,6 +106,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	private void loadCollections(){
 		loadEmpresas();
+		loadDivisiones();
 		loadBancos();
 		loadRepresentantes();
 		loadTiposContactos();
@@ -116,6 +117,27 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadMunicipios();		
 		loadLocalidades();		
 	} // loadCollections
+	
+	private void loadDivisiones(){
+		List<UISelectItem> infraestructuras= null;
+		List<UISelectItem> viviendas       = null;
+		Map<String, Object> params         = null;		
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			infraestructuras= UISelect.build("TcKeetTiposInfraestructurasDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("infraestructuras", infraestructuras);
+			viviendas= UISelect.build("TcKeetTiposViviendasDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("viviendas", viviendas);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally		
+	} // loadDivisiones
 	
   public void doLoad() {
     EAccion eaccion = null;
