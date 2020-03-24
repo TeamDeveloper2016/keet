@@ -405,12 +405,11 @@ public class RegistroPersona implements Serializable {
 			pivote= this.personasBeneficiarios.get(this.personasBeneficiarios.indexOf(this.personaBeneficiarioSeleccion));
 			pivote.setModificar(true);
 			this.beneficiarioPivote= new PersonaBeneficiario();
-			this.beneficiarioPivote.setCurp(pivote.getCurp());
+			this.beneficiarioPivote.setFechaNacimiento(pivote.getFechaNacimiento());
 			this.beneficiarioPivote.setIdTipoParentesco(pivote.getIdTipoParentesco());	
 			this.beneficiarioPivote.setMaterno(pivote.getMaterno());
 			this.beneficiarioPivote.setPaterno(pivote.getPaterno());
-			this.beneficiarioPivote.setNombre(pivote.getNombre());
-			this.beneficiarioPivote.setRfc(pivote.getRfc());
+			this.beneficiarioPivote.setNombre(pivote.getNombre());			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -436,12 +435,11 @@ public class RegistroPersona implements Serializable {
 			personaBeneficiario.setIdUsuario(JsfBase.getIdUsuario());			
 			if(!actualizar)
 				personaBeneficiario.setConsecutivo(this.personasBeneficiarios.size() + 1L);
-			personaBeneficiario.setCurp(this.personaBeneficiario.getCurp());
+			personaBeneficiario.setFechaNacimiento(this.personaBeneficiario.getFechaNacimiento());
 			personaBeneficiario.setIdTipoParentesco(this.personaBeneficiario.getIdTipoParentesco());
 			personaBeneficiario.setMaterno(this.personaBeneficiario.getMaterno());
 			personaBeneficiario.setPaterno(this.personaBeneficiario.getPaterno());
-			personaBeneficiario.setNombre(this.personaBeneficiario.getNombre());
-			personaBeneficiario.setRfc(this.personaBeneficiario.getRfc());			
+			personaBeneficiario.setNombre(this.personaBeneficiario.getNombre());			
 		} // try
 		catch (Exception e) {			
 			throw e;
