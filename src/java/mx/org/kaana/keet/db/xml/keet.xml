@@ -1032,5 +1032,43 @@
           id_nombre_dia = {idNombreDia} and nombre = '{nombre}'
       </select>
     </unit>
+		<unit id="TcKeetClientesInfraestructurasDto">
+      <select id="row">
+        select      
+					tc_keet_clientes_infraestructuras.id_cliente_infraestructura as id_key,
+          tc_keet_clientes_infraestructuras.*
+        from      
+          tc_keet_clientes_infraestructuras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_clientes_infraestructuras
+        where      
+          id_cliente = {idCliente} and id_cliente_infraestructura = {idClienteInfraestructura} and id_tipo_infraestructura = {idTipoInfraestructura}
+      </select>
+    </unit>
+		 <unit id="TcKeetClientesViviendasDto">
+      <select id="row">
+        select      
+					tc_keet_clientes_viviendas.id_cliente_vivienda as id_key,
+          tc_keet_clientes_viviendas.*
+        from      
+          tc_keet_clientes_viviendas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_clientes_viviendas
+        where      
+          id_cliente = {idCliente} and id_tipo_vivienda = {idTipoVivienda} and id_cliente_vivienda = {idClienteVivienda}
+      </select>
+    </unit>
   </dml>    
 </process>
