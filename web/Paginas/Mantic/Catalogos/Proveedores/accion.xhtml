@@ -58,6 +58,10 @@
 			};
 			
 			$(document).ready(function(){janal.readingMode('#{manticCatalogosProveedoresAccion.attrs.nombreAccion}');});
+			
+			function clearMateriales(){
+				$('#contenedorGrupos\\:codigos_input').val('');
+			}
     </script>
   </ui:define>
   <ui:define name="contenido">
@@ -382,6 +386,41 @@
 									</p:dataTable>	
 								</p:panelGrid>	
 							</p:fieldset>
+						</p:tab>
+						<p:tab title="Materiales" >	
+							<p:commandButton id="replace" actionListener="#{manticCatalogosProveedoresAccion.doAgregarProveedorMaterial}" process="@this" update="panelTablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();clearMateriales();" style="display:none"/>
+							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosProveedoresAccion.attrs.custom}" completeMethod="#{manticCatalogosProveedoresAccion.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<p:ajax event="itemSelect" oncomplete="$('#contenedorGrupos\\:replace').click();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Propio:" />
+										<h:outputText value="#{custom.propio}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />																				
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>		
+							<p:panelGrid id="panelTablaMateriales" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+								<p:dataTable id="tablaMateriales" rowIndexVar="index" var="material" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresMateriales}" rows="6" paginator="false" reflow="true" rowKey="#{servicio.key}" emptyMessage=" " styleClass="paginated">																														
+									<p:column headerText="Propio" styleClass="janal-wid-10">		
+										<p:inputText styleClass="janal-wid-100-txt" value="#{material.propio}" readonly="true"/>                    																																			
+									</p:column>
+									<p:column headerText="Nombre" styleClass="janal-wid-30">		
+										<p:inputText styleClass="janal-wid-100-txt" value="#{material.nombre}" readonly="true"/>                    																																			
+									</p:column>									
+									<p:column headerText="Unidad de medida" styleClass="janal-wid-10">		
+										<p:inputText styleClass="janal-wid-100-txt" value="#{material.unidadMedida}" readonly="true"/>
+									</p:column>
+									<p:column style="width:32px;text-align: center">
+										<p:commandButton update="tablaMateriales" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorMaterial}">
+											<f:setPropertyActionListener value="#{material}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorMaterialSeleccion}" />
+										</p:commandButton>
+									</p:column>									
+								</p:dataTable>	
+							</p:panelGrid>								
 						</p:tab>
             <p:tab title="Observaciones">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
