@@ -27,7 +27,7 @@
 				'contenedorGrupos\\:departamento' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:fechaIngreso' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:fechaContrato': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:idSeguro'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idSeguro'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nss'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:infonavit'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:factorInfonavit': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -71,7 +71,7 @@
 			} // readingLocalMode
 			
 			function refreshValidateNss(){
-				$('#contenedorGrupos\\:idSeguro_label').text()=== 'ACTIVO' ? janal.renovates([{id: 'contenedorGrupos\\:nss', value: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'}}]) : janal.renovates([{id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:nss', value: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}}]);
+				$('#contenedorGrupos\\:idSeguro_label').text()=== 'SI' ? janal.renovates([{id: 'contenedorGrupos\\:nss', value: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'}}]) : janal.renovates([{id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:nss', value: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}}]);
 			}
 		</script>   
 	</ui:define>
@@ -180,11 +180,12 @@
             <p:tab title="Prestaciones">
 							<p:panelGrid id="panelPrestaciones" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">																			
 								<p:outputLabel value="Seguro social" style="font-weight: bold"/><p:spacer/>
-								<p:outputLabel for="idSeguro" value="Estatus:"/>
+								<p:spacer/><p:separator/>
+								<p:outputLabel for="idSeguro" value="Tiene seguro:"/>
 								<p:selectOneMenu id="idSeguro" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idSeguro}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="janal.convertidor.EnteroLargo">
 									<p:ajax event="change" process="@this idSeguro" oncomplete="refreshValidateNss();"/>									
-									<f:selectItem itemValue="1" itemLabel="ACTIVO"/>
-									<f:selectItem itemValue="2" itemLabel="INACTIVO"/>
+									<f:selectItem itemValue="1" itemLabel="SI"/>
+									<f:selectItem itemValue="2" itemLabel="NO"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="nss" value="Nss:"/>
 								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}"/>
@@ -192,8 +193,8 @@
 								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}"/>                    
 								<p:outputLabel for="mensualImss" value="Sueldo IMSS semanal:"/>								                 
 								<p:inputNumber id="mensualImss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}"/>                    
-								<p:spacer/><p:separator/>
 								<p:outputLabel value="Infonavit" style="font-weight: bold"/><p:spacer/>
+								<p:spacer/><p:separator/>
 								<p:outputLabel for="infonavit" value="No credito:"/>
 								<p:inputText id="infonavit" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.infonavit}" onblur="$('#contenedorGrupos\\:infonavit').val().trim().length> 0? janal.renovate('contenedorGrupos\\:factorInfonavit', {validaciones: 'requerido', mascara: 'libre'}): janal.renovate('contenedorGrupos\\:factorInfonavit', {validaciones: 'libre', mascara: 'libre'});" />
 								<p:outputLabel for="factorInfonavit" value="Factor:"/>								
@@ -341,7 +342,6 @@
 								<p:outputLabel for="idNomina" value="Se deposita nómina:"/>
 								<p:selectOneMenu id="idNomina" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idNomina}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="janal.convertidor.EnteroLargo">
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this idNomina" oncomplete="janal.desbloquear();"/>
-									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 									<f:selectItem itemValue="1" itemLabel="SI"/>
 									<f:selectItem itemValue="2" itemLabel="NO"/>
 								</p:selectOneMenu>	

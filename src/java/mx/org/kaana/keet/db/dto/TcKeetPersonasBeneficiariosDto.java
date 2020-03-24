@@ -56,7 +56,7 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPersonasBeneficiariosDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, null, null, new Long(-1L), null, LocalDate.now());
     setKey(key);
   }
 
