@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.personas.backing;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -902,8 +903,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.registroPersona.getPersonaBeneficiario().setNombre(beneficiario.getNombre());
       this.registroPersona.getPersonaBeneficiario().setPaterno(beneficiario.getPaterno());
       this.registroPersona.getPersonaBeneficiario().setMaterno(beneficiario.getMaterno());
-      this.registroPersona.getPersonaBeneficiario().setCurp(beneficiario.getCurp());
-      this.registroPersona.getPersonaBeneficiario().setRfc(beneficiario.getRfc());
+      this.registroPersona.getPersonaBeneficiario().setFechaNacimiento(beneficiario.getFechaNacimiento());      
       this.registroPersona.getPersonaBeneficiario().setIdTipoParentesco(beneficiario.getIdTipoParentesco());      
     } // try
     catch (Exception e) {
@@ -924,12 +924,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   public void clearAtributosBeneficiario() {
     try {
-      this.registroPersona.getPersonaBeneficiario().setCurp("");
+      this.registroPersona.getPersonaBeneficiario().setFechaNacimiento(LocalDate.now());
       this.registroPersona.getPersonaBeneficiario().setIdTipoParentesco(null);
       this.registroPersona.getPersonaBeneficiario().setMaterno("");
       this.registroPersona.getPersonaBeneficiario().setPaterno("");
-      this.registroPersona.getPersonaBeneficiario().setNombre("");
-      this.registroPersona.getPersonaBeneficiario().setRfc("");
+      this.registroPersona.getPersonaBeneficiario().setNombre("");      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
