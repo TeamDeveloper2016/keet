@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,41 +28,39 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="materno")
+  @Column (name="MATERNO")
   private String materno;
-  @Column (name="id_empresa_persona")
+  @Column (name="ID_EMPRESA_PERSONA")
   private Long idEmpresaPersona;
-  @Column (name="paterno")
+  @Column (name="PATERNO")
   private String paterno;
-  @Column (name="id_tipo_parentesco")
+  @Column (name="ID_TIPO_PARENTESCO")
   private Long idTipoParentesco;
-  @Column (name="id_usuario")
+  @Column (name="ID_USUARIO")
   private Long idUsuario;
-  @Column (name="observaciones")
+  @Column (name="OBSERVACIONES")
   private String observaciones;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_persona_beneficiario")
+	@Column (name="ID_PERSONA_BENEFICIARIO")
   private Long idPersonaBeneficiario;
-  @Column (name="nombre")
-  private String nombre;
-  @Column (name="rfc")
-  private String rfc;
-  @Column (name="curp")
-  private String curp;
-  @Column (name="registro")
+  @Column (name="NOMBRE")
+  private String nombre;  
+  @Column (name="REGISTRO")
   private LocalDateTime registro;
+	@Column(name = "FECHA_NACIMIENTO")
+  private LocalDate fechaNacimiento;  
 
   public TcKeetPersonasBeneficiariosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetPersonasBeneficiariosDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcKeetPersonasBeneficiariosDto(String materno, Long idEmpresaPersona, String paterno, Long idTipoParentesco, Long idUsuario, String observaciones, Long idPersonaBeneficiario, String nombre, String rfc, String curp) {
+  public TcKeetPersonasBeneficiariosDto(String materno, Long idEmpresaPersona, String paterno, Long idTipoParentesco, Long idUsuario, String observaciones, Long idPersonaBeneficiario, String nombre, LocalDate fechaNacimiento) {
     setMaterno(materno);
     setIdEmpresaPersona(idEmpresaPersona);
     setPaterno(paterno);
@@ -69,10 +68,9 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setIdPersonaBeneficiario(idPersonaBeneficiario);
-    setNombre(nombre);
-    setRfc(rfc);
-    setCurp(curp);
+    setNombre(nombre);    
     setRegistro(LocalDateTime.now());
+		setFechaNacimiento(fechaNacimiento);
   }
 	
   public void setMaterno(String materno) {
@@ -139,22 +137,6 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
     return nombre;
   }
 
-  public void setRfc(String rfc) {
-    this.rfc = rfc;
-  }
-
-  public String getRfc() {
-    return rfc;
-  }
-
-  public void setCurp(String curp) {
-    this.curp = curp;
-  }
-
-  public String getCurp() {
-    return curp;
-  }
-
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -163,6 +145,14 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public LocalDate getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -193,10 +183,8 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
 		regresar.append(getIdPersonaBeneficiario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRfc());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getCurp());
+		regresar.append(Constantes.SEPARADOR);		
+		regresar.append(getFechaNacimiento());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -214,8 +202,7 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idPersonaBeneficiario", getIdPersonaBeneficiario());
 		regresar.put("nombre", getNombre());
-		regresar.put("rfc", getRfc());
-		regresar.put("curp", getCurp());
+		regresar.put("fechaNacimiento", getFechaNacimiento());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -223,7 +210,7 @@ public class TcKeetPersonasBeneficiariosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getMaterno(), getIdEmpresaPersona(), getPaterno(), getIdTipoParentesco(), getIdUsuario(), getObservaciones(), getIdPersonaBeneficiario(), getNombre(), getRfc(), getCurp(), getRegistro()
+			getMaterno(), getIdEmpresaPersona(), getPaterno(), getIdTipoParentesco(), getIdUsuario(), getObservaciones(), getIdPersonaBeneficiario(), getNombre(), getFechaNacimiento(), getRegistro()
     };
     return regresar;
   }
