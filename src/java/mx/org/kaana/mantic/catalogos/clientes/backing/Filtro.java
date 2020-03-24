@@ -144,8 +144,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			if(!Cadena.isVacio(this.attrs.get("clave")))
 				condicion.append("tc_mantic_clientes.clave like '%").append(this.attrs.get("clave")).append("%' and ");
 			if(this.attrs.get("idClienteProcess")!= null && !Cadena.isVacio(this.attrs.get("idClienteProcess")))
-				condicion.append("tc_mantic_clientes.id_cliente =").append(this.attrs.get("idClienteProcess")).append(" and ");
-			condicion.append("tc_mantic_clientes.id_activo in (").append(this.attrs.get("estatus")).append(") and ");
+				condicion.append("tc_mantic_clientes.id_cliente =").append(this.attrs.get("idClienteProcess")).append(" and ");			
 			if(Cadena.isVacio(condicion))
 				regresar= Constantes.SQL_VERDADERO;
 			else

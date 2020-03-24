@@ -121,7 +121,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadTiposParentescos();
 		loadDepartamentos();
 		loadContratistas();
-	} // loadCollections
+	} // loadCollections	
 	
 	private void loadDepartamentos(){
 		List<UISelectItem> departamentos= null;
@@ -139,7 +139,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally		
-	} // loadTiposParentescos
+	} // loadDepartamentos
 	
 	private void loadTiposParentescos(){
 		List<UISelectItem> parentescos= null;

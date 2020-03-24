@@ -1050,6 +1050,15 @@
         where      
           id_cliente = {idCliente} and id_cliente_infraestructura = {idClienteInfraestructura} and id_tipo_infraestructura = {idTipoInfraestructura}
       </select>
+			<select id="maximo">
+				select      
+          max(id_cliente_infraestructura) maximo
+        from      
+          tc_keet_clientes_infraestructuras
+			</select>
+			<delete id="rows">
+        delete from tc_keet_clientes_infraestructuras where id_cliente={idCliente}
+      </delete>
     </unit>
 		 <unit id="TcKeetClientesViviendasDto">
       <select id="row">
@@ -1069,6 +1078,43 @@
         where      
           id_cliente = {idCliente} and id_tipo_vivienda = {idTipoVivienda} and id_cliente_vivienda = {idClienteVivienda}
       </select>
+			<select id="maximo">
+				select      
+          max(id_cliente_vivienda) maximo
+        from      
+          tc_keet_clientes_viviendas
+			</select>
+			<delete id="rows">
+        delete from tc_keet_clientes_viviendas where id_cliente={idCliente}
+      </delete>
+    </unit>
+		<unit id="TcKeetProveedoresMaterialesDto">
+      <select id="row">
+        select      
+					tc_keet_proveedores_materiales.id_proveedor_material as id_key,
+          tc_keet_proveedores_materiales.*
+        from      
+          tc_keet_proveedores_materiales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proveedores_materiales
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_material = {idProveedorMaterial} and id_articulo = {idArticulo}
+      </select>
+			<select id="maximo">
+				select      
+          max(id_proveedor_material) maximo
+        from      
+          tc_keet_proveedores_materiales
+			</select>
+			<delete id="rows">
+        delete from tc_keet_proveedores_materiales where id_proveedor={idProveedor}
+      </delete>
     </unit>
   </dml>    
 </process>

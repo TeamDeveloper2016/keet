@@ -10,6 +10,8 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.db.dto.TcKeetClientesBancosDto;
+import mx.org.kaana.keet.db.dto.TcKeetClientesInfraestructurasDto;
+import mx.org.kaana.keet.db.dto.TcKeetClientesViviendasDto;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
@@ -22,7 +24,9 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteBanca;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteInfraestructura;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteVivienda;
 import mx.org.kaana.mantic.catalogos.clientes.beans.RegistroCliente;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesArchivosDto;
@@ -121,14 +125,22 @@ public class Transaccion extends TransaccionFactura {
 		if (eliminarRegistros(sesion)) {
 			this.registroCliente.getCliente().setIdUsuario(JsfBase.getIdUsuario());			
 			idCliente = DaoFactory.getInstance().insert(sesion, this.registroCliente.getCliente());
-			if (registraClientesDomicilios(sesion, idCliente)) {
-				if (registraClientesRepresentantes(sesion, idCliente)) {
-					if(registraClientesTipoContacto(sesion, idCliente)){
-						if(registraClientesServicios(sesion, idCliente)){
-							if(registraClientesTransferencia(sesion, idCliente)){
-								this.registroCliente.getPortal().setIdCliente(idCliente);								
-								this.registroCliente.getPortal().setIdUsuario(JsfBase.getIdUsuario());								
-								regresar= DaoFactory.getInstance().insert(sesion, this.registroCliente.getPortal())>= 1L;
+			if (registraClientesInfraestructuras(sesion, idCliente)) {
+				if (registraClientesViviendas(sesion, idCliente)) {
+					if (registraClientesDomicilios(sesion, idCliente)) {
+						if (registraClientesRepresentantes(sesion, idCliente)) {
+							if(registraClientesTipoContacto(sesion, idCliente)){
+								if(registraClientesServicios(sesion, idCliente)){
+									if(registraClientesTransferencia(sesion, idCliente)){
+										if(!Cadena.isVacio(this.registroCliente.getPortal().getPagina())){
+											this.registroCliente.getPortal().setIdCliente(idCliente);								
+											this.registroCliente.getPortal().setIdUsuario(JsfBase.getIdUsuario());								
+											regresar= DaoFactory.getInstance().insert(sesion, this.registroCliente.getPortal())>= 1L;
+										} // if
+										else
+											regresar= true;
+									} // if
+								} // if
 							} // if
 						} // if
 					} // if
@@ -183,24 +195,33 @@ public class Transaccion extends TransaccionFactura {
 	} // actualizarArticuloFacturama
 	
   private boolean actualizarCliente(Session sesion) throws Exception {
-    boolean regresar = false;
+    boolean regresar    = false;
+    boolean resultPortal= true;
     Long idCliente = this.registroCliente.getIdCliente();
-		if (registraClientesDomicilios(sesion, idCliente)) {
-			if (registraClientesRepresentantes(sesion, idCliente)) {
-				if(registraClientesTipoContacto(sesion, idCliente)){
-					if(registraClientesServicios(sesion, idCliente)){
-						if(registraClientesTransferencia(sesion, idCliente)){
-							this.registroCliente.getPortal().setIdCliente(idCliente);
-							this.registroCliente.getPortal().setIdUsuario(JsfBase.getIdUsuario());								
-							if(DaoFactory.getInstance().insert(sesion, this.registroCliente.getPortal())>= 1L){
-								regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
-								sesion.flush();
-								actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
-							} // if									
+		if (registraClientesInfraestructuras(sesion, idCliente)) {
+			if (registraClientesViviendas(sesion, idCliente)) {
+				if (registraClientesDomicilios(sesion, idCliente)) {
+					if (registraClientesRepresentantes(sesion, idCliente)) {
+						if(registraClientesTipoContacto(sesion, idCliente)){
+							if(registraClientesServicios(sesion, idCliente)){
+								if(registraClientesTransferencia(sesion, idCliente)){
+									this.registroCliente.getPortal().setIdCliente(idCliente);
+									this.registroCliente.getPortal().setIdUsuario(JsfBase.getIdUsuario());	
+									if(this.registroCliente.getPortal().isValid() && !Cadena.isVacio(this.registroCliente.getPortal().getPagina()))
+										resultPortal= DaoFactory.getInstance().update(sesion, this.registroCliente.getPortal())>= 1L;
+									else if (!Cadena.isVacio(this.registroCliente.getPortal().getPagina()))
+										resultPortal= DaoFactory.getInstance().insert(sesion, this.registroCliente.getPortal())>= 1L;									
+									if(resultPortal){
+										regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
+										sesion.flush();
+										actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
+									} // if									
+								} // if
+							} // if
 						} // if
 					} // if
-				} // if
-			} // if
+				} // if				
+			} // if				
 		} // if				
     return regresar;
   } // actualizarCliente
@@ -211,13 +232,17 @@ public class Transaccion extends TransaccionFactura {
     try {
       params = new HashMap<>();
       params.put("idCliente", this.registroCliente.getIdCliente());
-      if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteDomicilioDto.class, params) > -1L) {
-        if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteRepresentanteDto.class, params) > -1L) {
-          if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteTipoContactoDto.class, params) > -1L) {
-            regresar = DaoFactory.getInstance().delete(sesion, TcManticClientesDto.class, this.registroCliente.getIdCliente()) >= 1L;
-						eliminarClienteFacturama(sesion, this.registroCliente.getCliente().getIdFacturama());
-          }
-        } // if
+      if (DaoFactory.getInstance().deleteAll(sesion, TcKeetClientesViviendasDto.class, params) > -1L) {
+				if (DaoFactory.getInstance().deleteAll(sesion, TcKeetClientesInfraestructurasDto.class, params) > -1L) {
+					if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteDomicilioDto.class, params) > -1L) {
+						if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteRepresentanteDto.class, params) > -1L) {
+							if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteTipoContactoDto.class, params) > -1L) {
+								regresar = DaoFactory.getInstance().delete(sesion, TcManticClientesDto.class, this.registroCliente.getIdCliente()) >= 1L;
+								eliminarClienteFacturama(sesion, this.registroCliente.getCliente().getIdFacturama());
+							}
+						} // if
+					} // if
+				} // if
       } // if
     } // try // try    
     finally {
@@ -308,6 +333,70 @@ public class Transaccion extends TransaccionFactura {
     } // finally
     return regresar;
   } // registraClientesRepresentantes
+	
+  private boolean registraClientesInfraestructuras(Session sesion, Long idCliente) throws Exception {
+    TcKeetClientesInfraestructurasDto dto = null;
+    ESql sqlAccion    = null;
+    int count         = 0;
+    boolean validate  = false;
+    boolean regresar  = false;
+    try {			
+      for (ClienteInfraestructura clienteInfraestructura : this.registroCliente.getClientesInfraestructuras()) {
+			  clienteInfraestructura.setIdCliente(idCliente);
+        clienteInfraestructura.setIdUsuario(JsfBase.getIdUsuario());        
+        dto = (TcKeetClientesInfraestructurasDto) clienteInfraestructura;
+        sqlAccion = clienteInfraestructura.getSqlAccion();
+        switch (sqlAccion) {
+          case INSERT:
+            dto.setIdClienteInfraestructura(-1L);
+            validate = registrar(sesion, dto);
+            break;
+          case UPDATE:
+            validate = actualizar(sesion, dto);
+            break;
+        } // switch
+        if (validate) 
+          count++;        
+      } // for		
+      regresar = count == this.registroCliente.getClientesInfraestructuras().size();
+    } // try // try    
+    finally {
+      this.messageError = "Error al registrar las infraestructuras, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraClientesRepresentantes
+	
+  private boolean registraClientesViviendas(Session sesion, Long idCliente) throws Exception {
+    TcKeetClientesViviendasDto dto = null;
+    ESql sqlAccion    = null;
+    int count         = 0;
+    boolean validate  = false;
+    boolean regresar  = false;
+    try {			
+      for (ClienteVivienda clienteVivienda : this.registroCliente.getClientesViviendas()) {				
+        clienteVivienda.setIdCliente(idCliente);
+        clienteVivienda.setIdUsuario(JsfBase.getIdUsuario());        
+        dto = (TcKeetClientesViviendasDto) clienteVivienda;
+        sqlAccion = clienteVivienda.getSqlAccion();
+        switch (sqlAccion) {
+          case INSERT:
+            dto.setIdClienteVivienda(-1L);
+            validate = registrar(sesion, dto);
+            break;
+          case UPDATE:
+            validate = actualizar(sesion, dto);
+            break;
+        } // switch
+        if (validate) 
+          count++;        
+      } // for		
+      regresar = count == this.registroCliente.getClientesViviendas().size();
+    } // try // try    
+    finally {
+      this.messageError = "Error al registrar las viviendas, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraClientesViviendas
 	
 	private Long addRepresentante(Session sesion, ClienteContactoRepresentante clienteRepresentante) throws Exception{
 		Long regresar= -1L;

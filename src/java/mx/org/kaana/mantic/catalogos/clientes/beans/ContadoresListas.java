@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.clientes.beans;
 
 import java.util.Collections;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 
@@ -13,18 +14,22 @@ public class ContadoresListas {
 	private Long totalPersonasTipoContacto;	
 	private Long totalClientesServicio;	
 	private Long totalClientesTransferencia;	
+	private Long totalClientesInfraestructura;	
+	private Long totalClientesVivienda;	
 
 	public ContadoresListas() {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalClientesDomicilios, Long totalClientesRepresentantes, Long totalClientesTipoContacto, Long totalPersonasTipoContacto, Long totalClientesServicio, Long totalClientesTransferencia) {
-		this.totalClientesDomicilios    = totalClientesDomicilios;
-		this.totalClientesRepresentantes= totalClientesRepresentantes;
-		this.totalClientesTipoContacto  = totalClientesTipoContacto;
-		this.totalPersonasTipoContacto  = totalPersonasTipoContacto;	
-		this.totalClientesServicio      = totalClientesServicio;
-		this.totalClientesTransferencia = totalClientesTransferencia;
+	public ContadoresListas(Long totalClientesDomicilios, Long totalClientesRepresentantes, Long totalClientesTipoContacto, Long totalPersonasTipoContacto, Long totalClientesServicio, Long totalClientesTransferencia, Long totalClientesInfraestructura, Long totalClientesVivienda) {
+		this.totalClientesDomicilios     = totalClientesDomicilios;
+		this.totalClientesRepresentantes = totalClientesRepresentantes;
+		this.totalClientesTipoContacto   = totalClientesTipoContacto;
+		this.totalPersonasTipoContacto   = totalPersonasTipoContacto;	
+		this.totalClientesServicio       = totalClientesServicio;
+		this.totalClientesTransferencia  = totalClientesTransferencia;
+		this.totalClientesInfraestructura= totalClientesInfraestructura;
+		this.totalClientesVivienda       = totalClientesVivienda;
 	} // ContadoresListas
 
 	public Long getTotalClientesDomicilios() {
@@ -74,18 +79,28 @@ public class ContadoresListas {
 	public void setTotalClientesTransferencia(Long totalClientesTransferencia) {
 		this.totalClientesTransferencia = totalClientesTransferencia;
 	}	
+
+	public Long getTotalClientesInfraestructura() {
+		return totalClientesInfraestructura;
+	}
+
+	public Long getTotalClientesVivienda() {
+		return totalClientesVivienda;
+	}	
 	
 	private void init(){
 		try {
-			this.totalClientesDomicilios    = toMaxClienteDomicilio();
-			this.totalClientesRepresentantes= toMaxClienteRepresentantes();
-			this.totalClientesTipoContacto  = toMaxClienteTiposContactos();		
-			this.totalPersonasTipoContacto  = toMaxPersonaTiposContactos();
-			this.totalClientesServicio      = toMaxClienteBanco();
-			this.totalClientesTransferencia = toMaxClienteBanco();
+			this.totalClientesDomicilios     = toMaxClienteDomicilio();
+			this.totalClientesRepresentantes = toMaxClienteRepresentantes();
+			this.totalClientesTipoContacto   = toMaxClienteTiposContactos();		
+			this.totalPersonasTipoContacto   = toMaxPersonaTiposContactos();
+			this.totalClientesServicio       = toMaxClienteBanco();
+			this.totalClientesTransferencia  = toMaxClienteBanco();
+			this.totalClientesInfraestructura= toMaxClienteInfraestructura();
+			this.totalClientesVivienda       = toMaxClienteVivienda();
 		} // try
 		catch (Exception e) {
-			mx.org.kaana.libs.formato.Error.mensaje(e);						
+			Error.mensaje(e);						
 		} // catch		
 	} // init
 	
@@ -150,6 +165,34 @@ public class ContadoresListas {
 		Value maximo = null;
 		try {
 			maximo= DaoFactory.getInstance().toField("TcKeetClientesBancosDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			if(maximo.getData()!= null)
+				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toMax
+	
+	private Long toMaxClienteInfraestructura() throws Exception{
+		Long regresar= 0L;
+		Value maximo = null;
+		try {
+			maximo= DaoFactory.getInstance().toField("TcKeetClientesInfraestructurasDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			if(maximo.getData()!= null)
+				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toMax
+	
+	private Long toMaxClienteVivienda() throws Exception{
+		Long regresar= 0L;
+		Value maximo = null;
+		try {
+			maximo= DaoFactory.getInstance().toField("TcKeetClientesViviendasDto", "maximo", Collections.EMPTY_MAP, "maximo");
 			if(maximo.getData()!= null)
 				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
 		} // try

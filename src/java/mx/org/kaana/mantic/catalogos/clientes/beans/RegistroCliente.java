@@ -45,9 +45,13 @@ public class RegistroCliente implements Serializable{
 	private ClienteContactoRepresentante personaTipoContacto;	
 	private boolean habilitarCredito;
 	private boolean activo;
-
+	private List<ClienteVivienda> clientesViviendas;
+	private ClienteVivienda clienteViviendaSeleccion;
+	private List<ClienteInfraestructura> clientesInfraestructuras;
+	private ClienteInfraestructura clienteInfraestructuraSeleccion;	
+		
 	public RegistroCliente() {
-		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio(), new ArrayList<ClienteContactoRepresentante>(), new ClienteContactoRepresentante(), new ClienteContactoRepresentante(), new TcKeetClientesPortalesDto(), new ArrayList<ClienteBanca>(), new ArrayList<ClienteBanca>());
+		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio(), new ArrayList<ClienteContactoRepresentante>(), new ClienteContactoRepresentante(), new ClienteContactoRepresentante(), new TcKeetClientesPortalesDto(), new ArrayList<ClienteBanca>(), new ArrayList<ClienteBanca>(), new ArrayList<ClienteVivienda>(), new ClienteVivienda(), new ArrayList<ClienteInfraestructura>(), new ClienteInfraestructura()) ;
 	}
 	
 	public RegistroCliente(Long idCliente) {
@@ -62,7 +66,7 @@ public class RegistroCliente implements Serializable{
 		init();		
 	}
 	
-	public RegistroCliente(Long idCliente, TcManticClientesDto cliente, List<ClienteDomicilio> clientesDomicilio, List<ClienteTipoContacto> clientesTiposContacto, List<ClienteRepresentante> clientesRepresentantes, Domicilio domicilio, List<ClienteContactoRepresentante> personasTiposContacto, ClienteContactoRepresentante personaTipoContactoPivote, ClienteContactoRepresentante personaTipoContacto, TcKeetClientesPortalesDto portal, List<ClienteBanca> clientesServicio, List<ClienteBanca> clientesTransferencia) {
+	public RegistroCliente(Long idCliente, TcManticClientesDto cliente, List<ClienteDomicilio> clientesDomicilio, List<ClienteTipoContacto> clientesTiposContacto, List<ClienteRepresentante> clientesRepresentantes, Domicilio domicilio, List<ClienteContactoRepresentante> personasTiposContacto, ClienteContactoRepresentante personaTipoContactoPivote, ClienteContactoRepresentante personaTipoContacto, TcKeetClientesPortalesDto portal, List<ClienteBanca> clientesServicio, List<ClienteBanca> clientesTransferencia, List<ClienteVivienda> clientesViviendas, ClienteVivienda clienteViviendaSeleccion, List<ClienteInfraestructura> clientesInfraestructuras, ClienteInfraestructura clienteInfraestructuraSeleccion) {
 		this.idCliente                = idCliente;
 		this.cliente                  = cliente;
 		this.clientesDomicilio        = clientesDomicilio;
@@ -81,6 +85,10 @@ public class RegistroCliente implements Serializable{
 		this.clientesServicio         = clientesServicio;
 		this.clientesTransferencia    = clientesTransferencia;
 		this.activo                   = true;
+		this.clientesViviendas        = clientesViviendas;
+		this.clientesInfraestructuras = clientesInfraestructuras;
+		this.clienteViviendaSeleccion = clienteViviendaSeleccion;
+		this.clienteInfraestructuraSeleccion= clienteInfraestructuraSeleccion;
 	}
 	
 	public Long getIdCliente() {
@@ -260,6 +268,38 @@ public class RegistroCliente implements Serializable{
 		this.activo = activo;
 		this.cliente.setIdActivo(this.activo ? 1L : 2L);
 	}		
+
+	public List<ClienteVivienda> getClientesViviendas() {
+		return clientesViviendas;
+	}
+
+	public void setClientesViviendas(List<ClienteVivienda> clientesViviendas) {
+		this.clientesViviendas = clientesViviendas;
+	}
+
+	public ClienteVivienda getClienteViviendaSeleccion() {
+		return clienteViviendaSeleccion;
+	}
+
+	public void setClienteViviendaSeleccion(ClienteVivienda clienteViviendaSeleccion) {
+		this.clienteViviendaSeleccion = clienteViviendaSeleccion;
+	}
+
+	public List<ClienteInfraestructura> getClientesInfraestructuras() {
+		return clientesInfraestructuras;
+	}
+
+	public void setClientesInfraestructuras(List<ClienteInfraestructura> clientesInfraestructuras) {
+		this.clientesInfraestructuras = clientesInfraestructuras;
+	}
+
+	public ClienteInfraestructura getClienteInfraestructuraSeleccion() {
+		return clienteInfraestructuraSeleccion;
+	}
+
+	public void setClienteInfraestructuraSeleccion(ClienteInfraestructura clienteInfraestructuraSeleccion) {
+		this.clienteInfraestructuraSeleccion = clienteInfraestructuraSeleccion;
+	}	
 	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
@@ -290,6 +330,8 @@ public class RegistroCliente implements Serializable{
 			this.personasTiposContacto= motor.toRepresentantes();
 			this.clientesServicio= motor.toServicios();
 			this.clientesTransferencia= motor.toTransferencias();
+			this.clientesInfraestructuras= motor.toInfraestructuras();
+			this.clientesViviendas= motor.toViviendas();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
@@ -656,5 +698,66 @@ public class RegistroCliente implements Serializable{
 			JsfBase.addMessageError(e);			
 		} // catch			
 	} // doEliminarProveedorTipoContacto
+
+	public void doAgregarClienteVivienda(){
+		ClienteVivienda clienteVivienda= null;
+		try {					
+			clienteVivienda= new ClienteVivienda(this.contadores.getTotalClientesRepresentantes()+ this.countIndice, ESql.INSERT, true);				
+			this.clientesViviendas.add(clienteVivienda);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarClienteVivienda
 	
+	public void doEliminarClienteVivienda(){
+		try {			
+			if(this.clientesViviendas.remove(this.clienteViviendaSeleccion)){
+				if(!this.clienteViviendaSeleccion.getNuevo())
+					addDeleteList(this.clienteViviendaSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente la vivienda", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar la vivienda", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarClienteVivienda
+	
+	public void doAgregarClienteInfraestructura(){
+		ClienteInfraestructura clienteInfraestructura= null;
+		try {					
+			clienteInfraestructura= new ClienteInfraestructura(this.contadores.getTotalClientesRepresentantes()+ this.countIndice, ESql.INSERT, true);				
+			this.clientesInfraestructuras.add(clienteInfraestructura);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarClienteInfraestructura
+	
+	public void doEliminarClienteInfraestructura(){
+		try {			
+			if(this.clientesInfraestructuras.remove(this.clienteInfraestructuraSeleccion)){
+				if(!this.clienteInfraestructuraSeleccion.getNuevo())
+					addDeleteList(this.clienteInfraestructuraSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente la infraestructura", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar la infraestructura", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarClienteInfraestructura
 }
