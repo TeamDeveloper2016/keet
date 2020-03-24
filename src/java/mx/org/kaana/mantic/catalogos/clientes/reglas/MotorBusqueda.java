@@ -13,7 +13,9 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteBanca;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteInfraestructura;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteRepresentante;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteVivienda;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
@@ -280,6 +282,40 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, " id_cliente=" + this.idCliente + " and id_tipo_cuenta=" + tipoCuenta.getKey());
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteBanca.class, "TcKeetClientesBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedorbanca
+	
+	public List<ClienteInfraestructura> toInfraestructuras() throws Exception{
+		List<ClienteInfraestructura> regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, " id_cliente=" + this.idCliente);
+			regresar= DaoFactory.getInstance().toEntitySet(ClienteInfraestructura.class, "TcKeetClientesInfraestructurasDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedorbanca
+	
+	public List<ClienteVivienda> toViviendas() throws Exception{
+		List<ClienteVivienda> regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, " id_cliente=" + this.idCliente);
+			regresar= DaoFactory.getInstance().toEntitySet(ClienteVivienda.class, "TcKeetClientesViviendasDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
 			throw e;
