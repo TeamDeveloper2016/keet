@@ -222,6 +222,8 @@ public class Transaccion  extends IBaseTnx{
 				empresaPersonal.setIdDepartamento(this.persona.getEmpresaPersona().getIdDepartamento());
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
+				empresaPersonal.setIdNomina(this.persona.getEmpresaPersona().getIdNomina());
+				empresaPersonal.setIdSeguro(this.persona.getEmpresaPersona().getIdSeguro());
 				bitacora(sesion, "Empleados", empresaPersonal);
 				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;				
 			} // if			
