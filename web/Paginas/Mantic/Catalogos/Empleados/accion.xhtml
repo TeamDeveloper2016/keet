@@ -27,6 +27,7 @@
 				'contenedorGrupos\\:departamento' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:fechaIngreso' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:fechaContrato': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+				'contenedorGrupos\\:idSeguro'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nss'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:infonavit'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:factorInfonavit': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -50,9 +51,8 @@
 				'cuenta'                          : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
 				'contenedorGrupos\\:nombreB'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:paternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:maternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:curpB'        : {validaciones: 'curp', mascara: 'curp', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:rfcB'         : {validaciones: 'rfc', mascara: 'fiscal', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:maternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},				
+				'contenedorGrupos\\:nacimientoB'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'beneficiario'},				
 				'contenedorGrupos\\:parentesco'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true}
 			};					
 			
@@ -62,13 +62,17 @@
 			
 			$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticCatalogosPersonasAccion.attrs.nombreAccion}')", 500);				
-        // $('.keet-main-content').attr('style', 'height:'+ Math.trunc(screen.height*48/100)+'px !important;overflow-y: auto');				
+        // $('.keet-main-content').attr('style', 'height:'+ Math.trunc(screen.height*48/100)+'px !important;overflow-y: auto');								
 			});
 			
 			function readingLocalMode(mode){
 				if(mode === 'Consultar')
 					$('#contenedorGrupos\\:empresa').prop('disabled', 'disabled').addClass('ui-state-disabled');
 			} // readingLocalMode
+			
+			function refreshValidateNss(){
+				$('#contenedorGrupos\\:idSeguro_label').text()=== 'ACTIVO' ? janal.renovates([{id: 'contenedorGrupos\\:nss', value: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'}}]) : janal.renovates([{id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}}, {id: 'contenedorGrupos\\:nss', value: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}}]);
+			}
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -174,10 +178,16 @@
               </p:panelGrid>
 						</p:tab>	
             <p:tab title="Prestaciones">
-							<p:panelGrid id="panelPrestaciones" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">										
+							<p:panelGrid id="panelPrestaciones" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">																			
 								<p:outputLabel value="Seguro social" style="font-weight: bold"/><p:spacer/>
+								<p:outputLabel for="idSeguro" value="Estatus:"/>
+								<p:selectOneMenu id="idSeguro" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idSeguro}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="janal.convertidor.EnteroLargo">
+									<p:ajax event="change" process="@this idSeguro" oncomplete="refreshValidateNss();"/>									
+									<f:selectItem itemValue="1" itemLabel="ACTIVO"/>
+									<f:selectItem itemValue="2" itemLabel="INACTIVO"/>
+								</p:selectOneMenu>
 								<p:outputLabel for="nss" value="Nss:"/>
-								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}" onblur="$('#contenedorGrupos\\:nss').val().trim().length> 0? janal.renovates([{id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'requerido|flotante', mascara: 'libre'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'requerido|flotante', mascara: 'libre'}}]): janal.renovates([{id: 'contenedorGrupos\\:sueldoSemanal', value: {validaciones: 'libre', mascara: 'libre'}}, {id: 'contenedorGrupos\\:mensualImss', value: {validaciones: 'libre', mascara: 'libre'}}]);"/>
+								<p:inputText id="nss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.nss}"/>
 								<p:outputLabel for="sueldoSemanal" value="Deposito semanal:"/>								
 								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}"/>                    
 								<p:outputLabel for="mensualImss" value="Sueldo IMSS semanal:"/>								                 
@@ -292,20 +302,20 @@
 						<p:tab title="Beneficiarios">
               <p:panelGrid id="panelTablaBeneficiarios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-180, janal-wid-80">
                 <p:dataList id="tablaBeneficiarios" value="#{manticCatalogosPersonasAccion.registroPersona.personasBeneficiarios}" var="beneficiario" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
-                  <p:commandLink update="contenedorGrupos:formularioBeneficiario tablaBeneficiarios contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:curpB contenedorGrupos:rfcB contenedorGrupos:parentesco" title="Eliminar" action="#{manticCatalogosPersonasAccion.doEliminarBeneficiario}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
+                  <p:commandLink update="contenedorGrupos:formularioBeneficiario tablaBeneficiarios contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:nacimientoB contenedorGrupos:parentesco" title="Eliminar" action="#{manticCatalogosPersonasAccion.doEliminarBeneficiario}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{beneficiario}" target="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiarioSeleccion}" />
 										<i class="fa fa-minus-square fa-lg"></i>   
                   </p:commandLink>		
-									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioBeneficiario tablaBeneficiarios contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:curpB contenedorGrupos:rfcB contenedorGrupos:parentesco" title="Actualizar" action="#{manticCatalogosPersonasAccion.doActualizaBeneficiario}" rendered="#{beneficiario.modificar}">
+									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioBeneficiario tablaBeneficiarios contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:nacimientoB contenedorGrupos:parentesco" title="Actualizar" action="#{manticCatalogosPersonasAccion.doActualizaBeneficiario}" rendered="#{beneficiario.modificar}">
                     <f:setPropertyActionListener value="#{beneficiario}" target="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiarioSeleccion}" />
 										<i class="fa fa-check-square fa-lg"></i>
                   </p:commandLink>																				
-									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioBeneficiario tablaBeneficiarios contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:curpB contenedorGrupos:rfcB contenedorGrupos:parentesco" title="Beneficiario #{beneficiario.consecutivo}" action="#{manticCatalogosPersonasAccion.doConsultarBeneficiario}">
+									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioBeneficiario tablaBeneficiarios contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:nacimientoB contenedorGrupos:parentesco" title="Beneficiario #{beneficiario.consecutivo}" action="#{manticCatalogosPersonasAccion.doConsultarBeneficiario}">
                     <f:setPropertyActionListener value="#{beneficiario}" target="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiarioSeleccion}" />		
 										<p:outputLabel value="Beneficiario #{beneficiario.consecutivo}"/>
                   </p:commandLink>                                                                        
                   <f:facet name="footer" class="alinear-izquierda">																
-                    <p:commandLink title="Agregar beneficiario" action="#{manticCatalogosPersonasAccion.doAgregarBeneficiario}" process="@this contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:curpB contenedorGrupos:rfcB contenedorGrupos:parentesco" update="contenedorGrupos:tablaBeneficiarios contenedorGrupos:formularioBeneficiario" onstart="return janal.partial('beneficiario', true);" oncomplete="janal.refresh();janal.desbloquear();">
+                    <p:commandLink title="Agregar beneficiario" action="#{manticCatalogosPersonasAccion.doAgregarBeneficiario}" process="@this contenedorGrupos:nombreB contenedorGrupos:paternoB contenedorGrupos:maternoB contenedorGrupos:nacimientoB contenedorGrupos:parentesco" update="contenedorGrupos:tablaBeneficiarios contenedorGrupos:formularioBeneficiario" onstart="return janal.partial('beneficiario', true);" oncomplete="janal.refresh();janal.desbloquear();">
 											<i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar beneficiario"/></i>
 										</p:commandLink>		              										
                   </f:facet>
@@ -317,10 +327,8 @@
                   <p:inputText id="paternoB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.materno}" />
                   <p:outputLabel for="maternoB" value="Apellido materno:"/>
                   <p:inputText id="maternoB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.paterno}"/>	
-                  <p:outputLabel for="rfcB" value="Rfc:"/>
-                  <p:inputText id="rfcB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.rfc}"/>	                  
-                  <p:outputLabel for="curpB" value="Curp:"/>
-                  <p:inputText id="curpB" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.curp}"/>	
+                  <p:outputLabel for="nacimientoB" value="Fecha de nacimiento:"/>
+									<p:calendar id="nacimientoB" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>									
                   <p:outputLabel for="parentesco" value="Parentesco:"/>
                   <p:selectOneMenu id="parentesco" value="#{manticCatalogosPersonasAccion.registroPersona.personaBeneficiario.idTipoParentesco}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.parentescos}"/>
@@ -331,7 +339,8 @@
 						<p:tab title="Cuentas bancarias">
               <p:panelGrid id="panelTablaBancos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:outputLabel for="idNomina" value="Se deposita nómina:"/>
-								<p:selectOneMenu id="idNomina" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idNomina}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idNomina" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.idNomina}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="janal.convertidor.EnteroLargo">
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this idNomina" oncomplete="janal.desbloquear();"/>
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 									<f:selectItem itemValue="1" itemLabel="SI"/>
 									<f:selectItem itemValue="2" itemLabel="NO"/>
