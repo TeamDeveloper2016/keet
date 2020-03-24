@@ -36,7 +36,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosEmpleadosFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosEmpleadosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosEmpleadosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -45,7 +45,7 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-							<p:outputLabel for="idActivo" value="idActivo:"/>
+							<p:outputLabel for="idActivo" value="Activo:"/>
               <p:selectOneMenu id="idActivo" value="#{manticCatalogosEmpleadosFiltro.attrs.estatus}"  styleClass="janal-wid-96">
                 <f:selectItem itemLabel="SELECCIONE" itemValue="1,2"/>
                 <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
@@ -57,8 +57,26 @@
                 <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
                 <f:selectItem itemLabel="INACTIVO" itemValue="2"/>                
               </p:selectOneMenu>
+							<p:outputLabel for="contratista" value="Asignado a contratista:"/>
+							<p:selectOneMenu id="contratista" value="#{manticCatalogosEmpleadosFiltro.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+								<f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombres}"/>
+								</p:column>   
+								<p:column headerText="Departamento">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column> 
+							</p:selectOneMenu>																
               <p:outputLabel for="clave" value="Clave:"/>
               <p:inputText id="clave" value="#{manticCatalogosEmpleadosFiltro.attrs.clave}" styleClass="janal-wid-100-txt" placeholder="ejemplo: BR123"/> 
+              <p:outputLabel for="departamento" value="Departamento:"/>
+              <p:selectOneMenu  id="departamento" value="#{manticCatalogosEmpleadosFiltro.attrs.departamento}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.departamentos}"/>                
+              </p:selectOneMenu>
+              <p:outputLabel for="puesto" value="Puesto:"/>
+              <p:selectOneMenu  id="puesto" value="#{manticCatalogosEmpleadosFiltro.attrs.puesto}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.puestos}"/>                
+              </p:selectOneMenu> 
               <p:outputLabel for="nombres" value="Nombres:"/>
               <p:inputText id="nombres" value="#{manticCatalogosEmpleadosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="paterno" value="Apellido paterno:"/>
@@ -69,24 +87,6 @@
               <p:inputText id="curp" value="#{manticCatalogosEmpleadosFiltro.attrs.curp}" styleClass="janal-wid-100-txt"/>              														
 							<p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosEmpleadosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                                                        
-              <p:outputLabel for="departamento" value="Departamento:"/>
-              <p:selectOneMenu  id="departamento" value="#{manticCatalogosEmpleadosFiltro.attrs.departamento}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.departamentos}"/>                
-              </p:selectOneMenu>
-              <p:outputLabel for="puesto" value="Puesto:"/>
-              <p:selectOneMenu  id="puesto" value="#{manticCatalogosEmpleadosFiltro.attrs.puesto}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.puestos}"/>                
-              </p:selectOneMenu> 
-							<p:outputLabel for="contratista" value="Asignado a contratista:"/>
-							<p:selectOneMenu id="contratista" value="#{manticCatalogosEmpleadosFiltro.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-								<f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} - #{element.nombre}"/>
-								<p:column headerText="Nombre">
-									<h:outputText value="#{item.nombres}"/>
-								</p:column>   
-								<p:column headerText="Departamento">
-									<h:outputText value="#{item.nombre}"/>
-								</p:column> 
-							</p:selectOneMenu>																
 							<p:outputLabel for="salarioMenor" value="Salario menor a:" title="Salario mensual" style="display: none"/>
               <p:inputNumber id="salarioMenor" value="#{manticCatalogosEmpleadosFiltro.attrs.salarioMenor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" style="display: none"/>
 							<p:outputLabel for="salarioMayor" value="Salario mayor a:" title="Salario mensual" style="display: none"/>
@@ -145,7 +145,7 @@
               </f:facet>
               <h:outputText value="#{filtro['nombres']} #{filtro['paterno']} #{filtro['materno']}"/>
             </p:column>																			
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.departamento}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.departamento}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Departamento"/>
               </f:facet>
@@ -157,13 +157,13 @@
               </f:facet>
               <h:outputText value="#{filtro['puesto']}"/>
             </p:column>		
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.activo}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-7" sortBy="#{filtro.activo}">
               <f:facet name="header">
                 <h:outputText value="Activo"/>
               </f:facet>
               <h:outputText value="#{filtro['activo']}"/>
             </p:column>
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.seguro}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-7" sortBy="#{filtro.seguro}">
               <f:facet name="header">
                 <h:outputText value="Seguro"/>
               </f:facet>
