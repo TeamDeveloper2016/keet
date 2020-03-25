@@ -43,6 +43,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
@@ -569,5 +570,21 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
       Methods.clean(columns);
     } // finally
   } 
-		
+
+	protected Long toRegisterFile(String carpetaArchivo) throws Exception {
+		Long regresar= -1L;
+		TcManticArchivosDto file= new TcManticArchivosDto(
+			this.getFile().getName(), // String archivo, 
+			1L, // Long idEliminado, 
+			this.getFile().getRuta(), // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			Configuracion.getInstance().getPropiedadSistemaServidor("prototipos").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // String alias, 
+			-1L, // Long idArchivo, 
+			this.getFile().getOriginal() // String nombre
+		);
+		regresar= DaoFactory.getInstance().insert(file);
+		if(regresar <= 0)
+			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
+		return regresar;
+	}	// toRegisterFile
 }
