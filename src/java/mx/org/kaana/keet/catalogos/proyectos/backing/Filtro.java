@@ -16,6 +16,8 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Proyecto;
+import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosEstatusDto;
 import mx.org.kaana.libs.Constantes;
@@ -205,7 +207,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado                = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			TcKeetProyectosDto proyecto= (TcKeetProyectosDto)DaoFactory.getInstance().findById(TcKeetProyectosEstatusDto.class, seleccionado.getKey());
+			Proyecto proyecto= (Proyecto)DaoFactory.getInstance().toEntity(Proyecto.class, "byId", seleccionado.toMap());
 			bitacora= new TcKeetProyectosBitacoraDto(
 				(String)this.attrs.get("justificacion"), // String justificacion, 
 				((UISelectEntity)this.attrs.get("estatus")).getKey(),  // Long idProyectoEstatus, 
@@ -213,7 +215,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				-1L, // Long idProyectoBitacora, 
 				seleccionado.getKey() // Long idProyecto 
 			);
-			transaccion= new Transaccion(proyecto, bitacora);
+			transaccion= new Transaccion(new RegistroProyecto(proyecto), bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else

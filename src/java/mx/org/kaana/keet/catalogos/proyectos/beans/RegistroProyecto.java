@@ -25,6 +25,10 @@ public class RegistroProyecto implements Serializable {
 		this(new Proyecto(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	}	
 	
+	public RegistroProyecto(Proyecto proyecto) {
+		this(proyecto, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+	}	
+	
 	public RegistroProyecto(Proyecto proyecto, List<TcKeetProyectosArchivosDto> documentos, List<TcKeetProyectosPresupuestosDto> presupuestos, List<TcKeetProyectosGeneradoresDto> generadores) {
 		this.proyecto    = proyecto;
 		this.documentos  = documentos;

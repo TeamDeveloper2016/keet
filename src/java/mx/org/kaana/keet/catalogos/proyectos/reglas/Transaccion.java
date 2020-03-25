@@ -31,15 +31,14 @@ public class Transaccion extends IBaseTnx {
 	private RegistroProyecto proyecto;	
 	private IBaseDto dtoDelete;
 	private EArchivosProyectos tipoArchivo;
-	private TcKeetProyectosDto keetProyecto;
 	private TcKeetProyectosBitacoraDto bitacora;
 	
 	public Transaccion(RegistroProyecto proyecto) {
 		this(proyecto, EArchivosProyectos.DOCUMENTOS);
 	}
 
-	public Transaccion(TcKeetProyectosDto keetProyecto, TcKeetProyectosBitacoraDto bitacora) {
-		this.keetProyecto= keetProyecto;
+	public Transaccion(RegistroProyecto proyecto, TcKeetProyectosBitacoraDto bitacora) {
+		this(proyecto, EArchivosProyectos.DOCUMENTOS);
 		this.bitacora= bitacora;
 	}
 	
@@ -101,8 +100,8 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.keetProyecto.setIdProyectoEstatus(this.bitacora.getIdProyectoEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.keetProyecto)>= 1L;
+						this.proyecto.getProyecto().setIdProyectoEstatus(this.bitacora.getIdProyectoEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, this.proyecto.getProyecto())>= 1L;
 					} // if
 					break;
 			} // switch

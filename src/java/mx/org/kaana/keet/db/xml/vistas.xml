@@ -143,6 +143,7 @@
 			<select id="lazy">
 				select 
           tc_keet_proyectos.id_proyecto id_key,
+          tc_keet_proyectos.id_proyecto,
           tc_keet_proyectos.clave,
           tc_keet_proyectos.no_viviendas,
           tc_keet_proyectos.etapa,

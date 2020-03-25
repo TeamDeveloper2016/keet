@@ -17,7 +17,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
-public class Proyecto extends TcKeetProyectosDto{
+public class Proyecto extends TcKeetProyectosDto {
 
 	private static final long serialVersionUID = -2978341734389180932L;	
 	private UISelectEntity ikCliente;
