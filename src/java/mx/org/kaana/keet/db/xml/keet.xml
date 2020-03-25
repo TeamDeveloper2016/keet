@@ -1119,5 +1119,24 @@
         delete from tc_keet_proveedores_materiales where id_proveedor={idProveedor}
       </delete>
     </unit>
+		<unit id="TcKeetContratosPersonalDto">
+      <select id="row">
+        select      
+					tc_keet_contratos_personal.id_contratos_personal as id_key,
+          tc_keet_contratos_personal.*
+        from      
+          tc_keet_contratos_personal
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_personal
+        where      
+          id_contratos_personal = {idContratosPersonal} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>
   </dml>    
 </process>
