@@ -655,6 +655,15 @@
         where 
           {condicion} 
       </select>
+      <select id="byId">
+        select      
+          tc_keet_desarrollos.id_desarrollo id_key,
+				  tc_keet_desarrollos.*
+        from      
+          tc_keet_desarrollos
+        where 
+          id_desarrollo= {idDesarrollo} 
+      </select>
       <select id="identically">
         select      
           *
