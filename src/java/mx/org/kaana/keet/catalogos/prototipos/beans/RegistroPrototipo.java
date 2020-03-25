@@ -13,7 +13,6 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.MotorBusqueda;
-import mx.org.kaana.keet.db.dto.TcKeetPrototiposArchivosDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetNombresDiasDto;
