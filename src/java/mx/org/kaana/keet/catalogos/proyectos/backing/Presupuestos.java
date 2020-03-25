@@ -42,7 +42,7 @@ public class Presupuestos extends IBaseImportacion implements Serializable {
   } // init	
 		
 	@Override
-	public Presupuesto toArchivo(){
+	public Presupuesto toArchivo(Long idArchivo){
 		EArchivosProyectos tipoArchivo= (EArchivosProyectos) this.attrs.get("tipoArchivo");
 		Presupuesto regresar= new Presupuesto(
 			getDataCombo("presupuesto","presupuestos").toString("nombre"),
@@ -56,7 +56,8 @@ public class Presupuestos extends IBaseImportacion implements Serializable {
 			-1L,			
 			((UISelectEntity)this.attrs.get("presupuesto")).getKey(),
 			Configuracion.getInstance().getPropiedadSistemaServidor(tipoArchivo.getPath()).concat(this.getFile().getRuta()).concat(this.getFile().getName()),						
-			this.getFile().getOriginal()						
+			this.getFile().getOriginal(),
+			idArchivo
 		);				
 		return regresar;
 	} // toPrototipoArchivo	

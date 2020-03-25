@@ -15,11 +15,13 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Documento;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Generador;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Lote;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Presupuesto;
 import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosBitacoraDto;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -84,16 +86,21 @@ public class Transaccion extends IBaseTnx {
 				case SUBIR:					
 					switch(this.tipoArchivo) {
 						case DOCUMENTOS:
-							for(IBaseDto dto: this.proyecto.getDocumentos())
-								DaoFactory.getInstance().insert(sesion, dto);
+							for(Documento dto: this.proyecto.getDocumentos()){
+								if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
+									toSaveFile(dto.getIdArchivo());
+							} // for
 							break;
 						case GENERADORES:
-							for(IBaseDto dto: this.proyecto.getGeneradores())
-								DaoFactory.getInstance().insert(sesion, dto);
+							for(Generador dto: this.proyecto.getGeneradores())
+								if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
+									toSaveFile(dto.getIdArchivo());
 							break;
 						case PRESUPUESTOS:
-							for(IBaseDto dto: this.proyecto.getPresupuestos())
-								DaoFactory.getInstance().insert(sesion, dto);
+							for(Presupuesto dto: this.proyecto.getPresupuestos()){
+								if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
+									toSaveFile(dto.getIdArchivo());
+							} // for
 							break;
 					} // switch
 					regresar= true;

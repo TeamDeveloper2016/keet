@@ -42,7 +42,7 @@ public class Generadores extends IBaseImportacion implements Serializable {
   } // init	
 		
 	@Override
-	public Generador toArchivo(){
+	public Generador toArchivo(Long idArchivo){
 		EArchivosProyectos tipoArchivo= (EArchivosProyectos) this.attrs.get("tipoArchivo");
 		Generador regresar= new Generador(		
 			getDataCombo("tipoGenerador","tiposGeneradores").toString("nombre"),
@@ -56,7 +56,8 @@ public class Generadores extends IBaseImportacion implements Serializable {
 			-1L,
 			(String)this.attrs.get("observaciones"), 
 			Configuracion.getInstance().getPropiedadSistemaServidor(tipoArchivo.getPath()).concat(this.getFile().getRuta()).concat(this.getFile().getName()),						
-			this.getFile().getOriginal()	
+			this.getFile().getOriginal(),
+			idArchivo
 		);				
 		return regresar;
 	} // toPrototipoArchivo	

@@ -11,7 +11,6 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.keet.catalogos.proyectos.comun.IBaseImportacion;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
@@ -43,7 +42,7 @@ public class Importar extends IBaseImportacion implements Serializable {
   } // init	
 		
 	@Override
-	public Documento toArchivo(){
+	public Documento toArchivo(Long idArchivo){
 		EArchivosProyectos tipoArchivo= (EArchivosProyectos) this.attrs.get("tipoArchivo");
 		Documento regresar= new Documento(		
 			getDataCombo("especialidad", "especialidades").toString("nombre"),
@@ -60,7 +59,8 @@ public class Importar extends IBaseImportacion implements Serializable {
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 			
 			(String)this.attrs.get("observaciones"), 
 			Configuracion.getInstance().getPropiedadSistemaServidor(tipoArchivo.getPath()).concat(this.getFile().getRuta()).concat(this.getFile().getName()),			
-			((UISelectEntity)this.attrs.get("prototipo")).getKey()
+			((UISelectEntity)this.attrs.get("prototipo")).getKey(),
+			idArchivo
 		);		
 		return regresar;
 	} // toPrototipoArchivo	

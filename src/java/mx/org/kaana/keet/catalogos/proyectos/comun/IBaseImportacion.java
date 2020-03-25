@@ -191,6 +191,7 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 		String nameFile        = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result            = null;		
 		Long fileSize          = 0L;		
+		Long idArchivo         = 0L;		
 		EArchivosProyectos tipo= null;
 		try {			
 			tipo= (EArchivosProyectos) this.attrs.get("tipoArchivo");
@@ -211,15 +212,16 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 			fileSize= event.getFile().getSize();						
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
   		this.attrs.put("file", this.getFile().getName());		
+			idArchivo= toRegisterFile(tipo.getPath());
 			switch(tipo){ 
 				case DOCUMENTOS:
-					this.registroProyecto.getDocumentos().add((Documento) toArchivo());
+					this.registroProyecto.getDocumentos().add((Documento) toArchivo(idArchivo));
 					break;
 				case GENERADORES:
-					this.registroProyecto.getGeneradores().add((Generador) toArchivo());
+					this.registroProyecto.getGeneradores().add((Generador) toArchivo(idArchivo));
 					break;
 				case PRESUPUESTOS:
-					this.registroProyecto.getPresupuestos().add((Presupuesto) toArchivo());
+					this.registroProyecto.getPresupuestos().add((Presupuesto) toArchivo(idArchivo));
 					break;
 			} // switch			
 		} // try
@@ -231,7 +233,7 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 		} // catch
 	} // doFileUpload	
 	
-	public abstract IBaseDto toArchivo();
+	public abstract IBaseDto toArchivo(Long idArchivo);
 	
 	protected EFormatos getFileType(String fileName){
 		EFormatos regresar= EFormatos.FREE;
