@@ -8,6 +8,7 @@ package mx.org.kaana.kajool.reglas;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 import com.google.common.base.Objects;
+import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -21,6 +22,8 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -118,4 +121,20 @@ public abstract class IBaseTnx {
 		return token+ Cadena.rellenar(String.valueOf(idKey), Constantes.LENGTH_CLAVE, '0', true);
 	}
 	
+	protected boolean toSaveFile(Long idKey) throws Exception {
+		boolean regresar         = false;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idEliminado", 2L);
+			regresar= DaoFactory.getInstance().update(this.sesion, TcManticArchivosDto.class, idKey, params)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally				
+		return regresar;
+	} // toUpdateFileRecord
 }
