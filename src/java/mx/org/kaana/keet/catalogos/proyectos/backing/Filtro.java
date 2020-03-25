@@ -218,10 +218,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado                = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			Proyecto proyecto= (Proyecto)DaoFactory.getInstance().toEntity(Proyecto.class, "byId", seleccionado.toMap());
+			Proyecto proyecto= (Proyecto)DaoFactory.getInstance().toEntity(Proyecto.class, "TcKeetProyectosDto", "byId", seleccionado.toMap());
 			bitacora= new TcKeetProyectosBitacoraDto(
 				(String)this.attrs.get("justificacion"), // String justificacion, 
-				((UISelectEntity)this.attrs.get("estatus")).getKey(),  // Long idProyectoEstatus, 
+				(Long)this.attrs.get("estatus"),  // Long idProyectoEstatus, 
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				-1L, // Long idProyectoBitacora, 
 				seleccionado.getKey() // Long idProyecto 

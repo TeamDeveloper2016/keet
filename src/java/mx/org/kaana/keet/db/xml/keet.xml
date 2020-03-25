@@ -901,7 +901,8 @@
     <unit id="TcKeetProyectosEstatusDto">
       <select id="row">
         select      
-          *
+				  tc_keet_proyectos_estatus.id_proyecto_estatus as id_key,
+          tc_keet_proyectos_estatus.*
         from      
           tc_keet_proyectos_estatus
         where 
