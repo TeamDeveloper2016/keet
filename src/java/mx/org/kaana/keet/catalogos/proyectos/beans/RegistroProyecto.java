@@ -8,18 +8,15 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.keet.catalogos.proyectos.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.catalogos.proyectos.reglas.MotorBusqueda;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosGeneradoresDto;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosPresupuestosDto;
 
 public class RegistroProyecto implements Serializable {
 	
 	private static final long serialVersionUID = 6253504536549861564L;
 	private Long idProyecto;
 	private Proyecto proyecto;
-	private List<TcKeetProyectosArchivosDto> documentos;
-	private List<TcKeetProyectosPresupuestosDto> presupuestos;
-	private List<TcKeetProyectosGeneradoresDto> generadores;
+	private List<Documento> documentos;
+	private List<Presupuesto> presupuestos;
+	private List<Generador> generadores;
 
 	public RegistroProyecto() {
 		this(new Proyecto(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
@@ -29,7 +26,8 @@ public class RegistroProyecto implements Serializable {
 		this(proyecto, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	}	
 	
-	public RegistroProyecto(Proyecto proyecto, List<TcKeetProyectosArchivosDto> documentos, List<TcKeetProyectosPresupuestosDto> presupuestos, List<TcKeetProyectosGeneradoresDto> generadores) {
+
+	public RegistroProyecto(Proyecto proyecto, List<Documento> documentos, List<Presupuesto> presupuestos, List<Generador> generadores) {
 		this.proyecto    = proyecto;
 		this.documentos  = documentos;
 		this.presupuestos= presupuestos;
@@ -60,27 +58,27 @@ public class RegistroProyecto implements Serializable {
 		this.proyecto = proyecto;
 	}	
 
-	public List<TcKeetProyectosArchivosDto> getDocumentos() {
+	public List<Documento> getDocumentos() {
 		return documentos;
 	}
 
-	public void setDocumentos(List<TcKeetProyectosArchivosDto> documentos) {
+	public void setDocumentos(List<Documento> documentos) {
 		this.documentos = documentos;
 	}	
 
-	public List<TcKeetProyectosPresupuestosDto> getPresupuestos() {
+	public List<Presupuesto> getPresupuestos() {
 		return presupuestos;
 	}
 
-	public void setPresupuestos(List<TcKeetProyectosPresupuestosDto> presupuestos) {
+	public void setPresupuestos(List<Presupuesto> presupuestos) {
 		this.presupuestos = presupuestos;
 	}
 
-	public List<TcKeetProyectosGeneradoresDto> getGeneradores() {
+	public List<Generador> getGeneradores() {
 		return generadores;
 	}
 
-	public void setGeneradores(List<TcKeetProyectosGeneradoresDto> generadores) {
+	public void setGeneradores(List<Generador> generadores) {
 		this.generadores = generadores;
 	}	
 	

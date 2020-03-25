@@ -4,13 +4,13 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Generador;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.keet.catalogos.proyectos.comun.IBaseImportacion;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosGeneradoresDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
@@ -42,9 +42,10 @@ public class Generadores extends IBaseImportacion implements Serializable {
   } // init	
 		
 	@Override
-	public TcKeetProyectosGeneradoresDto toArchivo(){
+	public Generador toArchivo(){
 		EArchivosProyectos tipoArchivo= (EArchivosProyectos) this.attrs.get("tipoArchivo");
-		TcKeetProyectosGeneradoresDto regresar= new TcKeetProyectosGeneradoresDto(		
+		Generador regresar= new Generador(		
+			getDataCombo("tipoGenerador","tiposGeneradores").toString("nombre"),
 			((UISelectEntity)this.attrs.get("tipoGenerador")).getKey(),
 			this.getFile().getName(), 			
 			this.getFile().getRuta(), 			
@@ -53,7 +54,7 @@ public class Generadores extends IBaseImportacion implements Serializable {
 			this.registroProyecto.getProyecto().getIdProyecto(),
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 			
 			-1L,
-			this.attrs.get("observaciones").toString(), 
+			(String)this.attrs.get("observaciones"), 
 			Configuracion.getInstance().getPropiedadSistemaServidor(tipoArchivo.getPath()).concat(this.getFile().getRuta()).concat(this.getFile().getName()),						
 			this.getFile().getOriginal()	
 		);				

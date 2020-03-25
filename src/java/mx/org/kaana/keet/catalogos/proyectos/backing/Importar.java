@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Documento;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -42,9 +43,11 @@ public class Importar extends IBaseImportacion implements Serializable {
   } // init	
 		
 	@Override
-	public TcKeetProyectosArchivosDto toArchivo(){
+	public Documento toArchivo(){
 		EArchivosProyectos tipoArchivo= (EArchivosProyectos) this.attrs.get("tipoArchivo");
-		TcKeetProyectosArchivosDto regresar= new TcKeetProyectosArchivosDto(		
+		Documento regresar= new Documento(		
+			getDataCombo("especialidad", "especialidades").toString("nombre"),
+			getDataCombo("plano","planos").toString("nombre"),
 			((UISelectEntity)this.attrs.get("plano")).getKey(),
 			this.getFile().getName(), 			
 			this.getFile().getRuta(), 			
@@ -55,7 +58,7 @@ public class Importar extends IBaseImportacion implements Serializable {
 			this.getFile().getFileSize(), 			
 			JsfBase.getIdUsuario(), 			
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 			
-			this.attrs.get("observaciones").toString(), 
+			(String)this.attrs.get("observaciones"), 
 			Configuracion.getInstance().getPropiedadSistemaServidor(tipoArchivo.getPath()).concat(this.getFile().getRuta()).concat(this.getFile().getName()),			
 			((UISelectEntity)this.attrs.get("prototipo")).getKey()
 		);		

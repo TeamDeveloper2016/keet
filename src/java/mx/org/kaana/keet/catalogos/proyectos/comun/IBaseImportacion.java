@@ -13,11 +13,11 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Documento;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Generador;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Presupuesto;
 import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
 import mx.org.kaana.keet.catalogos.proyectos.reglas.Transaccion;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosGeneradoresDto;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosPresupuestosDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -119,11 +119,11 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 	public void doActualizaPlanos(){
 		List<UISelectEntity> planos= null;
 		Map<String, Object>params  = null;
-		UISelectEntity especialidad= null;
+		UISelectEntity regresar= null;
 		try {
 			params= new HashMap<>();
-			especialidad= (UISelectEntity) this.attrs.get("especialidad");
-			params.put(Constantes.SQL_CONDICION, "id_especialidad=" + especialidad.getKey());
+			regresar= (UISelectEntity) this.attrs.get("regresar");
+			params.put(Constantes.SQL_CONDICION, "id_regresar=" + regresar.getKey());
 			planos= UIEntity.seleccione("TcKeetPlanosDto", "row", params, "nombre");
       this.attrs.put("planos", planos);			
 		} // try
@@ -211,15 +211,15 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 			fileSize= event.getFile().getSize();						
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
   		this.attrs.put("file", this.getFile().getName());		
-			switch(tipo){
+			switch(tipo){ 
 				case DOCUMENTOS:
-					this.registroProyecto.getDocumentos().add((TcKeetProyectosArchivosDto) toArchivo());
+					this.registroProyecto.getDocumentos().add((Documento) toArchivo());
 					break;
 				case GENERADORES:
-					this.registroProyecto.getGeneradores().add((TcKeetProyectosGeneradoresDto) toArchivo());
+					this.registroProyecto.getGeneradores().add((Generador) toArchivo());
 					break;
 				case PRESUPUESTOS:
-					this.registroProyecto.getPresupuestos().add((TcKeetProyectosPresupuestosDto) toArchivo());
+					this.registroProyecto.getPresupuestos().add((Presupuesto) toArchivo());
 					break;
 			} // switch			
 		} // try
@@ -274,4 +274,21 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 		JsfBase.setFlashAttribute("idProyecto", this.attrs.get("idProyecto"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
+	
+	protected UISelectEntity getDataCombo(String llave, String nombreLista){
+		UISelectEntity regresar        = null;
+		try {
+			regresar= (UISelectEntity)this.attrs.get(llave);
+			List<UISelectEntity> items= (List<UISelectEntity>)this.attrs.get(nombreLista);
+			if(regresar!= null && items.indexOf(regresar)>= 0)
+				regresar= items.get(items.indexOf(regresar));
+			else
+				regresar= items.get(0);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+    return regresar;
+	} // getDataCombo	
 }

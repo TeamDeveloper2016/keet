@@ -4,13 +4,13 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.keet.catalogos.proyectos.beans.Presupuesto;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.keet.catalogos.proyectos.comun.IBaseImportacion;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosPresupuestosDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
@@ -42,16 +42,17 @@ public class Presupuestos extends IBaseImportacion implements Serializable {
   } // init	
 		
 	@Override
-	public TcKeetProyectosPresupuestosDto toArchivo(){
+	public Presupuesto toArchivo(){
 		EArchivosProyectos tipoArchivo= (EArchivosProyectos) this.attrs.get("tipoArchivo");
-		TcKeetProyectosPresupuestosDto regresar= new TcKeetProyectosPresupuestosDto(					
+		Presupuesto regresar= new Presupuesto(
+			getDataCombo("presupuesto","presupuestos").toString("nombre"),
 			this.getFile().getName(), 			
 			this.getFile().getRuta(), 			
 			this.getFile().getFileSize(), 			
 			JsfBase.getIdUsuario(), 			
 			this.registroProyecto.getProyecto().getIdProyecto(),
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 			
-			this.attrs.get("observaciones").toString(), 
+			(String)this.attrs.get("observaciones"), 
 			-1L,			
 			((UISelectEntity)this.attrs.get("presupuesto")).getKey(),
 			Configuracion.getInstance().getPropiedadSistemaServidor(tipoArchivo.getPath()).concat(this.getFile().getRuta()).concat(this.getFile().getName()),						
