@@ -25,7 +25,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.keet.catalogos.prototipos.beans.Documento;
 import mx.org.kaana.keet.catalogos.prototipos.beans.RegistroPrototipo;
 import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
-import mx.org.kaana.keet.db.dto.TcKeetPrototiposArchivosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -148,6 +147,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result       = null;		
 		Long fileSize     = 0L;			
+		Long idArchivo    = 0L;			
 		try {			
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("prototipos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
@@ -165,8 +165,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
-  		this.attrs.put("file", this.getFile().getName());			
-			this.prototipo.getDocumentos().add(toProtipoArchivo());
+  		this.attrs.put("file", this.getFile().getName());	
+			idArchivo= toRegisterFile("prototipos");							
+			this.prototipo.getDocumentos().add(toProtipoArchivo(idArchivo));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -191,7 +192,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		return regresar;
 	} // toClave
 	
-	private Documento toProtipoArchivo(){
+	private Documento toProtipoArchivo(Long idArchivo){
 		UISelectEntity especialidad= (UISelectEntity)this.attrs.get("especialidad");
 		List<UISelectEntity> especialidades= (List<UISelectEntity>)this.attrs.get("especialidades");
 		if(especialidad!= null && especialidades.indexOf(especialidad)>= 0)
@@ -204,7 +205,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			plano= planos.get(planos.indexOf(plano));
 		else
 			plano= planos.get(0);
-		Documento regresar= null;
+		Documento regresar= null;		
 		regresar= new Documento(
 			plano.getKey(),
 			this.getFile().getName(), 
@@ -218,7 +219,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.prototipo.getIdPrototipo(), 
 			this.getFile().getOriginal(),
 			especialidad.toString("nombre"),
-			plano.toString("nombre")
+			plano.toString("nombre"),
+			idArchivo
 		);
 		return regresar;
 	} // toPrototipoArchivo

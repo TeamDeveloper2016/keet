@@ -7,6 +7,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.keet.catalogos.prototipos.beans.Documento;
 import mx.org.kaana.keet.catalogos.prototipos.beans.RegistroPrototipo;
 import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposArchivosDto;
@@ -61,8 +62,10 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().delete(sesion, this.prototipo.getPrototipo());
 					break;
 				case SUBIR:
-					for(TcKeetPrototiposArchivosDto item: this.prototipo.getDocumentos())						
-						DaoFactory.getInstance().insert(sesion, item);					
+					for(Documento item: this.prototipo.getDocumentos()){						
+						if(DaoFactory.getInstance().insert(sesion, item)>=1L)
+							toSaveFile(item.getIdArchivo());
+					} // for
 					break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dtoDelete)>= 1L;
