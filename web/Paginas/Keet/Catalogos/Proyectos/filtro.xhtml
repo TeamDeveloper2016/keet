@@ -159,8 +159,8 @@
             <p:menuitem id="importar" action="#{keetCatalogosProyectosFiltro.doAccion('SUBIR')}" icon="fa fa-file-o" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="generadores" action="#{keetCatalogosProyectosFiltro.doAccion('PROCESAR')}" icon="fa fa-file-pdf-o" ajax="false" value="Generadores" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="presupuestos" action="#{keetCatalogosProyectosFiltro.doAccion('COPIAR')}" icon="fa fa-file-text-o" ajax="false" value="Presupuestos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:separator rendered="#{fn:contains('|1|2|3|5|6|', keetCatalogosProyectosFiltro.attrs.seleccionado.idProyectoEstatus)}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosProyectosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', keetCatalogosProyectosFiltro.attrs.seleccionado.idProyectoEstatus)}"/>					
+            <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosProyectosFiltro.attrs.seleccionado.idProyectoEstatus)}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosProyectosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosProyectosFiltro.attrs.seleccionado.idProyectoEstatus)}"/>					
           </p:contextMenu>
         </div>
       </div>
