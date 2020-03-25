@@ -578,7 +578,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			1L, // Long idEliminado, 
 			this.getFile().getRuta(), // String ruta, 
 			JsfBase.getIdUsuario(), // Long idUsuario, 
-			Configuracion.getInstance().getPropiedadSistemaServidor("prototipos").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // String alias, 
+			Configuracion.getInstance().getPropiedadSistemaServidor(carpetaArchivo).concat(this.getFile().getRuta()).concat(this.getFile().getName()), // String alias, 
 			-1L, // Long idArchivo, 
 			this.getFile().getOriginal() // String nombre
 		);
