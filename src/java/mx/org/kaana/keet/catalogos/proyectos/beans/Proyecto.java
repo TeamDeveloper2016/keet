@@ -166,7 +166,6 @@ public class Proyecto extends TcKeetProyectosDto {
   public Class toHbmClass() {
     return TcKeetProyectosDto.class;
   }
-	
 		
 	private LocalDate addWorkingDays(LocalDate date, int cuantos, List<DiaHabil> diasHabiles) throws Exception{
 		LocalDate regresar= null;
@@ -177,9 +176,7 @@ public class Proyecto extends TcKeetProyectosDto {
 			if(diasHabiles.contains(new DiaHabil(dia)))
 				cuantos--;
 		} // for
-		
 		return regresar;
 	}
-	
 	
 }	
