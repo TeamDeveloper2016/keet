@@ -336,7 +336,7 @@
           tc_keet_desarrollos.nombres,
           tc_keet_desarrollos.registro,
           tc_keet_desarrollos.descripcion,
-          tc_mantic_clientes.razon_social cliente,
+          tc_mantic_clientes.razon_social,
           concat(tc_mantic_domicilios.calle, ", ",tc_mantic_domicilios.numero_exterior) domicilio
         from
           tc_keet_desarrollos
