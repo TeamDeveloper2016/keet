@@ -18,6 +18,21 @@
         'viviendasMenor': {validaciones: 'libre', mascara: 'libre'},
         'tipoObra'      : {validaciones: 'libre', mascara: 'libre'}
       };
+		
+		  fields= {
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+			};
+			
+
+			function justifica() {
+				var ok= janal.partial('dialogo');
+				if(ok) {
+					PF('dlgEstatus').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // justifica
     </script>		
   </ui:define>
   <ui:define name="contenido">
@@ -144,6 +159,8 @@
             <p:menuitem id="importar" action="#{keetCatalogosProyectosFiltro.doAccion('SUBIR')}" icon="fa fa-file-o" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="generadores" action="#{keetCatalogosProyectosFiltro.doAccion('PROCESAR')}" icon="fa fa-file-pdf-o" ajax="false" value="Generadores" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="presupuestos" action="#{keetCatalogosProyectosFiltro.doAccion('COPIAR')}" icon="fa fa-file-text-o" ajax="false" value="Presupuestos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:separator rendered="#{fn:contains('|1|2|3|5|6|', keetCatalogosProyectosFiltro.attrs.seleccionado.idProyectoEstatus)}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosProyectosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', keetCatalogosProyectosFiltro.attrs.seleccionado.idProyectoEstatus)}"/>					
           </p:contextMenu>
         </div>
       </div>
@@ -162,4 +179,23 @@
       <p:outputLabel value="#{keetCatalogosProyectosFiltro.attrs.seleccionado.etapa}"/>
     </h:panelGrid>			
   </ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fields);janal.refresh();">
+			<h:form id="formDialogoEstatus" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+					<p:selectOneMenu id="estatusDlg" value="#{keetCatalogosProyectosFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
+						<f:selectItems value="#{keetCatalogosProyectosFiltro.attrs.allEstatus}"/>					
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
+				<p:inputTextarea id="justificacion" value="#{keetCatalogosProyectosFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{keetCatalogosProyectosFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
 </ui:composition>

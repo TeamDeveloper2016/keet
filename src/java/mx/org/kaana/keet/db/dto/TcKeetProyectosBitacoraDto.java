@@ -37,8 +37,8 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_proyecto_bitacora")
   private Long idProyectoBitacora;
-  @Column (name="id_proyecto_lote")
-  private Long idProyectoLote;
+  @Column (name="id_proyecto")
+  private Long idProyecto;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -51,12 +51,12 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetProyectosBitacoraDto(String justificacion, Long idProyectoEstatus, Long idUsuario, Long idProyectoBitacora, Long idProyectoLote) {
+  public TcKeetProyectosBitacoraDto(String justificacion, Long idProyectoEstatus, Long idUsuario, Long idProyectoBitacora, Long idProyecto) {
     setJustificacion(justificacion);
     setIdProyectoEstatus(idProyectoEstatus);
     setIdUsuario(idUsuario);
     setIdProyectoBitacora(idProyectoBitacora);
-    setIdProyectoLote(idProyectoLote);
+    setIdProyecto(idProyecto);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -92,12 +92,12 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
     return idProyectoBitacora;
   }
 
-  public void setIdProyectoLote(Long idProyectoLote) {
-    this.idProyectoLote = idProyectoLote;
+  public void setIdProyecto(Long idProyecto) {
+    this.idProyecto = idProyecto;
   }
 
-  public Long getIdProyectoLote() {
-    return idProyectoLote;
+  public Long getIdProyecto() {
+    return idProyecto;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -131,7 +131,7 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProyectoBitacora());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdProyectoLote());
+		regresar.append(getIdProyecto());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -145,7 +145,7 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
 		regresar.put("idProyectoEstatus", getIdProyectoEstatus());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idProyectoBitacora", getIdProyectoBitacora());
-		regresar.put("idProyectoLote", getIdProyectoLote());
+		regresar.put("idProyecto", getIdProyecto());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -153,7 +153,7 @@ public class TcKeetProyectosBitacoraDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getJustificacion(), getIdProyectoEstatus(), getIdUsuario(), getIdProyectoBitacora(), getIdProyectoLote(), getRegistro()
+    getJustificacion(), getIdProyectoEstatus(), getIdUsuario(), getIdProyectoBitacora(), getIdProyecto(), getRegistro()
     };
     return regresar;
   }

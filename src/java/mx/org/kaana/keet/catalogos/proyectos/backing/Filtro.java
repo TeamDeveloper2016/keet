@@ -8,20 +8,28 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.db.dto.TcKeetProyectosBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetProyectosEstatusDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.keet.catalogos.proyectos.reglas.Transaccion;
+import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 
 @Named(value = "keetCatalogosProyectosFiltro")
 @ViewScoped
@@ -169,4 +177,55 @@ public class Filtro extends IBaseFilter implements Serializable {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Proyectos/filtro"); 
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
+	
+	public void doLoadEstatus() {
+		Entity seleccionado          = null;
+		Map<String, Object>params    = null;
+		List<UISelectItem> allEstatus= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_proyecto_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			allEstatus= UISelect.build("TcKeetProyectosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			this.attrs.put("allEstatus", allEstatus);
+			this.attrs.put("estatus", allEstatus.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadEstatus
+	
+	public void doActualizarEstatus() {
+		Transaccion transaccion            = null;
+		TcKeetProyectosBitacoraDto bitacora= null;
+		Entity seleccionado                = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			TcKeetProyectosDto proyecto= (TcKeetProyectosDto)DaoFactory.getInstance().findById(TcKeetProyectosEstatusDto.class, seleccionado.getKey());
+			bitacora= new TcKeetProyectosBitacoraDto(
+				(String)this.attrs.get("justificacion"), // String justificacion, 
+				((UISelectEntity)this.attrs.get("estatus")).getKey(),  // Long idProyectoEstatus, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				-1L, // Long idProyectoBitacora, 
+				seleccionado.getKey() // Long idProyecto 
+			);
+			transaccion= new Transaccion(proyecto, bitacora);
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally {
+			this.attrs.put("justificacion", "");
+		} // finally
+	}	// doActualizaEstatus
+	
 }

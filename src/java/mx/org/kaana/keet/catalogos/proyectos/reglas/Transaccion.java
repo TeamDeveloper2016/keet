@@ -18,6 +18,8 @@ import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Lote;
 import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
+import mx.org.kaana.keet.db.dto.TcKeetProyectosBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -29,9 +31,16 @@ public class Transaccion extends IBaseTnx {
 	private RegistroProyecto proyecto;	
 	private IBaseDto dtoDelete;
 	private EArchivosProyectos tipoArchivo;
+	private TcKeetProyectosDto keetProyecto;
+	private TcKeetProyectosBitacoraDto bitacora;
 	
 	public Transaccion(RegistroProyecto proyecto) {
 		this(proyecto, EArchivosProyectos.DOCUMENTOS);
+	}
+
+	public Transaccion(TcKeetProyectosDto keetProyecto, TcKeetProyectosBitacoraDto bitacora) {
+		this.keetProyecto= keetProyecto;
+		this.bitacora= bitacora;
 	}
 	
 	public Transaccion(RegistroProyecto proyecto, EArchivosProyectos tipoArchivo) {
@@ -74,7 +83,7 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().delete(sesion, this.dtoDelete)>= 1L;
 					break;
 				case SUBIR:					
-					switch(this.tipoArchivo){
+					switch(this.tipoArchivo) {
 						case DOCUMENTOS:
 							for(IBaseDto dto: this.proyecto.getDocumentos())
 								DaoFactory.getInstance().insert(sesion, dto);
@@ -89,6 +98,12 @@ public class Transaccion extends IBaseTnx {
 							break;
 					} // switch
 					regresar= true;
+					break;
+				case JUSTIFICAR:
+					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
+						this.keetProyecto.setIdProyectoEstatus(this.bitacora.getIdProyectoEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, this.keetProyecto)>= 1L;
+					} // if
 					break;
 			} // switch
 		} // try

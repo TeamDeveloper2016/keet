@@ -906,6 +906,8 @@
           tc_keet_proyectos_estatus
         where 
           {condicion} 
+				order by 
+				  id_proyecto_estatus
       </select>
       <select id="identically">
         select      
