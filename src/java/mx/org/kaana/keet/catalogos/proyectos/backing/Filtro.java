@@ -2,6 +2,8 @@ package mx.org.kaana.keet.catalogos.proyectos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,16 +45,23 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
 		List<UISelectEntity> tiposObras= null;
+    Map<String, Object> params     = new HashMap<>();
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			tiposObras= UIEntity.seleccione("VistaTiposObrasDto", "catalogo", "tipoObra");
 			this.attrs.put("tipoObras", tiposObras);
 			this.attrs.put("tipoObra", UIBackingUtilities.toFirstKeySelectEntity(tiposObras));
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      this.attrs.put("catalogo", UIEntity.seleccione("TcKeetProyectosEstatusDto", "row", params, Collections.EMPTY_LIST, "nombre"));
+			this.attrs.put("idProyectoEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+    finally {
+      Methods.clean(params);
+    }// finally
   } // init
 
   @Override
@@ -168,6 +177,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("tc_keet_proyectos.no_viviendas > ").append(this.attrs.get("viviendasMayor")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("tipoObra")) && ((UISelectEntity)this.attrs.get("tipoObra")).getKey()>= 1L)				
 			sb.append("tc_keet_proyectos.id_tipos_obras=").append(((UISelectEntity)this.attrs.get("tipoObra")).getKey()).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("idProyectoEstatus")) && !this.attrs.get("idProyectoEstatus").toString().equals("-1"))
+  		sb.append("(tc_keet_proyectos.id_proyecto_estatus= ").append(this.attrs.get("idProyectoEstatus")).append(") and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	

@@ -150,6 +150,9 @@
           tc_mantic_clientes.razon_social,
           tc_keet_desarrollos.nombres desarrollo,
           tc_keet_tipos_obras.nombre tipo_obra,
+					tc_keet_proyectos_estatus.id_proyecto_estatus,
+					tc_keet_proyectos_estatus.nombre as estatus,
+					tc_keet_proyectos_estatus.estatus_asociados,
 					tc_keet_proyectos.registro
         from 
           tc_keet_proyectos
@@ -159,6 +162,8 @@
 					tc_keet_desarrollos on tc_keet_desarrollos.id_desarrollo= tc_keet_proyectos.id_desarrollo
         inner join 
 					tc_keet_tipos_obras on tc_keet_tipos_obras.id_tipo_obra= tc_keet_proyectos.id_tipos_obras
+        inner join
+          tc_keet_proyectos_estatus on tc_keet_proyectos_estatus.id_proyecto_estatus= tc_keet_proyectos.id_proyecto_estatus      
         where
           {condicion}
 				{sortOrder}
