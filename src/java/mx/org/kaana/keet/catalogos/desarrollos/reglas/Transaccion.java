@@ -25,14 +25,20 @@ public class Transaccion extends IBaseTnx {
 		try {
 			switch(accion){
 				case AGREGAR:			
-					this.registroDesarrollo.getDesarrollo().setIdDomicilio(1L);
 					this.registroDesarrollo.getDesarrollo().setIdUsuario(JsfBase.getIdUsuario());
+					this.registroDesarrollo.getDomicilio().setIdUsuario(JsfBase.getIdUsuario());
+					this.registroDesarrollo.getDomicilio().setIdDomicilio(-1L);
+					DaoFactory.getInstance().insert(sesion, this.registroDesarrollo.getDomicilio());
+					this.registroDesarrollo.getDesarrollo().setIdDomicilio(this.registroDesarrollo.getDomicilio().getKey());
 					regresar= DaoFactory.getInstance().insert(sesion, this.registroDesarrollo.getDesarrollo())>= 1L;
 					break;
 				case MODIFICAR:
+					this.registroDesarrollo.getDomicilio().setIdDomicilio(this.registroDesarrollo.getDesarrollo().getIdDomicilio());
+					DaoFactory.getInstance().update(sesion, this.registroDesarrollo.getDomicilio());
 					regresar= DaoFactory.getInstance().update(sesion, this.registroDesarrollo.getDesarrollo())>= 1L;
 					break;				
 				case ELIMINAR:
+					DaoFactory.getInstance().delete(sesion, this.registroDesarrollo.getDomicilio());
 					regresar= DaoFactory.getInstance().delete(sesion, this.registroDesarrollo.getDesarrollo())>= 1L;
 					break;
 			} // switch
