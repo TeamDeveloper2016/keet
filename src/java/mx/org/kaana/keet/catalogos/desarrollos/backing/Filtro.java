@@ -34,6 +34,11 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null){
+				this.attrs.put("idDesarrolloProcess", JsfBase.getFlashAttribute("idDesarrolloProcess"));
+				doLoad();
+				this.attrs.put("idDesarrolloProcess", null);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -127,6 +132,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
     UISelectEntity cliente        = (UISelectEntity)this.attrs.get("cliente");
     List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("clientes");
+		if(this.attrs.get("idDesarrolloProcess")!= null && !Cadena.isVacio(this.attrs.get("idDesarrolloProcess")))
+			sb.append("tc_keet_desarrollos.id_desarrollo=").append(this.attrs.get("idDesarrolloProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
 			sb.append("(tc_keet_desarrollos.clave like '%").append(this.attrs.get("clave")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("nombres")))
