@@ -1146,6 +1146,12 @@
         where      
           id_contratos_personal = {idContratosPersonal} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
       </select>
+			<select id="maximo">
+				select      
+          max(id_contratos_personal) maximo
+        from      
+          tc_keet_contratos_personal
+			</select>
     </unit>
 		    <unit id="TcKeetContratosDto">
       <select id="row">
