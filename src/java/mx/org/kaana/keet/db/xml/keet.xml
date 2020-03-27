@@ -1172,5 +1172,149 @@
           consecutivo = '{consecutivo}' and id_contrato = {idContrato}
       </select>
     </unit>
+		    <unit id="TcKeetContratosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_archivos
+        where      
+          id_contrato_archivo = {idContratoArchivo} and id_tipo_archivo = {idTipoArchivo} and id_contrato = {idContrato} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_bitacora
+        where      
+          id_contrato_bitacora = {idContratoBitacora}
+      </select>
+    </unit>
+	<unit id="TcKeetContratosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_estatus
+        where      
+          id_contrato_estatus = {idContratoEstatus} and nombre = '{nombre}'
+      </select>
+    </unit>
+	<unit id="TcKeetContratosFirmadosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_firmados
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_firmados
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_contrato = {idContrato} and id_contrato_firmado = {idContratoFirmado} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosGeneradoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_generadores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_generadores
+        where      
+          id_tipo_generador = {idTipoGenerador} and id_contrato_generador = {idContratoGenerador} and id_tipo_archivo = {idTipoArchivo} and id_contrato = {idContrato} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosLotesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes
+        where      
+          manzana = '{manzana}' and lote = {lote} and id_contrato = {idContrato} and id_contrato_lote = {idContratoLote}
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosPresupuestosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_presupuestos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_presupuestos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_contrato = {idContrato} and id_tipo_presupuesto = {idTipoPresupuesto} and nombre = '{nombre}' and id_contrato_presupuesto = {idContratoPresupuesto}
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosProyectosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_proyectos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_proyectos
+        where      
+          id_cliente_contrato = {idClienteContrato} and clave = '{clave}' and id_contrato_proyecto = {idContratoProyecto} and nombre = '{nombre}'
+      </select>
+    </unit>
   </dml>    
 </process>

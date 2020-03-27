@@ -348,5 +348,92 @@
 		      tc_keet_desarrollos.nombres
 			</select>	
 		</unit>
+		<unit id="VistaContratosArchivosDto">
+			<select id="importados">
+				select
+					tc_keet_contratos_archivos.id_contrato_archivo id_key,
+					tc_keet_contratos_archivos.nombre,
+					tc_keet_contratos_archivos.archivo,
+					tc_keet_contratos_archivos.ruta,
+					tc_keet_contratos_archivos.alias,
+					tc_keet_contratos_archivos.observaciones,
+					tc_keet_contratos_archivos.registro,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
+					tc_keet_contratos_archivos.id_tipo_archivo,
+					tc_keet_prototipos.clave clave_prototipo,
+					tc_keet_prototipos.nombre nombre_prototipo,
+					tc_keet_especialidades.clave clave_especialidad,
+					tc_keet_especialidades.nombre nombre_especialidad,
+					tc_keet_planos.nombre nombre_plano
+				from
+					tc_keet_contratos_archivos
+				inner join 
+					tc_janal_usuarios on tc_keet_contratos_archivos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				inner join 
+					tc_keet_prototipos on tc_keet_contratos_archivos.id_prototipo = tc_keet_prototipos.id_prototipo
+				inner join 
+					tc_keet_planos on tc_keet_contratos_archivos.id_plano = tc_keet_planos.id_plano
+				inner join 
+					tc_keet_especialidades on tc_keet_planos.id_especialidad = tc_keet_especialidades.id_especialidad
+				where
+				  tc_keet_contratos_archivos.id_contrato= {idContrato}
+			</select>
+		</unit>		
+		<unit id="VistaContratosGeneradoresDto">
+			<select id="importados">
+				select
+					tc_keet_contratos_generadores.id_contrato_generador id_key,
+					tc_keet_contratos_generadores.nombre,
+					tc_keet_contratos_generadores.archivo,
+					tc_keet_contratos_generadores.ruta,
+					tc_keet_contratos_generadores.alias,
+					tc_keet_contratos_generadores.observaciones,
+					tc_keet_contratos_generadores.registro,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
+					tc_keet_contratos_generadores.id_tipo_archivo,
+					tc_keet_tipos_generadores.clave clave_generador,
+					tc_keet_tipos_generadores.nombre nombre_generador,
+					tc_keet_estaciones.nombre nombre_estacion
+				from
+					tc_keet_contratos_generadores
+				inner join 
+					tc_janal_usuarios on tc_keet_contratos_generadores.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_keet_tipos_generadores on tc_keet_contratos_generadores.id_tipo_generador = tc_keet_tipos_generadores.id_tipo_generador
+				inner join 
+					tc_keet_estaciones on tc_keet_tipos_generadores.id_estacion = tc_keet_estaciones.id_estacion
+				where
+				  tc_keet_contratos_generadores.id_contrato= {idContrato}
+			</select>
+		</unit>		
+		<unit id="VistaContratosPresupuestosDto">
+			<select id="importados">
+				select
+					tc_keet_contratos_presupuestos.id_contrato_presupuesto id_key,
+					tc_keet_contratos_presupuestos.nombre,
+					tc_keet_contratos_presupuestos.archivo,
+					tc_keet_contratos_presupuestos.ruta,
+					tc_keet_contratos_presupuestos.alias,
+					tc_keet_contratos_presupuestos.observaciones,
+					tc_keet_contratos_presupuestos.registro,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
+					tc_keet_contratos_presupuestos.id_tipo_archivo,
+					tc_keet_tipos_presupuestos.nombre tipo_presupuesto
+				from
+					tc_keet_contratos_presupuestos
+				inner join 
+					tc_janal_usuarios on tc_keet_contratos_presupuestos.id_usuarios = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				inner join
+					tc_keet_tipos_presupuestos on tc_keet_contratos_presupuestos.id_tipo_presupuesto = tc_keet_tipos_presupuestos.id_tipo_presupuesto
+				where
+				  tc_keet_contratos_presupuestos.id_contrato= {idContrato}
+			</select>
+		</unit>		
 	</dml>    
 </process>
