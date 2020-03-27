@@ -1,7 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.beans;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,21 +18,42 @@ import mx.org.kaana.libs.reflection.Methods;
 
 public class Contrato extends TcKeetContratosDto {
 
-	private static final long serialVersionUID = -2978341734389180932L;	
+	private static final long serialVersionUID = -2816173235044810661L;
 	private UISelectEntity ikProyecto;
   private List<Lote> lotes;
 	private Lote loteSeleccion;
-	 
-	public Contrato() {
-		this(new UISelectEntity(-1L), new UISelectEntity(-1L));
-	} 
+	private String claveDesarrollo;
+	private String desarrollo;		
+	private ESql sqlAccion;
+	private Boolean nuevo;	
 
-	public Contrato(UISelectEntity ikCliente, UISelectEntity ikProyecto) {
-		super();
-		this.lotes= new ArrayList<>();
-		this.ikProyecto= ikProyecto;
+	public Contrato() {
+		this(-1L);
 	}
 
+	public Contrato(Long key) {
+		this(key, ESql.UPDATE);
+	}
+	
+	public Contrato(Long key, ESql sqlAccion) {
+		this(key, sqlAccion, false);
+	}
+	
+	public Contrato(Long key, ESql sqlAccion, Boolean nuevo) {		
+		this(key, "", "", new ArrayList<>(), new Lote(), new UISelectEntity(-1L), sqlAccion, nuevo);		
+	}
+	
+	public Contrato(Long key, String claveDesarrollo, String desarrollo, List<Lote> lotes, Lote loteSeleccion, UISelectEntity ikProyecto, ESql sqlAccion, Boolean nuevo) {
+		super(key);
+		this.claveDesarrollo= claveDesarrollo;
+		this.desarrollo     = desarrollo;				
+		this.sqlAccion      = sqlAccion;
+		this.nuevo          = nuevo;
+		this.lotes          = lotes;
+		this.loteSeleccion  = loteSeleccion;
+		this.ikProyecto     = ikProyecto;
+	}
+	
 	public UISelectEntity getIkProyecto() {
 		return ikProyecto;
 	} 
@@ -43,7 +63,6 @@ public class Contrato extends TcKeetContratosDto {
 		if(this.ikProyecto!= null)
 			this.setIdProyecto(this.ikProyecto.getKey());
 	} 
-
 
 	public List<Lote> getLotes() {
 		return lotes;
@@ -60,6 +79,38 @@ public class Contrato extends TcKeetContratosDto {
 	public void setLoteSeleccion(Lote loteSeleccion) {
 		this.loteSeleccion = loteSeleccion;
 	}
+
+	public String getClaveDesarrollo() {
+		return claveDesarrollo;
+	}
+
+	public void setClaveDesarrollo(String claveDesarrollo) {
+		this.claveDesarrollo = claveDesarrollo;
+	}
+
+	public String getDesarrollo() {
+		return desarrollo;
+	}
+
+	public void setDesarrollo(String desarrollo) {
+		this.desarrollo = desarrollo;
+	}
+
+	public ESql getSqlAccion() {
+		return sqlAccion;
+	}
+
+	public void setSqlAccion(ESql sqlAccion) {
+		this.sqlAccion = sqlAccion;
+	}
+
+	public Boolean getNuevo() {
+		return nuevo;
+	}
+
+	public void setNuevo(Boolean nuevo) {
+		this.nuevo = nuevo;
+	}	
 	
   public boolean addLote(Lote lote) throws Exception{
 		boolean regresar= false;
@@ -92,7 +143,7 @@ public class Contrato extends TcKeetContratosDto {
 	
 	public void doAddLote() throws Exception{
 		this.addLote(new Lote(ESql.INSERT, (this.lotes.size()+1)*(-1L)));
-	}
+	} // doAddLote
 	
 	public boolean validaPrototipos(List<UISelectEntity> uISelectEntitys) throws Exception{
 		boolean regresar= true;
@@ -114,7 +165,7 @@ public class Contrato extends TcKeetContratosDto {
 	public void doCalculateFecha(Lote lote){
 		TcKeetPrototiposDto tcKeetPrototiposDto= null;
 		List<DiaHabil> diasHabiles             = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params              = null;
 	  try {
 			params= new HashMap<>();
 			params.put("idPrototipo",  lote.getIdPrototipo());
@@ -138,11 +189,6 @@ public class Contrato extends TcKeetContratosDto {
 			Methods.clean(diasHabiles);
 		} // finally		
 	} // doCalculateFecha
-	
-  @Override
-  public Class toHbmClass() {
-    return TcKeetContratosDto.class;
-  }
 		
 	private LocalDate addWorkingDays(LocalDate date, int cuantos, List<DiaHabil> diasHabiles) throws Exception{
 		LocalDate regresar= null;
@@ -154,6 +200,5 @@ public class Contrato extends TcKeetContratosDto {
 				cuantos--;
 		} // for
 		return regresar;
-	}
-	
+	}	// addWorkingDays
 }	
