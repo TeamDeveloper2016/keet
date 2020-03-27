@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.beans.Contrato;
-import mx.org.kaana.keet.catalogos.contratos.beans.ContratoPersonal;
-import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
 public class MotorBusqueda implements Serializable{
@@ -20,12 +21,15 @@ public class MotorBusqueda implements Serializable{
 	}
 	
 	public Contrato toContrato() throws Exception{
-		Contrato regresar        = null;
+		Contrato regresar       = null;
 		Map<String, Object>params= null;
 		try {
 		  params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_contrato=" + this.idContrato);
-			regresar= (Contrato) DaoFactory.getInstance().toEntity(Contrato.class, "TcKeetContratosDto", "row", params);			
+			params.put("idContrato", this.idContrato);
+			regresar= (Contrato) DaoFactory.getInstance().toEntity(Contrato.class, "TcKeetContratosDto", "byId", params);
+			if(regresar!= null && regresar.isValid()){
+				regresar.setIkProyecto(new UISelectEntity(regresar.getIdProyecto()));
+			} // if			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -34,15 +38,17 @@ public class MotorBusqueda implements Serializable{
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toContrato
+	} // toPrototipo	
 	
-	public List<ContratoPersonal> toPersonas() throws Exception{
-		List<ContratoPersonal> regresar= null;
-		Map<String, Object>params      = null;
+	public List<Lote> toLotes() throws Exception{
+		List<Lote> regresar= null;
+		Map<String, Object>params         = null;
 		try {
 		  params= new HashMap<>();
 			params.put("idContrato", this.idContrato);
-			regresar= DaoFactory.getInstance().toEntitySet(ContratoPersonal.class, "VistaContratosPersonalDto", "row", params);      
+			regresar= DaoFactory.getInstance().toEntitySet(Lote.class, "TcKeetContratosLotesDto", "byContrato", params);			
+			for(Lote item: regresar)
+				item.setAccion(ESql.UPDATE);
 		} // try
 		catch (Exception e) {			
 			throw e;
