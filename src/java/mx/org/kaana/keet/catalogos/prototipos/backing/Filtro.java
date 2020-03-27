@@ -47,7 +47,6 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-
   @Override
   public void doLoad() {
     List<Columna> columns    = null;
@@ -112,20 +111,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
   } // doAccion
 
-  public void doEliminar() {
-    /*Transaccion transaccion = null;
-    try {
-      transaccion = new Transaccion(new TcManticProveedoresDto(((Entity)this.attrs.get("seleccionado")).getKey()));
-      transaccion.ejecutar(EAccion.ELIMINAR);
-      JsfBase.addMessage("Eliminar proveedor", "El proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		*/
+  public void doEliminar() {    
   } // doEliminar
 	
-public List<UISelectEntity> doCompleteCliente(String codigo) {
+	public List<UISelectEntity> doCompleteCliente(String codigo) {
  		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
@@ -159,8 +148,7 @@ public List<UISelectEntity> doCompleteCliente(String codigo) {
       Methods.clean(params);
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}	
-	
+	}	// doCompleteCliente
 	
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar  = new HashMap<>();	
@@ -190,11 +178,11 @@ public List<UISelectEntity> doCompleteCliente(String codigo) {
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		
-	}
+	} // toPrepare
 
   public String doMasivo() {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Prototipos/filtro");
     //JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PROVEEDORES.getId());
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
-	}
+	} // doMasivo
 }
