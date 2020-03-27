@@ -2,7 +2,6 @@ package mx.org.kaana.keet.catalogos.proyectos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,6 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Proyecto;
 import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosBitacoraDto;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosEstatusDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -33,7 +31,6 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.catalogos.proyectos.reglas.Transaccion;
-import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 
 @Named(value = "keetCatalogosProyectosFiltro")
 @ViewScoped
@@ -54,6 +51,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetProyectosEstatusDto", "row", params, Collections.EMPTY_LIST, "nombre"));
 			this.attrs.put("idProyectoEstatus", new UISelectEntity("-1"));
+			if(JsfBase.getFlashAttribute("idProyectoProcess")!= null){
+				this.attrs.put("idProyectoProcess", JsfBase.getFlashAttribute("idProyectoProcess"));
+				this.doLoad();
+				this.attrs.put("idProyectoProcess", null);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -161,6 +163,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
     UISelectEntity cliente        = (UISelectEntity)this.attrs.get("cliente");
     List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("clientes");
+		if(this.attrs.get("idProyectoProcess")!= null && !Cadena.isVacio(this.attrs.get("idProyectoProcess")))
+			sb.append("tc_keet_proyectos.id_proyecto=").append(this.attrs.get("idProyectoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
 			sb.append("(tc_keet_proyectos.clave like '%").append(this.attrs.get("clave")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("etapa")))
@@ -189,7 +193,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String doMasivo() {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Proyectos/filtro"); 
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
-	}
+	} // doMasivo
 	
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
@@ -239,6 +243,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			this.attrs.put("justificacion", "");
 		} // finally
-	}	// doActualizaEstatus
-	
+	}	// doActualizaEstatus	
 }

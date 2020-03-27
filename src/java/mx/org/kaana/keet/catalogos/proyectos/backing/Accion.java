@@ -128,7 +128,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.proyecto.getProyecto().setIdUsuario(JsfBase.getIdUsuario());
 			transaccion= new Transaccion(this.proyecto);
 			if (transaccion.ejecutar(eaccion)) {
-				regresar =  "filtro".concat(Constantes.REDIRECIONAR);//this.attrs.get("retorno")!=null? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
+				JsfBase.setFlashAttribute("idProyectoProcess", this.proyecto.getProyecto().getIdProyecto());
+				regresar= "filtro".concat(Constantes.REDIRECIONAR);//this.attrs.get("retorno")!=null? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el proyecto de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
 			else 
@@ -141,7 +142,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     return regresar;
   } // doAccion
 
-  public String doCancelar() {   
+  public String doCancelar() {  
+		JsfBase.setFlashAttribute("idProyectoProcess", this.proyecto.getProyecto().getIdProyecto());
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion	
 	
