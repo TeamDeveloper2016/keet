@@ -1,10 +1,12 @@
 package mx.org.kaana.keet.catalogos.desarrollos.beans;
 
 import java.io.Serializable;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.catalogos.desarrollos.reglas.MotorBusqueda;
 
 public class RegistroDesarrollo implements Serializable {
-	
+
+	private static final long serialVersionUID= -6002648015306541890L;	
 	private Domicilio domicilio;
 	private Desarrollo desarrollo;
 
@@ -47,9 +49,8 @@ public class RegistroDesarrollo implements Serializable {
 			} // else
 		} // try
 		catch (Exception e) {			
-			mx.org.kaana.libs.formato.Error.mensaje(e);			
+			Error.mensaje(e);			
 		} // catch		
 		return regresar;
-	} // Desarrollo
-	
+	} // init
 }
