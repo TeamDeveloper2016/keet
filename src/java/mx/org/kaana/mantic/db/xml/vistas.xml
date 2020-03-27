@@ -4260,8 +4260,9 @@
 				inner join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
 				where 
-					tc_mantic_puestos.nombre='CONTRATISTA'
-				  and tr_mantic_empresa_personal.id_activo= 1
+					tc_mantic_puestos.nombre= 'CONTRATISTA'
+				and 
+					tr_mantic_empresa_personal.id_activo= 1
 			  order by
 				  tc_mantic_puestos.nombre
 			</select>
