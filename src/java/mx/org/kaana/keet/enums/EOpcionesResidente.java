@@ -6,8 +6,8 @@ import java.util.Map;
 
 public enum EOpcionesResidente {
 	
-	EMPLEADOS   ("Registro de empleados"  , "818f9da3a0a8a0aab83e"    , "/Paginas/Keet/Catalogos/Contratos/Personal/empleados.jsf"),
-	INCIDENCIAS ("Registro de incidencias", "3bcd5dee77f6758d91e81a5d", "/Paginas/Keet/Catalogos/Contratos/Personal/incidencias.jsf");
+	EMPLEADOS   ("Asignación de personal a los desarrollos", "818f9da3a0a8a0aab83e"    , "/Paginas/Keet/Catalogos/Contratos/Personal/registro.jsf"),
+	INCIDENCIAS ("Registro de incidencias del personal"    , "3bcd5dee77f6758d91e81a5d", "/Paginas/Keet/Catalogos/Contratos/Personal/incidencias.jsf");
 	
 	private static final Map<Long, EOpcionesResidente> lookup= new HashMap<>();	
 	private String titulo;
