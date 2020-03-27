@@ -51,7 +51,7 @@ public class TcKeetContratosBitacoraDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetContratosBitacoraDto(Long idContratoEstatus, String justificacion, Long idUsuario, Long idContratoBitacora, Long idContratoLote) {
+  public TcKeetContratosBitacoraDto(String justificacion,Long idContratoEstatus, Long idUsuario, Long idContratoBitacora, Long idContratoLote) {
     setIdContratoEstatus(idContratoEstatus);
     setJustificacion(justificacion);
     setIdUsuario(idUsuario);
