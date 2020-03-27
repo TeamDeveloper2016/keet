@@ -44,6 +44,19 @@
 				order by
 					tc_keet_clientes_contratos.id_cliente_contrato
 			</select>	
+			<select id="findDesarrollo">
+				select 
+					tc_keet_contratos.id_contrato as id_key,
+					tc_keet_contratos.*
+				from
+					tc_keet_contratos
+				inner join
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto = tc_keet_proyectos.id_proyecto
+				inner join
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				where
+					tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+			</select>
 		</unit>
     <unit id="VistaPrototiposDto">
 			<select id="lazy">
