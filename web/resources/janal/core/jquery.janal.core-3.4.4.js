@@ -30,7 +30,7 @@
   };    
   
   if(window.Janal) {
-    Console.debug("Janal already loaded, ignoring duplicate execution.");
+    console.debug("Janal already loaded, ignoring duplicate execution.");
     return;
   }
 
