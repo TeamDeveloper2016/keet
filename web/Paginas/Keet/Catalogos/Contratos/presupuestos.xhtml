@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Importar presupuestos"/>
+	<ui:define name="librerias">
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {				
+				'contenedorGrupos\\:presupuesto'  : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
+			};						
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}			
+		</script>
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+			.syntaxhighlighter {
+					overflow-y: auto !important;
+					overflow-x: auto !important;
+					max-height: 470px;
+			}			
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:remoteCommand name="viewDocument" actionListener="#{keetCatalogosContratosPresupuestos.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{keetCatalogosContratosPresupuestos.doTabChange}" process="@this" update="@(.importado)"/>						
+            <p:tab title="General">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-96, janal-wid-col-38">		
+                <p:outputLabel for="clave" value="Clave:"/>
+								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosPresupuestos.registroContrato.contrato.clave}" readonly="true"/>											
+                <p:outputLabel for="etapa" value="Etapa:"/>
+                <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosPresupuestos.registroContrato.contrato.etapa}" readonly="true"/>								
+								<p:outputLabel for="noViviendas" value="No. viviendas"/>
+                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosContratosPresupuestos.registroContrato.contrato.noViviendas}" readonly="true"/>                
+								<p:outputLabel for="idProyecto" value="Proyecto:"/>
+                <p:selectOneMenu id="idProyecto" disabled="true" value="#{keetCatalogosContratosPresupuestos.registroContrato.contrato.ikProyecto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetCatalogosContratosPresupuestos.attrs.proyectos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombres}"/>
+									</p:column>   
+								</p:selectOneMenu>
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+						<p:tab title="Archivos">
+							<p:dataTable id="importados" var="row" value="#{keetCatalogosContratosPresupuestos.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="janal-wid-20" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   								
+								<p:column headerText="Tipo">
+									<h:outputText value="#{row.tipoPresupuesto}"/>
+								</p:column>      								  
+								<p:column styleClass="janal-wid-20" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>    
+								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-col-40 janal-column-center">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+										<p:fileDownload value="#{keetCatalogosContratosPresupuestos.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+						<p:tab title="Importar">
+							<p:outputLabel for="presupuesto" value="Tipo presupuesto:"/>
+							<p:selectOneMenu id="presupuesto" value="#{keetCatalogosContratosPresupuestos.attrs.presupuesto}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt import-local-file">
+								<f:selectItems value="#{keetCatalogosContratosPresupuestos.attrs.presupuestos}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombre}"/>
+								<p:ajax event="change" process="@this presupuesto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>      
+							</p:selectOneMenu>							
+							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt import-local-file" value="#{keetCatalogosContratosPresupuestos.attrs.observaciones}" onblur="procesDataFile();"/>
+							<p:remoteCommand name="procesDataFile" process="@this contenedorGrupos:observaciones"/>
+							<p:spacer height="5px"/>	
+							<p:fileUpload listener="#{keetCatalogosContratosPresupuestos.doFileUpload}" onstart="return janal.execute();"
+							  mode="advanced" process="@this contenedorGrupos:observaciones" update="@(.importado)" label="Selecciona DWG/ZIP/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+								multiple="false" allowTypes="#{keetCatalogosContratosPresupuestos.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCatalogosContratosPresupuestos.attrs.formatos}"/>														
+							<p:dataTable id="importado" var="row" value="#{keetCatalogosContratosPresupuestos.registroContrato.presupuestos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   		
+                                <p:column styleClass="janal-wid-20" headerText="Plano">
+									<h:outputText value="#{row.presupuesto}"/>
+								</p:column>    								
+								<p:column styleClass="janal-wid-20" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPresupuestos.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{keetCatalogosContratosPresupuestos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPresupuestos.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{keetCatalogosContratosPresupuestos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+	</ui:define>
+</ui:composition>
