@@ -20,6 +20,10 @@ import mx.org.kaana.keet.catalogos.proyectos.beans.Generador;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Lote;
 import mx.org.kaana.keet.catalogos.proyectos.beans.Presupuesto;
 import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosArchivosDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosGeneradoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosPresupuestosDto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosBitacoraDto;
 import mx.org.kaana.keet.enums.EArchivosProyectos;
@@ -67,6 +71,7 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().insert(sesion, this.proyecto.getProyecto())>= 1L;
 					for(Lote item:this.proyecto.getProyecto().getLotes())
 						actualizarLote(sesion, item);
+					//crearContrato(sesion);
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.proyecto.getProyecto())>= 1L;
@@ -109,6 +114,8 @@ public class Transaccion extends IBaseTnx {
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.proyecto.getProyecto().setIdProyectoEstatus(this.bitacora.getIdProyectoEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.proyecto.getProyecto())>= 1L;
+						if(this.bitacora.getIdProyectoEstatus().equals(7L))
+							crearContrato(sesion);
 					} // if
 					break;
 			} // switch
@@ -198,4 +205,52 @@ public class Transaccion extends IBaseTnx {
 			throw new Exception(e);
 		} // catch	
 	} // cargarPlanos
+
+	private void crearContrato(Session sesion) throws Exception {
+		TcKeetContratosDto contratosDto= null;
+		try{
+			contratosDto= (TcKeetContratosDto)DaoFactory.getInstance().toEntity(TcKeetContratosDto.class,"TcKeetProyectosDto", "byId", this.proyecto.getProyecto().toMap());
+			contratosDto.setIdUsuario(JsfBase.getIdUsuario());
+			DaoFactory.getInstance().insert(sesion, contratosDto);
+		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetContratosArchivosDto", "toContratos", contratosDto.toMap()));
+		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosPresupuestosDto.class,"TcKeetContratosPresupuestosDto", "toContratos", contratosDto.toMap()));
+		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosGeneradoresDto.class,"TcKeetContratosGeneradoresDto", "toContratos", contratosDto.toMap()));
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+  }
+	
+	private void cargarDocumentos(Session sesion, List<IBaseDto> documentos) throws Exception {
+		String nuevaRuta = null;
+		File origen      = null;
+    File destino     = null;
+		InputStream in   = null;
+		OutputStream out = null;		
+		byte[] buf       = new byte[1024];
+    int len          = 0;      
+		try {
+			for (IBaseDto item : documentos) {
+				origen      = new File(item.toValue("alias").toString().replaceAll("contrato", "proyecto"));
+        destino     = new File(item.toValue("alias").toString());	
+			  if (!destino.exists())
+				  destino.mkdirs();
+				destino     = new File(nuevaRuta);
+				if (!destino.exists() || DaoFactory.getInstance().findIdentically(sesion, item.getClass(), item.toMap())==null){
+					in = new FileInputStream(origen);
+					out= new FileOutputStream(destino);
+					while ((len = in.read(buf)) > 0) 
+						out.write(buf, 0, len);
+					in.close();
+          out.close();
+					DaoFactory.getInstance().insert(sesion, item);
+				} // if
+			} // for
+		} // try
+		catch (Exception e) {
+			throw new Exception(e);
+		} // catch	
+	} // cargarPlanos
+	
+	
 }
