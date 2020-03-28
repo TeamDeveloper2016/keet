@@ -44,8 +44,6 @@
           tc_keet_contratos_estatus on tc_keet_contratos_estatus.id_contrato_estatus= tc_keet_contratos.id_contrato_estatus      
         where
           {condicion}
-				{sortOrder} where
-          {condicion}
 				{sortOrder}
 			</select>	
 			<select id="findDesarrollo">
