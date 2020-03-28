@@ -1175,7 +1175,8 @@
 		    <unit id="TcKeetContratosArchivosDto">
       <select id="row">
         select      
-          *
+          tc_keet_contratos_archivos.id_contrato_archivo as id_key,
+					tc_keet_contratos_archivos.*
         from      
           tc_keet_contratos_archivos
         where 
@@ -1193,7 +1194,8 @@
 	    <unit id="TcKeetContratosBitacoraDto">
       <select id="row">
         select      
-          *
+          tc_keet_contratos_bitacora.id_contrato_bitacora as id_key,
+					tc_keet_contratos_bitacora.*
         from      
           tc_keet_contratos_bitacora
         where 
@@ -1211,7 +1213,8 @@
 	<unit id="TcKeetContratosEstatusDto">
       <select id="row">
         select      
-          *
+          tc_keet_contratos_estatus.id_contrato_estatus as id_key,
+					tc_keet_contratos_estatus.*
         from      
           tc_keet_contratos_estatus
         where 
@@ -1229,7 +1232,8 @@
 	<unit id="TcKeetContratosFirmadosDto">
       <select id="row">
         select      
-          *
+          tc_keet_contratos_firmados.id_contrato_firmado as id_key,
+					tc_keet_contratos_firmados.*
         from      
           tc_keet_contratos_firmados
         where 
@@ -1247,7 +1251,8 @@
 	    <unit id="TcKeetContratosGeneradoresDto">
       <select id="row">
         select      
-          *
+          tc_keet_contratos_generadores.id_contrato_generador as id_key,
+					tc_keet_contratos_generadores.*
         from      
           tc_keet_contratos_generadores
         where 
@@ -1265,7 +1270,8 @@
 	    <unit id="TcKeetContratosLotesDto">
       <select id="row">
         select      
-          *
+          tc_keet_contratos_lotes.id_contrato_lote as id_key,
+					tc_keet_contratos_lotes.*
         from      
           tc_keet_contratos_lotes
         where 
@@ -1283,7 +1289,8 @@
 	    <unit id="TcKeetContratosPresupuestosDto">
       <select id="row">
         select      
-          *
+          tc_keet_contratos_presupuestos.id_contrato_presupuesto as id_key,
+					tc_keet_contratos_presupuestos.*
         from      
           tc_keet_contratos_presupuestos
         where 
@@ -1301,7 +1308,8 @@
 	    <unit id="TcKeetContratosProyectosDto">
       <select id="row">
         select      
-          *
+          tc_keet_contratos_proyectos.id_contrato_proyecto as id_key,
+					tc_keet_contratos_proyectos.*
         from      
           tc_keet_contratos_proyectos
         where 
