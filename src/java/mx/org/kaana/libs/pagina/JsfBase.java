@@ -20,11 +20,12 @@ import org.apache.commons.logging.LogFactory;
  */
 public class JsfBase extends JsfUtilities {
 
-  private static final Log LOG       = LogFactory.getLog(JsfBase.class);
-  private static final String ADMIN  = "ADMINISTRADOR";
-  private static final String ADMINS = "ADMINISTRADORDEENCUESTA";
-  private static final String GERENTE= "GERENTE";
-  private static final String CAJERO= "CAJERO";
+  private static final Log LOG         = LogFactory.getLog(JsfBase.class);
+  private static final String ADMIN    = "ADMINISTRADOR";
+  private static final String ADMINS   = "ADMINISTRADORDEENCUESTA";
+  private static final String GERENTE  = "GERENTE";
+  private static final String CAJERO   = "CAJERO";
+  private static final String RESIDENTE= "RESIDENTE";
 
   public static Autentifica getAutentifica() {
     return (Autentifica) getSession().getAttribute(Constantes.ATRIBUTO_AUTENTIFICA);
@@ -50,6 +51,17 @@ public class JsfBase extends JsfUtilities {
     boolean regresar = false;
     try {
       regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(GERENTE);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    return regresar;
+  } // isAdminEncuesta
+	
+  public static boolean isResidente() throws Exception {
+    boolean regresar = false;
+    try {
+      regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(RESIDENTE);
     } // try
     catch (Exception e) {
       throw e;
