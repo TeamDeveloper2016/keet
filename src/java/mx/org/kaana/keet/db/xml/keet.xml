@@ -153,6 +153,24 @@
         where 
           {condicion} 
       </select>
+			<select id="toContratos">
+        select 
+					-1 id_contrato_generador,
+					id_tipo_generador,
+					id_tipo_archivo
+					nombre,
+					archivo,
+					ruta,
+					tamanio,
+					observaciones,
+				  {idUsuario} id_usuario,
+				  {idContrato} id_contrato,
+				  replace(alias,'proyecto', 'contrato') alias
+				 from
+					 tc_keet_proyectos_generadores
+				where
+					id_proyecto= {idProyecto}
+      </select>
       <select id="identically">
         select      
           *
@@ -171,6 +189,24 @@
           tc_keet_proyectos_presupuestos;
         where 
           {condicion} 
+      </select>
+			<select id="toContratos">
+        select 
+					-1 id_contrato_prespuesto,
+					id_tipo_presupuesto,
+					id_tipo_archivo,
+					nombre,
+					archivo,
+					ruta,
+					tamanio,
+					observaciones,
+				  {idUsuario} id_usuario,
+				  {idContrato} id_contrato,
+				  replace(alias,'proyecto', 'contrato') alias
+				 from
+					 tc_keet_proyectos_prespuestos
+				where
+					id_proyecto= {idProyecto}
       </select>
       <select id="identically">
         select      
@@ -879,6 +915,25 @@
           tc_keet_proyectos_archivos
         where 
           {condicion} 
+      </select>
+			<select id="toContratos">
+        select 
+					-1 id_contrato_archivo,
+					id_prototipo,
+					id_plano,
+					id_tipo_archivo,
+					nombre,
+					archivo,
+					ruta,
+					tamanio,
+					observaciones,
+				  {idUsuario} id_usuario,
+				  {idContrato} id_contrato,
+				  replace(alias,'proyecto', 'contrato') alias
+				 from
+					 tc_keet_proyectos_archivos
+				where
+					id_proyecto= {idProyecto}
       </select>
       <select id="identically">
         select      
