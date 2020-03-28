@@ -17,7 +17,6 @@
         'razonSocial'   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'viviendasMayor': {validaciones: 'libre', mascara: 'libre'},
         'viviendasMenor': {validaciones: 'libre', mascara: 'libre'},
-        'tipoObra'      : {validaciones: 'libre', mascara: 'libre'},
         'idContratoEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
 		
@@ -68,19 +67,6 @@
               <p:inputNumber id="viviendasMenor" value="#{keetCatalogosContratosFiltro.attrs.viviendasMenor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="0"/>
 							<p:outputLabel for="viviendasMayor" value="Viviendas mayor a:" title="Viviendas."/>
               <p:inputNumber id="viviendasMayor" value="#{keetCatalogosContratosFiltro.attrs.viviendasMayor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="0"/>
-							<p:outputLabel for="tipoObra" value="Tipo de obra:"/>
-							<p:selectOneMenu id="tipoObra" value="#{keetCatalogosContratosFiltro.attrs.tipoObra}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-								<f:selectItems value="#{keetCatalogosContratosFiltro.attrs.tipoObras}" var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.tipoObra} #{empty element.tipoDivision or element.tipoDivision eq ''? '': '-'} #{element.tipoDivision}"/>
-								<p:column headerText="Clave">
-									<h:outputText value="#{item.clave}"/>
-								</p:column>   
-								<p:column headerText="Tipo obra">
-									<h:outputText value="#{item.tipoObra}"/>
-								</p:column> 
-								<p:column headerText="Tipo división">
-									<h:outputText value="#{item.tipoDivision}"/>
-								</p:column> 
-							</p:selectOneMenu>              
             </p:panelGrid>
 						<p:outputLabel for="idContratoEstatus" value="Estatus:"/>
 						<p:selectOneMenu id="idContratoEstatus" value="#{keetCatalogosContratosFiltro.attrs.idContratoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
@@ -137,12 +123,6 @@
                 <h:outputText value="Proyecto" />
               </f:facet>
               <h:outputText value="#{row['proyecto']}"/>
-            </p:column>
-            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.tipoObra}">
-              <f:facet name="header">
-                <h:outputText value="Tipo obra" />
-              </f:facet>
-              <h:outputText value="#{row['tipoObra']}"/>
             </p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.noViviendas}">
               <f:facet name="header">

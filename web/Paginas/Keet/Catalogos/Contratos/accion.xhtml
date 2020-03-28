@@ -14,8 +14,6 @@
 				'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:noViviendas': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:etapa': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:idCliente': {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idTipoObra': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idProyecto': {validaciones: 'requerido', mascara: 'libre'}
 			};
 
@@ -44,42 +42,14 @@
                 <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosContratosAccion.contrato.contrato.noViviendas}"/>                
 								<p:outputLabel for="idProyecto" value="Proyecto:"/>
                 <p:selectOneMenu id="idProyecto" value="#{keetCatalogosContratosAccion.contrato.contrato.ikProyecto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosContratosAccion.attrs.proyectos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
+									<f:selectItems value="#{keetCatalogosContratosAccion.attrs.proyectos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombres}"/>
-									</p:column>   
-								</p:selectOneMenu>
-								<p:outputLabel for="idTipoObra" value="Tipo de obra:"/>
-                <p:selectOneMenu id="idTipoObra" value="#{keetCatalogosContratosAccion.contrato.contrato.ikTipoObra}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosContratosAccion.attrs.tipoObras}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.tipoObra} - #{element.tipoDivision}"/>
-									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
-									<p:column headerText="Tipo obra">
-										<h:outputText value="#{item.tipoObra}"/>
-									</p:column> 
-									<p:column headerText="Tipo división">
-										<h:outputText value="#{item.tipoDivision}"/>
-									</p:column>     
 								</p:selectOneMenu>
               </p:panelGrid>
 						</p:tab>		
 						<p:tab title="Siembra" >	
-							<p:outputLabel for="idCliente" value="Cliente:"/>
-							<p:selectOneMenu id="idCliente" value="#{keetCatalogosContratosAccion.contrato.contrato.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetCatalogosContratosAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
-								<p:ajax event="change" listener="#{keetCatalogosContratosAccion.doLoadPrototipos}" process="@this" update="tablaLotes" />
-								<p:column headerText="Clave">
-									<h:outputText value="#{item.clave}"/>
-								</p:column>   
-								<p:column headerText="RFC">
-									<h:outputText value="#{item.rfc}"/>
-								</p:column>   
-								<p:column headerText="Nombre">
-									<h:outputText value="#{item.razonSocial}"/>
-								</p:column>   
-							</p:selectOneMenu>
-							<p:outputLabel value="*Selecciona el cliente para cargar sus prototipos"/>
 							<p:spacer/>
 							<p:dataTable id="tablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosContratosAccion.contrato.contrato.lotes}" rows="6" paginator="false" reflow="true" rowKey="#{lote.key}" emptyMessage=" " styleClass="paginated">																					
 								<p:column  headerText="Codigo">										
