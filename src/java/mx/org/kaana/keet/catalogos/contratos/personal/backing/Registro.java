@@ -73,12 +73,8 @@ public class Registro extends IBaseAttribute implements Serializable {
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
-			this.movimientosAdd= new ArrayList<>();
-			this.movimientosRemove= new ArrayList<>();
-			this.temporalOrigen= new ArrayList<>();
-			this.temporalDestino= new ArrayList<>();
-			this.allEmpleados= new ArrayList<>();
-			this.model= new DualListModel<>();
+			this.attrs.put("isResidente", JsfBase.isResidente());
+			inicializaContenido();			
 			loadCatalogos();
     } // try // try
     catch (Exception e) {
@@ -174,14 +170,18 @@ public class Registro extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // loadContratistas
 	
-  public void doLoadByContrato() {    
-		this.attrs.put("controlBuqueda", Boolean.FALSE);
+	private void inicializaContenido(){
 		this.allEmpleados= new ArrayList<>();
 		this.movimientosAdd= new ArrayList<>();
 		this.movimientosRemove= new ArrayList<>();
 		this.temporalOrigen= new ArrayList<>();
 		this.temporalDestino= new ArrayList<>();
 		this.model= new DualListModel<>();				
+	}
+	
+  public void doLoadByContrato() {    
+		this.attrs.put("controlBuqueda", Boolean.FALSE);
+		inicializaContenido();
 		doLoad();
 	}	 // doLoadByContrato
 	
@@ -202,45 +202,12 @@ public class Registro extends IBaseAttribute implements Serializable {
 				sAsignados= toListSelectionIten(asignados);
 				this.temporalOrigen= sDisponibles;
 				this.temporalDestino= sAsignados;				
-				if(this.allEmpleados.isEmpty()){
-					this.allEmpleados.addAll(sAsignados);
-					this.allEmpleados.addAll(sDisponibles);
-				} // else
-				else{
-					for(SelectionItem item: sAsignados){
-						if(!this.allEmpleados.contains(item))
-							this.allEmpleados.add(item);
-					} // for
-					for(SelectionItem item: sDisponibles){
-						if(!this.allEmpleados.contains(item))
-							this.allEmpleados.add(item);
-					} // for
-				} // else
-				if((Boolean)this.attrs.get("controlBuqueda")){
-					if(!this.movimientosAdd.isEmpty()){						
-						for(SelectionItem item: this.movimientosAdd){
-							if(!sAsignados.contains(item))
-								sAsignados.add(0, this.allEmpleados.get(this.allEmpleados.indexOf(item)));
-						} // for
-					} // if
-					if(!this.movimientosRemove.isEmpty()){						
-						for(SelectionItem item: this.movimientosRemove){
-							if(sAsignados.contains(item))
-								sAsignados.remove(item);
-						} // for
-					} // if
-					this.movimientosAdd= new ArrayList<>();
-					this.movimientosRemove= new ArrayList<>();
-				} // if				
+				loadAllEmpleados(sAsignados, sDisponibles);								
 				this.model.setSource(sDisponibles);
-				this.model.setTarget(sAsignados);
+				this.model.setTarget(validateControlBusquedaAsignados(sAsignados));
 			} // if
 			else{				
-				this.allEmpleados= new ArrayList<>();
-				this.movimientosAdd= new ArrayList<>();
-				this.temporalOrigen= new ArrayList<>();
-				this.temporalDestino= new ArrayList<>();
-				this.model= new DualListModel<>();				
+				inicializaContenido();
 				JsfBase.addMessage("Es necesario seleccionar un contrato.");
 			} // else
     } // try // try
@@ -252,6 +219,44 @@ public class Registro extends IBaseAttribute implements Serializable {
 			this.attrs.put("controlBuqueda", Boolean.TRUE);
 		} // finally
   } // doLoad		
+	
+	private List<SelectionItem> validateControlBusquedaAsignados(List<SelectionItem> sAsignados){
+		if((Boolean)this.attrs.get("controlBuqueda")){
+			if(!this.movimientosAdd.isEmpty()){						
+				for(SelectionItem item: this.movimientosAdd){
+					if(!sAsignados.contains(item))
+						sAsignados.add(0, this.allEmpleados.get(this.allEmpleados.indexOf(item)));
+				} // for
+			} // if
+			if(!this.movimientosRemove.isEmpty()){						
+				for(SelectionItem item: this.movimientosRemove){
+					if(sAsignados.contains(item)){
+						String descripcion= this.allEmpleados.get(this.allEmpleados.indexOf(item)).getItem();
+						if(!((boolean)this.attrs.get("isResidente")) || (((boolean)this.attrs.get("isResidente")) && !descripcion.contains("RESIDENTE")))
+							sAsignados.remove(item);
+					} // if
+				} // for
+			} // if			
+		} // if
+		return sAsignados;
+	} // validateControlBusquedaAsignados
+	
+	private void loadAllEmpleados(List<SelectionItem> sAsignados, List<SelectionItem> sDisponibles){
+		if(this.allEmpleados.isEmpty()){
+			this.allEmpleados.addAll(sAsignados);
+			this.allEmpleados.addAll(sDisponibles);
+		} // else
+		else{
+			for(SelectionItem item: sAsignados){
+				if(!this.allEmpleados.contains(item))
+					this.allEmpleados.add(item);
+			} // for
+			for(SelectionItem item: sDisponibles){
+				if(!this.allEmpleados.contains(item))
+					this.allEmpleados.add(item);
+			} // for
+		} // else
+	} // loadAllEmpleados
 	
 	private String toPrepare(){
 		StringBuilder condicion= null;
