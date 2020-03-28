@@ -23,6 +23,7 @@ import mx.org.kaana.keet.catalogos.proyectos.beans.RegistroProyecto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosGeneradoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPresupuestosDto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosBitacoraDto;
@@ -207,14 +208,15 @@ public class Transaccion extends IBaseTnx {
 	} // cargarPlanos
 
 	private void crearContrato(Session sesion) throws Exception {
-		TcKeetContratosDto contratosDto= null;
+		TcKeetContratosDto contratosDto    = null;
 		try{
-			contratosDto= (TcKeetContratosDto)DaoFactory.getInstance().toEntity(TcKeetContratosDto.class,"TcKeetProyectosDto", "byId", this.proyecto.getProyecto().toMap());
+			contratosDto= (TcKeetContratosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDto.class,"TcKeetProyectosDto", "byId", this.proyecto.getProyecto().toMap());
 			contratosDto.setIdUsuario(JsfBase.getIdUsuario());
+			contratosDto.setIdContratoEstatus(1L);//cambiar estatus por el inicial
 			DaoFactory.getInstance().insert(sesion, contratosDto);
-		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetContratosArchivosDto", "toContratos", contratosDto.toMap()));
-		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosPresupuestosDto.class,"TcKeetContratosPresupuestosDto", "toContratos", contratosDto.toMap()));
-		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosGeneradoresDto.class,"TcKeetContratosGeneradoresDto", "toContratos", contratosDto.toMap()));
+		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetProyectosArchivosDto", "toContratos", contratosDto.toMap()));
+		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosPresupuestosDto.class,"TcKeetProyectosPrespuestosDto", "toContratos", contratosDto.toMap()));
+		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosGeneradoresDto.class,"TcKeetProyectosGeneradoresDto", "toContratos", contratosDto.toMap()));
 		} // try
 		catch (Exception e) {
 			throw e;
