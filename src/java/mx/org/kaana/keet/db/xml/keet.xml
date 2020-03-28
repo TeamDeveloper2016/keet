@@ -1199,7 +1199,7 @@
         from      
           tc_keet_contratos_personal
         where      
-          id_contratos_personal = {idContratosPersonal} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+          id_contratos_personal = {idContratosPersonal}
       </select>
 			<select id="maximo">
 				select      
@@ -1207,6 +1207,9 @@
         from      
           tc_keet_contratos_personal
 			</select>
+			<delete id="contrato">
+				delete from tc_keet_contratos_personal where id_contrato={idContrato} and id_desarrollo= {idDesarrollo}
+			</delete>
     </unit>
 		    <unit id="TcKeetContratosDto">
       <select id="row">
