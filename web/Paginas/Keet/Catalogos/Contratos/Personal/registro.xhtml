@@ -24,6 +24,12 @@
 			/*.ui-picklist.ui-picklist-responsive .ui-picklist-buttons {
 				width: 70px !important;
 			}*/
+			.ui-picklist .ui-picklist-item {
+				cursor: pointer;
+				border: 0 none;
+				font-weight: inherit;
+				width: 90% !important;
+			}
 			.ui-picklist .ui-picklist-filter {
 				width: 100% !important;
 			}
@@ -94,7 +100,7 @@
 						<f:facet name="sourceCaption">Disponibles</f:facet>
 						<f:facet name="targetCaption">Asignados</f:facet>
 						<p:ajax event="transfer" onstart="return janal.bloquear();" listener="#{keetCatalogosContratosPersonalRegistro.onTransfer}" oncomplete="reloadValues();"/>												
-						<p:column>
+						<p:column style="width: 95% !important">
 							<h:outputText value="#{empleado.item}" styleClass="janal-wid-100-txt"/>
 						</p:column>
 					</p:pickList>
