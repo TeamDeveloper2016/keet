@@ -9,9 +9,12 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.beans.SelectionItem;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.catalogos.contratos.beans.ContratoPersonal;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.keet.catalogos.contratos.reglas.MotorBusqueda;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
@@ -24,20 +27,35 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import org.primefaces.event.TransferEvent;
+import org.primefaces.model.DualListModel;
 
 @Named(value = "keetCatalogosContratosPersonalRegistro")
 @ViewScoped
 public class Registro extends IBaseAttribute implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;		
+  private static final long serialVersionUID= 8793667741599428879L;		
 	private RegistroDesarrollo registroDesarrollo;	
-
+	protected List<SelectionItem> allEmpleados;	
+	protected List<SelectionItem> movimientos;	
+	protected List<SelectionItem> temporalOrigen;
+	protected List<SelectionItem> temporalDestino;	
+	protected DualListModel model;
+	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
 	}
 
 	public void setRegistroDesarrollo(RegistroDesarrollo registroDesarrollo) {
 		this.registroDesarrollo = registroDesarrollo;
+	}	
+
+	public DualListModel getModel() {
+		return model;
+	}
+
+	public void setModel(DualListModel model) {
+		this.model = model;
 	}	
 	
   @PostConstruct
@@ -51,6 +69,11 @@ public class Registro extends IBaseAttribute implements Serializable {
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
+			this.movimientos= new ArrayList<>();
+			this.temporalOrigen= new ArrayList<>();
+			this.temporalDestino= new ArrayList<>();
+			this.allEmpleados= new ArrayList<>();
+			this.model= new DualListModel<>();
 			loadCatalogos();
     } // try
     catch (Exception e) {
@@ -146,15 +169,107 @@ public class Registro extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // loadContratistas
 	
-  public void doLoad() {    
+  public void doLoadByContrato() {    
+		this.attrs.put("controlBuqueda", Boolean.FALSE);
+		this.allEmpleados= new ArrayList<>();
+		this.movimientos= new ArrayList<>();
+		this.temporalOrigen= new ArrayList<>();
+		this.temporalDestino= new ArrayList<>();
+		this.model= new DualListModel<>();				
+		doLoad();
+	}	 // doLoadByContrato
+	
+  public void doLoad() {    		
+		List<ContratoPersonal>disponibles= null;
+		List<ContratoPersonal>asignados  = null;
+		List<SelectionItem>sDisponibles  = null;
+		List<SelectionItem>sAsignados    = null;
+		MotorBusqueda motorBusqueda      = null;
+		String condicion                 = null;
     try {
-			
+			if(this.attrs.get("idContrato")!= null && !Cadena.isVacio(this.attrs.get("idContrato")) && Long.valueOf((String)this.attrs.get("idContrato"))>= 1L){								
+				motorBusqueda= new MotorBusqueda(Long.valueOf((String)this.attrs.get("idContrato")));
+				condicion= this.toPrepare();
+				disponibles= motorBusqueda.toPersonasDisponibles(condicion);
+				sDisponibles= toListSelectionIten(disponibles);
+				asignados= motorBusqueda.toPersonasAsignadas();
+				sAsignados= toListSelectionIten(asignados);
+				this.temporalOrigen= sDisponibles;
+				this.temporalDestino= sAsignados;				
+				if(this.allEmpleados.isEmpty()){
+					this.allEmpleados.addAll(sAsignados);
+					this.allEmpleados.addAll(sDisponibles);
+				} // else
+				else{
+					for(SelectionItem item: sAsignados){
+						if(!this.allEmpleados.contains(item))
+							this.allEmpleados.add(item);
+					} // for
+					for(SelectionItem item: sDisponibles){
+						if(!this.allEmpleados.contains(item))
+							this.allEmpleados.add(item);
+					} // for
+				} // else
+				if((Boolean)this.attrs.get("controlBuqueda")){
+					if(!this.movimientos.isEmpty()){						
+						for(SelectionItem item: this.movimientos){
+							if(!sAsignados.contains(item))
+								sAsignados.add(0, this.allEmpleados.get(this.allEmpleados.indexOf(item)));
+						} // for
+					} // if
+				} // if				
+				this.model.setSource(sDisponibles);
+				this.model.setTarget(sAsignados);
+			} // if
+			else{				
+				this.allEmpleados= new ArrayList<>();
+				this.movimientos= new ArrayList<>();
+				this.temporalOrigen= new ArrayList<>();
+				this.temporalDestino= new ArrayList<>();
+				this.model= new DualListModel<>();				
+				JsfBase.addMessage("Es necesario seleccionar un contrato.");
+			} // else
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch    
+		finally{
+			this.attrs.put("controlBuqueda", Boolean.TRUE);
+		} // finally
   } // doLoad		
+	
+	private String toPrepare(){
+		StringBuilder condicion= null;
+		String regresar        = null;
+		try {
+			condicion= new StringBuilder();
+			if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf((String)this.attrs.get("idPuesto"))>= 1L)
+				condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
+			if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf((String)this.attrs.get("idDepartamento"))>= 1L)
+				condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
+			if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
+				condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
+			regresar= Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toPrepare
+	
+	private List<SelectionItem> toListSelectionIten(List<ContratoPersonal> entities){
+		List<SelectionItem> regresar= null;
+		try {
+			regresar= new ArrayList<>();
+			for(ContratoPersonal ent: entities)
+				regresar.add(new SelectionItem(ent.getIdEmpresaPersona().toString(), "[".concat(ent.getPuesto()).concat("] ").concat(ent.getNombres()).concat(" ").concat(ent.getPaterno()).concat(" ").concat(ent.getMaterno())));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toListSelectionIten
 	
 	private String toDomicilio(){
 		StringBuilder regresar= null;
@@ -174,6 +289,35 @@ public class Registro extends IBaseAttribute implements Serializable {
 		return regresar.toString();
 	} // toDomicilio
 	
+	public void onTransfer(TransferEvent event) {				
+		List<SelectionItem> transfers= null;
+		try {
+			transfers= (List<SelectionItem>) event.getItems();
+			for(SelectionItem item: transfers){
+				if(!this.movimientos.contains(item))
+					this.movimientos.add(item);
+				if(!this.model.getTarget().contains(item))
+					this.model.getTarget().add(item);
+			} // for			
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch					
+	} // onTransfer 	
+	
+	public String doAceptar(){
+		String regresar= null;
+		try {
+			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doAceptar
+	
 	public String doCancelar() {
     String regresar          = null;    
 		EOpcionesResidente opcion= null;
@@ -188,5 +332,5 @@ public class Registro extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina	
+  } // doPagina		
 }
