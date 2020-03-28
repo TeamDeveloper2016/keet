@@ -180,12 +180,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
 			JsfBase.setFlashAttribute("idDesarrollo", this.seleccionado.getKey());
 			JsfBase.setFlashAttribute("opcionResidente", opcion);			
-			regresar= opcion.getRuta();			
+			regresar= opcion.getRuta().concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-    return regresar.concat(Constantes.REDIRECIONAR);
+    return regresar;
   } // doPagina
 }
