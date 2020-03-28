@@ -16,14 +16,15 @@
 				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contrato'            : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
       };							
+			
+			function validateCriterios(){
+				var ok= janal.execute();
+				if(ok)
+					janal.bloquear();
+				return ok;
+			} // validateCriterios
     </script>		
-		<style type="text/css">    
-			/*.ui-picklist.ui-picklist-responsive .ui-picklist-list-wrapper {
-				width: 100% !important;
-			}*/
-			/*.ui-picklist.ui-picklist-responsive .ui-picklist-buttons {
-				width: 70px !important;
-			}*/
+		<style type="text/css">    			
 			.ui-picklist .ui-picklist-item {
 				cursor: pointer;
 				border: 0 none;
@@ -111,11 +112,11 @@
   </ui:define>
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosPersonalRegistro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosPersonalRegistro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
