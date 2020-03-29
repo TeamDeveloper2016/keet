@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
-import mx.org.kaana.kajool.procesos.enums.EExportarDatos;
-import mx.org.kaana.kajool.procesos.reportes.beans.Exportar;
 import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -63,6 +62,7 @@ public class Filtro extends Comun implements Serializable {
   @Override
   protected void init() {
     try {
+      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
     	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
       //this.attrs.put("nombre", "");
@@ -114,6 +114,8 @@ public class Filtro extends Comun implements Serializable {
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
       this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
 			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+      this.attrs.put("familias", (List<UISelectEntity>) UIEntity.seleccione("TcKeetFamiliasDto", "familias", params, Collections.EMPTY_LIST, "nombre"));
+			this.attrs.put("idFamilia", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       throw e;
@@ -139,25 +141,12 @@ public class Filtro extends Comun implements Serializable {
 		  		sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
 				} // if	
 		  sb.append("tc_mantic_articulos.id_vigente=").append(this.attrs.get("idVigente")).append(" and ");
-			if(!Cadena.isVacio(this.attrs.get("idImagen")) && !this.attrs.get("idImagen").toString().equals("-1"))
-  			if(this.attrs.get("idImagen").toString().equals("1"))
-    		  sb.append("tc_mantic_articulos.id_imagen is not null and ");
-			  else
-    		  sb.append("tc_mantic_articulos.id_imagen is null and ");
 			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-			if(!Cadena.isVacio(this.attrs.get("idPerdida")) && !this.attrs.get("idPerdida").toString().equals("-1"))
-  			if(this.attrs.get("idPerdida").toString().equals("1"))
-    		  sb.append("(tc_mantic_articulos.precio>= tc_mantic_articulos.menudeo or tc_mantic_articulos.precio>= tc_mantic_articulos.mayoreo or tc_mantic_articulos.precio>= tc_mantic_articulos.medio_mayoreo) and ");
-			  else
-    		  sb.append("(tc_mantic_articulos.precio< tc_mantic_articulos.menudeo and tc_mantic_articulos.precio< tc_mantic_articulos.mayoreo and tc_mantic_articulos.precio< tc_mantic_articulos.medio_mayoreo) and ");
-			if(!Cadena.isVacio(this.attrs.get("idMenor10")) && !this.attrs.get("idMenor10").toString().equals("-1"))
-  			if(this.attrs.get("idMenor10").toString().equals("1"))
-    		  sb.append("(tc_mantic_articulos.menudeo< 10 and tc_mantic_articulos.id_redondear= 1) and ");
-			  else
-    		  sb.append("(tc_mantic_articulos.menudeo>= 10 and tc_mantic_articulos.id_redondear= 2) and ");
+			if(!Cadena.isVacio(this.attrs.get("idFamilia")) && !this.attrs.get("idFamilia").toString().equals("-1"))
+   		  sb.append("(tc_mantic_articulos.id_familia= ").append(this.attrs.get("idFamilia").toString()).append(") and ");
 			if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
   		  regresar.put("almacen", " and (tc_mantic_almacenes_articulos.id_almacen= "+ ((UISelectEntity)this.attrs.get("idAlmacen")).getKey()+ ")");
 			else

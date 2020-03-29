@@ -585,6 +585,15 @@
         where      
           nombre = '{nombre}'
       </select>
+      <select id="familias">
+        select      
+          tc_keet_familias.id_familia as id_key,
+					tc_keet_familias.*
+        from      
+          tc_keet_familias
+        order by 
+          nombre
+      </select>
     </unit>		
     <unit id="TcKeetBitacorasDto">
       <select id="row">

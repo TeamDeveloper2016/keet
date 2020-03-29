@@ -27,9 +27,9 @@
         <div id="collapse-find" class="ui-grid-col-3">
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
-            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" panelStyleClass="janal-wid-25" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticCatalogosClientesFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -64,7 +64,7 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="credito" value="Credito:"/>
-							<p:selectOneMenu id="credito" value="#{manticCatalogosClientesFiltro.attrs.credito}" styleClass="janal-wid-90">
+							<p:selectOneMenu id="credito" value="#{manticCatalogosClientesFiltro.attrs.credito}" styleClass="janal-wid-96">
 								<f:selectItems value="#{manticCatalogosClientesFiltro.attrs.creditos}"/>
 							</p:selectOneMenu>
 							<p:separator/>
@@ -105,7 +105,7 @@
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>		
-						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Empresa"/>
               </f:facet>
@@ -117,7 +117,7 @@
               </f:facet>
               <h:outputText value="#{filtro['clave']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.rfc}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{filtro.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
@@ -129,7 +129,7 @@
               </f:facet>
               <h:outputText value="#{filtro['razonSocial']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{filtro.credito}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.credito}">
               <f:facet name="header">
                 <h:outputText value="Credito"/>
               </f:facet>
