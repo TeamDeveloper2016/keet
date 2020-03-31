@@ -1,10 +1,7 @@
 package mx.org.kaana.mantic.incidentes.reglas;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import static java.time.temporal.ChronoUnit.DAYS;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -63,8 +60,7 @@ public class Transaccion extends IBaseTnx {
 		Entity registro          = null;
 		Map<String, Object>params= null;
 		long totalDias           = 0L;
-		LocalDate initDate       = null;
-		Calendar calendar        = null;
+		LocalDate initDate       = null;		
 		try {
 			this.messageError= "No es posible agregar una incidencia del mismo tipo al mismo empleado cuando hay una vigente.";
 			totalDias= DAYS.between(this.incidente.getVigenciaInicio(), this.incidente.getVigenciaFin());
@@ -73,10 +69,10 @@ public class Transaccion extends IBaseTnx {
 				totalDias=1;
 			for(int count=0; count< totalDias; count++){
 				params= new HashMap<>();
-				params.put("idPersona", this.incidente.getIdPersona());
+				params.put("idEmpresaPersona", this.incidente.getIdEmpresaPersona());
 				params.put("idTipoIncidente", this.incidente.getIdTipoIncidente());
 				params.put("estatus", toEstatus());
-				params.put("fecha", Fecha.formatear(Fecha.FECHA_MYSQL, initDate));
+				params.put("fecha", initDate.toString());
 				registro= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticIncidentesDto", "existente", params);
 				if(registro!= null && registro.isValid()){
 					regresar= false;
@@ -120,7 +116,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setOrden(consecutivo.getOrden());			
 			dto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
 			dto.setIdIncidenteEstatus(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
-			dto.setIdPersona(this.incidente.getIdPersona());
+			dto.setIdEmpresaPersona(this.incidente.getIdEmpresaPersona());
 			dto.setIdTipoIncidente(this.incidente.getIdTipoIncidente());
 			dto.setIdUsuario(JsfBase.getIdUsuario());
 			dto.setObservaciones(this.incidente.getObservaciones());
@@ -179,7 +175,7 @@ public class Transaccion extends IBaseTnx {
 			dto= (TcManticIncidentesDto) DaoFactory.getInstance().findById(sesion, TcManticIncidentesDto.class, this.incidente.getIdIncidente());
 			if(estatus)
 				dto.setIdIncidenteEstatus(this.incidente.getIdIncidenteEstatus());
-			dto.setIdPersona(this.incidente.getIdPersona());
+			dto.setIdEmpresaPersona(this.incidente.getIdEmpresaPersona());
 			dto.setIdTipoIncidente(this.incidente.getIdTipoIncidente());			
 			dto.setObservaciones(this.incidente.getObservaciones());
 			dto.setVigenciaInicio(this.incidente.getVigenciaInicio());
