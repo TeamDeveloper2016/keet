@@ -5488,7 +5488,7 @@
 				from 
 					tc_mantic_incidentes
 				where 
-					id_persona= {idPersona}
+					id_empresa_persona= {idEmpresaPersona}
 				and 
 					id_tipo_incidente={idTipoIncidente}
 				and 
