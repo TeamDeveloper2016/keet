@@ -118,7 +118,7 @@ public class Filtro extends Comun implements Serializable {
 			if(!Cadena.isVacio(JsfBase.getParametro("orden_input")))
 				sb.append("upper(tc_mantic_incidentes.orden) like upper('%").append(JsfBase.getParametro("orden_input")).append("%') and ");						
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
-				sb.append("tc_mantic_incidentes.id_persona=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
+				sb.append("tc_mantic_incidentes.id_empresa_persona=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
   		else 
 	  		if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
 					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
@@ -274,6 +274,5 @@ public class Filtro extends Comun implements Serializable {
 		List<UISelectItem> tiposIncidentes= UISelect.build("TcManticTiposIncidentesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
 		tiposIncidentes.add(0, new UISelectItem(-1L, "TODOS"));
 		this.attrs.put("incidentes", tiposIncidentes);
-	} // loadTiposInicidentes
-	
+	} // loadTiposInicidentes	
 }
