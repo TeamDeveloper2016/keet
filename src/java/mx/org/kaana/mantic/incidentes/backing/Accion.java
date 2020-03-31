@@ -61,10 +61,10 @@ public class Accion extends Comun implements Serializable {
 				case CONSULTAR:
 					idIncidente= (Long) JsfBase.getFlashAttribute("idIncidente");
 					loadIncidente(idIncidente);
-					this.attrs.put("nombre", new UISelectEntity(this.incidente.getIdPersona()));
+					this.attrs.put("nombre", new UISelectEntity(this.incidente.getIdEmpresaPersona()));
 					this.attrs.put("nombreModificar", "XYZ");
 					doLoad();
-					this.attrs.put("seleccionado", new Entity(this.incidente.getIdPersona()));					
+					this.attrs.put("seleccionado", new Entity(this.incidente.getIdEmpresaPersona()));					
 					break;
 			} // switch
 			this.attrs.put("eaccion", eaccion);
@@ -195,8 +195,8 @@ public class Accion extends Comun implements Serializable {
 		try {
 			eaccion= (EAccion) this.attrs.get("eaccion");
 			seleccionado= ((Entity)this.attrs.get("seleccionado"));
-			if(seleccionado== null && this.incidente.getIdPersona()>= 1L && eaccion.equals(EAccion.MODIFICAR))
-				seleccionado= new Entity(this.incidente.getIdPersona());
+			if(seleccionado== null && this.incidente.getIdEmpresaPersona()>= 1L && eaccion.equals(EAccion.MODIFICAR))
+				seleccionado= new Entity(this.incidente.getIdEmpresaPersona());
 			if(seleccionado!= null){
 				this.incidente.setIdPersona(seleccionado.getKey());
 				transaccion= new Transaccion(this.incidente);				
