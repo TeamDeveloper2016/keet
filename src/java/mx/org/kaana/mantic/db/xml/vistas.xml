@@ -4366,7 +4366,7 @@
 			</select>              
 			<select id="rowAutocomplete">
 				select 
-				  tc_mantic_personas.id_persona as id_key,
+				  tr_mantic_empresa_personal.id_empresa_persona as id_key,
 				  tc_mantic_personas.nombres,
 				  tc_mantic_personas.paterno,
 				  tc_mantic_personas.materno,
@@ -9655,7 +9655,7 @@
 				select 
 					tc_mantic_incidentes.id_incidente as id_key,
 					tc_mantic_incidentes.consecutivo,
-					tc_mantic_incidentes.id_persona, 
+					tc_mantic_incidentes.id_empresa_persona, 
 					tc_mantic_incidentes.id_tipo_incidente, 
 					tc_mantic_incidentes.vigencia_inicio,
 					tc_mantic_incidentes.vigencia_fin,
@@ -9672,11 +9672,11 @@
 					tc_mantic_incidentes_estatus.estatus_asociados,
 					tc_mantic_puestos.nombre puesto
 				from 
-					tc_mantic_incidentes
-				inner join 
-					tc_mantic_personas on tc_mantic_incidentes.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_incidentes				
 				inner join
-					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+					tr_mantic_empresa_personal on tc_mantic_incidentes.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
 				inner join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				inner join 
@@ -9699,10 +9699,10 @@
 					tc_mantic_incidentes.orden
 				from 
 					tc_mantic_incidentes
-				inner join 
-					tc_mantic_personas on tc_mantic_incidentes.id_persona = tc_mantic_personas.id_persona
 				inner join
-					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+					tr_mantic_empresa_personal on tc_mantic_incidentes.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
 				inner join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				inner join 
