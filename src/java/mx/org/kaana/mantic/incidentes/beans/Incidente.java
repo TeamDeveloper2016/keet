@@ -2,15 +2,13 @@ package mx.org.kaana.mantic.incidentes.beans;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 
 public class Incidente implements Serializable{
 
 	private static final long serialVersionUID= 5491973442869961621L;	
 	private Long idIncidente;
-	private Long idPersona;
+	private Long idEmpresaPersona;
 	private Long idTipoIncidente;
 	private Long idIncidenteEstatus;
 	private LocalDate vigenciaInicio;
@@ -22,12 +20,12 @@ public class Incidente implements Serializable{
 	}
 
 	public Incidente(TcManticIncidentesDto dto){
-		this(dto.getIdIncidente(), dto.getIdPersona(), dto.getIdTipoIncidente(), dto.getIdIncidenteEstatus(), dto.getVigenciaInicio(), dto.getVigenciaFin(), dto.getObservaciones());
+		this(dto.getIdIncidente(), dto.getIdEmpresaPersona(), dto.getIdTipoIncidente(), dto.getIdIncidenteEstatus(), dto.getVigenciaInicio(), dto.getVigenciaFin(), dto.getObservaciones());
 	}
 	
-	public Incidente(Long idIncidente, Long idPersona, Long idTipoIncidente, Long idIncidenteEstatus, LocalDate vigenciaInicio, LocalDate vigenciaFin, String observaciones) {
+	public Incidente(Long idIncidente, Long idEmpresaPersona, Long idTipoIncidente, Long idIncidenteEstatus, LocalDate vigenciaInicio, LocalDate vigenciaFin, String observaciones) {
 		this.idIncidente       = idIncidente;
-		this.idPersona         = idPersona;
+		this.idEmpresaPersona  = idEmpresaPersona;
 		this.idTipoIncidente   = idTipoIncidente;
 		this.idIncidenteEstatus= idIncidenteEstatus;
 		this.vigenciaInicio    = vigenciaInicio;
@@ -43,12 +41,12 @@ public class Incidente implements Serializable{
 		this.idIncidente = idIncidente;
 	}
 	
-	public Long getIdPersona() {
-		return idPersona;
+	public Long getIdEmpresaPersona() {
+		return idEmpresaPersona;
 	}
 
-	public void setIdPersona(Long idPersona) {
-		this.idPersona = idPersona;
+	public void setIdPersona(Long idEmpresaPersona) {
+		this.idEmpresaPersona = idEmpresaPersona;
 	}
 
 	public Long getIdTipoIncidente() {
