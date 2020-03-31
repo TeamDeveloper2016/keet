@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.db.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -33,8 +32,8 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
   private String consecutivo;
   @Column (name="id_tipo_incidente")
   private Long idTipoIncidente;
-  @Column (name="id_persona")
-  private Long idPersona;
+  @Column (name="id_empresa_persona")
+  private Long idEmpresaPersona;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_incidente")
@@ -55,20 +54,22 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
   private Long ejercicio;
   @Column (name="registro")
   private LocalDateTime registro;
+	@Column (name="id_desarrollo")
+  private Long idDesarrollo;
 
   public TcManticIncidentesDto() {
     this(new Long(-1L));
   }
 
   public TcManticIncidentesDto(Long key) {
-    this(null, null, null, new Long(-1L), LocalDate.now(), null, null, null, null, LocalDate.now(), null);
+    this(null, null, null, new Long(-1L), LocalDate.now(), null, null, null, null, LocalDate.now(), null, null);
     setKey(key);
   }
 
-  public TcManticIncidentesDto(String consecutivo, Long idTipoIncidente, Long idPersona, Long idIncidente, LocalDate vigenciaInicio, Long idUsuario, Long idIncidenteEstatus, String observaciones, Long orden, LocalDate vigenciaFin, Long ejercicio) {
+  public TcManticIncidentesDto(String consecutivo, Long idTipoIncidente, Long idEmpresaPersona, Long idIncidente, LocalDate vigenciaInicio, Long idUsuario, Long idIncidenteEstatus, String observaciones, Long orden, LocalDate vigenciaFin, Long ejercicio, Long idDesarrollo) {
     setConsecutivo(consecutivo);
     setIdTipoIncidente(idTipoIncidente);
-    setIdPersona(idPersona);
+    setIdEmpresaPersona(idEmpresaPersona);
     setIdIncidente(idIncidente);
     setVigenciaInicio(vigenciaInicio);
     setIdUsuario(idUsuario);
@@ -78,6 +79,7 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     setVigenciaFin(vigenciaFin);
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
+		setIdDesarrollo(idDesarrollo);
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -96,12 +98,12 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     return idTipoIncidente;
   }
 
-  public void setIdPersona(Long idPersona) {
-    this.idPersona = idPersona;
+  public void setIdEmpresaPersona(Long idEmpresaPersona) {
+    this.idEmpresaPersona = idEmpresaPersona;
   }
 
-  public Long getIdPersona() {
-    return idPersona;
+  public Long getIdEmpresaPersona() {
+    return idEmpresaPersona;
   }
 
   public void setIdIncidente(Long idIncidente) {
@@ -176,6 +178,14 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getIdDesarrollo() {
+		return idDesarrollo;
+	}
+
+	public void setIdDesarrollo(Long idDesarrollo) {
+		this.idDesarrollo = idDesarrollo;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -195,7 +205,9 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoIncidente());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPersona());
+		regresar.append(getIdEmpresaPersona());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDesarrollo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdIncidente());
 		regresar.append(Constantes.SEPARADOR);
@@ -223,7 +235,8 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idTipoIncidente", getIdTipoIncidente());
-		regresar.put("idPersona", getIdPersona());
+		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
+		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("idIncidente", getIdIncidente());
 		regresar.put("vigenciaInicio", getVigenciaInicio());
 		regresar.put("idUsuario", getIdUsuario());
@@ -232,14 +245,14 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("vigenciaFin", getVigenciaFin());
 		regresar.put("ejercicio", getEjercicio());
-		regresar.put("registro", getRegistro());
+		regresar.put("registro", getRegistro());		
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdTipoIncidente(), getIdPersona(), getIdIncidente(), getVigenciaInicio(), getIdUsuario(), getIdIncidenteEstatus(), getObservaciones(), getOrden(), getVigenciaFin(), getEjercicio(), getRegistro()
+			getConsecutivo(), getIdTipoIncidente(), getIdEmpresaPersona(), getIdIncidente(), getVigenciaInicio(), getIdUsuario(), getIdIncidenteEstatus(), getObservaciones(), getOrden(), getVigenciaFin(), getEjercicio(), getRegistro(), getIdDesarrollo()
     };
     return regresar;
   }
