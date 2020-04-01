@@ -230,7 +230,6 @@ public class Transaccion extends IBaseTnx {
   }
 	
 	private void cargarDocumentos(Session sesion, List<IBaseDto> documentos) throws Exception {
-		String nuevaRuta = null;
 		File origen      = null;
     File destino     = null;
 		InputStream in   = null;
@@ -240,10 +239,10 @@ public class Transaccion extends IBaseTnx {
 		try {
 			for (IBaseDto item : documentos) {
 				origen      = new File(item.toValue("alias").toString().replaceAll("contrato", "proyecto"));
-        destino     = new File(item.toValue("alias").toString());	
+        destino     = new File(item.toValue("alias").toString().substring(0, item.toValue("alias").toString().lastIndexOf("/")));	
 			  if (!destino.exists())
 				  destino.mkdirs();
-				destino     = new File(nuevaRuta);
+				destino     = new File(item.toValue("alias").toString());
 				if (!destino.exists() || DaoFactory.getInstance().findIdentically(sesion, item.getClass(), item.toMap())==null){
 					in = new FileInputStream(origen);
 					out= new FileOutputStream(destino);
