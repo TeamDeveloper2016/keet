@@ -9,20 +9,16 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.beans.SelectionItem;
-import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.catalogos.contratos.beans.ContratoPersonal;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
-import mx.org.kaana.keet.catalogos.contratos.reglas.MotorBusqueda;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
+import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -30,21 +26,13 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import org.primefaces.event.TransferEvent;
-import org.primefaces.model.DualListModel;
 
-@Named(value = "keetCatalogosContratosPersonalRegistro")
+@Named(value = "keetCatalogosContratosPersonalEmpleados")
 @ViewScoped
-public class Registro extends IBaseAttribute implements Serializable {
+public class Empleados extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;		
-	private RegistroDesarrollo registroDesarrollo;	
-	protected List<SelectionItem> allEmpleados;	
-	protected List<SelectionItem> movimientosAdd;	
-	protected List<SelectionItem> movimientosRemove;	
-	protected List<SelectionItem> temporalOrigen;
-	protected List<SelectionItem> temporalDestino;	
-	protected DualListModel model;
+	private RegistroDesarrollo registroDesarrollo;		
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
@@ -52,15 +40,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 
 	public void setRegistroDesarrollo(RegistroDesarrollo registroDesarrollo) {
 		this.registroDesarrollo = registroDesarrollo;
-	}	
-
-	public DualListModel getModel() {
-		return model;
-	}
-
-	public void setModel(DualListModel model) {
-		this.model = model;
-	}	
+	}		
 	
   @PostConstruct
   @Override
@@ -72,9 +52,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
-			this.attrs.put("isResidente", JsfBase.isResidente());
-			inicializaContenido();			
+      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
 			loadCatalogos();
     } // try // try
     catch (Exception e) {
@@ -170,46 +148,29 @@ public class Registro extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // loadContratistas
 	
-	private void inicializaContenido(){
-		this.allEmpleados= new ArrayList<>();
-		this.movimientosAdd= new ArrayList<>();
-		this.movimientosRemove= new ArrayList<>();
-		this.temporalOrigen= new ArrayList<>();
-		this.temporalDestino= new ArrayList<>();
-		this.model= new DualListModel<>();				
-	}
-	
-  public void doLoadByContrato() {    
-		this.attrs.put("controlBuqueda", Boolean.FALSE);
-		inicializaContenido();
-		doLoad();
-	}	 // doLoadByContrato
-	
-  public void doLoad() {    		
-		List<ContratoPersonal>disponibles= null;
-		List<ContratoPersonal>asignados  = null;
-		List<SelectionItem>sDisponibles  = null;
-		List<SelectionItem>sAsignados    = null;
-		MotorBusqueda motorBusqueda      = null;
-		String condicion                 = null;
+	@Override
+  public void doLoad() {   
+		Map<String, Object>params= null;
+		List<Columna>campos      = null;		
     try {
 			if(this.attrs.get("idContrato")!= null && !Cadena.isVacio(this.attrs.get("idContrato")) && Long.valueOf((String)this.attrs.get("idContrato"))>= 1L){								
-				motorBusqueda= new MotorBusqueda(Long.valueOf((String)this.attrs.get("idContrato")));
-				condicion= this.toPrepare();
-				disponibles= motorBusqueda.toPersonasDisponibles(condicion);
-				sDisponibles= toListSelectionIten(disponibles);
-				asignados= motorBusqueda.toPersonasAsignadas();
-				sAsignados= toListSelectionIten(asignados);
-				this.temporalOrigen= sDisponibles;
-				this.temporalDestino= sAsignados;				
-				loadAllEmpleados(sAsignados, sDisponibles);								
-				this.model.setSource(sDisponibles);
-				this.model.setTarget(validateControlBusquedaAsignados(sAsignados));
+				params= new HashMap<>();
+				params.put(Constantes.SQL_CONDICION, toPrepare());
+				params.put("campoLlave", "tc_keet_contratos_personal.id_contratos_personal");
+				params.put("idContrato", Long.valueOf((String)this.attrs.get("idContrato")));				
+				campos= new ArrayList<>();
+				campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+				campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+				campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+				campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+				campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
+				campos.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
+				campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
+				this.lazyModel= new FormatLazyModel("VistaContratosDto", "personalAsignado", params, campos);
+				UIBackingUtilities.resetDataTable("dataEmpleados");
 			} // if
-			else{				
-				inicializaContenido();
+			else				
 				JsfBase.addMessage("Es necesario seleccionar un contrato.");
-			} // else
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -219,44 +180,6 @@ public class Registro extends IBaseAttribute implements Serializable {
 			this.attrs.put("controlBuqueda", Boolean.TRUE);
 		} // finally
   } // doLoad		
-	
-	private List<SelectionItem> validateControlBusquedaAsignados(List<SelectionItem> sAsignados){
-		if((Boolean)this.attrs.get("controlBuqueda")){
-			if(!this.movimientosAdd.isEmpty()){						
-				for(SelectionItem item: this.movimientosAdd){
-					if(!sAsignados.contains(item))
-						sAsignados.add(0, this.allEmpleados.get(this.allEmpleados.indexOf(item)));
-				} // for
-			} // if
-			if(!this.movimientosRemove.isEmpty()){						
-				for(SelectionItem item: this.movimientosRemove){
-					if(sAsignados.contains(item)){
-						String descripcion= this.allEmpleados.get(this.allEmpleados.indexOf(item)).getItem();
-						if(!((boolean)this.attrs.get("isResidente")) || (((boolean)this.attrs.get("isResidente")) && !descripcion.contains("RESIDENTE")))
-							sAsignados.remove(item);
-					} // if
-				} // for
-			} // if			
-		} // if
-		return sAsignados;
-	} // validateControlBusquedaAsignados
-	
-	private void loadAllEmpleados(List<SelectionItem> sAsignados, List<SelectionItem> sDisponibles){
-		if(this.allEmpleados.isEmpty()){
-			this.allEmpleados.addAll(sAsignados);
-			this.allEmpleados.addAll(sDisponibles);
-		} // else
-		else{
-			for(SelectionItem item: sAsignados){
-				if(!this.allEmpleados.contains(item))
-					this.allEmpleados.add(item);
-			} // for
-			for(SelectionItem item: sDisponibles){
-				if(!this.allEmpleados.contains(item))
-					this.allEmpleados.add(item);
-			} // for
-		} // else
-	} // loadAllEmpleados
 	
 	private String toPrepare(){
 		StringBuilder condicion= null;
@@ -277,19 +200,6 @@ public class Registro extends IBaseAttribute implements Serializable {
 		return regresar;
 	} // toPrepare
 	
-	private List<SelectionItem> toListSelectionIten(List<ContratoPersonal> entities){
-		List<SelectionItem> regresar= null;
-		try {
-			regresar= new ArrayList<>();
-			for(ContratoPersonal ent: entities)
-				regresar.add(new SelectionItem(ent.getIdEmpresaPersona().toString(), "[".concat(ent.getPuesto()).concat("] ").concat(ent.getNombres()).concat(" ").concat(ent.getPaterno()).concat(" ").concat(ent.getMaterno())));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toListSelectionIten
-	
 	private String toDomicilio(){
 		StringBuilder regresar= null;
 		try {
@@ -308,51 +218,20 @@ public class Registro extends IBaseAttribute implements Serializable {
 		return regresar.toString();
 	} // toDomicilio
 	
-	public void onTransfer(TransferEvent event) {				
-		List<SelectionItem> transfers= null;
+	public String doAccion(Entity seleccionado){
+		String regresar= null;
 		try {
-			transfers= (List<SelectionItem>) event.getItems();
-			if(event.isAdd()){
-				for(SelectionItem item: transfers){
-					if(!this.movimientosAdd.contains(item))
-						this.movimientosAdd.add(item);
-					if(!this.model.getTarget().contains(item))
-						this.model.getTarget().add(item);
-				} // for			
-			} // if
-			else{
-				for(SelectionItem item: transfers){
-					if(!this.movimientosRemove.contains(item))
-						this.movimientosRemove.add(item);
-					if(this.model.getTarget().contains(item))
-						this.model.getTarget().remove(item);
-				} // for
-			} // else
-		} // try // try
-		catch (Exception e) {			
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch					
-	} // onTransfer 	
-	
-	public String doAceptar(){
-		String regresar        = null;
-		Transaccion transaccion= null;
-		try {
-			transaccion= new Transaccion((Long)this.attrs.get("idDesarrollo"), Long.valueOf((String)this.attrs.get("idContrato")), this.model.getTarget());
-			if(transaccion.ejecutar(EAccion.PROCESAR)){
-				regresar= doCancelar();
-				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Se registraron de forma correcta los empleados.", ETipoMensaje.INFORMACION);
-			} // if
-			else
-				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Ocurrió un error al registrar los empleados.", ETipoMensaje.ERROR);
+			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente) this.attrs.get("opcionResidente"));
+			JsfBase.setFlashAttribute("idDesarrollo", (Long) this.attrs.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("idContratoPersona", seleccionado.getKey());
+			regresar= "incidencias".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
 		return regresar;
-	} // doAceptar
+	} // doAccion
 	
 	public String doCancelar() {
     String regresar          = null;    
@@ -368,5 +247,5 @@ public class Registro extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina		
+  } // doCancelar		
 }
