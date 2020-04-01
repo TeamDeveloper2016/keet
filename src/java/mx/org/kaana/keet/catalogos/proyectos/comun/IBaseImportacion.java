@@ -119,11 +119,11 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 	public void doActualizaPlanos(){
 		List<UISelectEntity> planos= null;
 		Map<String, Object>params  = null;
-		UISelectEntity regresar= null;
+		UISelectEntity especialidad= null;
 		try {
 			params= new HashMap<>();
-			regresar= (UISelectEntity) this.attrs.get("regresar");
-			params.put(Constantes.SQL_CONDICION, "id_regresar=" + regresar.getKey());
+			especialidad= (UISelectEntity) this.attrs.get("especialidad");
+			params.put(Constantes.SQL_CONDICION, "id_especialidad=" + especialidad.getKey());
 			planos= UIEntity.seleccione("TcKeetPlanosDto", "row", params, "nombre");
       this.attrs.put("planos", planos);			
 		} // try

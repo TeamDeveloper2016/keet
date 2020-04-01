@@ -22,7 +22,9 @@
         from      
           tc_mantic_archivos
         where      
-          nombre = '{nombre}'
+          nombre= '{nombre}'
+				and
+				  alias='{alias}'
       </select>
       <select id="depuracion">
         select      

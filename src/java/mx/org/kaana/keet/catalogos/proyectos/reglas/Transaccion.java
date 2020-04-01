@@ -214,6 +214,11 @@ public class Transaccion extends IBaseTnx {
 			contratosDto.setIdUsuario(JsfBase.getIdUsuario());
 			contratosDto.setIdContratoEstatus(1L);//cambiar estatus por el inicial
 			DaoFactory.getInstance().insert(sesion, contratosDto);
+		  for(TcKeetContratosLotesDto lote: (List<TcKeetContratosLotesDto>) DaoFactory.getInstance().toEntitySet(TcKeetContratosLotesDto.class,"TcKeetProyectosLotesDto", "byProyecto", contratosDto.toMap())){
+				lote.setIdContrato(contratosDto.getIdContrato());
+				lote.setIdUsuario(JsfBase.getIdUsuario());
+				DaoFactory.getInstance().insert(sesion, lote);
+			} // for
 		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetProyectosArchivosDto", "toContratos", contratosDto.toMap()));
 		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosPresupuestosDto.class,"TcKeetProyectosPrespuestosDto", "toContratos", contratosDto.toMap()));
 		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosGeneradoresDto.class,"TcKeetProyectosGeneradoresDto", "toContratos", contratosDto.toMap()));
@@ -221,6 +226,7 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {
 			throw e;
 		} // catch		
+		
   }
 	
 	private void cargarDocumentos(Session sesion, List<IBaseDto> documentos) throws Exception {
