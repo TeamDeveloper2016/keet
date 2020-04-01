@@ -1230,6 +1230,23 @@
         where 
           {condicion} 
       </select>
+			<select id="byId">
+        select      
+				  tc_keet_contratos.id_contrato id_key,
+          tc_keet_contratos.*
+        from      
+          tc_keet_contratos
+        where 
+          id_contrato= {idContrato}
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_contratos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>	
       <select id="identically">
         select      
           *
@@ -1343,6 +1360,15 @@
           tc_keet_contratos_lotes
         where 
           {condicion} 
+      </select>
+			<select id="byContrato">
+        select      
+				  tc_keet_contratos_lotes.id_contrato_lote id_key,
+          tc_keet_contratos_lotes.*
+        from      
+          tc_keet_contratos_lotes
+        where 
+          id_contrato= {idContrato} 
       </select>
       <select id="identically">
         select      
