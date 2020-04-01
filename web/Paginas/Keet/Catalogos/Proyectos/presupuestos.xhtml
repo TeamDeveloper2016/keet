@@ -62,7 +62,7 @@
                 <p:outputLabel for="etapa" value="Etapa:"/>
                 <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosPresupuestos.registroProyecto.proyecto.etapa}" readonly="true"/>								
 								<p:outputLabel for="noViviendas" value="No. viviendas"/>
-                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosProyectosPresupuestos.registroProyecto.proyecto.noViviendas}" readonly="true"/>                
+                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosPresupuestos.registroProyecto.proyecto.noViviendas}" readonly="true"/>                
 								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
                 <p:selectOneMenu id="idDesarrollo" disabled="true" value="#{keetCatalogosProyectosPresupuestos.registroProyecto.proyecto.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosProyectosPresupuestos.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
