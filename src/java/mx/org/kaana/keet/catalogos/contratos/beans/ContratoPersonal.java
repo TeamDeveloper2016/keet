@@ -17,6 +17,9 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 	private Long idActivo;		
 	private ESql sqlAccion;
 	private Boolean nuevo;
+	private String clave;
+	private String claveDesarrollo;
+	private String nombreDesarrollo;
 
 	public ContratoPersonal() {
 		this(-1L);
@@ -31,21 +34,24 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 	}
 	
 	public ContratoPersonal(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo);		
+		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "");		
 	}
 
-	public ContratoPersonal(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo) {
+	public ContratoPersonal(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo) {
 		super(key);
-		this.nombres     = nombres;
-		this.paterno     = paterno;
-		this.materno     = materno;
-		this.puesto      = puesto;
-		this.departamento= departamento;
-		this.curp        = curp;
-		this.rfc         = rfc;
-		this.idActivo    = idActivo;
-		this.sqlAccion   = sqlAccion;
-		this.nuevo       = nuevo;
+		this.nombres         = nombres;
+		this.paterno         = paterno;
+		this.materno         = materno;
+		this.puesto          = puesto;
+		this.departamento    = departamento;
+		this.curp            = curp;
+		this.rfc             = rfc;
+		this.idActivo        = idActivo;
+		this.sqlAccion       = sqlAccion;
+		this.nuevo           = nuevo;
+		this.clave           = clave;
+		this.claveDesarrollo = claveDesarrollo;
+		this.nombreDesarrollo= nombreDesarrollo;
 	}
 	
 	public ESql getSqlAccion() {
@@ -126,5 +132,29 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 
 	public void setIdActivo(Long idActivo) {
 		this.idActivo = idActivo;
+	}	
+
+	public String getClave() {
+		return clave;
+	}
+
+	public void setClave(String clave) {
+		this.clave = clave;
+	}
+
+	public String getClaveDesarrollo() {
+		return claveDesarrollo;
+	}
+
+	public void setClaveDesarrollo(String claveDesarrollo) {
+		this.claveDesarrollo = claveDesarrollo;
+	}
+
+	public String getNombreDesarrollo() {
+		return nombreDesarrollo;
+	}
+
+	public void setNombreDesarrollo(String nombreDesarrollo) {
+		this.nombreDesarrollo = nombreDesarrollo;
 	}	
 }
