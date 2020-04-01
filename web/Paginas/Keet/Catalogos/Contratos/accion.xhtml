@@ -39,10 +39,18 @@
                 <p:outputLabel for="etapa" value="Etapa:"/>
                 <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.etapa}" />								
 								<p:outputLabel for="noViviendas" value="No. viviendas"/>
-                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.noViviendas}"/>                
+                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.noViviendas}"/>
+								<p:outputLabel for="recepcion" value="Recepción:"/>
+								<p:calendar id="recepcion" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetCatalogosContratosAccion.contrato.contrato.recepcion}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" />
+								<p:outputLabel for="aceptacion" value="Aceptación:"/>
+								<p:calendar id="aceptacion" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetCatalogosContratosAccion.contrato.contrato.aceptacion}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+								<p:outputLabel for="arranque" value="Arranque:"/>
+								<p:calendar id="arranque" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetCatalogosContratosAccion.contrato.contrato.arranque}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+								<p:spacer/>
+								<p:separator/>
 								<p:outputLabel for="idProyecto" value="Proyecto:"/>
-                <p:selectOneMenu id="idProyecto" value="#{keetCatalogosContratosAccion.contrato.contrato.ikProyecto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosContratosAccion.attrs.proyectos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <p:selectOneMenu id="idProyecto" value="#{keetCatalogosContratosAccion.contrato.contrato.ikProyecto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" editable="false" disabled="true">
+									<f:selectItems value="#{keetCatalogosContratosAccion.attrs.proyectos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}" />
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
