@@ -157,7 +157,7 @@
         select 
 					-1 id_contrato_generador,
 					id_tipo_generador,
-					id_tipo_archivo
+					id_tipo_archivo,
 					nombre,
 					archivo,
 					ruta,
