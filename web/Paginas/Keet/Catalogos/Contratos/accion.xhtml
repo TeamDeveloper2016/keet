@@ -39,7 +39,7 @@
                 <p:outputLabel for="etapa" value="Etapa:"/>
                 <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.etapa}" />								
 								<p:outputLabel for="noViviendas" value="No. viviendas"/>
-                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosContratosAccion.contrato.contrato.noViviendas}"/>                
+                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.contrato.noViviendas}"/>                
 								<p:outputLabel for="idProyecto" value="Proyecto:"/>
                 <p:selectOneMenu id="idProyecto" value="#{keetCatalogosContratosAccion.contrato.contrato.ikProyecto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosContratosAccion.attrs.proyectos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>

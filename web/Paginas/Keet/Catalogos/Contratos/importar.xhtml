@@ -64,15 +64,14 @@
                 <p:outputLabel for="etapa" value="Etapa:"/>
                 <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosImportar.registroContrato.contrato.etapa}" readonly="true"/>								
 								<p:outputLabel for="noViviendas" value="No. viviendas"/>
-                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{keetCatalogosContratosImportar.registroContrato.contrato.noViviendas}" readonly="true"/>                
+                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt"  value="#{keetCatalogosContratosImportar.registroContrato.contrato.noViviendas}" readonly="true"/>                
 								<p:outputLabel for="idProyecto" value="Proyecto:"/>
                 <p:selectOneMenu id="idProyecto" disabled="true" value="#{keetCatalogosContratosImportar.registroContrato.contrato.ikProyecto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosContratosImportar.attrs.proyectos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
+									<f:selectItems value="#{keetCatalogosContratosImportar.attrs.proyectos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombres}"/>
+										<h:outputText value="#{item.clave}"/>
 									</p:column>   
-								</p:selectOneMenu>
-								<p:outputLabel for="idTipoObra" value="Tipo de obra:"/>																
+								</p:selectOneMenu>									
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">
