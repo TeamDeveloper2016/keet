@@ -91,7 +91,7 @@ public abstract class IBaseImportacion extends IBaseImportar implements Serializ
 			estacion= UIBackingUtilities.toFirstKeySelectEntity(estaciones);
 			this.attrs.put("estacion", estacion);
 			doActualizaTiposGeneradores();
-			proyectos= UIEntity.seleccione("TcKeetProyectosDto", "row", params, "nombre");
+			proyectos= UIEntity.seleccione("TcKeetProyectosDto", "row", params, "clave");
       this.attrs.put("proyectos", proyectos);
 			tiposObras= UIEntity.seleccione("VistaTiposObrasDto", "catalogo", params, "tipoObra");
       this.attrs.put("tipoObras", tiposObras);
