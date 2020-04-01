@@ -83,6 +83,43 @@
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
         where 
           tc_keet_contratos_personal.id_contrato= {idContrato}
+				and 
+					{condicion}
+				order by 
+					tc_mantic_puestos.nombre,
+					tc_mantic_personas.nombres
+			</select>
+			<select id="findContratoPersona">
+				select      
+					tc_keet_contratos_personal.id_contratos_personal as id_key,									
+					tc_keet_departamentos.nombre departamento,
+					tc_mantic_puestos.nombre puesto,
+					tr_mantic_empresa_personal.id_activo,
+					tc_mantic_personas.nombres,
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,					
+					tc_mantic_personas.rfc,					
+					tc_mantic_personas.curp,					
+          tc_keet_contratos_personal.*,
+					tc_keet_contratos.clave,
+					tc_keet_desarrollos.clave clave_desarrollo,
+					tc_keet_desarrollos.nombres nombre_desarrollo
+        from      
+          tc_keet_contratos_personal
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+				inner join 
+					tc_keet_contratos on tc_keet_contratos_personal.id_contrato = tc_keet_contratos.id_contrato
+				inner join 
+					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+        where 
+          tc_keet_contratos_personal.id_contratos_personal= {idContratoPersona}
 				order by 
 					tc_mantic_puestos.nombre,
 					tc_mantic_personas.nombres
