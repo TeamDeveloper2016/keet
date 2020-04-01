@@ -244,7 +244,7 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
 		regresar.put("noViviendas", getNoViviendas());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
-		regresar.put("idProyectoEstatus()", getIdProyectoEstatus());
+		regresar.put("idProyectoEstatus", getIdProyectoEstatus());
   	return regresar;
   }
 
