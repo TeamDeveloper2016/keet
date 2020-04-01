@@ -192,7 +192,7 @@
       </select>
 			<select id="toContratos">
         select 
-					-1 id_contrato_prespuesto,
+					-1 id_contrato_presupuesto,
 					id_tipo_presupuesto,
 					id_tipo_archivo,
 					nombre,
@@ -204,7 +204,7 @@
 				  {idContrato} id_contrato,
 				  replace(alias,'proyecto', 'contrato') alias
 				 from
-					 tc_keet_proyectos_prespuestos
+					 tc_keet_proyectos_presupuestos
 				where
 					id_proyecto= {idProyecto}
       </select>
@@ -212,7 +212,7 @@
         select      
           *
         from      
-          tc_keet_proyectos_prespuestos
+          tc_keet_proyectos_presupuestos
         where      
           id_proyecto = {idProyecto} and id_tipo_archivo = {idTipoArchivo} and id_tipo_presupuesto = {idTipoPresupuesto} and nombre = '{nombre}'
       </select>
