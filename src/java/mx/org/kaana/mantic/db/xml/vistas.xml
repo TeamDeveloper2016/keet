@@ -4466,6 +4466,52 @@
 				order by
 					paterno,materno,nombres
 			</select>
+			<select id="exportar">
+				select 
+				  tc_mantic_personas.id_persona as id_key,
+				  tc_mantic_personas.nombres as nombre,
+				  tc_mantic_personas.paterno as "1er apellido",
+				  tc_mantic_personas.materno as "2do apellido",
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
+				  tc_mantic_personas.rfc,
+				  tc_mantic_personas.curp,
+				  tc_mantic_personas.fecha_nacimiento as "fecha nacimiento",
+				  tc_mantic_tipos_personas.nombre as tipo_persona,
+				  tc_janal_tipos_sexos.id_tipo_sexo,
+		 		  tc_janal_tipos_sexos.nombre as sexo,
+				  tc_mantic_personas.cuenta,
+					tc_mantic_empresas.nombre as sucursal,
+					tc_mantic_puestos.nombre as puesto,
+					tr_mantic_persona_tipo_contacto.valor contacto,
+					tr_mantic_empresa_personal.id_activo,
+				  if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,
+				  if(tr_mantic_empresa_personal.id_seguro= 1, 'SI', 'NO') as seguro,
+					tr_mantic_empresa_personal.clave as codigo,
+					tr_mantic_empresa_personal.id_nomina,
+					if(tr_mantic_empresa_personal.nss is null, '', tr_mantic_empresa_personal.nss) nss,		
+					tc_keet_departamentos.nombre as departamento
+				from 
+					tc_mantic_personas
+				inner join
+					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+				inner join 
+					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
+				inner join
+					tc_mantic_tipos_personas  on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
+				inner join
+					tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+				left join
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+				left join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+				left join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				where 
+					{condicion}									
+				{sortOrder}  
+			</select>              
     </unit>   
 		<unit id="VistaGruposClientesDto">
 			<select id="row">

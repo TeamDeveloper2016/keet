@@ -3496,7 +3496,8 @@ public final class DaoFactory<T extends IBaseDto> {
     try {
       query = session.createNativeQuery(sql);
       query.setFirstResult(first);
-      query.setMaxResults(records);
+	  	if(Constantes.SQL_TODOS_REGISTROS!= records)
+        query.setMaxResults(records);
       regresar = query.setResultTransformer(new TransformDto(dto)).list();
     } // try   
     catch (Exception e) {
@@ -3609,7 +3610,8 @@ public final class DaoFactory<T extends IBaseDto> {
     try {
       query = session.createNativeQuery(sql);
       query.setFirstResult(first);
-      query.setMaxResults(records);
+			if(Constantes.SQL_TODOS_REGISTROS!= records)
+        query.setMaxResults(records);  
       list = query.setResultTransformer(new TransformEntity()).list();
       String total = "select count(*) count from (".concat(SessionFactoryFacade.getInstance().isOracle() ? sql : Cadena.toSqlCleanOrderBy(sql)).concat(") datos");
       Long count = ((Number) toField(session, total, "count").getData()).longValue();

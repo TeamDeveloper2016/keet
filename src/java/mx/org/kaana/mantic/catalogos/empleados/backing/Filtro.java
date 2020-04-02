@@ -9,10 +9,13 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
@@ -22,6 +25,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 
 @Named(value = "manticCatalogosEmpleadosFiltro")
@@ -182,4 +186,26 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		} // catch
 		return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
+	
+	public String doExportar() {
+		String regresar          = null;		
+		Map<String, Object>params= null;
+		try {									   
+			params= this.toPrepare();
+			params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tc_mantic_personas.rfc");
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.PERSONAS.getProceso(), EExportacionXls.PERSONAS.getIdXml(), EExportacionXls.PERSONAS.getNombreArchivo()), EExportacionXls.PERSONAS, 
+				"SUCURSAL,CODIGO,DEPARTAMENTO,PUESTO,RFC,CURP,NOMBRE,1ER APELLIDO,2DO APELLIDO,ACTIVO,SEGURO,NSS"));
+			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e){
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // doExportar  
+	
 }
