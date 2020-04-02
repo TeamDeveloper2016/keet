@@ -192,9 +192,9 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		Map<String, Object>params= null;
 		try {									   
 			params= this.toPrepare();
-			params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tc_mantic_personas.rfc");
+			params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tc_keet_departamentos.nombre, tc_mantic_puestos.nombre, tc_mantic_personas.rfc");
 			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.PERSONAS.getProceso(), EExportacionXls.PERSONAS.getIdXml(), EExportacionXls.PERSONAS.getNombreArchivo()), EExportacionXls.PERSONAS, 
-				"SUCURSAL,CODIGO,DEPARTAMENTO,PUESTO,RFC,CURP,NOMBRE,1ER APELLIDO,2DO APELLIDO,ACTIVO,SEGURO,NSS"));
+				"SUCURSAL,CODIGO NOMINA,DEPARTAMENTO,PUESTO,RFC,CURP,NOMBRE,1ER APELLIDO,2DO APELLIDO,FECHA CONTRATACION,ACTIVO,SEGURO,NSS,INFONAVIT,FACTOR INFONAVIT,DEPOSITO SEMANAL,SUELDO IMSS SEMANAL"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);
 		} // try

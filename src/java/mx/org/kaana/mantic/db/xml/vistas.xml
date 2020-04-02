@@ -4472,24 +4472,24 @@
 				  tc_mantic_personas.nombres as nombre,
 				  tc_mantic_personas.paterno as "1er apellido",
 				  tc_mantic_personas.materno as "2do apellido",
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
 				  tc_mantic_personas.rfc,
 				  tc_mantic_personas.curp,
 				  tc_mantic_personas.fecha_nacimiento as "fecha nacimiento",
-				  tc_mantic_tipos_personas.nombre as tipo_persona,
-				  tc_janal_tipos_sexos.id_tipo_sexo,
-		 		  tc_janal_tipos_sexos.nombre as sexo,
-				  tc_mantic_personas.cuenta,
 					tc_mantic_empresas.nombre as sucursal,
 					tc_mantic_puestos.nombre as puesto,
 					tr_mantic_persona_tipo_contacto.valor contacto,
 					tr_mantic_empresa_personal.id_activo,
 				  if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,
 				  if(tr_mantic_empresa_personal.id_seguro= 1, 'SI', 'NO') as seguro,
-					tr_mantic_empresa_personal.clave as codigo,
+					tr_mantic_empresa_personal.clave as "codigo nomina",
 					tr_mantic_empresa_personal.id_nomina,
 					if(tr_mantic_empresa_personal.nss is null, '', tr_mantic_empresa_personal.nss) nss,		
-					tc_keet_departamentos.nombre as departamento
+					tc_keet_departamentos.nombre as departamento,
+				  tr_mantic_empresa_personal.fecha_contratacion,
+				  tr_mantic_empresa_personal.infonavit,
+				  tr_mantic_empresa_personal.factor_infonavit as "factor infonavit",
+				  tr_mantic_empresa_personal.sueldo_semanal as "deposito semanal",
+				  tr_mantic_empresa_personal.sueldo_imss as "sueldo imss semanal"
 				from 
 					tc_mantic_personas
 				inner join
