@@ -14,10 +14,9 @@
     </script>
   </ui:define>
   <ui:define name="contenido" >
-   
 		<div class="janal-content-table">
       <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
-        <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-col-90, janal-wid-100, janal-wid-col-50 janal-column-center">
+        <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-col-90, janal-wid-90, janal-wid-col-38 janal-column-center">
           <p:outputLabel for="descripcion" value="Descripción:"/>
           <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{kajoolMantenimientoGruposperfilesGruposFiltro.attrs.descripcion}"/>		
           <p:commandButton id="buscar" icon="fa fa-search" actionListener="#{kajoolMantenimientoGruposperfilesGruposFiltro.doLoad}" onstart="return janal.execute(true);" process="@this descripcion" update="tabla" title="Busqueda General"/>
