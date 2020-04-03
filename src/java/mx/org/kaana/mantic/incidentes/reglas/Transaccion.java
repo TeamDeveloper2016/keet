@@ -24,10 +24,28 @@ public class Transaccion extends IBaseTnx {
 
 	private Incidente incidente;
 	private String messageError;	
+	private boolean estatus;
 
 	public Transaccion(Incidente incidente) {
-		this.incidente = incidente;
+		this.incidente= incidente;
+		this.estatus  = false;
 	}
+
+	public Incidente getIncidente() {
+		return incidente;
+	}
+
+	public void setIncidente(Incidente incidente) {
+		this.incidente = incidente;
+	}	
+
+	public boolean isEstatus() {
+		return estatus;
+	}
+
+	public void setEstatus(boolean estatus) {
+		this.estatus = estatus;
+	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -35,8 +53,8 @@ public class Transaccion extends IBaseTnx {
 		try {
 			switch(accion){
 				case AGREGAR:			
-					if(verificaExistente(sesion))
-						regresar= registrarIncidente(sesion);
+					if(verificaExistente(sesion))						
+						regresar= registrarIncidente(sesion);					
 					break;
 				case MODIFICAR:									
 					if(verificaExistente(sesion))
@@ -114,8 +132,10 @@ public class Transaccion extends IBaseTnx {
 			consecutivo= this.toSiguiente(sesion);			
 			dto.setConsecutivo(consecutivo.getOrden().toString());			
 			dto.setOrden(consecutivo.getOrden());			
-			dto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
-			dto.setIdIncidenteEstatus(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
+			dto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
+			dto.setIdIncidenteEstatus(this.estatus ? this.incidente.getIdEmpresaPersona() : EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());			
+			if(this.incidente.getIdDesarrollo()!= null && this.incidente.getIdDesarrollo() > 0)
+				dto.setIdDesarrollo(this.incidente.getIdDesarrollo());
 			dto.setIdEmpresaPersona(this.incidente.getIdEmpresaPersona());
 			dto.setIdTipoIncidente(this.incidente.getIdTipoIncidente());
 			dto.setIdUsuario(JsfBase.getIdUsuario());

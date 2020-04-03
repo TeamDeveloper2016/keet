@@ -198,7 +198,7 @@ public class Accion extends Comun implements Serializable {
 			if(seleccionado== null && this.incidente.getIdEmpresaPersona()>= 1L && eaccion.equals(EAccion.MODIFICAR))
 				seleccionado= new Entity(this.incidente.getIdEmpresaPersona());
 			if(seleccionado!= null){
-				this.incidente.setIdPersona(seleccionado.getKey());
+				this.incidente.setIdEmpresaPersona(seleccionado.getKey());
 				transaccion= new Transaccion(this.incidente);				
 				if(transaccion.ejecutar(eaccion)){
 					JsfBase.addMessage(eaccion.equals(EAccion.AGREGAR) ? "Agregar incidente" : "Modificar incidente", "Se ejecutó la operación de forma correcta.", ETipoMensaje.INFORMACION);

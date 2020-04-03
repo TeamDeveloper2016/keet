@@ -22,16 +22,17 @@ public class Incidente implements Serializable{
 	private String estatus;
 	private String puesto;
 	private ESql accion;
+	private String estatusAsociados;
 
 	public Incidente() {
-		this(-1L, -1L, -1L, -1L, LocalDate.now(), LocalDate.now(), "", -1L, null, null, null, null, null, ESql.UPDATE);
+		this(-1L, -1L, -1L, -1L, LocalDate.now(), LocalDate.now(), "", -1L, null, null, null, null, null, ESql.UPDATE, null);
 	}
 
 	public Incidente(TcManticIncidentesDto dto){
-		this(dto.getIdIncidente(), dto.getIdEmpresaPersona(), dto.getIdTipoIncidente(), dto.getIdIncidenteEstatus(), dto.getVigenciaInicio(), dto.getVigenciaFin(), dto.getObservaciones(), dto.getIdDesarrollo(), null, null, null, null, null, ESql.UPDATE);
+		this(dto.getIdIncidente(), dto.getIdEmpresaPersona(), dto.getIdTipoIncidente(), dto.getIdIncidenteEstatus(), dto.getVigenciaInicio(), dto.getVigenciaFin(), dto.getObservaciones(), dto.getIdDesarrollo(), null, null, null, null, null, ESql.UPDATE, null);
 	}
 	
-	public Incidente(Long idIncidente, Long idEmpresaPersona, Long idTipoIncidente, Long idIncidenteEstatus, LocalDate vigenciaInicio, LocalDate vigenciaFin, String observaciones, Long idDesarrollo, String nombre, String tipoIncidente, String nombreUsuario, String estatus, String puesto, ESql accion) {
+	public Incidente(Long idIncidente, Long idEmpresaPersona, Long idTipoIncidente, Long idIncidenteEstatus, LocalDate vigenciaInicio, LocalDate vigenciaFin, String observaciones, Long idDesarrollo, String nombre, String tipoIncidente, String nombreUsuario, String estatus, String puesto, ESql accion, String estatusAsociados) {
 		this.idIncidente       = idIncidente;
 		this.idEmpresaPersona  = idEmpresaPersona;
 		this.idTipoIncidente   = idTipoIncidente;
@@ -39,7 +40,8 @@ public class Incidente implements Serializable{
 		this.vigenciaInicio    = vigenciaInicio;
 		this.vigenciaFin       = vigenciaFin;
 		this.observaciones     = observaciones;
-		this.idDesarrollo      = idDesarrollo;						
+		this.idDesarrollo      = idDesarrollo;				
+		this.estatusAsociados	 = estatusAsociados;	
 	}	
 
 	public Long getIdIncidente() {
@@ -54,7 +56,7 @@ public class Incidente implements Serializable{
 		return idEmpresaPersona;
 	}
 
-	public void setIdPersona(Long idEmpresaPersona) {
+	public void setIdEmpresaPersona(Long idEmpresaPersona) {
 		this.idEmpresaPersona = idEmpresaPersona;
 	}
 
@@ -152,5 +154,13 @@ public class Incidente implements Serializable{
 
 	public void setAccion(ESql accion) {
 		this.accion = accion;
+	}	
+
+	public String getEstatusAsociados() {
+		return estatusAsociados;
+	}
+
+	public void setEstatusAsociados(String estatusAsociados) {
+		this.estatusAsociados = estatusAsociados;
 	}	
 }
