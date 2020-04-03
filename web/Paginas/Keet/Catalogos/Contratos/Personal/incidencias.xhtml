@@ -22,7 +22,7 @@
 				if(ok)
 					janal.bloquear();
 				return ok;
-			} // validateCriterios
+			} // validateCriterios												
     </script>		
 		<style type="text/css">    			
 			.ui-picklist .ui-picklist-item {
@@ -44,13 +44,39 @@
 				border-collapse: collapse;
 				width: 0%;
 			}
+			.fc-timeGridWeek-button{
+				display: none !important;
+			}
+			.fc-timeGridDay-button{
+				display: none !important;
+			}
+			.incidencia-rojo{
+				background-color: red !important;
+				border: solid 1px red !important;
+			}
+			.incidencia-amarillo{
+				background-color: yellow !important;
+				border: solid 1px yellow !important;
+			}
+			.incidencia-verde{
+				background-color: green !important;
+				border: solid 1px green !important;
+			}
+			.incidencia-azul{
+				background-color: blue !important;
+				border: solid 1px blue !important;
+			}
+			.incidencia-naranja{
+				background-color: orange !important;
+				border: solid 1px orange !important;
+			}
     </style>
   </ui:define>
   <ui:define name="contenido">				
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:accordionPanel id="tabla" activeIndex="1" multiple="true">
+					<p:accordionPanel id="tabla" activeIndex="1" multiple="false">						
 						<p:tab title="Empleado: #{keetCatalogosContratosPersonalIncidencias.contratoPersonal.nombres} #{keetCatalogosContratosPersonalIncidencias.contratoPersonal.paterno} #{keetCatalogosContratosPersonalIncidencias.contratoPersonal.materno}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Curp:"/>
@@ -68,21 +94,25 @@
 								<p:outputLabel value="Puesto:"/>
 								<p:inputText value="#{keetCatalogosContratosPersonalIncidencias.contratoPersonal.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>
 							</p:panelGrid>										
-						</p:tab>											
-					</p:accordionPanel>					
-					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="myschedule">
-					</p:schedule>					
+						</p:tab>									
+					</p:accordionPanel>										
+					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="myschedule" >
+						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onDateSelect}" update="dataEmpleados"/>
+						<!--p:ajax event="eventSelect" listener="#{scheduleJava8View.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+						<p:ajax event="eventMove" listener="#{scheduleJava8View.onEventMove}" update="messages" />
+						<p:ajax event="eventResize" listener="#{scheduleJava8View.onEventResize}" update="messages" /-->
+					</p:schedule>																
 				</div>						        
       </div>
     </div>		           							
   </ui:define>
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalIncidencias.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<!--p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalIncidencias.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/-->
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosPersonalIncidencias.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalIncidencias.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<!--p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalIncidencias.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/-->
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosPersonalIncidencias.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
