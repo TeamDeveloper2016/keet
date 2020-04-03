@@ -22,7 +22,33 @@
 				if(ok)
 					janal.bloquear();
 				return ok;
-			} // validateCriterios												
+			} // validateCriterios					
+			
+			function showPanelIncidencia(){
+				$('#panelIncidencia').css('display','block');
+				top.location.href = '#panelIncidencia';
+			} // showPanelIncidencia
+			
+			function hidePanelIncidencia(){
+				$('#panelIncidencia').css('display','none');
+				var text= $('#idSelectionEvent').text();
+				top.location.href = '#'.concat(text.substring(1));
+			} // hidePanelIncidencia
+			
+			function applyIdEvent(){
+				var text= $('#idSelectionEvent').text();
+				var event = $(text);
+				event.attr('id', text.substring(1));
+				top.location.href = '#'.concat(text.substring(1));
+			} // applyIdEvent
+			
+			function applyIdEventHide(){
+				$('#panelIncidencia').css('display','none');
+				var text= $('#idSelectionEvent').text();
+				var event = $(text);
+				event.attr('id', text.substring(1));
+				top.location.href = '#'.concat(text.substring(1));
+			} // applyIdEvent
     </script>		
 		<style type="text/css">    			
 			.ui-picklist .ui-picklist-item {
@@ -54,8 +80,8 @@
 				background-color: red !important;
 				border: solid 1px red !important;
 			}
-			.incidencia-amarillo{
-				background-color: yellow !important;
+			.incidencia-amarilla{
+				background-color: #c99f15 !important;
 				border: solid 1px yellow !important;
 			}
 			.incidencia-verde{
@@ -95,24 +121,50 @@
 								<p:inputText value="#{keetCatalogosContratosPersonalIncidencias.contratoPersonal.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>
 							</p:panelGrid>										
 						</p:tab>									
-					</p:accordionPanel>										
+					</p:accordionPanel>															
+          <p:panel id="panelIncidencia" header="Incidencia" toggleable="false" style="display: none">						
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+              <p:inputText id="fechaInicio" value="#{keetCatalogosContratosPersonalIncidencias.attrs.fechaInicio}" styleClass="janal-wid-100-txt" readonly="true"/>                
+              <p:outputLabel for="fechaFin" value="Fecha fin:"/>
+              <p:inputText id="fechaFin" value="#{keetCatalogosContratosPersonalIncidencias.attrs.fechaFin}" styleClass="janal-wid-100-txt" readonly="true"/>                
+              <p:outputLabel for="titulo" value="Descripción:"/>
+              <p:inputText id="titulo" value="#{keetCatalogosContratosPersonalIncidencias.event.title}" styleClass="janal-wid-100-txt" readonly="true"/>                
+							<p:outputLabel for="idTipoIncidente" value="Tipo:"/>
+							<p:selectOneMenu id="idTipoIncidente" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idTipoIncidente}" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{keetCatalogosContratosPersonalIncidencias.attrs.tiposIncidentes}"/>							
+							</p:selectOneMenu>
+							<p:outputLabel for="idIncidenteEstatus" value="Estatus:"/>
+							<p:selectOneMenu id="idIncidenteEstatus" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idIncidenteEstatus}" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{keetCatalogosContratosPersonalIncidencias.attrs.allEstatus}"/>							
+							</p:selectOneMenu>
+            </p:panelGrid>						
+						<p:separator/>
+						<div class="janal-align-right">							
+							<p:commandButton id="applyChange" title="Aplicar cambios" iconPos="left" styleClass="janal-text-white janal-wid-40" accesskey="b" icon="fa fa-check" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalIncidencias.doApplyChange}" oncomplete="janal.desbloquear();findSelectEventOk();" update="dataEmpleados"/>
+							<p:commandButton id="cancelChange" title="Cancelar cambios" iconPos="left" styleClass="janal-text-white janal-wid-40" accesskey="b" icon="fa fa-close" oncomplete="janal.desbloquear();hidePanelIncidencia();"/>
+						</div>
+          </p:panel>        
 					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="myschedule" >
-						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onDateSelect}" update="dataEmpleados"/>
-						<!--p:ajax event="eventSelect" listener="#{scheduleJava8View.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-						<p:ajax event="eventMove" listener="#{scheduleJava8View.onEventMove}" update="messages" />
+						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onDateSelect}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent();"/>
+						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onEventSelect}" update="panelIncidencia idSelectionEvent" oncomplete="showPanelIncidencia();"/>
+						<!--p:ajax event="eventMove" listener="#{scheduleJava8View.onEventMove}" update="messages" />
 						<p:ajax event="eventResize" listener="#{scheduleJava8View.onEventResize}" update="messages" /-->
-					</p:schedule>																
+					</p:schedule>	
+					<p:outputLabel id="idSelectionEvent" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idSelectionEvent}" style="display: none !important"/>
+					<p:remoteCommand name="findSelectEvent" oncomplete="applyIdEvent();"/>
+					<p:remoteCommand name="findSelectEventOk" oncomplete="applyIdEventHide();" />
 				</div>						        
       </div>
     </div>		           							
   </ui:define>
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<!--p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalIncidencias.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/-->
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalIncidencias.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosPersonalIncidencias.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<!--p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalIncidencias.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/-->
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalIncidencias.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosPersonalIncidencias.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
