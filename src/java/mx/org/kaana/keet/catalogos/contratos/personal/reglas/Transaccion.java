@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.personal.reglas;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,19 +8,28 @@ import mx.org.kaana.kajool.beans.SelectionItem;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPersonalDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.incidentes.beans.Incidente;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transaccion {
 
 	private Long idDesarrollo;
 	private Long idContrato;
 	private List<SelectionItem> empleados;
 
+	public Transaccion(Incidente incidente) {
+		this(incidente, -1L, -1L, new ArrayList<>());
+	}
+	
 	public Transaccion(Long idDesarrollo, Long idContrato, List<SelectionItem> empleados) {
+		this(new Incidente(), idDesarrollo, idContrato, empleados);
+	}
+	
+	public Transaccion(Incidente incidente, Long idDesarrollo, Long idContrato, List<SelectionItem> empleados) {
+		super(incidente);
 		this.idDesarrollo= idDesarrollo;
 		this.idContrato  = idContrato;
 		this.empleados   = empleados;
@@ -51,6 +61,9 @@ public class Transaccion extends IBaseTnx {
 						} // for
 					} // if
 					break;				
+				default:
+					super.ejecutar(sesion, accion);
+					break;
 			} // switch
 		} // try
 		catch (Exception e) {			

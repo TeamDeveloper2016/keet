@@ -13,6 +13,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.incidentes.beans.Incidente;
 
 public class MotorBusqueda implements Serializable{
 	
@@ -127,4 +128,21 @@ public class MotorBusqueda implements Serializable{
 		} // finally
 		return regresar;
 	} // toPersonasDisponibles	
+	
+	public List<Incidente> toIncidencias() throws Exception{
+		List<Incidente> regresar= null;
+		Map<String, Object>params= null;
+		try {
+		  params= new HashMap<>();
+			params.put("idContratoPersona", this.idContrato);						
+			regresar= DaoFactory.getInstance().toEntitySet(Incidente.class, "VistaIncidentesDto", "personalDesarrollo", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toInicidencias
 }
