@@ -13,13 +13,21 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
 import org.hibernate.Session;
+import org.primefaces.model.ScheduleEvent;
+import org.primefaces.model.ScheduleModel;
 
 public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transaccion {
 
 	private Long idDesarrollo;
 	private Long idContrato;
 	private List<SelectionItem> empleados;
+	private ScheduleModel eventModel;
 
+	public Transaccion(ScheduleModel eventModel) {
+		this(new Incidente());
+		this.eventModel= eventModel;
+	}		
+	
 	public Transaccion(Incidente incidente) {
 		this(incidente, -1L, -1L, new ArrayList<>());
 	}
@@ -41,6 +49,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		Map<String, Object>params     = null;
 		TcKeetContratosPersonalDto dto= null;
 		Long idUsuario                = -1L;
+		Incidente incidente           = null;
+		EAccion accionIncidente       = null;
 		try {
 			switch(accion){
 				case PROCESAR:				
@@ -61,6 +71,22 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						} // for
 					} // if
 					break;				
+				case REGISTRAR:
+					for(ScheduleEvent event: this.eventModel.getEvents()){
+						incidente= (Incidente) event.getData();
+						switch(incidente.getAccion()){
+							case INSERT:
+								incidente.setIdIncidente(-1L);
+								accionIncidente= EAccion.AGREGAR;								
+								break;
+							case UPDATE:
+								accionIncidente= EAccion.ASIGNAR;								
+								break;
+						} // switch						
+						setIncidente(incidente);
+						super.ejecutar(sesion, accionIncidente);
+					} // for
+					break;
 				default:
 					super.ejecutar(sesion, accion);
 					break;
