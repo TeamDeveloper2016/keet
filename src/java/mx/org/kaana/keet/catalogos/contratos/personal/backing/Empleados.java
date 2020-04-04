@@ -54,6 +54,7 @@ public class Empleados extends IBaseFilter implements Serializable {
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
 			loadCatalogos();
+			doLoad();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -64,8 +65,7 @@ public class Empleados extends IBaseFilter implements Serializable {
 	private void loadCatalogos(){
 		try {
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
-			this.attrs.put("domicilio", toDomicilio());
-			loadContratos();
+			this.attrs.put("domicilio", toDomicilio());			
 			loadDepartamentos();
 			loadPuestos();
 			loadContratistas();
@@ -73,25 +73,7 @@ public class Empleados extends IBaseFilter implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // loadCatalogos
-	
-	private void loadContratos(){
-		List<UISelectItem> contratos= null;
-		Map<String, Object> params  = null;		
-		try {
-			params= new HashMap<>();
-			params.put("idDesarrollo", this.registroDesarrollo.getDesarrollo().getIdDesarrollo());			
-			contratos= UISelect.seleccione("VistaContratosDto", "findDesarrollo", params, "clave", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("contratos", contratos);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally		
-	} // loadDepartamentos
+	} // loadCatalogos	
 	
 	private void loadDepartamentos(){
 		List<UISelectItem> departamentos= null;
@@ -152,25 +134,21 @@ public class Empleados extends IBaseFilter implements Serializable {
   public void doLoad() {   
 		Map<String, Object>params= null;
 		List<Columna>campos      = null;		
-    try {
-			if(this.attrs.get("idContrato")!= null && !Cadena.isVacio(this.attrs.get("idContrato")) && Long.valueOf((String)this.attrs.get("idContrato"))>= 1L){								
-				params= new HashMap<>();
-				params.put(Constantes.SQL_CONDICION, toPrepare());
-				params.put("campoLlave", "tc_keet_contratos_personal.id_contratos_personal");
-				params.put("idContrato", Long.valueOf((String)this.attrs.get("idContrato")));				
-				campos= new ArrayList<>();
-				campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-				this.lazyModel= new FormatLazyModel("VistaContratosDto", "personalAsignado", params, campos);
-				UIBackingUtilities.resetDataTable("dataEmpleados");
-			} // if
-			else				
-				JsfBase.addMessage("Es necesario seleccionar un contrato.");
+    try {			
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, toPrepare());
+			params.put("campoLlave", "tc_keet_contratos_personal.id_contratos_personal");
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));				
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
+			this.lazyModel= new FormatLazyModel("VistaContratosDto", "personalAsignado", params, campos);
+			UIBackingUtilities.resetDataTable("dataEmpleados");			
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -186,9 +164,9 @@ public class Empleados extends IBaseFilter implements Serializable {
 		String regresar        = null;
 		try {
 			condicion= new StringBuilder();
-			if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf((String)this.attrs.get("idPuesto"))>= 1L)
+			if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
 				condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
-			if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf((String)this.attrs.get("idDepartamento"))>= 1L)
+			if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
 				condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
 			if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
 				condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
