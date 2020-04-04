@@ -18,8 +18,7 @@ import org.primefaces.model.ScheduleModel;
 
 public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transaccion {
 
-	private Long idDesarrollo;
-	private Long idContrato;
+	private Long idDesarrollo;	
 	private List<SelectionItem> empleados;
 	private ScheduleModel eventModel;
 
@@ -29,17 +28,16 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	}		
 	
 	public Transaccion(Incidente incidente) {
-		this(incidente, -1L, -1L, new ArrayList<>());
+		this(incidente, -1L, new ArrayList<>());
 	}
 	
-	public Transaccion(Long idDesarrollo, Long idContrato, List<SelectionItem> empleados) {
-		this(new Incidente(), idDesarrollo, idContrato, empleados);
+	public Transaccion(Long idDesarrollo, List<SelectionItem> empleados) {
+		this(new Incidente(), idDesarrollo, empleados);
 	}
 	
-	public Transaccion(Incidente incidente, Long idDesarrollo, Long idContrato, List<SelectionItem> empleados) {
+	public Transaccion(Incidente incidente, Long idDesarrollo, List<SelectionItem> empleados) {
 		super(incidente);
-		this.idDesarrollo= idDesarrollo;
-		this.idContrato  = idContrato;
+		this.idDesarrollo= idDesarrollo;		
 		this.empleados   = empleados;
 	}	
 	
@@ -54,19 +52,17 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			switch(accion){
 				case PROCESAR:				
-					params= new HashMap<>();
-					params.put("idContrato", this.idContrato);
+					params= new HashMap<>();					
 					params.put("idDesarrollo", this.idDesarrollo);
 					if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosPersonalDto", "contrato", params)>= 0L){
 						idUsuario= JsfBase.getIdUsuario();
 						for(SelectionItem item: this.empleados){
-							dto= new TcKeetContratosPersonalDto();
-							dto.setIdContrato(this.idContrato);
+							dto= new TcKeetContratosPersonalDto();							
 							dto.setIdDesarrollo(this.idDesarrollo);
 							dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
 							dto.setIdUsuario(idUsuario);
 							dto.setIdVigente(1L);
-							dto.setObservaciones("Asignación de empleado al contrato " + this.idContrato);
+							dto.setObservaciones("Asignación de empleado al desarrollo " + this.idDesarrollo);
 							DaoFactory.getInstance().insert(sesion, dto);
 						} // for
 					} // if
