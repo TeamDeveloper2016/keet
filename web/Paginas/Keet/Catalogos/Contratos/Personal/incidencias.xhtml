@@ -144,12 +144,13 @@
           </p:panel>        
 					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="myschedule" >
 						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onDateSelect}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent();"/>
-						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onEventSelect}" update="panelIncidencia idSelectionEvent" oncomplete="showPanelIncidencia();"/>
+						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onEventSelect}" update="panelIncidencia idSelectionEvent" oncomplete="findSelectEventShow();"/>
 						<!--p:ajax event="eventMove" listener="#{scheduleJava8View.onEventMove}" update="messages" />
 						<p:ajax event="eventResize" listener="#{scheduleJava8View.onEventResize}" update="messages" /-->
 					</p:schedule>	
 					<p:outputLabel id="idSelectionEvent" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idSelectionEvent}" style="display: none !important"/>
 					<p:remoteCommand name="findSelectEvent" oncomplete="applyIdEvent();"/>
+					<p:remoteCommand name="findSelectEventShow" oncomplete="applyIdEvent();showPanelIncidencia();"/>
 					<p:remoteCommand name="findSelectEventOk" oncomplete="applyIdEventHide();" />
 				</div>						        
       </div>
