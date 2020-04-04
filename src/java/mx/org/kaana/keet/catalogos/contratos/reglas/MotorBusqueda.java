@@ -18,10 +18,10 @@ import mx.org.kaana.mantic.incidentes.beans.Incidente;
 public class MotorBusqueda implements Serializable{
 	
 	private static final long serialVersionUID = -2951697223110542896L;
-	private Long idContrato;
+	private Long idPivote;
 
-	public MotorBusqueda(Long idContrato) {
-		this.idContrato= idContrato;
+	public MotorBusqueda(Long idPivote) {
+		this.idPivote= idPivote;
 	}
 	
 	public Contrato toContrato() throws Exception{
@@ -29,7 +29,7 @@ public class MotorBusqueda implements Serializable{
 		Map<String, Object>params= null;
 		try {
 		  params= new HashMap<>();
-			params.put("idContrato", this.idContrato);
+			params.put("idContrato", this.idPivote);
 			regresar= (Contrato) DaoFactory.getInstance().toEntity(Contrato.class, "TcKeetContratosDto", "byId", params);
 			if(regresar!= null && regresar.isValid())
 				regresar.setIkProyecto(new UISelectEntity(regresar.getIdProyecto()));			
@@ -48,7 +48,7 @@ public class MotorBusqueda implements Serializable{
 		Map<String, Object>params= null;
 		try {
 		  params= new HashMap<>();
-			params.put("idContrato", this.idContrato);
+			params.put("idContrato", this.idPivote);
 			regresar= DaoFactory.getInstance().toEntitySet(Lote.class, "TcKeetContratosLotesDto", "byContrato", params);			
 			for(Lote item: regresar)
 				item.setAccion(ESql.UPDATE);
@@ -68,7 +68,7 @@ public class MotorBusqueda implements Serializable{
 	
 	public List<ContratoPersonal> toPersonasAsignadas() throws Exception{
 		return toPersonasCondicion("tr_mantic_empresa_personal.id_empresa_persona");
-	}
+	} // toPersonasAsignadas
 	
 	private List<ContratoPersonal> toPersonasCondicion(String campoLlave) throws Exception{
 		List<ContratoPersonal> regresar= null;
@@ -76,7 +76,7 @@ public class MotorBusqueda implements Serializable{
 		try {
 		  params= new HashMap<>();
 			params.put("campoLlave", campoLlave);
-			params.put("idContrato", this.idContrato);			
+			params.put("idDesarrollo", this.idPivote);			
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
 			regresar= DaoFactory.getInstance().toEntitySet(ContratoPersonal.class, "VistaContratosDto", "personalAsignado", params);      
 		} // try
@@ -98,7 +98,7 @@ public class MotorBusqueda implements Serializable{
 		Map<String, Object>params      = null;
 		try {
 		  params= new HashMap<>();
-			params.put("idContrato", this.idContrato);			
+			params.put("idDesarrollo", this.idPivote);			
 			params.put("condicion", condicion);
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			regresar= DaoFactory.getInstance().toEntitySet(ContratoPersonal.class, "VistaContratosDto", "personalDisponible", params);      
@@ -117,7 +117,7 @@ public class MotorBusqueda implements Serializable{
 		Map<String, Object>params= null;
 		try {
 		  params= new HashMap<>();
-			params.put("idContratoPersona", this.idContrato);						
+			params.put("idContratoPersona", this.idPivote);						
 			regresar= (ContratoPersonal) DaoFactory.getInstance().toEntity(ContratoPersonal.class, "VistaContratosDto", "findContratoPersona", params);      
 		} // try
 		catch (Exception e) {			
@@ -134,7 +134,7 @@ public class MotorBusqueda implements Serializable{
 		Map<String, Object>params= null;
 		try {
 		  params= new HashMap<>();
-			params.put("idContratoPersona", this.idContrato);						
+			params.put("idContratoPersona", this.idPivote);						
 			regresar= DaoFactory.getInstance().toEntitySet(Incidente.class, "VistaIncidentesDto", "personalDesarrollo", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {			
