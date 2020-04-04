@@ -34,9 +34,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   @Column (name="id_desarrollo")
   private Long idDesarrollo;
   @Column (name="id_usuario")
-  private Long idUsuario;
-  @Column (name="id_contrato")
-  private Long idContrato;
+  private Long idUsuario;  
   @Column (name="id_empresa_persona")
   private Long idEmpresaPersona;
   @Column (name="observaciones")
@@ -51,15 +49,14 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   }
 
   public TcKeetContratosPersonalDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetContratosPersonalDto(Long idContratosPersonal, Long idDesarrollo, Long idUsuario, Long idContrato, Long idEmpresaPersona, String observaciones, Long idVigente) {
+  public TcKeetContratosPersonalDto(Long idContratosPersonal, Long idDesarrollo, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idVigente) {
     setIdContratosPersonal(idContratosPersonal);
     setIdDesarrollo(idDesarrollo);
-    setIdUsuario(idUsuario);
-    setIdContrato(idContrato);
+    setIdUsuario(idUsuario);    
     setIdEmpresaPersona(idEmpresaPersona);
     setObservaciones(observaciones);
     setIdVigente(idVigente);
@@ -88,15 +85,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
 
   public Long getIdUsuario() {
     return idUsuario;
-  }
-
-  public void setIdContrato(Long idContrato) {
-    this.idContrato = idContrato;
-  }
-
-  public Long getIdContrato() {
-    return idContrato;
-  }
+	}
 
   public void setIdEmpresaPersona(Long idEmpresaPersona) {
     this.idEmpresaPersona = idEmpresaPersona;
@@ -150,9 +139,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
 		regresar.append(getIdDesarrollo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdContrato());
-		regresar.append(Constantes.SEPARADOR);
+		regresar.append(Constantes.SEPARADOR);		
 		regresar.append(getIdEmpresaPersona());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
@@ -169,8 +156,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idContratosPersonal", getIdContratosPersonal());
 		regresar.put("idDesarrollo", getIdDesarrollo());
-		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idContrato", getIdContrato());
+		regresar.put("idUsuario", getIdUsuario());		
 		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idVigente", getIdVigente());
@@ -181,7 +167,7 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdContratosPersonal(), getIdDesarrollo(), getIdUsuario(), getIdContrato(), getIdEmpresaPersona(), getObservaciones(), getIdVigente(), getRegistro()
+			getIdContratosPersonal(), getIdDesarrollo(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdVigente(), getRegistro()
     };
     return regresar;
   }
@@ -239,7 +225,4 @@ public class TcKeetContratosPersonalDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdContratosPersonal() != null ? getIdContratosPersonal().hashCode() : 0);
     return hash;
   }
-
 }
-
-
