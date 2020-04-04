@@ -225,7 +225,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				-1L, // Long idContratoBitacora, 
 				seleccionado.getKey() // Long idContrato 
-			);
+			);	
 			transaccion= new Transaccion(new RegistroContrato(contrato), bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);

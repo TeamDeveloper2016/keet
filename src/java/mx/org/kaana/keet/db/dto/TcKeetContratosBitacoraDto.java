@@ -37,8 +37,8 @@ public class TcKeetContratosBitacoraDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_contrato_bitacora")
   private Long idContratoBitacora;
-  @Column (name="id_contrato_lote")
-  private Long idContratoLote;
+  @Column (name="id_contrato")
+  private Long idContrato;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -51,12 +51,12 @@ public class TcKeetContratosBitacoraDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetContratosBitacoraDto(String justificacion,Long idContratoEstatus, Long idUsuario, Long idContratoBitacora, Long idContratoLote) {
+  public TcKeetContratosBitacoraDto(String justificacion,Long idContratoEstatus, Long idUsuario, Long idContratoBitacora, Long idContrato) {
     setIdContratoEstatus(idContratoEstatus);
     setJustificacion(justificacion);
     setIdUsuario(idUsuario);
     setIdContratoBitacora(idContratoBitacora);
-    setIdContratoLote(idContratoLote);
+    setIdContrato(idContrato);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -92,12 +92,12 @@ public class TcKeetContratosBitacoraDto implements IBaseDto, Serializable {
     return idContratoBitacora;
   }
 
-  public void setIdContratoLote(Long idContratoLote) {
-    this.idContratoLote = idContratoLote;
+  public void setIdContrato(Long idContrato) {
+    this.idContrato = idContrato;
   }
 
-  public Long getIdContratoLote() {
-    return idContratoLote;
+  public Long getIdContrato() {
+    return idContrato;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -131,7 +131,7 @@ public class TcKeetContratosBitacoraDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdContratoBitacora());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdContratoLote());
+		regresar.append(getIdContrato());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -145,7 +145,7 @@ public class TcKeetContratosBitacoraDto implements IBaseDto, Serializable {
 		regresar.put("justificacion", getJustificacion());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idContratoBitacora", getIdContratoBitacora());
-		regresar.put("idContratoLote", getIdContratoLote());
+		regresar.put("idContrato", getIdContrato());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -153,7 +153,7 @@ public class TcKeetContratosBitacoraDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdContratoEstatus(), getJustificacion(), getIdUsuario(), getIdContratoBitacora(), getIdContratoLote(), getRegistro()
+    getIdContratoEstatus(), getJustificacion(), getIdUsuario(), getIdContratoBitacora(), getIdContrato(), getRegistro()
     };
     return regresar;
   }

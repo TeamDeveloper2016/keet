@@ -30,7 +30,7 @@
 					<p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
 						<p:tab title="Busqueda:">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-								<p:outputLabel for="nombres" value="Clave nómina ó nombre del empleado:"/>
+								<p:outputLabel for="nombres" value="Clave ó nombre del desarrollo:"/>
 								<p:inputText id="nombres" value="#{keetCatalogosContratosPersonalFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/>  
 								<p:outputLabel for="razonSocial" value="Nombre del desarrollo:"/>
 								<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: CONSTRUCTORA. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosPersonalFiltro.attrs.cliente}" completeMethod="#{keetCatalogosContratosPersonalFiltro.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
