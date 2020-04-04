@@ -76,6 +76,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 			this.attrs.put("isResidente", JsfBase.isResidente());
 			inicializaContenido();			
 			loadCatalogos();
+			doLoad();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -86,8 +87,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 	private void loadCatalogos(){
 		try {
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
-			this.attrs.put("domicilio", toDomicilio());
-			loadContratos();
+			this.attrs.put("domicilio", toDomicilio());			
 			loadDepartamentos();
 			loadPuestos();
 			loadContratistas();
@@ -96,24 +96,6 @@ public class Registro extends IBaseAttribute implements Serializable {
 			throw e;
 		} // catch		
 	} // loadCatalogos
-	
-	private void loadContratos(){
-		List<UISelectItem> contratos= null;
-		Map<String, Object> params  = null;		
-		try {
-			params= new HashMap<>();
-			params.put("idDesarrollo", this.registroDesarrollo.getDesarrollo().getIdDesarrollo());			
-			contratos= UISelect.seleccione("VistaContratosDto", "findDesarrollo", params, "clave", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("contratos", contratos);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally		
-	} // loadDepartamentos
 	
 	private void loadDepartamentos(){
 		List<UISelectItem> departamentos= null;
@@ -177,13 +159,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 		this.temporalOrigen= new ArrayList<>();
 		this.temporalDestino= new ArrayList<>();
 		this.model= new DualListModel<>();				
-	}
-	
-  public void doLoadByContrato() {    
-		this.attrs.put("controlBuqueda", Boolean.FALSE);
-		inicializaContenido();
-		doLoad();
-	}	 // doLoadByContrato
+	}  
 	
   public void doLoad() {    		
 		List<ContratoPersonal>disponibles= null;
@@ -192,52 +168,41 @@ public class Registro extends IBaseAttribute implements Serializable {
 		List<SelectionItem>sAsignados    = null;
 		MotorBusqueda motorBusqueda      = null;
 		String condicion                 = null;
-    try {
-			if(this.attrs.get("idContrato")!= null && !Cadena.isVacio(this.attrs.get("idContrato")) && Long.valueOf((String)this.attrs.get("idContrato"))>= 1L){								
-				motorBusqueda= new MotorBusqueda(Long.valueOf((String)this.attrs.get("idContrato")));
-				condicion= this.toPrepare();
-				disponibles= motorBusqueda.toPersonasDisponibles(condicion);
-				sDisponibles= toListSelectionIten(disponibles);
-				asignados= motorBusqueda.toPersonasAsignadas();
-				sAsignados= toListSelectionIten(asignados);
-				this.temporalOrigen= sDisponibles;
-				this.temporalDestino= sAsignados;				
-				loadAllEmpleados(sAsignados, sDisponibles);								
-				this.model.setSource(sDisponibles);
-				this.model.setTarget(validateControlBusquedaAsignados(sAsignados));
-			} // if
-			else{				
-				inicializaContenido();
-				JsfBase.addMessage("Es necesario seleccionar un contrato.");
-			} // else
+    try {			
+			motorBusqueda= new MotorBusqueda((Long)this.attrs.get("idDesarrollo"));
+			condicion= this.toPrepare();
+			disponibles= motorBusqueda.toPersonasDisponibles(condicion);
+			sDisponibles= toListSelectionIten(disponibles);
+			asignados= motorBusqueda.toPersonasAsignadas();
+			sAsignados= toListSelectionIten(asignados);
+			this.temporalOrigen= sDisponibles;
+			this.temporalDestino= sAsignados;				
+			loadAllEmpleados(sAsignados, sDisponibles);								
+			this.model.setSource(sDisponibles);
+			this.model.setTarget(validateControlBusquedaAsignados(sAsignados));			
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    } // catch    
-		finally{
-			this.attrs.put("controlBuqueda", Boolean.TRUE);
-		} // finally
+    } // catch    		
   } // doLoad		
 	
-	private List<SelectionItem> validateControlBusquedaAsignados(List<SelectionItem> sAsignados){
-		if((Boolean)this.attrs.get("controlBuqueda")){
-			if(!this.movimientosAdd.isEmpty()){						
-				for(SelectionItem item: this.movimientosAdd){
-					if(!sAsignados.contains(item))
-						sAsignados.add(0, this.allEmpleados.get(this.allEmpleados.indexOf(item)));
-				} // for
-			} // if
-			if(!this.movimientosRemove.isEmpty()){						
-				for(SelectionItem item: this.movimientosRemove){
-					if(sAsignados.contains(item)){
-						String descripcion= this.allEmpleados.get(this.allEmpleados.indexOf(item)).getItem();
-						if(!((boolean)this.attrs.get("isResidente")) || (((boolean)this.attrs.get("isResidente")) && !descripcion.contains("RESIDENTE")))
-							sAsignados.remove(item);
-					} // if
-				} // for
-			} // if			
+	private List<SelectionItem> validateControlBusquedaAsignados(List<SelectionItem> sAsignados){		
+		if(!this.movimientosAdd.isEmpty()){						
+			for(SelectionItem item: this.movimientosAdd){
+				if(!sAsignados.contains(item))
+					sAsignados.add(0, this.allEmpleados.get(this.allEmpleados.indexOf(item)));
+			} // for
 		} // if
+		if(!this.movimientosRemove.isEmpty()){						
+			for(SelectionItem item: this.movimientosRemove){
+				if(sAsignados.contains(item)){
+					String descripcion= this.allEmpleados.get(this.allEmpleados.indexOf(item)).getItem();
+					if(!((boolean)this.attrs.get("isResidente")) || (((boolean)this.attrs.get("isResidente")) && !descripcion.contains("RESIDENTE")))
+						sAsignados.remove(item);
+				} // if
+			} // for
+		} // if					
 		return sAsignados;
 	} // validateControlBusquedaAsignados
 	
@@ -263,9 +228,9 @@ public class Registro extends IBaseAttribute implements Serializable {
 		String regresar        = null;
 		try {
 			condicion= new StringBuilder();
-			if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf((String)this.attrs.get("idPuesto"))>= 1L)
+			if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
 				condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
-			if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf((String)this.attrs.get("idDepartamento"))>= 1L)
+			if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
 				condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
 			if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
 				condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
@@ -339,7 +304,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		try {
-			transaccion= new Transaccion((Long)this.attrs.get("idDesarrollo"), Long.valueOf((String)this.attrs.get("idContrato")), this.model.getTarget());
+			transaccion= new Transaccion((Long)this.attrs.get("idDesarrollo"), this.model.getTarget());
 			if(transaccion.ejecutar(EAccion.PROCESAR)){
 				regresar= doCancelar();
 				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Se registraron de forma correcta los empleados.", ETipoMensaje.INFORMACION);
