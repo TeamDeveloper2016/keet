@@ -299,14 +299,51 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doApplyChange
 	
-	public void onEventMove(ScheduleEntryMoveEvent event) {        
-		
+	public void onEventMove(ScheduleEntryMoveEvent event) {       		
+		try {
+			this.event= event.getScheduleEvent();
+			updateEvent();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
   } // onEventMove
      
 	public void onEventResize(ScheduleEntryResizeEvent event) {
-		
+		try {
+			this.event= event.getScheduleEvent();
+			updateEvent();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
 	} // onEventResize
 
+	private void updateEvent(){
+		DefaultScheduleEvent defaultEvent= null;
+		try {
+			((Incidente)this.event.getData()).setVigenciaInicio(this.event.getStartDate().toLocalDate());
+			((Incidente)this.event.getData()).setVigenciaFin(this.event.getEndDate().toLocalDate());			
+			defaultEvent= DefaultScheduleEvent.builder()
+								.id(this.event.getId())
+								.allDay(this.event.isAllDay())
+								.data(this.event.getData())
+								.description("Incidencia: ".concat(((Incidente)this.event.getData()).getTipoIncidente()).concat(" Estatus: ").concat(((Incidente)this.event.getData()).getEstatus()))
+								.title("Incidencia: ".concat(((Incidente)this.event.getData()).getTipoIncidente()).concat(" Estatus: ").concat(((Incidente)this.event.getData()).getEstatus()))
+								.startDate(((Incidente)this.event.getData()).getVigenciaInicio().atStartOfDay())
+								.endDate(((Incidente)this.event.getData()).getVigenciaFin().atStartOfDay())
+								.styleClass(ETiposIncidentes.fromId(((Incidente)this.event.getData()).getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString())))
+								.build();		
+			this.eventModel.updateEvent(defaultEvent);
+			this.attrs.put("idSelectionEvent", ".incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString()));					
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // updateEvent
+	
 	public String doAceptar(){
 		String regresar        = null;
 		Transaccion transaccion= null;
