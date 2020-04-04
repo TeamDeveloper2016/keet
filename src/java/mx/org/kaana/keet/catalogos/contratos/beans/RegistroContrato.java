@@ -118,7 +118,7 @@ public class RegistroContrato implements Serializable {
 			motor= new MotorBusqueda(this.idContrato);
 			this.contrato= motor.toContrato();
 			this.contrato.setLotes(motor.toLotes());
-			this.contratoPersonas= motor.toPersonas();
+			this.contratoPersonas= new ArrayList<>();
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
