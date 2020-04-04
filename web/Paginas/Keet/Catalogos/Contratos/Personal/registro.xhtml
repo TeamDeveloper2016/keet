@@ -13,8 +13,7 @@
       Janal.Control.fields = {        
 				'tabla\\:puesto'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'tabla\\:departamento': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
-				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contrato'            : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
+				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };							
 			
 			function validateCriterios(){
@@ -88,14 +87,6 @@
 							</p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>	
-					<p:spacer/>
-					<p:panelGrid columns="1" styleClass="janal-wid-100">
-						<p:outputLabel for="contrato" value="Contrato:"/>
-						<p:selectOneMenu id="contrato" value="#{keetCatalogosContratosPersonalRegistro.attrs.idContrato}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">															
-							<p:ajax event="change" onstart="return janal.bloquear();" process="@this tabla" listener="#{keetCatalogosContratosPersonalRegistro.doLoadByContrato}" update="dataEmpleados" oncomplete="janal.desbloquear();"/>
-							<f:selectItems value="#{keetCatalogosContratosPersonalRegistro.attrs.contratos}"/>						
-						</p:selectOneMenu>	
-					</p:panelGrid>	
 					<p:spacer/>
 					<p:pickList id="dataEmpleados" value="#{keetCatalogosContratosPersonalRegistro.model}" var="empleado" effect="bounce" itemValue="#{empleado}" itemLabel="#{empleado.item}" showCheckbox="true" showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="janal.convertidor.SelectionItem" responsive="true">
 						<f:facet name="sourceCaption">Disponibles</f:facet>

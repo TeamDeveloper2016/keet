@@ -13,8 +13,7 @@
       Janal.Control.fields = {        
 				'tabla\\:puesto'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'tabla\\:departamento': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
-				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contrato'            : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
+				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };							
 			
 			function validateCriterios(){
@@ -88,15 +87,7 @@
 							</p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>	
-					<p:spacer/>
-					<p:panelGrid columns="1" styleClass="janal-wid-100">
-						<p:outputLabel for="contrato" value="Contrato:"/>
-						<p:selectOneMenu id="contrato" value="#{keetCatalogosContratosPersonalEmpleados.attrs.idContrato}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">															
-							<p:ajax event="change" onstart="return janal.bloquear();" process="@this tabla" listener="#{keetCatalogosContratosPersonalEmpleados.doLoad}" update="dataEmpleados" oncomplete="janal.desbloquear();"/>
-							<f:selectItems value="#{keetCatalogosContratosPersonalEmpleados.attrs.contratos}"/>						
-						</p:selectOneMenu>	
-					</p:panelGrid>	
-					<p:spacer/>
+					<p:spacer/>										
 					<p:dataTable  lazy="true" id="dataEmpleados" widgetVar="kajoolTable" var="filtro" value="#{keetCatalogosContratosPersonalEmpleados.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalEmpleados.attrs.seleccionado}" paginator="#{keetCatalogosContratosPersonalEmpleados.lazyModel.rowCount gt keetCatalogosContratosPersonalEmpleados.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" selectionMode="single">            						
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.curp}">
               <f:facet name="header">

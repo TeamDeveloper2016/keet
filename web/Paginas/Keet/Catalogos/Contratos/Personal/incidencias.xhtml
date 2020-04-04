@@ -13,8 +13,7 @@
       Janal.Control.fields = {        
 				'tabla\\:puesto'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'tabla\\:departamento': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
-				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contrato'            : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
+				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };							
 			
 			function validateCriterios(){
@@ -109,9 +108,7 @@
 								<p:inputText value="#{keetCatalogosContratosPersonalIncidencias.contratoPersonal.curp}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Rfc:"/>																		
 								<p:inputText value="#{keetCatalogosContratosPersonalIncidencias.contratoPersonal.rfc}" styleClass="janal-wid-100-txt" readonly="true"/>								
-								<p:separator/>
-								<p:outputLabel value="Contrato:"/>
-								<p:inputText value="#{keetCatalogosContratosPersonalIncidencias.contratoPersonal.clave}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:separator/>								
 								<p:outputLabel value="Desarrollo:"/>
 								<p:inputText value="[#{keetCatalogosContratosPersonalIncidencias.contratoPersonal.claveDesarrollo}] #{keetCatalogosContratosPersonalIncidencias.contratoPersonal.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:separator/>
