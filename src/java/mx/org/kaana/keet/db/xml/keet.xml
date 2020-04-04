@@ -1217,7 +1217,7 @@
           tc_keet_contratos_personal
 			</select>
 			<delete id="contrato">
-				delete from tc_keet_contratos_personal where id_contrato={idContrato} and id_desarrollo= {idDesarrollo}
+				delete from tc_keet_contratos_personal where id_desarrollo= {idDesarrollo}
 			</delete>
     </unit>
 		    <unit id="TcKeetContratosDto">
