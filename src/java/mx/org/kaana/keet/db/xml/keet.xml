@@ -502,6 +502,16 @@
 				and
 					nivel = {nivel}
       </select>
+			 <select id="maxClave">
+        select      
+          max(clave) clave
+        from      
+          tc_keet_estaciones
+        where 
+          clave like '{clave}%'
+				and
+					nivel = {nivel}
+      </select>
       <select id="identically">
         select      
           *
