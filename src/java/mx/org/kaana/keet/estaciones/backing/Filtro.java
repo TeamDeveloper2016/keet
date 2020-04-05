@@ -38,10 +38,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.estacionesDto= new TcKeetEstacionesDto();
-			this.estacionesDto.setNivel(1L);
-			this.estacionesDto.setClave("");
-			doLoad();
+			doInicio();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -57,7 +54,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_HORA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -139,6 +135,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 	} // doVisitado
+
+	private void doInicio() {
+		try {
+			this.estacionesDto= new TcKeetEstacionesDto();
+			this.estacionesDto.setNivel(1L);
+			this.estacionesDto.setClave("");
+			doLoad();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	}
 	
 	
 }
