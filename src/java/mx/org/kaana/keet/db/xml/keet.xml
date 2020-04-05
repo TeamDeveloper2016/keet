@@ -482,6 +482,26 @@
         where 
           {condicion} 
       </select>
+      <select id="byId">
+        select      
+          tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
+        from      
+          tc_keet_estaciones
+        where 
+          id_estacion= {idEstacion} 
+      </select>
+      <select id="byClaveNivel">
+        select      
+          tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
+        from      
+          tc_keet_estaciones
+        where 
+          clave like '{clave}%'
+				and
+					nivel = {nivel}
+      </select>
       <select id="identically">
         select      
           *
