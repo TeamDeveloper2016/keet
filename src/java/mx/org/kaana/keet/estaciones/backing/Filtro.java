@@ -3,7 +3,6 @@ package mx.org.kaana.keet.estaciones.backing;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -15,6 +14,9 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.estaciones.beans.RegistroEstacion;
+import mx.org.kaana.keet.estaciones.reglas.MotorBusqueda;
+import mx.org.kaana.keet.estaciones.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -29,6 +31,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
 	private TcKeetEstacionesDto estacionesDto;
 	private int TAMANIO_NIVEL= 3; 
+	
 
   @PostConstruct
   @Override
@@ -60,7 +63,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 			if(this.estacionesDto.getClave().length()>0)
-				this.estacionesDto.setClave(this.estacionesDto.getClave().substring(0, ((this.estacionesDto.getNivel().intValue()-1) * this.TAMANIO_NIVEL)+1));
+				this.estacionesDto.setClave(this.estacionesDto.getClave().substring(0, ((this.estacionesDto.getNivel().intValue()-1) * TAMANIO_NIVEL)+1));
       this.lazyModel = new FormatCustomLazy("VistaEstacionesDto", this.estacionesDto.toMap(), columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -74,15 +77,30 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
-    EAccion eaccion= null;
-		String regresar= null; 
+    EAccion eaccion        = null;
+		String regresar        = null;
+		Transaccion transaccion= null;
     try {
 			regresar= "accion".concat(Constantes.REDIRECIONAR);
       eaccion = EAccion.valueOf(accion.toUpperCase());
-      JsfBase.setFlashAttribute("accion", eaccion);      
-      JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-      JsfBase.setFlashAttribute("idDesarrollo", eaccion.equals(EAccion.AGREGAR) ? -1L : ((Entity) this.attrs.get("seleccionado")).getKey());
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Desarrollos/filtro");
+			switch(eaccion){
+				case AGREGAR:
+				case MODIFICAR:
+				case CONSULTAR:
+					JsfBase.setFlashAttribute("accion", eaccion);      
+					JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
+					JsfBase.setFlashAttribute("idDesarrollo", eaccion.equals(EAccion.AGREGAR) ? -1L : ((Entity) this.attrs.get("seleccionado")).getKey());
+					JsfBase.setFlashAttribute("estacionDto", this.estacionesDto);
+					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Desarrollos/filtro");
+					break;
+				case SUBIR:
+				case BAJAR:
+				case ELIMINAR:
+					transaccion= new Transaccion(new RegistroEstacion(((Entity) this.attrs.get("seleccionado")).getKey()));
+					transaccion.ejecutar(eaccion);
+				break;
+			} // swicth
+     
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -96,7 +114,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			regresar= new ArrayList<>();
 			for (int i=this.estacionesDto.getNivel().intValue()-1; i>0; i--) {
-        this.attrs.put("clave", this.estacionesDto.getClave().substring(0, (this.TAMANIO_NIVEL*i)+1));
+        this.attrs.put("clave", this.estacionesDto.getClave().substring(0, (TAMANIO_NIVEL*i)+1));
         this.attrs.put("nivel", this.estacionesDto.getNivel()-1L);
         TcKeetEstacionesDto dto=(TcKeetEstacionesDto) DaoFactory.getInstance().toEntity(TcKeetEstacionesDto.class,"TcKeetEstacionesDto", "byClaveNivel", this.attrs);
         if (dto!=null&&dto.getKey()!=-1L) {

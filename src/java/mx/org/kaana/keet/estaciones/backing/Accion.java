@@ -9,6 +9,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -41,6 +42,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idEstacion", JsfBase.getFlashAttribute("idEstacion"));
+      this.attrs.put("estacionPadre", JsfBase.getFlashAttribute("estacionPadre"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
@@ -71,6 +73,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.estacion= new RegistroEstacion();
+					this.estacion.getEstacion().setClave(((TcKeetEstacionesDto)this.attrs.get("estacionPadre")).getClave());
+					this.estacion.getEstacion().setNivel(((TcKeetEstacionesDto)this.attrs.get("estacionPadre")).getNivel());
           break;
         case MODIFICAR:					
         case CONSULTAR:					
