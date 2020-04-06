@@ -15,80 +15,80 @@
   </ui:define>
   <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-					<p:toolbar  styleClass="janal-wid-100-txt" id="seguimiento">
-						<f:facet name="left">
-							<p:commandButton value="Inicio" icon="fa fa-caret-right" actionListener="#{keetEstacionesFiltro.doInicio}"  update="tabla,seguimiento" id="visitados"/>
-							<ui:repeat var="visitado" value="#{keetEstacionesFiltro.visitados}" >
-								<p:commandButton value="#{visitado.descripcion}" icon="fa fa-caret-right" actionListener="#{keetEstacionesFiltro.doVisitado(visitado)}" update="tabla,seguimiento" />
-							</ui:repeat>
-						</f:facet>
-					</p:toolbar>
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetEstacionesFiltro.lazyModel.rowCount gt keetEstacionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-            <p:ajax event="rowDblselect"  listener="#{keetEstacionesFiltro.doVisitado(row)}" onstart="return janal.bloquear();" update="tabla,seguimiento" process="@this, tabla" oncomplete="janal.desbloquear();"/>
-						<f:facet name="header" >							
-              <div class="lg-pantalla">
-                <p:menuButton   value="Opciones">
-                  <p:menuitem  value="Agregar" action="#{keetEstacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-									<p:separator/>
-                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                </p:menuButton>
-              </div>  
-              <div class="xs-pantalla">              
-                <p:commandButton action="#{keetEstacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-              </div>  
-            </f:facet>												
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
-              <f:facet name="header">
-                <h:outputText value="Codigo"/>
-              </f:facet>
-              <h:outputText value="#{row['codigo']}"/>
-            </p:column>														
-            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.nombre}">
-              <f:facet name="header">
-                <h:outputText value="Nombre"/>
-              </f:facet>
-              <h:outputText value="#{row['nombre']}"/>
-            </p:column>			            
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.descripcion}">
-              <f:facet name="header">
-                <h:outputText value="Descripcion"/>
-              </f:facet>
-              <h:outputText value="#{row['descripcion']}"/>
-            </p:column>	      
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{row.inicio}">
-              <f:facet name="header">
-                <h:outputText value="Inicio"/>
-              </f:facet>
-              <h:outputText value="#{row['inicio']}"/>
-            </p:column>	      
-            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.termino}">
-              <f:facet name="header">
-                <h:outputText value="Termino" />
-              </f:facet>
-              <h:outputText value="#{row['termino']}"/>
-            </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.cantidad}">
-              <f:facet name="header">
-                <h:outputText value="cantiad" />
-              </f:facet>
-              <h:outputText value="#{row['cantidad']}"/>
-            </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.costo}">
-              <f:facet name="header">
-                <h:outputText value="costo" />
-              </f:facet>
-              <h:outputText value="#{row['costo']}"/>
-            </p:column>
-            <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetEstacionesFiltro.lazyModel==null?0:keetEstacionesFiltro.lazyModel.rowCount}] registros"/>
-            </f:facet>
-          </p:dataTable>
-          <p:contextMenu id="idContextMenu" for="tabla" widgetVar="kajoolContextMenu" >
+			<p:toolbar  styleClass="janal-wid-100-txt" id="seguimiento">
+				<f:facet name="left">
+					<p:commandButton value="Inicio" icon="fa fa-caret-right" actionListener="#{keetEstacionesFiltro.doInicio}"  update="tabla,seguimiento" id="visitados"/>
+					<ui:repeat var="visitado" value="#{keetEstacionesFiltro.visitados}" >
+						<p:commandButton value="#{visitado.nombre}" icon="fa fa-caret-right" actionListener="#{keetEstacionesFiltro.doVisitado(visitado)}" update="tabla,seguimiento" />
+					</ui:repeat>
+				</f:facet>
+			</p:toolbar>
+			<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetEstacionesFiltro.lazyModel.rowCount gt keetEstacionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+				<p:ajax event="rowDblselect"  listener="#{keetEstacionesFiltro.doSelectPadre}" onstart="return janal.bloquear();" process="@this" update="tabla,seguimiento" oncomplete="janal.desbloquear();"/>
+				<f:facet name="header" >							
+					<div class="lg-pantalla">
+						<p:menuButton   value="Opciones">
+							<p:menuitem  value="Agregar" action="#{keetEstacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+							<p:separator/>
+							<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+						</p:menuButton>
+					</div>  
+					<div class="xs-pantalla">              
+						<p:commandButton action="#{keetEstacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+						<p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+						<p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+					</div>  
+				</f:facet>												
+				<p:column class="MarAuto Responsive janal-wid-10" >
+					<f:facet name="header">
+						<h:outputText value="Codigo"/>
+					</f:facet>
+					<h:outputText value="#{row['codigo']}"/>
+				</p:column>														
+				<p:column class="MarAuto Responsive janal-wid-20" >
+					<f:facet name="header">
+						<h:outputText value="Nombre"/>
+					</f:facet>
+					<h:outputText value="#{row['nombre']}"/>
+				</p:column>			            
+				<p:column class="janal-column-left MarAuto Responsive janal-wid-30" >
+					<f:facet name="header">
+						<h:outputText value="Descripcion"/>
+					</f:facet>
+					<h:outputText value="#{row['descripcion']}"/>
+				</p:column>	      
+				<p:column class="janal-column-left MarAuto Responsive janal-wid-20" >
+					<f:facet name="header">
+						<h:outputText value="Inicio"/>
+					</f:facet>
+					<h:outputText value="#{row['inicio']}"/>
+				</p:column>	      
+				<p:column class="MarAuto Responsive janal-wid-20" >
+					<f:facet name="header">
+						<h:outputText value="Termino" />
+					</f:facet>
+					<h:outputText value="#{row['termino']}"/>
+				</p:column>
+				<p:column class="janal-column-center MarAuto Responsive janal-wid-15" >
+					<f:facet name="header">
+						<h:outputText value="cantiad" />
+					</f:facet>
+					<h:outputText value="#{row['cantidad']}"/>
+				</p:column>
+				<p:column class="janal-column-center MarAuto Responsive janal-wid-15" >
+					<f:facet name="header">
+						<h:outputText value="costo" />
+					</f:facet>
+					<h:outputText value="#{row['costo']}"/>
+				</p:column>
+				<f:facet name="footer">
+					<p:outputLabel value="Total [#{keetEstacionesFiltro.lazyModel==null?0:keetEstacionesFiltro.lazyModel.rowCount}] registros"/>
+				</f:facet>
+			</p:dataTable>
+			<p:contextMenu id="idContextMenu" for="tabla" widgetVar="kajoolContextMenu" >
         <p:menuitem icon="fa fa-edit" action="#{keetEstacionesFiltro.doAccion('MODIFICAR')}"  value="Modificar"  title="Modificar opción de menú" />
-        <p:menuitem icon="fa fa-trash" action="#{keetEstacionesFiltro.doAccion('ELIMINAR')}"  value="Eliminar"  title="Eliminar opción de menú" />
+        <p:menuitem icon="fa fa-trash" actionListener="#{keetEstacionesFiltro.doAccion('ELIMINAR')}"  value="Eliminar"  title="Eliminar opción de menú" update="tabla" process="@this,tabla"/>
         <p:separator/>
         <p:menuitem icon="fa fa-arrow-up" id="subir" actionListener="#{keetEstacionesFiltro.doAccion('SUBIR')}" value="Subir" title="Subir opción" update="tabla" process="@this,tabla"/>
         <p:menuitem icon="fa fa-arrow-down" id="bajar" actionListener="#{keetEstacionesFiltro.doAccion('BAJAR')}" value="Bajar" title="Bajar opción" update="tabla" process="@this,tabla"/>
