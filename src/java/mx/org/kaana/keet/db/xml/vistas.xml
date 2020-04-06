@@ -83,8 +83,8 @@
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
         where 
           tc_keet_contratos_personal.id_desarrollo= {idDesarrollo}
-				and 
-					{condicion}
+				  and tr_mantic_empresa_personal.id_activo= 1
+				  and {condicion}
 				order by 
 					tc_mantic_puestos.nombre,
 					tc_mantic_personas.nombres
@@ -145,8 +145,8 @@
           tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_personal where tc_keet_contratos_personal.id_desarrollo= {idDesarrollo})
 				and 
 					tr_mantic_empresa_personal.id_empresa= {idEmpresa}
-				and 
-					{condicion}
+				  and tr_mantic_empresa_personal.id_activo= 1
+				  and {condicion}
 				order by 
 					tc_mantic_puestos.nombre,
 					tc_mantic_personas.nombres

@@ -197,12 +197,12 @@ img{ border:none; border:0px;}
 .TexAlRight{ text-align:right !important;}
 
 /* Padding With Transparent Border*/
-.PadWithBorder1{ border:solid 1px transparent;}
-.PadWithBorder2{ border:solid 2px transparent;}
-.PadWithBorder3{ border:solid 3px transparent;}
-.PadWithBorder4{ border:solid 4px transparent;}
-.PadWithBorder5{ border:solid 5px transparent;}
-.PadWithBorder10{ border:solid 10px transparent;}
+.PadWithBorder1{ border:solid 1px transparent !important;}
+.PadWithBorder2{ border:solid 2px transparent !important;}
+.PadWithBorder3{ border:solid 3px transparent !important;}
+.PadWithBorder4{ border:solid 4px transparent !important;}
+.PadWithBorder5{ border:solid 5px transparent !important;}
+.PadWithBorder10{ border:solid 10px transparent !important;}
 
 /* Box Sizing */
 .BoxSizeContent{ box-sizing:content-box; -webkit-box-sizing:content-box; -moz-box-sizing:content-box;}
@@ -250,9 +250,9 @@ img{ border:none; border:0px;}
 .ColWid50{width: 50% !important;}
 
 /* Font Type */
-.FontBold{ font-weight:bold;}
-.FontLight{ font-weight:lighter;}
-.FontNormal{ font-weight:normal;}
+.FontBold{ font-weight:bold !important;}
+.FontLight{ font-weight:lighter !important;}
+.FontNormal{ font-weight:normal !important;}
 
 /* Animated */
 .Animated05{-webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -ms-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease;}

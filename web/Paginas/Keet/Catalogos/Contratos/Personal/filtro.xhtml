@@ -57,15 +57,14 @@
 						<p:panel header="#{item.nombres}" style="width:100%;" >
 							<p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;">										
 								<p:commandLink id="ayuda" action="#{keetCatalogosContratosPersonalFiltro.doPagina}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
-									<p:graphicImage width="200px" height="180px" library="janal" name="img/sistema/logo.svg"/>
+									<p:graphicImage width="200px" height="150px" library="janal" name="img/sistema/logo.svg"/>
 									<f:setPropertyActionListener value="#{item}" target="#{keetCatalogosContratosPersonalFiltro.seleccionado}"  />
 								</p:commandLink>										                    
-								<h:outputText value="#{item.clave}" style="font-weight: bold !important;font-size: 18px !important;"/>
-								<h:outputText value="#{item.descripcion}" style="font-weight: bold !important;font-size: 18px !important;"/>
-								<p:spacer/>
-								<p:outputLabel value="Domicilio:" style="font-weight: bold !important;"/>
+								<h:outputText value="Clave: #{item.clave}" styleClass="FontBold Fs18"/>
+								<p:spacer height="2px"/>
+								<p:outputLabel value="Domicilio:" styleClass="FontBold"/>
 								<h:outputText value="#{item.domicilio}" />
-								<p:outputLabel value="Cliente:" style="font-weight: bold !important;"/>
+								<p:outputLabel value="Cliente:" styleClass="FontBold"/>
 								<h:outputText value="#{item.razonSocial}" />								
 							</p:panelGrid>
 						</p:panel>
