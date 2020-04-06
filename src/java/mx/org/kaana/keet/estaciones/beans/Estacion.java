@@ -61,7 +61,7 @@ public class Estacion extends TcKeetEstacionesDto{
 	public String calcularClave(String clave, Long nivel, int direcccion) throws Exception{
 		String regresar= claveSinCeros(clave, nivel);
 		int longitud= regresar.length();
-		regresar= Cadena.rellenar(String.valueOf(Numero.getInteger(regresar)+ direcccion), longitud, '0', true);
+		regresar= Cadena.rellenar(String.valueOf(Long.valueOf(regresar)+ direcccion), longitud, '0', true);
 		regresar= regresar.concat(clave.substring(longitud, clave.length()));
 		return regresar;
 	} //calcularClave
