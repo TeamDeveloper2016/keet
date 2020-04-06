@@ -248,6 +248,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			this.attrs.put("idIncidenteEstatus", seleccionado.getIdIncidenteEstatus());
 			this.attrs.put("idTipoIncidente", seleccionado.getIdTipoIncidente());
 			this.attrs.put("idSelectionEvent", ".incidencia-".concat(seleccionado.getIdIncidente().toString()));
+			this.attrs.put("isDelete", seleccionado.getAccion().equals(ESql.INSERT));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -298,6 +299,16 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doApplyChange
+	
+	public void doDelete(){					
+		try {						
+			this.eventModel.deleteEvent(this.event);		
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doDelete
 	
 	public void onEventMove(ScheduleEntryMoveEvent event) {       		
 		try {
