@@ -87,8 +87,8 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 			this.attrs.put("idContratoPersona", idContratoPersona);			
-			loadTiposIncidentes();
-			loadEmpleado();
+			this.loadTiposIncidentes();
+			this.loadEmpleado();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
