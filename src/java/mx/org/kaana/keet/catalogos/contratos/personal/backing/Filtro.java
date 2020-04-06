@@ -89,12 +89,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
-			if(JsfBase.isResidente()){
-				params.put("idPersona", JsfBase.getAutentifica().getPersona().getIdPersona());
-				this.desarrollos= UIEntity.build("VistaDesarrollosDto", "lazyResidente", params, columns);      
-			} // if
-			else
-				this.desarrollos= UIEntity.build("VistaDesarrollosDto", "lazy", params, columns);      
+	    this.desarrollos= UIEntity.build("VistaDesarrollosDto", JsfBase.isAdminEncuestaOrAdmin()? "lazy": "residentes", params, columns);  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -107,32 +102,24 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
 	private Map<String, Object> toPrepare() throws Exception {
-	  Map<String, Object> regresar= null;
-		StringBuilder condicion     = null;
-    UISelectEntity cliente      = null;
-    List<UISelectEntity>clientes= null;
-		try {
-			regresar= new HashMap<>();
-			condicion= new StringBuilder();
-			cliente= (UISelectEntity) this.attrs.get("cliente");
-			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
-			if(this.attrs.get("idDesarrolloProcess")!= null && !Cadena.isVacio(this.attrs.get("idDesarrolloProcess")))
-				condicion.append("tc_keet_desarrollos.id_desarrollo=").append(this.attrs.get("idDesarrolloProcess")).append(" and ");					
-			if(!Cadena.isVacio(this.attrs.get("nombres"))){
-				condicion.append("(tc_keet_desarrollos.nombres like '%").append(this.attrs.get("nombres")).append("%' or ");
-				condicion.append("tc_keet_desarrollos.clave like '%").append(this.attrs.get("nombres")).append("%') and ");
-			} // if
-			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-				condicion.append("(tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%') and ");
-			else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
-				condicion.append("(tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");    			
-			regresar.put(Constantes.SQL_CONDICION, condicion.length()== 0 ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()- 4));		
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch				
+		Map<String, Object> regresar = new HashMap<>();
+		StringBuilder condicion      = new StringBuilder();
+		UISelectEntity cliente       = (UISelectEntity) this.attrs.get("cliente");
+		List<UISelectEntity> clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+		if(this.attrs.get("idDesarrolloProcess")!= null && !Cadena.isVacio(this.attrs.get("idDesarrolloProcess")))
+			condicion.append("tc_keet_desarrollos.id_desarrollo=").append(this.attrs.get("idDesarrolloProcess")).append(" and ");		
+		if(!Cadena.isVacio(this.attrs.get("nombres"))){
+			condicion.append("(tc_keet_desarrollos.nombres like '%").append(this.attrs.get("nombres")).append("%' or ");
+			condicion.append("tc_keet_desarrollos.clave like '%").append(this.attrs.get("nombres")).append("%') and ");
+		} // if
+		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
+			condicion.append("(tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%') and ");
+		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
+			condicion.append("(tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");    			
+		regresar.put(Constantes.SQL_CONDICION, condicion.length()== 0 ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()- 4));		
+		regresar.put("idPersona", JsfBase.getAutentifica().getPersona().getIdPersona());
 		return regresar;		
-	} // toPrepare    
+	} // toPrepare  
 	
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
  		List<Columna> columns     = null;
