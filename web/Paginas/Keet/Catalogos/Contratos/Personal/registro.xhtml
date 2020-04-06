@@ -93,8 +93,8 @@
 						<f:facet name="targetCaption">Asignados</f:facet>
 						<p:ajax event="transfer" onstart="return janal.bloquear();" listener="#{keetCatalogosContratosPersonalRegistro.onTransfer}" oncomplete="reloadValues();"/>												
 						<p:column style="width: 95% !important">
-							<h:graphicImage library="janal" name="icon/semaforos/#{empleado.idActivo eq 1? 'circulo-azul': 'circulo-rojo'}"/>
-							<h:outputText value="#{empleado.item}" styleClass="janal-wid-100-txt #{empleado.idActivo eq 1? 'janal-color-blue': 'janal-color-red'}"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{empleado.idActivo eq 1? 'circulo-azul': 'circulo-rojo'}.png"/>
+							<h:outputText value=" #{empleado.item}" styleClass="janal-wid-100-txt #{empleado.idActivo eq 1? 'janal-color-blue': 'janal-color-red'}"/>
 						</p:column>
 					</p:pickList>
 					<p:remoteCommand name="reloadValues" actionListener="#{keetCatalogosContratosPersonalRegistro.doLoad}" process="@this tabla" update="dataEmpleados" oncomplete="janal.desbloquear();"/>
