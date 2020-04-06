@@ -88,14 +88,14 @@
 						</p:tab>
 					</p:accordionPanel>	
 					<p:spacer/>										
-					<p:dataTable  lazy="true" id="dataEmpleados" widgetVar="kajoolTable" var="filtro" value="#{keetCatalogosContratosPersonalEmpleados.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalEmpleados.attrs.seleccionado}" paginator="#{keetCatalogosContratosPersonalEmpleados.lazyModel.rowCount gt keetCatalogosContratosPersonalEmpleados.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" selectionMode="single">            						
+					<p:dataTable lazy="true" id="dataEmpleados" widgetVar="kajoolTable" var="filtro" value="#{keetCatalogosContratosPersonalEmpleados.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalEmpleados.attrs.seleccionado}" paginator="#{keetCatalogosContratosPersonalEmpleados.lazyModel.rowCount gt keetCatalogosContratosPersonalEmpleados.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" selectionMode="single">            						
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.curp}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="CURP"/>
               </f:facet>
               <h:outputText value="#{filtro['curp']}"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.rfc}">
+            <p:column class="janal-wid-13 janal-column-left MarAuto Responsive" sortBy="#{filtro.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
@@ -107,7 +107,7 @@
               </f:facet>
               <h:outputText value="#{filtro['nombres']} #{filtro['paterno']} #{filtro['materno']}"/>
             </p:column>														            						
-						<p:column class="MarAuto Responsive" sortBy="#{filtro.departamento}">
+						<p:column class="janal-wid-20 MarAuto Responsive" sortBy="#{filtro.departamento}">
               <f:facet name="header">
                 <h:outputText value="Departamento"/>
               </f:facet>
