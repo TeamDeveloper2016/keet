@@ -95,17 +95,11 @@
               </f:facet>
               <h:outputText value="#{filtro['curp']}"/>
             </p:column>		
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.curp}" rendered="false">
-              <f:facet name="header">
-                <h:outputText value="CURP"/>
-              </f:facet>
-              <i class="fa fa-user fa-lg"/><h:outputText value="#{filtro['curp']}"/>
-            </p:column>		
             <p:column class="janal-wid-13 janal-column-left MarAuto Responsive" sortBy="#{filtro.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
-              <h:outputText value="#{filtro['rfc']}"/>
+              <i class="fa fa-user fa-lg janal-color-green"/><h:outputText value=" #{filtro['rfc']}"/>
             </p:column>		            
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombres}">
               <f:facet name="header">
