@@ -502,9 +502,30 @@
 				and
 					nivel = {nivel}
       </select>
+      <select id="getHijos">
+        select      
+          tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
+        from      
+          tc_keet_estaciones
+        where 
+          clave like '{clave}%'
+				and
+					nivel &gt;= {nivel}
+      </select>
 			 <select id="maxClave">
         select      
           max(clave) clave
+        from      
+          tc_keet_estaciones
+        where 
+          clave like '{clave}%'
+				and
+					nivel = {nivel}
+      </select>
+			<select id="minClave">
+        select      
+          min(clave) clave
         from      
           tc_keet_estaciones
         where 

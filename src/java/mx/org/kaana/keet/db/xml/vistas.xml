@@ -568,8 +568,7 @@
 				and
 					tc_keet_estaciones.nivel = {nivel}
 		 	  order by
-				  tc_mantic_empaques.nombre,
-				  tc_mantic_unidades_medidas.nombre
+				  tc_keet_estaciones.clave
 			</select>		
 		</unit>		
 		<unit id="VistaEmpaqueUnidadDto">
