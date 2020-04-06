@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
@@ -30,14 +31,16 @@ public class Transaccion extends IBaseTnx {
 		String clave              = null;
 		List<TcKeetEstacionesDto> toArriba= null;
 		List<TcKeetEstacionesDto> toAbajo= null;
+		Value value               = null;
 		try {
 			params=new HashMap<>();
 			switch(accion){
 				case AGREGAR:			
 					this.registroEstacion.getEstacion().setIdUsuario(JsfBase.getIdUsuario());
-					params.put("clave", this.registroEstacion.getEstacion().claveSinCeros());
+					params.put("clave", this.registroEstacion.getEstacion().claveSinCeros(this.registroEstacion.getEstacion().getNivel()-1L));
 					params.put("nivel", this.registroEstacion.getEstacion().getNivel());
-					clave= DaoFactory.getInstance().toField("TcKeetEstacionesDto", "maxClave", params, "clave").getData$();
+					value= DaoFactory.getInstance().toField("TcKeetEstacionesDto", "maxClave", params, "clave");
+					clave= value.getData()== null? this.registroEstacion.getEstacion().getClave(): value.getData$();
 					this.registroEstacion.getEstacion().setClave(this.registroEstacion.getEstacion().calcularClave(clave, this.registroEstacion.getEstacion().getNivel(),1));
 					regresar= DaoFactory.getInstance().insert(sesion, this.registroEstacion.getEstacion())>= 1L;
 					break;
@@ -48,35 +51,39 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().delete(sesion, this.registroEstacion.getEstacion())>= 1L;
 					break;
 				case SUBIR:
-					params.put("clave", this.registroEstacion.getEstacion().claveSinCeros());
+					params.put("clave", this.registroEstacion.getEstacion().claveSinCeros(this.registroEstacion.getEstacion().getNivel()-1L));
 					params.put("nivel", this.registroEstacion.getEstacion().getNivel());
-					if(Numero.getLong(this.registroEstacion.getEstacion().getClave())> Numero.getLong(DaoFactory.getInstance().toField("TcKeetEstacionesDto", "minClave", params, "clave").getData$())){
-						toAbajo= this.registroEstacion.getEstacion().getHijos(this.registroEstacion.getEstacion().calcularClave(1), this.registroEstacion.getEstacion().getNivel());
+					value= DaoFactory.getInstance().toField("TcKeetEstacionesDto", "minClave", params, "clave");
+					clave= value.getData()== null? this.registroEstacion.getEstacion().getClave(): value.getData$();
+					if(Numero.getLong(this.registroEstacion.getEstacion().getClave())> Numero.getLong(clave)){
+						toAbajo= this.registroEstacion.getEstacion().getHijos(this.registroEstacion.getEstacion().calcularClave(-1), this.registroEstacion.getEstacion().getNivel());
 						toArriba= this.registroEstacion.getEstacion().getHijos();
-						for(TcKeetEstacionesDto item: toArriba){
-							item.setClave(this.registroEstacion.getEstacion().calcularClave(item.getClave(), item.getNivel(), 1));
+						for(TcKeetEstacionesDto item: toAbajo ){
+							item.setClave(this.registroEstacion.getEstacion().calcularClave(item.getClave(), this.registroEstacion.getEstacion().getNivel(), 1));
 							DaoFactory.getInstance().update(sesion,item);
 						} // for
-						for(TcKeetEstacionesDto item: toAbajo){
-							item.setClave(this.registroEstacion.getEstacion().calcularClave(item.getClave(), item.getNivel(), -1));
+						for(TcKeetEstacionesDto item: toArriba){
+							item.setClave(this.registroEstacion.getEstacion().calcularClave(item.getClave(), this.registroEstacion.getEstacion().getNivel(), -1));
 							DaoFactory.getInstance().update(sesion,item);
 						} // for
 					} // if
 					else
-						throw new Exception("No es posible bajar la estación");
+						throw new Exception("No es posible subir la estación");
 					break;				
 				case BAJAR:
-					params.put("clave", this.registroEstacion.getEstacion().claveSinCeros());
+					params.put("clave", this.registroEstacion.getEstacion().claveSinCeros(this.registroEstacion.getEstacion().getNivel()- 1L));
 					params.put("nivel", this.registroEstacion.getEstacion().getNivel());
-					if(Numero.getLong(this.registroEstacion.getEstacion().getClave())< Numero.getLong(DaoFactory.getInstance().toField("TcKeetEstacionesDto", "maxClave", params, "clave").getData$())){
+					value= DaoFactory.getInstance().toField("TcKeetEstacionesDto", "maxClave", params, "clave");
+					clave= value.getData()== null? this.registroEstacion.getEstacion().getClave(): value.getData$();
+					if(Numero.getLong(this.registroEstacion.getEstacion().getClave())< Numero.getLong(clave)){
 						toArriba= this.registroEstacion.getEstacion().getHijos(this.registroEstacion.getEstacion().calcularClave(1), this.registroEstacion.getEstacion().getNivel());
 						toAbajo= this.registroEstacion.getEstacion().getHijos();
 						for(TcKeetEstacionesDto item: toAbajo){
-							item.setClave(this.registroEstacion.getEstacion().calcularClave(item.getClave(), item.getNivel(), 1));
+							item.setClave(this.registroEstacion.getEstacion().calcularClave(item.getClave(), this.registroEstacion.getEstacion().getNivel(), 1));
 							DaoFactory.getInstance().update(sesion,item);
 						} // for
 						for(TcKeetEstacionesDto item: toArriba){
-							item.setClave(this.registroEstacion.getEstacion().calcularClave(item.getClave(), item.getNivel(), -1));
+							item.setClave(this.registroEstacion.getEstacion().calcularClave(item.getClave(), this.registroEstacion.getEstacion().getNivel(), -1));
 							DaoFactory.getInstance().update(sesion,item);
 						} // for
 					} // if

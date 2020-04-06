@@ -23,8 +23,8 @@ public class MotorBusqueda implements Serializable{
 		try {
 		  params= new HashMap<>();
 			params.put("idEstacion", this.idEstacion);
-			regresar= (Estacion) DaoFactory.getInstance().toEntity(Estacion.class, "TcKeetEstacionsDto", "byId", params);
-			if(regresar!= null && regresar.isValid())
+			regresar= (Estacion) DaoFactory.getInstance().toEntity(Estacion.class, "TcKeetEstacionesDto", "byId", params);
+			if(regresar!= null && regresar.isValid() && regresar.getIdEmpaqueUnidadMedida()!= null)
 				regresar.setIkEmpaqueUnidadMedida(new UISelectEntity(regresar.getIdEmpaqueUnidadMedida()));
 		} // try
 		catch (Exception e) {			

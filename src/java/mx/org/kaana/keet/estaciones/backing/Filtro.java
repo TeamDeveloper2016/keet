@@ -38,7 +38,12 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			doInicio();
+			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
+				this.estacionesDto= (TcKeetEstacionesDto)JsfBase.getFlashAttribute("estacionProcess");
+				this.doLoad();
+			} // if
+			else
+			  doInicio();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -59,8 +64,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 			if(this.estacionesDto.getClave().length()>0)
-				this.estacionesDto.setClave(this.estacionesDto.getClave().substring(0, ((this.estacionesDto.getNivel().intValue()-1) * TAMANIO_NIVEL)+1));
-      this.lazyModel = new FormatCustomLazy("VistaEstacionesDto", this.estacionesDto.toMap(), columns);
+				this.attrs.put("clave", this.estacionesDto.getClave().substring(0, ((this.estacionesDto.getNivel().intValue()) * TAMANIO_NIVEL)));
+			else
+				this.attrs.put("clave", this.estacionesDto.getClave());
+			this.attrs.put("nivel", this.estacionesDto.getNivel()+1L);
+      this.lazyModel = new FormatCustomLazy("VistaEstacionesDto", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -77,17 +85,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
     try {
-			regresar= "accion".concat(Constantes.REDIRECIONAR);
       eaccion = EAccion.valueOf(accion.toUpperCase());
 			switch(eaccion){
+				case REGISTRAR:
+				  doSelectPadre();
+					eaccion= EAccion.AGREGAR;
 				case AGREGAR:
 				case MODIFICAR:
 				case CONSULTAR:
+					regresar= "accion".concat(Constantes.REDIRECIONAR);
 					JsfBase.setFlashAttribute("accion", eaccion);      
-					JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-					JsfBase.setFlashAttribute("idDesarrollo", eaccion.equals(EAccion.AGREGAR) ? -1L : ((Entity) this.attrs.get("seleccionado")).getKey());
-					JsfBase.setFlashAttribute("estacionDto", this.estacionesDto);
-					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Desarrollos/filtro");
+					JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(eaccion.name()));      
+					JsfBase.setFlashAttribute("idEstacion", eaccion.equals(EAccion.AGREGAR) ? -1L : ((Entity) this.attrs.get("seleccionado")).getKey());
+					JsfBase.setFlashAttribute("estacionPadre", this.estacionesDto);
+					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
 					break;
 				case SUBIR:
 				case BAJAR:
@@ -109,14 +120,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 		List<TcKeetEstacionesDto> regresar=null;
 		try {
 			regresar= new ArrayList<>();
-			for (int i=this.estacionesDto.getNivel().intValue()-1; i>0; i--) {
-        this.attrs.put("clave", this.estacionesDto.getClave().substring(0, (TAMANIO_NIVEL*i)+1));
-        this.attrs.put("nivel", this.estacionesDto.getNivel()-1L);
-        TcKeetEstacionesDto dto=(TcKeetEstacionesDto) DaoFactory.getInstance().toEntity(TcKeetEstacionesDto.class,"TcKeetEstacionesDto", "byClaveNivel", this.attrs);
-        if (dto!=null&&dto.getKey()!=-1L) {
-          regresar.add(dto);
-        } // if
-      } // for
+			if(this.estacionesDto!=null){
+				for (int i=1; i<=this.estacionesDto.getNivel().intValue(); i++) {
+					this.attrs.put("clave", this.estacionesDto.getClave().substring(0, (TAMANIO_NIVEL*i)));
+					this.attrs.put("nivel", i);
+					TcKeetEstacionesDto dto=(TcKeetEstacionesDto) DaoFactory.getInstance().toEntity(TcKeetEstacionesDto.class,"TcKeetEstacionesDto", "byClaveNivel", this.attrs);
+					if (dto!=null&&dto.getKey()!=-1L) {
+						regresar.add(dto);
+					} // if
+				} // for
+			}// if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -136,18 +149,38 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch
 	} // doVisitado
 
-	private void doInicio() {
+	public void doInicio() {
 		try {
 			this.estacionesDto= new TcKeetEstacionesDto();
-			this.estacionesDto.setNivel(1L);
-			this.estacionesDto.setClave("");
+			this.estacionesDto.setNivel(0L);
+			this.estacionesDto.setClave("000000000000000");
 			doLoad();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	}
+	} //doInicio
+	
+	public void doSelectPadre() {
+		try {
+			if(((Entity)this.attrs.get("seleccionado")).toLong("nivel")<5){
+				this.estacionesDto= new TcKeetEstacionesDto();
+				this.estacionesDto.setNivel(((Entity)this.attrs.get("seleccionado")).toLong("nivel"));
+				this.estacionesDto.setClave(((Entity)this.attrs.get("seleccionado")).toString("clave"));
+				doLoad();
+			} //
+			else
+			  JsfBase.addAlert("No existen mas niveles disponibles");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} //doInicio
+	
+
+	
 	
 	
 }

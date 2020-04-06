@@ -28,6 +28,7 @@ public class Estacion extends TcKeetEstacionesDto{
 		this.ikEmpaqueUnidadMedida = ikEmpaqueUnidadMedida;
 		this.pantilla = pantilla;
 		setIdPlantilla(this.pantilla? EBooleanos.SI.getIdBooleano():EBooleanos.NO.getIdBooleano());
+		this.setIdEstacionEstatus(1L);
 	}
 		
 	public UISelectEntity getIkEmpaqueUnidadMedida() {
@@ -69,8 +70,12 @@ public class Estacion extends TcKeetEstacionesDto{
 		return claveSinCeros(this.getClave(), this.getNivel());
 	} //calcularClave
 	
+	public String claveSinCeros(Long nivel) throws Exception{
+		return claveSinCeros(this.getClave(), nivel);
+	} //calcularClave
+	
 	public String claveSinCeros(String clave,Long nivel) throws Exception{
-		return clave.substring(0, ((nivel.intValue())* TAMANIO_NIVEL)+1);
+		return clave.substring(0, ((nivel.intValue())* TAMANIO_NIVEL));
 	} //calcularClave
 	
 	public List<TcKeetEstacionesDto> getHijos() throws Exception{
@@ -84,7 +89,7 @@ public class Estacion extends TcKeetEstacionesDto{
 			params=new HashMap<>();
       params.put("clave", claveSinCeros(clave, nivel));
       params.put("nivel", nivel);
-      regresar=(List<TcKeetEstacionesDto>) DaoFactory.getInstance().toEntitySet(TcKeetEstacionesDto.class,"TcKeetEstacionesDto", "byClaveNivel", params);
+      regresar=(List<TcKeetEstacionesDto>) DaoFactory.getInstance().toEntitySet(TcKeetEstacionesDto.class,"TcKeetEstacionesDto", "getHijos", params);
 		} // try
 		catch (Exception e) {
 			throw e;

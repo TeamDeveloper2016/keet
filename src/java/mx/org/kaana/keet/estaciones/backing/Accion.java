@@ -74,7 +74,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case AGREGAR:											
           this.estacion= new RegistroEstacion();
 					this.estacion.getEstacion().setClave(((TcKeetEstacionesDto)this.attrs.get("estacionPadre")).getClave());
-					this.estacion.getEstacion().setNivel(((TcKeetEstacionesDto)this.attrs.get("estacionPadre")).getNivel());
+					this.estacion.getEstacion().setNivel(((TcKeetEstacionesDto)this.attrs.get("estacionPadre")).getNivel()+1L); // nivel hijo
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -96,7 +96,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");      
 			transaccion = new Transaccion(this.estacion);
 			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.setFlashAttribute("idEstacionProcess", this.estacion.getEstacion().getIdEstacion());
+				JsfBase.setFlashAttribute("estacionProcess", ((TcKeetEstacionesDto)this.attrs.get("estacionPadre")));
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);				
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el estacion de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
@@ -111,7 +111,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-		JsfBase.setFlashAttribute("idEstacionProcess", this.estacion.getEstacion().getIdEstacion());
+		JsfBase.setFlashAttribute("estacionProcess", ((TcKeetEstacionesDto)this.attrs.get("estacionPadre")));
     return (String) this.attrs.get("retorno");
   } // doCancelar	
 
