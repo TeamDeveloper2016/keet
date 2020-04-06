@@ -26,7 +26,6 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;		
-	private static final String RESIDENTE     = "RESIDENTE";
 	private List<UISelectEntity> desarrollos;
 	private UISelectEntity seleccionado;
 	
