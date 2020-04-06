@@ -59,17 +59,17 @@
 							</p:panelGrid>										
 						</p:tab>					
 						<p:tab title="Busqueda">
-							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																															
-								<p:outputLabel for="puesto" value="Puesto:"/>
-								<p:selectOneMenu id="puesto" value="#{keetCatalogosContratosPersonalEmpleados.attrs.idPuesto}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this tabla" listener="#{keetCatalogosContratosPersonalEmpleados.doLoad}" update="dataEmpleados" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetCatalogosContratosPersonalEmpleados.attrs.puestos}"/>
-								</p:selectOneMenu>																
+							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																							
 								<p:outputLabel for="departamento" value="Departamento:"/>
 								<p:selectOneMenu id="departamento" value="#{keetCatalogosContratosPersonalEmpleados.attrs.idDepartamento}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this tabla" listener="#{keetCatalogosContratosPersonalEmpleados.doLoad}" update="dataEmpleados" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetCatalogosContratosPersonalEmpleados.attrs.departamentos}"/>
 								</p:selectOneMenu>								
+								<p:outputLabel for="puesto" value="Puesto:"/>
+								<p:selectOneMenu id="puesto" value="#{keetCatalogosContratosPersonalEmpleados.attrs.idPuesto}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this tabla" listener="#{keetCatalogosContratosPersonalEmpleados.doLoad}" update="dataEmpleados" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetCatalogosContratosPersonalEmpleados.attrs.puestos}"/>
+								</p:selectOneMenu>																
 								<p:outputLabel for="contratista" value="Contratista:"/>
 								<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosPersonalEmpleados.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this tabla" listener="#{keetCatalogosContratosPersonalEmpleados.doLoad}" update="dataEmpleados" oncomplete="janal.desbloquear();"/>
