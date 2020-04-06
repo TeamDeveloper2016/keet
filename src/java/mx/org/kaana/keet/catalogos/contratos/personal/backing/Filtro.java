@@ -25,7 +25,8 @@ import mx.org.kaana.libs.reflection.Methods;
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;		
+  private static final long serialVersionUID= 8793667741599428879L;		
+	private static final String RESIDENTE     = "RESIDENTE";
 	private List<UISelectEntity> desarrollos;
 	private UISelectEntity seleccionado;
 	
@@ -101,7 +102,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-	private Map<String, Object> toPrepare() {
+	private Map<String, Object> toPrepare() throws Exception {
 	  Map<String, Object> regresar= null;
 		StringBuilder condicion     = null;
     UISelectEntity cliente      = null;
@@ -112,7 +113,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			cliente= (UISelectEntity) this.attrs.get("cliente");
 			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
 			if(this.attrs.get("idDesarrolloProcess")!= null && !Cadena.isVacio(this.attrs.get("idDesarrolloProcess")))
-				condicion.append("tc_keet_desarrollos.id_desarrollo=").append(this.attrs.get("idDesarrolloProcess")).append(" and ");			
+				condicion.append("tc_keet_desarrollos.id_desarrollo=").append(this.attrs.get("idDesarrolloProcess")).append(" and ");		
+			else if(JsfBase.isResidente())
+				condicion.append(toCondicionResidente());
 			if(!Cadena.isVacio(this.attrs.get("nombres"))){
 				condicion.append("(tc_keet_desarrollos.nombres like '%").append(this.attrs.get("nombres")).append("%' or ");
 				condicion.append("tc_keet_desarrollos.clave like '%").append(this.attrs.get("nombres")).append("%') and ");
@@ -128,6 +131,26 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch				
 		return regresar;		
 	} // toPrepare    
+	
+	private String toCondicionResidente(){
+		StringBuilder regresar= null;
+		try {
+			regresar= new StringBuilder("tc_keet_desarrollos.id_desarrollo in (");
+			regresar.append("select id_desarrollo from tc_keet_contratos_personal where id_empresa_persona in (");			
+			regresar.append("select id_empresa_persona from tr_mantic_empresa_personal ");
+			regresar.append("inner join tc_janal_usuarios on tr_mantic_empresa_personal.id_persona = tc_janal_usuarios.id_persona ");
+			regresar.append("where tr_mantic_empresa_personal.id_persona=");
+			regresar.append(JsfBase.getAutentifica().getPersona().getIdPersona());
+			regresar.append(" and tc_janal_usuarios.id_perfil=");			
+			regresar.append("(select id_perfil from tc_janal_perfiles where descripcion='");
+			regresar.append(RESIDENTE);			
+			regresar.append("'))) and ");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.toString();
+	} // toCondicionResidente
 	
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
  		List<Columna> columns     = null;
