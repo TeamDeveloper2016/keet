@@ -16,10 +16,16 @@ public class SelectionItem implements Serializable {
 
   private String item;
   private String key;
+	private Long idActivo;
 
   public SelectionItem(String key, String item) {
+		this(key, item, 1L);
+  }
+
+  public SelectionItem(String key, String item, Long idActivo) {
     this.item=item;
     this.key=key;
+		this.idActivo= idActivo;
   }
 
   public String getItem() {
@@ -37,6 +43,14 @@ public class SelectionItem implements Serializable {
   public void setKey(String key) {
     this.key=key;
   }
+
+	public Long getIdActivo() {
+		return idActivo;
+	}
+
+	public void setIdActivo(Long idActivo) {
+		this.idActivo=idActivo;
+	}
 
   @Override
   public boolean equals(Object obj) {
@@ -60,5 +74,9 @@ public class SelectionItem implements Serializable {
     return hash;
   }
 
+	@Override
+	public String toString() {
+		return "SelectionItem{"+"item="+item+", key="+key+", idActivo="+idActivo+'}';
+	}
 
 }

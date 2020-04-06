@@ -177,9 +177,9 @@ public class Registro extends IBaseAttribute implements Serializable {
 			sAsignados= toListSelectionIten(asignados);
 			this.temporalOrigen= sDisponibles;
 			this.temporalDestino= sAsignados;				
-			loadAllEmpleados(sAsignados, sDisponibles);								
+			this.loadAllEmpleados(sAsignados, sDisponibles);								
 			this.model.setSource(sDisponibles);
-			this.model.setTarget(validateControlBusquedaAsignados(sAsignados));			
+			this.model.setTarget(this.validateControlBusquedaAsignados(sAsignados));			
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -223,53 +223,33 @@ public class Registro extends IBaseAttribute implements Serializable {
 		} // else
 	} // loadAllEmpleados
 	
-	private String toPrepare(){
-		StringBuilder condicion= null;
-		String regresar        = null;
-		try {
-			condicion= new StringBuilder();
-			if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
-				condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
-			if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
-				condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
-			if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
-				condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
-			regresar= Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4);
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
+	private String toPrepare() {
+		StringBuilder condicion= new StringBuilder();
+		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
+			condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
+		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
+			condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
+		if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
+			condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
+		return Cadena.isVacio(condicion)? Constantes.SQL_VERDADERO: condicion.substring(0, condicion.length()-4);
 	} // toPrepare
 	
-	private List<SelectionItem> toListSelectionIten(List<ContratoPersonal> entities){
-		List<SelectionItem> regresar= null;
-		try {
-			regresar= new ArrayList<>();
-			for(ContratoPersonal ent: entities)
-				regresar.add(new SelectionItem(ent.getIdEmpresaPersona().toString(), "[".concat(ent.getPuesto()).concat("] ").concat(ent.getNombres()).concat(" ").concat(ent.getPaterno()).concat(" ").concat(ent.getMaterno())));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+	private List<SelectionItem> toListSelectionIten(List<ContratoPersonal> entities) {
+		List<SelectionItem> regresar= new ArrayList<>();
+		for(ContratoPersonal item: entities)
+			regresar.add(new SelectionItem(String.valueOf(item.getIdEmpresaPersona()), "[".concat(item.getPuesto()).concat("] ").concat(item.getNombres()).concat(" ").concat(item.getPaterno()).concat(" ").concat(item.getMaterno()), item.getIdActivo()));
 		return regresar;
 	} // toListSelectionIten
 	
-	private String toDomicilio(){
-		StringBuilder regresar= null;
-		try {
-			regresar= new StringBuilder();
-			regresar.append(this.registroDesarrollo.getDomicilio().getCalle()).append(" , ");
-			if(!Cadena.isVacio(this.registroDesarrollo.getDomicilio().getNumeroExterior()))
-				regresar.append(this.registroDesarrollo.getDomicilio().getNumeroExterior()).append(" , ");
-			if(!Cadena.isVacio(this.registroDesarrollo.getDomicilio().getNumeroInterior()))
-				regresar.append(this.registroDesarrollo.getDomicilio().getNumeroInterior()).append(" , ");
-			regresar.append(this.registroDesarrollo.getDomicilio().getAsentamiento()).append(" , C.P. ");
-			regresar.append(this.registroDesarrollo.getDomicilio().getCodigoPostal());
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+	private String toDomicilio() {
+		StringBuilder regresar= new StringBuilder();
+		regresar.append(this.registroDesarrollo.getDomicilio().getCalle()).append(" , ");
+		if(!Cadena.isVacio(this.registroDesarrollo.getDomicilio().getNumeroExterior()))
+			regresar.append(this.registroDesarrollo.getDomicilio().getNumeroExterior()).append(" , ");
+		if(!Cadena.isVacio(this.registroDesarrollo.getDomicilio().getNumeroInterior()))
+			regresar.append(this.registroDesarrollo.getDomicilio().getNumeroInterior()).append(" , ");
+		regresar.append(this.registroDesarrollo.getDomicilio().getAsentamiento()).append(" , C.P. ");
+		regresar.append(this.registroDesarrollo.getDomicilio().getCodigoPostal());
 		return regresar.toString();
 	} // toDomicilio
 	
