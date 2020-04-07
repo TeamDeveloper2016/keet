@@ -20,6 +20,7 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 	private String clave;
 	private String claveDesarrollo;
 	private String nombreDesarrollo;
+	private Long idPersona;
 
 	public ContratoPersonal() {
 		this(-1L);
@@ -34,10 +35,10 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 	}
 	
 	public ContratoPersonal(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "");		
+		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L);		
 	}
 
-	public ContratoPersonal(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo) {
+	public ContratoPersonal(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona) {
 		super(key);
 		this.nombres         = nombres;
 		this.paterno         = paterno;
@@ -52,6 +53,7 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 		this.clave           = clave;
 		this.claveDesarrollo = claveDesarrollo;
 		this.nombreDesarrollo= nombreDesarrollo;
+		this.idPersona       = idPersona;
 	}
 	
 	public ESql getSqlAccion() {
@@ -156,5 +158,13 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 
 	public void setNombreDesarrollo(String nombreDesarrollo) {
 		this.nombreDesarrollo = nombreDesarrollo;
+	}	
+
+	public Long getIdPersona() {
+		return idPersona;
+	}
+
+	public void setIdPersona(Long idPersona) {
+		this.idPersona = idPersona;
 	}	
 }
