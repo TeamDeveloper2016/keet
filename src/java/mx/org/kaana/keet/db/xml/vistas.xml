@@ -4,6 +4,53 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaIncidenciasDto">
+			<select id="importados">
+				select 
+					tc_mantic_incidentes_archivos.id_incidente_archivo as id_key,
+					tc_mantic_incidentes_archivos.nombre,
+					tc_mantic_incidentes_archivos.archivo,
+					tc_mantic_incidentes_archivos.ruta,
+					tc_mantic_incidentes_archivos.alias,
+					tc_mantic_incidentes_archivos.observaciones observacion_archivo,
+					tc_mantic_incidentes_archivos.registro,					
+					tc_mantic_incidentes.consecutivo,					
+					tc_mantic_incidentes.vigencia_inicio,
+					tc_mantic_incidentes.vigencia_fin,
+					tc_mantic_incidentes.ejercicio,					
+					tc_mantic_incidentes.orden,					
+					tc_mantic_incidentes.observaciones,
+					tc_mantic_incidentes.id_usuario,
+					tc_mantic_incidentes.registro registro_incidente,	
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_persona,
+					concat(persona_usuario.nombres, ' ', persona_usuario.paterno, ' ', persona_usuario.materno) nombre_usuario,
+					tc_mantic_tipos_incidentes.nombre tipo_incidente,
+					tc_mantic_incidentes_estatus.nombre estatus,					
+					tc_mantic_puestos.nombre puesto				
+				from 
+					tc_mantic_incidentes_archivos
+				inner join 
+					tc_mantic_incidentes on tc_mantic_incidentes_archivos.id_incidente = tc_mantic_incidentes.id_incidente
+				inner join 
+					tc_keet_contratos_personal on tc_mantic_incidentes.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona
+				inner join
+					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona				
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+				inner join 
+					tc_mantic_tipos_incidentes on tc_mantic_incidentes.id_tipo_incidente = tc_mantic_tipos_incidentes.id_tipo_incidente
+				inner join 
+					tc_mantic_incidentes_estatus on tc_mantic_incidentes_estatus.id_incidente_estatus = tc_mantic_incidentes.id_incidente_estatus
+				inner join 
+					tc_janal_usuarios on tc_mantic_incidentes_archivos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
+				where 
+					tc_keet_contratos_personal.id_contratos_personal = {idContratoPersona}												
+			</select>
+		</unit>
 		<unit id="VistaTiposObrasDto">
 			<select id="catalogo">
 				select
@@ -95,6 +142,7 @@
 					tc_keet_departamentos.nombre departamento,
 					tc_mantic_puestos.nombre puesto,
 					tr_mantic_empresa_personal.id_activo,
+					tc_mantic_personas.id_persona,
 					tc_mantic_personas.nombres,
 					tc_mantic_personas.paterno,
 					tc_mantic_personas.materno,					
