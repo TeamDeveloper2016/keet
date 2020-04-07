@@ -11,8 +11,11 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombre': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-        'tipoPerfil': {validaciones: 'libre', mascara: 'libre'}
+        'cuenta'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}       
+        'nombre'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}       
+        'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'tipoPerfil'  : {validaciones: 'libre', mascara: 'libre'}
       };
 
       function mensajeConfirmacion() {
@@ -33,7 +36,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{kajoolUsuariosFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{kajoolUsuariosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{kajoolUsuariosFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <f:selectItems value="#{kajoolUsuariosFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -41,8 +44,10 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+              <p:outputLabel for="cuenta" value="Cuenta:"/>
+              <p:inputText id="cuenta" value="#{kajoolUsuariosFiltro.attrs.cuenta}" placeholder="ejemplo: alejandro.jimenez" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="nombre" value="Nombre completo:"/>
-              <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombre')" />              
+              <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" placeholder="ejemplo: ALEJANDRO JIMENEZ" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombre')" />              
               <p:outputLabel for="tipoPerfil"  value="Perfil:"/>
               <p:selectOneMenu  id="tipoPerfil" value="#{kajoolUsuariosFiltro.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
                 <f:selectItems value="#{kajoolUsuariosFiltro.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -50,16 +55,20 @@
                   <h:outputText value="#{item.descripcion}"/>
                 </p:column>                
               </p:selectOneMenu>
+              <p:outputLabel for="fechaInicio" value="Ultimo ingreso inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+              <p:outputLabel for="fechaTermino" value="Ultimo ingreso termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this idEmpresa nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" icon="fa fa-filter"  iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" onstart="janal.execute()" process="@this idEmpresa nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" icon="fa fa-filter"  iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" onstart="janal.execute()" process="@this panelBusqueda" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{kajoolUsuariosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kajoolUsuariosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kajoolUsuariosFiltro.lazyModel.rowCount gt kajoolUsuariosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kajoolUsuariosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kajoolUsuariosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kajoolUsuariosFiltro.lazyModel.rowCount gt kajoolUsuariosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <p:ajax event="contextMenu" process="@this" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
@@ -82,30 +91,36 @@
               </f:facet>
               <h:outputText value="#{index+1}.-"/>
             </p:column>				
-            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.nombreEmpresa}">
+            <p:column class="janal-column-left Wid10 MarAuto Responsive" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Empresa"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombreEmpresa']}"/>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.primerApellido}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.primerApellido}">
               <f:facet name="header">
                 <h:outputText value="Usuario"/>
               </f:facet>
-              <h:outputText value="#{filtro['primerApellido']} #{filtro['segundoApellido']} #{filtro['nombres']}"/>
+              <h:outputText value="#{row['primerApellido']} #{row['segundoApellido']} #{row['nombres']}"/>
             </p:column>
-            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.cuenta}">
+            <p:column class="janal-column-left Wid30 MarAuto Responsive" sortBy="#{row.cuenta}">
               <f:facet name="header">
                 <h:outputText value="Cuenta"/>
               </f:facet>
-              <h:outputText value="#{filtro['cuenta']}"/>
+              <h:outputText value="#{row['cuenta']}"/>
             </p:column>
-            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.descPerfil}">
+            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{row.descPerfil}">
               <f:facet name="header">
                 <h:outputText value="Perfil"/>
               </f:facet>
-              <h:outputText value="#{filtro['descPerfil']}"/>
+              <h:outputText value="#{row['descPerfil']}"/>
             </p:column>            
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{row.ultimoAcceso}">
+              <f:facet name="header">
+                <h:outputText value="Ultimo acceso"/>
+              </f:facet>
+              <h:outputText value="#{row['ultimoAcceso']}"/>
+            </p:column>		
             <f:facet name="footer">
               <h:outputText value="Total [#{kajoolUsuariosFiltro.lazyModel==null?0:kajoolUsuariosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>

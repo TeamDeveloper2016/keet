@@ -1,6 +1,7 @@
 package mx.org.kaana.kajool.procesos.usuarios.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -55,6 +57,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   @PostConstruct
   protected void init() {
+    this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
     CargaInformacionUsuarios carga = null;
     try {
       this.criteriosBusqueda = new CriteriosBusqueda();
@@ -107,6 +110,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));      
+      campos.add(new Columna("ultimoAcceso", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			StringBuilder sb= new StringBuilder();
       switch (tipoBusqueda) {
         case NOMBRE:
@@ -121,6 +125,12 @@ public class Filtro extends IBaseFilter implements Serializable {
         case SIN_CONDICION:
           break;
       } // switch
+			if(!Cadena.isVacio(this.attrs.get("cuenta")))
+				sb.append("(upper(tc_mantic_personas.cuenta) like '%").append(this.attrs.get("cuenta")).append("%') and ");
+			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+				sb.append("(date_format(tc_janal_usuarios.ultimo_acceso, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+			if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+				sb.append("(date_format(tc_janal_usuarios.ultimo_acceso, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				sb.append("(tr_mantic_empresa_personal.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");
       if(sb.length()== 0)

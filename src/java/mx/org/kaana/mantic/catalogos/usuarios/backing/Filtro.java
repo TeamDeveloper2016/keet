@@ -98,15 +98,15 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idTipoSexo")) && !this.attrs.get("idTipoSexo").toString().equals("-1"))
   		sb.append("(tc_mantic_personas.id_tipo_sexo=").append(this.attrs.get("idTipoSexo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idPerfil")) && !this.attrs.get("idPerfil").toString().equals("-1"))
-  		sb.append("(tc_janal_usuarios.idPerfil=").append(this.attrs.get("idPerfil")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		sb.append("(tc_janal_usuarios.id_perfil=").append(this.attrs.get("idPerfil")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_janal_usuarios.ultimo_acceso, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("(date_format(tc_janal_usuarios.ultimo_acceso, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+		else
+		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
     regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);

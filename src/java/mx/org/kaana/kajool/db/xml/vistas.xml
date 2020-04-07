@@ -597,7 +597,8 @@
 				  tc_janal_perfiles.descripcion desc_perfil,				
 				  tc_janal_usuarios.activo,				
 				  lower(tc_mantic_personas.cuenta) cuenta,
-          tc_mantic_personas.curp
+          tc_mantic_personas.curp,
+				  tc_janal_usuarios.ultimo_acceso
 				from
 				  tc_janal_usuarios
 				inner join 				
