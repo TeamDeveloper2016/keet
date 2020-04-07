@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import mx.org.kaana.mantic.enums.EExportacionXls;
 
 /**
  *@company KAANA
@@ -24,6 +25,10 @@ public class Modelo implements Serializable {
 
   public Modelo(Map<String, Object> params, String proceso, String idXml) {
 		this(params, proceso, idXml, "");
+	}
+	
+  public Modelo(Map<String, Object> params, EExportacionXls enumExportacion) {
+		this(params, enumExportacion.getProceso(), enumExportacion.getIdXml(), enumExportacion.getNombreArchivo());
 	}
 	
   public Modelo(Map<String, Object> params, String proceso, String idXml, String nombre) {
