@@ -1,6 +1,5 @@
 package mx.org.kaana.keet.estaciones.beans;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,12 +7,10 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
-public class Estacion extends TcKeetEstacionesDto{
+public class Estacion extends TcKeetEstacionesDto {
 	
 	private UISelectEntity ikEmpaqueUnidadMedida;
 	private boolean pantilla;
@@ -66,7 +63,7 @@ public class Estacion extends TcKeetEstacionesDto{
 		return regresar;
 	} //calcularClave
 	
-	public String claveSinCeros() throws Exception{
+	public String claveSinCeros() throws Exception {
 		return claveSinCeros(this.getClave(), this.getNivel());
 	} //calcularClave
 	

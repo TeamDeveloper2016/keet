@@ -5528,7 +5528,8 @@
 				from 
 					tc_mantic_tipos_incidentes
 				where 
-					{condicion}
+				  tc_mantic_tipos_incidentes.grupo= 1
+					and {condicion}
 			</select>
 		</unit>
 		<unit id="TcManticIncidentesEstatusDto">

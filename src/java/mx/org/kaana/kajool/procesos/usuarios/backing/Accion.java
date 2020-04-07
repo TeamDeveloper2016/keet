@@ -33,6 +33,7 @@ import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.BouncyEncryption;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
@@ -156,7 +157,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
 			TcManticPersonasDto persona= (TcManticPersonasDto)this.attrs.get("tcManticPersonasDto");			
       if (persona.isValid()) {
-				persona.setContrasenia(BouncyEncryption.decrypt(persona.getContrasenia()));
+				persona.setContrasenia(BouncyEncryption.decrypt(Cadena.isVacio(persona.getContrasenia())? BouncyEncryption.encrypt(Constantes.CONTRASENIA_DEFAULT):  persona.getContrasenia()));
         index = this.getCriteriosBusqueda().getListaPersonas().indexOf(new UISelectEntity(new Entity(persona.getIdPersona())));
 				if(index>= 0)
           this.criteriosBusqueda.setPersona(this.getCriteriosBusqueda().getListaPersonas().get(index));

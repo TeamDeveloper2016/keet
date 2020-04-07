@@ -97,7 +97,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.registro desc");
       columns = new ArrayList<>();
@@ -219,9 +219,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcManticOrdenesEstatusDto", "row", params, columns, "nombre"));
 			this.attrs.put("idOrdenEstatus", new UISelectEntity("-1"));
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);

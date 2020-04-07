@@ -4245,6 +4245,43 @@
 			</select> 
 		</unit>
 		<unit id="VistaPersonasDto">
+			<select id="lazy">
+				select 
+				  tc_mantic_personas.id_persona as id_key,
+				  tc_mantic_personas.nombres,
+				  tc_mantic_personas.paterno,
+				  tc_mantic_personas.materno,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
+				  tc_mantic_personas.rfc,
+				  tc_mantic_personas.curp,
+				  tc_janal_tipos_sexos.id_tipo_sexo,
+		 		  tc_janal_tipos_sexos.nombre as sexo,
+				  tc_janal_tipos_sexos.nombre,
+				  tc_mantic_personas.cuenta,
+					tc_mantic_empresas.nombre sucursal,
+					tc_mantic_personas.id_tipo_persona,
+					tc_janal_perfiles.descripcion as perfil,
+					tc_janal_usuarios.ultimo_acceso
+				from 
+					tc_janal_usuarios
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				inner join
+					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				inner join
+					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+				inner join 
+					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
+				inner join
+					tc_janal_tipos_sexos on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+				where 				
+				  tr_mantic_empresa_personal.id_empresa in (1,2)	
+				  and tc_mantic_personas.id_tipo_persona!= 1
+				  and {condicion}
+				{sortOrder}  
+			</select>  
 			<select id="contratistas">
 				select 
 					tr_mantic_empresa_personal.id_empresa_persona as id_key,
@@ -4303,18 +4340,12 @@
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				where 				
 					tc_mantic_personas.nombres like '%{nombres}%' 
-				and
-					tc_mantic_personas.paterno like '%{paterno}%'
-				and
-					tc_mantic_personas.materno  like '%{materno}%'
-				and 
-					tc_mantic_personas.rfc  like '%{rfc}%'
-				and 
-					tc_mantic_personas.id_tipo_sexo in ({idTipoSexo})
-				and
-					tc_mantic_personas.id_tipo_persona  in ({idTipoPersona})
-				and 
-					tr_mantic_empresa_personal.id_empresa in ({sucursales})								
+				  and tc_mantic_personas.paterno like '%{paterno}%'
+				  and tc_mantic_personas.materno  like '%{materno}%'
+				  and tc_mantic_personas.rfc  like '%{rfc}%'
+				  and tc_mantic_personas.id_tipo_sexo in ({idTipoSexo})
+				  and tc_mantic_personas.id_tipo_persona  in ({idTipoPersona})
+				  and tr_mantic_empresa_personal.id_empresa in ({sucursales})								
 				{sortOrder}  
 			</select>              
 			<select id="filter">

@@ -3,7 +3,7 @@ package mx.org.kaana.mantic.catalogos.personas.beans;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.db.dto.TcKeetPersonasBeneficiariosDto;
 
-public class PersonaBeneficiario extends TcKeetPersonasBeneficiariosDto{
+public class PersonaBeneficiario extends TcKeetPersonasBeneficiariosDto {
 	
 	private static final long serialVersionUID = 731679150148040999L;	
 	private ESql sqlAccion;

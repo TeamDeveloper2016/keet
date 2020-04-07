@@ -32,7 +32,7 @@
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
 								<p:outputLabel for="nombres" value="Clave ó nombre del desarrollo:"/>
 								<p:inputText id="nombres" value="#{keetCatalogosContratosPersonalFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/>  
-								<p:outputLabel for="razonSocial" value="Nombre del desarrollo:"/>
+								<p:outputLabel for="razonSocial" value="Razón social del cliente:"/>
 								<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: CONSTRUCTORA. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosPersonalFiltro.attrs.cliente}" completeMethod="#{keetCatalogosContratosPersonalFiltro.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">

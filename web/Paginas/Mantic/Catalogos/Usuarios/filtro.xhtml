@@ -11,11 +11,12 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombres': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}       
-        'rfc': {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: true},
-        'curp': {validaciones: 'libre', mascara: 'curp', formatos: 'cambiar-mayusculas', individual: true},
-        'idTipoSexo': {validaciones: 'libre', mascara: 'libre'},
-        'tipoPersona': {validaciones: 'libre', mascara: 'libre'}
+        'cuenta'     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}       
+        'nombres'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}       
+        'rfc'        : {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas'},
+        'fechaInicio': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'idPerfil'    : {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
   </ui:define>
@@ -29,24 +30,28 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-              <p:outputLabel for="nombres" value="Nombres, paterno, materno:"/>
-              <p:inputText id="nombres" value="#{manticCatalogosUsuariosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="cuenta" value="Cuenta:"/>
+              <p:inputText id="cuenta" value="#{manticCatalogosUsuariosFiltro.attrs.cuenta}" placeholder="ejemplo: alejandro.jimenez" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="nombres" value="Nombre(s):"/>
+              <p:inputText id="nombres" value="#{manticCatalogosUsuariosFiltro.attrs.nombres}" placeholder="ejemplo: ALEJANDRO JIMENEZ" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosUsuariosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" />              			                            
-              <p:outputLabel for="curp" value="CURP:"/>
-              <p:inputText id="curp" value="#{manticCatalogosUsuariosFiltro.attrs.curp}" styleClass="janal-wid-100-txt" />              														
-              <p:outputLabel for="idTipoSexo"  value="Sexo:"/>
-              <p:selectOneMenu  id="idTipoSexo"  value="#{manticCatalogosUsuariosFiltro.attrs.idTipoSexo}"  styleClass="janal-wid-100-txt">
-                <f:selectItem itemLabel="TODOS" itemValue="1,2,3"/>
-                <f:selectItem itemLabel="HOMBRE" itemValue="1"/>
-                <f:selectItem itemLabel="MUJER" itemValue="2"/>
-                <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
-              </p:selectOneMenu>             
+              <p:inputText id="rfc" value="#{manticCatalogosUsuariosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" placeholder="ejemplo: JIGA200101"/>              			                            
+              <p:outputLabel for="idPerfil"  value="Perfiles:"/>
+              <p:selectOneMenu id="idPerfil" value="#{manticCatalogosUsuariosFiltro.attrs.idPerfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticCatalogosUsuariosFiltro.attrs.perfiles}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.descripcion}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="fechaInicio" value="Ingreso inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{manticCatalogosUsuariosFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+              <p:outputLabel for="fechaTermino" value="Ingreso termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{manticCatalogosUsuariosFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this nombres rfc curp idTipoSexo" actionListener="#{manticCatalogosUsuariosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this nombres rfc curp idTipoSexo" actionListener="#{manticCatalogosUsuariosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticCatalogosUsuariosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticCatalogosUsuariosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 						</div>
           </p:panel>
         </div>
@@ -67,47 +72,41 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-             <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.curp}">
+             <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.sucursal}">
               <f:facet name="header">
-                <h:outputText value="CURP"/>
+                <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['curp']}"/>
+              <h:outputText value="#{filtro['sucursal']}"/>
             </p:column>		
-             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.rfc}">
+             <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
               <h:outputText value="#{filtro['rfc']}"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.nombres}">
-              <f:facet name="header">
-                <h:outputText value="Nombres"/>
-              </f:facet>
-              <h:outputText value="#{filtro['nombres']}"/>
-            </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{filtro.paterno}">
-              <f:facet name="header">
-                <h:outputText value="Apellido paterno"/>
-              </f:facet>
-              <h:outputText value="#{filtro['paterno']}"/>
-            </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.materno}">
-              <f:facet name="header">
-                <h:outputText value="Apellido materno"/>
-              </f:facet>
-              <h:outputText value="#{filtro['materno']}"/>
-            </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.sexo}">
-              <f:facet name="header">
-                <h:outputText value="Sexo"/>
-              </f:facet>
-              <h:outputText value="#{filtro['sexo']}"/>
-            </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.cuenta}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.cuenta}">
               <f:facet name="header">
                 <h:outputText value="Cuenta"/>
               </f:facet>
               <h:outputText value="#{filtro['cuenta']}"/>
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombreCompleto}">
+              <f:facet name="header">
+                <h:outputText value="Nombre(s)"/>
+              </f:facet>
+              <h:outputText value="#{filtro['nombreCompleto']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.perfil}">
+              <f:facet name="header">
+                <h:outputText value="Perfil"/>
+              </f:facet>
+              <h:outputText value="#{filtro['perfil']}"/>
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{filtro.ultimoAcceso}">
+              <f:facet name="header">
+                <h:outputText value="Ultimo acceso"/>
+              </f:facet>
+              <h:outputText value="#{filtro['ultimoAcceso']}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosUsuariosFiltro.lazyModel==null?0:manticCatalogosUsuariosFiltro.lazyModel.rowCount}] registros"/>

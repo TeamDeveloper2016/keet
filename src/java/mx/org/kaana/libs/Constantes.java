@@ -4,8 +4,9 @@ import java.awt.Color;
 
 public final class Constantes {
 
-  public static final String NOMBRE_RESOURCES = "janal";
-  public static final String NOMBRE_           = "kajool";
+  public static final String NOMBRE_RESOURCES   = "janal";
+  public static final String NOMBRE_            = "kajool";
+  public static final String CONTRASENIA_DEFAULT= "20cafu20";
   public static final String JANAL_DEFAULT_PROPERTIES = "janal.properties";
   public static final String KAANA_PROPERTIES = "kajool.properties";
   public static final String NOMBRE_DE_APLICACION = "kajool";
