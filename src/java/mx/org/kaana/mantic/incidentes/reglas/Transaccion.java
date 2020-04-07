@@ -24,11 +24,17 @@ public class Transaccion extends IBaseTnx {
 
 	private Incidente incidente;
 	private String messageError;	
+	private String observaciones;	
 	private boolean estatus;
 
 	public Transaccion(Incidente incidente) {
-		this.incidente= incidente;
-		this.estatus  = false;
+		this(incidente, "");
+	}
+	
+	public Transaccion(Incidente incidente, String observaciones) {
+		this.incidente    = incidente;
+		this.observaciones= observaciones;
+		this.estatus      = false;
 	}
 
 	public Incidente getIncidente() {
@@ -201,7 +207,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setVigenciaInicio(this.incidente.getVigenciaInicio());
 			dto.setVigenciaFin(this.incidente.getVigenciaFin());		
 			if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
-				this.incidente.setObservaciones("Actualización del incidente anteriormente registrado.");
+				this.incidente.setObservaciones(this.observaciones);
 				regresar= registrarBitacora(sesion, this.incidente.getIdIncidente(), dto.getIdIncidenteEstatus());
 			} // if
 		} // try
