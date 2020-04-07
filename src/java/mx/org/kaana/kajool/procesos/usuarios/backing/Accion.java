@@ -28,6 +28,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.acceso.reglas.GeneradorCuentas;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.CargaInformacionUsuarios;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
@@ -59,9 +60,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("isModificar", this.accion.equals(EAccion.MODIFICAR));
 			this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
 			this.attrs.put("nuevo", JsfBase.getFlashAttribute("idUsuario")!= null);
-      loadPerfiles();
-      loadPersonas();      
-      loadUsuario();
+      this.loadPerfiles();
+      this.loadPersonas();      
+      this.loadUsuario();
       this.attrs.put("titulo", this.accion.equals(EAccion.MODIFICAR) ? "Modificar usuario cuenta [".concat(((TcManticPersonasDto) this.attrs.get("tcManticPersonasDto")).getCuenta()).concat("]") : "Agregar usuario [...]");      
 			buscar();
     } // try
@@ -151,13 +152,26 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doBuscar
 	
+	private void toValueDefault(TcManticPersonasDto persona) throws Exception {
+		String contrasenia= Cadena.isVacio(persona.getMaterno())? Cadena.isVacio(persona.getPaterno())? Constantes.CONTRASENIA_DEFAULT: persona.getPaterno(): persona.getMaterno();
+		if(Cadena.isVacio(persona.getContrasenia()))
+			contrasenia= BouncyEncryption.encrypt(contrasenia);
+		else
+		  contrasenia= persona.getContrasenia();
+		persona.setContrasenia(BouncyEncryption.decrypt(contrasenia));
+		if(Cadena.isVacio(persona.getCuenta())) {
+	    GeneradorCuentas generador= new GeneradorCuentas(persona.getNombres(), persona.getPaterno(), persona.getMaterno());
+			persona.setCuenta(generador.getCuentaGenerada());
+		} // if
+	}
+	
   public void buscar() {
     TcJanalUsuariosDto usuario= null;
     int index                 = -1;
     try {
 			TcManticPersonasDto persona= (TcManticPersonasDto)this.attrs.get("tcManticPersonasDto");			
       if (persona.isValid()) {
-				persona.setContrasenia(BouncyEncryption.decrypt(Cadena.isVacio(persona.getContrasenia())? BouncyEncryption.encrypt(Constantes.CONTRASENIA_DEFAULT):  persona.getContrasenia()));
+				this.toValueDefault(persona);
         index = this.getCriteriosBusqueda().getListaPersonas().indexOf(new UISelectEntity(new Entity(persona.getIdPersona())));
 				if(index>= 0)
           this.criteriosBusqueda.setPersona(this.getCriteriosBusqueda().getListaPersonas().get(index));

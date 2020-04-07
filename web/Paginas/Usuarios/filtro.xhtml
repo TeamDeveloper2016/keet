@@ -11,8 +11,8 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'cuenta'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}       
-        'nombre'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}       
+        'cuenta'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},       
+        'nombre'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},      
         'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'tipoPerfil'  : {validaciones: 'libre', mascara: 'libre'}
@@ -103,19 +103,19 @@
               </f:facet>
               <h:outputText value="#{row['primerApellido']} #{row['segundoApellido']} #{row['nombres']}"/>
             </p:column>
-            <p:column class="janal-column-left Wid30 MarAuto Responsive" sortBy="#{row.cuenta}">
+            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{row.cuenta}">
               <f:facet name="header">
                 <h:outputText value="Cuenta"/>
               </f:facet>
               <h:outputText value="#{row['cuenta']}"/>
             </p:column>
-            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{row.descPerfil}">
+            <p:column class="janal-column-left janal-wid-15 MarAuto Responsive" sortBy="#{row.descPerfil}">
               <f:facet name="header">
                 <h:outputText value="Perfil"/>
               </f:facet>
               <h:outputText value="#{row['descPerfil']}"/>
             </p:column>            
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{row.ultimoAcceso}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.ultimoAcceso}">
               <f:facet name="header">
                 <h:outputText value="Ultimo acceso"/>
               </f:facet>
