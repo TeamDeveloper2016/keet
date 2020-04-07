@@ -122,6 +122,9 @@
 						<p:column styleClass="janal-wid-col-50 janal-column-center">
 							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doAccion(filtro)}" title="Capturar incidencia."/>															
 						</p:column>
+						<p:column styleClass="janal-wid-col-50 janal-column-center">
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doImportar(filtro)}" title="Importar incidencia."/>															
+						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosPersonalEmpleados.lazyModel==null?0:keetCatalogosContratosPersonalEmpleados.lazyModel.rowCount}] registros"/>
             </f:facet>
