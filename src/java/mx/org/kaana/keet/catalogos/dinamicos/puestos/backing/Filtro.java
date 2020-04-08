@@ -27,7 +27,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.catalogos.dinamicos.reglas.Transaccion;
 import mx.org.kaana.keet.enums.ECatalogosDinamicos;
 
-@Named(value = "keetCatalogosDinamicosFiltro")
+@Named(value = "keetCatalogosDinamicosPersonasFiltro")
 @ViewScoped
 public class Filtro extends Comun implements Serializable {
 

@@ -28,7 +28,7 @@ import mx.org.kaana.keet.catalogos.dinamicos.reglas.Transaccion;
 import mx.org.kaana.keet.enums.ECatalogosDinamicos;
 import org.primefaces.model.DualListModel;
 
-@Named(value = "keetCatalogosDinamicosAccion")
+@Named(value = "keetCatalogosDinamicosPersonasAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
