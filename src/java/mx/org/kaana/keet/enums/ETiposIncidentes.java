@@ -14,7 +14,10 @@ public enum ETiposIncidentes {
 	LICENCIA_PATERNA ("LICENCIA PATERNA", "incidencia-naranja"),
 	OMISION_ENTRADA  ("OMISION ENTRADA" , "incidencia-azul"),
 	OMISION_SALIDA   ("OMISION SALIDA"  , "incidencia-azul"),
-	ONOMASTICO       ("ONOMASTICO"      , "incidencia-verde");
+	ONOMASTICO       ("ONOMASTICO"      , "incidencia-verde"),
+	ALTA             ("ALTA"            , "incidencia-verde"),
+	BAJA             ("BAJA"            , "incidencia-rojo"),
+	REINGRESO        ("REINGRESO"       , "incidencia-verde");
 	
 	private static final Map<Long, ETiposIncidentes> lookup= new HashMap<>();		
 	private String nombre;	
