@@ -9,7 +9,8 @@ public enum EEstatusIncidentes {
   CAPTURADA (1L),
   ACEPTADA  (2L),
 	APLICADA  (3L),
-  CANCELADA (4L);
+  CANCELADA (4L),
+  REGISTRADA(5L);
 
   private Long idEstatusInicidente;
 	private static final Map<Long, EEstatusIncidentes> lookup= new HashMap<>();
