@@ -1,20 +1,27 @@
 package mx.org.kaana.mantic.catalogos.personas.reglas;
 
+import com.google.common.base.Objects;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetPersonasBancosDto;
 import mx.org.kaana.keet.db.dto.TcKeetPersonasBeneficiariosDto;
+import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.BouncyEncryption;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBanco;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBeneficiario;
@@ -22,16 +29,18 @@ import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteRepresentanteDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorAgenteDto;
+import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.hibernate.Session;
 
-public class Transaccion  extends IBaseTnx{
+public class Transaccion extends IBaseTnx{
 
 	private IBaseDto dto;
 	private RegistroPersona persona;	
@@ -183,14 +192,17 @@ public class Transaccion  extends IBaseTnx{
   } // eliminarCliente
 	
 	private boolean registraPersonaEmpresa(Session sesion, Long idPersona) throws Exception{
-		boolean regresar= false;		
+		boolean regresar     = false;		
+		Long idEmpresaPersona= -1L;
 		try {
 			this.persona.getEmpresaPersona().setIdPersona(idPersona);			
 			this.persona.getEmpresaPersona().setIdEmpresa(this.persona.getIdEmpresa());						
 			this.persona.getEmpresaPersona().setIdPuesto(this.persona.getIdPuesto());						
 			this.persona.getEmpresaPersona().setIdUsuario(JsfBase.getIdUsuario());												
 			this.persona.getEmpresaPersona().setObservaciones("Alta de empleado nuevo.");												
-			regresar= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona())>= 1L;			
+			idEmpresaPersona= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona());
+			if(idEmpresaPersona>= 1L)
+				regresar= registrarIncidencia(sesion, idEmpresaPersona);			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -198,9 +210,58 @@ public class Transaccion  extends IBaseTnx{
 		return regresar;
 	} // registraPersonaEmpresa
 	
+	private boolean registrarIncidencia(Session sesion, Long idEmpresaPersona) throws Exception{
+		return registrarIncidencia(sesion, idEmpresaPersona, ETiposIncidentes.ALTA.getKey(), "Alta de empleado");
+	} // registrarIncidencia
+	
+	private boolean registrarIncidencia(Session sesion, Long idEmpresaPersona, Long idTipoIncidencia, String observaciones) throws Exception{
+		Boolean regresar                = false;
+		TcManticIncidentesDto incidencia= null;
+		Siguiente consecutivo           = null;
+		try {
+			incidencia= new TcManticIncidentesDto();
+			consecutivo= this.toSiguiente(sesion);			
+			incidencia.setConsecutivo(consecutivo.getOrden().toString());			
+			incidencia.setOrden(consecutivo.getOrden());			
+			incidencia.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
+			incidencia.setIdEmpresaPersona(idEmpresaPersona);
+			incidencia.setIdIncidenteEstatus(EEstatusIncidentes.REGISTRADA.getIdEstatusInicidente());
+			incidencia.setIdTipoIncidente(idTipoIncidencia);
+			incidencia.setIdUsuario(JsfBase.getIdUsuario());
+			incidencia.setObservaciones(observaciones);
+			incidencia.setVigenciaInicio(LocalDate.now());
+			incidencia.setVigenciaFin(LocalDate.now());
+			regresar= DaoFactory.getInstance().insert(sesion, incidencia)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarIncidencia
+	
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", this.getCurrentYear());			
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticIncidentesDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L); 
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguiente
+	
 	private boolean actualizaPuestoPersona(Session sesion, Long idPersona) throws Exception{
 		boolean regresar                          = false;
 		TrManticEmpresaPersonalDto empresaPersonal= null;
+		TrManticEmpresaPersonalDto oldData        = null;
 		Map<String, Object>params                 = null;
 		try {
 			params= new HashMap<>();
@@ -225,14 +286,36 @@ public class Transaccion  extends IBaseTnx{
 				empresaPersonal.setIdNomina(this.persona.getEmpresaPersona().getIdNomina());
 				empresaPersonal.setIdSeguro(this.persona.getEmpresaPersona().getIdSeguro());
 				bitacora(sesion, "Empleados", empresaPersonal);
-				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;				
+				oldData= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findById(sesion, empresaPersonal.getClass(), empresaPersonal.getKey());
+				if(registrarIncidenciaCambios(sesion, empresaPersonal, oldData))
+					regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;				
 			} // if			
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
-	} // registraPersonaEmpresa
+	} // actualizaPuestoPersona
+	
+	private boolean registrarIncidenciaCambios(Session sesion, TrManticEmpresaPersonalDto empresaPersonal, TrManticEmpresaPersonalDto empresaPersonalOld) throws Exception{
+		boolean regresar       = true;		
+		Map<String, Object> old= null;
+		Map<String, Object> tmp= null;
+		try {			
+			old= empresaPersonalOld.toMap();
+			tmp= empresaPersonal.toMap();
+			for(String key: old.keySet()) {
+				if(!Objects.equal(old.get(key),tmp.get(key))) {
+					if(key.equals("idActivo"))
+						regresar= registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Reingreso de empleado." : "Baja de empleado.");						
+				} // if
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarBitacoraCambios
 	
 	private boolean registraPersonasDomicilios(Session sesion, Long idPersona) throws Exception {
     TrManticPersonaDomicilioDto dto= null;
