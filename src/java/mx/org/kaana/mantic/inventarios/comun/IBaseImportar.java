@@ -574,13 +574,13 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	protected Long toRegisterFile(String carpetaArchivo) throws Exception {
 		Long regresar= -1L;
 		TcManticArchivosDto file= new TcManticArchivosDto(
-			Archivo.toFormatNameFile(this.getFile().getName()), // String archivo, 
+			this.getFile().getName(), // String archivo, 
 			1L, // Long idEliminado, 
 			this.getFile().getRuta(), // String ruta, 
 			JsfBase.getIdUsuario(), // Long idUsuario, 
 			Configuracion.getInstance().getPropiedadSistemaServidor(carpetaArchivo).concat(this.getFile().getRuta()).concat(this.getFile().getName()), // String alias, 
 			-1L, // Long idArchivo, 
-			this.getFile().getOriginal() // String nombre
+			Archivo.toFormatNameFile(this.getFile().getOriginal()) // String nombre
 		);
 		regresar= DaoFactory.getInstance().insert(file);
 		if(regresar <= 0)
