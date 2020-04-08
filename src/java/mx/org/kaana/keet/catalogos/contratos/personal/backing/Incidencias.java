@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import static java.time.temporal.ChronoUnit.DAYS;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 	private ScheduleEvent event;
 	private ContratoPersonal contratoPersonal;		
 	private Integer count;
+	private List<Incidente> incidenciasDelete;
 
 	public ContratoPersonal getContratoPersonal() {
 		return contratoPersonal;
@@ -86,6 +88,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 			this.attrs.put("idContratoPersona", idContratoPersona);			
+			this.incidenciasDelete= new ArrayList<>();
 			this.loadTiposIncidentes();
 			this.loadEmpleado();
     } // try // try
@@ -248,7 +251,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			this.attrs.put("idIncidenteEstatus", seleccionado.getIdIncidenteEstatus());
 			this.attrs.put("idTipoIncidente", seleccionado.getIdTipoIncidente());
 			this.attrs.put("idSelectionEvent", ".incidencia-".concat(seleccionado.getIdIncidente().toString()));
-			this.attrs.put("isDelete", seleccionado.getAccion().equals(ESql.INSERT));
+			this.attrs.put("isDelete", seleccionado.getIdIncidenteEstatus().equals(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente()));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -301,7 +304,11 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 	} // doApplyChange
 	
 	public void doDelete(){					
+		Incidente seleccionado= null;
 		try {						
+			seleccionado= (Incidente) this.event.getData();
+			if(seleccionado.getAccion().equals(ESql.UPDATE))
+				this.incidenciasDelete.add(seleccionado);
 			this.eventModel.deleteEvent(this.event);		
 		} // try
 		catch (Exception e) {
@@ -359,8 +366,8 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		try {			
-			if(this.eventModel.getEvents().size()> 0){
-				transaccion= new Transaccion(this.eventModel);
+			if(this.eventModel.getEvents().size()> 0 || this.incidenciasDelete.size()> 0){
+				transaccion= new Transaccion(this.eventModel, this.incidenciasDelete);
 				if(transaccion.ejecutar(EAccion.REGISTRAR)){
 					JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente) this.attrs.get("opcionResidente"));
 					JsfBase.setFlashAttribute("idDesarrollo", (Long) this.attrs.get("idDesarrollo"));			
