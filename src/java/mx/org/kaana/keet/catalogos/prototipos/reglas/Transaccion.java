@@ -10,7 +10,6 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.catalogos.prototipos.beans.Documento;
 import mx.org.kaana.keet.catalogos.prototipos.beans.RegistroPrototipo;
 import mx.org.kaana.keet.catalogos.prototipos.beans.SistemaConstructivo;
-import mx.org.kaana.keet.db.dto.TcKeetPrototiposArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDiasDto;
 import mx.org.kaana.keet.enums.EDiasSemana;
 import mx.org.kaana.libs.pagina.JsfBase;

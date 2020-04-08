@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.beans.SelectionItem;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.keet.catalogos.contratos.personal.beans.DocumentoIncidencia;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPersonalDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
@@ -21,7 +22,13 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	private Long idDesarrollo;	
 	private List<SelectionItem> empleados;
 	private ScheduleModel eventModel;
+	private List<DocumentoIncidencia> incidencias;
 
+	public Transaccion(List<DocumentoIncidencia> incidencias) {
+		this(new Incidente());
+		this.incidencias= incidencias;
+	}	
+	
 	public Transaccion(ScheduleModel eventModel) {
 		this(new Incidente());
 		this.eventModel= eventModel;
@@ -81,6 +88,12 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						} // switch						
 						setIncidente(incidente);
 						super.ejecutar(sesion, accionIncidente);
+					} // for
+					break;
+				case SUBIR:
+					for(DocumentoIncidencia incidencia: this.incidencias){
+						if(DaoFactory.getInstance().insert(sesion, incidencia)>=1L)
+							toSaveFile(incidencia.getIdArchivo());
 					} // for
 					break;
 				default:

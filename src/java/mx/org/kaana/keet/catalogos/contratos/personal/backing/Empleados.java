@@ -211,6 +211,21 @@ public class Empleados extends IBaseFilter implements Serializable {
 		return regresar;
 	} // doAccion
 	
+	public String doImportar(Entity seleccionado){
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente) this.attrs.get("opcionResidente"));
+			JsfBase.setFlashAttribute("idDesarrollo", (Long) this.attrs.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("idContratoPersona", seleccionado.getKey());
+			regresar= "importar".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doImportar
+	
 	public String doCancelar() {
     String regresar          = null;    
 		EOpcionesResidente opcion= null;
