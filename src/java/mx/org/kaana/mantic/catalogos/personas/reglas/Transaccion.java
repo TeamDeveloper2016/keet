@@ -221,7 +221,7 @@ public class Transaccion extends IBaseTnx{
 		try {
 			incidencia= new TcManticIncidentesDto();
 			consecutivo= this.toSiguiente(sesion);			
-			incidencia.setConsecutivo(consecutivo.getOrden().toString());			
+			incidencia.setConsecutivo(consecutivo.getConsecutivo());			
 			incidencia.setOrden(consecutivo.getOrden());			
 			incidencia.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
 			incidencia.setIdEmpresaPersona(idEmpresaPersona);
