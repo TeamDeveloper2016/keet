@@ -142,12 +142,15 @@ public class Transaccion extends IBaseTnx {
 	} // toSiguiente
 	
 	private void actualizarLote(Session sesion, Lote item) throws Exception {
+		Value orden= null;
 		try {
 			switch(item.getAccion()){
 				case INSERT:
           item.setIdContratoLote(-1L);
 					item.setIdContrato(this.contrato.getContrato().getIdContrato());
 					item.setIdUsuario(JsfBase.getIdUsuario());
+					orden= DaoFactory.getInstance().toField("TcKeetContratosArchivosDto", "getOrden", item.toMap(), "maxOrden	");
+					item.setOrden(orden.toLong(1L));
 					DaoFactory.getInstance().insert(sesion, item);
 					cargarPlanos(sesion, (List<TcKeetContratosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toContratos", item.toMap()));
 					break;
