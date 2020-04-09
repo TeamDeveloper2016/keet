@@ -250,7 +250,7 @@
 				from 
 					tc_keet_proyectos
 				where				  
-				  id_cliente = {idCliente} and ejercicio = {ejercicio}			
+				  ejercicio = {ejercicio}			
 			</select>			
     </unit>		
     <unit id="TcKeetProyectosLotesDto">
