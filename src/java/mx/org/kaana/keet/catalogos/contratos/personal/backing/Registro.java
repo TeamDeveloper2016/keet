@@ -173,13 +173,16 @@ public class Registro extends IBaseAttribute implements Serializable {
 			condicion= this.toPrepare();
 			disponibles= motorBusqueda.toPersonasDisponibles(condicion);
 			sDisponibles= toListSelectionIten(disponibles);
-			asignados= motorBusqueda.toPersonasAsignadas();
+			asignados= motorBusqueda.toPersonasAsignadas(condicion);
 			sAsignados= toListSelectionIten(asignados);
 			this.temporalOrigen= sDisponibles;
 			this.temporalDestino= sAsignados;				
 			this.loadAllEmpleados(sAsignados, sDisponibles);								
 			this.model.setSource(sDisponibles);
-			this.model.setTarget(this.validateControlBusquedaAsignados(sAsignados));			
+			this.model.setTarget(sAsignados);		
+			//this.model.setTarget(this.validateControlBusquedaAsignados(sAsignados));		
+			this.attrs.put("totalDisponibles", this.model.getSource().size());
+			this.attrs.put("totalAsignados", this.model.getTarget().size());
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -253,11 +256,25 @@ public class Registro extends IBaseAttribute implements Serializable {
 		return regresar.toString();
 	} // toDomicilio
 	
-	public void onTransfer(TransferEvent event) {				
+	public void onTransfer(TransferEvent event) {
 		List<SelectionItem> transfers= null;
+		List<SelectionItem> empleados= null;
+		Transaccion transaccion      = null;
+		EAccion accion               = null;
 		try {
 			transfers= (List<SelectionItem>) event.getItems();
-			if(event.isAdd()){
+			empleados= new ArrayList<>();
+			for(SelectionItem item: transfers){
+				if(this.allEmpleados.contains(item))
+					empleados.add(this.allEmpleados.get(this.allEmpleados.indexOf(item)));
+			} // for
+			accion= event.isAdd() ? EAccion.PROCESAR : EAccion.DEPURAR;
+			transaccion= new Transaccion((Long)this.attrs.get("idDesarrollo"), empleados);
+			if(transaccion.ejecutar(accion))
+				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Se ".concat(accion.equals(EAccion.PROCESAR) ? "asignaron" : "desasignaron").concat(" de forma correcta los empleados."), ETipoMensaje.INFORMACION);			
+			else
+				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Ocurrió un error al ".concat(accion.equals(EAccion.PROCESAR) ? "asignar" : "desasignar").concat(" los empleados."), ETipoMensaje.ERROR);
+			/*if(event.isAdd()){				
 				for(SelectionItem item: transfers){
 					if(!this.movimientosAdd.contains(item))
 						this.movimientosAdd.add(item);
@@ -272,7 +289,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 					if(this.model.getTarget().contains(item))
 						this.model.getTarget().remove(item);
 				} // for
-			} // else
+			} // else*/
 		} // try // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
