@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -34,6 +35,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.enums.EExportacionXls;
+import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
 import mx.org.kaana.mantic.incidentes.reglas.Transaccion;
 
@@ -121,9 +123,6 @@ public class Exportar extends IBaseFilter implements Serializable {
 			this.attrs.put("idEstatus", UIBackingUtilities.toFirstKeySelectItem(estatus));
 			this.loadTiposIncidentes();
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);
@@ -132,35 +131,29 @@ public class Exportar extends IBaseFilter implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= new HashMap<>();
-		StringBuilder sb            = null;
-		try {
-			sb= new StringBuilder("");						
-			if(this.attrs.get("idEstatus")!= null && Long.valueOf(this.attrs.get("idEstatus").toString())>0L)
-				sb.append("tc_mantic_incidentes.id_incidente_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
-			if(this.attrs.get("idTipoIncidente")!= null && Long.valueOf(this.attrs.get("idTipoIncidente").toString())>0L)
-				sb.append("tc_mantic_incidentes.id_tipo_incidente=").append(this.attrs.get("idTipoIncidente")).append(" and ");						
-			if(!Cadena.isVacio(JsfBase.getParametro("orden_input")))
-				sb.append("upper(tc_mantic_incidentes.orden) like upper('%").append(JsfBase.getParametro("orden_input")).append("%') and ");						
-			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
-				sb.append("tc_mantic_incidentes.id_empresa_persona=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
-  		else if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-				sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
-			} // else if			  						
-			sb.append("tc_mantic_incidentes.vigencia_inicio >= '").append(this.fechaInicio.toString()).append("' and ");				
-			sb.append("tc_mantic_incidentes.vigencia_fin <= '").append(this.fechaFin.toString()).append("' and ");										
-			if(Cadena.isVacio(sb.toString()))
-				regresar.put("condicion", Constantes.SQL_VERDADERO);
-			else
-			  regresar.put("condicion", sb.substring(0, sb.length()- 4));			
-		  if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && this.attrs.get("idEmpresa").toString().equals("-1"))
-			  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
-			else
-			  regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+		StringBuilder sb= new StringBuilder("");						
+		if(this.attrs.get("idEstatus")!= null && Long.valueOf(this.attrs.get("idEstatus").toString())>0L)
+			sb.append("tc_mantic_incidentes.id_incidente_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
+		if(this.attrs.get("idTipoIncidente")!= null && Long.valueOf(this.attrs.get("idTipoIncidente").toString())>0L)
+			sb.append("tc_mantic_incidentes.id_tipo_incidente=").append(this.attrs.get("idTipoIncidente")).append(" and ");						
+		if(!Cadena.isVacio(JsfBase.getParametro("orden_input")))
+			sb.append("upper(tc_mantic_incidentes.orden) like upper('%").append(JsfBase.getParametro("orden_input")).append("%') and ");						
+		if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
+			sb.append("tc_mantic_incidentes.id_empresa_persona=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
+		else if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
+			String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+			sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
+		} // else if			  						
+		sb.append("tc_mantic_incidentes.vigencia_inicio >= '").append(this.fechaInicio.toString()).append("' and ");				
+		sb.append("tc_mantic_incidentes.vigencia_fin <= '").append(this.fechaFin.toString()).append("' and ");										
+		if(Cadena.isVacio(sb.toString()))
+			regresar.put("condicion", Constantes.SQL_VERDADERO);
+		else
+			regresar.put("condicion", sb.substring(0, sb.length()- 4));			
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && this.attrs.get("idEmpresa").toString().equals("-1"))
+			regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
+		else
+			regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 		return regresar;
 	} // toCondicion
 
@@ -315,4 +308,36 @@ public class Exportar extends IBaseFilter implements Serializable {
 		regresar.append(")");
 		return regresar.toString();
 	} // toCondicionExporter
+	
+	public String doMovimientos() {
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("tipo", ETipoMovimiento.ORDENES_COMPRAS);
+			JsfBase.setFlashAttribute(ETipoMovimiento.ORDENES_COMPRAS.getIdKey(), seleccionado.getKey());
+			JsfBase.setFlashAttribute("regreso", "/Paginas/Keet/Catalogos/Contratos/Personal/exportar");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return "movimientos".concat(Constantes.REDIRECIONAR);
+	}
+
+	public String doImportar() {
+		String regresar= null;
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.INCIDENCIAS);
+			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("idEmpresaPersona", seleccionado.get("idEmpresaPersona"));
+			JsfBase.setFlashAttribute("idContratoPersona", seleccionado.get("idContratoPersona"));
+			regresar= "importar".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doImportar
+	
 }

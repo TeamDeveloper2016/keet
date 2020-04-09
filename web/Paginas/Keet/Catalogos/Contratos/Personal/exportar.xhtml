@@ -153,6 +153,10 @@
 						</p:dataTable>						
 						<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">														
 							<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosPersonalExportar.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(keetCatalogosContratosPersonalExportar.attrs.seleccionado.idIncidenteEstatus eq '4')}"/>
+  						<p:separator/>
+              <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetCatalogosContratosPersonalExportar.doMovimientos}"/>
+  						<p:separator/>
+              <p:menuitem id="evidencia" icon="fa fa-cloud-upload" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetCatalogosContratosPersonalExportar.doMovimientos}"/>
 						</p:contextMenu>		
 					</div>	
 				</div>

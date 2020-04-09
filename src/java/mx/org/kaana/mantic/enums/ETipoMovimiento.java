@@ -9,15 +9,16 @@ package mx.org.kaana.mantic.enums;
  */
 public enum ETipoMovimiento {
   
-	ORDENES_COMPRAS("orden(es) de compra(s)", "ordenes", "idOrdenCompra", "VistaOrdenesComprasDto"), 
-	NOTAS_ENTRADAS("nota(s) de entrada(s)", "notas", "idNotaEntrada", "VistaNotasEntradasDto"), 
-	VENTAS("venta(s)", "ventas", "idVenta", "VistaVentasDto"), 
-	SERVICIOS("servicio(s)", "servicios", "idServicio", "VistaTallerServiciosDto"), 
-	DEVOLUCIONES("devolucion(es)", "devoluciones", "idDevolucion", "VistaDevolucionesDto"),
-	NOTAS_CREDITOS("nota(s) de credito(s)", "creditos_notas", "idCreditoNota", "VistaNotasCreditosDto"),
-	CIERRES_CAJA("cierre(s) de caja", "cierres", "idCierre", "VistaCierresCajasDto"),
-	FACTURAS_FICTICIAS("factura(s)", "ficticias", "idFicticia", "VistaFicticiasDto"),
-	TRANSFERENCIAS("transferencia(s)", "transferencias", "idTransferencia", "VistaAlmacenesTransferenciasDto");
+	INCIDENCIAS("incidencia(s)", "tc_mantic_incidentes", "idIncidencia", "VistaIncidenciasDto"), 
+	ORDENES_COMPRAS("orden(es) de compra(s)", "tc_mantic_ordenes", "idOrdenCompra", "VistaOrdenesComprasDto"), 
+	NOTAS_ENTRADAS("nota(s) de entrada(s)", "tc_mantic_notas", "idNotaEntrada", "VistaNotasEntradasDto"), 
+	VENTAS("venta(s)", "tc_mantic_ventas", "idVenta", "VistaVentasDto"), 
+	SERVICIOS("servicio(s)", "tc_mantic_servicios", "idServicio", "VistaTallerServiciosDto"), 
+	DEVOLUCIONES("devolucion(es)", "tc_mantic_devoluciones", "idDevolucion", "VistaDevolucionesDto"),
+	NOTAS_CREDITOS("nota(s) de credito(s)", "tc_mantic_creditos_notas", "idCreditoNota", "VistaNotasCreditosDto"),
+	CIERRES_CAJA("cierre(s) de caja", "tc_mantic_cierres", "idCierre", "VistaCierresCajasDto"),
+	FACTURAS_FICTICIAS("factura(s)", "tc_mantic_ficticias", "idFicticia", "VistaFicticiasDto"),
+	TRANSFERENCIAS("transferencia(s)", "tc_mantic_transferencias", "idTransferencia", "VistaAlmacenesTransferenciasDto");
 	 
 	private final String title;
 	private final String table;
@@ -36,7 +37,7 @@ public enum ETipoMovimiento {
 	}
 	
 	public String getTable() {
-		return "tc_mantic_".concat(this.table);
+		return this.table;
 	}
 	
 	public String getIdKey() {

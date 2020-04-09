@@ -74,17 +74,18 @@ public class Importar extends IBaseImportar implements Serializable {
   protected void init() {		
 		EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
-		Long idContratoPersona   = null;
+		Long idEmpresaPersona    = null;
     try {			
 			if(JsfBase.getFlashAttribute("idDesarrollo")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
-			idContratoPersona= (Long) JsfBase.getFlashAttribute("idContratoPersona");			
+			idEmpresaPersona= (Long) JsfBase.getFlashAttribute("idEmpresaPersona");			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
-			this.attrs.put("idContratoPersona", idContratoPersona);						
+			this.attrs.put("idEmpresaPersona", idEmpresaPersona);						
+			this.attrs.put("idContratoPersona", JsfBase.getFlashAttribute("idContratoPersona"));						
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
 			this.attrs.put("file", ""); 
 			setFile(new Importado());
