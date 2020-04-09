@@ -87,7 +87,14 @@
 							</p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>	
-					<p:spacer/>										
+					<p:panelGrid columns="1" class="janal-wid-100-txt">
+						<p:spacer/>
+						<p:outputLabel for="nombre" value="Nombre:" styleClass="janal-wid-100-txt"/>							
+						<p:inputText id="nombre" placeholder="Nombre empleado" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosPersonalEmpleados.attrs.nombre}">
+							<p:ajax event="keyup" process="@this nombre tabla" listener="#{keetCatalogosContratosPersonalEmpleados.doLoad}" update="dataEmpleados"/>
+						</p:inputText>		
+						<p:spacer/>
+					</p:panelGrid>										
 					<p:dataTable lazy="true" id="dataEmpleados" widgetVar="kajoolTable" var="filtro" value="#{keetCatalogosContratosPersonalEmpleados.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalEmpleados.attrs.seleccionado}" paginator="#{keetCatalogosContratosPersonalEmpleados.lazyModel.rowCount gt keetCatalogosContratosPersonalEmpleados.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" selectionMode="single">            						
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.curp}" rendered="false">
               <f:facet name="header">
@@ -123,7 +130,7 @@
 							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doAccion(filtro)}" title="Capturar incidencia."/>															
 						</p:column>
 						<p:column styleClass="janal-wid-col-50 janal-column-center">
-							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doImportar(filtro)}" title="Importar incidencia."/>															
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doImportar(filtro)}" title="Importar incidencia." disabled="#{filtro.totalIncidencias eq '0'}"/>															
 						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosPersonalEmpleados.lazyModel==null?0:keetCatalogosContratosPersonalEmpleados.lazyModel.rowCount}] registros"/>
