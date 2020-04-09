@@ -67,22 +67,25 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		EAccion accionIncidente       = null;
 		try {
 			switch(accion){
-				case PROCESAR:				
-					params= new HashMap<>();					
-					params.put("idDesarrollo", this.idDesarrollo);
-					if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosPersonalDto", "contrato", params)>= 0L){
-						idUsuario= JsfBase.getIdUsuario();
-						for(SelectionItem item: this.empleados){
-							dto= new TcKeetContratosPersonalDto();							
-							dto.setIdDesarrollo(this.idDesarrollo);
-							dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
-							dto.setIdUsuario(idUsuario);
-							dto.setIdVigente(1L);
-							dto.setObservaciones("Asignación de empleado al desarrollo " + this.idDesarrollo);
-							DaoFactory.getInstance().insert(sesion, dto);
-						} // for
-					} // if
+				case PROCESAR:									
+					idUsuario= JsfBase.getIdUsuario();
+					for(SelectionItem item: this.empleados){
+						dto= new TcKeetContratosPersonalDto();							
+						dto.setIdDesarrollo(this.idDesarrollo);
+						dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
+						dto.setIdUsuario(idUsuario);
+						dto.setIdVigente(1L);
+						dto.setObservaciones("Asignación de empleado al desarrollo " + this.idDesarrollo);
+						DaoFactory.getInstance().insert(sesion, dto);
+					} // for					
 					break;				
+				case DEPURAR:
+					for(SelectionItem item: this.empleados){
+						params= new HashMap<>();
+						params.put("idEmpresaPersona", Long.valueOf(item.getKey()));
+						DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosPersonalDto", "contratoPersona", params);					
+					} // for
+					break;
 				case REGISTRAR:
 					if(eliminarIncidencias(sesion)){
 						for(ScheduleEvent event: this.eventModel.getEvents()){
