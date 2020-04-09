@@ -63,21 +63,21 @@ public class MotorBusqueda implements Serializable{
 	} // toLotes
 	
 	public List<ContratoPersonal> toPersonas() throws Exception{
-		return toPersonasCondicion("tc_keet_contratos_personal.id_contratos_personal");
+		return toPersonasCondicion("tc_keet_contratos_personal.id_contratos_personal", Constantes.SQL_VERDADERO);
 	} // toPersonas
 	
-	public List<ContratoPersonal> toPersonasAsignadas() throws Exception{
-		return toPersonasCondicion("tr_mantic_empresa_personal.id_empresa_persona");
+	public List<ContratoPersonal> toPersonasAsignadas(String condicion) throws Exception{
+		return toPersonasCondicion("tr_mantic_empresa_personal.id_empresa_persona", condicion);
 	} // toPersonasAsignadas
 	
-	private List<ContratoPersonal> toPersonasCondicion(String campoLlave) throws Exception{
+	private List<ContratoPersonal> toPersonasCondicion(String campoLlave, String condicion) throws Exception{
 		List<ContratoPersonal> regresar= null;
 		Map<String, Object>params      = null;
 		try {
 		  params= new HashMap<>();
-			params.put("campoLlave", campoLlave);
+			params.put("campoLlave", campoLlave);			
 			params.put("idDesarrollo", this.idPivote);			
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			params.put(Constantes.SQL_CONDICION, condicion);			
 			regresar= DaoFactory.getInstance().toEntitySet(ContratoPersonal.class, "VistaContratosDto", "personalAsignado", params);      
 		} // try
 		catch (Exception e) {			
