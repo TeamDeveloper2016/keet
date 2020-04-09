@@ -272,6 +272,14 @@
         where 
           id_proyecto= {idProyecto} 
       </select>
+      <select id="getOrden">
+        select      
+				  max(orden)+ 1 max_orden
+        from      
+          tc_keet_proyectos_lotes
+        where 
+          id_proyecto= {idProyecto} 
+      </select>
       <select id="identically">
         select      
           *
@@ -1419,6 +1427,14 @@
         select      
 				  tc_keet_contratos_lotes.id_contrato_lote id_key,
           tc_keet_contratos_lotes.*
+        from      
+          tc_keet_contratos_lotes
+        where 
+          id_contrato= {idContrato} 
+      </select>
+			<select id="getOrden">
+        select      
+				  max(orden)+1 max_orden
         from      
           tc_keet_contratos_lotes
         where 
