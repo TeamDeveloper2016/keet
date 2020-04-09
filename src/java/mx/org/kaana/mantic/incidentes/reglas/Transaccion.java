@@ -136,7 +136,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			dto= new TcManticIncidentesDto();
 			consecutivo= this.toSiguiente(sesion);			
-			dto.setConsecutivo(consecutivo.getOrden().toString());			
+			dto.setConsecutivo(consecutivo.getConsecutivo());			
 			dto.setOrden(consecutivo.getOrden());			
 			dto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
 			dto.setIdIncidenteEstatus(this.estatus ? this.incidente.getIdEmpresaPersona() : EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());			
