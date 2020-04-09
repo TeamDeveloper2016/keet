@@ -1,7 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.personal.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,7 +66,7 @@ public class Exportar extends IBaseFilter implements Serializable {
   protected void init() {
     try {    	
       this.attrs.put("codigo", "");                  
-			this.fechaInicio= LocalDate.now();
+			this.fechaInicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
 			this.fechaFin= LocalDate.now();
 			this.toLoadCatalog();
     } // try
@@ -285,11 +284,13 @@ public class Exportar extends IBaseFilter implements Serializable {
 	}	// doActualizaEstatus
 	
 	public String doExportar() {
-		String regresar          = null;		
+		String regresar          = null;				
 		Map<String, Object>params= null;
 		try {									   
-			params= this.toPrepare();
-			params.put("sortOrder", "order by tc_mantic_incidentes.vigencia_inicio");
+			params= new HashMap<>();						  
+			params.put("idEmpresa", !Cadena.isVacio(this.attrs.get("idEmpresa")) && this.attrs.get("idEmpresa").toString().equals("-1") ? JsfBase.getAutentifica().getEmpresa().getDependencias() : ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+			params.put(Constantes.SQL_CONDICION, toCondicionExporter());
+			params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tc_mantic_incidentes.vigencia_inicio");
 			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.INCIDENCIAS), EExportacionXls.INCIDENCIAS, 
 				"EJERCICIO,CONSECUTIVO,VIGENCIA_INICIO,VIGENCIA_FIN,NOMBRE,PUESTO,TIPO_INCIDENTE,ESTATUS,CLAVE_DESARROLLO,NOMBRE_DESARROLLO,REGISTRO"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
@@ -304,4 +305,14 @@ public class Exportar extends IBaseFilter implements Serializable {
 		} // finally
 		return regresar;
 	} // doExportar  
+	
+	private String toCondicionExporter(){
+		StringBuilder regresar= new StringBuilder("");
+		regresar.append("tc_mantic_incidentes.id_incidente_estatus in (");
+		regresar.append(EEstatusIncidentes.REGISTRADA.getIdEstatusInicidente());
+		regresar.append(",");
+		regresar.append(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
+		regresar.append(")");
+		return regresar.toString();
+	} // toCondicionExporter
 }
