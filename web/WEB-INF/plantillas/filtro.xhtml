@@ -34,6 +34,8 @@
               <p:panel styleClass="sticky-body janal-padding-cero" toggleable="true" style="border:0px;">
                 <p:focus class="janal-padding-cero" context="principal"/>														
                 <ui:insert name="contenido"/>
+									<br/>
+									<br/>
                   <h:commandLink id="dataPdf">
                     <pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
                   </h:commandLink>

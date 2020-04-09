@@ -45,7 +45,7 @@
 					overflow-y: auto !important;
 					overflow-x: auto !important;
 					max-height: 470px;
-			}			
+			}		
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -136,9 +136,9 @@
 							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosPersonalImportar.attrs.observaciones}" onblur="processDataFile();"/>
 							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:observaciones"/>
 							<p:spacer height="5px"/>	
-							<p:fileUpload listener="#{keetCatalogosContratosPersonalImportar.doFileUpload}" onstart="return janal.execute()"
+							<p:fileUpload listener="#{keetCatalogosContratosPersonalImportar.doFileUpload}" onstart="return janal.execute()" skinSimple="true" 
 							  mode="advanced" process="@this observaciones incidencia" update="@(.importado)" label="Selecciona JPG/PNG/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
-								multiple="false" allowTypes="#{keetCatalogosContratosPersonalImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								multiple="false" allowTypes="#{keetCatalogosContratosPersonalImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCatalogosContratosPersonalImportar.attrs.formatos}"/>														
 							<p:dataTable id="importado" var="row" value="#{keetCatalogosContratosPersonalImportar.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
 								<p:column styleClass="janal-wid-col-30" headerText="No.">

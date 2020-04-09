@@ -88,7 +88,6 @@
 						</p:tab>
 					</p:accordionPanel>	
 					<p:panelGrid columns="1" class="janal-wid-100-txt">
-						<p:spacer/>
 						<p:outputLabel for="nombre" value="Nombre:" styleClass="janal-wid-100-txt"/>							
 						<p:inputText id="nombre" placeholder="Nombre empleado" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosPersonalEmpleados.attrs.nombre}">
 							<p:ajax event="keyup" process="@this nombre tabla" listener="#{keetCatalogosContratosPersonalEmpleados.doLoad}" update="dataEmpleados"/>
@@ -126,10 +125,8 @@
               </f:facet>
               <h:outputText value="#{filtro['puesto']}"/>
             </p:column>		
-						<p:column styleClass="janal-wid-col-50 janal-column-center">
+						<p:column styleClass="janal-wid-7 janal-column-center">
 							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doAccion(filtro)}" title="Capturar incidencia."/>															
-						</p:column>
-						<p:column styleClass="janal-wid-col-50 janal-column-center">
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doImportar(filtro)}" title="Importar incidencia." disabled="#{filtro.totalIncidencias eq '0'}"/>															
 						</p:column>
             <f:facet name="footer">
