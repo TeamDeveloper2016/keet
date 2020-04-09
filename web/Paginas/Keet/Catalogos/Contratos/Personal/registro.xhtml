@@ -25,10 +25,11 @@
     </script>		
 		<style type="text/css">    			
 			.ui-picklist .ui-picklist-item {
-				cursor: pointer;
+				cursor: default !important;
 				border: 0 none;
 				font-weight: inherit;
 				width: 90% !important;
+				pointer-events: none;
 			}
 			.ui-picklist .ui-picklist-filter {
 				width: 100% !important;
@@ -42,6 +43,12 @@
 			.ui-picklist table {				
 				border-collapse: collapse;
 				width: 0%;
+			}
+			.ui-chkbox {
+				display: inline-block;
+				vertical-align: middle;
+				cursor: default !important;
+				pointer-events: auto !important;				
 			}
     </style>
   </ui:define>
@@ -89,8 +96,8 @@
 					</p:accordionPanel>	
 					<p:spacer/>
 					<p:pickList id="dataEmpleados" value="#{keetCatalogosContratosPersonalRegistro.model}" var="empleado" effect="bounce" itemValue="#{empleado}" itemLabel="#{empleado.item}" showCheckbox="true" showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="janal.convertidor.SelectionItem" responsive="true">
-						<f:facet name="sourceCaption">Disponibles</f:facet>
-						<f:facet name="targetCaption">Asignados</f:facet>
+						<f:facet name="sourceCaption">[#{keetCatalogosContratosPersonalRegistro.attrs.totalDisponibles}] Disponibles</f:facet>
+						<f:facet name="targetCaption">[#{keetCatalogosContratosPersonalRegistro.attrs.totalAsignados}] Asignados</f:facet>
 						<p:ajax event="transfer" onstart="return janal.bloquear();" listener="#{keetCatalogosContratosPersonalRegistro.onTransfer}" oncomplete="reloadValues();"/>												
 						<p:column style="width: 95% !important">
 							<h:graphicImage library="janal" name="icon/semaforos/#{empleado.idActivo eq 1? 'circulo-verde': 'circulo-rojo'}.png"/>
@@ -104,11 +111,11 @@
   </ui:define>
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosPersonalRegistro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosPersonalRegistro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
