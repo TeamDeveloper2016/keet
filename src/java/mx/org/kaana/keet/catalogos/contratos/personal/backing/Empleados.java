@@ -168,8 +168,10 @@ public class Empleados extends IBaseFilter implements Serializable {
 				condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
 			if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
 				condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
-			if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
+			if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)			
 				condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
+			if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre")))
+				condicion.append("concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) like '%").append(this.attrs.get("nombre").toString().toUpperCase()).append("%' and ");
 			regresar= Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4);
 		} // try
 		catch (Exception e) {			
