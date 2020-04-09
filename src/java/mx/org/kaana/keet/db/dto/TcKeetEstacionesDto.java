@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="inicio")
-  private LocalDateTime inicio;
+  private LocalDate inicio;
   @Column (name="abono_50")
   private Double abono50;
   @Column (name="abono_51")
@@ -336,7 +337,7 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable {
   @Column (name="acumulado_32")
   private Double acumulado32;
   @Column (name="termino")
-  private LocalDateTime termino;
+  private LocalDate termino;
   @Column (name="acumulado_30")
   private Double acumulado30;
   @Column (name="acumulado_35")
@@ -397,11 +398,11 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetEstacionesDto(Long key) {
-    this(LocalDateTime.now(), null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, LocalDateTime.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(LocalDate.now(), null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetEstacionesDto(LocalDateTime inicio, Double abono50, Double abono51, Double abono52, Double abono53, Double abono54, Double cargo27, Double abono55, Double cargo28, Double cargo29, Double acumulado53, Long idEstacion, Double cargo20, Double acumulado54, Double cargo21, Double acumulado51, Double cargo22, Double acumulado52, Double cargo23, Double cargo24, Double cargo25, Double acumulado55, Double cargo26, Long ultimo, Double acumulado50, Double abono40, Double abono41, Double abono42, Double abono43, Double cargo16, Double abono44, Double cargo17, Double abono45, Double cargo18, Double abono46, Double acumulado48, Double cargo19, Double abono47, Double acumulado49, Double abono48, Double abono49, Double acumulado42, Double acumulado43, Double cargo10, Double acumulado40, Double cargo11, Double acumulado41, Double cargo12, Double acumulado46, Long nivel, Double cargo13, Double acumulado47, Double cargo14, Double acumulado44, Double cargo15, Double acumulado45, Double cargo50, Double cargo51, Double cargo49, Double cargo41, Double cargo42, Double cargo43, Double cargo44, Double cargo45, Double cargo46, Double cargo47, Double cargo48, Double abono7, Double abono6, String clave, Double abono5, Double abono4, Double abono3, Double abono2, Long idEmpaqueUnidadMedida, Double abono1, Double cargo40, Double cargo2, Double cargo1, Double abono9, Double abono8, Double cargo8, Double cargo38, Double cargo7, Double cargo39, Double cargo9, Double cargo4, Double cargo3, Long idUsuario, Double cargo6, Long idPlantilla, Double cargo5, Double cargo30, Double cargo31, Double cargo32, Double cargo33, Double cargo34, Double cargo35, Double cargo36, Double cargo37, String descripcion, Double acumulado9, Double acumulado8, Double acumulado7, Double acumulado6, Double acumulado5, Double acumulado4, Double abono10, Double acumulado3, Double abono11, Double acumulado17, Double acumulado2, Double abono12, Double acumulado18, Double acumulado1, Double abono13, Double acumulado15, Double abono14, Double acumulado16, Double abono15, Double abono16, Double abono17, Double acumulado19, Double abono18, Double abono19, Double acumulado10, Double acumulado13, Double acumulado14, Double acumulado11, Double acumulado12, String codigo, Double cargo52, Double cargo53, Double cargo54, Double cantidad, Double cargo55, Long idEstacionEstatus, String nombre, Double abono30, Double abono31, Double abono32, Double abono33, Double acumulado39, Double abono34, Double abono35, Double acumulado37, Double abono36, Double acumulado38, Double abono37, Double abono38, Double abono39, Double acumulado31, Double acumulado32, LocalDateTime termino, Double acumulado30, Double acumulado35, Double acumulado36, Double acumulado33, Double acumulado34, Double costo, Double abono20, Double abono21, Double abono22, Double acumulado28, Double abono23, Double acumulado29, Double abono24, Double acumulado26, Double abono25, Double acumulado27, Double abono26, Double abono27, Double abono28, Double abono29, Double acumulado20, Double acumulado21, Double acumulado24, Double acumulado25, Double acumulado22, Double acumulado23) {
+  public TcKeetEstacionesDto(LocalDate inicio, Double abono50, Double abono51, Double abono52, Double abono53, Double abono54, Double cargo27, Double abono55, Double cargo28, Double cargo29, Double acumulado53, Long idEstacion, Double cargo20, Double acumulado54, Double cargo21, Double acumulado51, Double cargo22, Double acumulado52, Double cargo23, Double cargo24, Double cargo25, Double acumulado55, Double cargo26, Long ultimo, Double acumulado50, Double abono40, Double abono41, Double abono42, Double abono43, Double cargo16, Double abono44, Double cargo17, Double abono45, Double cargo18, Double abono46, Double acumulado48, Double cargo19, Double abono47, Double acumulado49, Double abono48, Double abono49, Double acumulado42, Double acumulado43, Double cargo10, Double acumulado40, Double cargo11, Double acumulado41, Double cargo12, Double acumulado46, Long nivel, Double cargo13, Double acumulado47, Double cargo14, Double acumulado44, Double cargo15, Double acumulado45, Double cargo50, Double cargo51, Double cargo49, Double cargo41, Double cargo42, Double cargo43, Double cargo44, Double cargo45, Double cargo46, Double cargo47, Double cargo48, Double abono7, Double abono6, String clave, Double abono5, Double abono4, Double abono3, Double abono2, Long idEmpaqueUnidadMedida, Double abono1, Double cargo40, Double cargo2, Double cargo1, Double abono9, Double abono8, Double cargo8, Double cargo38, Double cargo7, Double cargo39, Double cargo9, Double cargo4, Double cargo3, Long idUsuario, Double cargo6, Long idPlantilla, Double cargo5, Double cargo30, Double cargo31, Double cargo32, Double cargo33, Double cargo34, Double cargo35, Double cargo36, Double cargo37, String descripcion, Double acumulado9, Double acumulado8, Double acumulado7, Double acumulado6, Double acumulado5, Double acumulado4, Double abono10, Double acumulado3, Double abono11, Double acumulado17, Double acumulado2, Double abono12, Double acumulado18, Double acumulado1, Double abono13, Double acumulado15, Double abono14, Double acumulado16, Double abono15, Double abono16, Double abono17, Double acumulado19, Double abono18, Double abono19, Double acumulado10, Double acumulado13, Double acumulado14, Double acumulado11, Double acumulado12, String codigo, Double cargo52, Double cargo53, Double cargo54, Double cantidad, Double cargo55, Long idEstacionEstatus, String nombre, Double abono30, Double abono31, Double abono32, Double abono33, Double acumulado39, Double abono34, Double abono35, Double acumulado37, Double abono36, Double acumulado38, Double abono37, Double abono38, Double abono39, Double acumulado31, Double acumulado32, LocalDate termino, Double acumulado30, Double acumulado35, Double acumulado36, Double acumulado33, Double acumulado34, Double costo, Double abono20, Double abono21, Double abono22, Double acumulado28, Double abono23, Double acumulado29, Double abono24, Double acumulado26, Double abono25, Double acumulado27, Double abono26, Double abono27, Double abono28, Double abono29, Double acumulado20, Double acumulado21, Double acumulado24, Double acumulado25, Double acumulado22, Double acumulado23) {
     setInicio(inicio);
     setAbono50(abono50);
     setAbono51(abono51);
@@ -585,11 +586,11 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable {
     setAcumulado23(acumulado23);
   }
 	
-  public void setInicio(LocalDateTime inicio) {
+  public void setInicio(LocalDate inicio) {
     this.inicio = inicio;
   }
 
-  public LocalDateTime getInicio() {
+  public LocalDate getInicio() {
     return inicio;
   }
 
@@ -1809,11 +1810,11 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable {
     return acumulado32;
   }
 
-  public void setTermino(LocalDateTime termino) {
+  public void setTermino(LocalDate termino) {
     this.termino = termino;
   }
 
-  public LocalDateTime getTermino() {
+  public LocalDate getTermino() {
     return termino;
   }
 
