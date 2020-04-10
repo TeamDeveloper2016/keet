@@ -150,7 +150,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setVigenciaFin(this.incidente.getVigenciaFin());		
 			key= DaoFactory.getInstance().insert(sesion, dto);
 			if(key>= 1L)
-				regresar= registrarBitacora(sesion, key, EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
+				regresar= registrarBitacora(sesion, key, this.estatus ? this.incidente.getIdEmpresaPersona() : EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
 		} // try
 		catch (Exception e) {			
 			throw e;
