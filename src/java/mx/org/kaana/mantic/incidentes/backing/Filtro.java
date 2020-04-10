@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -292,4 +293,21 @@ public class Filtro extends Comun implements Serializable {
 		tiposIncidentes.add(0, new UISelectItem(-1L, "TODOS"));
 		this.attrs.put("incidentes", tiposIncidentes);
 	} // loadTiposInicidentes	
+	
+	public String doImportar() {
+		String regresar= null;
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.INCIDENCIAS);
+			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.get("idDesarrollo").getData()!= null ? seleccionado.toLong("idDesarrollo") : -1L);
+			JsfBase.setFlashAttribute("idEmpresaPersona", seleccionado.toLong("idEmpresaPersona"));			
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Incidentes/filtro");			
+			regresar= "/Paginas/Keet/Catalogos/Contratos/Personal/importar".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doImportar
 }
