@@ -51,15 +51,13 @@
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
-              </p:selectOneMenu>              
-              <p:outputLabel for="consecutivo" value="Consecutivo:"/>
-              <p:autoComplete id="consecutivo" placeholder="ej. 202000001" var="customCodigo" itemLabel="#{customOrden.orden}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customOrden}" value="#{manticIncidentesFiltro.attrs.ordenBuscado}" completeMethod="#{manticIncidentesFiltro.doCompleteOrden}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-250"/>															
+              </p:selectOneMenu>                            
 							<p:outputLabel for="nombre" value="Nombre:"/>							
 							<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesFiltro.attrs.nombre}" completeMethod="#{manticIncidentesFiltro.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
               <p:outputLabel for="fechaInicio" value="Vigencia inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
               <p:outputLabel for="fechaTermino" value="Vigencia termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />														
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />														
 							<p:outputLabel for="idTipoIncidente" value="Tipo incidente:"/>
 							<p:selectOneMenu id="idTipoIncidente" value="#{manticIncidentesFiltro.attrs.idTipoIncidente}" styleClass="janal-wid-100-txt">
 								<f:selectItems value="#{manticIncidentesFiltro.attrs.incidentes}"/>
@@ -70,7 +68,7 @@
               </p:selectOneMenu> 
 						</p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="@form" actionListener="#{manticIncidentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="@form" actionListener="#{manticIncidentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.partial('general');" process="@form" actionListener="#{manticIncidentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
 					</p:panel>
