@@ -2,7 +2,6 @@ package mx.org.kaana.keet.catalogos.contratos.personal.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,13 +14,13 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
+import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
@@ -66,9 +65,9 @@ public class Empleados extends IBaseFilter implements Serializable {
 		try {
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", toDomicilio());			
-			loadDepartamentos();
-			loadPuestos();
-			loadContratistas();
+			this.loadDepartamentos();
+			this.loadPuestos();
+			this.loadContratistas();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -113,14 +112,10 @@ public class Empleados extends IBaseFilter implements Serializable {
     } // finally
 	} // loadPuestos
 	
-	private void loadContratistas(){
+	private void loadContratistas() {
 		List<UISelectEntity>contratistas= null;		
-		List<Columna> campos            = null;
 		try {
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			contratistas= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, campos, Constantes.SQL_TODOS_REGISTROS, "nombres");
+			contratistas= Catalogos.toContratistasPorElDia();
 			this.attrs.put("contratistas", contratistas);
 			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
 		} // try
@@ -159,25 +154,20 @@ public class Empleados extends IBaseFilter implements Serializable {
 		} // finally
   } // doLoad		
 	
-	private String toPrepare(){
-		StringBuilder condicion= null;
-		String regresar        = null;
-		try {
-			condicion= new StringBuilder();
-			if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
-				condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
-			if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
-				condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
-			if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)			
+	private String toPrepare() {
+		StringBuilder condicion= new StringBuilder();
+		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
+			condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
+		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
+			condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
+		if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)			
+			if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
+				condicion.append("tr_mantic_empresa_personal.id_contratista is null and ");
+			else
 				condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
-			if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre")))
-				condicion.append("concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) like '%").append(this.attrs.get("nombre").toString().toUpperCase()).append("%' and ");
-			regresar= Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4);
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
+		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre")))
+			condicion.append("concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) like '%").append(this.attrs.get("nombre").toString().toUpperCase()).append("%' and ");
+		return Cadena.isVacio(condicion)? Constantes.SQL_VERDADERO: condicion.substring(0, condicion.length()-4);
 	} // toPrepare
 	
 	private String toDomicilio(){

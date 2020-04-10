@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -18,6 +19,7 @@ import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -79,14 +81,10 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		} // catch				
 	} // loadEmpresas
 	
-	private void loadContratistas(){
+	private void loadContratistas() {
 		List<UISelectEntity>contratistas= null;		
-		List<Columna> campos            = null;
 		try {
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			contratistas= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, campos, Constantes.SQL_TODOS_REGISTROS, "nombres");
+			contratistas= Catalogos.toContratistasPorElDia();
 			this.attrs.put("contratistas", contratistas);
 			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
 		} // try
@@ -124,49 +122,45 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
   } // doLoad
 
 	private Map<String, Object> toPrepare(){
-		Map<String, Object> regresar= null;
-		StringBuilder condicion     = null;
-		try {
-			condicion= new StringBuilder("");			
-			if(!Cadena.isVacio(this.attrs.get("salarioMenor")))
-				condicion.append("tr_mantic_empresa_personal.sueldo_mensual<").append(this.attrs.get("salarioMenor")).append(" and ");
-			if(!Cadena.isVacio(this.attrs.get("salarioMayor")))
-				condicion.append("tr_mantic_empresa_personal.sueldo_mensual>").append(this.attrs.get("salarioMayor")).append(" and ");
-			if(!Cadena.isVacio(this.attrs.get("clave")))
-				condicion.append("tr_mantic_empresa_personal.clave like '%").append(this.attrs.get("clave")).append("%' and ");
-			if(!Cadena.isVacio(this.attrs.get("idPersona")))
-				condicion.append("tc_mantic_personas.id_persona=").append(this.attrs.get("idPersona")).append(" and ");
-			if(!Cadena.isVacio(this.attrs.get("nombres")))
-				condicion.append("tc_mantic_personas.nombres like '%").append(this.attrs.get("nombres")).append("%' and ");
-			if(!Cadena.isVacio(this.attrs.get("paterno")))
-				condicion.append("tc_mantic_personas.paterno like '%").append(this.attrs.get("paterno")).append("%' and ");
-			if(!Cadena.isVacio(this.attrs.get("materno")))
-				condicion.append("tc_mantic_personas.materno like '%").append(this.attrs.get("materno")).append("%' and ");
-			if(!Cadena.isVacio(this.attrs.get("rfc")))
-				condicion.append("tc_mantic_personas.rfc like '%").append(this.attrs.get("rfc")).append("%' and ");
-			if(!Cadena.isVacio(this.attrs.get("curp")))
-				condicion.append("tc_mantic_personas.curp like '%").append(this.attrs.get("curp")).append("%' and ");			
-			condicion.append("tc_mantic_personas.id_tipo_persona in (").append(this.attrs.get("idTipoPersona")).append(") and ");
-			if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey()>= 1L)				
-				condicion.append("tr_mantic_empresa_personal.id_contratista=").append(((UISelectEntity)this.attrs.get("idContratista")).getKey()).append(" and ");
-			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
-				condicion.append("tr_mantic_empresa_personal.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(") and ");
+		StringBuilder condicion= new StringBuilder("");			
+		if(!Cadena.isVacio(this.attrs.get("salarioMenor")))
+			condicion.append("tr_mantic_empresa_personal.sueldo_mensual<").append(this.attrs.get("salarioMenor")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("salarioMayor")))
+			condicion.append("tr_mantic_empresa_personal.sueldo_mensual>").append(this.attrs.get("salarioMayor")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("clave")))
+			condicion.append("tr_mantic_empresa_personal.clave like '%").append(this.attrs.get("clave")).append("%' and ");
+		if(!Cadena.isVacio(this.attrs.get("idPersona")))
+			condicion.append("tc_mantic_personas.id_persona=").append(this.attrs.get("idPersona")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("nombres")))
+			condicion.append("tc_mantic_personas.nombres like '%").append(this.attrs.get("nombres")).append("%' and ");
+		if(!Cadena.isVacio(this.attrs.get("paterno")))
+			condicion.append("tc_mantic_personas.paterno like '%").append(this.attrs.get("paterno")).append("%' and ");
+		if(!Cadena.isVacio(this.attrs.get("materno")))
+			condicion.append("tc_mantic_personas.materno like '%").append(this.attrs.get("materno")).append("%' and ");
+		if(!Cadena.isVacio(this.attrs.get("rfc")))
+			condicion.append("tc_mantic_personas.rfc like '%").append(this.attrs.get("rfc")).append("%' and ");
+		if(!Cadena.isVacio(this.attrs.get("curp")))
+			condicion.append("tc_mantic_personas.curp like '%").append(this.attrs.get("curp")).append("%' and ");			
+		condicion.append("tc_mantic_personas.id_tipo_persona in (").append(this.attrs.get("idTipoPersona")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey()>= 1L)
+      if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
+			  condicion.append("tr_mantic_empresa_personal.id_contratista is null and ");
 			else
-				condicion.append("tr_mantic_empresa_personal.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(") and ");
-			if(!Cadena.isVacio(this.attrs.get("idActivo")))
-				condicion.append("tr_mantic_empresa_personal.id_activo in (").append(this.attrs.get("idActivo")).append(") and ");			
-			if(!Cadena.isVacio(this.attrs.get("idSeguro")))
-				condicion.append("tr_mantic_empresa_personal.id_seguro in (").append(this.attrs.get("idSeguro")).append(") and ");			
-			if(!Cadena.isVacio(this.attrs.get("departamento")) && Long.valueOf(this.attrs.get("departamento").toString())>=1)
-				condicion.append("tr_mantic_empresa_personal.id_departamento=").append(this.attrs.get("departamento")).append(" and ");
-			if(!Cadena.isVacio(this.attrs.get("puesto")) && Long.valueOf(this.attrs.get("puesto").toString())>=1)
-				condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("puesto")).append(" and ");
-			regresar= new HashMap<>();
-			regresar.put(Constantes.SQL_CONDICION, condicion.substring(0, condicion.length()-4));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+			  condicion.append("tr_mantic_empresa_personal.id_contratista=").append(((UISelectEntity)this.attrs.get("idContratista")).getKey()).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
+			condicion.append("tr_mantic_empresa_personal.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(") and ");
+		else
+			condicion.append("tr_mantic_empresa_personal.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idActivo")))
+			condicion.append("tr_mantic_empresa_personal.id_activo in (").append(this.attrs.get("idActivo")).append(") and ");			
+		if(!Cadena.isVacio(this.attrs.get("idSeguro")))
+			condicion.append("tr_mantic_empresa_personal.id_seguro in (").append(this.attrs.get("idSeguro")).append(") and ");			
+		if(!Cadena.isVacio(this.attrs.get("departamento")) && Long.valueOf(this.attrs.get("departamento").toString())>=1)
+			condicion.append("tr_mantic_empresa_personal.id_departamento=").append(this.attrs.get("departamento")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("puesto")) && Long.valueOf(this.attrs.get("puesto").toString())>=1)
+			condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("puesto")).append(" and ");
+		Map<String, Object> regresar= new HashMap<>();
+		regresar.put(Constantes.SQL_CONDICION, condicion.substring(0, condicion.length()- 4));
 		return regresar;
 	} // toPrepare  
 	

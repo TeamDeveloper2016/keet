@@ -19,6 +19,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
 import mx.org.kaana.keet.catalogos.contratos.reglas.MotorBusqueda;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
+import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -84,20 +85,20 @@ public class Registro extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
   
-	private void loadCatalogos(){
+	private void loadCatalogos() {
 		try {
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", toDomicilio());			
-			loadDepartamentos();
-			loadPuestos();
-			loadContratistas();
+			this.loadDepartamentos();
+			this.loadPuestos();
+			this.loadContratistas();
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 	} // loadCatalogos
 	
-	private void loadDepartamentos(){
+	private void loadDepartamentos() {
 		List<UISelectItem> departamentos= null;
 		Map<String, Object> params      = null;		
 		try {
@@ -137,12 +138,8 @@ public class Registro extends IBaseAttribute implements Serializable {
 	
 	private void loadContratistas(){
 		List<UISelectEntity>contratistas= null;		
-		List<Columna> campos            = null;
 		try {
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			contratistas= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, campos, Constantes.SQL_TODOS_REGISTROS, "nombres");
+			contratistas= Catalogos.toContratistasPorElDia();
 			this.attrs.put("contratistas", contratistas);
 			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
 		} // try
@@ -233,7 +230,10 @@ public class Registro extends IBaseAttribute implements Serializable {
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
 			condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
 		if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
-			condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
+      if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
+			  condicion.append("tr_mantic_empresa_personal.id_contratista is null and ");
+			else
+  			condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
 		return Cadena.isVacio(condicion)? Constantes.SQL_VERDADERO: condicion.substring(0, condicion.length()-4);
 	} // toPrepare
 	
