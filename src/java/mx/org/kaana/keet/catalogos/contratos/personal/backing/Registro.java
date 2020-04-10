@@ -2,7 +2,6 @@ package mx.org.kaana.keet.catalogos.contratos.personal.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import mx.org.kaana.kajool.beans.SelectionItem;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoPersonal;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
@@ -26,7 +24,6 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
@@ -224,17 +221,17 @@ public class Registro extends IBaseAttribute implements Serializable {
 	} // loadAllEmpleados
 	
 	private String toPrepare() {
-		StringBuilder condicion= new StringBuilder();
+		StringBuilder sb= new StringBuilder();
 		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
-			condicion.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
+			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
-			condicion.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
+			sb.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
 		if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
       if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
-			  condicion.append("tr_mantic_empresa_personal.id_contratista is null and ");
+			  sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
 			else
-  			condicion.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
-		return Cadena.isVacio(condicion)? Constantes.SQL_VERDADERO: condicion.substring(0, condicion.length()-4);
+  			sb.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
+		return Cadena.isVacio(sb)? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()-4);
 	} // toPrepare
 	
 	private List<SelectionItem> toListSelectionIten(List<ContratoPersonal> entities) {

@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -65,6 +66,7 @@ public class Filtro extends Comun implements Serializable {
 			this.fechaInicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
 			this.fechaFin= LocalDate.now();
 			this.toLoadCatalog();
+			this.loadContratistas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -126,38 +128,50 @@ public class Filtro extends Comun implements Serializable {
     }// finally
 	}
 
+	private void loadContratistas() {
+		List<UISelectEntity>contratistas= null;		
+		try {
+			contratistas= Catalogos.toContratistasPorElDia();
+			this.attrs.put("contratistas", contratistas);
+			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // loadContratistas
+
 	private Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= new HashMap<>();
-		StringBuilder sb            = null;
-		try {
-			sb= new StringBuilder("");						
-			if(this.attrs.get("idEstatus")!= null && Long.valueOf(this.attrs.get("idEstatus").toString())>0L)
-				sb.append("tc_mantic_incidentes.id_incidente_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
-			if(this.attrs.get("idTipoIncidente")!= null && Long.valueOf(this.attrs.get("idTipoIncidente").toString())>0L)
-				sb.append("tc_mantic_incidentes.id_tipo_incidente=").append(this.attrs.get("idTipoIncidente")).append(" and ");						
-			if(!Cadena.isVacio(JsfBase.getParametro("orden_input")))
-				sb.append("upper(tc_mantic_incidentes.orden) like upper('%").append(JsfBase.getParametro("orden_input")).append("%') and ");						
-			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
-				sb.append("tc_mantic_incidentes.id_empresa_persona=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
-  		else 
-	  		if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-		  		sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
-				} // if			  			
-			sb.append("(date_format(tc_mantic_incidentes.vigencia_inicio, '%Y%m%d')>= date_format('").append(this.fechaInicio.toString()).append("', '%Y%m%d')) and ");					
-			sb.append("(date_format(tc_mantic_incidentes.vigencia_fin, '%Y%m%d')<= date_format('").append(this.fechaFin.toString()).append("', '%Y%m%d')) and ");						
-			if(Cadena.isVacio(sb.toString()))
-				regresar.put("condicion", Constantes.SQL_VERDADERO);
+		StringBuilder sb            = new StringBuilder("");						
+		if(this.attrs.get("idEstatus")!= null && Long.valueOf(this.attrs.get("idEstatus").toString())>0L)
+			sb.append("tc_mantic_incidentes.id_incidente_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
+		if(this.attrs.get("idTipoIncidente")!= null && Long.valueOf(this.attrs.get("idTipoIncidente").toString())>0L)
+			sb.append("tc_mantic_incidentes.id_tipo_incidente=").append(this.attrs.get("idTipoIncidente")).append(" and ");						
+		if(!Cadena.isVacio(JsfBase.getParametro("orden_input")))
+			sb.append("upper(tc_mantic_incidentes.orden) like upper('%").append(JsfBase.getParametro("orden_input")).append("%') and ");						
+		if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
+			sb.append("tc_mantic_incidentes.id_empresa_persona=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
+		else 
+			if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
+				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
+			} // if			  			
+		if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey()>= 1L)
+			if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
+				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
 			else
-			  regresar.put("condicion", sb.substring(0, sb.length()- 4));			
-		  if(!Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
-			  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
-			else
-			  regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+				sb.append("tr_mantic_empresa_personal.id_contratista=").append(((UISelectEntity)this.attrs.get("idContratista")).getKey()).append(" and ");
+		sb.append("(date_format(tc_mantic_incidentes.vigencia_inicio, '%Y%m%d')>= date_format('").append(this.fechaInicio.toString()).append("', '%Y%m%d')) and ");					
+		sb.append("(date_format(tc_mantic_incidentes.vigencia_fin, '%Y%m%d')<= date_format('").append(this.fechaFin.toString()).append("', '%Y%m%d')) and ");						
+		if(Cadena.isVacio(sb.toString()))
+			regresar.put("condicion", Constantes.SQL_VERDADERO);
+		else
+			regresar.put("condicion", sb.substring(0, sb.length()- 4));			
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
+			regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
+		else
+			regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 		return regresar;
 	} // toCondicion
 
