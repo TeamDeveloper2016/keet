@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.incidentes.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +38,31 @@ import mx.org.kaana.mantic.incidentes.beans.Incidente;
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+	private LocalDate fechaInicio;
+	private LocalDate fechaFin;
 
+	public LocalDate getFechaInicio() {
+		return fechaInicio;
+	}
+
+	public void setFechaInicio(LocalDate fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
+
+	public LocalDate getFechaFin() {
+		return fechaFin;
+	}
+
+	public void setFechaFin(LocalDate fechaFin) {
+		this.fechaFin = fechaFin;
+	}
   @PostConstruct
   @Override
   protected void init() {
     try {    	
-      this.attrs.put("codigo", "");                  
+      this.attrs.put("codigo", "");         
+			this.fechaInicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
+			this.fechaFin= LocalDate.now();
 			this.toLoadCatalog();
     } // try
     catch (Exception e) {
@@ -124,10 +143,8 @@ public class Filtro extends Comun implements Serializable {
 					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 		  		sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
 				} // if			  			
-			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-				sb.append("(date_format(tc_mantic_incidentes.vigencia_inicio, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-			if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-				sb.append("(date_format(tc_mantic_incidentes.vigencia_fin, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");										
+			sb.append("(date_format(tc_mantic_incidentes.vigencia_inicio, '%Y%m%d')>= date_format('").append(this.fechaInicio.toString()).append("', '%Y%m%d')) and ");					
+			sb.append("(date_format(tc_mantic_incidentes.vigencia_fin, '%Y%m%d')<= date_format('").append(this.fechaFin.toString()).append("', '%Y%m%d')) and ");						
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
 			else
