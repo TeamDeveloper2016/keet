@@ -320,7 +320,7 @@ public class Exportar extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-		return "movimientos".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
 
 	public String doImportar() {
