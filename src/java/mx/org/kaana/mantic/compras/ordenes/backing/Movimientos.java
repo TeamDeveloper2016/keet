@@ -44,6 +44,10 @@ public class Movimientos extends IBaseFilter implements Serializable {
 	  return !ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo) && !ETipoMovimiento.INCIDENCIAS.equals(this.tipo);
 	}
 	
+	public boolean getTransporto() {
+	  return ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo);
+	}
+	
 	public String doTransporto(Entity row) {
 		Value regresar= null;
 		try {

@@ -9,7 +9,7 @@ package mx.org.kaana.mantic.enums;
  */
 public enum ETipoMovimiento {
   
-	INCIDENCIAS("incidencia(s)", "tc_mantic_incidentes", "idIncidencia", "VistaIncidenciasDto"), 
+	INCIDENCIAS("incidencia(s)", "tc_mantic_incidentes", "idIncidente", "VistaIncidenciasDto"), 
 	ORDENES_COMPRAS("orden(es) de compra(s)", "tc_mantic_ordenes", "idOrdenCompra", "VistaOrdenesComprasDto"), 
 	NOTAS_ENTRADAS("nota(s) de entrada(s)", "tc_mantic_notas", "idNotaEntrada", "VistaNotasEntradasDto"), 
 	VENTAS("venta(s)", "tc_mantic_ventas", "idVenta", "VistaVentasDto"), 
