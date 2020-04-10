@@ -87,8 +87,8 @@ public class Exportar extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("vigenciaInicio", EFormatoDinamicos.FECHA_HORA_CORTA));
-      columns.add(new Columna("vigenciaFin", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("vigenciaInicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("vigenciaFin", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("sortOrder", "order by tc_mantic_incidentes.id_desarrollo, tc_mantic_incidentes.consecutivo");
       this.lazyModel = new FormatCustomLazy("VistaIncidentesDto", "principal", params, columns);
@@ -312,8 +312,8 @@ public class Exportar extends IBaseFilter implements Serializable {
 	public String doMovimientos() {
 		try {
 			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
-			JsfBase.setFlashAttribute("tipo", ETipoMovimiento.ORDENES_COMPRAS);
-			JsfBase.setFlashAttribute(ETipoMovimiento.ORDENES_COMPRAS.getIdKey(), seleccionado.getKey());
+			JsfBase.setFlashAttribute("tipo", ETipoMovimiento.INCIDENCIAS);
+			JsfBase.setFlashAttribute(ETipoMovimiento.INCIDENCIAS.getIdKey(), seleccionado.getKey());
 			JsfBase.setFlashAttribute("regreso", "/Paginas/Keet/Catalogos/Contratos/Personal/exportar");
 		} // try
 		catch (Exception e) {

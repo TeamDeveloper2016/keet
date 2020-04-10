@@ -43,7 +43,7 @@
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetCatalogosContratosPersonalExportar.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
-                <f:selectItems value="#{keetCatalogosContratosPersonalExportar.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <f:selectItems value="#{keetCatalogosContratosPersonalExportar.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -123,21 +123,21 @@
 								</f:facet>
 								<h:outputText value="#{row['estatus']}"/>
 							</p:column>														
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}" rendered="false">
 								<f:facet name="header">
 									<h:outputText value="Ejercicio"/>
 								</f:facet>
 								<h:outputText value="#{row['ejercicio']}"/>
 							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.vigenciaInicio}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.vigenciaInicio}">
 								<f:facet name="header">
-									<h:outputText value="Vigencia inicio"/>
+									<h:outputText value="Inicio"/>
 								</f:facet>
 								<h:outputText value="#{row['vigenciaInicio']}"/>
 							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.vigenciaFin}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.vigenciaFin}">
 								<f:facet name="header">
-									<h:outputText value="Vigencia fin"/>
+									<h:outputText value="Termino"/>
 								</f:facet>
 								<h:outputText value="#{row['vigenciaFin']}"/>
 							</p:column>					
