@@ -112,13 +112,13 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toPersonasDisponibles	
 	
-	public ContratoPersonal toPersonaIncidencia() throws Exception{
+	public ContratoPersonal toPersonaIncidencia(boolean contrato) throws Exception{
 		ContratoPersonal regresar= null;
 		Map<String, Object>params= null;
 		try {
 		  params= new HashMap<>();
-			params.put("idContratoPersona", this.idPivote);						
-			regresar= (ContratoPersonal) DaoFactory.getInstance().toEntity(ContratoPersonal.class, "VistaContratosDto", "findContratoPersona", params);      
+			params.put(contrato ? "idContratoPersona" : "idEmpresaPersona", this.idPivote);						
+			regresar= (ContratoPersonal) DaoFactory.getInstance().toEntity(ContratoPersonal.class, "VistaContratosDto", contrato ? "findContratoPersona" : "findPersonaAdmin", params);      
 		} // try
 		catch (Exception e) {			
 			throw e;

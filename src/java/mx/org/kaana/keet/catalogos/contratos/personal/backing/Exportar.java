@@ -328,9 +328,9 @@ public class Exportar extends IBaseFilter implements Serializable {
 		try {
 			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
 			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.INCIDENCIAS);
-			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.get("idDesarrollo"));
-			JsfBase.setFlashAttribute("idEmpresaPersona", seleccionado.get("idEmpresaPersona"));
-			JsfBase.setFlashAttribute("idContratoPersona", seleccionado.get("idContratoPersona"));
+			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.get("idDesarrollo").getData()!= null ? seleccionado.toLong("idDesarrollo") : -1L);
+			JsfBase.setFlashAttribute("idEmpresaPersona", seleccionado.toLong("idEmpresaPersona"));			
+			JsfBase.setFlashAttribute("retorno", "exportar");			
 			regresar= "importar".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
@@ -338,6 +338,5 @@ public class Exportar extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 		return regresar;
-	} // doImportar
-	
+	} // doImportar	
 }

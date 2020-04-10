@@ -217,8 +217,9 @@ public class Empleados extends IBaseFilter implements Serializable {
 		String regresar= null;
 		try {
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente) this.attrs.get("opcionResidente"));
-			JsfBase.setFlashAttribute("idDesarrollo", (Long) this.attrs.get("idDesarrollo"));
-			JsfBase.setFlashAttribute("idContratoPersona", seleccionado.getKey());
+			JsfBase.setFlashAttribute("idDesarrollo", (Long) this.attrs.get("idDesarrollo"));			
+			JsfBase.setFlashAttribute("idEmpresaPersona", seleccionado.toLong("idEmpresaPersona"));
+			JsfBase.setFlashAttribute("retorno", "empleados");
 			regresar= "importar".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
