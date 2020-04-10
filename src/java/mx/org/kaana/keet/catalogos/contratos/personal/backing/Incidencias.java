@@ -116,7 +116,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		MotorBusqueda motor= null;
 		try {
 			motor= new MotorBusqueda((Long)this.attrs.get("idContratoPersona"));
-			this.contratoPersonal= motor.toPersonaIncidencia();						
+			this.contratoPersonal= motor.toPersonaIncidencia(true);						
 			this.eventModel= new DefaultScheduleModel();
 			this.event= new DefaultScheduleEvent();
 			this.loadIncidencias();

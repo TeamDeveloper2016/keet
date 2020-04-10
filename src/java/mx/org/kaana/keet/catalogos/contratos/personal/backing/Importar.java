@@ -81,11 +81,11 @@ public class Importar extends IBaseImportar implements Serializable {
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			idEmpresaPersona= (Long) JsfBase.getFlashAttribute("idEmpresaPersona");			
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
-			this.attrs.put("idEmpresaPersona", idEmpresaPersona);						
-			this.attrs.put("idContratoPersona", JsfBase.getFlashAttribute("idContratoPersona"));						
+			this.attrs.put("idEmpresaPersona", idEmpresaPersona);									
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
 			this.attrs.put("file", ""); 
 			setFile(new Importado());
@@ -102,8 +102,8 @@ public class Importar extends IBaseImportar implements Serializable {
 	private void loadEmpleado() throws Exception{
 		MotorBusqueda motor= null;
 		try {
-			motor= new MotorBusqueda((Long)this.attrs.get("idContratoPersona"));
-			this.contratoPersonal= motor.toPersonaIncidencia();												
+			motor= new MotorBusqueda((Long)this.attrs.get("idEmpresaPersona"));
+			this.contratoPersonal= motor.toPersonaIncidencia(false);												
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -116,8 +116,8 @@ public class Importar extends IBaseImportar implements Serializable {
 		Map<String, Object>params       = null;
 		try {
 			params= new HashMap<>();
-			params.put("idContratoPersona", this.contratoPersonal.getIdContratosPersonal());						
-			incidencias= UIEntity.seleccione("VistaIncidentesDto", "personalDesarrollo", params, "consecutivo");			
+			params.put("idEmpresaPersona", (Long)this.attrs.get("idEmpresaPersona"));						
+			incidencias= UIEntity.seleccione("VistaIncidentesDto", "incidenciasPersonal", params, "consecutivo");			
       this.attrs.put("incidencias", incidencias);			
       incidencia= UIBackingUtilities.toFirstKeySelectEntity(incidencias);		
 			this.attrs.put("incidencia", incidencia);						
@@ -228,7 +228,7 @@ public class Importar extends IBaseImportar implements Serializable {
     try {			
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente) this.attrs.get("opcionResidente"));
 			JsfBase.setFlashAttribute("idDesarrollo", (Long) this.attrs.get("idDesarrollo"));			
-			regresar= "empleados".concat(Constantes.REDIRECIONAR);
+			regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
