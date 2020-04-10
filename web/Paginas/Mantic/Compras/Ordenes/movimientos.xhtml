@@ -30,13 +30,13 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column class="MarAuto Responsive janal-wid-25" sortBy="#{row.nombre}">
               <f:facet name="header">
-                <h:outputText value="Estatus"/>
+                <h:outputText value="Usuario"/>
               </f:facet>
-              <h:outputText value="#{row['estatus']}"/>
+              <h:outputText value="&lt;i class='fa fa-fw fa-user'&gt;&lt;/i&gt; #{row['nombre']}" escape="false"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-20" rendered="#{not manticComprasOrdenesMovimientos.transporto}">
+            <p:column class="MarAuto Responsive janal-wid-20" rendered="#{manticComprasOrdenesMovimientos.transporto}">
               <f:facet name="header">
                 <h:outputText value="Transportó"/>
               </f:facet>
@@ -48,17 +48,17 @@
               </f:facet>
               <h:outputText value="#{row['justificacion']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.nombre}">
-              <f:facet name="header">
-                <h:outputText value="Usuario"/>
-              </f:facet>
-              <h:outputText value="&lt;i class='fa fa-fw fa-user'&gt;&lt;/i&gt; #{row['nombre']}" escape="false"/>
-            </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}" rendered="#{manticComprasOrdenesMovimientos.visible}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
               <f:facet name="header">
