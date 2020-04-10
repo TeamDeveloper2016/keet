@@ -68,9 +68,9 @@
 								<p:inputText value="#{keetCatalogosContratosPersonalImportar.contratoPersonal.curp}" styleClass="janal-wid-100-txt" disabled="true"/>
 								<p:outputLabel value="Rfc:"/>																		
 								<p:inputText value="#{keetCatalogosContratosPersonalImportar.contratoPersonal.rfc}" styleClass="janal-wid-100-txt" disabled="true"/>								
-								<p:separator/>								
-								<p:outputLabel value="Desarrollo:"/>
-								<p:inputText value="[#{keetCatalogosContratosPersonalImportar.contratoPersonal.claveDesarrollo}] #{keetCatalogosContratosPersonalImportar.contratoPersonal.nombreDesarrollo}" styleClass="janal-wid-100-txt" disabled="true"/>
+								<p:separator rendered="#{keetCatalogosContratosPersonalImportar.attrs.idDesarrollo gt 0}"/>								
+								<p:outputLabel value="Desarrollo:" rendered="#{keetCatalogosContratosPersonalImportar.attrs.idDesarrollo gt 0}"/>
+								<p:inputText value="[#{keetCatalogosContratosPersonalImportar.contratoPersonal.claveDesarrollo}] #{keetCatalogosContratosPersonalImportar.contratoPersonal.nombreDesarrollo}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{keetCatalogosContratosPersonalImportar.attrs.idDesarrollo gt 0}"/>
 								<p:separator/>
 								<p:outputLabel value="Departamento:"/>
 								<p:inputText value="#{keetCatalogosContratosPersonalImportar.contratoPersonal.departamento}" styleClass="janal-wid-100-txt" disabled="true"/>
