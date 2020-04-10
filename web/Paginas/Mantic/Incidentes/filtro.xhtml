@@ -158,6 +158,7 @@
 							<p:menuitem id="consultar" action="#{manticIncidentesFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />																			
 							<p:separator rendered="#{!(manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '4')}"/>
 							<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticIncidentesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '4')}"/>
+							<p:menuitem id="evidencia" icon="fa fa-cloud-upload" value="Evidencias" onstart="return janal.bloquear()" process="@this tabla" action="#{manticIncidentesFiltro.doImportar}"/>
 						</p:contextMenu>		
 					</div>	
 				</div>
