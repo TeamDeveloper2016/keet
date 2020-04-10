@@ -144,8 +144,8 @@ public class Exportar extends IBaseFilter implements Serializable {
 			String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 			sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
 		} // else if			  						
-		sb.append("tc_mantic_incidentes.vigencia_inicio >= '").append(this.fechaInicio.toString()).append("' and ");				
-		sb.append("tc_mantic_incidentes.vigencia_fin <= '").append(this.fechaFin.toString()).append("' and ");										
+		sb.append("(date_format(tc_mantic_incidentes.vigencia_inicio, '%Y%m%d')>= date_format('").append(this.fechaInicio.toString()).append("', '%Y%m%d')) and ");					
+		sb.append("(date_format(tc_mantic_incidentes.vigencia_fin, '%Y%m%d')<= date_format('").append(this.fechaFin.toString()).append("', '%Y%m%d')) and ");			
 		if(Cadena.isVacio(sb.toString()))
 			regresar.put("condicion", Constantes.SQL_VERDADERO);
 		else
