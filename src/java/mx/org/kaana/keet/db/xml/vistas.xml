@@ -55,11 +55,9 @@
 				from 
 					tc_mantic_incidentes_archivos
 				inner join 
-					tc_mantic_incidentes on tc_mantic_incidentes_archivos.id_incidente = tc_mantic_incidentes.id_incidente
-				inner join 
-					tc_keet_contratos_personal on tc_mantic_incidentes.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona
+					tc_mantic_incidentes on tc_mantic_incidentes_archivos.id_incidente = tc_mantic_incidentes.id_incidente				
 				inner join
-					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona				
+					tr_mantic_empresa_personal on tc_mantic_incidentes.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona				
 				inner join 
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
 				inner join 
@@ -72,6 +70,8 @@
 					tc_janal_usuarios on tc_mantic_incidentes_archivos.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 
 					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
+				left join 
+					tc_keet_contratos_personal on tc_mantic_incidentes.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona
 				where 
 					tc_keet_contratos_personal.id_contratos_personal = {idContratoPersona}
 				  or tr_mantic_empresa_personal.id_empresa_persona = {idEmpresaPersona}												
@@ -192,6 +192,40 @@
 					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo = tc_keet_desarrollos.id_desarrollo
         where 
           tc_keet_contratos_personal.id_contratos_personal= {idContratoPersona}
+				order by 
+					tc_mantic_puestos.nombre,
+					tc_mantic_personas.nombres
+			</select>
+			<select id="findPersonaAdmin">
+				select      
+					tr_mantic_empresa_personal.id_empresa_persona as id_key,									
+					tc_keet_departamentos.nombre departamento,
+					tc_mantic_puestos.nombre puesto,
+					tr_mantic_empresa_personal.id_activo,
+					tc_mantic_personas.id_persona,
+					tc_mantic_personas.nombres,
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,					
+					tc_mantic_personas.rfc,					
+					tc_mantic_personas.curp,
+					tc_keet_contratos_personal.id_desarrollo,					
+					tc_keet_contratos_personal.id_contratos_personal,					
+					tc_keet_desarrollos.clave clave_desarrollo,
+					tc_keet_desarrollos.nombres nombre_desarrollo          
+        from                
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+				left join 
+					tc_keet_contratos_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				left join 
+					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+        where 
+          tr_mantic_empresa_personal.id_empresa_persona= {idEmpresaPersona}
 				order by 
 					tc_mantic_puestos.nombre,
 					tc_mantic_personas.nombres
