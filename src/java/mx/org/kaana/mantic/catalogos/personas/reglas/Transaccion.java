@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.db.dto.TcManticIncidentesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteRepresentanteDto;
@@ -231,13 +232,31 @@ public class Transaccion extends IBaseTnx{
 			incidencia.setObservaciones(observaciones);
 			incidencia.setVigenciaInicio(LocalDate.now());
 			incidencia.setVigenciaFin(LocalDate.now());
-			regresar= DaoFactory.getInstance().insert(sesion, incidencia)>= 1L;
+			if(DaoFactory.getInstance().insert(sesion, incidencia)>= 1L)
+				regresar= registrarBitacora(sesion, incidencia.getIdIncidente(), EEstatusIncidentes.REGISTRADA.getIdEstatusInicidente(), observaciones);
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
 	} // registrarIncidencia
+	
+	private boolean registrarBitacora(Session sesion, Long idIncidente, Long idEstatus, String observaciones) throws Exception{
+		boolean regresar                 = false;
+		TcManticIncidentesBitacoraDto dto= null;
+		try {
+			dto= new TcManticIncidentesBitacoraDto();
+			dto.setIdIncidente(idIncidente);
+			dto.setIdIncidenteEstatus(idEstatus);
+			dto.setIdUsuario(JsfBase.getIdUsuario());
+			dto.setJustificacion(observaciones);
+			regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarBitacora
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
