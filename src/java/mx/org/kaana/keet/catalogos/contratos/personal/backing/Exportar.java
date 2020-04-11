@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
@@ -37,7 +38,7 @@ import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
-import mx.org.kaana.mantic.incidentes.reglas.Transaccion;
+import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
 
 @Named(value= "keetCatalogosContratosPersonalExportar")
 @ViewScoped
@@ -339,4 +340,25 @@ public class Exportar extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} // doImportar	
+	
+	public void doEliminar(){
+		Transaccion transaccion  = null;
+		List<Incidente>incidentes= null;
+		Incidente dto            = null;
+		try {						
+			incidentes= new ArrayList<>();
+			dto= new Incidente();
+			dto.setIdIncidente(((Entity)this.attrs.get("seleccionado")).getKey());
+			incidentes.add(dto);
+			transaccion= new Transaccion(null, incidentes);
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+				JsfBase.addMessage("Eliminar incidencia.", "Se eliminó de forma correcta la incidencia.", ETipoMensaje.ERROR);							
+			else
+				JsfBase.addMessage("Eliminar incidencia.", "Ocurrio un error al eliminar la incidencia.", ETipoMensaje.ERROR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // doAceptar
 }
