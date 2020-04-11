@@ -32,7 +32,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
-import mx.org.kaana.mantic.incidentes.reglas.Transaccion;
+import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
 
 @Named(value = "manticIncidentesFiltro")
@@ -324,4 +324,25 @@ public class Filtro extends Comun implements Serializable {
 		} // catch		
 		return regresar;
 	} // doImportar
+	
+	public void doEliminar(){		
+		Transaccion transaccion  = null;
+		List<Incidente>incidentes= null;
+		Incidente dto            = null;
+		try {						
+			incidentes= new ArrayList<>();
+			dto= new Incidente();
+			dto.setIdIncidente(((Entity)this.attrs.get("seleccionado")).getKey());
+			incidentes.add(dto);
+			transaccion= new Transaccion(null, incidentes);
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+				JsfBase.addMessage("Eliminar incidencia.", "Se eliminó de forma correcta la incidencia.", ETipoMensaje.ERROR);							
+			else
+				JsfBase.addMessage("Eliminar incidencia.", "Ocurrio un error al eliminar la incidencia.", ETipoMensaje.ERROR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // doAceptar
 }
