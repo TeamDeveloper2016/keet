@@ -32,6 +32,10 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	private List<DocumentoIncidencia> incidencias;
 	private List<Incidente> incidenciasDelete;
 
+	public Transaccion(Incidente incidente, String observaciones) {
+		super(incidente, observaciones);
+	}
+	
 	public Transaccion(List<DocumentoIncidencia> incidencias) {
 		this(new Incidente());
 		this.incidencias= incidencias;
@@ -109,6 +113,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						if(DaoFactory.getInstance().insert(sesion, incidencia)>=1L)
 							toSaveFile(incidencia.getIdArchivo());
 					} // for
+					break;
+				case JUSTIFICAR:
+					eliminarIncidencias(sesion);
 					break;
 				default:
 					super.ejecutar(sesion, accion);
