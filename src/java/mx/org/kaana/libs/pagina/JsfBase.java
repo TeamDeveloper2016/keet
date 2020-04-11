@@ -25,7 +25,7 @@ public class JsfBase extends JsfUtilities {
   private static final String ADMINS   = "SUPERUSUARIO";
   private static final String GERENTE  = "GERENTE";
   private static final String CAJERO   = "CAJERO";
-  private static final String RESIDENTE= "RESIDENTE";
+  private static final String RESIDENTE= "RESIDENTEDEOBRA";
 
   public static Autentifica getAutentifica() {
     return (Autentifica) getSession().getAttribute(Constantes.ATRIBUTO_AUTENTIFICA);
