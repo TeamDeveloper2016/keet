@@ -1,11 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -13,9 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -40,12 +33,14 @@ public class TcManticPuestosDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_puesto")
   private Long idPuesto;
-  @Column (name="observaciones")
-  private Long observaciones;
-  @Column (name="id_registro")
-  private Long idRegistro;
+  @Column (name="descripcion")
+  private String descripcion;
+  @Column (name="orden")
+  private Long orden;
   @Column (name="id_empresa")
   private Long idEmpresa;
+  @Column (name="id_usuario")
+  private Long idUsuario;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
@@ -56,18 +51,19 @@ public class TcManticPuestosDto implements IBaseDto, Serializable {
   }
 
   public TcManticPuestosDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticPuestosDto(String clave, Long idPuesto, Long observaciones, Long idRegistro, Long idEmpresa, String nombre) {
+  public TcManticPuestosDto(String clave, Long idPuesto, String descripcion, Long orden, Long idEmpresa, String nombre, Long idUsuario) {
     setClave(clave);
     setIdPuesto(idPuesto);
-    setObservaciones(observaciones);
-    setIdRegistro(idRegistro);
+    setDescripcion(descripcion);
+    setOrden(orden);
     setIdEmpresa(idEmpresa);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
+		setIdUsuario(idUsuario);
   }
 	
   public void setClave(String clave) {
@@ -86,20 +82,20 @@ public class TcManticPuestosDto implements IBaseDto, Serializable {
     return idPuesto;
   }
 
-  public void setObservaciones(Long observaciones) {
-    this.observaciones = observaciones;
+  public void setDescripcion(String descripcion) {
+    this.descripcion = descripcion;
   }
 
-  public Long getObservaciones() {
-    return observaciones;
+  public String getDescripcion() {
+    return descripcion;
   }
 
-  public void setIdRegistro(Long idRegistro) {
-    this.idRegistro = idRegistro;
+  public void setOrden(Long orden) {
+    this.orden = orden;
   }
 
-  public Long getIdRegistro() {
-    return idRegistro;
+  public Long getOrden() {
+    return orden;
   }
 
   public void setIdEmpresa(Long idEmpresa) {
@@ -126,6 +122,14 @@ public class TcManticPuestosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(Long idUsuario) {
+		this.idUsuario = idUsuario;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -145,15 +149,17 @@ public class TcManticPuestosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPuesto());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservaciones());
+		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdRegistro());
+		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -163,18 +169,19 @@ public class TcManticPuestosDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("clave", getClave());
 		regresar.put("idPuesto", getIdPuesto());
-		regresar.put("observaciones", getObservaciones());
-		regresar.put("idRegistro", getIdRegistro());
+		regresar.put("descripcion", getDescripcion());
+		regresar.put("orden", getOrden());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
+		regresar.put("idUsuario", getIdUsuario());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getIdPuesto(), getObservaciones(), getIdRegistro(), getIdEmpresa(), getNombre(), getRegistro()
+			getClave(), getIdPuesto(), getDescripcion(), getOrden(), getIdEmpresa(), getNombre(), getRegistro(), getIdUsuario()
     };
     return regresar;
   }
@@ -232,7 +239,4 @@ public class TcManticPuestosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdPuesto() != null ? getIdPuesto().hashCode() : 0);
     return hash;
   }
-
 }
-
-
