@@ -1,8 +1,9 @@
 package mx.org.kaana.keet.estaciones.beans;
 
+import java.io.Serializable;
 import mx.org.kaana.keet.estaciones.reglas.MotorBusqueda;
 
-public class RegistroEstacion {
+public class RegistroEstacion implements Serializable {
 	
 	private Estacion estacion;
 
@@ -39,8 +40,5 @@ public class RegistroEstacion {
 		} // catch		
 		return regresar;
 	} // init
-	
-	
-	
 	
 }

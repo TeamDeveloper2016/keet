@@ -74,7 +74,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case AGREGAR:											
           this.estacion= new RegistroEstacion();
 					this.estacion.getEstacion().setClave(((TcKeetEstacionesDto)this.attrs.get("estacionPadre")).getClave());
-					this.estacion.getEstacion().setNivel(((TcKeetEstacionesDto)this.attrs.get("estacionPadre")).getNivel()+1L); // nivel hijo
+					this.estacion.getEstacion().setNivel(((TcKeetEstacionesDto)this.attrs.get("estacionPadre")).getNivel()); // nivel hijo
           break;
         case MODIFICAR:					
         case CONSULTAR:					
