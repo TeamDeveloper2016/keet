@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">  	
+  <ui:define name="contenido">    
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">          
+					<p:panelGrid id="panelGeneral" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">						
+						<ui:insert name="uiCamposPrioridad"/>
+						<p:outputLabel for="clave" value="Código:" rendered="#{managedComunDinamicoAccion.attrs.isClave}"/>
+						<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{managedComunDinamicoAccion.attrs.dto.clave}" rendered="#{managedComunDinamicoAccion.attrs.isClave}"/>                    
+						<p:outputLabel for="nombre" value="Nombre:"/>
+						<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{managedComunDinamicoAccion.attrs.dto.nombre}"/>                    
+						<p:outputLabel for="descripcion" value="Descripción:"/>
+						<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{managedComunDinamicoAccion.attrs.dto.descripcion}" />						
+						<ui:insert name="uiCampos"/>
+					</p:panelGrid>
+					<p:outputLabel for="estatus" value="Estatus:" rendered="#{managedComunDinamicoAccion.attrs.estatus}"/>
+					<p:pickList id="estatus" value="#{managedComunDinamicoAccion.selectionItems}" var="itemSelection" converter="janal.convertidor.SelectionItem" itemValue="#{itemSelection}" itemLabel="#{itemSelection.item}" style="width: 30%" rendered="#{managedComunDinamicoAccion.attrs.estatus}">
+						<f:facet  name="sourceCaption">Disponibles</f:facet>  
+						<f:facet name="targetCaption">Asignados</f:facet>  
+						<p:column style="width:100%">  
+							#{itemSelection.item}
+						</p:column>						
+					</p:pickList>
+        </div>
+      </div>
+    </div>			
+  </ui:define>    
+  <ui:define name="acciones">
+    <div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{managedComunDinamicoAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@none" action="#{managedComunDinamicoAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+    <div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{managedComunDinamicoAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@none" action="#{managedComunDinamicoAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+  </ui:define>
+</ui:composition>
