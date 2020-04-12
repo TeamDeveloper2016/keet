@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/dinamicos/accion.xhtml">
+	<ui:param name="managedComunDinamicoAccion" value="#{keetCatalogosDinamicosPuestosAccion}"/>
+  <ui:param name="titulo" value="#{keetCatalogosDinamicosPuestosAccion.attrs.titulo}" />
+	<ui:define name="librerias">    
+		<script type="text/javascript">
+      Janal.Control.fields = {        
+        idEmpresa    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        clave        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        nombre       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        orden        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        descripcion  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'}        
+      };	
+			
+			$(document).ready(function(){janal.readingMode('#{keetCatalogosDinamicosPuestosAccion.attrs.nombreAccion}');});
+    </script> 		
+  </ui:define>
+  <ui:define name="uiCamposPrioridad">		
+		<p:outputLabel for="idEmpresa" value="Sucursal:"/>
+		<p:selectOneMenu id="idEmpresa" value="#{keetCatalogosDinamicosPuestosAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+			<f:selectItems value="#{keetCatalogosDinamicosPuestosAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+			<p:column headerText="Clave">
+				<h:outputText value="#{item.clave}"/>
+			</p:column>   
+			<p:column headerText="Nombre">
+				<h:outputText value="#{item.nombre}"/>
+			</p:column>   
+		</p:selectOneMenu>
+	</ui:define>  
+	<ui:define name="uiCampos">		
+		<p:outputLabel for="orden" value="Orden:"/>
+		<p:inputNumber id="orden" styleClass="janal-wid-100-txt janal-column-left" style="text-align: left !important" value="#{managedComunDinamicoAccion.attrs.dto.orden}"/>                    
+	</ui:define>
+</ui:composition>
