@@ -3,23 +3,8 @@ package mx.org.kaana.keet.enums;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import mx.org.kaana.keet.db.dto.TcKeetDepartamentosDto;
-import mx.org.kaana.keet.db.dto.TcKeetDivisionesDto;
-import mx.org.kaana.keet.db.dto.TcKeetEspecialidadesDto;
-import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
-import mx.org.kaana.keet.db.dto.TcKeetFamiliasDto;
-import mx.org.kaana.keet.db.dto.TcKeetGruposConstructivosDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposAtributosDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposBancariosDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposConceptosDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposFachadasDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposInfraestructurasDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposNominasDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposParentescosDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposPresupuestosDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposRelacionesDto;
-import mx.org.kaana.keet.db.dto.TcKeetTiposViviendasDto;
-import mx.org.kaana.mantic.db.dto.TcManticCierresEstatusDto;
+import mx.org.kaana.keet.db.dto.*;
+import mx.org.kaana.mantic.db.dto.*;
 
 public enum ECatalogosDinamicos {
 	
@@ -39,7 +24,8 @@ public enum ECatalogosDinamicos {
 	PARENTESCOS			(TcKeetTiposParentescosDto.class     , "Mantenimiento a tipos parentescos"        , false, false, "021b1d21293ac743d72948ab"),
 	PRESUPUESTOS		(TcKeetTiposPresupuestosDto.class    , "Mantenimiento a tipos presupuestos"       , false, false, "a2bb4fda61fb051418599ddc05"),
 	RELACIONES			(TcKeetTiposRelacionesDto.class      , "Mantenimiento a tipos relaciones"         , false, false, "2ec94ed459d152ef7ff67a"),
-	VIVIENDAS				(TcKeetTiposViviendasDto.class       , "Mantenimiento a tipos de viviendas"       , false, false, "c353dd7a8c9ca3a9abcc");
+	VIVIENDAS				(TcKeetTiposViviendasDto.class       , "Mantenimiento a tipos de viviendas"       , false, false, "c353dd7a8c9ca3a9abcc"),
+	PUESTOS				  (TcManticPuestosDto.class            , "Mantenimiento a puestos"                  , false, true , "cc54e860fc1c223b");
 	
 	private static final Map<Long, ECatalogosDinamicos> lookup= new HashMap<>();
 	private Class clase;
