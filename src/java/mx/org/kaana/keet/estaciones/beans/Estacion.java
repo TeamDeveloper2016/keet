@@ -47,64 +47,24 @@ public class Estacion extends TcKeetEstacionesDto {
 		setIdPlantilla(this.pantilla? EBooleanos.SI.getIdBooleano():EBooleanos.NO.getIdBooleano());
 	}
 	
-	public String calcularClave(int direcccion) throws Exception{
-		return calcularClave(this.getNivel(), direcccion);
-	} //calcularClave
-	
-	public String calcularClave(Long nivel, int direcccion) throws Exception{
-		return calcularClave(this.getClave(), nivel, direcccion);
-	} //calcularClave
-	
-	public String calcularClave(String clave, Long nivel, int direcccion) throws Exception{
-		String regresar= claveSinCeros(clave, nivel);
-		int longitud= regresar.length();
-		regresar= Cadena.rellenar(String.valueOf(Long.valueOf(regresar)+ direcccion), longitud, '0', true);
-		regresar= regresar.concat(clave.substring(longitud, clave.length()));
-		return regresar;
-	} //calcularClave
-	
-	public String claveSinCeros() throws Exception {
-		return claveSinCeros(this.getClave(), this.getNivel());
-	} //calcularClave
-	
-	public String claveSinCeros(Long nivel) throws Exception{
-		return claveSinCeros(this.getClave(), nivel);
-	} //calcularClave
-	
-	public String claveSinCeros(String clave,Long nivel) throws Exception{
-		return clave.substring(0, ((nivel.intValue())* TAMANIO_NIVEL));
-	} //calcularClave
-	
-	public List<TcKeetEstacionesDto> getHijos() throws Exception{
-		return getHijos(this.getClave(), this.getNivel());
-	}
+	 @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    final TcKeetEstacionesDto other = (TcKeetEstacionesDto) obj;
+    if (getIdEstacion() != other.getIdEstacion() && (getIdEstacion() == null || !getIdEstacion().equals(other.getIdEstacion()))) {
+      return false;
+    }
+    return true;
+  }
 
-	public List<TcKeetEstacionesDto> getHijos(String clave, Long nivel) throws Exception{
-		List<TcKeetEstacionesDto> regresar= null;
-		Map<String, Object> params        = null;
-		try {
-			params=new HashMap<>();
-      params.put("clave", claveSinCeros(clave, nivel));
-      params.put("nivel", nivel);
-      regresar=(List<TcKeetEstacionesDto>) DaoFactory.getInstance().toEntitySet(TcKeetEstacionesDto.class,"TcKeetEstacionesDto", "getHijos", params);
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-		return regresar;
-	}
-
-
-	
-	
-	
-	
-	
-	
-		
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 67 * hash + (getIdEstacion() != null ? getIdEstacion().hashCode() : 0);
+    return hash;
+  }	
 		
 
 	

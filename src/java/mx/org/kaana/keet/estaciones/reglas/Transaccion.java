@@ -49,8 +49,8 @@ public class Transaccion extends IBaseTnx {
 				case ELIMINAR:
 					if (estaciones.isChild(this.registroEstacion.getEstacion().getClave(), this.registroEstacion.getEstacion().getNivel().intValue())) {
 						DaoFactory.getInstance().delete(sesion, this.registroEstacion.getEstacion());
-						this.registroEstacion= new RegistroEstacion(estaciones.getFather(this.registroEstacion.getEstacion().getClave()).getKey());
-						if (this.registroEstacion.getEstacion()!=null) {
+						if (estaciones.getFather(this.registroEstacion.getEstacion().getClave())!=null) {
+							this.registroEstacion= new RegistroEstacion(estaciones.getFather(this.registroEstacion.getEstacion().getClave()).getKey());
 							int count=estaciones.toCountChildren(this.registroEstacion.getEstacion().getClave(), this.registroEstacion.getEstacion().getNivel().intValue());
 							if (count==0) {
 								this.registroEstacion.getEstacion().setUltimo(1L);
@@ -68,10 +68,10 @@ public class Transaccion extends IBaseTnx {
 					int index=-1;
 					List<TcKeetEstacionesDto> list=estaciones.toChildren(this.registroEstacion.getEstacion().getClave(), this.registroEstacion.getEstacion().getNivel().intValue());
 					if (EAccion.SUBIR.equals(accion)) {
-						index=list.indexOf(this.registroEstacion.getEstacion())-1;
+						index= list.indexOf((TcKeetEstacionesDto)this.registroEstacion.getEstacion())-1;
 					} // if
 					else {
-						index=list.indexOf(this.registroEstacion.getEstacion())+1;
+						index=list.indexOf((TcKeetEstacionesDto)this.registroEstacion.getEstacion())+1;
 					} // else
 					if (index>=0&&index<list.size()) {
 						TcKeetEstacionesDto change=list.get(index);
@@ -90,6 +90,7 @@ public class Transaccion extends IBaseTnx {
 					} // else
 					break;
 			} // switch
+			regresar= true;
 		} // try
 		catch (Exception e) {			
 			throw new Exception(e);

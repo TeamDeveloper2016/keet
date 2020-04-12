@@ -49,13 +49,13 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
 				this.current= (TcKeetEstacionesDto)JsfBase.getFlashAttribute("estacionProcess");
-				actualizarChildren(0);
+				actualizarChildren(1);
 			} // if
 			else{
 				this.current=new TcKeetEstacionesDto();
 				this.current.setClave(estaciones.toCode("0012020999"));
-				this.current.setNivel(4L);
-				actualizarChildren(0);
+				this.current.setNivel(3L);
+				actualizarChildren(1);
 			} // if	
     } // try
     catch (Exception e) {
@@ -102,7 +102,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 			switch(eaccion){
 				case REGISTRAR:
 				  this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
-				  this.current.setNivel(this.current.getNivel()+1L);
 					eaccion= EAccion.AGREGAR;
 				case AGREGAR:
 				case MODIFICAR:
@@ -110,18 +109,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 					regresar= "accion".concat(Constantes.REDIRECIONAR);
 					JsfBase.setFlashAttribute("accion", eaccion);      
 					JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(eaccion.name()));      
-					JsfBase.setFlashAttribute("idEstacion", eaccion.equals(EAccion.AGREGAR) ? -1L : ((Entity) this.attrs.get("seleccionado")).getKey());
+					JsfBase.setFlashAttribute("idEstacion", eaccion.equals(EAccion.AGREGAR) ? -1L : ((TcKeetEstacionesDto) this.attrs.get("seleccionado")).getKey());
 					JsfBase.setFlashAttribute("estacionPadre", this.current);
 					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
 					break;
 				case SUBIR:
 				case BAJAR:
 				case ELIMINAR:
-					transaccion= new Transaccion(new RegistroEstacion(((Entity) this.attrs.get("seleccionado")).getKey()));
-					transaccion.ejecutar(eaccion);
+					transaccion= new Transaccion(new RegistroEstacion(((TcKeetEstacionesDto) this.attrs.get("seleccionado")).getKey()));
+					if (transaccion.ejecutar(eaccion)){
+					  actualizarChildren(0);
+						JsfBase.addMessage("La estación se ".concat(eaccion.getTitle()).concat(" correctamente."));
+					} // if
 				break;
 			} // swicth
-     
     } // try
     catch (Exception e) {
       Error.mensaje(e);
