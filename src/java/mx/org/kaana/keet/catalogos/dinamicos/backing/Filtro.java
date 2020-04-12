@@ -43,7 +43,7 @@ public class Filtro extends Comun implements Serializable {
 			encriptar= new Encriptar();
 			if(JsfBase.getFlashAttribute("unit")!= null)
 				unit= encriptar.desencriptar((String)JsfBase.getFlashAttribute("unit"));							
-			else
+			else if(JsfBase.getParametro("unit")!= null)
 				unit= encriptar.desencriptar(JsfBase.getParametro("unit"));							
 			if(unit!= null){			
 				catalogoDinamico= ECatalogosDinamicos.valueOf(unit);
@@ -83,7 +83,7 @@ public class Filtro extends Comun implements Serializable {
     } // finally		
   } // doLoad
 
-	private Map<String, Object> toPrepare() {
+	protected Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= null;
 		StringBuilder sb            = null;
 		try {			

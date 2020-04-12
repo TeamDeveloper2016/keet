@@ -33,7 +33,7 @@ import org.primefaces.model.DualListModel;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;  
-	private DualListModel<SelectionItem> selectionItems;
+	protected DualListModel<SelectionItem> selectionItems;
 
 	public DualListModel<SelectionItem> getSelectionItems() {
 		return selectionItems;
@@ -185,5 +185,5 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		    
     return regresar;
- } // doCancela	
+ } // doCancelar	
 }
