@@ -60,8 +60,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.current.setNivel(3L);
 				actualizarChildren(1);
 			} // if	
-			loadEmpresas();
-			loadPrototipos();
+		loadCombos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -202,8 +201,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
-			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("empresas")));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -215,54 +214,15 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally				
 	} // loadEmpresas
 	
-	public List<UISelectEntity> doCompleteCliente(String codigo) {
- 		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-		boolean buscaPorCodigo    = false;
-    try {
-			columns= new ArrayList<>();
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idPrototipo")).getKey()>0L)
-  		  params.put("sucursales",((UISelectEntity)this.attrs.get("idPrototipo")).getKey());
-			else
-  		   params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			if(!Cadena.isVacio(codigo)) {
-  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
-				buscaPorCodigo= codigo.startsWith(".");
-				if(buscaPorCodigo)
-					codigo= codigo.trim().substring(1);
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-			} // if	
-			else
-				codigo= "WXYZ";
-  		params.put("codigo", codigo);
-			if(buscaPorCodigo)
-        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porCodigo", params, columns, 40L));
-			else
-        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porNombre", params, columns, 40L));
-		} // try
-	  catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    }// finally
-		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}	// doCompleteCliente
 	
-	
-	public void loadPrototipos(){
-		 UISelectEntity cliente         = null;
+	public void doLoadPrototipos(){
+		UISelectEntity cliente         = null;
 	  try {
 			cliente = (UISelectEntity)this.attrs.get("cliente");
 			if(cliente!= null && cliente.getKey()> 0L) 
 			  this.attrs.put(Constantes.SQL_CONDICION, "id_cliente= ".concat(cliente.getKey().toString()));
 			else
-				this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+				this.attrs.put(Constantes.SQL_CONDICION, "id_estacion is not null");
       this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "row", this.attrs, "nombre"));
     } // try
     catch (Exception e) {
@@ -271,5 +231,32 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
 	} // doLoadPrototipos
 	
+	public void doLoadClientes(){
+		UISelectEntity empresa= null;
+	  try {
+			empresa = (UISelectEntity)this.attrs.get("idEmpresa");
+			if(empresa!= null && empresa.getKey()> 0L) 
+			  this.attrs.put("sucursales", empresa.getKey());
+			else
+				this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	} // loadCombos
+	
+	private void loadCombos(){
+		try {
+			loadEmpresas();
+			doLoadClientes();
+			doLoadPrototipos();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	} // loadCombos
 	
 }

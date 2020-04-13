@@ -269,7 +269,8 @@
           tc_keet_prototipos.nombre,
           tc_keet_prototipos.descripcion,
           tc_keet_prototipos.metros2,
-          tc_mantic_clientes.razon_social
+          tc_mantic_clientes.razon_social,
+				  tc_keet_prototipos.id_estacion
         from
           tc_keet_prototipos
         inner 

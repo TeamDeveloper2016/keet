@@ -8,12 +8,15 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.estaciones.beans.Estacion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -93,16 +96,38 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String doAccion(String accion) {
     String regresar= null;
 		EAccion eaccion= null;
+		TcKeetEstacionesDto estacionDto= null;
     try {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
       JsfBase.setFlashAttribute("idPrototipo", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
       JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Prototipos/filtro");
-			if(eaccion.equals(EAccion.SUBIR))
-				regresar= "importar".concat(Constantes.REDIRECIONAR);
-			else
-				regresar= "accion".concat(Constantes.REDIRECIONAR);
+			switch (eaccion){
+				case SUBIR:
+				  regresar= "importar".concat(Constantes.REDIRECIONAR);	
+				break;
+				case CONSULTAR:
+				case MODIFICAR:
+				  regresar= "accion".concat(Constantes.REDIRECIONAR);
+					break;
+				case COMPLEMENTAR:
+					if(((Entity) this.attrs.get("seleccionado")).toLong("idEstacion")== null) {//agregar estacion
+					  regresar= "/Paginas/Keet/Estaciones/accion".concat(Constantes.REDIRECIONAR);
+						estacionDto= new TcKeetEstacionesDto();
+						estacionDto.setNivel(3L);
+						estacionDto.setClave("0012020999");//calcular
+						JsfBase.setFlashAttribute("idEstacion",  -1L);
+						JsfBase.setFlashAttribute("estacionPadre", estacionDto);
+						JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
+					} // if
+					else{
+						estacionDto= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, ((Entity) this.attrs.get("seleccionado")).toLong("idEstacion"));
+						JsfBase.setFlashAttribute("estacionProcess", estacionDto);
+						regresar= "/Paginas/Keet/Estaciones/filtro".concat(Constantes.REDIRECIONAR);
+					} // else
+					break;
+			} // switch
     } // try
     catch (Exception e) {
       Error.mensaje(e);
