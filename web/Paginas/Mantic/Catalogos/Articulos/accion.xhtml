@@ -183,7 +183,8 @@
 								<p:outputLabel value="Respetar todos los articulos que cuentan con esta imagen." styleClass="janal-color-blue"/>								
 							</p:panelGrid>
 						</p:tab>
-						<p:tab id="tabDescuentos" title="Descuentos" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
+						<!--p:tab id="tabDescuentos" title="Descuentos" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}"-->
+						<p:tab id="tabDescuentos" title="Descuentos" rendered="false">
 							<p:panelGrid id="panelTablaDescuentos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaDescuentos" rowIndexVar="index" var="descuento" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuento.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Porcentaje" styleClass="janal-wid-20 porcDesc">		
@@ -242,7 +243,8 @@
 								</p:selectOneMenu>								
 							</p:panelGrid>	
 						</p:tab>
-						<p:tab title="Ofertas" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
+						<!--p:tab title="Ofertas" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}"-->
+						<p:tab title="Ofertas" rendered="false">
 							<p:panelGrid id="panelTablaPreciosSugeridos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaPreciosSugeridos" rowIndexVar="index" var="precioSugerido" value="#{manticCatalogosArticulosAccion.registroArticulo.preciosSugeridos}" rows="6" paginator="false" reflow="true" rowKey="#{precioSugerido.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
