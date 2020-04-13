@@ -53,7 +53,8 @@
 				'contenedorGrupos\\:paternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:maternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},				
 				'contenedorGrupos\\:nacimientoB'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'beneficiario'},				
-				'contenedorGrupos\\:parentesco'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true}
+				'contenedorGrupos\\:parentesco'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:limite'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
 			};					
 			
 			fieldsDialog= {
@@ -419,6 +420,12 @@
 										<p:outputLabel value="Total [#{manticCatalogosPersonasAccion.lazyModelBitacora==null?0:manticCatalogosPersonasAccion.lazyModelBitacora.rowCount}] registros"/>
 									</f:facet>
 								</p:dataTable>
+              </p:panelGrid>	
+            </p:tab>
+						<p:tab title="Credito">
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">																		
+								<p:outputLabel for="limite" value="Limite:"/>
+								<p:inputNumber id="limite" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.deudor.limite}"/>                    	
               </p:panelGrid>	
             </p:tab>
 					</p:tabView>
