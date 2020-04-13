@@ -48,13 +48,17 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
     return regresar;
   }
 
-  private List<TcKeetEstacionesDto> toChildren(String value, int level, int child) throws Exception {
+ public List<TcKeetEstacionesDto> toChildren(int aumentarNivel, String value, int level, int child) throws Exception {
     Map<String, Object> params=new HashMap<String, Object>();
     value=toOnlyKey(value, level+child);
-    params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+child))).concat(" "));
+    params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+child+aumentarNivel))).concat(" "));
     List<TcKeetEstacionesDto> regresar=(List) DaoFactory.getInstance().findViewCriteria(TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
     params.clear();
     return regresar;
+  }
+	
+	private List<TcKeetEstacionesDto> toChildren(String value, int level, int child) throws Exception {
+    return toChildren(0, value, level, child);
   }
 
   @Override
