@@ -262,6 +262,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.registroPersona= new RegistroPersona();			
+					this.registroPersona.getDeudor().setLimite(10000D);
 					this.loadCollections();
 					if(this.attrs.get("tipoPersona")!= null)
 						this.registroPersona.getPersona().setIdTipoPersona(Long.valueOf(this.attrs.get("tipoPersona").toString()));	

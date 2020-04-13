@@ -8,6 +8,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
@@ -165,6 +166,23 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			regresar= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);			
 			if(regresar!= null)
 			this.idEmpresaPersona= regresar.getIdEmpresaPersona();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPuestoPersona
+	
+	public TcKeetDeudoresDto toDeudor(Long idEmpresaPersona) throws Exception{
+		TcKeetDeudoresDto regresar= null;
+		Map<String, Object>params = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_empresa_persona=" + idEmpresaPersona);
+			regresar= (TcKeetDeudoresDto) DaoFactory.getInstance().findFirst(TcKeetDeudoresDto.class, "row", params);						
 		} // try
 		catch (Exception e) {			
 			throw e;

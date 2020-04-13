@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetPersonasBancosDto;
 import mx.org.kaana.keet.db.dto.TcKeetPersonasBeneficiariosDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
@@ -116,7 +117,7 @@ public class Transaccion extends IBaseTnx{
 				this.persona.getPersona().setCuenta(this.cuenta);
         this.persona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
         idPersona = DaoFactory.getInstance().insert(sesion, this.persona.getPersona());
-				if(registraPersonaEmpresa(sesion, idPersona)){
+				if(registraPersonaEmpresa(sesion, idPersona)){					
 					if (registraPersonasBeneficiarios(sesion, this.persona.getEmpresaPersona().getIdEmpresaPersona())) {
 						if (registraPersonasDomicilios(sesion, idPersona)) {
 							if(registraPersonasTipoContacto(sesion, idPersona)){
@@ -128,8 +129,8 @@ public class Transaccion extends IBaseTnx{
 							} // if
 						} // if
 					} // if
-        } // if
-      } // if
+				} // if
+			} // if      
     } // try
     catch (Exception e) {
       throw e;
@@ -202,8 +203,34 @@ public class Transaccion extends IBaseTnx{
 			this.persona.getEmpresaPersona().setIdUsuario(JsfBase.getIdUsuario());												
 			this.persona.getEmpresaPersona().setObservaciones("Alta de empleado nuevo.");												
 			idEmpresaPersona= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona());
-			if(idEmpresaPersona>= 1L)
-				regresar= registrarIncidencia(sesion, idEmpresaPersona);			
+			if(idEmpresaPersona>= 1L){
+				if(registrarIncidencia(sesion, idEmpresaPersona))	
+					regresar= registraDeudor(sesion, idEmpresaPersona);
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registraPersonaEmpresa
+	
+	private boolean registraDeudor(Session sesion, Long idEmpresaPersona) throws Exception{
+		boolean regresar        = false;						
+		TcKeetDeudoresDto deudor= null;
+		try {
+			if(this.persona.getDeudor()!= null && this.persona.getDeudor().isValid()){
+				deudor= (TcKeetDeudoresDto) DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.persona.getDeudor().getIdDeudor());
+				deudor.setLimite(this.persona.getDeudor().getLimite());
+				regresar= DaoFactory.getInstance().update(sesion, deudor)>= 1L;
+			} // if
+			else{
+				this.persona.getDeudor().setDisponible(this.persona.getDeudor().getLimite());
+				this.persona.getDeudor().setSaldo(0D);
+				this.persona.getDeudor().setIdEmpresaPersona(idEmpresaPersona);
+				this.persona.getDeudor().setIdUsuario(JsfBase.getIdUsuario());
+				this.persona.getDeudor().setObservaciones("Alta de empleado");
+				regresar= DaoFactory.getInstance().insert(sesion, this.persona.getDeudor())>= 1L;
+			} // else			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -306,8 +333,10 @@ public class Transaccion extends IBaseTnx{
 				empresaPersonal.setIdSeguro(this.persona.getEmpresaPersona().getIdSeguro());
 				bitacora(sesion, "Empleados", empresaPersonal);
 				oldData= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findById(sesion, empresaPersonal.getClass(), empresaPersonal.getKey());
-				if(registrarIncidenciaCambios(sesion, empresaPersonal, oldData))
-					regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;				
+				if(registrarIncidenciaCambios(sesion, empresaPersonal, oldData)){
+					if(DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L)	
+						regresar= registraDeudor(sesion, empresaPersonal.getIdEmpresaPersona());
+				} // if
 			} // if			
 		} // try
 		catch (Exception e) {			

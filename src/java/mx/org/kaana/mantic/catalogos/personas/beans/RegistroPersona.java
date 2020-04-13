@@ -7,6 +7,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -21,6 +22,7 @@ public class RegistroPersona implements Serializable {
 	private static final long serialVersionUID= -8922183204418674058L;
 	private Long idPersona;
 	private TcManticPersonasDto persona;
+	private TcKeetDeudoresDto deudor;
 	private TrManticEmpresaPersonalDto empresaPersona;
 	private List<PersonaDomicilio> personasDomicilio;
 	private PersonaDomicilio personaDomicilioSeleccion;
@@ -42,7 +44,7 @@ public class RegistroPersona implements Serializable {
 	private boolean activo;
 	
 	public RegistroPersona() {
-		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio(), new ArrayList<PersonaBanco>(), new ArrayList<PersonaBeneficiario>(), new TrManticEmpresaPersonalDto(), new PersonaBeneficiario(), new PersonaBeneficiario());
+		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio(), new ArrayList<PersonaBanco>(), new ArrayList<PersonaBeneficiario>(), new TrManticEmpresaPersonalDto(), new PersonaBeneficiario(), new PersonaBeneficiario(), new TcKeetDeudoresDto());
 	}
 	
 	public RegistroPersona(Long idPersona) {
@@ -57,7 +59,7 @@ public class RegistroPersona implements Serializable {
 		init();		
 	}
 	
-	public RegistroPersona(Long idPersona, TcManticPersonasDto persona, List<PersonaDomicilio> personasDomicilio, List<PersonaTipoContacto> personasTiposContacto, Domicilio domicilio, List<PersonaBanco> personasBancos, List<PersonaBeneficiario> personasBeneficiarios, TrManticEmpresaPersonalDto empresaPersona, PersonaBeneficiario beneficiarioPivote, PersonaBeneficiario personaBeneficiario) {
+	public RegistroPersona(Long idPersona, TcManticPersonasDto persona, List<PersonaDomicilio> personasDomicilio, List<PersonaTipoContacto> personasTiposContacto, Domicilio domicilio, List<PersonaBanco> personasBancos, List<PersonaBeneficiario> personasBeneficiarios, TrManticEmpresaPersonalDto empresaPersona, PersonaBeneficiario beneficiarioPivote, PersonaBeneficiario personaBeneficiario, TcKeetDeudoresDto deudor) {
 		this.idPersona            = idPersona;
 		this.persona              = persona;
 		this.personasDomicilio    = personasDomicilio;
@@ -75,6 +77,7 @@ public class RegistroPersona implements Serializable {
 		this.beneficiarioPivote   = beneficiarioPivote;
 		this.personaBeneficiario  = personaBeneficiario;
 		this.activo               = true;
+		this.deudor               = deudor;
 	}
 
 	public Long getIdPersona() {
@@ -229,6 +232,14 @@ public class RegistroPersona implements Serializable {
 		this.activo = activo;
 		this.empresaPersona.setIdActivo(this.activo ? 1L : 2L);
 	}	
+
+	public TcKeetDeudoresDto getDeudor() {
+		return deudor;
+	}
+
+	public void setDeudor(TcKeetDeudoresDto deudor) {
+		this.deudor = deudor;
+	}	
 	
 	private void init(){
 		int countDomicilio   = 0;
@@ -238,6 +249,7 @@ public class RegistroPersona implements Serializable {
 			motor= new MotorBusqueda(this.idPersona);
 			this.persona= motor.toPersona();									
 			this.empresaPersona= motor.toDetallePersona();
+			this.deudor= motor.toDeudor(this.empresaPersona.getIdEmpresaPersona());
 			this.personasDomicilio= motor.toPersonasDomicilio(true);
 			for(PersonaDomicilio personaDomicilio: this.personasDomicilio){
 				countDomicilio++;
