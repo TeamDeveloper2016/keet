@@ -35,44 +35,46 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   private String clave;
   @Column (name="id_cliente")
   private Long idCliente;
+  @Column (name="id_tipo_dia")
+  private Long idTipoDia;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="dias_construccion")
+  private Long diasConstruccion;
+  @Column (name="id_estacion")
+  private Long idEstacion;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_prototipo")
   private Long idPrototipo;
-	@Column (name="dias_construccion")
-  private Long diasConstruccion;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
   private LocalDateTime registro;
-  @Column (name="id_tipo_dia")
-  private Long idTipoDia;
 
   public TcKeetPrototiposDto() {
     this(new Long(-1L));
   }
 
   public TcKeetPrototiposDto(Long key) {
-    this(null, 150D, null, null, null, new Long(-1L), null, 90L, 1L);
+    this(null, null, null, null, null, null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
-
-  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idUsuario, Long idPrototipo, String nombre, Long diasConstruccion, Long idTipoDia) {
-    this.descripcion     = descripcion;
-    this.metros2         = metros2;
-    this.clave           = clave;
-    this.idCliente       = idCliente;
-    this.idUsuario       = idUsuario;
-    this.idPrototipo     = idPrototipo;
-    this.nombre          = nombre;		
-		this.diasConstruccion= diasConstruccion;
-		this.registro        = LocalDateTime.now();   
-		this.idTipoDia       = idTipoDia;
+  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idTipoDia, Long idUsuario, Long diasConstruccion, Long idEstacion, Long idPrototipo, String nombre) {
+    setDescripcion(descripcion);
+    setMetros2(metros2);
+    setClave(clave);
+    setIdCliente(idCliente);
+    setIdTipoDia(idTipoDia);
+    setIdUsuario(idUsuario);
+    setDiasConstruccion(diasConstruccion);
+    setIdEstacion(idEstacion);
+    setIdPrototipo(idPrototipo);
+    setNombre(nombre);
+    setRegistro(LocalDateTime.now());
   }
-  
+	
   public void setDescripcion(String descripcion) {
     this.descripcion = descripcion;
   }
@@ -105,12 +107,36 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
     return idCliente;
   }
 
+  public void setIdTipoDia(Long idTipoDia) {
+    this.idTipoDia = idTipoDia;
+  }
+
+  public Long getIdTipoDia() {
+    return idTipoDia;
+  }
+
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
 
   public Long getIdUsuario() {
     return idUsuario;
+  }
+
+  public void setDiasConstruccion(Long diasConstruccion) {
+    this.diasConstruccion = diasConstruccion;
+  }
+
+  public Long getDiasConstruccion() {
+    return diasConstruccion;
+  }
+
+  public void setIdEstacion(Long idEstacion) {
+    this.idEstacion = idEstacion;
+  }
+
+  public Long getIdEstacion() {
+    return idEstacion;
   }
 
   public void setIdPrototipo(Long idPrototipo) {
@@ -137,22 +163,6 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
     return registro;
   }
 
-	public Long getDiasConstruccion() {
-		return diasConstruccion;
-	}
-
-	public void setDiasConstruccion(Long diasConstruccion) {
-		this.diasConstruccion = diasConstruccion;
-	}
-
-	public Long getIdTipoDia() {
-		return idTipoDia;
-	}
-
-	public void setIdTipoDia(Long idTipoDia) {
-		this.idTipoDia=idTipoDia;
-	}
-	
   @Transient
   @Override
   public Long getKey() {
@@ -176,17 +186,19 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoDia());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDiasConstruccion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEstacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrototipo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getDiasConstruccion());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoDia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -198,19 +210,20 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 		regresar.put("metros2", getMetros2());
 		regresar.put("clave", getClave());
 		regresar.put("idCliente", getIdCliente());
+		regresar.put("idTipoDia", getIdTipoDia());
 		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("diasConstruccion", getDiasConstruccion());
+		regresar.put("idEstacion", getIdEstacion());
 		regresar.put("idPrototipo", getIdPrototipo());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
-		regresar.put("diasConstruccion", getDiasConstruccion());
-		regresar.put("idTipoDia", getIdTipoDia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getDescripcion(), getMetros2(), getClave(), getIdCliente(), getIdUsuario(), getIdPrototipo(), getNombre(), getRegistro(), getDiasConstruccion(), getIdTipoDia()
+    getDescripcion(), getMetros2(), getClave(), getIdCliente(), getIdTipoDia(), getIdUsuario(), getDiasConstruccion(), getIdEstacion(), getIdPrototipo(), getNombre(), getRegistro()
     };
     return regresar;
   }
@@ -268,5 +281,7 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdPrototipo() != null ? getIdPrototipo().hashCode() : 0);
     return hash;
   }
-	
+
 }
+
+
