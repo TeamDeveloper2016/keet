@@ -7,6 +7,25 @@
   </model>
 
   <dml>		
+		<unit id="TcKeetDiasFestivosDto">
+      <select id="row">
+        select      
+					tc_keet_dias_festivos.id_dia_festivo as id_key,
+          tc_keet_dias_festivos.*
+        from      
+          tc_keet_dias_festivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_dias_festivos
+        where      
+          date_format(dia, '%Y%m%d') = '{dia}' and id_dia_festivo = {idDiaFestivo} and ejercicio = {ejercicio}
+      </select>
+    </unit>
 		<unit id="TcKeetPrestamosDto">
       <select id="row">
         select      
