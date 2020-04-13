@@ -24,9 +24,9 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetEstacionesFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <!--p:ajax event="change" listener="#{keetEstacionesFiltro.cargaCatalogos()}" process="@this" update="panelBusqueda" /-->
-								<f:selectItems value="#{keetEstacionesFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{keetEstacionesFiltro.doLoadClientes()}" process="@this" update="panelBusqueda" />
+								<f:selectItems value="#{keetEstacionesFiltro.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
@@ -34,21 +34,22 @@
                   <h:outputText value="#{item.titulo}"/>
                 </p:column>
 							</p:selectOneMenu>
-								<p:outputLabel for="razonSocial" value="Cliente:"/>
-								<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: CONSTRUCTORA. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetEstacionesFiltro.attrs.cliente}" completeMethod="#{keetEstacionesFiltro.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-									<f:facet name="itemtip">
-										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
-											<h:outputText value="Clave:" />
-											<h:outputText value="#{custom.clave}" />
-											<h:outputText value="RFC:" />
-											<h:outputText value="#{custom.rfc}" />
-											<h:outputText value="Razón social:" />
-											<h:outputText value="#{custom.razonSocial}" />
-										</h:panelGrid>
-									</f:facet>
-								</p:autoComplete>	
-								<p:outputLabel for="prototipo" value="Prototipo:"/>
-								<p:selectOneMenu id="prototipo" value="#{keetEstacionesFiltro.attrs.idPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
+							<p:outputLabel for="idCliente" value="Cliente:"/>
+							<p:selectOneMenu id="idCliente" value="#{keetEstacionesFiltro.attrs.cliente}" var="item" converter="janal.convertidor.Entity"  styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{keetEstacionesFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+								<p:ajax event="change" listener="#{keetEstacionesFiltro.doLoadPrototipos}" process="@this" update="panelBusqueda" />
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="RFC">
+									<h:outputText value="#{item.rfc}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.razonSocial}"/>
+								</p:column>   
+							</p:selectOneMenu>
+								<p:outputLabel for="idPrototipo" value="Prototipo:"/>
+								<p:selectOneMenu id="idPrototipo" value="#{keetEstacionesFiltro.attrs.idPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
 									<f:selectItems value="#{keetEstacionesFiltro.attrs.prototipos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombre}"/>
@@ -107,25 +108,25 @@
 							</f:facet>
 							<h:outputText value="#{row['descripcion']}"/>
 						</p:column>	      
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" >
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" >
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
 							<h:outputText value="#{row['inicio']}"/>
 						</p:column>	      
-						<p:column class="MarAuto Responsive janal-wid-10" >
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" >
 							<f:facet name="header">
 								<h:outputText value="Termino" />
 							</f:facet>
 							<h:outputText value="#{row['termino']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" >
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
 							<f:facet name="header">
 								<h:outputText value="cantiad" />
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" >
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
 							<f:facet name="header">
 								<h:outputText value="costo" />
 							</f:facet>
