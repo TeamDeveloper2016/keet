@@ -131,7 +131,7 @@ public class Empleados extends IBaseFilter implements Serializable {
 		List<Columna>campos      = null;		
     try {			
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, toPrepare());
+			params.put(Constantes.SQL_CONDICION, this.toPrepare());
 			params.put("campoLlave", "tc_keet_contratos_personal.id_contratos_personal");
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));				
 			campos= new ArrayList<>();
@@ -165,8 +165,10 @@ public class Empleados extends IBaseFilter implements Serializable {
 				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
 			else
 				sb.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
-		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre")))
-			sb.append("concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) like '%").append(this.attrs.get("nombre").toString().toUpperCase()).append("%' and ");
+		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
+			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+  		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) regexp '.*").append(nombre).append(".*') and ");
+		} // if
 		return Cadena.isVacio(sb)? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()-4);
 	} // toPrepare
 	

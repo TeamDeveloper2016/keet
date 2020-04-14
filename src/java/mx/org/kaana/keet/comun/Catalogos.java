@@ -2,14 +2,20 @@ package mx.org.kaana.keet.comun;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 
 /**
@@ -21,6 +27,35 @@ import mx.org.kaana.libs.reflection.Methods;
  */
 
 public final class Catalogos {
+	
+	public static void toLoadDepartamentos(Map<String, Object> attrs) throws Exception {
+		Map<String, Object> params      = null;		
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			attrs.put("departamentos", UISelect.seleccione("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally		
+	} // toLoadDepartamentos
+	
+	public static void toLoadPuestos(Map<String, Object> attrs) throws Exception {
+		List<UISelectItem> puestos= null;
+    Map<String, Object> params= null;
+    try {
+      params = new HashMap<>();
+      params.put(Constantes.SQL_CONDICION, "id_empresa=" + attrs.get("idEmpresa"));
+      puestos = UISelect.seleccione("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			if(!puestos.isEmpty()) {
+				attrs.put("puestos", puestos);
+				attrs.put("idPuesto", UIBackingUtilities.toFirstKeySelectItem(puestos));
+			} // if
+    } // try
+    finally {
+      Methods.clean(params);
+    } // finally
+	} // toLoadPuestos
 	
 	public static List<UISelectEntity> toContratistasPorElDia() throws Exception {
 		List<Columna> columns        = null;
@@ -43,6 +78,12 @@ public final class Catalogos {
 			Methods.clean(columns);
 		} // finally
 		return regresar;
+	}
+
+	public static void toLoadContratistas(Map<String, Object> attrs) throws Exception {
+		List<UISelectEntity>contratistas= toContratistasPorElDia();
+		attrs.put("contratistas", contratistas);
+		attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
 	}
 
 }

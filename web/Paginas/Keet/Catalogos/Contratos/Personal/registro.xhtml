@@ -101,6 +101,7 @@
 						<p:ajax event="transfer" onstart="return janal.bloquear();" listener="#{keetCatalogosContratosPersonalRegistro.onTransfer}" oncomplete="reloadValues();"/>												
 						<p:column style="width: 95% !important">
 							<h:graphicImage library="janal" name="icon/semaforos/#{empleado.idActivo eq 1? 'circulo-verde': 'circulo-rojo'}.png"/>
+							<p:spacer width="3px"/>
 							<h:outputText value=" #{empleado.item}" styleClass="janal-wid-100-txt #{empleado.idActivo eq 1? 'janal-color-green': 'janal-color-red'}"/>
 						</p:column>
 					</p:pickList>
@@ -112,11 +113,11 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosPersonalRegistro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosPersonalRegistro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalRegistro.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosPersonalRegistro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosPersonalRegistro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>
