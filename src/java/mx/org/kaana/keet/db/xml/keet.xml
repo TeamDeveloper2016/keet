@@ -1487,6 +1487,8 @@
           tc_keet_contratos_lotes
         where 
           {condicion} 
+				order by
+				  clave, manzana, lote
       </select>
 			<select id="byContrato">
         select      
@@ -1496,6 +1498,8 @@
           tc_keet_contratos_lotes
         where 
           id_contrato= {idContrato} 
+				order by
+				  clave, manzana, lote
       </select>
 			<select id="getOrden">
         select      

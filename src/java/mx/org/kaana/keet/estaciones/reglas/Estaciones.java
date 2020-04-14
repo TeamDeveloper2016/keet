@@ -14,7 +14,10 @@ import mx.org.kaana.libs.cfg.Detalle;
 import mx.org.kaana.libs.cfg.IArbol;
 import mx.org.kaana.libs.cfg.Maestro;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 
 public class Estaciones extends Maestro implements IArbol, Serializable {
 
@@ -166,5 +169,16 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
 			regresar= regresar+ this.getNiveles().get(i).getLongitud();
     return regresar;
   }
+	
+	public String toCodeByIdContrato(Long idContrato) throws Exception{
+		String regresar= null;
+		Value contrato = null;
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("idContrato", idContrato);
+		contrato= DaoFactory.getInstance().toField("VistaContratosDto","getEstacionPatron", params, "patron");
+		regresar= contrato.getData()!= null? contrato.getData$(): "";
+		Methods.clean(params);
+		return regresar;
+	} // toCodeByIdContrato
 	
 }

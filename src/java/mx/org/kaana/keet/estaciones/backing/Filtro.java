@@ -32,7 +32,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 	private List<TcKeetEstacionesDto> estacionesHijas;
-	private TcKeetEstacionesDto current;
+	protected TcKeetEstacionesDto current;
 
 	public List<TcKeetEstacionesDto> getEstacionesHijas() {
 		return estacionesHijas;
@@ -86,6 +86,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.current.setClave(estaciones.toCode(nodo));
 				this.current.setNivel(1L);
 				actualizarChildren(1,2);
+				this.current.setNivel(3L);
 			} // else if
 			else
 				doInicio();
@@ -148,11 +149,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	} // getVisitados
 
-	private void actualizarChildren(int nivel) throws Exception {
+	protected void actualizarChildren(int nivel) throws Exception {
 		actualizarChildren(nivel, 0);
 	}
 	
-	private void actualizarChildren(int nivel, int aumentarNivel) throws Exception {
+	protected void actualizarChildren(int nivel, int aumentarNivel) throws Exception {
 		Estaciones estaciones=null;
 		try {
 			this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
@@ -164,7 +165,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch
 	} // actualizarChildren
 
-	public void doActualizarChildren() {
+	protected void doActualizarChildren() {
 		try {
 			this.current= ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
 			actualizarChildren(1);
@@ -191,7 +192,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		init();
 	} // doInicio
 
-	private void loadEmpresas() {
+	protected void loadEmpresas() {
 		Map<String, Object>params= null;
 		List<Columna> columns    = null;
 		try {
@@ -247,7 +248,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
 	} // loadCombos
 	
-	private void loadCombos(){
+	protected void loadCombos(){
 		try {
 			loadEmpresas();
 			doLoadClientes();

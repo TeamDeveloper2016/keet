@@ -260,6 +260,31 @@
 					tc_mantic_puestos.nombre,
 					tc_mantic_personas.nombres
 			</select>
+			<select id="byEmpresa">
+				select 
+					tc_keet_contratos.id_contrato as id_key,
+					tc_keet_contratos.*
+				from
+					tc_keet_contratos
+				inner join
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join
+					tc_mantic_clientes on tc_keet_proyectos.id_cliente=tc_mantic_clientes.id_cliente
+				where
+					tc_mantic_clientes.id_empresa in ({sucursales})
+			</select>
+			<select id="getEstacionPatron">
+				select 
+					concat(lpad(tc_mantic_clientes.id_empresa, 3, '0') ,tc_keet_contratos.ejercicio ,lpad(tc_keet_contratos.orden, 3, '0')) patron
+				from
+					tc_keet_contratos
+				inner join
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join
+					tc_mantic_clientes on tc_keet_proyectos.id_cliente=tc_mantic_clientes.id_cliente
+				where
+					tc_keet_contratos.id_contrato = {idContrato}
+			</select>
 		</unit>
     <unit id="VistaPrototiposDto">
 			<select id="lazy">

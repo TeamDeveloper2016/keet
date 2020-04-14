@@ -34,6 +34,8 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.catalogos.contratos.reglas.Transaccion;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
+import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 
 @Named(value = "keetCatalogosContratosFiltro")
 @ViewScoped
@@ -91,8 +93,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
-    EAccion eaccion= null;
-		String regresar= null; 
+    EAccion eaccion                = null;
+		String regresar                = null; 
+		TcKeetEstacionesDto estacionDto= null;
+		Estaciones estaciones          = null; 
     try {
 			regresar= "accion".concat(Constantes.REDIRECIONAR);
       eaccion = EAccion.valueOf(accion.toUpperCase());
@@ -105,6 +109,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 					break;
 				case COPIAR:
 					regresar= "presupuestos".concat(Constantes.REDIRECIONAR);
+					break;
+				case COMPLEMENTAR:
+					estaciones= new Estaciones();
+					estacionDto= new TcKeetEstacionesDto();
+					estacionDto.setClave(estaciones.toCodeByIdContrato(((Entity) this.attrs.get("seleccionado")).getKey()));
+					estacionDto.setNivel(3L);
+					JsfBase.setFlashAttribute("estacionProcess", estacionDto);
+					regresar= "/Paginas/Keet/Estaciones/contrato".concat(Constantes.REDIRECIONAR);
 					break;
 			} // switch
       JsfBase.setFlashAttribute("accion", eaccion);      
