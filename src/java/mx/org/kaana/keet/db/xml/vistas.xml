@@ -4,6 +4,46 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaContratosLotesDto">
+			<select id="principal">
+				select 
+					tc_keet_contratos.id_contrato as id_key,
+					tc_keet_contratos.consecutivo,
+					tc_keet_contratos.clave,
+					tc_keet_contratos.no_viviendas,
+					tc_keet_contratos.etapa,
+					tc_keet_contratos.recepcion,
+					tc_keet_contratos.aceptacion,
+					tc_keet_contratos.arranque,
+					tc_keet_contratos.ejercicio,
+					tc_keet_contratos.orden,
+					tc_keet_contratos.registro,
+					tc_keet_proyectos.consecutivo cons_proyecto,
+					tc_keet_proyectos.clave clave_proyecto,
+					tc_keet_proyectos.id_cliente,
+					tc_keet_proyectos.etapa etapa_proyecto,
+					tc_keet_proyectos.ejercicio ejercicio_proyecto,
+					tc_keet_proyectos.id_desarrollo,
+					tc_keet_desarrollos.clave clave_desarrollo,
+					tc_keet_desarrollos.nombres nombre_desarrollo,    
+					tc_mantic_clientes.razon_social,
+					concat(tc_mantic_domicilios.calle, ", ",tc_mantic_domicilios.numero_exterior) domicilio
+				from 
+					tc_keet_contratos
+				inner join 
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto = tc_keet_proyectos.id_proyecto
+				inner join 
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				inner join
+					tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_proyectos.id_cliente
+				inner join 
+					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio= tc_keet_desarrollos.id_domicilio
+				where
+					{condicion}
+				order by 
+					tc_keet_contratos.clave
+			</select>
+		</unit>
 		<unit id="VistaDiasFeriadosDto">
 			<select id="lazy">
 				select
@@ -323,6 +363,67 @@
 					tc_mantic_clientes on tc_keet_proyectos.id_cliente=tc_mantic_clientes.id_cliente
 				where
 					tc_keet_contratos.id_contrato = {idContrato}
+			</select>
+			<select id="contratistasAsignado">
+				select      
+					tr_mantic_empresa_personal.id_empresa_persona as id_key,									
+					tc_keet_departamentos.nombre departamento,
+					tc_mantic_puestos.nombre puesto,
+					tr_mantic_empresa_personal.id_activo,
+					tc_mantic_personas.nombres,
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,					
+					tc_mantic_personas.rfc,					
+					tc_mantic_personas.curp,					
+          tc_keet_contratos_lotes_contratistas.*
+        from      
+          tc_keet_contratos_lotes_contratistas
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+        where 
+          tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote} and tc_keet_contratos_lotes_contratistas.id_trabajo=2
+				  and tr_mantic_empresa_personal.id_activo= 1
+				  and {condicion}
+				order by 
+					tc_mantic_puestos.nombre,
+					tc_mantic_personas.nombres
+			</select>
+			<select id="contratistasDisponible">
+				select      
+					tr_mantic_empresa_personal.id_empresa_persona as id_key,			
+					tr_mantic_empresa_personal.id_empresa_persona,
+					tc_keet_departamentos.nombre departamento,
+					tc_mantic_puestos.nombre puesto,
+					tr_mantic_empresa_personal.id_activo,
+					tc_mantic_personas.nombres,
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,					
+					tc_mantic_personas.rfc,					
+					tc_mantic_personas.curp          
+        from                				
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+        where 
+          tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_lotes_contratistas where tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote})
+				and 
+					tr_mantic_empresa_personal.id_empresa= {idEmpresa}
+				  and tr_mantic_empresa_personal.id_activo= 1
+				  and {condicion}
+					and tc_mantic_puestos.nombre= 'CONTRATISTA'
+				order by 
+					tc_mantic_puestos.nombre,
+					tc_mantic_personas.nombres
 			</select>
 		</unit>
     <unit id="VistaPrototiposDto">
