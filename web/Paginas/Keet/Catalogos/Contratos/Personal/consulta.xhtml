@@ -67,7 +67,13 @@
 						</p:inputText>		
 						<p:spacer/>
 					</p:panelGrid>										
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosPersonalConsulta.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalConsulta.attrs.seleccionado}" paginator="#{keetCatalogosContratosPersonalConsulta.lazyModel.rowCount gt keetCatalogosContratosPersonalConsulta.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" selectionMode="single">            						
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosPersonalConsulta.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalConsulta.attrs.seleccionado}" paginator="#{keetCatalogosContratosPersonalConsulta.lazyModel.rowCount gt keetCatalogosContratosPersonalConsulta.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-40">
+              <f:facet name="header">
+                <h:outputText value="No"/>
+              </f:facet>
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreCompleto}">
               <f:facet name="header">
                 <h:outputText value="Nombre "/>
@@ -83,7 +89,7 @@
 				</div>						        
       </div>
     </div>		    
-		<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+		<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 			<p:outputLabel value="Empleados activos"/>
 			<p:outputLabel value="Empleados inactivos"/>
 			<p:outputLabel value="Activos sin seguro"/>
