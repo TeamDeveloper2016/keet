@@ -188,7 +188,17 @@
           </p:contextMenu>
         </div>
       </div>
-    </div>		           				
+    </div>
+		<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+			<p:outputLabel value="Empleados activos"/>
+			<p:outputLabel value="Empleados inactivos"/>
+			<p:outputLabel value="Activos sin seguro"/>
+			<p:outputLabel value="Activos sin deposito al banco"/>
+		  <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
+		  <h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
+		  <h:graphicImage library="janal" name="icon/semaforos/circulo-amarillo.png"/>
+		  <h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
+		</p:panelGrid>	
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar a la persona ?" />
