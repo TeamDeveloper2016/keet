@@ -4,6 +4,23 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaDiasFeriadosDto">
+			<select id="lazy">
+				select
+					tc_keet_dias_festivos.id_dia_festivo AS id_key,
+					tc_keet_dias_festivos.*,
+					tc_mantic_empresas.nombre 
+				from
+					tc_keet_dias_festivos
+				inner join 
+					tc_mantic_empresas on tc_keet_dias_festivos.id_empresa= tc_mantic_empresas.id_empresa
+				where 
+					{condicion}
+				and 
+					tc_keet_dias_festivos.id_empresa in ({idEmpresa})				
+				{sortOrder}
+			</select>
+		</unit>
 		<unit id="VistaIncidenciasDto">
 			<select id="movimientos">
 				select
