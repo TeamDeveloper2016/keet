@@ -136,7 +136,7 @@
 							<h:outputText value="#{row['costo']}"/>
 						</p:column>
 						<f:facet name="footer">
-							<p:outputLabel value="Total [#{keetEstacionesContrato.lazyModel==null?0:keetEstacionesContrato.lazyModel.rowCount}] registros"/>
+							<p:outputLabel value="Total [#{keetEstacionesContrato.estacionesHijas==null?0:keetEstacionesContrato.estacionesHijas.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>
 				</div>
