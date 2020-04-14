@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.beans.Contrato;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoPersonal;
+import mx.org.kaana.keet.catalogos.contratos.contratistas.beans.ContratistaLote;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -145,4 +146,41 @@ public class MotorBusqueda implements Serializable{
 		} // finally
 		return regresar;
 	} // toInicidencias
+	
+	public List<ContratistaLote> toContratistasDisponibles(String condicion) throws Exception{
+		List<ContratistaLote> regresar= null;
+		Map<String, Object>params      = null;
+		try {
+		  params= new HashMap<>();
+			params.put("idContratoLote", this.idPivote);			
+			params.put("condicion", condicion);
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			regresar= DaoFactory.getInstance().toEntitySet(ContratistaLote.class, "VistaContratosDto", "contratistasDisponible", params);      
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toContratistasDisponibles	
+	
+	public List<ContratistaLote> toContratistasAsignados(String condicion) throws Exception{
+		List<ContratistaLote> regresar= null;
+		Map<String, Object>params      = null;
+		try {
+		  params= new HashMap<>();			
+			params.put("idContratoLote", this.idPivote);			
+			params.put(Constantes.SQL_CONDICION, condicion);			
+			regresar= DaoFactory.getInstance().toEntitySet(ContratistaLote.class, "VistaContratosDto", "contratistasAsignado", params);      
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toContratistasAsignados
 }
