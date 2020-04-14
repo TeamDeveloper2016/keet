@@ -152,6 +152,7 @@
             <p:menuitem id="importar" action="#{keetCatalogosContratosFiltro.doAccion('SUBIR')}" icon="fa fa-file-o" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="generadores" action="#{keetCatalogosContratosFiltro.doAccion('PROCESAR')}" icon="fa fa-file-pdf-o" ajax="false" value="Generadores" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="presupuestos" action="#{keetCatalogosContratosFiltro.doAccion('COPIAR')}" icon="fa fa-file-text-o" ajax="false" value="Presupuestos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="estaciones" action="#{keetCatalogosContratosFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-list-alt" ajax="false" value="Estaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					
           </p:contextMenu>
