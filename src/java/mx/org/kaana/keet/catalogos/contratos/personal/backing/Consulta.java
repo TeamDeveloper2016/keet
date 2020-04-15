@@ -13,35 +13,30 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
 import mx.org.kaana.keet.comun.Catalogos;
-import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
-import mx.org.kaana.libs.reflection.Methods;
 
 @Named(value = "keetCatalogosContratosPersonalConsulta")
 @ViewScoped
 public class Consulta extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;		
-	private RegistroDesarrollo registroDesarrollo;		
-	
-	public RegistroDesarrollo getRegistroDesarrollo() {
-		return registroDesarrollo;
+	protected FormatLazyModel totales;	
+
+	public FormatLazyModel getTotales() {
+		return totales;
 	}
 
-	public void setRegistroDesarrollo(RegistroDesarrollo registroDesarrollo) {
-		this.registroDesarrollo = registroDesarrollo;
-	}		
+	public void setTotales(FormatLazyModel totales) {
+		this.totales=totales;
+	}
 	
-  @PostConstruct
+	@PostConstruct
   @Override
   protected void init() {
     try {
@@ -74,6 +69,12 @@ public class Consulta extends IBaseFilter implements Serializable {
 			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel= new FormatLazyModel("VistaContratosDto", "consulta", params, campos);
 			UIBackingUtilities.resetDataTable("tabla");			
+			campos.clear();
+			campos.add(new Columna("total", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+			campos.add(new Columna("activos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+			campos.add(new Columna("noActivos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+			this.lazyModel= new FormatLazyModel("VistaContratosDto", "totales", params, campos);
+			UIBackingUtilities.resetDataTable("totales");			
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -101,5 +102,15 @@ public class Consulta extends IBaseFilter implements Serializable {
 		} // if
 		return Cadena.isVacio(sb)? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()- 4);
 	} // toPrepare
+	
+	public String toLegend(Long index, Entity row) {
+		String regresar= row.toString("desarrollo");
+	  if(index!= 0)
+			if(Cadena.isVacio(row.toLong("idEmpresa")))
+				regresar= "TOTAL GENERAL";
+		  else
+				regresar= "TOTAL EMPRESA";
+		return regresar;
+	}
 	
 }

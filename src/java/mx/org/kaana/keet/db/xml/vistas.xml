@@ -242,6 +242,25 @@
 				order by 
 					tc_mantic_puestos.nombre, tc_mantic_personas.nombres
 			</select>
+			<select id="totales">
+				select
+					tr_mantic_empresa_personal.id_empresa, 
+					if(tc_keet_desarrollos.descripcion is null, 'SIN DESARROLLO', tc_keet_desarrollos.descripcion) as desarrollo, 
+					count(*) as total, 
+					sum(if(tr_mantic_empresa_personal.id_activo= 1, 1, 0)) as activos,
+					sum(if(tr_mantic_empresa_personal.id_activo= 2, 1, 0)) as no_activos
+				from
+					tr_mantic_empresa_personal
+				left join
+					tc_keet_contratos_personal on tc_keet_contratos_personal.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				left join
+					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				group by
+					tr_mantic_empresa_personal.id_empresa, tc_keet_desarrollos.descripcion
+				with rollup
+			</select>
 			<select id="findContratoPersona">
 				select      
 					tc_keet_contratos_personal.id_contratos_personal as id_key,									

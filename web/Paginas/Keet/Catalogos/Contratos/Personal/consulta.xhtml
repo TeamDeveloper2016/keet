@@ -86,18 +86,51 @@
               <p:outputLabel value="Total [#{keetCatalogosContratosPersonalConsulta.lazyModel==null?0:keetCatalogosContratosPersonalConsulta.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>  
+					<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+						<p:outputLabel value="Empleados activos"/>
+						<p:outputLabel value="Empleados inactivos"/>
+						<p:outputLabel value="Activos sin seguro"/>
+						<p:outputLabel value="Activos sin deposito al banco"/>
+						<h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
+						<h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
+						<h:graphicImage library="janal" name="icon/semaforos/circulo-amarillo.png"/>
+						<h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
+					</p:panelGrid>	
+					<br/>
+					<p:dataTable lazy="true" id="totales" widgetVar="kajoolTotales" var="row" value="#{keetCatalogosContratosPersonalConsulta.totales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalConsulta.attrs.total}" paginator="#{keetCatalogosContratosPersonalConsulta.totales.rowCount gt keetCatalogosContratosPersonalConsulta.totales.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+            <f:facet name="header">
+							<h:outputText value="Total de empleados por desarrollo"/>
+						</f:facet>
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-50" sortBy="#{row.desarrollo}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo"/>
+              </f:facet>
+							<h:outputText value="#{keetCatalogosContratosPersonalConsulta.toLegend(index, row)}"/>
+						</p:column>
+            <p:column class="janal-column-right MarAuto Responsive" sortBy="#{row.total}">
+              <f:facet name="header">
+                <h:outputText value="Empleados"/>
+              </f:facet>
+							<h:outputText value="#{row.total}"/>							
+            </p:column>														            						
+            <p:column class="janal-column-right MarAuto Responsive" sortBy="#{row.activos}">
+              <f:facet name="header">
+                <h:outputText value="Activos"/>
+              </f:facet>
+							<h:outputText value="#{row.activos}"/>							
+            </p:column>														            						
+            <p:column class="janal-column-right MarAuto Responsive" sortBy="#{row.noActivos}">
+              <f:facet name="header">
+                <h:outputText value="No activos"/>
+              </f:facet>
+							<h:outputText value="#{row.noActivos}"/>							
+            </p:column>														            						
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetCatalogosContratosPersonalConsulta.totales==null? 0: keetCatalogosContratosPersonalConsulta.totales.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>  
 				</div>						        
       </div>
     </div>		    
-		<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center">
-			<p:outputLabel value="Empleados activos"/>
-			<p:outputLabel value="Empleados inactivos"/>
-			<p:outputLabel value="Activos sin seguro"/>
-			<p:outputLabel value="Activos sin deposito al banco"/>
-		  <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
-		  <h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
-		  <h:graphicImage library="janal" name="icon/semaforos/circulo-amarillo.png"/>
-		  <h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
-		</p:panelGrid>	
   </ui:define>
 </ui:composition>
