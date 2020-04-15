@@ -126,6 +126,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 						JsfBase.addMessage("La estación se ".concat(eaccion.getTitle()).concat(" correctamente."));
 					} // if
 				break;
+				case LISTAR:
+					JsfBase.setFlashAttribute("estacionPadre", this.current);
+					this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+					regresar= "estructura".concat(Constantes.REDIRECIONAR);
+					JsfBase.setFlashAttribute("estacionProcess", this.current);
+					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
+					break;
 			} // swicth
     } // try
     catch (Exception e) {
@@ -165,7 +172,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch
 	} // actualizarChildren
 
-	protected void doActualizarChildren() {
+	public void doActualizarChildren() {
 		try {
 			this.current= ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
 			actualizarChildren(1);
