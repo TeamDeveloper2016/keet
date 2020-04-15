@@ -148,6 +148,7 @@
         <p:menuitem icon="fa fa-arrow-up" id="subir" actionListener="#{keetEstacionesContrato.doAccion('SUBIR')}" value="Subir" title="Subir opción" update="tabla" process="@this,tabla"/>
         <p:menuitem icon="fa fa-arrow-down" id="bajar" actionListener="#{keetEstacionesContrato.doAccion('BAJAR')}" value="Bajar" title="Bajar opción" update="tabla" process="@this,tabla"/>
         <p:menuitem icon="fa fa-th-list" action="#{keetEstacionesContrato.doAccion('REGISTRAR')}" ajax="false" value="Descendencia"  title="Agregar descendencia"/>             				
+				<p:menuitem icon="fa fa-tasks" action="#{keetEstacionesContrato.doAccion('LISTAR')}" ajax="false" value="Estructura"  title="Ver estructura"/> 
       </p:contextMenu>
 
     </div>		           				
