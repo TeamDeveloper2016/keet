@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -43,7 +44,7 @@ public class Consulta extends IBaseFilter implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
 			this.loadCatalogos();
 			this.doLoad();
-			this.doTotales();
+			this.toTotales();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -80,11 +81,12 @@ public class Consulta extends IBaseFilter implements Serializable {
 		} // finally
   } // doLoad		
 	
-  public void doTotales() {   
+  private void toTotales() {   
 		Map<String, Object>params= null;
 		List<Columna>columns     = null;		
     try {			
 			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			columns= new ArrayList<>();
 			columns.add(new Columna("total", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
 			columns.add(new Columna("activos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
@@ -122,7 +124,8 @@ public class Consulta extends IBaseFilter implements Serializable {
 			if(Cadena.isVacio(row.toLong("idEmpresa")))
 				regresar= "TOTAL GENERAL";
 		  else
-				regresar= "TOTAL EMPRESA";
+				if(Objects.equals(regresar, "SIN DESARROLLO"))
+				  regresar= "TOTAL EMPRESA";
 		return regresar;
 	}
 	

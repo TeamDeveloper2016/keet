@@ -258,6 +258,8 @@
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 				left join
 					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				where
+				  {condicion}
 				group by
 					tr_mantic_empresa_personal.id_empresa, tc_keet_desarrollos.descripcion
 				with rollup
