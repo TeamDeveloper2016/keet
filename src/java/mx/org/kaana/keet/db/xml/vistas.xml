@@ -80,7 +80,7 @@
 				inner join
 					tc_janal_usuarios on tc_mantic_incidentes_bitacora.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
-					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				where
 					tc_mantic_incidentes_bitacora.id_incidente= {idIncidente}
 				order by
@@ -116,7 +116,7 @@
 				inner join
 					tr_mantic_empresa_personal on tc_mantic_incidentes.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona				
 				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				inner join 
@@ -207,7 +207,7 @@
 				inner join 
 					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
 				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				inner join 
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
@@ -232,7 +232,7 @@
         from      
           tr_mantic_empresa_personal
 				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				inner join 
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
@@ -256,7 +256,7 @@
 				left join
 					tc_keet_contratos_personal on tc_keet_contratos_personal.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
 				inner join
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				left join
 					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				where
@@ -285,7 +285,7 @@
 				inner join 
 					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
 				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				inner join 
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
@@ -317,7 +317,7 @@
         from                
 					tr_mantic_empresa_personal
 				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
@@ -347,7 +347,7 @@
         from                				
 					tr_mantic_empresa_personal
 				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
@@ -404,7 +404,7 @@
 				inner join 
 					tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
 				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
@@ -432,7 +432,7 @@
         from                				
 					tr_mantic_empresa_personal
 				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
 				inner join	
@@ -525,7 +525,7 @@
 				inner join 
 					tc_janal_usuarios on tc_keet_prototipos_archivos.id_usuarios= tc_janal_usuarios.id_usuario
 				inner join 
-					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_keet_planos on tc_keet_prototipos_archivos.id_plano = tc_keet_planos.id_plano
 				inner join 
@@ -606,7 +606,7 @@
 				inner join 
 					tc_janal_usuarios on tc_keet_proyectos_archivos.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 
-					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_keet_prototipos on tc_keet_proyectos_archivos.id_prototipo = tc_keet_prototipos.id_prototipo
 				inner join 
@@ -637,7 +637,7 @@
 				inner join 
 					tc_janal_usuarios on tc_keet_proyectos_generadores.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 
-					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_keet_tipos_generadores on tc_keet_proyectos_generadores.id_tipo_generador = tc_keet_tipos_generadores.id_tipo_generador
 				inner join 
@@ -664,7 +664,7 @@
 				inner join 
 					tc_janal_usuarios on tc_keet_proyectos_presupuestos.id_usuarios = tc_janal_usuarios.id_usuario
 				inner join 
-					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join
 					tc_keet_tipos_presupuestos on tc_keet_proyectos_presupuestos.id_tipo_presupuesto = tc_keet_tipos_presupuestos.id_tipo_presupuesto
 				where
@@ -801,7 +801,7 @@
 				inner join 
 					tc_janal_usuarios on tc_keet_contratos_archivos.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 
-					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_keet_prototipos on tc_keet_contratos_archivos.id_prototipo = tc_keet_prototipos.id_prototipo
 				inner join 
@@ -832,7 +832,7 @@
 				inner join 
 					tc_janal_usuarios on tc_keet_contratos_generadores.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 
-					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join 
 					tc_keet_tipos_generadores on tc_keet_contratos_generadores.id_tipo_generador = tc_keet_tipos_generadores.id_tipo_generador
 				inner join 
@@ -859,7 +859,7 @@
 				inner join 
 					tc_janal_usuarios on tc_keet_contratos_presupuestos.id_usuarios = tc_janal_usuarios.id_usuario
 				inner join 
-					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 6
 				inner join
 					tc_keet_tipos_presupuestos on tc_keet_contratos_presupuestos.id_tipo_presupuesto = tc_keet_tipos_presupuestos.id_tipo_presupuesto
 				where
