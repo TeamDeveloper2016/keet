@@ -99,6 +99,7 @@ public final class Constantes {
 
   public static Color[] COLORES = {new Color(230, 230, 230), Color.BLACK, Color.WHITE, Color.GRAY, Color.BLUE, Color.RED, Color.YELLOW};
   public static final Long USUARIO_ACTIVO = 1L;
+  public static final Long USUARIO_INACTIVO = -1L;
   public static final String PERMITIR_ACCESO = "1";
 
   public static final String PROPIEDAD_SISTEMA_SERVIDOR = "sistema.servidor";
