@@ -43,6 +43,7 @@ public class Consulta extends IBaseFilter implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
 			this.loadCatalogos();
 			this.doLoad();
+			this.doTotales();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -59,22 +60,16 @@ public class Consulta extends IBaseFilter implements Serializable {
 	@Override
   public void doLoad() {   
 		Map<String, Object>params= null;
-		List<Columna>campos      = null;		
+		List<Columna>columns     = null;		
     try {			
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, this.toPrepare());
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-			this.lazyModel= new FormatLazyModel("VistaContratosDto", "consulta", params, campos);
-			UIBackingUtilities.resetDataTable("tabla");			
-			campos.clear();
-			campos.add(new Columna("total", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-			campos.add(new Columna("activos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-			campos.add(new Columna("noActivos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-			this.lazyModel= new FormatLazyModel("VistaContratosDto", "totales", params, campos);
-			UIBackingUtilities.resetDataTable("totales");			
+			columns= new ArrayList<>();
+			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
+			this.lazyModel= new FormatLazyModel("VistaContratosDto", "consulta", params, columns);
+			UIBackingUtilities.resetDataTable("tabla");	
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -83,6 +78,24 @@ public class Consulta extends IBaseFilter implements Serializable {
 		finally{
 			this.attrs.put("controlBuqueda", Boolean.TRUE);
 		} // finally
+  } // doLoad		
+	
+  public void doTotales() {   
+		Map<String, Object>params= null;
+		List<Columna>columns     = null;		
+    try {			
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+			columns.add(new Columna("total", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+			columns.add(new Columna("activos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+			columns.add(new Columna("noActivos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+			this.totales= new FormatLazyModel("VistaContratosDto", "totales", params, columns);
+			UIBackingUtilities.resetDataTable("totales");			
+    } // try // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch    
   } // doLoad		
 	
 	private String toPrepare() {
@@ -103,7 +116,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 		return Cadena.isVacio(sb)? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()- 4);
 	} // toPrepare
 	
-	public String toLegend(Long index, Entity row) {
+	public String toLegend(Integer index, Entity row) {
 		String regresar= row.toString("desarrollo");
 	  if(index!= 0)
 			if(Cadena.isVacio(row.toLong("idEmpresa")))
