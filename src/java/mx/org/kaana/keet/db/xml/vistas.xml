@@ -448,6 +448,42 @@
 					tc_mantic_puestos.nombre,
 					tc_mantic_personas.nombres
 			</select>
+			<select id="contratistas">
+				select      
+					tr_mantic_empresa_personal.id_empresa_persona as id_key,			
+					tr_mantic_empresa_personal.id_empresa_persona,
+					tc_keet_departamentos.nombre departamento,
+					tc_mantic_puestos.nombre puesto,
+					tr_mantic_empresa_personal.id_activo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
+					tc_mantic_personas.nombres,
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,					
+					tc_mantic_personas.rfc,					
+					tc_mantic_personas.curp          
+        from                				
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+        where           
+					tr_mantic_empresa_personal.id_empresa= {idEmpresa}
+				  and tr_mantic_empresa_personal.id_activo= 1
+				  and {condicion}
+					and tc_mantic_puestos.nombre= 'CONTRATISTA'
+					and
+						(tc_mantic_personas.nombres like '%{nombreEmpleado}%' 
+					or
+						tc_mantic_personas.paterno like '%{nombreEmpleado}%'
+					or
+						tc_mantic_personas.materno  like '%{nombreEmpleado}%')
+				order by 
+					tc_mantic_puestos.nombre,
+					tc_mantic_personas.nombres
+			</select>
 		</unit>
     <unit id="VistaPrototiposDto">
 			<select id="lazy">
