@@ -244,6 +244,7 @@
 			</select>
 			<select id="totales">
 				select
+				  floor(rand()*(100- 10+ 1)+10) as id_key,
 					tr_mantic_empresa_personal.id_empresa, 
 					if(tc_keet_desarrollos.descripcion is null, 'SIN DESARROLLO', tc_keet_desarrollos.descripcion) as desarrollo, 
 					count(*) as total, 
