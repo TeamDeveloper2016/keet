@@ -249,7 +249,8 @@
 					if(tc_keet_desarrollos.descripcion is null, 'SIN DESARROLLO', tc_keet_desarrollos.descripcion) as desarrollo, 
 					count(*) as total, 
 					sum(if(tr_mantic_empresa_personal.id_activo= 1, 1, 0)) as activos,
-					sum(if(tr_mantic_empresa_personal.id_activo= 2, 1, 0)) as no_activos
+					sum(if(tr_mantic_empresa_personal.id_activo= 2, 1, 0)) as no_activos,
+          sum(if(tr_mantic_empresa_personal.id_activo= 1 and (tr_mantic_empresa_personal.nss is null or tr_mantic_empresa_personal.nss= ''), 1, 0)) as sin_seguro
 				from
 					tr_mantic_empresa_personal
 				left join

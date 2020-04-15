@@ -140,6 +140,12 @@
               </f:facet>
 							<h:outputText value="#{item.noActivos}"/>							
             </p:column>														            						
+            <p:column class="janal-column-right MarAuto Responsive" sortBy="#{item.sinSeguro}">
+              <f:facet name="header">
+                <h:outputText value="Sin seguro"/>
+              </f:facet>
+							<h:outputText value="#{item.sinSeguro}"/>							
+            </p:column>														            						
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosPersonalConsulta.totales==null? 0: keetCatalogosContratosPersonalConsulta.totales.rowCount}] registros"/>
             </f:facet>

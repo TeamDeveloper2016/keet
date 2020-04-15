@@ -91,6 +91,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 			columns.add(new Columna("total", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
 			columns.add(new Columna("activos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
 			columns.add(new Columna("noActivos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+			columns.add(new Columna("sinSeguro", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
 			this.totales= new FormatLazyModel("VistaContratosDto", "totales", params, columns);
 			UIBackingUtilities.resetDataTable("totales");			
     } // try // try
