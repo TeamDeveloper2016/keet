@@ -57,6 +57,12 @@
 										<h:outputText value="#{item.nombres}"/>
 									</p:column>   
 								</p:selectOneMenu>																	
+								<p:outputLabel for="idSeguro" value="Empleado activo con seguro:"/>
+								<p:selectOneMenu id="idSeguro" value="#{keetCatalogosContratosPersonalConsulta.attrs.idSeguro}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+									<f:selectItem itemValue="1" itemLabel="SI"/>
+									<f:selectItem itemValue="2" itemLabel="NO"/>
+								</p:selectOneMenu>																	
 							</p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>	

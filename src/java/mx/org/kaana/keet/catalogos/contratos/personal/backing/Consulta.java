@@ -42,6 +42,7 @@ public class Consulta extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
+      this.attrs.put("idSeguro", -1L);						
 			this.loadCatalogos();
 			this.doLoad();
 			this.toTotales();
@@ -112,6 +113,11 @@ public class Consulta extends IBaseFilter implements Serializable {
 				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
 			else
 				sb.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
+		if(this.attrs.get("idSeguro")!= null && !Cadena.isVacio(this.attrs.get("idSeguro")) && Long.valueOf(this.attrs.get("idSeguro").toString())>= 1L)
+	    if(Long.valueOf(this.attrs.get("idSeguro").toString())== 1L)		
+  			sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.nss is not null and tr_mantic_empresa_personal.nss!= '') and ");
+		  else
+	  		sb.append("(tr_mantic_empresa_personal.id_activo= 1 and (tr_mantic_empresa_personal.nss is null or tr_mantic_empresa_personal.nss= '')) and ");
 		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
 			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
   		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) regexp '.*").append(nombre).append(".*') and ");
