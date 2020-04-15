@@ -10,6 +10,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -71,9 +72,10 @@ public class Lotes extends IBaseFilter implements Serializable {
     List<Columna> columns= null;		
     try {      
       columns= new ArrayList<>();      
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));            
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
 	    this.lotes= DaoFactory.getInstance().toEntitySet("TcKeetContratosLotesDto", "byContratoContratistas", this.attrs);
+			if(!this.lotes.isEmpty())
+				this.lotes.add(0, toLoteDefault());
 			UIBackingUtilities.toFormatEntitySet(this.lotes, columns);
     } // try
     catch (Exception e) {
@@ -84,6 +86,27 @@ public class Lotes extends IBaseFilter implements Serializable {
       Methods.clean(columns);
     } // finally		
   } // doLoad	
+	
+	private Entity toLoteDefault(){
+		Entity regresar= null;
+		Long total     = 0L;
+		try {
+			for(Entity lote: this.lotes)
+				total= total + lote.toLong("contratistas");
+			regresar= new Entity(Constantes.USUARIO_INACTIVO);
+			regresar.put("clave", new Value("clave", "ASIGNACIÓN GENERAL"));
+			regresar.put("manzana", new Value("manzana", this.lotes.get(0).toString("manzana")));
+			regresar.put("lote", new Value("lote", "N"));
+			regresar.put("fechaInicio", new Value("fechaInicio", "-"));
+			regresar.put("fechaTermino", new Value("fechaTermino", "-"));
+			regresar.put("diasConstruccion", new Value("diasConstruccion", "-"));
+			regresar.put("contratistas", new Value("contratistas", total));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toLoteDefault
 	
 	public String doCancelar() {
     String regresar          = null;    		
@@ -99,11 +122,16 @@ public class Lotes extends IBaseFilter implements Serializable {
   } // doPagina
 	
 	public String doRegistrar() {
-    String regresar= null;    		
+    String regresar    = null;    		
+		Entity seleccionado= null;
     try {			
+			seleccionado= (Entity) this.attrs.get("seleccionado");
 			JsfBase.setFlashAttribute("idContrato", this.attrs.get("idContrato"));			
-			JsfBase.setFlashAttribute("idContratoLote", ((Entity)this.attrs.get("seleccionado")).getKey());			
-			regresar= "registro".concat(Constantes.REDIRECIONAR);			
+			JsfBase.setFlashAttribute("idContratoLote", seleccionado.getKey());			
+			if(seleccionado.getKey().equals(Constantes.USUARIO_INACTIVO))
+				regresar= "asignacion".concat(Constantes.REDIRECIONAR);
+			else
+				regresar= "registro".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
