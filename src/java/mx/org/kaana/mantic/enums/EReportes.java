@@ -49,7 +49,8 @@ public enum EReportes implements IReportAttribute{
   FACTURAS_FICTICIAS        ("VistaFicticiasDto", "lazy", "Listado de facturación", "/Paginas/Mantic/Facturas/Reportes/facturas", EFormatos.PDF, "listado_de_facturacion", "/Paginas/Mantic/Facturas/filtro"),
 	FACTURAS_FICTICIAS_DETALLE("reporteFacturaDetalle", "ficticiaDetalle", "Facturación", "/Paginas/Mantic/Facturas/Reportes/facturaDetalle", EFormatos.PDF, "facturacion", "/Paginas/Mantic/Facturas/filtro"),
 	FACTURAS_RESUMEN          ("VistaReporteJuntaFacturas", "facturas", "Facturama", "", EFormatos.PDF, "facturama_facturas_seleccionadas", "/Paginas/Mantic/Facturas/filtro"),
-	EMPLEADOS                 ("VistaEmpleadosEstatusDto", "empleados", "Plantilla de personal", "/Paginas/Mantic/Catalogos/Empleados/Reportes/empleados", EFormatos.PDF, "plantilla_de_personal", "/Paginas/Mantic/Catalogos/Empleados/filtro");
+	EMPLEADOS                 ("VistaEmpleadosEstatusDto", "empleados", "Plantilla de personal", "/Paginas/Mantic/Catalogos/Empleados/Reportes/empleados", EFormatos.PDF, "plantilla_de_personal", "/Paginas/Mantic/Catalogos/Empleados/filtro"),
+	EMPLEADOS_DESARROLLO      ("VistaEmpleadosEstatusDto", "desarrollo", "Plantilla de personal", "/Paginas/Keet/Catalogos/Contratos/Personal/Reportes/empleados", EFormatos.PDF, "plantilla_de_personal", "/Paginas/Mantic/Catalogos/Contratos/Personal/consulta");
 	
 	
 	private final String proceso;
