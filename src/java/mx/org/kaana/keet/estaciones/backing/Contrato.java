@@ -5,10 +5,14 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.estaciones.beans.RegistroEstacion;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
+import mx.org.kaana.keet.estaciones.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -127,6 +131,38 @@ public class Contrato extends Filtro{
       JsfBase.addMessageError(e);
     } // catch		
 	} // doLoadContratos
+	
+	@Override
+	public String doAccion(String accion) {
+    EAccion eaccion        = null;
+		String regresar        = null;
+    try {
+      eaccion = EAccion.valueOf(accion.toUpperCase());
+			switch(eaccion){
+				case REGISTRAR:
+				case AGREGAR:
+				case MODIFICAR:
+				case CONSULTAR:
+				case SUBIR:
+				case BAJAR:
+				case ELIMINAR:
+          super.doAccion(accion);
+				break;
+				case LISTAR:
+					JsfBase.setFlashAttribute("estacionPadre", this.current);
+					this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+					regresar= "estructura".concat(Constantes.REDIRECIONAR);
+					JsfBase.setFlashAttribute("estacionProcess", this.current);
+					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
+					break;
+			} // swicth
+    } // try
+    catch (Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  } // doAccion  
 	
 	
 	
