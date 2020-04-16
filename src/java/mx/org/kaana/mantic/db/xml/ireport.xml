@@ -62,6 +62,42 @@
 				order by 
 					nombre_empresa, desarrollo, nombre_completo, puesto, departamento
 			</select>			
+			<select id="desarrollo">
+				select 
+					principal.*,
+					1 total,
+				  if(activo='SI', 1, 0) id_activo,
+					if(activo='SI', 0, 1) id_inactivo
+				from(
+				select 
+					tc_mantic_empresas.nombre empresa,
+					concat(tc_mantic_empresas.nombre, ' - ', tc_mantic_empresas.titulo) nombre_empresa,  
+					tc_keet_desarrollos.nombres desarrollo,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) nombre_completo,
+					tc_mantic_puestos.nombre puesto,
+					tc_keet_departamentos.nombre departamento,
+					if(tr_mantic_empresa_personal.id_activo=1, 'SI', 'NO') activo,					
+					if(tr_mantic_empresa_personal.id_seguro=1, 'SI', 'NO') seguro					
+				from
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join 
+					tc_keet_contratos_personal on tr_mantic_empresa_personal.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona
+				inner join 
+					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				where 					
+					tc_keet_desarrollos.id_desarrollo in (select id_desarrollo from tc_keet_contratos_personal where tc_keet_contratos_personal.id_empresa_persona= (select id_empresa_persona from tr_mantic_empresa_personal where id_persona= {idPersona}))
+				) principal
+				order by 
+					nombre_empresa, desarrollo, nombre_completo, puesto, departamento
+			</select>			
 		</unit>
 		<unit id="VistaReportesOrdenesComprasDto">
 			<select id="reporteOrden">
