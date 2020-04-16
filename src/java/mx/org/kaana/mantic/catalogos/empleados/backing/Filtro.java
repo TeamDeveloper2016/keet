@@ -215,8 +215,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
 		try {		
-      params= new HashMap<>();      
-      //params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+      params= new HashMap<>();            
       reporteSeleccion= EReportes.valueOf(nombre);
       this.reporte= JsfBase.toReporte();	
       parametros= new HashMap<>();
