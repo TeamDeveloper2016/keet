@@ -75,7 +75,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombreDesarrollo", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
-	    this.contratos= UIEntity.build("VistaContratosLotesDto", "principal", params, columns);  
+	    this.contratos= UIEntity.build("VistaContratosLotesDto", JsfBase.isAdminEncuestaOrAdmin()? "principal" : "residentes", params, columns);  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -106,6 +106,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
 			condicion.append("(tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");    			
 		regresar.put(Constantes.SQL_CONDICION, condicion.length()== 0 ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()- 4));				
+		regresar.put("idPersona", JsfBase.getAutentifica().getPersona().getIdPersona());
 		return regresar;		
 	} // toPrepare  
 	
