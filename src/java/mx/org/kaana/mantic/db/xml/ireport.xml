@@ -8,11 +8,12 @@
   <dml>
 		<unit id="VistaEmpleadosEstatusDto">
 			<select id="empleados">
-				select 
+				 select 
 					principal.*,
 					1 total,
 				  if(activo='SI', 1, 0) id_activo,
-					if(activo='SI', 0, 1) id_inactivo
+					if(activo='SI', 0, 1) id_inactivo,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) contratista
 				from(
 				select 
 					tc_mantic_empresas.nombre empresa,
@@ -22,7 +23,8 @@
 					tc_mantic_puestos.nombre puesto,
 					tc_keet_departamentos.nombre departamento,
 					if(tr_mantic_empresa_personal.id_activo=1, 'SI', 'NO') activo,					
-					if(tr_mantic_empresa_personal.id_seguro=1, 'SI', 'NO') seguro					
+					if(tr_mantic_empresa_personal.id_seguro=1, 'SI', 'NO') seguro,
+					tr_mantic_empresa_personal.id_contratista				
 				from
 					tr_mantic_empresa_personal
 				inner join 
@@ -46,7 +48,8 @@
 					tc_mantic_puestos.nombre puesto,
 					tc_keet_departamentos.nombre departamento,
 					if(tr_mantic_empresa_personal.id_activo=1, 'SI', 'NO') activo,					
-					if(tr_mantic_empresa_personal.id_seguro=1, 'SI', 'NO') seguro
+					if(tr_mantic_empresa_personal.id_seguro=1, 'SI', 'NO') seguro,
+					tr_mantic_empresa_personal.id_contratista
 				from
 					tr_mantic_empresa_personal
 				inner join 
@@ -58,7 +61,12 @@
 				inner join 
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				where 
-					tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_personal group by id_empresa_persona)) principal
+					tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_personal group by id_empresa_persona)
+			  ) principal
+			  left join
+			    tr_mantic_empresa_personal on principal.id_contratista= tr_mantic_empresa_personal.id_empresa_persona
+			  left join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				order by 
 					nombre_empresa, desarrollo, nombre_completo, puesto, departamento
 			</select>			
@@ -67,7 +75,8 @@
 					principal.*,
 					1 total,
 				  if(activo='SI', 1, 0) id_activo,
-					if(activo='SI', 0, 1) id_inactivo
+					if(activo='SI', 0, 1) id_inactivo,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) contratista
 				from(
 				select 
 					tc_mantic_empresas.nombre empresa,
@@ -77,7 +86,8 @@
 					tc_mantic_puestos.nombre puesto,
 					tc_keet_departamentos.nombre departamento,
 					if(tr_mantic_empresa_personal.id_activo=1, 'SI', 'NO') activo,					
-					if(tr_mantic_empresa_personal.id_seguro=1, 'SI', 'NO') seguro					
+					if(tr_mantic_empresa_personal.id_seguro=1, 'SI', 'NO') seguro,
+				  tr_mantic_empresa_personal.id_contratista					
 				from
 					tr_mantic_empresa_personal
 				inner join 
@@ -95,6 +105,10 @@
 				where 					
 					tc_keet_desarrollos.id_desarrollo in (select id_desarrollo from tc_keet_contratos_personal where tc_keet_contratos_personal.id_empresa_persona= (select id_empresa_persona from tr_mantic_empresa_personal where id_persona= {idPersona}))
 				) principal
+			  left join
+			    tr_mantic_empresa_personal on principal.id_contratista= tr_mantic_empresa_personal.id_empresa_persona
+			  left join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				order by 
 					nombre_empresa, desarrollo, nombre_completo, puesto, departamento
 			</select>			

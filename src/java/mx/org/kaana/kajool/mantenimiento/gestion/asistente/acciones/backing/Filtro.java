@@ -9,7 +9,6 @@ package mx.org.kaana.kajool.mantenimiento.gestion.asistente.acciones.backing;
  */
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.io.Serializable;
@@ -55,7 +54,6 @@ import mx.org.kaana.kajool.mantenimiento.gestion.asistente.filtros.reglas.Genera
 import mx.org.kaana.kajool.mantenimiento.gestion.asistente.acciones.beans.Campo;
 import mx.org.kaana.kajool.mantenimiento.gestion.asistente.acciones.reglas.DtoFinder;
 import mx.org.kaana.kajool.mantenimiento.gestion.asistente.filtros.beans.Parametro;
-import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
