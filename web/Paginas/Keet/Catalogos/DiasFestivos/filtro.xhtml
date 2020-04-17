@@ -39,6 +39,7 @@
               <p:outputLabel for="fechaFin" value="Vigencia termino:"/>
 							<p:calendar id="fechaFin" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetCatalogosDiasFestivosFiltro.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>							
 						</p:panelGrid>
+						<p:separator/>
 						<div class="janal-align-right">
 							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="@form" actionListener="#{keetCatalogosDiasFestivosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="@form" actionListener="#{keetCatalogosDiasFestivosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
