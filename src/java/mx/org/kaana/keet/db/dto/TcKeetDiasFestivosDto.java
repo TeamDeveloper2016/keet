@@ -54,7 +54,7 @@ public class TcKeetDiasFestivosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetDiasFestivosDto(Long key) {
-    this(null, null, null, null, LocalDate.now(), null, new Long(-1L), null);
+    this(null, null, null, 2D, LocalDate.now(), 1L, new Long(-1L), null);
     setKey(key);
   }
 
