@@ -95,4 +95,38 @@ public class Gestor implements Serializable {
     } // finally
 		return regresar;
   } // loadPuestos
+	
+  public List<UISelectItem> loadPuestosSimple() throws Exception {    
+		List<UISelectItem> regresar= null;    
+    Map<String,Object> params  = null;
+    try {
+      params =  new HashMap();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			regresar= UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);      
+    } // finally
+		return regresar;
+  } // loadPuestos
+	
+  public List<UISelectItem> loadDepartamentosSimple() throws Exception {    
+		List<UISelectItem> regresar= null;    
+    Map<String,Object> params  = null;
+    try {
+      params =  new HashMap();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			regresar= UISelect.build("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);      
+    } // finally
+		return regresar;
+  } // loadPuestos
 }
