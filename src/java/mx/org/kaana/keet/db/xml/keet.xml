@@ -1376,6 +1376,9 @@
 			<delete id="contratoPersona">
 				delete from tc_keet_contratos_personal where id_empresa_persona= {idEmpresaPersona}
 			</delete>
+			<select id="numeroRegistros">
+				select count(*) total from tc_keet_contratos_personal where id_empresa_persona= {idEmpresaPersona}
+			</select>
     </unit>
 		    <unit id="TcKeetContratosDto">
       <select id="row">
