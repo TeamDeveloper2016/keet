@@ -64,7 +64,7 @@ public final class Catalogos {
 			columns= new ArrayList<>();
 			columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-		  regresar= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS, "nombres");
+		  regresar= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS, "puesto");
 			if(regresar!= null) {
 				Entity sinContratista=  new Entity(999L);
 				sinContratista.put("nombre", new Value("nombre", "POR EL DIA"));

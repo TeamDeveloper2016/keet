@@ -239,7 +239,7 @@
 				from(
 				select
 				  principal.*,
-				  concat('[', if(nombre_contratista is null, departamento, nombre_contratista),'] [', puesto, '] ', nombres,' ',paterno,' ',materno) descripcion
+				  concat('[', if(nombre_contratista is null, departamento, nombre_contratista), '] [', puesto, '] ', nombres,' ',paterno,' ',materno) descripcion
 				from(
 				select      
 					{campoLlave} as id_key,									
@@ -409,7 +409,7 @@
 				from(
 				select
 				  principal.*,
-				  concat('[', if(nombre_contratista is null, departamento, nombre_contratista),'] [', puesto, '] ', nombres,' ',paterno,' ',materno) descripcion
+				  concat('[', if(nombre_contratista is null, departamento, nombre_contratista), '] [', puesto, '] ', nombres,' ',paterno,' ',materno) descripcion
 				from(
 				select      
 					tr_mantic_empresa_personal.id_empresa_persona AS id_key,			
