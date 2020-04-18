@@ -46,12 +46,12 @@
 								<p:outputLabel for="contratista" value="Contratista:"/>
 								<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosPersonalConsulta.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosPersonalConsulta.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetCatalogosContratosPersonalConsulta.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.puesto or element.puesto eq ''? '': '-'} #{element.nombres}"/>
-									<p:column headerText="Puesto">
-										<h:outputText value="#{item.puesto}"/>
-									</p:column> 
+									<f:selectItems value="#{keetCatalogosContratosPersonalConsulta.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
 									<p:column headerText="Departamento">
 										<h:outputText value="#{item.nombre}"/>
+									</p:column> 
+									<p:column headerText="Puesto">
+										<h:outputText value="#{item.puesto}"/>
 									</p:column> 
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombres}"/>
