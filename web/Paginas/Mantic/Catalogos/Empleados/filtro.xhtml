@@ -68,13 +68,16 @@
               </p:selectOneMenu>
 							<p:outputLabel for="contratista" value="Asignado a contratista:"/>
 							<p:selectOneMenu id="contratista" value="#{manticCatalogosEmpleadosFiltro.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-								<f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
-								<p:column headerText="Nombre">
-									<h:outputText value="#{item.nombres}"/>
-								</p:column>   
+								<f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombre}"/>
 								<p:column headerText="Departamento">
 									<h:outputText value="#{item.nombre}"/>
 								</p:column> 
+								<p:column headerText="Puesto">
+									<h:outputText value="#{item.puesto}"/>
+								</p:column> 
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombres}"/>
+								</p:column>   
 							</p:selectOneMenu>																
               <p:outputLabel for="clave" value="Clave:"/>
               <p:inputText id="clave" value="#{manticCatalogosEmpleadosFiltro.attrs.clave}" styleClass="janal-wid-100-txt" placeholder="ejemplo: BR123"/> 
@@ -92,8 +95,8 @@
               <p:inputText id="paterno" value="#{manticCatalogosEmpleadosFiltro.attrs.paterno}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="materno" value="Apellido materno:"/>
               <p:inputText id="materno" value="#{manticCatalogosEmpleadosFiltro.attrs.materno}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="curp" value="CURP:"/>
-              <p:inputText id="curp" value="#{manticCatalogosEmpleadosFiltro.attrs.curp}" styleClass="janal-wid-100-txt"/>              														
+              <p:outputLabel for="curp" value="CURP:" style="display: none"/>
+              <p:inputText id="curp" value="#{manticCatalogosEmpleadosFiltro.attrs.curp}" styleClass="janal-wid-100-txt" style="display: none"/>              														
 							<p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosEmpleadosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                                                        
 							<p:outputLabel for="salarioMenor" value="Salario menor a:" title="Salario mensual" style="display: none"/>
@@ -199,11 +202,11 @@
             <p:menuitem id="modificar" action="#{manticCatalogosEmpleadosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
 						<p:separator/>
-						<p:menuitem id="activar" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doActivar('true')}" update="tabla" icon="fa fa-check" value="Activar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idActivo eq '2'}"/>					
-						<p:menuitem id="inactivar" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doActivar('false')}" update="tabla" icon="fa fa-minus" value="Inactivar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idActivo eq '1'}"/>					
+						<p:menuitem id="activar" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doActivar('true')}" update="tabla" icon="fa fa-check" value="Re-ingreso" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idActivo eq '2'}"/>					
+						<p:menuitem id="inactivar" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doActivar('false')}" update="tabla" icon="fa fa-minus" value="Dar baja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idActivo eq '1'}"/>					
 						<p:separator/>
 						<p:menuitem id="deposito" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doDeposito('true')}" update="tabla" icon="fa fa-money" value="Deposito" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idNomina eq '2'}"/>					
-						<p:menuitem id="nodeposito" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doDeposito('false')}" update="tabla" icon="fa fa-lock" value="No deposito" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idNomina eq '1'}"/>					
+						<p:menuitem id="nodeposito" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doDeposito('false')}" update="tabla" icon="fa fa-deviantart" value="No deposito" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idNomina eq '1'}"/>					
           </p:contextMenu>
 					<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 						<p:outputLabel value="Empleados activos"/>

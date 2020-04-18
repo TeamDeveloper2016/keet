@@ -15,6 +15,8 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	private String curp;
 	private String rfc;
 	private Long idActivo;		
+	private Long idNomina;		
+	private String nss;		
 	private ESql sqlAccion;
 	private Boolean nuevo;
 	private String clave;
@@ -35,10 +37,10 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	}
 	
 	public ContratistaLote(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L);		
+		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, 2L, null);		
 	}
 
-	public ContratistaLote(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona) {
+	public ContratistaLote(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, Long idNomina, String nss) {
 		super(key);
 		this.nombres         = nombres;
 		this.paterno         = paterno;
@@ -54,6 +56,8 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 		this.claveDesarrollo = claveDesarrollo;
 		this.nombreDesarrollo= nombreDesarrollo;
 		this.idPersona       = idPersona;
+		this.idNomina        = idNomina;
+		this.nss             = nss;
 	}
 	
 	public ESql getSqlAccion() {
@@ -167,4 +171,21 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}	
+
+	public Long getIdNomina() {
+		return idNomina;
+	}
+
+	public void setIdNomina(Long idNomina) {
+		this.idNomina=idNomina;
+	}
+
+	public String getNss() {
+		return nss;
+	}
+
+	public void setNss(String nss) {
+		this.nss=nss;
+	}
+	
 }

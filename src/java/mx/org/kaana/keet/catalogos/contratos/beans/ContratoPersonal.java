@@ -15,6 +15,8 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 	private String curp;
 	private String rfc;
 	private Long idActivo;		
+	private String nss;		
+	private Long idNomina;		
 	private ESql sqlAccion;
 	private Boolean nuevo;
 	private String clave;
@@ -36,10 +38,10 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 	}
 	
 	public ContratoPersonal(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, "");		
+		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, "", 1L, null);		
 	}
 
-	public ContratoPersonal(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, String descripcion) {
+	public ContratoPersonal(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, String descripcion, Long idNomina, String nss) {
 		super(key);
 		this.nombres         = nombres;
 		this.paterno         = paterno;
@@ -56,6 +58,8 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 		this.nombreDesarrollo= nombreDesarrollo;
 		this.idPersona       = idPersona;
 		this.descripcion     = descripcion;
+		this.idNomina        = idNomina;
+		this.nss             = nss;
 	}
 	
 	public ESql getSqlAccion() {
@@ -176,5 +180,22 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
-	}	
+	}
+
+	public String getNss() {
+		return nss;
+	}
+
+	public void setNss(String nss) {
+		this.nss=nss;
+	}
+
+	public Long getIdNomina() {
+		return idNomina;
+	}
+
+	public void setIdNomina(Long idNomina) {
+		this.idNomina=idNomina;
+	}
+	
 }

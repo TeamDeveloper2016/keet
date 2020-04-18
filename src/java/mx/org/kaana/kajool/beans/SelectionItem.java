@@ -17,15 +17,19 @@ public class SelectionItem implements Serializable {
   private String item;
   private String key;
 	private Long idActivo;
+	private Long idNomina;
+	private String nss;
 
   public SelectionItem(String key, String item) {
-		this(key, item, 1L);
+		this(key, item, 1L, 2L, null);
   }
 
-  public SelectionItem(String key, String item, Long idActivo) {
+  public SelectionItem(String key, String item, Long idActivo, Long idNomina, String nss) {
     this.item=item;
     this.key=key;
 		this.idActivo= idActivo;
+		this.idNomina= idNomina;
+		this.nss= nss;
   }
 
   public String getItem() {
@@ -50,6 +54,22 @@ public class SelectionItem implements Serializable {
 
 	public void setIdActivo(Long idActivo) {
 		this.idActivo=idActivo;
+	}
+
+	public Long getIdNomina() {
+		return idNomina;
+	}
+
+	public void setIdNomina(Long idNomina) {
+		this.idNomina=idNomina;
+	}
+
+	public String getNss() {
+		return nss;
+	}
+
+	public void setNss(String nss) {
+		this.nss=nss;
 	}
 
   @Override

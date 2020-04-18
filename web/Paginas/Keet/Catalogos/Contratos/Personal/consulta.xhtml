@@ -100,9 +100,9 @@
               <f:facet name="header">
                 <h:outputText value="Nombre "/>
               </f:facet>
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2' ? 'circulo-rojo' : (row.idActivo.toLong eq '1' and (not empty row.nss.toString) and row.idNomina.toLong eq '2' ? 'circulo-azul' : (row.idActivo.toLong eq '1' and empty row.nss.toString? 'circulo-amarillo' : 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1' ? '': 'NO '}activo"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and (not empty row.nss.toString) and row.idNomina.toLong eq '2' ? 'circulo-azul': (row.idActivo.toLong eq '1' and empty row.nss.toString? 'circulo-amarillo' : 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 							<p:spacer width="3px"/>
-							<h:outputText value="[#{empty row.contratista.toString? row.departamento: row.contratista}] [#{row.puesto}] #{row['nombreCompleto']}" styleClass="janal-wid-100-txt #{row.idActivo.toLong eq 1? 'janal-color-green': 'janal-color-red'}"/>							
+							<h:outputText value="[#{empty row.contratista.toString? row.departamento: row.contratista}] [#{row.puesto}] #{row['nombreCompleto']}" styleClass="janal-wid-100-txt"/>							
             </p:column>														            						
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosPersonalConsulta.lazyModel==null?0:keetCatalogosContratosPersonalConsulta.lazyModel.rowCount}] registros"/>
