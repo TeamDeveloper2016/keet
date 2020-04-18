@@ -26,7 +26,11 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
+import mx.org.kaana.mantic.catalogos.personas.reglas.Gestor;
+import mx.org.kaana.mantic.catalogos.personas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -46,7 +50,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 	
   @PostConstruct
   @Override
-  protected void init() {
+  protected void init() {		
     try {			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("nombres", "");
@@ -55,7 +59,9 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			this.attrs.put("rfc", "");
 			this.attrs.put("curp", "");
       this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");     
-      this.attrs.put("idTipoPersona", ETipoPersona.EMPLEADO.getIdTipoPersona());
+      this.attrs.put("idTipoPersona", ETipoPersona.EMPLEADO.getIdTipoPersona());			
+			this.attrs.put("selectDepartamentos", new String[]{});
+			this.attrs.put("selectPuestos", new String[]{});
 			this.loadEmpresas();
 			this.loadTiposPersonas();
 			this.loadContratistas();
@@ -71,6 +77,18 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
     } // catch		
   } // init
   
+	@Override
+	protected void loadTiposPersonas() throws Exception {
+    Gestor gestor = new Gestor();
+    gestor.loadTiposPersonas();
+    this.attrs.put("tiposPersonas", gestor.getTiposPersonas());
+    this.attrs.put("tipoPersona", UIBackingUtilities.toFirstKeySelectEntity(gestor.getTiposPersonas()));    
+    this.attrs.put("puestos", gestor.loadPuestosSimple());
+    this.attrs.put("puesto", UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>)this.attrs.get("puestos")));
+    this.attrs.put("departamentos", gestor.loadDepartamentosSimple());
+    this.attrs.put("departamento", UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>)this.attrs.get("departamentos")));
+  } // loadTiposPersonas  
+	
 	private void loadEmpresas() {
 		Map<String, Object>params= null;
 		List<Columna> columns    = null;
@@ -130,7 +148,9 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
   } // doLoad
 
 	private Map<String, Object> toPrepare(){
-		StringBuilder sb= new StringBuilder("");			
+		StringBuilder sb= new StringBuilder("");	
+		String[] selectPuestos= (String[]) this.attrs.get("selectPuestos");
+		String[] selectDepartamentos= (String[]) this.attrs.get("selectDepartamentos");
 		if(!Cadena.isVacio(this.attrs.get("salarioMenor")))
 			sb.append("tr_mantic_empresa_personal.sueldo_mensual<").append(this.attrs.get("salarioMenor")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("salarioMayor")))
@@ -162,11 +182,19 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		if(!Cadena.isVacio(this.attrs.get("idActivo")))
 			sb.append("tr_mantic_empresa_personal.id_activo in (").append(this.attrs.get("idActivo")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("idSeguro")))
-			sb.append("tr_mantic_empresa_personal.id_seguro in (").append(this.attrs.get("idSeguro")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("departamento")) && Long.valueOf(this.attrs.get("departamento").toString())>=1)
-			sb.append("tr_mantic_empresa_personal.id_departamento=").append(this.attrs.get("departamento")).append(" and ");
-		if(!Cadena.isVacio(this.attrs.get("puesto")) && Long.valueOf(this.attrs.get("puesto").toString())>=1)
-			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("puesto")).append(" and ");
+			sb.append("tr_mantic_empresa_personal.id_seguro in (").append(this.attrs.get("idSeguro")).append(") and ");					
+		if(selectDepartamentos.length > 0){
+			String allDepartametos= "";
+			for(String departamento: selectDepartamentos)
+				allDepartametos= allDepartametos.concat(departamento).concat(",");
+			sb.append("tr_mantic_empresa_personal.id_departamento in (").append(allDepartametos.substring(0, allDepartametos.length()-1)).append(") and ");
+		} // if		
+		if(selectPuestos.length > 0){
+			String allPuestos= "";
+			for(String puesto: selectPuestos)
+				allPuestos= allPuestos.concat(puesto).concat(",");
+			sb.append("tc_mantic_puestos.id_puesto in (").append(allPuestos.substring(0, allPuestos.length()-1)).append(") and ");
+		} // if
 		Map<String, Object> regresar= new HashMap<>();
 		regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;
@@ -246,4 +274,48 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		} // else
     return regresar;
 	} // doVerificarReporte	
+	
+	public void doActivar(String activar){
+		Entity seleccionado            = null;
+		RegistroPersona registroPersona= null;
+		Transaccion transaccion        = null;
+		Boolean isActivar              = false;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			registroPersona= new RegistroPersona(seleccionado.getKey());
+			isActivar= Boolean.valueOf(activar);
+			registroPersona.getEmpresaPersona().setIdActivo(isActivar ? 1L : 2L);
+			transaccion= new Transaccion(registroPersona);
+			if(transaccion.ejecutar(EAccion.MODIFICAR))
+				JsfBase.addMessage((isActivar ? "Activar" : "Inactivar").concat(" empleado"), "Se ".concat(isActivar ? "activo" : "inactivo").concat(" el empleado de forma correcta."), ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage((isActivar ? "Activar" : "Inactivar").concat(" empleado"), "Ocurrió un error al ".concat(isActivar ? "activar" : "inactivar").concat(" el empleado."), ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	}
+	
+	public void doDeposito(String deposito){
+		Entity seleccionado            = null;
+		RegistroPersona registroPersona= null;
+		Transaccion transaccion        = null;
+		Boolean isDeposito             = false;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			registroPersona= new RegistroPersona(seleccionado.getKey());
+			isDeposito= Boolean.valueOf(deposito);
+			registroPersona.getEmpresaPersona().setIdNomina(isDeposito ? 1L : 2L);
+			transaccion= new Transaccion(registroPersona);
+			if(transaccion.ejecutar(EAccion.MODIFICAR))
+				JsfBase.addMessage((isDeposito ? "Activar" : "Inactivar").concat(" pago"), "Se ".concat(isDeposito ? "activo" : "inactivo").concat(" el pago de forma correcta."), ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage((isDeposito ? "Activar" : "Inactivar").concat(" pago"), "Ocurrió un error al ".concat(isDeposito ? "activar" : "inactivar").concat(" el pago."), ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doDeposito
 }
