@@ -100,7 +100,10 @@ public class Registro extends IBaseAttribute implements Serializable {
 		Map<String, Object> params      = null;		
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			if(JsfBase.isAdminEncuestaOrAdmin())
+				params.put(Constantes.SQL_CONDICION, "id_oficina in (2,3)");
+			else
+				params.put(Constantes.SQL_CONDICION, "id_oficina in (2)");			
 			departamentos= UISelect.seleccione("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("departamentos", departamentos);
 		} // try
@@ -117,8 +120,8 @@ public class Registro extends IBaseAttribute implements Serializable {
 		List<UISelectItem> puestos= null;
     Map<String, Object> params= null;
     try {
-      params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_empresa=" + this.attrs.get("idEmpresa"));
+      params = new HashMap<>();			
+			params.put(Constantes.SQL_CONDICION, "id_empresa=" + this.attrs.get("idEmpresa"));			
       puestos = UISelect.seleccione("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!puestos.isEmpty()) {
 				this.attrs.put("puestos", puestos);
@@ -223,9 +226,11 @@ public class Registro extends IBaseAttribute implements Serializable {
 	private String toPrepare() {
 		StringBuilder sb= new StringBuilder();
 		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
-			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
+			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");		
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
 			sb.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
+		else			
+			sb.append("tc_keet_departamentos.id_oficina in (2,3) and ");
 		if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)
       if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
 			  sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
@@ -237,7 +242,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 	private List<SelectionItem> toListSelectionIten(List<ContratoPersonal> entities) {
 		List<SelectionItem> regresar= new ArrayList<>();
 		for(ContratoPersonal item: entities)
-			regresar.add(new SelectionItem(String.valueOf(item.getIdEmpresaPersona()), "[".concat(item.getPuesto()).concat("] ").concat(item.getNombres()).concat(" ").concat(item.getPaterno()).concat(" ").concat(item.getMaterno()), item.getIdActivo()));
+			regresar.add(new SelectionItem(String.valueOf(item.getIdEmpresaPersona()), item.getDescripcion()));
 		return regresar;
 	} // toListSelectionIten
 	
