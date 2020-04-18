@@ -68,7 +68,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-	private void loadTiposEmpresa(){
+	private void loadTiposEmpresa() {
 		List<UISelectItem> tiposEmpresas= null;
 		String all                      = "";
 		try {
@@ -119,4 +119,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch			
   } // doEliminar
+	
 }
