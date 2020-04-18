@@ -16,6 +16,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesArchivosDto;
+import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +27,7 @@ import org.primefaces.model.ScheduleModel;
 public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transaccion {
 
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);
+	private static final Long ADMINISTRATIVO_POR_DIA= 2L;
 	private Long idDesarrollo;	
 	private List<SelectionItem> empleados;
 	private ScheduleModel eventModel;
@@ -63,24 +65,38 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar              = true;
-		Map<String, Object>params     = null;
-		TcKeetContratosPersonalDto dto= null;
-		Long idUsuario                = -1L;
-		Incidente incidente           = null;
-		EAccion accionIncidente       = null;
+		boolean regresar                  = true;
+		Map<String, Object>params         = null;
+		TcKeetContratosPersonalDto dto    = null;
+		TrManticEmpresaPersonalDto persona= null;
+		Long idUsuario                    = -1L;
+		Incidente incidente               = null;
+		EAccion accionIncidente           = null;
+		boolean procesaEmpleado           = true;
+		Long numeroRegistros              = null;
 		try {
 			switch(accion){
 				case PROCESAR:									
 					idUsuario= JsfBase.getIdUsuario();
+					params= new HashMap<>();
 					for(SelectionItem item: this.empleados){
-						dto= new TcKeetContratosPersonalDto();							
-						dto.setIdDesarrollo(this.idDesarrollo);
-						dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
-						dto.setIdUsuario(idUsuario);
-						dto.setIdVigente(1L);
-						dto.setObservaciones("Asignación de empleado al desarrollo " + this.idDesarrollo);
-						DaoFactory.getInstance().insert(sesion, dto);
+						procesaEmpleado= true;
+						persona= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findById(sesion, TrManticEmpresaPersonalDto.class, Long.valueOf(item.getKey()));
+						if(persona.getIdDepartamento().equals(ADMINISTRATIVO_POR_DIA)){
+							params.clear();
+							params.put("idEmpresaPersona", item.getKey());
+							numeroRegistros= DaoFactory.getInstance().toField(sesion, "TcKeetContratosPersonalDto", "numeroRegistros", params, "total").toLong();
+							procesaEmpleado= numeroRegistros.equals(0L);
+						} // if
+						if(procesaEmpleado){	
+							dto= new TcKeetContratosPersonalDto();							
+							dto.setIdDesarrollo(this.idDesarrollo);
+							dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
+							dto.setIdUsuario(idUsuario);
+							dto.setIdVigente(1L);
+							dto.setObservaciones("Asignación de empleado al desarrollo " + this.idDesarrollo);
+							DaoFactory.getInstance().insert(sesion, dto);
+						} // if
 					} // for					
 					break;				
 				case DEPURAR:
