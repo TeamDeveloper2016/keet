@@ -1,17 +1,12 @@
 package mx.org.kaana.keet.prestamos.reglas;
 
-import java.util.HashMap;
-import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
-import mx.org.kaana.keet.enums.EDiasSemana;
 import mx.org.kaana.keet.prestamos.beans.Documento;
 import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.reflection.Methods;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
