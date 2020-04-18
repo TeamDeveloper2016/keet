@@ -204,8 +204,10 @@ public class Transaccion extends IBaseTnx{
 			this.persona.getEmpresaPersona().setObservaciones("Alta de empleado nuevo.");												
 			idEmpresaPersona= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona());
 			if(idEmpresaPersona>= 1L){
-				if(registrarIncidencia(sesion, idEmpresaPersona))	
-					regresar= registraDeudor(sesion, idEmpresaPersona);
+				if(registrarIncidencia(sesion, idEmpresaPersona)){
+					if(registrarIncidencia(sesion, idEmpresaPersona, this.persona.getEmpresaPersona().getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), this.persona.getEmpresaPersona().getIdActivo().equals(1L) ? "Activar deposito." : "Inactivar deposito."))	
+						regresar= registraDeudor(sesion, idEmpresaPersona);
+				} // if
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -356,6 +358,8 @@ public class Transaccion extends IBaseTnx{
 				if(!Objects.equal(old.get(key),tmp.get(key))) {
 					if(key.equals("idActivo"))
 						regresar= registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Reingreso de empleado." : "Baja de empleado.");						
+					else if(key.equals("idNomina"))
+						regresar= registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Activar deposito." : "Inactivar deposito.");						
 				} // if
 			} // for
 		} // try
