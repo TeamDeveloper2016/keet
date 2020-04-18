@@ -1602,5 +1602,80 @@
           id_cliente_contrato = {idClienteContrato} and clave = '{clave}' and id_contrato_proyecto = {idContratoProyecto} and nombre = '{nombre}'
       </select>
     </unit>
+		<unit id="TcKeetPrestamosArchivosDto">
+      <select id="row">
+        select      
+          tc_keet_prestamos_archivos.id_prestamo_archivo id_key,
+				  tc_keet_prestamos_archivos.*
+        from      
+          tc_keet_prestamos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_archivos
+        where      
+          id_prestamo_archivo = {idPrestamoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcKeetPrestamosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_prestamos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_bitacora
+        where      
+          id_prestamo_bitacora = {idPrestamoBitacora} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>
+		<unit id="TcKeetPrestamosEstatusDto">
+      <select id="row">
+        select      
+          tc_keet_prestamos_estatus.id_prestamo_estatus id_key,
+				  tc_keet_prestamos_estatus.*
+        from      
+          tc_keet_prestamos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_estatus
+        where      
+          nombre = '{nombre}' and id_prestamo_estatus = {idPrestamoEstatus}
+      </select>
+    </unit>
+		<unit id="TcKeetPrestamosPagosDto">
+      <select id="row">
+        select      
+          tc_keet_prestamos_pagos.id_prestamo_pago id_key,
+				  tc_keet_prestamos_pagos.*
+        from      
+          tc_keet_prestamos_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_pagos
+        where      
+          id_prestamo_pago = {idPrestamoPago} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>
   </dml>    
 </process>
