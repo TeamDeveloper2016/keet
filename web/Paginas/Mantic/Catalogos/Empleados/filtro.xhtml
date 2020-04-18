@@ -25,6 +25,14 @@
 				'salarioMayor': {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>
   </ui:define>
   <ui:define name="contenido">
     <div class="janal-align-right xs-pantalla janal-wid-100">
@@ -71,13 +79,13 @@
               <p:outputLabel for="clave" value="Clave:"/>
               <p:inputText id="clave" value="#{manticCatalogosEmpleadosFiltro.attrs.clave}" styleClass="janal-wid-100-txt" placeholder="ejemplo: BR123"/> 
               <p:outputLabel for="departamento" value="Departamento:"/>
-              <p:selectOneMenu  id="departamento" value="#{manticCatalogosEmpleadosFiltro.attrs.departamento}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectCheckboxMenu id="departamento" label="Departamentos" value="#{manticCatalogosEmpleadosFiltro.attrs.selectDepartamentos}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">
                 <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.departamentos}"/>                
-              </p:selectOneMenu>
+              </p:selectCheckboxMenu>
               <p:outputLabel for="puesto" value="Puesto:"/>
-              <p:selectOneMenu  id="puesto" value="#{manticCatalogosEmpleadosFiltro.attrs.puesto}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectCheckboxMenu id="puesto" label="Puestos" value="#{manticCatalogosEmpleadosFiltro.attrs.selectPuestos}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">
                 <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.puestos}"/>                
-              </p:selectOneMenu> 
+              </p:selectCheckboxMenu> 
               <p:outputLabel for="nombres" value="Nombres:"/>
               <p:inputText id="nombres" value="#{manticCatalogosEmpleadosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="paterno" value="Apellido paterno:"/>
@@ -101,7 +109,9 @@
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosEmpleadosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpleadosFiltro.lazyModel.rowCount gt manticCatalogosEmpleadosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-            <f:facet name="header" >
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
                   <p:menuitem  value="Agregar" action="#{manticCatalogosEmpleadosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
@@ -188,6 +198,12 @@
 						<p:separator/>
             <p:menuitem id="modificar" action="#{manticCatalogosEmpleadosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+						<p:separator/>
+						<p:menuitem id="activar" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doActivar('true')}" update="tabla" icon="fa fa-check" value="Activar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idActivo eq '2'}"/>					
+						<p:menuitem id="inactivar" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doActivar('false')}" update="tabla" icon="fa fa-minus" value="Inactivar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idActivo eq '1'}"/>					
+						<p:separator/>
+						<p:menuitem id="deposito" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doDeposito('true')}" update="tabla" icon="fa fa-money" value="Deposito" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idNomina eq '2'}"/>					
+						<p:menuitem id="nodeposito" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doDeposito('false')}" update="tabla" icon="fa fa-lock" value="No deposito" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idNomina eq '1'}"/>					
           </p:contextMenu>
 					<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 						<p:outputLabel value="Empleados activos"/>
