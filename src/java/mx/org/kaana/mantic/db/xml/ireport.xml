@@ -19,7 +19,7 @@
 					tc_mantic_empresas.nombre empresa,
 					concat(tc_mantic_empresas.nombre, ' - ', tc_mantic_empresas.titulo) nombre_empresa,  
 					tc_keet_desarrollos.nombres desarrollo,
-					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) nombre_completo,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) nombre_completo,
 					tc_mantic_puestos.nombre puesto,
 					tc_keet_departamentos.nombre departamento,
 					if(tr_mantic_empresa_personal.id_activo=1, 'SI', 'NO') activo,					
@@ -44,7 +44,7 @@
 					tc_mantic_empresas.nombre empresa,
 					concat(tc_mantic_empresas.nombre,' - ', tc_mantic_empresas.titulo) nombre_empresa,  
 					'z SIN DESARROLLO',
-					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) nombre_completo,
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) nombre_completo,
 					tc_mantic_puestos.nombre puesto,
 					tc_keet_departamentos.nombre departamento,
 					if(tr_mantic_empresa_personal.id_activo=1, 'SI', 'NO') activo,					
@@ -68,7 +68,7 @@
 			  left join
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				order by 
-					nombre_empresa, desarrollo, departamento, concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno), nombre_completo, puesto
+					nombre_empresa, desarrollo, departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')), nombre_completo, puesto
 			</select>			
 			<select id="desarrollo">
 				select 
@@ -82,7 +82,7 @@
 					tc_mantic_empresas.nombre empresa,
 					concat(tc_mantic_empresas.nombre, ' - ', tc_mantic_empresas.titulo) nombre_empresa,  
 					tc_keet_desarrollos.nombres desarrollo,
-					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) nombre_completo,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) nombre_completo,
 					tc_mantic_puestos.nombre puesto,
 					tc_keet_departamentos.nombre departamento,
 					if(tr_mantic_empresa_personal.id_activo=1, 'SI', 'NO') activo,					
@@ -110,7 +110,7 @@
 			  left join
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				order by 
-					nombre_empresa, desarrollo, departamento, concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno), nombre_completo, puesto
+					nombre_empresa, desarrollo, departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')), nombre_completo, puesto
 			</select>			
 		</unit>
 		<unit id="VistaReportesOrdenesComprasDto">
