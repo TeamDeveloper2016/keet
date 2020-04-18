@@ -332,5 +332,6 @@ public class Registro extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina		
+  } // doPagina
+	
 }
