@@ -111,7 +111,7 @@ public class Gestor implements Serializable {
       Methods.clean(params);      
     } // finally
 		return regresar;
-  } // loadPuestos
+  } // loadPuestosSimple
 	
   public List<UISelectItem> loadDepartamentosSimple() throws Exception {    
 		List<UISelectItem> regresar= null;    
@@ -128,5 +128,5 @@ public class Gestor implements Serializable {
       Methods.clean(params);      
     } // finally
 		return regresar;
-  } // loadPuestos
+  } // loadDepartamentosSimple
 }
