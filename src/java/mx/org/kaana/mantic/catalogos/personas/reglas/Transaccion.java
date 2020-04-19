@@ -44,9 +44,11 @@ import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx{
 
+	private static final String CONTRATISTA= "CONTRATISTA";
 	private IBaseDto dto;
 	private RegistroPersona persona;	
 	private String messageError;
+	private String messageAlert;
 	private String cuenta;	
 	private Long idPersonaAdicional;
 
@@ -66,6 +68,10 @@ public class Transaccion extends IBaseTnx{
 	public String getCuenta() {
 		return cuenta;
 	}		
+
+	public String getMessageAlert() {
+		return messageAlert;
+	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
@@ -357,9 +363,15 @@ public class Transaccion extends IBaseTnx{
 			for(String key: old.keySet()) {
 				if(!Objects.equal(old.get(key),tmp.get(key))) {
 					if(key.equals("idActivo"))
-						regresar= registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Reingreso de empleado." : "Baja de empleado.");						
-					else if(key.equals("idNomina"))
-						regresar= registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Activar deposito." : "Inactivar deposito.");						
+						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Reingreso de empleado." : "Baja de empleado.");						
+					if(key.equals("idNomina"))
+						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Activar deposito." : "Inactivar deposito.");						
+					if(key.equals("idPuesto") && ((Long)old.get("idPuesto")).equals(toIdContratista(sesion))){
+						if(!cleanPersonalAsignado(sesion, empresaPersonal.getIdEmpresaPersona())){
+							empresaPersonal.setIdPuesto(empresaPersonalOld.getIdPuesto());
+							this.messageAlert= "No es posible, hacer el cambio de puesto, tiene trabajo realizado como contratista.";
+						} // if
+					} // if
 				} // if
 			} // for
 		} // try
@@ -703,4 +715,38 @@ public class Transaccion extends IBaseTnx{
 		} // finally
 		return regresar;
 	} // toDomicilio
+	
+	private Long toIdContratista(Session sesion) throws Exception{
+		Long regresar            = -1L;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "nombre='".concat(CONTRATISTA).concat("'"));
+			regresar= DaoFactory.getInstance().toField(sesion, "TcManticPuestosDto", "row", params, "idKey").toLong();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return regresar;
+	} // toIdContratista
+	
+	private boolean cleanPersonalAsignado(Session sesion, Long idEmpresaPersona) throws Exception{
+		boolean regresar         = false;
+		Long countLotesPersona   = 0L;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idEmpresaPersona", idEmpresaPersona);
+			countLotesPersona= DaoFactory.getInstance().toField(sesion, "TcKeetContratosLotesContratistasDto", "trabajoLotes", params, "total").toLong();
+			if(countLotesPersona.equals(0L)){
+				if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosLotesContratistasDto", "depuracionCambioPerfil", params)>= 0L){
+					regresar= DaoFactory.getInstance().execute(ESql.UPDATE, sesion, "TrManticEmpresaPersonalDto", "depuracionCambioPerfil", params)>= 0;
+				} // if
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // clearPersonalAsignado
 }
