@@ -2,6 +2,7 @@ package mx.org.kaana.keet.catalogos.dinamicos.puestos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -64,7 +66,7 @@ public class Accion extends mx.org.kaana.keet.catalogos.dinamicos.backing.Accion
         case COPIAR:
         case ACTIVAR:
 					this.attrs.put("idEmpresa", ((List<UISelectEntity>)this.attrs.get("sucursales")).get(((List<UISelectEntity>)this.attrs.get("sucursales")).indexOf(new UISelectEntity((Long)dto.toValue("idEmpresa")))));          
-          break;
+          break;				
       } // switch			
     } // try
     catch (Exception e) {
@@ -76,10 +78,14 @@ public class Accion extends mx.org.kaana.keet.catalogos.dinamicos.backing.Accion
 	@Override
   public String doAceptar() {		
     String regresar= null;		
-		IBaseDto dto   = null;				
+		IBaseDto dto   = null;		
+		EAccion accion = null;
     try {			
+			accion= (EAccion) this.attrs.get("accion");
 			dto= (IBaseDto) this.attrs.get("dto");
 			Methods.setValue(dto, "idEmpresa", new Object[]{((UISelectEntity)this.attrs.get("idEmpresa")).getKey()});			
+			if(accion.equals(EAccion.AGREGAR))
+				Methods.setValue(dto, "orden", new Object[]{nextOrden()});			
 			regresar= super.doAceptar();			
     } // try
     catch (Exception e) {
@@ -88,4 +94,15 @@ public class Accion extends mx.org.kaana.keet.catalogos.dinamicos.backing.Accion
     } // catch
     return regresar;
   } // doAccion  
+	
+	private Long nextOrden() throws Exception{
+		Long regresar= 1L;
+		try {
+			regresar= DaoFactory.getInstance().toField("TcManticPuestosDto", "nextOrden", Collections.EMPTY_MAP, "orden").toLong();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // nextOrden
 }
