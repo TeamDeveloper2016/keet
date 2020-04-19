@@ -69,7 +69,7 @@ public class Transaccion extends IBaseTnx {
 						dto.setIdEmpresaPersona(this.idEmpresaPersona);
 						dto.setIdUsuario(idUsuario);
 						dto.setIdTrabajo(2L);						
-						dto.setObservaciones("Asignación de empleado al lote [ContratoLote [" + this.idContratoLote + "]]");
+						dto.setObservaciones("Asignación de empleado al lote.");
 						if(DaoFactory.getInstance().toEntity(sesion, "TcKeetContratosLotesContratistasDto", "existe", dto.toMap())== null)
 							DaoFactory.getInstance().insert(sesion, dto);
 					} // for					
