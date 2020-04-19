@@ -4081,6 +4081,9 @@
         where      
           id_puesto = {idPuesto}
       </select>
+			<select id="nextOrden">
+				select max(orden)+1 orden from tc_mantic_puestos
+			</select>
     </unit>
 	    <unit id="TcManticSinoDto">
       <select id="row">
