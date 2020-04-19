@@ -14,8 +14,7 @@
       Janal.Control.fields = {        
         idEmpresa    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         clave        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        nombre       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        orden        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        nombre       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
         descripcion  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'}        
       };	
 			
@@ -33,9 +32,5 @@
 				<h:outputText value="#{item.nombre}"/>
 			</p:column>   
 		</p:selectOneMenu>
-	</ui:define>  
-	<ui:define name="uiCampos">		
-		<p:outputLabel for="orden" value="Orden:"/>
-		<p:inputNumber id="orden" styleClass="janal-wid-100-txt janal-column-left" style="text-align: left !important" value="#{managedComunDinamicoAccion.attrs.dto.orden}"/>                    
-	</ui:define>
+	</ui:define>  	
 </ui:composition>
