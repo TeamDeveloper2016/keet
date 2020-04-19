@@ -101,9 +101,11 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					break;				
 				case DEPURAR:
 					for(SelectionItem item: this.empleados){
-						params= new HashMap<>();
-						params.put("idEmpresaPersona", Long.valueOf(item.getKey()));
-						DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosPersonalDto", "contratoPersona", params);					
+						if(verificacionLotes(sesion, Long.valueOf(item.getKey()))){
+							params= new HashMap<>();
+							params.put("idEmpresaPersona", Long.valueOf(item.getKey()));						
+							DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosPersonalDto", "contratoPersona", params);					
+						} // if
 					} // for
 					break;
 				case REGISTRAR:
@@ -183,4 +185,20 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		} // catch		
 		return regresar;
 	} // eliminarIncidencias
+	
+	private boolean verificacionLotes(Session sesion, Long idEmpresaPersona) throws Exception{
+		boolean regresar         = false;
+		Long countLotesPersona   = 0L;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idEmpresaPersona", idEmpresaPersona);
+			countLotesPersona= DaoFactory.getInstance().toField(sesion, "TcKeetContratosLotesContratistasDto", "trabajoLotes", params, "total").toLong();
+			regresar= countLotesPersona.equals(0L);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // clearPersonalAsignado
 }
