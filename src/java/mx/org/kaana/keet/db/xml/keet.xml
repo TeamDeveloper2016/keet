@@ -1,0 +1,1723 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para las tablas de MANTIC
+-->
+<process>
+  <model>    
+  </model>
+
+  <dml>		
+		<unit id="TcKeetContratosLotesContratistasDto">
+      <select id="row">
+        select      
+          tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista as id_key,
+					tc_keet_contratos_lotes_contratistas.*
+        from      
+          tc_keet_contratos_lotes_contratistas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes_contratistas
+        where      
+          id_empresa_persona = {idEmpresaPersona} and id_contrato_lote = {idContratoLote} and id_contrato_lote_contratista = {idContratoLoteContratista}
+      </select>
+      <select id="existe">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes_contratistas
+        where      
+          id_empresa_persona = {idEmpresaPersona} and id_contrato_lote = {idContratoLote}
+      </select>
+			<delete id="contratoLotePersona">
+				delete from tc_keet_contratos_lotes_contratistas where id_empresa_persona = {idEmpresaPersona} and id_contrato_lote = {idContratoLote}
+			</delete>
+			<delete id="depuracionCambioPerfil">
+				delete from tc_keet_contratos_lotes_contratistas where id_empresa_persona = {idEmpresaPersona}
+			</delete>
+			<select id="trabajoLotes">
+				select count(*) total from tc_keet_contratos_lotes_contratistas where id_empresa_persona={idEmpresaPersona} and id_trabajo=1
+			</select>
+    </unit>
+		<unit id="TcKeetDiasFestivosDto">
+      <select id="row">
+        select      
+					tc_keet_dias_festivos.id_dia_festivo as id_key,
+          tc_keet_dias_festivos.*
+        from      
+          tc_keet_dias_festivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_dias_festivos
+        where      
+          date_format(dia, '%Y%m%d') = '{dia}' and id_dia_festivo = {idDiaFestivo} and ejercicio = {ejercicio}
+      </select>
+    </unit>
+		<unit id="TcKeetPrestamosDto">
+      <select id="row">
+        select      
+          tc_keet_prestamos.id_prestamo as id_key,
+					tc_keet_prestamos.*
+        from      
+          tc_keet_prestamos
+        where 
+          {condicion} 
+      </select>
+      <select id="byId">
+        select      
+          tc_keet_prestamos.id_prestamo as id_key,
+					tc_keet_prestamos.*
+        from      
+          tc_keet_prestamos
+        where 
+          id_prestamo= {idPrestamo} 
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_prestamos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos
+        where      
+          id_prestamo = {idPrestamo}
+      </select>
+    </unit>
+		<unit id="TcKeetDeudoresDto">
+      <select id="row">
+        select      
+          tc_keet_deudores.id_deudor as id_key,
+					tc_keet_deudores.*
+        from      
+          tc_keet_deudores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_deudores
+        where      
+          id_deudor = {idDeudor} and id_empresa_persona = {idEmpresaPersona}
+      </select>
+    </unit>
+    <unit id="TcKeetClientesPortalesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_clientes_portales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_clientes_portales
+        where      
+          pagina = '{pagina}' and id_cliente = {idCliente}
+      </select>
+    </unit>		
+    <unit id="TcKeetClientesBancosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_clientes_bancos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_clientes_bancos
+        where      
+          id_cliente = {idCliente} and clave_referencia = '{claveReferencia}' and convenio_cuenta = '{convenioCuenta}' and id_tipo_cuenta = {idTipoCuenta} and id_banco = {idBanco}
+      </select>
+			<select id="maximo">
+				select      
+          max(id_cliente_banco) maximo
+        from      
+          tc_keet_clientes_bancos
+			</select>
+    </unit>		
+    <unit id="TcKeetTiposInfraestructurasDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_infraestructuras.id_tipo_infraestructura as id_key,
+					tc_keet_tipos_infraestructuras.*
+        from      
+          tc_keet_tipos_infraestructuras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_infraestructuras
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposViviendasDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_viviendas.id_tipo_vivienda as id_key,
+					tc_keet_tipos_viviendas.*
+        from      
+          tc_keet_tipos_viviendas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_viviendas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposBancariosDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_bancarios.id_tipo_bancario as id_key,
+					tc_keet_tipos_bancarios.*
+        from      
+          tc_keet_tipos_bancarios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_bancarios
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposRelacionesDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_relaciones.id_tipo_relacion as id_key,
+					tc_keet_tipos_relaciones.*
+        from      
+          tc_keet_tipos_relaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_relaciones
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposGeneradoresDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_generadores.id_tipo_generador as id_key,
+					tc_keet_tipos_generadores.*
+        from      
+          tc_keet_tipos_generadores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_generadores
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosGeneradoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_generadores
+        where 
+          {condicion} 
+      </select>
+			<select id="toContratos">
+        select 
+					-1 id_contrato_generador,
+					id_tipo_generador,
+					id_tipo_archivo,
+					nombre,
+					archivo,
+					ruta,
+					tamanio,
+					observaciones,
+				  {idUsuario} id_usuario,
+				  {idContrato} id_contrato,
+				  replace(alias,'proyecto', 'contrato') alias
+				 from
+					 tc_keet_proyectos_generadores
+				where
+					id_proyecto= {idProyecto}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_generadores
+        where      
+          id_tipo_generador = {idTipoGenerador} and id_proyecto = {idProyecto} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosPrespuestosDto">
+      <select id="row">
+        select
+          tc_keet_proyectos_presupuestos.id_proyecto_presupuesto as id_key,
+					tc_keet_proyectos_presupuestos.*
+        from
+          tc_keet_proyectos_presupuestos
+        where 
+          {condicion} 
+      </select>
+			<select id="toContratos">
+        select 
+					-1 id_contrato_presupuesto,
+					id_tipo_presupuesto,
+					id_tipo_archivo,
+					nombre,
+					archivo,
+					ruta,
+					tamanio,
+					observaciones,
+				  {idUsuario} id_usuario,
+				  {idContrato} id_contrato,
+				  replace(alias,'proyecto', 'contrato') alias
+				 from
+					 tc_keet_proyectos_presupuestos
+				where
+					id_proyecto= {idProyecto}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_presupuestos
+        where      
+          id_proyecto = {idProyecto} and id_tipo_archivo = {idTipoArchivo} and id_tipo_presupuesto = {idTipoPresupuesto} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosDto">
+      <select id="row">
+        select      
+          tc_keet_proyectos.id_proyecto id_key,
+          tc_keet_proyectos.*
+        from      
+          tc_keet_proyectos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+			<select id="byId">
+        select      
+				  tc_keet_proyectos.id_proyecto id_key,
+          tc_keet_proyectos.*
+        from      
+          tc_keet_proyectos
+        where 
+          id_proyecto= {idProyecto}
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_proyectos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
+    </unit>		
+    <unit id="TcKeetProyectosLotesDto">
+      <select id="row">
+        select      
+				  tc_keet_proyectos_lotes.id_proyecto_lote id_key,
+          tc_keet_proyectos_lotes.*
+        from      
+          tc_keet_proyectos_lotes
+        where 
+          {condicion} 
+      </select>
+      <select id="byProyecto">
+        select      
+				  tc_keet_proyectos_lotes.id_proyecto_lote id_key,
+          tc_keet_proyectos_lotes.*
+        from      
+          tc_keet_proyectos_lotes
+        where 
+          id_proyecto= {idProyecto} 
+      </select>
+      <select id="getOrden">
+        select      
+				  max(orden)+ 1 max_orden
+        from      
+          tc_keet_proyectos_lotes
+        where 
+          id_proyecto= {idProyecto} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_lotes
+        where      
+          manzana = '{manzana}' and id_proyecto = {idProyecto} and lote = {lote} 
+      </select>
+    </unit>
+		<unit id="TcKeetPrototiposDto">
+      <select id="row">
+        select      
+				  tc_keet_prototipos.id_prototipo id_key,
+          tc_keet_prototipos.*
+        from      
+          tc_keet_prototipos
+        where 
+          {condicion} 
+      </select>
+			<select id="byId">
+        select      
+				  tc_keet_prototipos.id_prototipo id_key,
+          tc_keet_prototipos.*
+        from      
+          tc_keet_prototipos
+        where 
+          id_prototipo= {idPrototipo} 
+      </select>
+			<select id="byCliente">
+        select      
+				  tc_keet_prototipos.id_prototipo id_key,
+          tc_keet_prototipos.*
+        from      
+          tc_keet_prototipos
+        where 
+          id_cliente= {idCliente}
+				order by
+				  nombre 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prototipos
+        where      
+          id_cliente = {idCliente} and nombre = '{nombre}'
+      </select>
+    </unit>		
+		<unit id="TcKeetPrototiposConstructivosDto">
+			<select id="row">
+				select      
+				  *
+				from      
+				  tc_keet_prototipos_constructivos
+				where 
+				  {condicion} 
+			</select>
+			<select id="identically">
+				select      
+				  *
+				from      
+				  tc_keet_prototipos_constructivos
+				where      
+				  id_constructivo = {idConstructivo} and id_prototipo = {idPrototipo}
+			</select>
+			<select id="maximo">
+        select      
+          max(id_prototipo_constructivo) maximo
+        from      
+          tc_keet_prototipos_constructivos
+      </select>
+		</unit>		
+    <unit id="TcKeetPrototiposArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_prototipos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="toProyectos">
+        select 
+					-1 id_proyecto_archivo,
+					id_prototipo,
+					id_plano,
+					id_tipo_archivo,
+					nombre,
+					archivo,
+					ruta,
+					alias,
+					tamanio,
+					observaciones
+				 from
+					 tc_keet_prototipos_archivos
+				where
+					id_prototipo= {idPrototipo}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prototipos_archivos
+        where      
+          id_plano = {idPlano} and id_prototipo = {idPrototipo} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposAtributosDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_atributos.id_tipo_atributo as id_key,
+					tc_keet_tipos_atributos.*
+        from      
+          tc_keet_tipos_atributos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_atributos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposFachadasDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_fachadas.id_tipo_fachada as id_key,
+					tc_keet_tipos_fachadas.*
+        from      
+          tc_keet_tipos_fachadas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_fachadas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposObrasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_obras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_obras
+        where      
+          id_tipo_obra = {idTipoObra} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposObrasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_tipos_obras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_obras
+        where      
+          nombre = '{nombre}' and id_division = {idDivision}
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposPresupuestosDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_presupuestos.id_tipo_presupuesto as id_key, 
+					tc_keet_tipos_presupuestos.*
+        from      
+          tc_keet_tipos_presupuestos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_presupuestos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetEstacionesDto">
+      <select id="row">
+        select      
+          tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
+        from      
+          tc_keet_estaciones
+        where 
+          {condicion}
+				order by
+				  clave 
+      </select>
+      <select id="byId">
+        select      
+          tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
+        from      
+          tc_keet_estaciones
+        where 
+          id_estacion= {idEstacion} 
+				order by
+				  clave 
+      </select>
+      <select id="byClaveNivel">
+        select      
+          tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
+        from      
+          tc_keet_estaciones
+        where 
+          clave like '{clave}%'
+				and
+					nivel = {nivel}
+				order by
+				  clave 
+      </select>
+      <select id="getHijos">
+        select      
+          tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
+        from      
+          tc_keet_estaciones
+        where 
+          clave like '{clave}%'
+				and
+					nivel &gt;= {nivel}
+      </select>
+			 <select id="maxClave">
+        select      
+          max(clave) clave
+        from      
+          tc_keet_estaciones
+        where 
+          clave like '{clave}%'
+				and
+					nivel = {nivel}
+      </select>
+			<select id="minClave">
+        select      
+          min(clave) clave
+        from      
+          tc_keet_estaciones
+        where 
+          clave like '{clave}%'
+				and
+					nivel = {nivel}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_estaciones
+        where      
+          clave = '{clave}'
+				order by
+				  clave 
+      </select>
+    </unit>		
+    <unit id="TcKeetEspecialidadesDto">
+      <select id="row">
+        select      
+          tc_keet_especialidades.id_especialidad as id_key,
+					tc_keet_especialidades.*
+        from      
+          tc_keet_especialidades
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_especialidades
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcKeetPlanosDto">
+      <select id="row">
+        select      
+          tc_keet_planos.id_plano as id_key,
+					tc_keet_planos.*
+        from      
+          tc_keet_planos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_planos
+        where      
+          id_especialidad = {idEspecialidad} and nombre = '{nombre}'
+      </select>
+    </unit>				
+    <unit id="TcKeetGruposConstructivosDto">
+      <select id="row">
+        select      
+          tc_keet_grupos_constructivos.id_grupo_constructivo as id_key,
+					tc_keet_grupos_constructivos.*
+        from      
+          tc_keet_grupos_constructivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_grupos_constructivos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetConstructivosDto">
+      <select id="row">
+        select      
+          tc_keet_constructivos.id_constructivo id_key,
+          tc_keet_constructivos.*
+        from      
+          tc_keet_constructivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_constructivos
+        where      
+          id_grupo_constructivo = {idGrupoConstructivo} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetFamiliasDto">
+      <select id="row">
+        select      
+          tc_keet_familias.id_familia as id_key,
+					tc_keet_familias.*
+        from      
+          tc_keet_familias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_familias
+        where      
+          nombre = '{nombre}'
+      </select>
+      <select id="familias">
+        select      
+          tc_keet_familias.id_familia as id_key,
+					tc_keet_familias.*
+        from      
+          tc_keet_familias
+        order by 
+          nombre
+      </select>
+    </unit>		
+    <unit id="TcKeetBitacorasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_bitacoras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_bitacoras
+        where      
+          id_bitacora = {idBitacora}
+      </select>
+			<select id="bitacora">
+				select 
+					tc_keet_bitacoras.id_bitacora AS id_key,
+					tc_keet_bitacoras.id_bitacora,
+					tc_keet_bitacoras.proceso,
+					tc_keet_bitacoras.tabla,
+					tc_keet_bitacoras.campo,
+					tc_keet_bitacoras.antes,
+					tc_keet_bitacoras.despues,
+					tc_keet_bitacoras.id_key AS id_principal,
+					tc_keet_bitacoras.id_usuario,
+					tc_keet_bitacoras.registro
+				from 
+					tc_keet_bitacoras
+				where 
+					proceso= '{proceso}'
+				and 
+					campo= '{campo}'
+				and 
+					id_key= {idKey}
+			</select>				
+    </unit>		
+    <unit id="TcKeetBitacorasAliasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_bitacoras_alias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_bitacoras_alias
+        where      
+          alias = '{alias}' and tabla = '{tabla}' and campo = '{campo}'
+      </select>
+    </unit>		
+    <unit id="TcKeetDepartamentosDto">
+      <select id="row">
+        select      
+          tc_keet_departamentos.id_departamento as id_key,
+					tc_keet_departamentos.*
+        from      
+          tc_keet_departamentos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_departamentos
+        where      
+          nombre = '{nombre}'
+      </select>
+      <select id="especialidades">
+        select      
+          tc_keet_departamentos.id_departamento as id_key,
+					tc_keet_departamentos.*
+        from      
+          tc_keet_departamentos
+        where 
+          id_especialidad= 1
+				order by
+				  nombre 
+      </select>
+    </unit>	
+    <unit id="TcKeetDivisionesDto">
+      <select id="row">
+        select      
+          tc_keet_divisiones.id_division as id_key,
+					tc_keet_divisiones.*
+        from      
+          tc_keet_divisiones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_divisiones
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>	
+    <unit id="TcKeetDesarrollosDto">
+      <select id="row">
+        select      
+          tc_keet_desarrollos.id_desarrollo id_key,
+				  tc_keet_desarrollos.*
+        from      
+          tc_keet_desarrollos
+        where 
+          {condicion} 
+      </select>
+      <select id="byId">
+        select      
+          tc_keet_desarrollos.id_desarrollo id_key,
+				  tc_keet_desarrollos.*
+        from      
+          tc_keet_desarrollos
+        where 
+          id_desarrollo= {idDesarrollo} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_desarrollos
+        where      
+          clave = '{clave}' and nombres = '{nombres}'
+      </select>
+    </unit>	
+    <unit id="TcKeetNominasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas
+        where      
+          id_nomina = {idNomina}
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_bitacora
+        where      
+          id_nomina_bitacota = {idNominaBitacota}
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasConceptosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_conceptos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_conceptos
+        where      
+          id_tipo_concepto = {idTipoConcepto} and id_activo = {idActivo} and clave = '{clave}' and nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcKeetNominasConstantesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_constantes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_constantes
+        where      
+          id_activo = {idActivo} and siglas = '{siglas}' and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasPeriodosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_periodos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_periodos
+        where      
+          orden = {orden} and ejercicio = {ejercicio}
+      </select>
+    </unit>							
+    <unit id="TcKeetNominasPersonasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_personas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_personas
+        where      
+          id_nomina_persona = {idNominaPersona}
+      </select>
+    </unit>		
+    <unit id="TcKeetPersonasBancosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_personas_bancos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_personas_bancos
+        where      
+          id_empresa_persona = {idEmpresaPersona} and cuenta = '{cuenta}' and id_banco = {idBanco}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_persona_banco) maximo
+        from      
+          tc_keet_personas_bancos
+      </select>
+			<delete id="rows">
+				delete from tc_keet_personas_bancos where id_empresa_persona = {idEmpresaPersona}
+			</delete>
+    </unit>	
+    <unit id="TcKeetPersonasBeneficiariosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_personas_beneficiarios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_personas_beneficiarios
+        where      
+          id_persona_beneficiario = {idPersonaBeneficiario}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_persona_beneficiario) maximo
+        from      
+          tc_keet_personas_beneficiarios
+      </select>
+			<delete id="rows">
+				delete from tc_keet_personas_beneficiarios where id_empresa_persona = {idEmpresaPersona}
+			</delete>
+    </unit>		
+    <unit id="TcKeetPersonasConceptosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_personas_conceptos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_personas_conceptos
+        where      
+          id_persona = {idPersona} and id_activo = {idActivo} and inicio = {inicio} and id_nomina_concepto = {idNominaConcepto}
+      </select>
+    </unit>			
+    <unit id="TcKeetProyectosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_archivos
+        where 
+          {condicion} 
+      </select>
+			<select id="toContratos">
+        select 
+					-1 id_contrato_archivo,
+					id_prototipo,
+					id_plano,
+					id_tipo_archivo,
+					nombre,
+					archivo,
+					ruta,
+					tamanio,
+					observaciones,
+				  {idUsuario} id_usuario,
+				  {idContrato} id_contrato,
+				  replace(alias,'proyecto', 'contrato') alias
+				 from
+					 tc_keet_proyectos_archivos
+				where
+					id_proyecto= {idProyecto}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_bitacora
+        where      
+          id_proyecto_bitacora = {idProyectoBitacora}
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosEstatusDto">
+      <select id="row">
+        select      
+				  tc_keet_proyectos_estatus.id_proyecto_estatus as id_key,
+          tc_keet_proyectos_estatus.*
+        from      
+          tc_keet_proyectos_estatus
+        where 
+          {condicion} 
+				order by 
+				  id_proyecto_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetProyectosLotesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_proyectos_lotes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proyectos_lotes
+        where      
+          manzana = '{manzana}' and lote = {lote}
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposConceptosDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_conceptos.id_tipo_concepto as id_key,
+					tc_keet_tipos_conceptos.*
+        from      
+          tc_keet_tipos_conceptos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_conceptos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>	
+    <unit id="TcKeetTiposNominasDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_nominas.id_tipo_nomina as id_key,
+					tc_keet_tipos_nominas.*
+        from      
+          tc_keet_tipos_nominas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_nominas
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcKeetTiposParentescosDto">
+      <select id="row">
+        select      
+					tc_keet_tipos_parentescos.id_tipo_parentesco as id_key,
+          tc_keet_tipos_parentescos.*
+        from      
+          tc_keet_tipos_parentescos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_parentescos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>			
+		<unit id="TcKeetPrototiposDiasDto">
+      <select id="row">
+        select      
+          tc_keet_prototipos_dias.id_prototipo_dia as id_key,
+					tc_keet_prototipos_dias.*
+        from      
+          tc_keet_prototipos_dias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prototipos_dias
+        where      
+          id_prototipo_dia = {idPrototipoDia} and id_nombre_dia = {idNombreDia} and id_prototipo = {idPrototipo}
+      </select>
+			<delete id="byIdPrototipo">
+				delete from tc_keet_prototipos_dias where id_prototipo= {idPrototipo}
+			</delete>
+    </unit>
+		<unit id="TcKeetNombresDiasDto">
+      <select id="row">
+        select      
+          tc_keet_nombres_dias.id_nombre_dia as id_key,
+					tc_keet_nombres_dias.*
+        from      
+          tc_keet_nombres_dias
+        where 
+          {condicion} 
+      </select>      
+			<select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nombres_dias
+        where      
+          id_nombre_dia = {idNombreDia} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcKeetClientesInfraestructurasDto">
+      <select id="row">
+        select      
+					tc_keet_clientes_infraestructuras.id_cliente_infraestructura as id_key,
+          tc_keet_clientes_infraestructuras.*
+        from      
+          tc_keet_clientes_infraestructuras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_clientes_infraestructuras
+        where      
+          id_cliente = {idCliente} and id_cliente_infraestructura = {idClienteInfraestructura} and id_tipo_infraestructura = {idTipoInfraestructura}
+      </select>
+			<select id="maximo">
+				select      
+          max(id_cliente_infraestructura) maximo
+        from      
+          tc_keet_clientes_infraestructuras
+			</select>
+			<delete id="rows">
+        delete from tc_keet_clientes_infraestructuras where id_cliente={idCliente}
+      </delete>
+    </unit>
+		 <unit id="TcKeetClientesViviendasDto">
+      <select id="row">
+        select      
+					tc_keet_clientes_viviendas.id_cliente_vivienda as id_key,
+          tc_keet_clientes_viviendas.*
+        from      
+          tc_keet_clientes_viviendas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_clientes_viviendas
+        where      
+          id_cliente = {idCliente} and id_tipo_vivienda = {idTipoVivienda} and id_cliente_vivienda = {idClienteVivienda}
+      </select>
+			<select id="maximo">
+				select      
+          max(id_cliente_vivienda) maximo
+        from      
+          tc_keet_clientes_viviendas
+			</select>
+			<delete id="rows">
+        delete from tc_keet_clientes_viviendas where id_cliente={idCliente}
+      </delete>
+    </unit>
+		<unit id="TcKeetProveedoresMaterialesDto">
+      <select id="row">
+        select      
+					tc_keet_proveedores_materiales.id_proveedor_material as id_key,
+          tc_keet_proveedores_materiales.*
+        from      
+          tc_keet_proveedores_materiales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proveedores_materiales
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_material = {idProveedorMaterial} and id_articulo = {idArticulo}
+      </select>
+			<select id="maximo">
+				select      
+          max(id_proveedor_material) maximo
+        from      
+          tc_keet_proveedores_materiales
+			</select>
+			<delete id="rows">
+        delete from tc_keet_proveedores_materiales where id_proveedor={idProveedor}
+      </delete>
+    </unit>
+		<unit id="TcKeetContratosPersonalDto">
+      <select id="row">
+        select      
+					tc_keet_contratos_personal.id_contratos_personal as id_key,
+          tc_keet_contratos_personal.*
+        from      
+          tc_keet_contratos_personal
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_personal
+        where      
+          id_contratos_personal = {idContratosPersonal}
+      </select>
+			<select id="maximo">
+				select      
+          max(id_contratos_personal) maximo
+        from      
+          tc_keet_contratos_personal
+			</select>
+			<delete id="contrato">
+				delete from tc_keet_contratos_personal where id_desarrollo= {idDesarrollo}
+			</delete>
+			<delete id="contratoPersona">
+				delete from tc_keet_contratos_personal where id_empresa_persona= {idEmpresaPersona}
+			</delete>
+			<select id="numeroRegistros">
+				select count(*) total from tc_keet_contratos_personal where id_empresa_persona= {idEmpresaPersona}
+			</select>
+    </unit>
+		    <unit id="TcKeetContratosDto">
+      <select id="row">
+        select      
+					tc_keet_contratos.id_contrato as id_key,
+					tc_keet_contratos.*
+        from      
+          tc_keet_contratos
+        where 
+          {condicion} 
+      </select>
+			<select id="byId">
+        select      
+				  tc_keet_contratos.id_contrato id_key,
+          tc_keet_contratos.*
+        from      
+          tc_keet_contratos
+        where 
+          id_contrato= {idContrato}
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_contratos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>	
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos
+        where      
+          consecutivo = '{consecutivo}' and id_contrato = {idContrato}
+      </select>
+    </unit>
+		    <unit id="TcKeetContratosArchivosDto">
+      <select id="row">
+        select      
+          tc_keet_contratos_archivos.id_contrato_archivo as id_key,
+					tc_keet_contratos_archivos.*
+        from      
+          tc_keet_contratos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_archivos
+        where      
+          id_contrato_archivo = {idContratoArchivo} and id_tipo_archivo = {idTipoArchivo} and id_contrato = {idContrato} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosBitacoraDto">
+      <select id="row">
+        select      
+          tc_keet_contratos_bitacora.id_contrato_bitacora as id_key,
+					tc_keet_contratos_bitacora.*
+        from      
+          tc_keet_contratos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_bitacora
+        where      
+          id_contrato_bitacora = {idContratoBitacora}
+      </select>
+    </unit>
+	<unit id="TcKeetContratosEstatusDto">
+      <select id="row">
+        select      
+          tc_keet_contratos_estatus.id_contrato_estatus as id_key,
+					tc_keet_contratos_estatus.*
+        from      
+          tc_keet_contratos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_estatus
+        where      
+          id_contrato_estatus = {idContratoEstatus} and nombre = '{nombre}'
+      </select>
+    </unit>
+	<unit id="TcKeetContratosFirmadosDto">
+      <select id="row">
+        select      
+          tc_keet_contratos_firmados.id_contrato_firmado as id_key,
+					tc_keet_contratos_firmados.*
+        from      
+          tc_keet_contratos_firmados
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_firmados
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_contrato = {idContrato} and id_contrato_firmado = {idContratoFirmado} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosGeneradoresDto">
+      <select id="row">
+        select      
+          tc_keet_contratos_generadores.id_contrato_generador as id_key,
+					tc_keet_contratos_generadores.*
+        from      
+          tc_keet_contratos_generadores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_generadores
+        where      
+          id_tipo_generador = {idTipoGenerador} and id_contrato_generador = {idContratoGenerador} and id_tipo_archivo = {idTipoArchivo} and id_contrato = {idContrato} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosLotesDto">
+      <select id="row">
+        select      
+          tc_keet_contratos_lotes.id_contrato_lote as id_key,
+					tc_keet_contratos_lotes.*
+        from      
+          tc_keet_contratos_lotes
+        where 
+          {condicion} 
+				order by
+				  clave, manzana, lote
+      </select>
+			<select id="byContrato">
+        select      
+				  tc_keet_contratos_lotes.id_contrato_lote id_key,
+          tc_keet_contratos_lotes.*
+        from      
+          tc_keet_contratos_lotes
+        where 
+          id_contrato= {idContrato} 
+				order by
+				  clave, manzana, lote
+      </select>
+			<select id="byContratoContratistas">
+        select      
+				  tc_keet_contratos_lotes.id_contrato_lote id_key,
+          tc_keet_contratos_lotes.*,
+          concat('Lote', ' ', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					(select count(*) total from tc_keet_contratos_lotes_contratistas where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote) contratistas
+        from      
+          tc_keet_contratos_lotes
+        where 
+          id_contrato= {idContrato} 
+				order by
+				  clave, manzana, lote
+      </select>
+			<select id="getOrden">
+        select      
+				  max(orden)+1 max_orden
+        from      
+          tc_keet_contratos_lotes
+        where 
+          id_contrato= {idContrato} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes
+        where      
+          manzana = '{manzana}' and lote = {lote} and id_contrato = {idContrato} and id_contrato_lote = {idContratoLote}
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosPresupuestosDto">
+      <select id="row">
+        select      
+          tc_keet_contratos_presupuestos.id_contrato_presupuesto as id_key,
+					tc_keet_contratos_presupuestos.*
+        from      
+          tc_keet_contratos_presupuestos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_presupuestos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_contrato = {idContrato} and id_tipo_presupuesto = {idTipoPresupuesto} and nombre = '{nombre}' and id_contrato_presupuesto = {idContratoPresupuesto}
+      </select>
+    </unit>
+	    <unit id="TcKeetContratosProyectosDto">
+      <select id="row">
+        select      
+          tc_keet_contratos_proyectos.id_contrato_proyecto as id_key,
+					tc_keet_contratos_proyectos.*
+        from      
+          tc_keet_contratos_proyectos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_proyectos
+        where      
+          id_cliente_contrato = {idClienteContrato} and clave = '{clave}' and id_contrato_proyecto = {idContratoProyecto} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcKeetPrestamosArchivosDto">
+      <select id="row">
+        select      
+          tc_keet_prestamos_archivos.id_prestamo_archivo id_key,
+				  tc_keet_prestamos_archivos.*
+        from      
+          tc_keet_prestamos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_archivos
+        where      
+          id_prestamo_archivo = {idPrestamoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcKeetPrestamosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_prestamos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_bitacora
+        where      
+          id_prestamo_bitacora = {idPrestamoBitacora} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>
+		<unit id="TcKeetPrestamosEstatusDto">
+      <select id="row">
+        select      
+          tc_keet_prestamos_estatus.id_prestamo_estatus id_key,
+				  tc_keet_prestamos_estatus.*
+        from      
+          tc_keet_prestamos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_estatus
+        where      
+          nombre = '{nombre}' and id_prestamo_estatus = {idPrestamoEstatus}
+      </select>
+    </unit>
+		<unit id="TcKeetPrestamosPagosDto">
+      <select id="row">
+        select      
+          tc_keet_prestamos_pagos.id_prestamo_pago id_key,
+				  tc_keet_prestamos_pagos.*
+        from      
+          tc_keet_prestamos_pagos
+        where 
+          {condicion} 
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_prestamos_pagos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_pagos
+        where      
+          id_prestamo_pago = {idPrestamoPago} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>
+  </dml>    
+</process>
