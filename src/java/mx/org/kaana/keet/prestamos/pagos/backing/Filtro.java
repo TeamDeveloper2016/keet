@@ -29,6 +29,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("idPrestamo")!= null){
 				this.attrs.put("idPrestamo", JsfBase.getFlashAttribute("idPrestamo"));
+			  this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 				this.doLoad();
 			} // if
 			else
@@ -43,7 +44,6 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns    = null;
-		Map<String, Object>params= null;
     try {
       columns= new ArrayList<>();
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
@@ -52,7 +52,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("abono", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("cambio", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyModel = new FormatCustomLazy("VistaPrestamosPagosDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaPrestamosPagosDto", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -60,7 +60,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(params);
       Methods.clean(columns);
     } // finally		
   } // doLoad

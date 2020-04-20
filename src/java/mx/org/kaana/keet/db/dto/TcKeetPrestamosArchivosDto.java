@@ -37,8 +37,8 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="id_tipo_archivo")
   private Long idTipoArchivo;
-  @Column (name="id_prestamo_pago")
-  private Long idPrestamoPago;
+  @Column (name="id_prestamo")
+  private Long idPrestamo;
   @Column (name="id_principal")
   private Long idPrincipal;
   @Column (name="observaciones")
@@ -63,13 +63,13 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetPrestamosArchivosDto(String archivo, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrestamoPago, Long idPrincipal, String observaciones, String alias, Long idPrestamoArchivo, String nombre) {
+  public TcKeetPrestamosArchivosDto(String archivo, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrestamo, Long idPrincipal, String observaciones, String alias, Long idPrestamoArchivo, String nombre) {
     setArchivo(archivo);
     setRuta(ruta);
     setTamanio(tamanio);
     setIdUsuario(idUsuario);
     setIdTipoArchivo(idTipoArchivo);
-    setIdPrestamoPago(idPrestamoPago);
+    setIdPrestamo(idPrestamo);
     setIdPrincipal(idPrincipal);
     setObservaciones(observaciones);
     setAlias(alias);
@@ -118,12 +118,12 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
     return idTipoArchivo;
   }
 
-  public void setIdPrestamoPago(Long idPrestamoPago) {
-    this.idPrestamoPago = idPrestamoPago;
+  public void setIdPrestamo(Long idPrestamo) {
+    this.idPrestamo = idPrestamo;
   }
 
-  public Long getIdPrestamoPago() {
-    return idPrestamoPago;
+  public Long getIdPrestamo() {
+    return idPrestamo;
   }
 
   public void setIdPrincipal(Long idPrincipal) {
@@ -199,7 +199,7 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoArchivo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPrestamoPago());
+		regresar.append(getIdPrestamo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrincipal());
 		regresar.append(Constantes.SEPARADOR);
@@ -224,7 +224,7 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
 		regresar.put("tamanio", getTamanio());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idTipoArchivo", getIdTipoArchivo());
-		regresar.put("idPrestamoPago", getIdPrestamoPago());
+		regresar.put("idPrestamo", getIdPrestamo());
 		regresar.put("idPrincipal", getIdPrincipal());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("alias", getAlias());
@@ -237,7 +237,7 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getArchivo(), getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrestamoPago(), getIdPrincipal(), getObservaciones(), getAlias(), getIdPrestamoArchivo(), getNombre(), getRegistro()
+    getArchivo(), getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrestamo(), getIdPrincipal(), getObservaciones(), getAlias(), getIdPrestamoArchivo(), getNombre(), getRegistro()
     };
     return regresar;
   }

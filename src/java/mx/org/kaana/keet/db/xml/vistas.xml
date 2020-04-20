@@ -1050,7 +1050,8 @@
 					tc_keet_deudores.disponible,
 					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) deudor,
 					ifnull(tc_keet_prestamos_pagos.numero_pagos, 0) numero_pagos,
-					tc_keet_prestamos_estatus.nombre estatus
+					tc_keet_prestamos_estatus.nombre estatus,
+				  tc_keet_prestamos_estatus.id_prestamo_estatus
 				from
 				tc_keet_prestamos
 				inner join tc_keet_deudores on tc_keet_prestamos.id_deudor= tc_keet_deudores.id_deudor
@@ -1061,6 +1062,25 @@
 				where
 				  {condicion}	
         {sortOrder}	
+			</select>
+			<select id="importados">
+				select
+					tc_keet_prestamos_archivos.id_prestamo_archivo id_key,
+					tc_keet_prestamos_archivos.nombre,
+					tc_keet_prestamos_archivos.archivo,
+					tc_keet_prestamos_archivos.ruta,
+					tc_keet_prestamos_archivos.alias,
+					tc_keet_prestamos_archivos.observaciones,
+					tc_keet_prestamos_archivos.registro,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario
+				from
+					tc_keet_prestamos_archivos
+				inner join 
+					tc_janal_usuarios on tc_keet_prestamos_archivos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  tc_keet_prestamos_archivos.id_prestamo= {idPrestamo}
 			</select>
 		</unit>	
 		<unit id="VistaDeudoresDto">
@@ -1075,6 +1095,28 @@
 				inner join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 				where
 				  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+			</select>
+		</unit>	
+		<unit id="VistaPrestamosPagosDto">
+			<select id="lazy">
+				select
+					tc_keet_prestamos_pagos.id_prestamo_pago id_key,
+					tc_keet_prestamos_pagos.consecutivo,
+					tc_keet_prestamos_pagos.pago,
+					tc_keet_prestamos_pagos.abono,
+					tc_keet_prestamos_pagos.cambio,
+					tc_keet_prestamos_pagos.observaciones,
+					tc_keet_prestamos_pagos.registro,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario
+				from
+					tc_keet_prestamos_pagos
+				inner join 
+					tc_janal_usuarios on tc_keet_prestamos_pagos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  tc_keet_prestamos_pagos.id_prestamo= {idPrestamo}
+				{sortOrder}	
 			</select>
 		</unit>	
 	</dml>    

@@ -18,7 +18,8 @@ import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
-	private TcKeetPrestamosPagosDto prestamosPagosDto;	
+	private TcKeetPrestamosPagosDto prestamosPagosDto;
+  private Long idDeudor;	
 
 
 	public Transaccion(TcKeetPrestamosPagosDto prestamosPagosDto) {
@@ -28,18 +29,17 @@ public class Transaccion extends IBaseTnx {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar               = false;
-		Long idDeudor                  = -1L;
 		TcKeetDeudoresDto deudoresDto  = null;
-		TcKeetPrestamosPagosDto prestamosPagoDto= null;
+		TcKeetPrestamosPagosDto keetPrestamosPagosDto= null;
 		try {
 			switch(accion){
 				case REGISTRAR:
-					prestamosPagoDto= calcularPago(sesion, this.prestamosPagosDto.getIdPrestamo(), this.prestamosPagosDto.getPago(), EEstatusPrestamos.LIQUIDADA, idDeudor);
-					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(TcKeetDeudoresDto.class, idDeudor);
-					deudoresDto.setSaldo(deudoresDto.getSaldo()- this.prestamosPagosDto.getAbono());
-					deudoresDto.setDisponible(deudoresDto.getDisponible()+ this.prestamosPagosDto.getAbono());
+					keetPrestamosPagosDto= calcularPago(sesion, this.prestamosPagosDto.getIdPrestamo(), this.prestamosPagosDto.getPago(), EEstatusPrestamos.LIQUIDADA);
+					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(TcKeetDeudoresDto.class, this.idDeudor);
+					deudoresDto.setSaldo(deudoresDto.getSaldo()- keetPrestamosPagosDto.getAbono());
+					deudoresDto.setDisponible(deudoresDto.getDisponible()+ keetPrestamosPagosDto.getAbono());
 					DaoFactory.getInstance().update(sesion, deudoresDto);
-					regresar= DaoFactory.getInstance().insert(sesion, prestamosPagoDto)>= 1L;
+					regresar= DaoFactory.getInstance().insert(sesion, keetPrestamosPagosDto)>= 1L;
 					break;
 				case COMPLETO:
 					/*
@@ -65,7 +65,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcKeetPrestamosPagoDto", "siguiente", params, "siguiente");
+			Value next= DaoFactory.getInstance().toField(sesion, "TcKeetPrestamosPagosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else
@@ -80,14 +80,14 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 
-	private TcKeetPrestamosPagosDto calcularPago(Session sesion,Long idPrestamo, Double pago, EEstatusPrestamos tipoFinalizar, Long idDeudor) throws Exception{
+	private TcKeetPrestamosPagosDto calcularPago(Session sesion,Long idPrestamo, Double pago, EEstatusPrestamos tipoFinalizar) throws Exception{
 		TcKeetPrestamosPagosDto regresar= null;
 		TcKeetPrestamosDto prestamosDto = null;
 		Siguiente siguiente             = null;
 		Double cambio, abono            = null;
 		try {
 			prestamosDto= (TcKeetPrestamosDto) DaoFactory.getInstance().findById(sesion, TcKeetPrestamosDto.class, idPrestamo);
-			idDeudor= prestamosDto.getIdDeudor();
+			this.idDeudor= prestamosDto.getIdDeudor();
 			siguiente= toSiguiente(sesion);
 			if((prestamosDto.getSaldo()-pago)>= 0){ //sin cambio
 				abono= pago;

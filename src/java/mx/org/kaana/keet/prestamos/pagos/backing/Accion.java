@@ -22,14 +22,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private static final long serialVersionUID = 1673182892612012760L;
 	private TcKeetPrestamosPagosDto pagoDto;
 
-	public TcKeetPrestamosPagosDto getPrestamo() {
+	public TcKeetPrestamosPagosDto getPagoDto() {
 		return pagoDto;
 	}
 
-	public void setPrestamo(TcKeetPrestamosPagosDto pagoDto) {
+	public void setPagoDto(TcKeetPrestamosPagosDto pagoDto) {
 		this.pagoDto = pagoDto;
-	}	
-	
+	}
+
 	@PostConstruct
   @Override
   protected void init() {			
