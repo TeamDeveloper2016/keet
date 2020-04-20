@@ -17,12 +17,12 @@ public class Prestamo extends TcKeetPrestamosDto{
 		this.ikDeudor= ikDeudor;
 	}
 
-	public UISelectEntity getIkCliente() {
+	public UISelectEntity getIkDeudor() {
 		return ikDeudor;
 	}
 
-	public void setIkCliente(UISelectEntity ikCliente) {
-		this.ikDeudor = ikCliente;
+	public void setIkDeudor(UISelectEntity ikDeudor) {
+		this.ikDeudor = ikDeudor;
 		if(this.ikDeudor!= null)
 			setIdDeudor(this.ikDeudor.getKey());
 	}	

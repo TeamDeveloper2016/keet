@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.keet.catalogos.prototipos.reglas.MotorBusqueda;
+import mx.org.kaana.keet.prestamos.reglas.MotorBusqueda;
 
 public class RegistroPrestamo implements Serializable {
 
@@ -13,8 +13,8 @@ public class RegistroPrestamo implements Serializable {
 	private Long idPrestamo;
 	private List<Documento> documentos;
 
-	public RegistroPrestamo(Prestamo prestamo) {
-		this.prestamo = prestamo;
+	public RegistroPrestamo() {
+		this(-1L);
 	}
 
 
@@ -27,7 +27,13 @@ public class RegistroPrestamo implements Serializable {
 	private void initCollections(Long idPrestamo){
 		MotorBusqueda motor= null;
 		try {
-			motor= new MotorBusqueda(idPrestamo);
+			if(idPrestamo> 0L){
+			  motor= new MotorBusqueda(idPrestamo);
+				this.prestamo= motor.toPrestamo();
+			} // if
+			else{
+				this.prestamo= new Prestamo();
+			} // else
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);			
@@ -57,7 +63,6 @@ public class RegistroPrestamo implements Serializable {
 	public void setDocumentos(List<Documento> documentos) {
 		this.documentos = documentos;
 	}
-	
-	
+
 
 }
