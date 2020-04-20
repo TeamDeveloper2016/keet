@@ -16,7 +16,7 @@
 				margin-right: 5px;
 			}
 			.manzana-lote-font {
-				font-size: 75px !important;
+				font-size: 3.2vw !important;
 				font-weight: bold !important;
 			}
 		</style>
@@ -50,7 +50,7 @@
 						<p:panel header="#{row.clave}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosContratistasLotes.doRegistrar}" style="cursor: hand;">
-									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana #{row.manzana}, Lote #{row.lote}" class="manzana-lote-font"/>
+									<p:outputLabel value="M#{row.manzana}, L#{row.lote}" title="Manzana #{row.manzana}, Lote #{row.lote}" class="manzana-lote-font"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosContratistasLotes.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
@@ -73,11 +73,11 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosContratistasLotes.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosContratistasLotes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosContratistasLotes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosContratistasLotes.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosContratistasLotes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosContratistasLotes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>
