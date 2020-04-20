@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.catalogos.contratos.contratistas.reglas.Transaccion;
+import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -38,8 +39,8 @@ public class Asignacion extends IBaseAttribute implements Serializable {
     try {						
 			this.attrs.put("idContrato", (Long) JsfBase.getFlashAttribute("idContrato"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			loadCatalogos();
-			loadDepartamentos();			
+			this.loadCatalogos();
+			Catalogos.toLoadEspecialidades(this.attrs);
     } // try 
     catch (Exception e) {
       Error.mensaje(e);
@@ -70,24 +71,6 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // loadCatalogos
-	
-	private void loadDepartamentos() {
-		List<UISelectItem> departamentos= null;
-		Map<String, Object> params      = null;		
-		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
-			departamentos= UISelect.seleccione("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("departamentos", departamentos);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally		
-	} // loadDepartamentos
 	
   public void doLoad() {    						
 		String condicion            = null;    			
