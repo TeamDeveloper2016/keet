@@ -830,6 +830,17 @@
         where      
           nombre = '{nombre}'
       </select>
+      <select id="especialidades">
+        select      
+          tc_keet_departamentos.id_departamento as id_key,
+					tc_keet_departamentos.*
+        from      
+          tc_keet_departamentos
+        where 
+          id_especialidad= 1
+				order by
+				  nombre 
+      </select>
     </unit>	
     <unit id="TcKeetDivisionesDto">
       <select id="row">

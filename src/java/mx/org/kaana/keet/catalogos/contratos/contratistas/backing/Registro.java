@@ -55,9 +55,9 @@ public class Registro extends IBaseAttribute implements Serializable {
 			this.attrs.put("idContrato", (Long) JsfBase.getFlashAttribute("idContrato"));
 			this.attrs.put("idContratoLote", (Long) JsfBase.getFlashAttribute("idContratoLote"));
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
-			inicializaContenido();			
-			loadCatalogos();
-			loadDepartamentos();
+			this.inicializaContenido();			
+			this.loadCatalogos();
+			this.loadDepartamentos();
 			doLoad();
     } // try 
     catch (Exception e) {
@@ -95,7 +95,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
-			departamentos= UISelect.seleccione("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			departamentos= UISelect.seleccione("TcKeetDepartamentosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("departamentos", departamentos);
 		} // try
 		catch (Exception e) {

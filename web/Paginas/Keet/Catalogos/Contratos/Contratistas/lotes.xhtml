@@ -41,6 +41,7 @@
 							</p:panelGrid>										
 						</p:tab>											
 					</p:accordionPanel>	
+					<p:spacer height="3px"/>
 					<p:dataGrid var="row" value="#{keetCatalogosContratosContratistasLotes.lotes}" columns="4" layout="grid" rowIndexVar="index"
 											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosContratistasLotes.lazyModel.rowCount gt Constantes.REGISTROS_POR_PAGINA}" id="tabla"
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
@@ -48,7 +49,7 @@
 											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.clave}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
-								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosContratistasLotes.doRegistrar}">
+								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosContratistasLotes.doRegistrar}" style="cursor: hand;">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana #{row.manzana}, Lote #{row.lote}" class="manzana-lote-font"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosContratistasLotes.attrs.seleccionado}"/>
 								</p:commandLink>																	

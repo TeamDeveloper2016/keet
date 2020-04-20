@@ -50,10 +50,10 @@
 							<p:ajax event="change" onstart="return janal.bloquear();" process="@this" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{keetCatalogosContratosContratistasAsignacion.attrs.departamentos}"/>
 						</p:selectOneMenu>																
-						<p:outputLabel for="nombre" value="Nombre:"/>							
+						<p:outputLabel for="nombre" value="Contratista:"/>							
 						<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosContratistasAsignacion.attrs.nombre}" completeMethod="#{keetCatalogosContratosContratistasAsignacion.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
 						<p:outputLabel for="lotes" value="Lotes:"/>
-						<p:selectCheckboxMenu label="Lotes" id="lotes" value="#{keetCatalogosContratosContratistasAsignacion.attrs.idsLotes}" class="contenido-mediano" filter="true" filterMatchMode="contains" multiple="true" panelStyle="janal-wid-100-txt" panelStyleClass="janal-wid-100-txt" style="width: 99% !important">
+						<p:selectCheckboxMenu label="Lotes" id="lotes" value="#{keetCatalogosContratosContratistasAsignacion.attrs.idsLotes}" class="contenido-mediano" filter="true" filterMatchMode="contains" multiple="true" panelStyle="janal-wid-98" panelStyleClass="janal-wid-98" style="width: 98% !important">
 							<f:selectItems value="#{keetCatalogosContratosContratistasAsignacion.attrs.lotes}"/>
 						</p:selectCheckboxMenu>
 					</p:panelGrid>										
