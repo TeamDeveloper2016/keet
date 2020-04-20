@@ -41,6 +41,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, deudoresDto);
 					regresar= DaoFactory.getInstance().insert(sesion, keetPrestamosPagosDto)>= 1L;
 					break;
+					
 				case COMPLETO:
 					/*
 					prestamosPagoDto= calcularPago(sesion, this.prestamosPagosDto.getIdPrestamo(), this.prestamosPagosDto.getPago(), EEstatusPrestamos.LIQUIDADA, idDeudor);
