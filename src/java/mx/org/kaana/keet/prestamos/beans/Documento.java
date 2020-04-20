@@ -4,33 +4,13 @@ import mx.org.kaana.keet.db.dto.TcKeetPrestamosArchivosDto;
 
 
 public class Documento extends TcKeetPrestamosArchivosDto {
-
 	private static final long serialVersionUID = 5328765921129293800L;
 	private Long idArchivo;
-	private String especialidad;
-	private String plano;	
+
 	
-	public Documento(Long idPlano, String archivo, String ruta, Long tamanio, Long idUsuarios, Long idTipoArchivo, String observaciones, Long idPrototipoArchivo, String alias, Long idPrototipo, String nombre, String especialidad, String plano, Long idArchivo) {
-		super(archivo, ruta, tamanio, idUsuarios, idTipoArchivo, idPrototipo, idPrototipo, observaciones, alias, idPrototipoArchivo, nombre);
-		this.especialidad= especialidad;
-		this.plano       = plano;
+	public Documento(String archivo, String ruta, Long tamanio, Long idUsuarios, Long idTipoArchivo, String observaciones, Long idPrestamoArchivo, String alias, Long idPrestamo, String nombre, Long idArchivo) {
+		super(archivo, ruta, tamanio, idUsuarios, idTipoArchivo, idPrestamo, 1L, observaciones, alias, idPrestamoArchivo, nombre);
 		this.idArchivo   = idArchivo;
-	}
-
-	public String getEspecialidad() {
-		return especialidad;
-	}
-
-	public void setEspecialidad(String especialidad) {
-		this.especialidad=especialidad;
-	}
-
-	public String getPlano() {
-		return plano;
-	}
-
-	public void setPlano(String plano) {
-		this.plano=plano;
 	}
 
 	public Long getIdArchivo() {

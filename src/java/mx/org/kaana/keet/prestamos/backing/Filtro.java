@@ -62,7 +62,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 			if(JsfBase.getFlashAttribute("idPrestamoProcess")!= null){
 				this.attrs.put("idPrestamoProcess", JsfBase.getFlashAttribute("idPrestamoProcess"));
 				this.doLoad();
-				this.attrs.put("idPrestamoProcess", null);
 			} // if
     } // try
     catch (Exception e) {
@@ -137,6 +136,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 				case MODIFICAR:
 				case AGREGAR:
 				  regresar= "accion".concat(Constantes.REDIRECIONAR);
+					break;
+				case REGISTRAR:
+				case COMPLETO:
+				  regresar= "/Paginas/Keet/Prestamos/Pagos/accion".concat(Constantes.REDIRECIONAR);
+					break;
+				case MOVIMIENTOS:
+				  regresar= "/Paginas/Keet/Prestamos/Pagos/filtro".concat(Constantes.REDIRECIONAR);
 					break;
 				case DESACTIVAR:
 					transaccion= new Transaccion(new RegistroPrestamo(((Entity) this.attrs.get("seleccionado")).getKey()));

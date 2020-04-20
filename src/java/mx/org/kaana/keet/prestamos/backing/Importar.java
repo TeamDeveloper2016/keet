@@ -73,8 +73,8 @@ public class Importar extends IBaseImportar implements Serializable {
 		List<Columna>campos= null;
 		try {
 			campos= new ArrayList<>();
-			campos.add(new Columna("dedor", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+			campos.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "byEmpresa", this.attrs, campos, "deudor"));
 		} // try
@@ -132,7 +132,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
   		this.attrs.put("file", this.getFile().getName());	
 			idArchivo= toRegisterFile("prestamos");							
-			this.prestamo.getDocumentos().add(toProtipoArchivo(idArchivo));
+			this.prestamo.getDocumentos().add(toPrestamoArchivo(idArchivo));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -143,22 +143,9 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doFileUpload	
 	
 	
-	private Documento toProtipoArchivo(Long idArchivo){
-		UISelectEntity especialidad= (UISelectEntity)this.attrs.get("especialidad");
-		List<UISelectEntity> especialidades= (List<UISelectEntity>)this.attrs.get("especialidades");
-		if(especialidad!= null && especialidades.indexOf(especialidad)>= 0)
-			especialidad= especialidades.get(especialidades.indexOf(especialidad));
-		else
-			especialidad= especialidades.get(0);
-		UISelectEntity plano= (UISelectEntity)this.attrs.get("plano");
-		List<UISelectEntity> planos= (List<UISelectEntity>)this.attrs.get("planos");
-		if(plano!= null && planos.indexOf(plano)>= 0)
-			plano= planos.get(planos.indexOf(plano));
-		else
-			plano= planos.get(0);
+	private Documento toPrestamoArchivo(Long idArchivo){
 		Documento regresar= null;		
 		regresar= new Documento(
-			plano.getKey(),
 			this.getFile().getName(), 
 			this.getFile().getRuta(), 
 			this.getFile().getFileSize(), 
@@ -169,8 +156,6 @@ public class Importar extends IBaseImportar implements Serializable {
 			Configuracion.getInstance().getPropiedadSistemaServidor("prestamos").concat(this.getFile().getRuta()).concat(this.getFile().getName()),
 			this.prestamo.getPrestamo().getIdPrestamo(), 
 			this.getFile().getOriginal(),
-			especialidad.toString("nombre"),
-			plano.toString("nombre"),
 			idArchivo
 		);
 		return regresar;
