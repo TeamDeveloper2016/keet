@@ -27,7 +27,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetPrestamosFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetPrestamosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetPrestamosFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+                <f:selectItems value="#{keetPrestamosFiltro.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -37,19 +37,21 @@
               </p:selectOneMenu>
 							<p:outputLabel for="consecutivo" value="Folio:"/>
               <p:inputText id="consecutivo" value="#{keetPrestamosFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="deudor" value="Deudor:"/>
 							<p:selectOneMenu id="deudor" value="#{keetPrestamosFiltro.attrs.deudor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetPrestamosFiltro.attrs.deudores}"  var="element" itemValue="#{element}" itemLabel="#{element.deudor} - #{element.disponible}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.deudor}"/>
                 </p:column>   
-                <p:column headerText="Nombre">
+                <p:column headerText="Disponible">
                   <h:outputText value="#{item.disponible}"/>
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="inicio" value="Periodo del:"/>
-							<p:calendar id="inicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94"	value="#{keetPrestamosFiltro.inicio}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" />
+							<p:calendar id="inicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94"	value="#{keetPrestamosFiltro.inicio}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" />
 							<p:outputLabel for="termino" value="al:"/>
-							<p:calendar id="termino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetPrestamosFiltro.termino}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+							<p:calendar id="termino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetPrestamosFiltro.termino}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode"/>
+							<p:outputLabel for="estatus" value="Estatus:"/>
 							<p:selectOneMenu id="estatus" value="#{keetPrestamosFiltro.attrs.estatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetPrestamosFiltro.attrs.listaEstatus}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
