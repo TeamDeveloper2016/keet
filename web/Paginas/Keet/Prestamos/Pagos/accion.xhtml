@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{keetPrestamosPagosAccion.attrs.nombreAccion} al catálogo de prestamos" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'contenedorGrupos\\:pago': {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'flotante'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+			};
+
+			$(document).ready(function () {
+				janal.readingMode('#{keetPrestamosPagosAccion.attrs.nombreAccion}');
+			});
+		</script>   
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
+								<p:outputLabel for="pago" value="Importe del prestamo:"/>
+                <p:inputText id="pago" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.pagoDto.pago}" />																								
+								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
+								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.pagoDto.observaciones}" />
+              </p:panelGrid>
+						</p:tab>										
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetPrestamosPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetPrestamosPagosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetPrestamosPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetPrestamosPagosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
