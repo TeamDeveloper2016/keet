@@ -12,7 +12,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				'contenedorGrupos\\:idDeudor': {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:importe': {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{keetPrestamosAccion.attrs.disponible}})', mascara: 'libre'},
+				'contenedorGrupos\\:importe': {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{keetPrestamosAccion.attrs.disponible}})', mascara: 'flotante'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
 
@@ -49,8 +49,8 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="importe" value="Importe del prestamo:"/>
                 <p:inputText id="importe" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" />																								
-								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
-								<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt import-local-file" value="#{keetPrestamosAccion.prestamo.prestamo.observaciones}" />
+								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
+								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.observaciones}" />
               </p:panelGrid>
 						</p:tab>										
 					</p:tabView>
