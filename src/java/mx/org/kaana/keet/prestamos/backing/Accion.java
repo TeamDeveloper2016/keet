@@ -125,7 +125,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 		TcKeetDeudoresDto deudoresDto= null;
     try {			
 			deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(TcKeetDeudoresDto.class, this.prestamo.getPrestamo().getIkDeudor().getKey());
-			this.attrs.put("disponible", deudoresDto.getDisponible().intValue());		
+			this.attrs.put("disponible", deudoresDto.getDisponible());		
+			UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ deudoresDto.getDisponible() + "})', mascara: 'libre'});");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
