@@ -72,6 +72,14 @@
         where 
           {condicion} 
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_prestamos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
       <select id="identically">
         select      
           *
@@ -1685,6 +1693,14 @@
         where 
           {condicion} 
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_prestamos_pagos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
       <select id="identically">
         select      
           *

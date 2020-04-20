@@ -3,9 +3,7 @@ package mx.org.kaana.keet.prestamos.backing;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -22,9 +20,9 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.keet.catalogos.prototipos.beans.Documento;
-import mx.org.kaana.keet.catalogos.prototipos.beans.RegistroPrototipo;
-import mx.org.kaana.keet.catalogos.prototipos.reglas.Transaccion;
+import mx.org.kaana.keet.prestamos.beans.Documento;
+import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
+import mx.org.kaana.keet.prestamos.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -40,31 +38,30 @@ public class Importar extends IBaseImportar implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Importar.class);
 	private static final long serialVersionUID= 2672741451185244787L;
-  private RegistroPrototipo prototipo;
+  private RegistroPrestamo prestamo;
 
-	public RegistroPrototipo getPrototipo() {
-		return prototipo;
+	public RegistroPrestamo getPrestamo() {
+		return prestamo;
 	}
 
-	public void setPrototipo(RegistroPrototipo prototipo) {
-		this.prototipo = prototipo;
+	public void setPrestamo(RegistroPrestamo prestamo) {
+		this.prestamo = prestamo;
 	}
 	
 	@PostConstruct
   @Override
   protected void init() {		
     try {      
-			if(JsfBase.getFlashAttribute("idPrototipo")== null)
+			if(JsfBase.getFlashAttribute("idPrestamo")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-			this.attrs.put("idPrototipo", JsfBase.getFlashAttribute("idPrototipo"));
+			this.attrs.put("idPrestamo", JsfBase.getFlashAttribute("idPrestamo"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_PLANOS);
+			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR);
 			setFile(new Importado());
 			this.attrs.put("file", ""); 
-			this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
 			this.loadCombos();
-			this.prototipo= new RegistroPrototipo(Long.valueOf(this.attrs.get("idPrototipo").toString()));						
+			this.prestamo= new RegistroPrestamo((Long)this.attrs.get("idPrestamo"));						
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -73,46 +70,21 @@ public class Importar extends IBaseImportar implements Serializable {
   } // init
 	
 	public void loadCombos() {
-		List<UISelectEntity> especialidades= null;
-		UISelectEntity especialidad        = null;
-		Map<String, Object>params          = null;
+		List<Columna>campos= null;
 		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			especialidades= UIEntity.seleccione("TcKeetEspecialidadesDto", "row", params, "nombre");
-      this.attrs.put("especialidades", especialidades);			
-      especialidad= UIBackingUtilities.toFirstKeySelectEntity(especialidades);		
-			this.attrs.put("especialidad", especialidad);			
-			this.doActualizaPlanos();			
+			campos= new ArrayList<>();
+			campos.add(new Columna("dedor", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "byEmpresa", this.attrs, campos, "deudor"));
 		} // try
-		catch (Exception e) {			
+		catch (Exception e) {
 			throw e;
 		} // catch		
 		finally{
-			Methods.clean(params);
+			Methods.clean(campos);
 		} // finally
 	} // loadCombos
-	
-	public void doActualizaPlanos() {
-		List<UISelectEntity> planos= null;
-		Map<String, Object>params  = null;
-		UISelectEntity especialidad= null;
-		try {
-			params= new HashMap<>();
-			especialidad= (UISelectEntity) this.attrs.get("especialidad");
-			params.put(Constantes.SQL_CONDICION, "id_especialidad=" + especialidad.getKey());
-			planos= UIEntity.seleccione("TcKeetPlanosDto", "row", params, "nombre");
-      this.attrs.put("planos", planos);			
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-			throw e;
-		} // catch
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // doActualizaPlanos
 	
 	@Override
 	public void doLoad() {
@@ -123,7 +95,7 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-		  this.attrs.put("importados", UIEntity.build("VistaPrototiposDto", "importados", this.attrs, columns));
+		  this.attrs.put("importados", UIEntity.build("VistaPrestamosDto", "importados", this.attrs, columns));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -142,10 +114,10 @@ public class Importar extends IBaseImportar implements Serializable {
 		Long fileSize     = 0L;			
 		Long idArchivo    = 0L;			
 		try {			
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("prototipos"));
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("prestamos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");			
-      temp.append(this.toClave());
+      temp.append(this.getPrestamo().getPrestamo().getIdDeudor());
       temp.append("/");      
 			path.append(temp.toString());
 			result= new File(path.toString());		
@@ -159,8 +131,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			fileSize= event.getFile().getSize();						
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
   		this.attrs.put("file", this.getFile().getName());	
-			idArchivo= toRegisterFile("prototipos");							
-			this.prototipo.getDocumentos().add(toProtipoArchivo(idArchivo));
+			idArchivo= toRegisterFile("prestamos");							
+			this.prestamo.getDocumentos().add(toProtipoArchivo(idArchivo));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -170,20 +142,6 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
 	} // doFileUpload	
 	
-	private String toClave(){
-		String regresar                = null;
-		List<UISelectEntity>clientes   = null;
-		UISelectEntity clienteSeleccion= null;
-		try {
-			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
-			clienteSeleccion= clientes.get(clientes.indexOf(this.prototipo.getPrototipo().getIkCliente()));
-			regresar= String.valueOf(clienteSeleccion.getKey());
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toClave
 	
 	private Documento toProtipoArchivo(Long idArchivo){
 		UISelectEntity especialidad= (UISelectEntity)this.attrs.get("especialidad");
@@ -208,15 +166,15 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), 
 			(String)this.attrs.get("observaciones"), 
 			-1L, 			
-			Configuracion.getInstance().getPropiedadSistemaServidor("prototipos").concat(this.getFile().getRuta()).concat(this.getFile().getName()),
-			this.prototipo.getIdPrototipo(), 
+			Configuracion.getInstance().getPropiedadSistemaServidor("prestamos").concat(this.getFile().getRuta()).concat(this.getFile().getName()),
+			this.prestamo.getPrestamo().getIdPrestamo(), 
 			this.getFile().getOriginal(),
 			especialidad.toString("nombre"),
 			plano.toString("nombre"),
 			idArchivo
 		);
 		return regresar;
-	} // toPrototipoArchivo
+	} // toPrestamoArchivo
 	
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
@@ -224,7 +182,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	}	// doTabChange	
 
   public String doCancelar() {   
-		JsfBase.setFlashAttribute("idPrototipoProcess", this.prototipo.getIdPrototipo());
+		JsfBase.setFlashAttribute("idPrestamoProcess", this.prestamo.getPrestamo().getIdPrestamo());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
@@ -232,7 +190,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		try {
-			transaccion= new Transaccion(this.prototipo);
+			transaccion= new Transaccion(this.prestamo);
       if(transaccion.ejecutar(EAccion.SUBIR)) {
       	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");
 				regresar= this.doCancelar();
