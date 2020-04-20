@@ -57,7 +57,7 @@ public class Transaccion extends IBaseTnx {
 					this.prestamo.getPrestamo().setIdPrestamoEstatus(EEstatusPrestamos.CANCELADA.getIdEstatusPrestamo());// CANCELADA
 					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(TcKeetDeudoresDto.class, this.prestamo.getPrestamo().getIdDeudor());
 					deudoresDto.setSaldo(deudoresDto.getSaldo()- this.prestamo.getPrestamo().getSaldo());
-					
+					deudoresDto.setDisponible(deudoresDto.getDisponible()+ this.prestamo.getPrestamo().getSaldo());
 					DaoFactory.getInstance().update(sesion, deudoresDto);
 					regresar= DaoFactory.getInstance().update(sesion, this.prestamo.getPrestamo())>= 1L;
 					break;

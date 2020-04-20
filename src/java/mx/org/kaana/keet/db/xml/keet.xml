@@ -72,6 +72,15 @@
         where 
           {condicion} 
       </select>
+      <select id="byId">
+        select      
+          tc_keet_prestamos.id_prestamo as id_key,
+					tc_keet_prestamos.*
+        from      
+          tc_keet_prestamos
+        where 
+          id_prestamo= {idPrestamo} 
+      </select>
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente

@@ -1042,7 +1042,7 @@
 			<select id="lazy">
 				select
 					tc_keet_prestamos.id_prestamo id_key,
-					concat(tc_keet_prestamos.ejercicio, tc_keet_prestamos.consecutivo) folio,
+					tc_keet_prestamos.consecutivo folio,
 					tc_keet_prestamos.importe,
 					tc_keet_prestamos.saldo,
 					tc_keet_deudores.saldo saldo_total,

@@ -144,8 +144,7 @@
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{keetPrestamosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{keetPrestamosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
 						<p:separator/>
             <p:menuitem id="importar" action="#{keetPrestamosFiltro.doAccion('SUBIR')}" icon="fa fa-external-link" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
           </p:contextMenu>
@@ -153,7 +152,7 @@
       </div>
     </div>		           				
   </ui:define>    
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el prestamo?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de cancelar el prestamo?" />
   <ui:param name="accionConfirmacion" value="#{keetPrestamosFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
@@ -162,9 +161,9 @@
     <h:panelGrid columns="2">
       <p:outputLabel value="Deudor: "/>
       <p:outputLabel value="#{keetPrestamosFiltro.attrs.seleccionado.deudor}"/>
-      <p:outputLabel value="Importe "/>
+      <p:outputLabel value="Importe del prestamo"/>
       <p:outputLabel value="#{keetPrestamosFiltro.attrs.seleccionado.importe}"/>
-      <p:outputLabel value="Saldo "/>
+      <p:outputLabel value="Saldo del prestamo "/>
       <p:outputLabel value="#{keetPrestamosFiltro.attrs.seleccionado.saldo}"/>
     </h:panelGrid>			
   </ui:define>

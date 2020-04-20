@@ -16,6 +16,9 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.db.dto.TcKeetPrestamosDto;
+import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
+import mx.org.kaana.keet.prestamos.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -55,12 +58,12 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			cargaCatalogos();
 			if(JsfBase.getFlashAttribute("idPrestamoProcess")!= null){
 				this.attrs.put("idPrestamoProcess", JsfBase.getFlashAttribute("idPrestamoProcess"));
 				this.doLoad();
 				this.attrs.put("idPrestamoProcess", null);
 			} // if
-      cargaCatalogos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -77,11 +80,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();
       columns.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("saldoTotal", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("limite", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("saldoTotal", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("limite", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaPrestamosDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -117,8 +120,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // loadEmpresas
 
   public String doAccion(String accion) {
-    String regresar= null;
-		EAccion eaccion= null;
+    String regresar        = null;
+		EAccion eaccion        = null;
+		Transaccion transaccion= null;
     try {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
@@ -134,6 +138,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 				case AGREGAR:
 				  regresar= "accion".concat(Constantes.REDIRECIONAR);
 					break;
+				case DESACTIVAR:
+					transaccion= new Transaccion(new RegistroPrestamo(((Entity) this.attrs.get("seleccionado")).getKey()));
+					if (transaccion.ejecutar(eaccion)){
+						JsfBase.addMessage("El prestamo se cancelo correctamente.");
+					} // if
+					doLoad();
+					break;
 			} // switch
     } // try
     catch (Exception e) {
@@ -144,7 +155,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion
 
   public void doEliminar() {
-		doAccion(EAccion.ELIMINAR.name());
+		doAccion(EAccion.DESACTIVAR.name()); //cancelar prestamo
   } // doEliminar
 	
 	
@@ -158,7 +169,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(this.attrs.get("idPrestamoProcess")!= null && !Cadena.isVacio(this.attrs.get("idPrestamoProcess")))
 			sb.append("tc_keet_prestamos.id_prestamo=").append(this.attrs.get("idPrestamoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-			sb.append("(concat(tc_keet_prestamos.ejercicio, tc_keet_prestamos.consecutivo) like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+			sb.append("(tc_keet_prestamos.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		sb.append("cast(tc_keet_prestamos.registro as date) between '").append(inicio.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).append("' and '");
 		sb.append(termino.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).append("' and ");
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
