@@ -62,6 +62,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			if(JsfBase.getFlashAttribute("idPrestamoProcess")!= null){
 				this.attrs.put("idPrestamoProcess", JsfBase.getFlashAttribute("idPrestamoProcess"));
 				this.doLoad();
+				this.attrs.put("idPrestamoProcess", null);
 			} // if
     } // try
     catch (Exception e) {
