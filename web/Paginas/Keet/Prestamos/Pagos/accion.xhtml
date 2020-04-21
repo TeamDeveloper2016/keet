@@ -11,7 +11,7 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				'contenedorGrupos\\:pago': {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'flotante'},
+				'contenedorGrupos\\:pago': {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
 
@@ -44,15 +44,27 @@
 					</p:tabView>
 				</div>
 			</div>
-		</div>		
+		</div>
+		<p:dialog id="dialogoPago" widgetVar="dialogoPago" header="Resumen de pago." resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="35%">			
+			<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+				<p:outputLabel value="Prestamos pagados:"/>
+				<p:outputLabel value="#{keetPrestamosPagosAccion.attrs.numeroPrestamos}"/>
+				<p:outputLabel value="Cambio:"/>
+				<p:outputLabel value="#{keetPrestamosPagosAccion.attrs.cambio}"/>
+			</h:panelGrid>			
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" process="@this" value="Aceptar" action="#{keetPrestamosPagosAccion.doCancelar}" onstart="return PF('dialogoPago').hide();" oncomplete="janal.desbloquear();" ajax="false"/>
+			</div>			
+		</p:dialog>		
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetPrestamosPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetPrestamosPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear(); PF('dialogoPago').show();" update="dialogoPago"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetPrestamosPagosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetPrestamosPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetPrestamosPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear(); PF('dialogoPago').show();" update="dialogoPago"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetPrestamosPagosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

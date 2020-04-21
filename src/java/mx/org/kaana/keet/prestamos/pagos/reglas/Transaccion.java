@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.prestamos.pagos.reglas;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -20,12 +21,25 @@ public class Transaccion extends IBaseTnx {
 
 	private TcKeetPrestamosPagosDto prestamosPagosDto;
   private Long idDeudor;	
+  private int prestamosPagados;	
+  private Double cambio;	
 
 
 	public Transaccion(TcKeetPrestamosPagosDto prestamosPagosDto) {
 		this.prestamosPagosDto= prestamosPagosDto;	
+		this.prestamosPagados= 0;
 	}
 
+	public int getPrestamosPagados() {
+		return prestamosPagados;
+	}
+
+	public Double getCambio() {
+		return cambio;
+	}
+	
+	
+	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar               = false;
@@ -35,24 +49,30 @@ public class Transaccion extends IBaseTnx {
 			switch(accion){
 				case REGISTRAR:
 					keetPrestamosPagosDto= calcularPago(sesion, this.prestamosPagosDto.getIdPrestamo(), this.prestamosPagosDto.getPago(), EEstatusPrestamos.LIQUIDADA);
-					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(TcKeetDeudoresDto.class, this.idDeudor);
+					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.idDeudor);
 					deudoresDto.setSaldo(deudoresDto.getSaldo()- keetPrestamosPagosDto.getAbono());
 					deudoresDto.setDisponible(deudoresDto.getDisponible()+ keetPrestamosPagosDto.getAbono());
 					DaoFactory.getInstance().update(sesion, deudoresDto);
 					regresar= DaoFactory.getInstance().insert(sesion, keetPrestamosPagosDto)>= 1L;
+					this.prestamosPagados= 1;
 					break;
-					
 				case COMPLETO:
-					/*
-					prestamosPagoDto= calcularPago(sesion, this.prestamosPagosDto.getIdPrestamo(), this.prestamosPagosDto.getPago(), EEstatusPrestamos.LIQUIDADA, idDeudor);
-					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(TcKeetDeudoresDto.class, idDeudor);
-					deudoresDto.setSaldo(deudoresDto.getSaldo()- this.prestamosPagosDto.getAbono());
-					deudoresDto.setDisponible(deudoresDto.getDisponible()+ this.prestamosPagosDto.getAbono());
-					DaoFactory.getInstance().update(sesion, deudoresDto);
-					regresar= DaoFactory.getInstance().insert(sesion, prestamosPagoDto)>= 1L;
-*/
+					keetPrestamosPagosDto= this.prestamosPagosDto;
+					keetPrestamosPagosDto.setCambio(this.prestamosPagosDto.getPago());
+					for(TcKeetPrestamosDto item: (List<TcKeetPrestamosDto>) DaoFactory.getInstance().toEntitySet(sesion, TcKeetPrestamosDto.class,"TcKeetPrestamosDto", "activosByIdDeudor", ((TcKeetPrestamosDto) DaoFactory.getInstance().findById(sesion, TcKeetPrestamosDto.class, this.prestamosPagosDto.getIdPrestamo())).toMap())){
+						keetPrestamosPagosDto= calcularPago(sesion, item.getIdPrestamo(), keetPrestamosPagosDto.getCambio(), EEstatusPrestamos.SALDADA);
+						deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.idDeudor);
+						deudoresDto.setSaldo(deudoresDto.getSaldo()- keetPrestamosPagosDto.getAbono());
+						deudoresDto.setDisponible(deudoresDto.getDisponible()+ keetPrestamosPagosDto.getAbono());
+						DaoFactory.getInstance().update(sesion, deudoresDto);
+						regresar= DaoFactory.getInstance().insert(sesion, keetPrestamosPagosDto)>= 1L;
+						this.prestamosPagados++;
+						if(keetPrestamosPagosDto.getCambio()==0D)
+							break;
+					} // for
 					break;
-			} // switch						
+			} // switch	
+			this.cambio= keetPrestamosPagosDto.getCambio();
 		} // try
 		catch (Exception e) {			
 			throw new Exception(e);

@@ -80,6 +80,21 @@
           tc_keet_prestamos
         where 
           id_prestamo= {idPrestamo} 
+				order by
+				  registro
+      </select>
+      <select id="activosByIdDeudor">
+        select      
+          tc_keet_prestamos.id_prestamo as id_key,
+					tc_keet_prestamos.*
+        from      
+          tc_keet_prestamos
+        where 
+          id_deudor= {idDeudor} 
+				and
+				  id_prestamo_estatus in (1,2)
+				order by
+				  registro
       </select>
 			<select id="siguiente">
         select
