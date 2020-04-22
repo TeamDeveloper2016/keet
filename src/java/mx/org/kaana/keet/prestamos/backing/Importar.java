@@ -77,6 +77,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			campos.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "byEmpresa", this.attrs, campos, "deudor"));
+			campos.clear();
+			campos.add(new Columna("abono", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.attrs.put("pagos", UIEntity.seleccione("TcKeetPrestamosPagosDto", "byIdPrestamo", this.attrs, campos, "consecutivo"));
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -95,6 +98,7 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("abono", EFormatoDinamicos.MILES_CON_DECIMALES));
 		  this.attrs.put("importados", UIEntity.build("VistaPrestamosDto", "importados", this.attrs, columns));
 		} // try
     catch (Exception e) {
@@ -154,7 +158,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			(String)this.attrs.get("observaciones"), 
 			-1L, 			
 			Configuracion.getInstance().getPropiedadSistemaServidor("prestamos").concat(this.getFile().getRuta()).concat(this.getFile().getName()),
-			this.prestamo.getPrestamo().getIdPrestamo(), 
+			((UISelectEntity)this.attrs.get("pago")).getKey(), 
 			this.getFile().getOriginal(),
 			idArchivo
 		);
