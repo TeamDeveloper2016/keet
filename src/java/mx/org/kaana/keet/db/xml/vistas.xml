@@ -1078,15 +1078,21 @@
 					tc_keet_prestamos_archivos.alias,
 					tc_keet_prestamos_archivos.observaciones,
 					tc_keet_prestamos_archivos.registro,
-					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario,
+          tc_keet_prestamos_pagos.consecutivo,
+          tc_keet_prestamos_pagos.abono
 				from
 					tc_keet_prestamos_archivos
+				inner join
+          tc_keet_prestamos_pagos on tc_keet_prestamos_pagos.id_prestamo_pago= tc_keet_prestamos_archivos.id_prestamo_pago
 				inner join 
 					tc_janal_usuarios on tc_keet_prestamos_archivos.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 
 					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
 				where
-				  tc_keet_prestamos_archivos.id_prestamo= {idPrestamo}
+				  tc_keet_prestamos_pagos.id_prestamo= {idPrestamo}
+        order by
+          tc_keet_prestamos_pagos.registro, tc_keet_prestamos_archivos.registro
 			</select>
 		</unit>	
 		<unit id="VistaDeudoresDto">

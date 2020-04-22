@@ -37,8 +37,8 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="id_tipo_archivo")
   private Long idTipoArchivo;
-  @Column (name="id_prestamo")
-  private Long idPrestamo;
+  @Column (name="id_prestamo_pago")
+  private Long idPrestamoPago;
   @Column (name="id_principal")
   private Long idPrincipal;
   @Column (name="observaciones")
@@ -63,13 +63,13 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetPrestamosArchivosDto(String archivo, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrestamo, Long idPrincipal, String observaciones, String alias, Long idPrestamoArchivo, String nombre) {
+  public TcKeetPrestamosArchivosDto(String archivo, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrestamoPago, Long idPrincipal, String observaciones, String alias, Long idPrestamoArchivo, String nombre) {
     setArchivo(archivo);
     setRuta(ruta);
     setTamanio(tamanio);
     setIdUsuario(idUsuario);
     setIdTipoArchivo(idTipoArchivo);
-    setIdPrestamo(idPrestamo);
+    setIdPrestamo(idPrestamoPago);
     setIdPrincipal(idPrincipal);
     setObservaciones(observaciones);
     setAlias(alias);
@@ -118,12 +118,12 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
     return idTipoArchivo;
   }
 
-  public void setIdPrestamo(Long idPrestamo) {
-    this.idPrestamo = idPrestamo;
+  public void setIdPrestamo(Long idPrestamoPago) {
+    this.idPrestamoPago = idPrestamoPago;
   }
 
   public Long getIdPrestamo() {
-    return idPrestamo;
+    return idPrestamoPago;
   }
 
   public void setIdPrincipal(Long idPrincipal) {
@@ -224,7 +224,7 @@ public class TcKeetPrestamosArchivosDto implements IBaseDto, Serializable {
 		regresar.put("tamanio", getTamanio());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idTipoArchivo", getIdTipoArchivo());
-		regresar.put("idPrestamo", getIdPrestamo());
+		regresar.put("idPrestamoPago", getIdPrestamo());
 		regresar.put("idPrincipal", getIdPrincipal());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("alias", getAlias());
