@@ -9,7 +9,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.db.dto.TcKeetPrestamosPagosDto;
 import mx.org.kaana.keet.prestamos.pagos.reglas.Transaccion;
-import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -40,6 +39,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idPrestamo", JsfBase.getFlashAttribute("idPrestamo"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.pagoDto= new TcKeetPrestamosPagosDto();
+			this.pagoDto.setPago(0D); // deberia ser el saldo
 			this.pagoDto.setIdPrestamo((Long)JsfBase.getFlashAttribute("idPrestamo"));
     } // try
     catch (Exception e) {
