@@ -1202,6 +1202,7 @@
 			<select id="lazy">
 				select
 					tc_keet_prestamos_pagos.id_prestamo_pago id_key,
+				  tc_keet_prestamos.consecutivo as prestamo,
 					tc_keet_prestamos_pagos.consecutivo,
 					tc_keet_prestamos_pagos.pago,
 					tc_keet_prestamos_pagos.abono,
