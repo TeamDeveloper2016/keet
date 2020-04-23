@@ -156,7 +156,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("deudor", deudor.toUpperCase() );
-      this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "complete", params, "deudor"));
+      this.attrs.put("deudores", UIEntity.build("VistaDeudoresDto", "complete", params));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);

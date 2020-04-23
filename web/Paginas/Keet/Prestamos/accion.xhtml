@@ -35,7 +35,7 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 								<p:outputLabel for="deudor" value="Deudor:"/>
 								<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 									<p:ajax event="itemSelect" listener="#{keetPrestamosAccion.doLoadDisponible}" process="@this" />
@@ -48,6 +48,10 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>
+								<p:outputLabel for="fecha" value="Fecha ingreso o re-ingreso:"/>
+								<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
+								<p:outputLabel for="dias" value="Antigüedad en días:"/>
+								<p:inputText id="dias" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
 								<p:outputLabel for="importe" value="Importe del prestamo:"/>
 								<p:inputText id="importe" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" />																								
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
