@@ -224,7 +224,7 @@
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>
-            <p:tab id="tabTipoPago" title="Condiciones de pago">
+            <p:tab id="tabTipoPago" title="Condiciones de pago" rendered="false">
               <p:panelGrid id="panelTablaTipoPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaTipoPago" rowIndexVar="index" var="tipoPago" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresCondicionPago}" rows="6" paginator="false" reflow="true" rowKey="#{tipoPago.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Clave" styleClass="janal-wid-30 llave">		
@@ -325,7 +325,7 @@
 									</p:panelGrid>
 							</p:panelGrid>
             </p:tab> 
-						<p:tab title="Portal" >
+						<p:tab title="Portal" rendered="false">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100-txt">
 								<p:outputLabel for="pagina" value="Pagina:"/>
                 <p:inputText id="pagina" value="#{manticCatalogosProveedoresAccion.registroProveedor.portal.pagina}" styleClass="janal-wid-100-txt"/>                    
@@ -335,7 +335,7 @@
                 <p:inputText id="contrasenia" value="#{manticCatalogosProveedoresAccion.registroProveedor.portal.contrasenia}" styleClass="janal-wid-100-txt"/>                    
 							</p:panelGrid>
 						</p:tab>
-						<p:tab title="Banca" >
+						<p:tab title="Banca">
 							<p:fieldset legend="Cuentas de servicios">
 								<p:panelGrid id="panelTablaServicios" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaServicios" rowIndexVar="index" var="servicio" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresServicio}" rows="6" paginator="false" reflow="true" rowKey="#{servicio.key}" emptyMessage=" " styleClass="paginated">																					
@@ -387,7 +387,7 @@
 								</p:panelGrid>	
 							</p:fieldset>
 						</p:tab>
-						<p:tab title="Materiales" >	
+						<p:tab title="Materiales" rendered="false">	
 							<p:commandButton id="replace" actionListener="#{manticCatalogosProveedoresAccion.doAgregarProveedorMaterial}" process="@this" update="panelTablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();clearMateriales();" style="display:none"/>
 							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosProveedoresAccion.attrs.custom}" completeMethod="#{manticCatalogosProveedoresAccion.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<p:ajax event="itemSelect" oncomplete="$('#contenedorGrupos\\:replace').click();"/>
