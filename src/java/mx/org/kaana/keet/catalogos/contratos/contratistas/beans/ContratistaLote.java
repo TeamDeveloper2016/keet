@@ -7,6 +7,7 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosLotesContratistasDto;
 public class ContratistaLote extends TcKeetContratosLotesContratistasDto implements Serializable{
 
 	private static final long serialVersionUID = -1210601775101099137L;
+	private Long idKey;
 	private String nombres;
 	private String paterno;
 	private String materno;
@@ -38,10 +39,10 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	}
 	
 	public ContratistaLote(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, 2L, null, null);		
+		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, 2L, null, null, -1L);		
 	}
 
-	public ContratistaLote(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, Long idNomina, String nss, Long tipo) {
+	public ContratistaLote(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, Long idNomina, String nss, Long tipo, Long idKey) {
 		super(key);
 		this.nombres         = nombres;
 		this.paterno         = paterno;
@@ -60,6 +61,7 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 		this.idNomina        = idNomina;
 		this.nss             = nss;
 		this.tipo            = tipo;
+		this.idKey           = idKey;
 	}
 	
 	public ESql getSqlAccion() {
@@ -196,5 +198,13 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 
 	public void setTipo(Long tipo) {
 		this.tipo = tipo;
+	}	
+
+	public Long getIdKey() {
+		return idKey;
+	}
+
+	public void setIdKey(Long idKey) {
+		this.idKey = idKey;
 	}	
 }
