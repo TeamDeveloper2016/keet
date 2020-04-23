@@ -1205,7 +1205,7 @@
 					tc_keet_prestamos_pagos.consecutivo,
 					tc_keet_prestamos_pagos.pago,
 					tc_keet_prestamos_pagos.abono,
-					tc_keet_prestamos_pagos.abonos,
+					tc_keet_prestamos_pagos.abono as abonos,
 					tc_keet_prestamos_pagos.cambio,
 				  tc_keet_prestamos.saldo,
 					tc_keet_prestamos_pagos.observaciones,
