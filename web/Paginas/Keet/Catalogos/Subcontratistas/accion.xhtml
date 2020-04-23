@@ -422,12 +422,31 @@
 								</p:dataTable>	
 							</p:panelGrid>								
 						</p:tab>
+						<p:tab id="tabDepartamentos" title="Departamentos">
+              <p:panelGrid id="panelDepartamentos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+                <p:dataTable id="tablaDepartamentos" rowIndexVar="index" var="departamento" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresDepartamentos}" rows="6" paginator="false" reflow="true" rowKey="#{departamento.key}" emptyMessage=" " styleClass="paginated">																					
+                  <p:column headerText="Tipo contacto">										
+                    <p:selectOneMenu id="tipo#{departamento.key}" styleClass="janal-wid-100-txt" value="#{departamento.idDepartamento}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!departamento.nuevo}" onblur="simpleProcess();">
+                      <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.departamentos}"/>
+                    </p:selectOneMenu> 				
+                  </p:column>	                  
+                  <p:column style="width:32px;text-align: center">
+                    <p:commandButton update="tablaDepartamentos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorDepartamento}">
+                      <f:setPropertyActionListener value="#{departamento}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorDepartamentoSeleccion}" />
+                    </p:commandButton>
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorDepartamento}" process="@this tablaDepartamentos" update="tablaDepartamentos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+                  </f:facet>
+                </p:dataTable>	
+              </p:panelGrid>	
+            </p:tab>
             <p:tab title="Observaciones">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.observaciones}"/>  
               </p:panelGrid>
             </p:tab>
-          </p:tabView>
+          </p:tabView>				
 					<p:remoteCommand name="simpleProcess" process="@this contenedorGrupos:tablaContactos contenedorGrupos:tablaTipoPago"/>
         </div>
       </div>
