@@ -1587,7 +1587,7 @@
         select      
 				  tc_keet_contratos_lotes.id_contrato_lote id_key,
           tc_keet_contratos_lotes.*,
-          concat('Lote', ' ', tc_keet_contratos_lotes.lote) as descripcion_lote,
+          concat('M', tc_keet_contratos_lotes.manzana, '-', tc_keet_contratos_lotes.lote) as descripcion_lote,
 					(select count(*) total from tc_keet_contratos_lotes_contratistas where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote) contratistas
         from      
           tc_keet_contratos_lotes
