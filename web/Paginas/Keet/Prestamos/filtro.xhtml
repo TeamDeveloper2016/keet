@@ -82,8 +82,8 @@
               </div>  
               <div class="xs-pantalla">              
                 <p:commandButton action="#{keetPrestamosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
@@ -92,45 +92,39 @@
               </f:facet>
               <h:outputText value="#{row['folio']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.deudor}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.deudor}">
               <f:facet name="header">
                 <h:outputText value="Deudor"/>
               </f:facet>
               <h:outputText value="#{row['deudor']}"/>
             </p:column>														
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.limite}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.saldoTotal}">
               <f:facet name="header">
-                <h:outputText value="Limite de credito"/>
-              </f:facet>
-              <h:outputText value="#{row['limite']}"/>
-            </p:column>	      
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.saldoTotal}">
-              <f:facet name="header">
-                <h:outputText value="Saldo total" />
+                <h:outputText value="Saldo total"/>
               </f:facet>
               <h:outputText value="#{row['saldoTotal']}"/>
             </p:column>	
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.disponible}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.disponible}">
               <f:facet name="header">
-                <h:outputText value="Disponible" />
+                <h:outputText value="Disponible"/>
               </f:facet>
               <h:outputText value="#{row['disponible']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.importe}">
               <f:facet name="header">
-                <h:outputText value="Importe prestamo" />
+                <h:outputText value="Pestamo"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.saldo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.saldo}">
               <f:facet name="header">
-                <h:outputText value="Saldo prestamo" />
+                <h:outputText value="Saldo"/>
               </f:facet>
               <h:outputText value="#{row['saldo']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.numeroPagos}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.numeroPagos}">
               <f:facet name="header">
-                <h:outputText value="Número de pagos" />
+                <h:outputText value="Pagos" />
               </f:facet>
               <h:outputText value="#{row['numeroPagos']}"/>
             </p:column>
@@ -141,7 +135,7 @@
               <h:outputText value="#{row['estatus']}"/>
             </p:column>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetPrestamosFiltro.lazyModel==null?0:keetPrestamosFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetPrestamosFiltro.lazyModel== null? 0: keetPrestamosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
@@ -152,7 +146,7 @@
             <p:menuitem id="liquidar" action="#{keetPrestamosFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" ajax="false" value="Liquidar deudas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus.toLong() lt 3? '': 'none'}"/>										
             <p:menuitem id="eliminar" icon="fa fa-close" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"  style="display: #{keetPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus.toLong() ne 5? '': 'none'}"/>					
 						<p:separator/>
-            <p:menuitem id="importar" action="#{keetPrestamosFiltro.doAccion('SUBIR')}" icon="fa fa-external-link" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetPrestamosFiltro.attrs.seleccionado.numeroPagos.toLong() gt 0? '': 'none'}"/>					
+            <p:menuitem id="importar" action="#{keetPrestamosFiltro.doAccion('SUBIR')}" icon="fa fa-cloud-upload" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetPrestamosFiltro.attrs.seleccionado.numeroPagos.toLong() gt 0? '': 'none'}"/>					
           </p:contextMenu>
         </div>
       </div>

@@ -48,10 +48,16 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>
-								<p:outputLabel for="fecha" value="Fecha ingreso o re-ingreso:"/>
-								<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
-								<p:outputLabel for="dias" value="Antigüedad en días:"/>
-								<p:inputText id="dias" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
+								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-50, janal-wid-50">
+									<p:outputLabel for="fecha" value="Fecha ingreso o re-ingreso:"/>
+									<p:outputLabel for="dias" value="Antigüedad en días:"/>
+									<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
+									<p:inputText id="dias" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
+									<p:outputLabel for="limite" value="Limite de crédito:"/>
+									<p:outputLabel for="saldo" value="Saldo:"/>
+									<p:inputText id="limite" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
+									<p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
+								</p:panelGrid>
 								<p:outputLabel for="importe" value="Importe del prestamo:"/>
 								<p:inputText id="importe" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" />																								
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
