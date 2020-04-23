@@ -3533,9 +3533,9 @@
 					tc_mantic_proveedores.dias_entrega,
 					tc_mantic_tipos_dias.nombre as tipo_dia,
 					tc_mantic_proveedores.descuento,
-					tr_mantic_proveedor_tipo_contacto.valor telefono,
+					ifnull(tr_mantic_proveedor_tipo_contacto.valor,'') telefono,
 					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) agente,
-					tr_mantic_persona_tipo_contacto.valor celular,
+					ifnull(tr_mantic_persona_tipo_contacto.valor,'') celular,
 					tc_mantic_empresas.clave clave_empresa,
 					tc_mantic_empresas.nombre nombre_empresa,
 					tc_mantic_empresas.titulo titulo_empresa

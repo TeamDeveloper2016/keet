@@ -1779,5 +1779,30 @@
 				select count(*) total from tc_keet_contratos_lotes_proveedores where id_proveedor = {idProveedor} and id_trabajo=1
 			</select>
     </unit>
+		<unit id="TcKeetProveedoresDepartamentosDto">
+      <select id="row">
+        select      
+          tc_keet_proveedores_departamentos.id_proveedor_departamento as id_key,
+				  tc_keet_proveedores_departamentos.*
+        from      
+          tc_keet_proveedores_departamentos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proveedores_departamentos
+        where      
+          id_proveedor_departamento = {idProveedorDepartamento} and id_proveedor = {idProveedor} and id_departamento = {idDepartamento}
+      </select>
+			<select id="maximo">
+				select      
+          max(id_proveedor_departamento) maximo
+        from      
+          tc_keet_proveedores_departamentos
+			</select>
+    </unit>
   </dml>    
 </process>

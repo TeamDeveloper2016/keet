@@ -525,7 +525,7 @@
 				select subcontratistas.* from (
 				select      
 					convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,								
-					ifnull((select nombre from tc_keet_proveedores_departamentos inner join tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento where tc_keet_proveedores_departamentos.id_proveedor=tc_mantic_proveedores.id_proveedor), '') departamento,
+					ifnull((select nombre from tc_keet_proveedores_departamentos inner join tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento where tc_keet_proveedores_departamentos.id_proveedor=tc_mantic_proveedores.id_proveedor limit 1), '') departamento,
 					'SUBCONTRATISTA' puesto,
 					tc_mantic_proveedores.id_activo,
 					1 id_nomina,
@@ -597,7 +597,7 @@
 				select      
 					convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,			
 					tc_mantic_proveedores.id_proveedor id_empresa_persona,	
-					ifnull((select nombre from tc_keet_proveedores_departamentos inner join tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento where tc_keet_proveedores_departamentos.id_proveedor=tc_mantic_proveedores.id_proveedor), '') departamento,				
+					ifnull((select nombre from tc_keet_proveedores_departamentos inner join tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento where tc_keet_proveedores_departamentos.id_proveedor=tc_mantic_proveedores.id_proveedor limit 1), '') departamento,				
 					'SUBCONTRATISTA' puesto,
 					tc_mantic_proveedores.id_activo,
 					1 id_nomina,

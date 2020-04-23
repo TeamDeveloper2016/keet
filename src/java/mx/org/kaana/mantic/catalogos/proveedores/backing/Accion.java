@@ -78,6 +78,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   
 	private void loadCollections(){
 		loadEmpresas();
+		loadDepartamentos();
 		loadBancos();
 		loadTiposProveedores();
 		loadTipoPago();
@@ -167,6 +168,27 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch				
 	} // loadEmpresas
+	
+	private void loadDepartamentos() {
+		List<UISelectItem> departamentos= null;
+		Map<String, Object> params      = null;		
+		try {
+			params= new HashMap<>();
+			if(JsfBase.isAdminEncuestaOrAdmin())
+				params.put(Constantes.SQL_CONDICION, "id_oficina in (2,3)");
+			else
+				params.put(Constantes.SQL_CONDICION, "id_oficina in (2)");			
+			departamentos= UISelect.build("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("departamentos", departamentos);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally		
+	} // loadDepartamentos
 	
 	private void loadTiposContactos() {
     List<UISelectItem> tiposContactos = null;
