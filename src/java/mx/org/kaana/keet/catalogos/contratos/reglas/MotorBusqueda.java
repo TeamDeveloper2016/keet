@@ -147,13 +147,14 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toInicidencias
 	
-	public List<ContratistaLote> toContratistasDisponibles(String condicion) throws Exception{
+	public List<ContratistaLote> toContratistasDisponibles(String condicion, String condicionProveedor) throws Exception{
 		List<ContratistaLote> regresar= null;
 		Map<String, Object>params      = null;
 		try {
 		  params= new HashMap<>();
 			params.put("idContratoLote", this.idPivote);			
-			params.put("condicion", condicion);
+			params.put(Constantes.SQL_CONDICION, condicion);
+			params.put("condicionProveedor", condicionProveedor);
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			regresar= DaoFactory.getInstance().toEntitySet(ContratistaLote.class, "VistaContratosDto", "contratistasDisponible", params);      
 		} // try
@@ -166,13 +167,15 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toContratistasDisponibles	
 	
-	public List<ContratistaLote> toContratistasAsignados(String condicion) throws Exception{
+	public List<ContratistaLote> toContratistasAsignados(String condicion, String condicionProveedor) throws Exception{
 		List<ContratistaLote> regresar= null;
 		Map<String, Object>params      = null;
 		try {
 		  params= new HashMap<>();			
 			params.put("idContratoLote", this.idPivote);			
-			params.put(Constantes.SQL_CONDICION, condicion);			
+			params.put(Constantes.SQL_CONDICION, condicion);	
+			params.put("condicionProveedor", condicionProveedor);
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			regresar= DaoFactory.getInstance().toEntitySet(ContratistaLote.class, "VistaContratosDto", "contratistasAsignado", params);      
 		} // try
 		catch (Exception e) {			
