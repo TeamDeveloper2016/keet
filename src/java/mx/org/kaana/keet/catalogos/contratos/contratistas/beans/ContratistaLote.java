@@ -23,6 +23,7 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	private String claveDesarrollo;
 	private String nombreDesarrollo;
 	private Long idPersona;
+	private Long tipo;
 
 	public ContratistaLote() {
 		this(-1L);
@@ -37,10 +38,10 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	}
 	
 	public ContratistaLote(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, 2L, null);		
+		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, 2L, null, null);		
 	}
 
-	public ContratistaLote(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, Long idNomina, String nss) {
+	public ContratistaLote(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, Long idNomina, String nss, Long tipo) {
 		super(key);
 		this.nombres         = nombres;
 		this.paterno         = paterno;
@@ -58,6 +59,7 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 		this.idPersona       = idPersona;
 		this.idNomina        = idNomina;
 		this.nss             = nss;
+		this.tipo            = tipo;
 	}
 	
 	public ESql getSqlAccion() {
@@ -185,7 +187,14 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	}
 
 	public void setNss(String nss) {
-		this.nss=nss;
+		this.nss = nss;
 	}
-	
+
+	public Long getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(Long tipo) {
+		this.tipo = tipo;
+	}	
 }
