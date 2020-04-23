@@ -1224,6 +1224,31 @@
 				  tc_keet_prestamos_pagos.id_prestamo= {idPrestamo}
 				{sortOrder}	
 			</select>
+			<select id="persona">
+				select
+					tc_keet_prestamos_pagos.id_prestamo_pago id_key,
+				  tc_keet_prestamos.consecutivo as prestamo,
+					tc_keet_prestamos_pagos.consecutivo,
+					tc_keet_prestamos_pagos.pago,
+					tc_keet_prestamos_pagos.abono,
+					tc_keet_prestamos_pagos.abono as abonos,
+					tc_keet_prestamos_pagos.cambio,
+				  tc_keet_prestamos.saldo,
+					tc_keet_prestamos_pagos.observaciones,
+					tc_keet_prestamos_pagos.registro,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario
+				from
+					tc_keet_prestamos_pagos
+				inner join 
+				  tc_keet_prestamos on tc_keet_prestamos_pagos.id_prestamo= tc_keet_prestamos.id_prestamo
+				inner join 
+					tc_janal_usuarios on tc_keet_prestamos_pagos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  tc_keet_prestamos.id_empresa_persona= {idEmpresaPersona}
+				{sortOrder}	
+			</select>
 		</unit>	
 	</dml>    
 </process>
