@@ -255,6 +255,7 @@
 					tc_mantic_personas.materno,					
 				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre_completo,
 					tc_mantic_personas.rfc,					
+					tc_mantic_personas.curp,					
           tc_keet_contratos_personal.*,
 					(select count(*) total from tc_mantic_incidentes where tc_mantic_incidentes.id_empresa_persona = tc_keet_contratos_personal.id_empresa_persona) total_incidencias,
 					tr_mantic_empresa_personal.id_persona,
@@ -482,8 +483,9 @@
 					tc_keet_contratos.id_contrato = {idContrato}
 			</select>
 			<select id="contratistasAsignado">
+				select contratistas.* from (
 				select      
-					tr_mantic_empresa_personal.id_empresa_persona as id_key,									
+					convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
 					tc_keet_departamentos.nombre departamento,
 					tc_mantic_puestos.nombre puesto,
 					tr_mantic_empresa_personal.id_activo,
@@ -493,8 +495,15 @@
 					tc_mantic_personas.paterno,
 					tc_mantic_personas.materno,					
 					tc_mantic_personas.rfc,					
-					tc_mantic_personas.curp,					
-          tc_keet_contratos_lotes_contratistas.*
+					tc_mantic_personas.curp,					          
+					1 tipo,
+					tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista,
+					tc_keet_contratos_lotes_contratistas.id_contrato_lote,
+					tc_keet_contratos_lotes_contratistas.id_empresa_persona,
+					tc_keet_contratos_lotes_contratistas.observaciones,
+					tc_keet_contratos_lotes_contratistas.id_trabajo,
+					tc_keet_contratos_lotes_contratistas.id_usuario,
+					tc_keet_contratos_lotes_contratistas.registro 
         from      
           tc_keet_contratos_lotes_contratistas
 				inner join 
@@ -511,11 +520,48 @@
 				  and {condicion}
 				order by 
 					tc_mantic_puestos.nombre,
-					tc_mantic_personas.nombres
+					tc_mantic_personas.nombres) contratistas
+				union
+				select subcontratistas.* from (
+				select      
+					convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,								
+					ifnull((select nombre from tc_keet_proveedores_departamentos inner join tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento where tc_keet_proveedores_departamentos.id_proveedor=tc_mantic_proveedores.id_proveedor), '') departamento,
+					'SUBCONTRATISTA' puesto,
+					tc_mantic_proveedores.id_activo,
+					1 id_nomina,
+					tc_mantic_proveedores.rfc nss,
+					tc_mantic_proveedores.razon_social nombres,
+					'' paterno,
+					'' materno,					
+					tc_mantic_proveedores.rfc,					
+					tc_mantic_proveedores.rfc curp,					
+					2 tipo,					
+					tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor id_contrato_lote_contratista,
+					tc_keet_contratos_lotes_proveedores.id_contrato_lote,
+					tc_keet_contratos_lotes_proveedores.id_proveedor id_empresa_persona,
+					tc_keet_contratos_lotes_proveedores.observaciones,
+					tc_keet_contratos_lotes_proveedores.id_trabajo,
+					tc_keet_contratos_lotes_proveedores.id_usuario,
+					tc_keet_contratos_lotes_proveedores.registro 
+        from     
+					tc_keet_contratos_lotes_proveedores
+				inner join
+					tc_mantic_proveedores	on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
+        where 
+          tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote} and tc_keet_contratos_lotes_proveedores.id_trabajo=2
+				and 					
+					tc_mantic_proveedores.id_empresa= {idEmpresa}
+				  and tc_mantic_proveedores.id_activo= 1
+				  and {condicionProveedor}
+					and tc_mantic_proveedores.id_subcontratista= 1
+				order by
+					tc_mantic_proveedores.razon_social
+				) subcontratistas
 			</select>
 			<select id="contratistasDisponible">
-				select      
-					tr_mantic_empresa_personal.id_empresa_persona as id_key,			
+				select contratistas.* from (
+				select      					
+					convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,					
 					tr_mantic_empresa_personal.id_empresa_persona,
 					tc_keet_departamentos.nombre departamento,
 					tc_mantic_puestos.nombre puesto,
@@ -526,7 +572,8 @@
 					tc_mantic_personas.paterno,
 					tc_mantic_personas.materno,					
 					tc_mantic_personas.rfc,					
-					tc_mantic_personas.curp          
+					tc_mantic_personas.curp,
+					1 tipo
         from                				
 					tr_mantic_empresa_personal
 				inner join 
@@ -544,7 +591,35 @@
 					and tc_mantic_puestos.nombre= 'CONTRATISTA'
 				order by 
 					tc_mantic_puestos.nombre,
-					tc_mantic_personas.nombres
+					tc_mantic_personas.nombres) contratistas
+				union
+				select subcontratistas.* from (
+				select      
+					convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,			
+					tc_mantic_proveedores.id_proveedor id_empresa_persona,	
+					ifnull((select nombre from tc_keet_proveedores_departamentos inner join tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento where tc_keet_proveedores_departamentos.id_proveedor=tc_mantic_proveedores.id_proveedor), '') departamento,				
+					'SUBCONTRATISTA' puesto,
+					tc_mantic_proveedores.id_activo,
+					1 id_nomina,
+					tc_mantic_proveedores.rfc nss,
+					tc_mantic_proveedores.razon_social nombres,
+					'' paterno,
+					'' materno,					
+					tc_mantic_proveedores.rfc,					
+					tc_mantic_proveedores.rfc curp,					
+					2 tipo
+        from                				
+					tc_mantic_proveedores				
+        where 
+          tc_mantic_proveedores.id_proveedor not in (select id_proveedor from tc_keet_contratos_lotes_proveedores where tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote})            
+				and 					
+					tc_mantic_proveedores.id_empresa= {idEmpresa}
+				  and tc_mantic_proveedores.id_activo= 1
+				  and {condicionProveedor}
+					and tc_mantic_proveedores.id_subcontratista= 1
+				order by
+					tc_mantic_proveedores.razon_social
+				) subcontratistas
 			</select>
 			<select id="contratistas">
 				select      
