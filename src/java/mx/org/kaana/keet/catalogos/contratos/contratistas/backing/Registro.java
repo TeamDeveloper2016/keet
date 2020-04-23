@@ -106,12 +106,14 @@ public class Registro extends IBaseAttribute implements Serializable {
 		List<SelectionItem>sAsignados    = null;
 		MotorBusqueda motorBusqueda      = null;
 		String condicion                 = null;
+		String condicionProveedor        = null;
     try {			
 			motorBusqueda= new MotorBusqueda((Long)this.attrs.get("idContratoLote"));
 			condicion= this.toPrepare();
-			disponibles= motorBusqueda.toContratistasDisponibles(condicion);
+			condicionProveedor= this.toPrepareProveedor();
+			disponibles= motorBusqueda.toContratistasDisponibles(condicion, condicionProveedor);
 			sDisponibles= toListSelectionIten(disponibles);
-			asignados= motorBusqueda.toContratistasAsignados(condicion);
+			asignados= motorBusqueda.toContratistasAsignados(condicion, condicionProveedor);
 			sAsignados= toListSelectionIten(asignados);
 			this.temporalOrigen= sDisponibles;
 			this.temporalDestino= sAsignados;				
@@ -147,14 +149,21 @@ public class Registro extends IBaseAttribute implements Serializable {
 	private String toPrepare() {
 		StringBuilder sb= new StringBuilder();		
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
-			sb.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");		
-		return Cadena.isVacio(sb)? Constantes.SQL_VERDADERO: sb.substring(0, sb.length()-4);
+			sb.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" ");		
+		return Cadena.isVacio(sb)? Constantes.SQL_VERDADERO: sb.toString();
+	} // toPrepare
+	
+	private String toPrepareProveedor() {
+		StringBuilder sb= new StringBuilder();		
+		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
+			sb.append("tc_mantic_proveedores.id_proveedor in (select id_proveedor from tc_keet_proveedores_departamentos where id_departamento=").append(this.attrs.get("idDepartamento")).append(") ");		
+		return Cadena.isVacio(sb)? Constantes.SQL_VERDADERO: sb.toString();
 	} // toPrepare
 	
 	private List<SelectionItem> toListSelectionIten(List<ContratistaLote> entities) {
 		List<SelectionItem> regresar= new ArrayList<>();
 		for(ContratistaLote item: entities)
-			regresar.add(new SelectionItem(String.valueOf(item.getIdEmpresaPersona()), "[".concat(item.getDepartamento()).concat("] [").concat(item.getPuesto()).concat("] ").concat(item.getNombres()).concat(" ").concat(item.getPaterno()).concat(" ").concat(item.getMaterno()), item.getIdActivo(), item.getIdNomina(), item.getNss()));
+			regresar.add(new SelectionItem(String.valueOf(item.getIdKey()), "[".concat(item.getDepartamento()).concat("] [").concat(item.getPuesto()).concat("] ").concat(item.getNombres()).concat(" ").concat(item.getPaterno()).concat(" ").concat(item.getMaterno()), item.getIdActivo(), item.getIdNomina(), item.getNss(), item.getTipo()));
 		return regresar;
 	} // toListSelectionIten	
 	
