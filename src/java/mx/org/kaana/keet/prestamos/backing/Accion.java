@@ -2,7 +2,9 @@ package mx.org.kaana.keet.prestamos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -21,6 +23,7 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
 
@@ -67,7 +70,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			campos.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "byEmpresa", this.attrs, campos, "deudor"));
+      //this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "byEmpresa", this.attrs, campos, "deudor"));
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -138,5 +141,32 @@ public class Accion extends IBaseAttribute implements Serializable {
 		JsfBase.setFlashAttribute("idPrestamoProcess", this.prestamo.getPrestamo().getIdPrestamo());
     return (String) this.attrs.get("retorno");
   } // doCancelar	
+	
+	public List<UISelectEntity> doCompleteDeudor(String deudor) {
+ 		List<Columna> campos     = null;
+		UISelectEntity empresa= null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			campos= new ArrayList<>();
+			campos.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
+			empresa = this.attrs.get("idEmpresa")==null? null:(UISelectEntity)this.attrs.get("idEmpresa");
+			if(empresa!= null && empresa.getKey()> 0L) 
+			  params.put("sucursales", empresa.getKey());
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("deudor", deudor.toUpperCase() );
+      this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "complete", params, "deudor"));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(campos);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("deudores");
+	}	// doCompleteCliente
 	
 }

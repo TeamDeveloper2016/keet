@@ -35,20 +35,21 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
-								<p:outputLabel for="deudor" value="Deudor:" />
-								<p:selectOneMenu id="deudor" value="#{keetPrestamosAccion.prestamo.prestamo.ikDeudor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{keetPrestamosAccion.doLoadDisponible}" process="@this" update="contenedorGrupos" />
-									<f:selectItems value="#{keetPrestamosAccion.attrs.deudores}"  var="element" itemValue="#{element}" itemLabel="#{element.deudor} #{empty element.disponible or element.disponible eq ''? '': '-'} #{element.disponible}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.deudor}"/>
-									</p:column>   
-									<p:column headerText="Disponible">
-										<h:outputText value="#{item.disponible}"/>
-									</p:column>   
-								</p:selectOneMenu>
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">
+								<p:outputLabel for="deudor" value="Deudor:"/>
+								<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+									<p:ajax event="itemSelect" listener="#{keetPrestamosAccion.doLoadDisponible}" process="@this" />
+									<f:facet name="itemtip">
+										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+											<h:outputText value="Nombre:" />
+											<h:outputText value="#{custom.deudor}" />
+											<h:outputText value="Disponoble:" />
+											<h:outputText value="#{custom.disponible}" />
+										</h:panelGrid>
+									</f:facet>
+								</p:autoComplete>
 								<p:outputLabel for="importe" value="Importe del prestamo:"/>
-                <p:inputText id="importe" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" />																								
+								<p:inputText id="importe" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" />																								
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.observaciones}" />
               </p:panelGrid>
