@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.beans.SelectionItem;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesContratistasDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosLotesProveedoresDto;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -29,27 +31,25 @@ public class Transaccion extends IBaseTnx {
 	}	
 
 	public Transaccion(Long idEmpresaPersona, String[] lotes) {
-		this.idEmpresaPersona = idEmpresaPersona;
-		this.lotes = lotes;
+		this.idEmpresaPersona= idEmpresaPersona;
+		this.lotes           = lotes;
 	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar                       = true;
-		Map<String, Object>params              = null;
-		TcKeetContratosLotesContratistasDto dto= null;
-		Long idUsuario                         = -1L;
+		boolean regresar         = true;
+		Map<String, Object>params= null;
+		IBaseDto dto             = null;
+		Long idUsuario           = -1L;
 		try {
 			switch(accion){
 				case PROCESAR:									
 					idUsuario= JsfBase.getIdUsuario();
 					for(SelectionItem item: this.empleados){
-						dto= new TcKeetContratosLotesContratistasDto();							
-						dto.setIdContratoLote(this.idContratoLote);
-						dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
-						dto.setIdUsuario(idUsuario);
-						dto.setIdTrabajo(2L);						
-						dto.setObservaciones("Asignación de empleado al lote [ContratoLote [" + this.idContratoLote + "]]");
+						if(item.getTipo().equals(1L))
+							dto= loadContratista(Long.valueOf(item.getKey().substring(4)), idUsuario, true);
+						else
+							dto= loadSubContratista(Long.valueOf(item.getKey().substring(4)), idUsuario);
 						DaoFactory.getInstance().insert(sesion, dto);
 					} // for					
 					break;				
@@ -57,19 +57,15 @@ public class Transaccion extends IBaseTnx {
 					for(SelectionItem item: this.empleados){
 						params= new HashMap<>();
 						params.put("idContratoLote", this.idContratoLote);
-						params.put("idEmpresaPersona", Long.valueOf(item.getKey()));
-						DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosLotesContratistasDto", "contratoLotePersona", params);					
+						params.put("idEmpresaPersona", Long.valueOf(item.getKey().substring(4)));
+						params.put("idProveedor", Long.valueOf(item.getKey().substring(4)));
+						DaoFactory.getInstance().execute(ESql.DELETE, sesion, item.getTipo().equals(1L) ? "TcKeetContratosLotesContratistasDto" : "TcKeetContratosLotesProveedoresDto", "contratoLotePersona", params);					
 					} // for
 					break;				
 				case REPROCESAR:
 					idUsuario= JsfBase.getIdUsuario();
 					for(String lote: this.lotes){
-						dto= new TcKeetContratosLotesContratistasDto();							
-						dto.setIdContratoLote(Long.valueOf(lote));
-						dto.setIdEmpresaPersona(this.idEmpresaPersona);
-						dto.setIdUsuario(idUsuario);
-						dto.setIdTrabajo(2L);						
-						dto.setObservaciones("Asignación de empleado al lote.");
+						dto= loadContratista(Long.valueOf(lote), idUsuario, false);						
 						if(DaoFactory.getInstance().toEntity(sesion, "TcKeetContratosLotesContratistasDto", "existe", dto.toMap())== null)
 							DaoFactory.getInstance().insert(sesion, dto);
 					} // for					
@@ -84,4 +80,44 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	}	// ejecutar	
+	
+	private IBaseDto loadContratista(Long key, Long idUsuario, boolean contratista){
+		TcKeetContratosLotesContratistasDto regresar= null;
+		try {
+			regresar= new TcKeetContratosLotesContratistasDto();							
+			if(contratista){
+				regresar.setIdContratoLote(this.idContratoLote);
+				regresar.setIdEmpresaPersona(key);
+				regresar.setObservaciones("Asignación de empleado al lote [ContratoLote [" + this.idContratoLote + "]]");
+			} // if
+			else{
+				regresar.setIdContratoLote(key);
+				regresar.setIdEmpresaPersona(this.idEmpresaPersona);				
+				regresar.setObservaciones("Asignación de empleado al lote.");
+			} // else
+			regresar.setIdUsuario(idUsuario);
+			regresar.setIdTrabajo(2L);						
+			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadContratista
+	
+	private IBaseDto loadSubContratista(Long key, Long idUsuario){
+		TcKeetContratosLotesProveedoresDto regresar= null;
+		try {
+			regresar= new TcKeetContratosLotesProveedoresDto();							
+			regresar.setIdContratoLote(this.idContratoLote);
+			regresar.setIdProveedor(key);
+			regresar.setIdUsuario(idUsuario);
+			regresar.setIdTrabajo(2L);						
+			regresar.setObservaciones("Asignación de empleado al lote [ContratoLote [" + this.idContratoLote + "]]");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadSubContratista
 }
