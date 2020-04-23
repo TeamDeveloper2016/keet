@@ -34,8 +34,15 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
-								<p:outputLabel for="pago" value="importe del pago"/>
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">		
+								<p:outputLabel for="empleado" value="Nombre del empelado:"/>
+                <p:inputText id="empleado" styleClass="janal-wid-100-txt" value="JUAN PEREZ GONZALEZ" readonly="true"/>																								
+								<p:outputLabel for="prestamo" value="Prestamo ($):"/>
+                <p:inputText id="prestamo" styleClass="janal-wid-100-txt" value="0,000.00" readonly="true"/>																								
+								<p:outputLabel for="saldo" value="Saldo ($):"/>
+                <p:inputText id="saldo" styleClass="janal-wid-100-txt" value="0,000.00" />	
+								<p:separator/>
+								<p:outputLabel for="pago" value="Importe del pago:"/>
                 <p:inputText id="pago" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.pagoDto.pago}" />																								
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.pagoDto.observaciones}" />
