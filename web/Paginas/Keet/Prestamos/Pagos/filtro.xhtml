@@ -6,12 +6,9 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Consulta de pagos" />
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Consulta de pago(s)" />
   <ui:define name="librerias">
-    <script type="text/javascript">
-
-    </script>		
   </ui:define>
   <ui:define name="contenido">
     <div class="janal-align-right xs-pantalla janal-wid-100">
@@ -19,10 +16,7 @@
     </div>			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
-
 				<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetPrestamosPagosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetPrestamosPagosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetPrestamosPagosFiltro.lazyModel.rowCount gt keetPrestamosPagosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-					<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
-					<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 					<f:facet name="header" >
 						<div class="lg-pantalla">
 							<p:menuButton   value="Opciones">
@@ -32,76 +26,60 @@
 							</p:menuButton>
 						</div>  
 						<div class="xs-pantalla">              
-							<p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 						</div>  
 					</f:facet>												
-					<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+					<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
 						<f:facet name="header">
 							<h:outputText value="Folio"/>
 						</f:facet>
 						<h:outputText value="#{row['consecutivo']}"/>
 					</p:column>														
+					<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.usuario}">
+						<f:facet name="header">
+							<h:outputText value="Recibió pago"/>
+						</f:facet>
+						<h:outputText value="#{row['usuario']}"/>
+					</p:column>
+					<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.pago}">
+						<f:facet name="header">
+							<h:outputText value="Pago" />
+						</f:facet>
+						<h:outputText value="#{row['pago']}"/>
+					</p:column>	
+					<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.abono}">
+						<f:facet name="header">
+							<h:outputText value="Abono" />
+						</f:facet>
+						<h:outputText value="#{row['abono']}"/>
+					</p:column>
+					<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cambio}">
+						<f:facet name="header">
+							<h:outputText value="Cambio" />
+						</f:facet>
+						<h:outputText value="#{row['cambio']}"/>
+					</p:column>
 					<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
 						<f:facet name="header">
 							<h:outputText value="Fecha de pago"/>
 						</f:facet>
 						<h:outputText value="#{row['registro']}"/>
 					</p:column>	      
-					<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.pago}">
-						<f:facet name="header">
-							<h:outputText value="Pago" />
-						</f:facet>
-						<h:outputText value="#{row['pago']}"/>
-					</p:column>	
-					<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.abono}">
-						<f:facet name="header">
-							<h:outputText value="Abono" />
-						</f:facet>
-						<h:outputText value="#{row['abono']}"/>
-					</p:column>
-					<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.cambio}">
-						<f:facet name="header">
-							<h:outputText value="Cambio" />
-						</f:facet>
-						<h:outputText value="#{row['cambio']}"/>
-					</p:column>
-					<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.usuario}">
-						<f:facet name="header">
-							<h:outputText value="Recibió pago"/>
-						</f:facet>
-						<h:outputText value="#{row['usuario']}"/>
-					</p:column>
 					<f:facet name="footer">
+						<p:outputLabel value="#{keetPrestamosPagosFiltro.calculate}&lt;span class='janal-color-green'&gt;Saldo: &lt;strong&gt;[#{keetPrestamosPagosFiltro.attrs.saldo}]&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-orange'&gt;Abonos: &lt;strong&gt;[#{keetPrestamosPagosFiltro.attrs.saldo}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
 						<p:outputLabel value="Total [#{keetPrestamosPagosFiltro.lazyModel==null?0:keetPrestamosPagosFiltro.lazyModel.rowCount}] registros"/>
 					</f:facet>
 				</p:dataTable>
-				<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-					<p:menuitem id="detalle" icon="fa fa-search" value="Detalle" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" />					
-				</p:contextMenu>
 			</div>
     </div>	
+  </ui:define>
+  <ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-arrow-left" accesskey="r" process="@this" action="#{keetPrestamosPagosFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-arrow-left" process="@this" action="#{keetPrestamosPagosFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>			
-  </ui:define>
-
-  <ui:param name="textoConfirmacion" value="Pago:" />
-  <ui:param name="accionConfirmacion" value="#{keetPrestamosPagosFiltro}"/>
-  <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doCancelar"	/>	
-  <ui:param name="renderedConfirmacion" value="false"/>	
-  <ui:define name="detalleConfirmacion">
-    <h:panelGrid columns="2">
-      <p:outputLabel value="Fecha de pago "/>
-      <p:outputLabel value="#{keetPrestamosPagosFiltro.attrs.seleccionado.usuario}"/>
-      <p:outputLabel value="Abono:"/>
-      <p:outputLabel value="#{keetPrestamosPagosFiltro.attrs.seleccionado.abono}"/>
-      <p:outputLabel value="Observaciones:"/>
-      <p:outputLabel value="#{keetPrestamosPagosFiltro.attrs.seleccionado.observaciones}"/>
-    </h:panelGrid>			
   </ui:define>
 </ui:composition>

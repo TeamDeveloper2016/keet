@@ -1205,12 +1205,16 @@
 					tc_keet_prestamos_pagos.consecutivo,
 					tc_keet_prestamos_pagos.pago,
 					tc_keet_prestamos_pagos.abono,
+					tc_keet_prestamos_pagos.abonos,
 					tc_keet_prestamos_pagos.cambio,
+				  tc_keet_prestamos.saldo,
 					tc_keet_prestamos_pagos.observaciones,
 					tc_keet_prestamos_pagos.registro,
 					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario
 				from
 					tc_keet_prestamos_pagos
+				inner join 
+				  tc_keet_prestamos on tc_keet_prestamos_pagos.id_prestamo= tc_keet_prestamos.id_prestamo
 				inner join 
 					tc_janal_usuarios on tc_keet_prestamos_pagos.id_usuario = tc_janal_usuarios.id_usuario
 				inner join 

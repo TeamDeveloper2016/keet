@@ -3,14 +3,16 @@ package mx.org.kaana.keet.prestamos.pagos.backing;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -22,6 +24,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 6319984968937774153L;
 
+  public String getCalculate() {
+		Double abonos= 0D;
+		Double saldo = 0D;
+		for (IBaseDto item: (List<IBaseDto>)this.lazyModel.getWrappedData()) {
+			Entity row= (Entity)item;
+		  abonos+= new Double(row.toString("abonos"));
+		  saldo  = new Double(row.toString("saldo"));
+		} // for
+	  this.attrs.put("abonos", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, abonos));
+	  this.attrs.put("saldo", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, saldo));
+		return "";
+	}	
 
   @PostConstruct
   @Override
