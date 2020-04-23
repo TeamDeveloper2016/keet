@@ -173,6 +173,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("(tr_mantic_empresa_personal.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
 			sb.append("(tr_mantic_empresa_personal.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+		if(!Cadena.isVacio(this.attrs.get("deudor")) && ((UISelectEntity)this.attrs.get("deudor")).getKey()>= 1L)				
+			sb.append("tc_keet_prestamos.id_deudor=").append(this.attrs.get("deudor")).append(" and ");
 		if(this.attrs.get("idPrestamoProcess")!= null && !Cadena.isVacio(this.attrs.get("idPrestamoProcess")))
 			sb.append("tc_keet_prestamos.id_prestamo=").append(this.attrs.get("idPrestamoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -191,7 +193,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private void cargaCatalogos() {
 		try {
 			loadEmpresas();
-			doLoadDeudores();
+			//doLoadDeudores();
 			loadEstatus();
 			inicio= LocalDate.of(Fecha.getAnioActual(),1, 1);
       termino= LocalDate.now();
@@ -202,28 +204,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch				
 	} // cargaCatalogos
 	
-	public void doLoadDeudores(){
-		UISelectEntity empresa= null;
-		List<Columna>campos= null;
-	  try {
-			campos= new ArrayList<>();
-			campos.add(new Columna("dedor", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
-			empresa = (UISelectEntity)this.attrs.get("idEmpresa");
-			if(empresa!= null && empresa.getKey()> 0L) 
-			  this.attrs.put("sucursales", empresa.getKey());
-			else
-				this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "byEmpresa", this.attrs, "deudor"));
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-		finally{
-			Methods.clean(campos);
-		} // finally
-	} // doLoadDeudores
 	
 	private void loadEstatus(){
 	  try {
@@ -236,39 +216,30 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
 	} // doLoadDeudores
 	
-	public List<UISelectEntity> doCompleteDeudor(String codigo) {
- 		List<Columna> columns     = null;
+	public List<UISelectEntity> doCompleteDeudor(String deudor) {
+ 		List<Columna> campos     = null;
+		UISelectEntity empresa= null;
     Map<String, Object> params= new HashMap<>();
-		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			if(!Cadena.isVacio(codigo)) {
-  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
-				buscaPorCodigo= codigo.startsWith(".");
-				if(buscaPorCodigo)
-					codigo= codigo.trim().substring(1);
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-			} // if	
+			campos= new ArrayList<>();
+			campos.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
+			empresa = this.attrs.get("idEmpresa")==null? null:(UISelectEntity)this.attrs.get("idEmpresa");
+			if(empresa!= null && empresa.getKey()> 0L) 
+			  params.put("sucursales", empresa.getKey());
 			else
-				codigo= "WXYZ";
-  		params.put("codigo", codigo);
-			if(buscaPorCodigo)
-        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porCodigo", params, columns, 40L));
-			else
-        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porNombre", params, columns, 40L));
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("deudor", deudor.toUpperCase() );
+      this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "complete", params, "deudor"));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
     finally {
-      Methods.clean(columns);
+      Methods.clean(campos);
       Methods.clean(params);
     }// finally
-		return (List<UISelectEntity>)this.attrs.get("clientes");
+		return (List<UISelectEntity>)this.attrs.get("deudores");
 	}	// doCompleteCliente
 }

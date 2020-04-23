@@ -38,15 +38,16 @@
 							<p:outputLabel for="consecutivo" value="Folio:"/>
               <p:inputText id="consecutivo" value="#{keetPrestamosFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="deudor" value="Deudor:"/>
-							<p:selectOneMenu id="deudor" value="#{keetPrestamosFiltro.attrs.deudor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetPrestamosFiltro.attrs.deudores}"  var="element" itemValue="#{element}" itemLabel="#{element.deudor}  #{empty element.disponible or element.disponible.toLong() lt 0? '': '-'} #{element.disponible}"/>
-                <p:column headerText="Clave">
-                  <h:outputText value="#{item.deudor}"/>
-                </p:column>   
-                <p:column headerText="Disponible">
-                  <h:outputText value="#{item.disponible}"/>
-                </p:column>   
-              </p:selectOneMenu>
+							<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosFiltro.attrs.deudor}" completeMethod="#{keetPrestamosFiltro.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.deudor}" />
+										<h:outputText value="Disponoble:" />
+										<h:outputText value="#{custom.disponible}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>
               <p:outputLabel for="inicio" value="Periodo del:"/>
 							<p:calendar id="inicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94"	value="#{keetPrestamosFiltro.inicio}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" />
 							<p:outputLabel for="termino" value="al:"/>
