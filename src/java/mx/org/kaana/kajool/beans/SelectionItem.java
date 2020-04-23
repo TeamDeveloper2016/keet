@@ -19,17 +19,23 @@ public class SelectionItem implements Serializable {
 	private Long idActivo;
 	private Long idNomina;
 	private String nss;
+	private Long tipo;
 
   public SelectionItem(String key, String item) {
-		this(key, item, 1L, 2L, null);
+		this(key, item, 1L, 2L, null, null);
   }
 
   public SelectionItem(String key, String item, Long idActivo, Long idNomina, String nss) {
-    this.item=item;
-    this.key=key;
+		this(key, item, idActivo, idNomina, nss, null);
+	}
+	
+  public SelectionItem(String key, String item, Long idActivo, Long idNomina, String nss, Long tipo) {
+    this.item    = item;
+    this.key     = key;
 		this.idActivo= idActivo;
 		this.idNomina= idNomina;
-		this.nss= nss;
+		this.nss     = nss;
+		this.tipo    = tipo;
   }
 
   public String getItem() {
@@ -72,6 +78,14 @@ public class SelectionItem implements Serializable {
 		this.nss=nss;
 	}
 
+	public Long getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(Long tipo) {
+		this.tipo = tipo;
+	}	
+	
   @Override
   public boolean equals(Object obj) {
     if (obj==null) {
@@ -98,5 +112,4 @@ public class SelectionItem implements Serializable {
 	public String toString() {
 		return "SelectionItem{"+"item="+item+", key="+key+", idActivo="+idActivo+'}';
 	}
-
 }
