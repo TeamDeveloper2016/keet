@@ -54,9 +54,12 @@
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosContratistasLotes.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
-									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.fechaInicio}" escape="false"/>																		
-									<h:outputText value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.fechaTermino}" escape="false"/>																		
-									<h:outputText value="&lt;b&gt;Dias construccion:&lt;/b&gt; #{row.diasConstruccion}" escape="false"/>																											
+									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.fechaInicio}" escape="false" style="display: #{row.fechaInicio eq '-' ? 'none' : ''}"/>
+									<p:spacer style="display: #{row.fechaInicio eq '-' ? '' : 'none'}"/>
+									<h:outputText value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.fechaTermino}" escape="false" style="display: #{row.fechaInicio eq '-' ? 'none' : ''}"/>
+									<p:spacer style="display: #{row.fechaTermino eq '-' ? '' : 'none'}"/>
+									<h:outputText value="&lt;b&gt;Dias construccion:&lt;/b&gt; #{row.diasConstruccion}" escape="false" style="display: #{row.fechaInicio eq '-' ? 'none' : ''}"/>
+									<p:spacer style="display: #{row.diasConstruccion eq '-' ? '' : 'none'}"/>
 								</p:panelGrid>								
 							</h:panelGrid>
 							<f:facet name="footer">
