@@ -74,11 +74,12 @@ public class Lotes extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("fechaInicio", EFormatoDinamicos.FECHA_CORTA));                  
-      columns.add(new Columna("fechatermino", EFormatoDinamicos.FECHA_CORTA));                  
+      columns.add(new Columna("fechaTermino", EFormatoDinamicos.FECHA_CORTA));                  
 	    this.lotes= DaoFactory.getInstance().toEntitySet("TcKeetContratosLotesDto", "byContratoContratistas", this.attrs);			
-			if(!this.lotes.isEmpty())
-				this.lotes.add(0, toLoteDefault());
-			UIBackingUtilities.toFormatEntitySet(this.lotes, columns);
+			if(!this.lotes.isEmpty()) {
+			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);
+				this.lotes.add(0, this.toLoteDefault());
+			} // if	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -89,24 +90,15 @@ public class Lotes extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad	
 	
-	private Entity toLoteDefault(){
-		Entity regresar= null;
-		Long total     = 0L;
-		try {
-			for(Entity lote: this.lotes)
-				total= total + lote.toLong("contratistas");
-			regresar= new Entity(Constantes.USUARIO_INACTIVO);
-			regresar.put("clave", new Value("clave", "ASIGNACIÓN GENERAL"));
-			regresar.put("manzana", new Value("manzana", this.lotes.get(0).toString("manzana")));
-			regresar.put("lote", new Value("lote", "N"));
-			regresar.put("fechaInicio", new Value("fechaInicio", "-"));
-			regresar.put("fechaTermino", new Value("fechaTermino", "-"));
-			regresar.put("diasConstruccion", new Value("diasConstruccion", "-"));
-			regresar.put("contratistas", new Value("contratistas", total));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+	private Entity toLoteDefault() {
+		Entity regresar= new Entity(Constantes.USUARIO_INACTIVO);
+		regresar.put("clave", new Value("clave", "ASIGNACIÓN GENERAL"));
+		regresar.put("manzana", new Value("manzana", this.lotes.get(0).toString("manzana")));
+		regresar.put("lote", new Value("lote", "N"));
+		regresar.put("fechaInicio", new Value("fechaInicio", "-"));
+		regresar.put("fechaTermino", new Value("fechaTermino", "-"));
+		regresar.put("diasConstruccion", new Value("diasConstruccion", "-"));
+		regresar.put("contratistas", new Value("contratistas", 0L));
 		return regresar;
 	} // toLoteDefault
 	

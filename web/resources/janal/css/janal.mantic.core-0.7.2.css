@@ -571,5 +571,5 @@ strong { font-weight: bolder; }
 .janal-tr-nuevo { background-color: #FDF5E6 !important; }
 .janal-tr-error { background-color: #FF7F50 !important; }
 .ui-fileupload-buttonbar { background: linear-gradient(to bottom, #1578c9 0%, #0b66b1 100%); }
-
+.ui-selectcheckboxmenu-multiple .ui-selectcheckboxmenu-trigger .ui-icon { top: 0% !important;	}
 
