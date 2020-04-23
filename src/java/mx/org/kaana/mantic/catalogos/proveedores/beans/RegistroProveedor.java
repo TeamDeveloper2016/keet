@@ -28,6 +28,8 @@ public class RegistroProveedor implements Serializable{
 	private ProveedorDomicilio proveedorDomicilioSeleccion;
 	private List<ProveedorTipoContacto> proveedoresTipoContacto;
 	private ProveedorTipoContacto proveedorTipoContactoSeleccion;
+	private List<ProveedorDepartamento> proveedoresDepartamentos;
+	private ProveedorDepartamento proveedorDepartamentoSeleccion;
 	private List<ProveedorBanca> proveedoresServicio;
 	private ProveedorBanca proveedorServicioSeleccion;
 	private List<ProveedorBanca> proveedoresTransferencia;
@@ -47,7 +49,7 @@ public class RegistroProveedor implements Serializable{
 	private ProveedorMaterial proveedorMaterialSeleccion;
 	
 	public RegistroProveedor() {
-		this(-1L, new TcManticProveedoresDto(), new ProveedorDomicilio(), new ArrayList<ProveedorTipoContacto>(), new Domicilio(), new Domicilio(), new ArrayList<ProveedorContactoAgente>(), new ProveedorContactoAgente(), new ProveedorContactoAgente(), new ArrayList<ProveedorCondicionPago>(), new ArrayList<ProveedorDomicilio>(), new TcManticProveedoresPortalesDto(), new ArrayList<ProveedorBanca>(), new ArrayList<ProveedorBanca>(), new ArrayList<ProveedorMaterial>(), new ProveedorMaterial());
+		this(-1L, new TcManticProveedoresDto(), new ProveedorDomicilio(), new ArrayList<ProveedorTipoContacto>(), new Domicilio(), new Domicilio(), new ArrayList<ProveedorContactoAgente>(), new ProveedorContactoAgente(), new ProveedorContactoAgente(), new ArrayList<ProveedorCondicionPago>(), new ArrayList<ProveedorDomicilio>(), new TcManticProveedoresPortalesDto(), new ArrayList<ProveedorBanca>(), new ArrayList<ProveedorBanca>(), new ArrayList<ProveedorMaterial>(), new ProveedorMaterial(), new ArrayList<ProveedorDepartamento>());
 	} // RegistroProveedor
 
 	public RegistroProveedor(Long idProveedor) {
@@ -62,7 +64,7 @@ public class RegistroProveedor implements Serializable{
 		init();
 	} // RegistroProveedor
 
-	public RegistroProveedor(Long idProveedor, TcManticProveedoresDto proveedor, ProveedorDomicilio proveedorDomicilioSeleccion, List<ProveedorTipoContacto> proveedoresTipoContacto, Domicilio domicilio, Domicilio domicilioPivote, List<ProveedorContactoAgente> personasTiposContacto, ProveedorContactoAgente personaTipoContactoPivote, ProveedorContactoAgente personaTipoContacto, List<ProveedorCondicionPago> proveedoresCondicionPago, List<ProveedorDomicilio> proveedoresDomicilio, TcManticProveedoresPortalesDto portal, List<ProveedorBanca> proveedoresServicio, List<ProveedorBanca> proveedoresTransferencia, List<ProveedorMaterial> proveedoresMateriales, ProveedorMaterial proveedorMaterialSeleccion) {
+	public RegistroProveedor(Long idProveedor, TcManticProveedoresDto proveedor, ProveedorDomicilio proveedorDomicilioSeleccion, List<ProveedorTipoContacto> proveedoresTipoContacto, Domicilio domicilio, Domicilio domicilioPivote, List<ProveedorContactoAgente> personasTiposContacto, ProveedorContactoAgente personaTipoContactoPivote, ProveedorContactoAgente personaTipoContacto, List<ProveedorCondicionPago> proveedoresCondicionPago, List<ProveedorDomicilio> proveedoresDomicilio, TcManticProveedoresPortalesDto portal, List<ProveedorBanca> proveedoresServicio, List<ProveedorBanca> proveedoresTransferencia, List<ProveedorMaterial> proveedoresMateriales, ProveedorMaterial proveedorMaterialSeleccion, List<ProveedorDepartamento> proveedoresDepartamentos) {
 		this.idProveedor                = idProveedor;
 		this.proveedor                  = proveedor;
 		this.proveedorDomicilioSeleccion= proveedorDomicilioSeleccion;
@@ -82,6 +84,7 @@ public class RegistroProveedor implements Serializable{
 		this.proveedoresTransferencia   = proveedoresTransferencia;
 		this.proveedoresMateriales      = proveedoresMateriales;
 		this.proveedorMaterialSeleccion = proveedorMaterialSeleccion;
+		this.proveedoresDepartamentos   = proveedoresDepartamentos;
 	} // RegistroProveedor	
 
 	public Long getIdProveedor() {
@@ -259,6 +262,22 @@ public class RegistroProveedor implements Serializable{
 	public void setProveedorMaterialSeleccion(ProveedorMaterial proveedorMaterialSeleccion) {
 		this.proveedorMaterialSeleccion = proveedorMaterialSeleccion;
 	}	
+
+	public List<ProveedorDepartamento> getProveedoresDepartamentos() {
+		return proveedoresDepartamentos;
+	}
+
+	public void setProveedoresDepartamentos(List<ProveedorDepartamento> proveedoresDepartamentos) {
+		this.proveedoresDepartamentos = proveedoresDepartamentos;
+	}
+
+	public ProveedorDepartamento getProveedorDepartamentoSeleccion() {
+		return proveedorDepartamentoSeleccion;
+	}
+
+	public void setProveedorDepartamentoSeleccion(ProveedorDepartamento proveedorDepartamentoSeleccion) {
+		this.proveedorDepartamentoSeleccion = proveedorDepartamentoSeleccion;
+	}	
 	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
@@ -283,6 +302,7 @@ public class RegistroProveedor implements Serializable{
 				proveedorDomicilio.setConsecutivo(Long.valueOf(count));
 			} // for				
 			this.proveedoresTipoContacto= motor.toProveedoresTipoContacto();			
+			this.proveedoresDepartamentos= motor.toProveedoresDepartamentos();			
 			this.personasTiposContacto= motor.toAgentes();
 			this.proveedoresCondicionPago= motor.toCondicionesPago();
 			this.proveedoresServicio= motor.toServicios();
@@ -436,6 +456,21 @@ public class RegistroProveedor implements Serializable{
 		} // finally
 	} // doAgregarProveedorTipoContacto
 	
+	public void doAgregarProveedorDepartamento(){
+		ProveedorDepartamento proveedorDepartamento= null;
+		try {					
+			proveedorDepartamento= new ProveedorDepartamento(this.contadores.getTotalProveedoresDepartamentos()+ this.countIndice, ESql.INSERT, true);							
+			this.proveedoresDepartamentos.add(proveedorDepartamento);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarProveedorTipoContacto
+	
 	public void doAgregarProveedorServicio(){
 		ProveedorBanca proveedorBanca= null;
 		try {					
@@ -498,6 +533,22 @@ public class RegistroProveedor implements Serializable{
 			JsfBase.addMessageError(e);			
 		} // catch			
 	} // doEliminarProveedorCondicionPago
+	
+	public void doEliminarProveedorDepartamento(){
+		try {			
+			if(this.proveedoresDepartamentos.remove(this.proveedorDepartamentoSeleccion)){
+				if(!this.proveedorDepartamentoSeleccion.getNuevo())
+					addDeleteList(this.proveedorDepartamentoSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el departamento", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar el departamento", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarProveedorDepartamento
 	
 	public void doEliminarProveedorTipoContacto(){
 		try {			
