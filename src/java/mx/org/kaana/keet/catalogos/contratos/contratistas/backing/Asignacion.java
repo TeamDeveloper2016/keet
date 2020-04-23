@@ -21,6 +21,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -41,6 +42,7 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.loadCatalogos();
 			Catalogos.toLoadEspecialidades(this.attrs);
+			doLoad();
     } // try 
     catch (Exception e) {
       Error.mensaje(e);
@@ -81,17 +83,13 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>();      
 			params= new HashMap<>();
 			condicion= this.toPrepare();									
-      columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));			
-			String nombreEmpleado= (String)this.attrs.get("nombreEmpleado"); 
-			nombreEmpleado= !Cadena.isVacio(nombreEmpleado) ? nombreEmpleado.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";		
-			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-				params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales()); 
-			params.put("nombreEmpleado", nombreEmpleado);	
+      columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));									
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
+			params.put("nombreEmpleado", "");	
 			params.put(Constantes.SQL_CONDICION, condicion);	
-      nombres= (List<UISelectEntity>) UIEntity.build("VistaContratosDto", "contratistas", params, columns, 20L);
+      nombres= (List<UISelectEntity>) UIEntity.seleccione("VistaContratosDto", "contratistas", params, columns, Constantes.SQL_TODOS_REGISTROS, "departamento");
       this.attrs.put("nombres", nombres);
+			this.attrs.put("nombre", UIBackingUtilities.toFirstKeySelectEntity(nombres));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -101,13 +99,7 @@ public class Asignacion extends IBaseAttribute implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally    
-  } // doLoad					
-	
-	public List<UISelectEntity> doCompleteNombreEmpleado(String query) {
-		this.attrs.put("nombreEmpleado", query);
-    this.doLoad();		
-		return (List<UISelectEntity>)this.attrs.get("nombres");
-	}	// doCompleteNombreEmpleado
+  } // doLoad							
 	
 	private String toPrepare() {
 		StringBuilder sb= new StringBuilder();		
