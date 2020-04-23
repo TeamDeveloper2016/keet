@@ -3257,6 +3257,8 @@
           tc_mantic_proveedores
         where 
           {condicion} 
+				and 
+					tc_mantic_proveedores.id_subcontratista=2
       </select>
       <select id="identically">
         select      
@@ -3275,6 +3277,7 @@
         where 
           id_empresa in ({sucursales})
           and upper(clave) regexp '.*{codigo}.*'
+					and tc_mantic_proveedores.id_subcontratista=2
 				order by
 				  clave
 			</select>
@@ -3291,6 +3294,7 @@
 				    or
 				    upper(rfc) regexp '.*{codigo}.*'
 				  )
+					and tc_mantic_proveedores.id_subcontratista=2
 				order by
 				  razon_social
 			</select>
@@ -3302,6 +3306,8 @@
           tc_mantic_proveedores
         where 
           tc_mantic_proveedores.id_empresa in ({sucursales})
+				and 
+					tc_mantic_proveedores.id_subcontratista=2
 				order by
 				  tc_mantic_proveedores.clave
       </select>      
@@ -3313,7 +3319,7 @@
         from      
           tc_mantic_proveedores
         where      
-          rfc = '{rfc}' and id_proveedor!= {idProveedor}
+          rfc = '{rfc}' and id_proveedor!= {idProveedor} and tc_mantic_proveedores.id_subcontratista=2
       </select>
       <select id="proveedor">
         select      
@@ -3321,7 +3327,7 @@
         from      
           tc_mantic_proveedores
         where      
-          rfc = '{rfc}' and id_empresa in ({sucursales})
+          rfc = '{rfc}' and id_empresa in ({sucursales}) and tc_mantic_proveedores.id_subcontratista=2
       </select>
     </unit>
 		<unit id="TcManticClientesDto">
