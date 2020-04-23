@@ -63,7 +63,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos(){
+	private void loadCatalogos() {
 		List<Columna>campos= null;
 		try {
 			campos= new ArrayList<>();

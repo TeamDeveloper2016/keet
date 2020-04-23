@@ -21,7 +21,7 @@ public class RegistroPrestamo implements Serializable {
 	public RegistroPrestamo(Long idPrestamo){	
 		this.idPrestamo= idPrestamo;
 		this.documentos = new ArrayList<>();
-		initCollections(idPrestamo);
+		this.initCollections(idPrestamo);
 	} // RegistroPrototipo
 	
 	private void initCollections(Long idPrestamo){
