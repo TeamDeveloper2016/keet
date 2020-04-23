@@ -46,7 +46,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.attrs.put("idProveedorProcess", JsfBase.getFlashAttribute("idProveedorProcess"));
 				doLoad();
 				this.attrs.put("idProveedorProcess", null);
-			} // if
+			} // if			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -178,7 +178,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return (List<UISelectEntity>)this.attrs.get("proveedores");
 	}	
 	
-	private Map<String, Object> toPrepare() {
+	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar  = new HashMap<>();	
 		StringBuilder sb              = new StringBuilder();
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
@@ -206,6 +206,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		regresar.put("idSubContratista", 2L);
 		return regresar;		
 	}
 
