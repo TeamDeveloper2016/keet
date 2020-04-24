@@ -36,21 +36,84 @@
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">		
 								<p:outputLabel for="empleado" value="Nombre del empelado:"/>
-                <p:inputText id="empleado" styleClass="janal-wid-100-txt" value="JUAN PEREZ GONZALEZ" readonly="true"/>																								
+                <p:inputText id="empleado" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.empleado}" readonly="true"/>																								
 								<p:outputLabel for="prestamo" value="Prestamo ($):"/>
-                <p:inputText id="prestamo" styleClass="janal-wid-100-txt" value="0,000.00" readonly="true"/>																								
+                <p:inputText id="prestamo" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.prestamo}" readonly="true"/>																								
 								<p:outputLabel for="saldo" value="Saldo ($):"/>
-                <p:inputText id="saldo" styleClass="janal-wid-100-txt" value="0,000.00" />	
+                <p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.saldo}"  readonly="true"/>	
 								<p:outputLabel for="pagos" value="Pagos realizados:"/>
-                <p:inputText id="pagos" styleClass="janal-wid-100-txt" value="000" />	
+                <p:inputText id="pagos" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.pagos}" readonly="true"/>	
+								<p:outputLabel for="numeroPrestamos" value="Numero de prestamos:" rendered="#{keetPrestamosPagosAccion.attrs.isLiquidar}"/>
+                <p:inputText id="numeroPrestamos" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.numeroPrestamos}" rendered="#{keetPrestamosPagosAccion.attrs.isLiquidar}" readonly="true"/>	
 								<p:separator/>
 								<p:outputLabel for="pago" value="Importe del pago:"/>
                 <p:inputText id="pago" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosPagosAccion.pagoDto.pago}" />																								
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.pagoDto.observaciones}" />
               </p:panelGrid>
-						</p:tab>										
-            <p:tab title="Pagos">							
+						</p:tab>
+            <p:tab title="Pagos">
+							<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetPrestamosPagosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetPrestamosPagosAccion.attrs.seleccionado}" selectionMode="single" paginator="#{keetPrestamosPagosAccion.lazyModel.rowCount gt keetPrestamosPagosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+								<f:facet name="header" >
+									<div class="lg-pantalla">
+										<p:menuButton   value="Opciones">
+											<p:separator/>
+											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+										</p:menuButton>
+									</div>  
+									<div class="xs-pantalla">              
+										<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									</div>  
+								</f:facet>												
+								<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.prestamo}">
+									<f:facet name="header">
+										<h:outputText value="Prestamo"/>
+									</f:facet>
+									<h:outputText value="#{row['prestamo']}"/>
+								</p:column>														
+								<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
+									<f:facet name="header">
+										<h:outputText value="Folio"/>
+									</f:facet>
+									<h:outputText value="#{row['consecutivo']}"/>
+								</p:column>														
+								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.usuario}">
+									<f:facet name="header">
+										<h:outputText value="Recibió pago"/>
+									</f:facet>
+									<h:outputText value="#{row['usuario']}"/>
+								</p:column>
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.pago}">
+									<f:facet name="header">
+										<h:outputText value="Pago" />
+									</f:facet>
+									<h:outputText value="#{row['pago']}"/>
+								</p:column>	
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.abono}">
+									<f:facet name="header">
+										<h:outputText value="Abono" />
+									</f:facet>
+									<h:outputText value="#{row['abono']}"/>
+								</p:column>
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cambio}">
+									<f:facet name="header">
+										<h:outputText value="Cambio" />
+									</f:facet>
+									<h:outputText value="#{row['cambio']}"/>
+								</p:column>
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+									<f:facet name="header">
+										<h:outputText value="Fecha de pago"/>
+									</f:facet>
+									<h:outputText value="#{row['registro']}"/>
+								</p:column>	      
+								<f:facet name="footer">
+									<p:outputLabel value="#{keetPrestamosPagosAccion.calculate}&lt;span class='janal-color-blue'&gt;Saldo: &lt;strong&gt;[#{keetPrestamosPagosAccion.attrs.saldo}]&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-orange'&gt;Abonos: &lt;strong&gt;[#{keetPrestamosPagosAccion.attrs.abonos}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+									<p:outputLabel value="Total [#{keetPrestamosPagosAccion.lazyModel==null?0:keetPrestamosPagosAccion.lazyModel.rowCount}] registros"/>
+								</f:facet>
+							</p:dataTable>
 						</p:tab>	
 					</p:tabView>
 				</div>
@@ -60,6 +123,8 @@
 			<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 				<p:outputLabel value="Pagado(s):"/>
 				<p:outputLabel value="#{keetPrestamosPagosAccion.attrs.numeroPrestamos}"/>
+				<p:outputLabel value="Importe:"/>
+				<p:outputLabel value="#{keetPrestamosPagosAccion.pagoDto.pago}"/>
 				<p:outputLabel value="Cambio:"/>
 				<p:outputLabel value="#{keetPrestamosPagosAccion.attrs.cambio}"/>
 			</h:panelGrid>			

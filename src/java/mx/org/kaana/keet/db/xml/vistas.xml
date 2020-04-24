@@ -1123,6 +1123,7 @@
 			<select id="lazy">
 				select
 					tc_keet_prestamos.id_prestamo id_key,
+				  tc_keet_prestamos.id_deudor,
 					tc_keet_prestamos.consecutivo folio,
 					tc_keet_prestamos.importe,
 					tc_keet_prestamos.saldo,
@@ -1168,6 +1169,49 @@
 				  tc_keet_prestamos_pagos.id_prestamo= {idPrestamo}
         order by
           tc_keet_prestamos_pagos.registro, tc_keet_prestamos_archivos.registro
+			</select>
+			<select id="byIdPrestamo">
+				select 
+				  tc_keet_prestamos.id_prestamo id_key,
+          tc_keet_prestamos.importe prestamo,
+          tc_keet_prestamos.saldo,
+          ifnull(tc_keet_prestamos_pagos.numero_pagos, 0) pagos,
+				  tc_keet_deudores.limite,
+				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) empleado,
+				  disponible,
+				  ifnull(tr_mantic_empresa_personal.fecha_ingreso, tr_mantic_empresa_personal.fecha_contratacion) ingreso,
+				  1 numero_prestamos
+				from
+				  tc_keet_prestamos
+        inner join tc_keet_deudores on tc_keet_deudores.id_deudor= tc_keet_prestamos.id_deudor
+        inner join tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+        left join (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
+				where
+				  tc_keet_prestamos.id_prestamo= {idPrestamo}
+			</select>
+			<select id="byIdDeudor">
+				select 
+				  tc_keet_deudores.id_deudor id_key,
+          concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) empleado,
+          sum(tc_keet_prestamos.importe) prestamo,
+          tc_keet_deudores.saldo,
+          sum(ifnull(tc_keet_prestamos_pagos.numero_pagos, 0)) pagos,
+				  count(*) numero_prestamos
+				from
+				  tc_keet_prestamos
+        inner join tc_keet_deudores on tc_keet_deudores.id_deudor= tc_keet_prestamos.id_deudor
+        inner join tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+        left join (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
+        where
+          tc_keet_prestamos.id_prestamo_estatus in (1,2)
+        and
+          tc_keet_deudores.id_deudor= {idDeudor}
+        group by
+          tc_keet_deudores.id_deudor,
+          tc_mantic_personas.nombres, tc_mantic_personas.paterno, tc_mantic_personas.materno,
+          tc_keet_deudores.saldo
 			</select>
 		</unit>	
 		<unit id="VistaDeudoresDto">
@@ -1260,7 +1304,7 @@
 				inner join 
 					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
 				where
-				  tc_keet_prestamos.id_empresa_persona= {idEmpresaPersona}
+				  tc_keet_prestamos.id_deudor= {idDeudor}
 				{sortOrder}	
 			</select>
 		</unit>	

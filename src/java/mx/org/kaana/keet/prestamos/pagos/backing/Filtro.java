@@ -12,6 +12,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -23,7 +24,7 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 6319984968937774153L;
-
+	
   public String getCalculate() {
 		Double abonos= 0D;
 		Double saldo = 0D;
