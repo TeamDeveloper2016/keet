@@ -37,7 +37,7 @@
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
-								<p:outputLabel for="deudor" value="Nombre del emplead(@):"/>
+								<p:outputLabel for="deudor" value="Nombre del empleado(a):"/>
 								<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 									<p:ajax event="itemSelect" listener="#{keetPrestamosAccion.doLoadDisponible}" process="@this" update="informacionDeudor"/>
 									<f:facet name="itemtip">
@@ -52,7 +52,7 @@
 								<p:panelGrid  id="informacionDeudor" columns="2" styleClass="janal-wid-100-txt">
 									<p:outputLabel for="fecha" value="Fecha ingreso o re-ingreso:"/>
 									<p:outputLabel for="antiguedad" value="Antigüedad en días:"/>
-									<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.ingreso}" readonly="true"/>																								
+									<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.fecha}" readonly="true"/>																								
 									<p:inputText id="antiguedad" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.antiguedad}" readonly="true"/>																								
 									<p:outputLabel for="limite" value="Limite de crédito:"/>
 									<p:outputLabel for="saldo" value="Saldo:"/>

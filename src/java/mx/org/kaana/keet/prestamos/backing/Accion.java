@@ -1,6 +1,8 @@
 package mx.org.kaana.keet.prestamos.backing;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +17,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
 import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
 import mx.org.kaana.keet.prestamos.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
@@ -58,10 +59,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("disponible", 0);      
       this.attrs.put("antiguedad", 0);      
       this.attrs.put("limite", 0);      
-      this.attrs.put("ingreso", "00/00/0000");      
+      this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, LocalDate.now()));      
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      loadCatalogos();
-			doLoad();
+      this.loadCatalogos();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -132,15 +133,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   public void doLoadDisponible() {  
 		Entity entity = null;
-		String ingreso= "";
     try {			
 			this.attrs.put("idDeudor", this.prestamo.getPrestamo().getIkDeudor().getKey());
 			entity= (Entity)DaoFactory.getInstance().toEntity("VistaDeudoresDto", "byIdDeudor", this.attrs);
 			this.attrs.put("disponible", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("disponible"))));	
 			this.attrs.put("limite", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("limite"))));	
-			ingreso= Fecha.formatear( Fecha.FECHA_CORTA, entity.toString("ingreso").replaceAll("-", ""));
-			this.attrs.put("ingreso", ingreso);		
-			this.attrs.put("antiguedad", Fecha.diferenciasDias(ingreso.replaceAll("/", ""), Fecha.getHoy().replaceAll("/", "")));		
+			this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, entity.toDate("ingreso")));		
+			this.attrs.put("antiguedad", DAYS.between(entity.toDate("ingreso"), LocalDate.now()));		
 			UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ entity.toString("disponible") + "})', mascara: 'libre'});");
     } // try
     catch (Exception e) {

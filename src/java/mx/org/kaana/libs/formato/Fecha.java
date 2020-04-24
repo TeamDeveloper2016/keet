@@ -204,11 +204,13 @@ public  class Fecha {
   } // formatear
 
   public static String formatear(int patron, LocalDate fecha) {
-    return fecha.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssS"));
+		DateTimeFormatter pattern= DateTimeFormatter.ofPattern("yyyyMMdd0000000");
+    return pattern.format(fecha);
   } // formatear
 
   public static String formatear(int patron, LocalTime fecha) {
-    return fecha.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssS"));
+		DateTimeFormatter pattern= DateTimeFormatter.ofPattern("20200101HHmmssS");
+    return pattern.format(fecha);
   } // formatear
 
   public static String formatear(int patron, Date fecha) {

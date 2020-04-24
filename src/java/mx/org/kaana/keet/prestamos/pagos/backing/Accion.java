@@ -58,7 +58,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("isLiquidar", JsfBase.getFlashAttribute("isLiquidar"));
 			this.pagoDto= new TcKeetPrestamosPagosDto();
-			cargarDatosDeudor();
+			this.cargarDatosDeudor();
 			this.pagoDto.setIdPrestamo((Long)JsfBase.getFlashAttribute("idPrestamo"));
 			doLoad();
     } // try
