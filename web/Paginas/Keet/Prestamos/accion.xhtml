@@ -13,6 +13,7 @@
 			Janal.Control.fields = {
 				'contenedorGrupos\\:idDeudor': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:importe': {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{keetPrestamosAccion.attrs.disponible}})', mascara: 'libre'},
+				'contenedorGrupos\\:antiguedad': {validaciones: 'requerido|flotante|mayor({"cuanto":90})', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
 
@@ -38,7 +39,7 @@
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 								<p:outputLabel for="deudor" value="Nombre del emplead(@):"/>
 								<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-									<p:ajax event="itemSelect" listener="#{keetPrestamosAccion.doLoadDisponible}" process="@this" />
+									<p:ajax event="itemSelect" listener="#{keetPrestamosAccion.doLoadDisponible}" process="@this" update="informacionDeudor"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 											<h:outputText value="Nombre:" />
@@ -48,15 +49,15 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>
-								<p:panelGrid columns="2" styleClass="janal-wid-100-txt">
+								<p:panelGrid  id="informacionDeudor" columns="2" styleClass="janal-wid-100-txt">
 									<p:outputLabel for="fecha" value="Fecha ingreso o re-ingreso:"/>
-									<p:outputLabel for="dias" value="Antigüedad en días:"/>
-									<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
-									<p:inputText id="dias" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
+									<p:outputLabel for="antiguedad" value="Antigüedad en días:"/>
+									<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.ingreso}" readonly="true"/>																								
+									<p:inputText id="antiguedad" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.antiguedad}" readonly="true"/>																								
 									<p:outputLabel for="limite" value="Limite de crédito:"/>
 									<p:outputLabel for="saldo" value="Saldo:"/>
-									<p:inputText id="limite" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
-									<p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" readonly="true"/>																								
+									<p:inputText id="limite" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.limite}" readonly="true"/>																								
+									<p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.disponible}" readonly="true"/>																								
 								</p:panelGrid>
 								<p:outputLabel for="importe" value="Importe del prestamo:"/>
 								<p:inputText id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" />																								
