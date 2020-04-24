@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -19,6 +20,8 @@ import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
 import mx.org.kaana.keet.prestamos.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -53,6 +56,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
       this.attrs.put("disponible", 0);      
+      this.attrs.put("antiguedad", 0);      
+      this.attrs.put("limite", 0);      
+      this.attrs.put("ingreso", "00/00/0000");      
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       loadCatalogos();
 			doLoad();
@@ -125,11 +131,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	
   public void doLoadDisponible() {  
-		TcKeetDeudoresDto deudoresDto= null;
+		Entity entity = null;
+		String ingreso= "";
     try {			
-			deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(TcKeetDeudoresDto.class, this.prestamo.getPrestamo().getIkDeudor().getKey());
-			this.attrs.put("disponible", deudoresDto.getDisponible());		
-			UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ deudoresDto.getDisponible() + "})', mascara: 'libre'});");
+			this.attrs.put("idDeudor", this.prestamo.getPrestamo().getIkDeudor().getKey());
+			entity= (Entity)DaoFactory.getInstance().toEntity("VistaDeudoresDto", "byIdDeudor", this.attrs);
+			this.attrs.put("disponible", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("disponible"))));	
+			this.attrs.put("limite", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("limite"))));	
+			ingreso= Fecha.formatear( Fecha.FECHA_CORTA, entity.toString("ingreso").replaceAll("-", ""));
+			this.attrs.put("ingreso", ingreso);		
+			this.attrs.put("antiguedad", Fecha.diferenciasDias(ingreso.replaceAll("/", ""), Fecha.getHoy().replaceAll("/", "")));		
+			UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ entity.toString("disponible") + "})', mascara: 'libre'});");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

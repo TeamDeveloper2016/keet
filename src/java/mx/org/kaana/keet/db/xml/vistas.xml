@@ -1197,6 +1197,20 @@
 				and 
 				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) like '%{deudor}%'
 			</select>
+			<select id="byIdDeudor">
+				select 
+				  tc_keet_deudores.id_deudor id_key,
+				  tc_keet_deudores.limite,
+				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) deudor,
+				  disponible,
+				  ifnull(tr_mantic_empresa_personal.fecha_ingreso, tr_mantic_empresa_personal.fecha_contratacion) ingreso
+				from
+				  tc_keet_deudores
+        inner join tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				where
+				 tc_keet_deudores.id_deudor= {idDeudor}
+			</select>
 		</unit>	
 		<unit id="VistaPrestamosPagosDto">
 			<select id="lazy">
