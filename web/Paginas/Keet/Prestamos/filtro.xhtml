@@ -141,11 +141,11 @@
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{keetPrestamosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:menuitem id="consultarPagos" action="#{keetPrestamosFiltro.doAccion('MOVIMIENTOS')}" icon="fa fa-search" ajax="false" value="Ver pagos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetPrestamosFiltro.attrs.seleccionado.numeroPagos.toLong() gt 0? '': 'none'}" />					
-						<p:separator  style="display: #{keetPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus.toLong() lt 3? '': 'none'}"/>
+						<p:separator style="display: #{keetPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus.toLong() lt 3? '': 'none'}"/>
             <p:menuitem id="pago" action="#{keetPrestamosFiltro.doAccion('REGISTRAR')}" icon="fa fa-plus" ajax="false" value="Registrar pago" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus.toLong() lt 3? '': 'none'}" />										
             <p:menuitem id="liquidar" action="#{keetPrestamosFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" ajax="false" value="Liquidar deudas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus.toLong() lt 3? '': 'none'}"/>										
             <p:menuitem id="eliminar" icon="fa fa-close" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"  style="display: #{keetPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus.toLong() lt 3? '': 'none'}"/>					
-						<p:separator/>
+						<p:separator style="display: #{keetPrestamosFiltro.attrs.seleccionado.numeroPagos.toLong() gt 0? '': 'none'}"/>
             <p:menuitem id="importar" action="#{keetPrestamosFiltro.doAccion('SUBIR')}" icon="fa fa-cloud-upload" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetPrestamosFiltro.attrs.seleccionado.numeroPagos.toLong() gt 0? '': 'none'}"/>					
           </p:contextMenu>
         </div>

@@ -1183,10 +1183,14 @@
 				  1 numero_prestamos
 				from
 				  tc_keet_prestamos
-        inner join tc_keet_deudores on tc_keet_deudores.id_deudor= tc_keet_prestamos.id_deudor
-        inner join tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-				inner join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-        left join (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
+        inner join 
+				  tc_keet_deudores on tc_keet_deudores.id_deudor= tc_keet_prestamos.id_deudor
+        inner join 
+				  tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+				  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+        left join 
+				  (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
 				where
 				  tc_keet_prestamos.id_prestamo= {idPrestamo}
 			</select>
@@ -1200,10 +1204,14 @@
 				  count(*) numero_prestamos
 				from
 				  tc_keet_prestamos
-        inner join tc_keet_deudores on tc_keet_deudores.id_deudor= tc_keet_prestamos.id_deudor
-        inner join tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-				inner join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-        left join (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
+        inner join 
+				  tc_keet_deudores on tc_keet_deudores.id_deudor= tc_keet_prestamos.id_deudor
+        inner join 
+				  tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+				  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+        left join 
+				  (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
         where
           tc_keet_prestamos.id_prestamo_estatus in (1,2)
         and
@@ -1222,8 +1230,10 @@
 				  disponible
 				from
 				  tc_keet_deudores
-        inner join tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-				inner join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+        inner join 
+				  tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner 
+				  join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 				where
 				  tr_mantic_empresa_personal.id_empresa in ({sucursales})
 			</select>

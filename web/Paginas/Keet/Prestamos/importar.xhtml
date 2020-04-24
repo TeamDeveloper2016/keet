@@ -57,7 +57,7 @@
             <p:ajax event="tabChange" listener="#{keetPrestamosImportar.doTabChange}" process="@this" update="@(.importado)"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
-								<p:outputLabel for="deudor" value="Deudor:" />
+								<p:outputLabel for="deudor" value="Nombre del empleado(a):" />
 								<p:selectOneMenu disabled="true" id="deudor" value="#{keetPrestamosImportar.prestamo.prestamo.ikDeudor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetPrestamosImportar.attrs.deudores}"  var="element" itemValue="#{element}" itemLabel="#{element.deudor} - #{element.disponible}"/>
 									<p:column headerText="Clave">
@@ -67,8 +67,10 @@
 										<h:outputText value="#{item.disponible}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel for="importe" value="Importe del prestamo:"/>
-                <p:inputText disabled="true" id="importe" styleClass="janal-wid-100-txt" value="#{keetPrestamosImportar.prestamo.prestamo.importe}" />																								
+								<p:outputLabel for="importe" value="Prestamo ($):"/>
+                <p:inputText id="importe" styleClass="janal-wid-100-txt" value="#{keetPrestamosImportar.prestamo.prestamo.importe}" readonly="true"/>																								
+								<p:outputLabel for="saldo" value="Saldo ($):"/>
+                <p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosImportar.prestamo.prestamo.saldo}" readonly="true"/>																								
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea disabled="true" styleClass="janal-wid-100-txt" value="#{keetPrestamosImportar.prestamo.prestamo.observaciones}" />
               </p:panelGrid>
@@ -106,7 +108,7 @@
 						<p:tab title="Importar">
 							<p:outputLabel for="pago" value="Pago:"/>
 							<p:selectOneMenu id="pago" value="#{keetPrestamosImportar.attrs.pago}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt import-local-file">
-								<f:selectItems value="#{keetPrestamosImportar.attrs.pagos}"  var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{empty element.abono or element.abono eq -1? '': '-'} #{element.abono}"/>								
+								<f:selectItems value="#{keetPrestamosImportar.attrs.pagos}"  var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{empty element.abono or element.abono.toString eq '-1'? '': '-'} #{element.abono.toString eq '-1'? '': element.abono}"/>								
 								<p:ajax event="change" process="@this pago" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<p:column headerText="Folio">
 									<h:outputText value="#{item.consecutivo}"/>

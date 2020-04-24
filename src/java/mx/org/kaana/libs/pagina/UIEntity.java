@@ -228,7 +228,7 @@ public final class UIEntity {
 					if (field.equals(name))
 					  todos.put(name, new Value(name, "SELECCIONE"));
 					else 
-						todos.put(field, new Value(field,((Value)(((Entity)primer).toMap()).get(field)).getData() instanceof String ? "":-1L) );
+						todos.put(field, new Value(field,((Value)(((Entity)primer).toMap()).get(field)).getData() instanceof String ? "":-1L));
 				} // for
 			regresar.add(new UISelectEntity(todos));
 			regresar.addAll(build(dtos,formato));				
