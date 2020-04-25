@@ -154,8 +154,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doCancelar	
 	
 	public List<UISelectEntity> doCompleteDeudor(String deudor) {
- 		List<Columna> campos     = null;
-		UISelectEntity empresa= null;
+ 		List<Columna> campos      = null;
+		UISelectEntity empresa    = null;
     Map<String, Object> params= new HashMap<>();
     try {
 			campos= new ArrayList<>();
@@ -166,7 +166,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			  params.put("sucursales", empresa.getKey());
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put("deudor", deudor.toUpperCase() );
+			params.put("deudor", deudor.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"));
       this.attrs.put("deudores", UIEntity.build("VistaDeudoresDto", "complete", params));
 		} // try
 	  catch (Exception e) {

@@ -1135,12 +1135,17 @@
 					tc_keet_prestamos_estatus.nombre estatus,
 				  tc_keet_prestamos_estatus.id_prestamo_estatus
 				from
-				tc_keet_prestamos
-				inner join tc_keet_deudores on tc_keet_prestamos.id_deudor= tc_keet_deudores.id_deudor
-				inner join tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-				inner join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-				left join (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
-				inner join tc_keet_prestamos_estatus on  tc_keet_prestamos.id_prestamo_estatus= tc_keet_prestamos_estatus.id_prestamo_estatus
+				  tc_keet_prestamos
+				inner join 
+				  tc_keet_deudores on tc_keet_prestamos.id_deudor= tc_keet_deudores.id_deudor
+				inner join 
+				  tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+				  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				left join 
+				  (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
+				inner join 
+				  tc_keet_prestamos_estatus on  tc_keet_prestamos.id_prestamo_estatus= tc_keet_prestamos_estatus.id_prestamo_estatus
 				where
 				  {condicion}	
         {sortOrder}	
@@ -1240,16 +1245,19 @@
 			<select id="complete">
 				select 
 				  tc_keet_deudores.id_deudor id_key,
-				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) deudor,
+				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) deudor,
 				  disponible
 				from
 				  tc_keet_deudores
-        inner join tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-				inner join tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+        inner join 
+				  tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+				  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 				where
 				  tr_mantic_empresa_personal.id_empresa in ({sucursales})
-				and 
-				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) like '%{deudor}%'
+				  and tr_mantic_empresa_personal.id_activo= 1 
+				  and tc_mantic_personas.id_tipo_persona!= 1
+				  and concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) regexp '.*{deudor}.*'
 			</select>
 			<select id="byIdDeudor">
 				select 
