@@ -51,6 +51,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetProyectosEstatusDto", "row", params, Collections.EMPTY_LIST, "nombre"));
 			this.attrs.put("idProyectoEstatus", new UISelectEntity("-1"));
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			loadEmpresas();
 			if(JsfBase.getFlashAttribute("idProyectoProcess")!= null){
 				this.attrs.put("idProyectoProcess", JsfBase.getFlashAttribute("idProyectoProcess"));
 				this.doLoad();
@@ -163,6 +165,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
     UISelectEntity cliente        = (UISelectEntity)this.attrs.get("cliente");
     List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("clientes");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
+			sb.append("(tc_mantic_clientes.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
+		else
+			sb.append("(tc_mantic_clientes.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
 		if(this.attrs.get("idProyectoProcess")!= null && !Cadena.isVacio(this.attrs.get("idProyectoProcess")))
 			sb.append("tc_keet_proyectos.id_proyecto=").append(this.attrs.get("idProyectoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
@@ -244,4 +250,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus	
+	
+	private void loadEmpresas() {
+		Map<String, Object>params= null;
+		List<Columna> columns    = null;
+		try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();			
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    finally{
+			Methods.clean(params);
+		}	// finally	
+	} // loadEmpresas
 }
