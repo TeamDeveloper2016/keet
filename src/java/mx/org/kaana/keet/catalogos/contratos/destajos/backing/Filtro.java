@@ -10,13 +10,16 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -161,8 +164,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("fechaTermino", EFormatoDinamicos.FECHA_CORTA));    
 			idXml= figura.toLong("tipo").equals(1L) ? "lotesContratistas" : "lotesSubContratistas";
 	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);			
-			if(!this.lotes.isEmpty()) 
+			if(!this.lotes.isEmpty()){ 
 			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);							
+				toEstatusManzanaLote();
+			} //
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -173,6 +178,49 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(params);
     } // finally		
   } // doLoad	
+	
+	private void toEstatusManzanaLote() throws Exception{
+		Map<String, Object>params= null;
+		Entity estatus           = null;
+		try {
+			params= new HashMap<>();
+			for(Entity mzaLote: this.lotes){
+				params.clear();
+				params.put("idDepartamento", this.attrs.get("especialidad"));
+				params.put("clave", toClaveEstacion(mzaLote));
+				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaDestajosDto", "estatusManzanaLote", params);
+				if(estatus.isValid()){
+					if(estatus.toLong("total").equals(estatus.toLong("terminado")))
+						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.TERMINADO.getSemaforo()));
+					else if(estatus.toLong("total").equals(estatus.toLong("iniciado")))
+						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.INICIAR.getSemaforo()));
+					else
+						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.EN_PROCESO.getSemaforo()));
+				} // if
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally		
+	} // toEstatusManzanaLote
+	
+	private String toClaveEstacion(Entity lote){
+		StringBuilder regresar= null;
+		try {			
+			regresar= new StringBuilder();
+			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
+			regresar.append(Fecha.getAnioActual());
+			regresar.append(Cadena.rellenar(lote.toString("ordenContrato"), 3, '0', true));
+			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.toString();
+	} // toClaveEstacion
 	
 	public String doConceptos() {
     String regresar             = null;    		

@@ -7,7 +7,7 @@ import java.util.Map;
 public enum EEstacionesEstatus {
 	
 	INICIAR    ("INICIAR"   , "circulo-rojo"),
-	EN_PROCESO ("EN PROCESO", "circulo-amarilla"),
+	EN_PROCESO ("EN PROCESO", "circulo-amarillo"),
 	TERMINADO  ("TERMINADO" , "circulo-verde"),
 	CANCELADO  ("CANCELADO" , "circulo-naranja");	
 	

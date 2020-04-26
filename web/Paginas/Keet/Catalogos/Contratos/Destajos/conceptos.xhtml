@@ -7,11 +7,11 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="Registro de contratistas en lotes" />
+  <ui:param name="titulo" value="Conceptos de revisión por especialidad" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        				
-				'tabla\\:departamento': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+				'criterios\\:nombreConcepto': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };							
 			
 			function validateCriterios(){
@@ -20,41 +20,13 @@
 					janal.bloquear();
 				return ok;
 			} // validateCriterios
-    </script>		
-		<style type="text/css">    			
-			.ui-picklist .ui-picklist-item {
-				cursor: default !important;
-				border: 0 none;
-				font-weight: inherit;
-				width: 90% !important;
-				pointer-events: none;
-			}
-			.ui-picklist .ui-picklist-filter {
-				width: 100% !important;
-			}
-			.ui-picklist-button-add-all{
-				display: none !important
-			}
-			.ui-picklist-button-remove-all{
-				display: none !important
-			}
-			.ui-picklist table {				
-				border-collapse: collapse;
-				width: 0%;
-			}
-			.ui-chkbox {
-				display: inline-block;
-				vertical-align: middle;
-				cursor: default !important;
-				pointer-events: auto !important;				
-			}
-    </style>
+    </script>				
   </ui:define>
   <ui:define name="contenido">				
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:accordionPanel activeIndex="2" multiple="true">																			
+					<p:accordionPanel id="criterios" activeIndex="2" multiple="true">																			
 						<p:tab title="[ #{keetCatalogosContratosDestajosConceptos.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosConceptos.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosConceptos.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosConceptos.attrs.contratoLote.lote}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Viviendas:"/>
