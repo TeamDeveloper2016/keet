@@ -1492,6 +1492,7 @@
 					tc_keet_estaciones.clave,
 					tc_keet_estaciones.id_empaque_unidad_medida,
 					tc_keet_estaciones.id_estacion_estatus,
+					tc_keet_estaciones.costo,
 					principal.*
 				from(  
 				select
@@ -1536,6 +1537,21 @@
 			</select>
 			<select id="puntosRevision">
 				select
+					tc_keet_puntos_paquetes.id_punto_paquete AS id_key,  
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_puntos_controles.id_punto_control,
+					tc_keet_puntos_controles.nombre,
+					tc_keet_puntos_controles.factor,
+					tc_keet_puntos_controles.orden  
+				from
+					tc_keet_puntos_paquetes
+				inner join
+					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+				inner join 
+					tc_keet_puntos_controles on tc_keet_puntos_paquetes.id_punto_control = tc_keet_puntos_controles.id_punto_control
+				where
+					tc_keet_puntos_grupos.id_departamento={idDepartamento} and tc_keet_puntos_paquetes.id_punto_grupo={idPuntoGrupo}
 			</select>
 		</unit>
 	</dml>    
