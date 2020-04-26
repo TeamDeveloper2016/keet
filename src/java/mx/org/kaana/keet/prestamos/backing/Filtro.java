@@ -130,6 +130,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
       JsfBase.setFlashAttribute("idPrestamo", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
       JsfBase.setFlashAttribute("idDeudor", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).toLong("idDeudor") : -1L);
+      JsfBase.setFlashAttribute("idEmpresaPersona", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).toLong("idEmpresaPersona") : -1L);
       JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Prestamos/filtro");
       JsfBase.setFlashAttribute("isLiquidar", true);
 			switch (eaccion){

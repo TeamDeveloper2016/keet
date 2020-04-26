@@ -2,7 +2,9 @@ package mx.org.kaana.keet.prestamos.pagos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -55,6 +57,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idPrestamo", JsfBase.getFlashAttribute("idPrestamo"));
       this.attrs.put("idDeudor", JsfBase.getFlashAttribute("idDeudor"));
+      this.attrs.put("idEmpresaPersona", JsfBase.getFlashAttribute("idEmpresaPersona"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("isLiquidar", JsfBase.getFlashAttribute("isLiquidar"));
 			this.pagoDto= new TcKeetPrestamosPagosDto();
@@ -99,29 +102,23 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doCancelar	
 
 	private void cargarDatosDeudor() throws Exception{
-		Entity entity= null;
-		String idXml = null;
-		  try {
-			 if((Boolean)this.attrs.get("isLiquidar"))
-				 idXml="byIdDeudor";
-			 else
-				 idXml="byIdPrestamo";
-			 entity= (Entity)DaoFactory.getInstance().toEntity("VistaPrestamosDto", idXml, this.attrs);
-			 this.attrs.put("empleado", entity.toString("empleado"));
-			 this.attrs.put("prestamo", entity.toString("prestamo"));
-			 this.attrs.put("saldo", entity.toString("saldo"));
-			 this.attrs.put("pagos", entity.toString("pagos"));
-			 this.attrs.put("numeroPrestamos", entity.toString("numeroPrestamos"));
-			 this.pagoDto.setPago(Numero.getDouble(entity.toString("saldo"), 0D));
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch		
+		String idXml = "byIdPrestamo";
+		if((Boolean)this.attrs.get("isLiquidar"))
+			idXml="byIdDeudor";
+		Entity entity= (Entity)DaoFactory.getInstance().toEntity("VistaPrestamosDto", idXml, this.attrs);
+		this.attrs.put("empleado", entity.toString("empleado"));
+		this.attrs.put("prestamo", entity.toString("prestamo"));
+		this.attrs.put("saldo", entity.toString("saldo"));
+		this.attrs.put("pagos", entity.toString("pagos"));
+		this.attrs.put("numeroPrestamos", entity.toString("numeroPrestamos"));
+		this.attrs.put("sortOrder", entity.toString("numeroPrestamos"));
+		this.pagoDto.setPago(Numero.getDouble(entity.toString("saldo"), 0D));
 	}
 	
   public void doLoad() {
-    List<Columna> columns    = null;
-		String idXml = null;
+		Map<String, Object> params= new HashMap<>();
+    List<Columna> columns= null;
+		String idXml         = null;
     try {
       columns= new ArrayList<>();
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
@@ -130,11 +127,14 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("abono", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("cambio", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			params.put("sortOrder", " order by tc_keet_prestamos.consecutivo, tc_keet_prestamos_pagos.consecutivo desc");
+			params.put("idPrestamo", this.attrs.get("idPrestamo"));
+			params.put("idEmpresaPersona", this.attrs.get("idEmpresaPersona"));
 			if((Boolean)this.attrs.get("isLiquidar"))
 				 idXml="persona";
 			 else
 				 idXml="lazy";
-      this.lazyModel = new FormatCustomLazy("VistaPrestamosPagosDto", idXml, this.attrs, columns);
+      this.lazyModel = new FormatCustomLazy("VistaPrestamosPagosDto", idXml, params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -142,6 +142,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
+      Methods.clean(params);
       Methods.clean(columns);
     } // finally		
   } // doLoad
