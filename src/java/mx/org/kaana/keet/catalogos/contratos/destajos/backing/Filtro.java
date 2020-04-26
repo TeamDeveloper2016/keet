@@ -10,7 +10,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -184,8 +183,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			JsfBase.setFlashAttribute("idContratoLote", seleccionado.getKey());									
+			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
 			JsfBase.setFlashAttribute("figura", figura);									
+			JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("especialidad"));									
+			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));									
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
