@@ -22,7 +22,6 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
 @Named(value = "keetCatalogosContratosDestajosConceptos")
@@ -48,7 +47,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			idDepartamento= Long.valueOf((String)JsfBase.getFlashAttribute("idDepartamento"));	
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("figura", figura);      
-			this.attrs.put("seleccionado", seleccionado);      			
+			this.attrs.put("seleccionadoPivote", seleccionado);      			
 			this.attrs.put("idDesarrollo", idDesarrollo);      
 			this.attrs.put("idDepartamento", idDepartamento);      			
 			this.attrs.put("nombreConcepto", "");      			
@@ -67,11 +66,11 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionado")).toString("idContrato")));
+			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contrato", contrato);
 			params.clear();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(((Entity)this.attrs.get("seleccionado")).getKey().toString()));
+			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(((Entity)this.attrs.get("seleccionadoPivote")).getKey().toString()));
 			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
 			this.attrs.put("contratoLote", contratoLote);
 		} // try
@@ -127,8 +126,8 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
 			regresar.append(Fecha.getAnioActual());
-			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionado")).toString("ordenContrato"), 3, '0', true));
-			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionado")).toString("orden"), 3, '0', true));
+			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
+			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("orden"), 3, '0', true));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -141,7 +140,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
     try {						
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));									
 			JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
-			JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionado"));									
+			JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionadoPivote"));									
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
 			JsfBase.setFlashAttribute("idDepartamento", (Long)this.attrs.get("idDepartamento"));									
 			JsfBase.setFlashAttribute("concepto", seleccionado);									
