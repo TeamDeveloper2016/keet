@@ -1530,7 +1530,7 @@
 				where
 					tc_keet_estaciones.clave like '{clave}%'
 				and
-					tc_keet_estaciones.id_estacion_estatus IN ({estatus})
+					tc_keet_estaciones.id_estacion_estatus in ({estatus})
 				order by 
 				  tc_keet_estaciones.clave
 			</select>
