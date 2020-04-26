@@ -57,7 +57,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idPrestamo", JsfBase.getFlashAttribute("idPrestamo"));
       this.attrs.put("idDeudor", JsfBase.getFlashAttribute("idDeudor"));
-      this.attrs.put("idEmpresaPersona", JsfBase.getFlashAttribute("idEmpresaPersona"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("isLiquidar", JsfBase.getFlashAttribute("isLiquidar"));
 			this.pagoDto= new TcKeetPrestamosPagosDto();
@@ -129,7 +128,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			params.put("sortOrder", " order by tc_keet_prestamos.consecutivo, tc_keet_prestamos_pagos.consecutivo desc");
 			params.put("idPrestamo", this.attrs.get("idPrestamo"));
-			params.put("idEmpresaPersona", this.attrs.get("idEmpresaPersona"));
+			params.put("idDeudor", this.attrs.get("idDeudor"));
 			if((Boolean)this.attrs.get("isLiquidar"))
 				 idXml="persona";
 			 else
