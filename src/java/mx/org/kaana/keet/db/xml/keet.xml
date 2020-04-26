@@ -1804,5 +1804,81 @@
           tc_keet_proveedores_departamentos
 			</select>
     </unit>
+		<unit id="TcKeetContratosPuntosContratistasDto">
+      <select id="row">
+        select      
+				  tc_keet_contratos_puntos_contratistas.id_contrato_punto_contratista as id_key,
+          tc_keet_contratos_puntos_contratistas.*
+        from      
+          tc_keet_contratos_puntos_contratistas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      					
+          *
+        from      
+          tc_keet_contratos_puntos_contratistas
+        where      
+          id_punto_paquete = {idPuntoPaquete} and id_contrato_punto_contratista = {idContratoPuntoContratista} and id_contrato_destajo_contratista = {idContratoDestajoContratista}
+      </select>
+    </unit>
+		<unit id="TcKeetContratosPuntosProveedoresDto">
+      <select id="row">
+        select      
+				  tc_keet_contratos_puntos_proveedores.id_contrato_punto_proveedor as id_key,
+          tc_keet_contratos_puntos_proveedores.*
+        from      
+          tc_keet_contratos_puntos_proveedores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_puntos_proveedores
+        where      
+          id_contrato_destajo_proveedor = {idContratoDestajoProveedor} and id_punto_paquete = {idPuntoPaquete} and id_contrato_punto_proveedor = {idContratoPuntoProveedor}
+      </select>
+    </unit>
+		<unit id="TcKeetContratosDestajosContratistasDto">
+      <select id="row">
+        select      
+					tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista as id_key,
+          tc_keet_contratos_destajos_contratistas.*
+        from      
+          tc_keet_contratos_destajos_contratistas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_destajos_contratistas
+        where      
+          id_contrato_destajo_contratista = {idContratoDestajoContratista} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>
+		<unit id="TcKeetContratosDestajosProveedoresDto">
+      <select id="row">
+        select      
+					tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor as id_key,
+          tc_keet_contratos_destajos_proveedores.*
+        from      
+          tc_keet_contratos_destajos_proveedores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_destajos_proveedores
+        where      
+          id_contrato_destajo_proveedor = {idContratoDestajoProveedor} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>
   </dml>    
 </process>
