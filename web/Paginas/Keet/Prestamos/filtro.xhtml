@@ -135,7 +135,7 @@
               <h:outputText value="#{row['estatus']}"/>
             </p:column>
             <p:column styleClass="janal-wid-col-38 janal-column-center">
-							<p:commandButton icon="fa fa-pencil" process="@this" ajax="false" action="#{keetPrestamosFiltro.doAccion('COMPLETO')}" title="Liquidar deuda" disabled="#{not(row.idPrestamoEstatus.toLong() lt 3)}"/>															
+							<p:commandButton icon="fa fa-pencil" process="@this" action="#{keetPrestamosFiltro.doAccion('COMPLETO')}" title="Liquidar deuda" disabled="#{not(row.idPrestamoEstatus.toLong() lt 3)}"/>															
 						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetPrestamosFiltro.lazyModel== null? 0: keetPrestamosFiltro.lazyModel.rowCount}] registros"/>

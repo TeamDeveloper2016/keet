@@ -183,8 +183,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("tc_keet_prestamos.id_prestamo=").append(this.attrs.get("idPrestamoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
 			sb.append("(tc_keet_prestamos.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
-		sb.append("cast(tc_keet_prestamos.registro as date) between '").append(inicio.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).append("' and '");
-		sb.append(termino.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).append("' and ");
+		sb.append("date_format(tc_keet_prestamos.registro, '%Y%m%d')>= '").append(inicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append(" and ");
+		sb.append("date_format(tc_keet_prestamos.registro, '%Y%m%d')<= '").append(termino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
 			sb.append("tc_keet_prestamos.id_prestamo_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
 		if(sb.length()== 0)

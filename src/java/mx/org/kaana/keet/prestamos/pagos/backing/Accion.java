@@ -126,7 +126,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("abono", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("cambio", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			params.put("sortOrder", " order by tc_keet_prestamos.consecutivo, tc_keet_prestamos_pagos.consecutivo desc");
+			params.put("sortOrder", " order by tc_keet_prestamos.consecutivo desc, tc_keet_prestamos_pagos.consecutivo desc");
 			params.put("idPrestamo", this.attrs.get("idPrestamo"));
 			params.put("idDeudor", this.attrs.get("idDeudor"));
 			if((Boolean)this.attrs.get("isLiquidar"))
