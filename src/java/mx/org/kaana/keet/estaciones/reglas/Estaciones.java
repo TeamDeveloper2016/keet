@@ -25,8 +25,8 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
       new Configuracion("Configuración de estaciones", 10),
       new ArrayList<Detalle>(
       Arrays.asList(
-      new Detalle(1, 3, 2, "0", "[1..999]", ""),
-      new Detalle(2, 4, 2, "0", "[1..9999]", ""),
+      new Detalle(1, 3, 2, "0", "[1..999]", ""), // idEmpresa
+      new Detalle(2, 4, 2, "0", "[1..9999]", ""), // ejercicio
       new Detalle(3, 3, 2, "0", "[1..999]", ""),
       new Detalle(4, 3, 2, "0", "[1..999]", ""),
       new Detalle(5, 3, 2, "0", "[1..999]", ""),
@@ -51,7 +51,7 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
   }
 
  public List<TcKeetEstacionesDto> toChildren(int aumentarNivel, String value, int level, int child) throws Exception {
-    Map<String, Object> params=new HashMap<String, Object>();
+    Map<String, Object> params=new HashMap<>();
     value=toOnlyKey(value, level+child);
     params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+child+aumentarNivel))).concat(" "));
     List<TcKeetEstacionesDto> regresar=(List) DaoFactory.getInstance().findViewCriteria(TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
@@ -133,7 +133,7 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
   }
 
   private List<TcKeetEstacionesDto> toAllChildren(String value, int level, int child) throws Exception {
-    Map<String, Object> params=new HashMap<String, Object>();
+    Map<String, Object> params=new HashMap<>();
     value=toOnlyKey(value, level+child);
     params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel>="+(level+child))).concat(" "));
     List<TcKeetEstacionesDto> regresar=(List) DaoFactory.getInstance().findViewCriteria(TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
@@ -147,7 +147,7 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
 
   public TcKeetEstacionesDto getFather(String value) throws Exception {
     TcKeetEstacionesDto regresar=null;
-    Map<String, Object> params=new HashMap<String, Object>();
+    Map<String, Object> params=new HashMap<>();
     String[] list=uniqueKey(toCodeAll(value), value);
     if (list!=null&&list.length>0) {
       if (list.length==1) {
@@ -172,9 +172,9 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
 	public String toCodeByIdContrato(Long idContrato) throws Exception{
 		String regresar= null;
 		Value contrato = null;
-		Map<String, Object> params=new HashMap<String, Object>();
+		Map<String, Object> params=new HashMap<>();
 		params.put("idContrato", idContrato);
-		contrato= DaoFactory.getInstance().toField("VistaContratosDto","getEstacionPatron", params, "patron");
+		contrato= DaoFactory.getInstance().toField("VistaContratosDto", "getEstacionPatron", params, "patron");
 		regresar= contrato.getData()!= null? contrato.getData$(): "";
 		Methods.clean(params);
 		return regresar;
