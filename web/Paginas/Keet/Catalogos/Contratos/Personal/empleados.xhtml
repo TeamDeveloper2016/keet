@@ -86,7 +86,7 @@
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
-              <i class="fa fa-user fa-lg janal-color-green"/><h:outputText value=" #{row['rfc']}"/>
+              <i class="fa fa-user fa-lg janal-color-green"/><h:outputText value="  #{row['rfc']}"/>
             </p:column>		            
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombres}">
               <f:facet name="header">
@@ -107,11 +107,11 @@
               <h:outputText value="#{row['puesto']}"/>
             </p:column>		
 						<p:column styleClass="janal-wid-12 janal-column-center">
-							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doAccion(filtro)}" title="Capturar incidencia."/>															
-							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doImportar(filtro)}" title="Importar incidencia." disabled="#{row.totalIncidencias eq '0'}"/>															
+							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doAccion(row)}" title="Registrar incidencia"/>															
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doImportar(row)}" title="Importar evidencia" disabled="#{row.totalIncidencias eq '0'}"/>															
 						</p:column>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetCatalogosContratosPersonalEmpleados.lazyModel==null?0:keetCatalogosContratosPersonalEmpleados.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetCatalogosContratosPersonalEmpleados.lazyModel== null? 0: keetCatalogosContratosPersonalEmpleados.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>  
 				</div>						        
