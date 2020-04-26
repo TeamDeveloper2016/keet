@@ -137,15 +137,15 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	} // toClaveEstacion
 	
 	public String doPuntosRevision(Entity seleccionado) {
-    String regresar             = null;    		
-		List<UISelectEntity> figuras= null;
-		UISelectEntity figura       = null;
-    try {			
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
-			JsfBase.setFlashAttribute("idContratoLote", seleccionado.getKey());									
-			JsfBase.setFlashAttribute("figura", figura);									
-			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
+    String regresar             = null;    				
+    try {						
+			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));									
+			JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
+			JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionado"));									
+			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
+			JsfBase.setFlashAttribute("idDepartamento", (Long)this.attrs.get("idDepartamento"));									
+			JsfBase.setFlashAttribute("concepto", seleccionado);									
+			regresar= "puntos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
