@@ -7,6 +7,24 @@
   </model>
 
   <dml>		
+    <unit id="TcKeetNominasPeriodosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_periodos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_periodos
+        where      
+          orden = {orden} and ejercicio = {ejercicio}
+      </select>
+    </unit>		
 		<unit id="TcKeetContratosLotesContratistasDto">
       <select id="row">
         select      
@@ -23,7 +41,7 @@
         from      
           tc_keet_contratos_lotes_contratistas
         where      
-          id_empresa_persona = {idEmpresaPersona} and id_contrato_lote = {idContratoLote} and id_contrato_lote_contratista = {idContratoLoteContratista}
+          id_empresa_persona = {idEmpresaPersona} and id_contrato_lote = {idContratoLote}
       </select>
       <select id="existe">
         select      
@@ -59,7 +77,7 @@
         from      
           tc_keet_dias_festivos
         where      
-          date_format(dia, '%Y%m%d') = '{dia}' and id_dia_festivo = {idDiaFestivo} and ejercicio = {ejercicio}
+          date_format(dia, '%Y%m%d') = '{dia}' and ejercicio = {ejercicio}
       </select>
     </unit>
 		<unit id="TcKeetPrestamosDto">

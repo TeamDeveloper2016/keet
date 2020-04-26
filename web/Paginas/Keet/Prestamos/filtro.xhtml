@@ -49,9 +49,9 @@
 								</f:facet>
 							</p:autoComplete>
               <p:outputLabel for="inicio" value="Periodo del:"/>
-							<p:calendar id="inicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94"	value="#{keetPrestamosFiltro.inicio}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+							<p:calendar id="inicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-80"	value="#{keetPrestamosFiltro.inicio}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
 							<p:outputLabel for="termino" value="al:"/>
-							<p:calendar id="termino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetPrestamosFiltro.termino}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+							<p:calendar id="termino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-80" value="#{keetPrestamosFiltro.termino}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
 							<p:outputLabel for="estatus" value="Estatus:"/>
 							<p:selectOneMenu id="estatus" value="#{keetPrestamosFiltro.attrs.estatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetPrestamosFiltro.attrs.listaEstatus}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -86,7 +86,7 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.folio}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.folio}">
               <f:facet name="header">
                 <h:outputText value="Folio"/>
               </f:facet>

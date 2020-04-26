@@ -1,13 +1,10 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -31,18 +28,18 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="corte")
+  private LocalDateTime corte;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_nomina_periodo")
   private Long idNominaPeriodo;
   @Column (name="inicio")
   private LocalDate inicio;
-  @Column (name="orden")
-  private Long orden;
   @Column (name="termino")
   private LocalDate termino;
-  @Column (name="calculo")
-  private LocalDateTime calculo;
+  @Column (name="orden")
+  private Long orden;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
@@ -53,20 +50,28 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetNominasPeriodosDto(Long key) {
-    this(new Long(-1L), LocalDate.now(), null, LocalDate.now(), LocalDateTime.now(), null);
+    this(LocalDateTime.now(), new Long(-1L), LocalDate.now(), LocalDate.now(), null, null);
     setKey(key);
   }
 
-  public TcKeetNominasPeriodosDto(Long idNominaPeriodo, LocalDate inicio, Long orden, LocalDate termino, LocalDateTime calculo, Long ejercicio) {
+  public TcKeetNominasPeriodosDto(LocalDateTime corte, Long idNominaPeriodo, LocalDate inicio, LocalDate termino, Long orden, Long ejercicio) {
+    setCorte(corte);
     setIdNominaPeriodo(idNominaPeriodo);
     setInicio(inicio);
-    setOrden(orden);
     setTermino(termino);
-    setCalculo(calculo);
+    setOrden(orden);
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
   }
 	
+  public void setCorte(LocalDateTime corte) {
+    this.corte = corte;
+  }
+
+  public LocalDateTime getCorte() {
+    return corte;
+  }
+
   public void setIdNominaPeriodo(Long idNominaPeriodo) {
     this.idNominaPeriodo = idNominaPeriodo;
   }
@@ -83,14 +88,6 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
     return inicio;
   }
 
-  public void setOrden(Long orden) {
-    this.orden = orden;
-  }
-
-  public Long getOrden() {
-    return orden;
-  }
-
   public void setTermino(LocalDate termino) {
     this.termino = termino;
   }
@@ -99,12 +96,12 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
     return termino;
   }
 
-  public void setCalculo(LocalDateTime calculo) {
-    this.calculo = calculo;
+  public void setOrden(Long orden) {
+    this.orden = orden;
   }
 
-  public LocalDateTime getCalculo() {
-    return calculo;
+  public Long getOrden() {
+    return orden;
   }
 
   public void setEjercicio(Long ejercicio) {
@@ -138,15 +135,15 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getCorte());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNominaPeriodo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getInicio());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTermino());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getCalculo());
+		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
@@ -158,11 +155,11 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("corte", getCorte());
 		regresar.put("idNominaPeriodo", getIdNominaPeriodo());
 		regresar.put("inicio", getInicio());
-		regresar.put("orden", getOrden());
 		regresar.put("termino", getTermino());
-		regresar.put("calculo", getCalculo());
+		regresar.put("orden", getOrden());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -171,7 +168,7 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdNominaPeriodo(), getInicio(), getOrden(), getTermino(), getCalculo(), getEjercicio(), getRegistro()
+    getCorte(), getIdNominaPeriodo(), getInicio(), getTermino(), getOrden(), getEjercicio(), getRegistro()
     };
     return regresar;
   }
@@ -229,4 +226,7 @@ public class TcKeetNominasPeriodosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdNominaPeriodo() != null ? getIdNominaPeriodo().hashCode() : 0);
     return hash;
   }
+
 }
+
+

@@ -808,12 +808,20 @@ public abstract class GenerationFiles {
     RenglonCampo renglon= null;
     try {
       // LEER CAMPOS DE LA TABLA
+			String typeData= null;
       for(String key: getDetailTable().keySet()) {
         renglon= getDetailTable().get(key);
         if (!(renglon.getCampo().equalsIgnoreCase("registro"))) {
           if (!(sb.length()== 0))
             sb.append(", ");
-          sb.append(MessageFormat.format("{0} {1}",new Object[]{renglon.getTipo(), renglon.getAtributo()}));
+					typeData= renglon.getTipo();
+          if(renglon.getTipo().equals("Date"))
+            typeData= "LocalDate";
+          else if (renglon.getTipo().equals("Timestamp"))
+            typeData= "LocalDateTime";
+          else if (renglon.getTipo().equals("Time"))
+            typeData= "LocalTime";
+          sb.append(MessageFormat.format("{0} {1}", new Object[] {typeData, renglon.getAtributo()}));
         } // if
       } // for x
     }
