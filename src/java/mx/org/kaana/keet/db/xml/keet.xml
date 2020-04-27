@@ -54,8 +54,8 @@
         from      
           tc_keet_nominas_periodos
 				where
-				  date_format(inicio, '%Y%m%d')>= '{fecha}'
-  				and date_format(termino, '%Y%m%d')<= '{fecha}'
+				  date_format(inicio, '%Y%m%d')<= '{fecha}'
+  				and date_format(termino, '%Y%m%d')>= '{fecha}'
       </select>			
     </unit>		
 		<unit id="TcKeetContratosLotesContratistasDto">
