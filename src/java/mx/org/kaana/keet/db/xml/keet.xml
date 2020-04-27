@@ -36,8 +36,8 @@
         from      
           tc_keet_nominas_periodos
 				where
-				  date_format(inicio, '%Y%m%d')<= '{fecha}'
-  				and date_format(termino, '%Y%m%d')>= '{fecha}'
+				  date_format(inicio, '%Y%m%d')&lt;= '{fecha}'
+  				and date_format(termino, '%Y%m%d')&gt;= '{fecha}'
       </select>			
     </unit>		
 		<unit id="TcKeetContratosLotesContratistasDto">
@@ -969,7 +969,7 @@
         from      
           tc_keet_nominas
         where      
-          id_nomina_periodo = {idNominaPeriodo} and id_tipo_nomina = {idTipoNomina}
+          id_nomina_periodo = {idNominaPeriodo} and id_empresa = {idEmpresa} and id_tipo_nomina = {idTipoNomina}
       </select>
     </unit>		
     <unit id="TcKeetNominasBitacoraDto">
@@ -1025,11 +1025,38 @@
         where      
           id_activo = {idActivo} and siglas = '{siglas}' and nombre = '{nombre}'
       </select>
+c			<select id="periodo">
+				select
+					siglas,
+					nombre,
+					valor
+				from
+					tc_keet_nominas_constantes
+				where 
+					date_format(inicio, '%Y%m%d')&lt;= '{fecha}'
+					and date_format(termino, '%Y%m%d')&gt;= '{fecha}'
+					and id_calcular= 1
+				order by
+					siglas			
+			</select>
+			<select id="todos">
+				select
+					siglas,
+					nombre,
+					valor
+				from
+					tc_keet_nominas_constantes
+				where 
+					id_activo= 1
+				order by
+					siglas			
+			</select>
     </unit>		
     <unit id="TcKeetNominasEstatusDto">
       <select id="row">
         select      
-          *
+				  tc_keet_nominas_estatus.id_nomina_estatus as id_key,
+          tc_keet_nominas_estatus.*
         from      
           tc_keet_nominas_estatus
         where 

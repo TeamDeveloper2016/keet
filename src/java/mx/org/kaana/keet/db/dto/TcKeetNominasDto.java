@@ -7,9 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -36,11 +36,13 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   private Long idNominaPeriodo;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
   @Column (name="id_tipo_nomina")
   private Long idTipoNomina;
   @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_nomina")
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)  
+  @Column (name="id_nomina")
   private Long idNomina;
   @Column (name="fecha_pago")
   private LocalDate fechaPago;
@@ -52,15 +54,16 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetNominasDto(Long key) {
-    this(LocalDate.now(), null, null, null, null, new Long(-1L), LocalDate.now());
+    this(LocalDate.now(), null, null, null, null, null, null, LocalDate.now());
     setKey(key);
   }
 
-  public TcKeetNominasDto(LocalDate fechaDispersion, Long idNominaEstatus, Long idNominaPeriodo, Long idUsuario, Long idTipoNomina, Long idNomina, LocalDate fechaPago) {
+  public TcKeetNominasDto(LocalDate fechaDispersion, Long idNominaEstatus, Long idNominaPeriodo, Long idUsuario, Long idEmpresa, Long idTipoNomina, Long idNomina, LocalDate fechaPago) {
     setFechaDispersion(fechaDispersion);
     setIdNominaEstatus(idNominaEstatus);
     setIdNominaPeriodo(idNominaPeriodo);
     setIdUsuario(idUsuario);
+    setIdEmpresa(idEmpresa);
     setIdTipoNomina(idTipoNomina);
     setIdNomina(idNomina);
     setFechaPago(fechaPago);
@@ -97,6 +100,14 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 
   public Long getIdUsuario() {
     return idUsuario;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdEmpresa() {
+    return idEmpresa;
   }
 
   public void setIdTipoNomina(Long idTipoNomina) {
@@ -154,6 +165,8 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoNomina());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNomina());
@@ -172,6 +185,7 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 		regresar.put("idNominaEstatus", getIdNominaEstatus());
 		regresar.put("idNominaPeriodo", getIdNominaPeriodo());
 		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idTipoNomina", getIdTipoNomina());
 		regresar.put("idNomina", getIdNomina());
 		regresar.put("fechaPago", getFechaPago());
@@ -182,7 +196,7 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getFechaDispersion(), getIdNominaEstatus(), getIdNominaPeriodo(), getIdUsuario(), getIdTipoNomina(), getIdNomina(), getFechaPago(), getRegistro()
+    getFechaDispersion(), getIdNominaEstatus(), getIdNominaPeriodo(), getIdUsuario(), getIdEmpresa(), getIdTipoNomina(), getIdNomina(), getFechaPago(), getRegistro()
     };
     return regresar;
   }

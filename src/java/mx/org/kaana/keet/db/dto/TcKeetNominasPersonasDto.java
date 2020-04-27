@@ -1,13 +1,9 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -33,14 +29,18 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="neto")
   private Double neto;
-  @Column (name="id_persona")
-  private Long idPersona;
+  @Column (name="id_empresa_persona")
+  private Long idEmpresaPersona;
   @Column (name="deducciones")
   private Double deducciones;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_nomina_persona")
   private Long idNominaPersona;
+  @Column (name="personas")
+  private Long personas;
+  @Column (name="aportaciones")
+  private Double aportaciones;
   @Column (name="percepciones")
   private Double percepciones;
   @Column (name="id_nomina")
@@ -53,15 +53,17 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetNominasPersonasDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null);
+    this(null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetNominasPersonasDto(Double neto, Long idPersona, Double deducciones, Long idNominaPersona, Double percepciones, Long idNomina) {
+  public TcKeetNominasPersonasDto(Double neto, Long idEmpresaPersona, Double deducciones, Long idNominaPersona, Long personas, Double aportaciones, Double percepciones, Long idNomina) {
     setNeto(neto);
-    setIdPersona(idPersona);
+    setIdEmpresaPersona(idEmpresaPersona);
     setDeducciones(deducciones);
     setIdNominaPersona(idNominaPersona);
+    setPersonas(personas);
+    setAportaciones(aportaciones);
     setPercepciones(percepciones);
     setIdNomina(idNomina);
     setRegistro(LocalDateTime.now());
@@ -75,12 +77,12 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
     return neto;
   }
 
-  public void setIdPersona(Long idPersona) {
-    this.idPersona = idPersona;
+  public void setIdEmpresaPersona(Long idEmpresaPersona) {
+    this.idEmpresaPersona = idEmpresaPersona;
   }
 
-  public Long getIdPersona() {
-    return idPersona;
+  public Long getIdEmpresaPersona() {
+    return idEmpresaPersona;
   }
 
   public void setDeducciones(Double deducciones) {
@@ -97,6 +99,22 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
 
   public Long getIdNominaPersona() {
     return idNominaPersona;
+  }
+
+  public void setPersonas(Long personas) {
+    this.personas = personas;
+  }
+
+  public Long getPersonas() {
+    return personas;
+  }
+
+  public void setAportaciones(Double aportaciones) {
+    this.aportaciones = aportaciones;
+  }
+
+  public Double getAportaciones() {
+    return aportaciones;
   }
 
   public void setPercepciones(Double percepciones) {
@@ -140,11 +158,15 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getNeto());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPersona());
+		regresar.append(getIdEmpresaPersona());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDeducciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNominaPersona());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPersonas());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getAportaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPercepciones());
 		regresar.append(Constantes.SEPARADOR);
@@ -159,9 +181,11 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("neto", getNeto());
-		regresar.put("idPersona", getIdPersona());
+		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
 		regresar.put("deducciones", getDeducciones());
 		regresar.put("idNominaPersona", getIdNominaPersona());
+		regresar.put("personas", getPersonas());
+		regresar.put("aportaciones", getAportaciones());
 		regresar.put("percepciones", getPercepciones());
 		regresar.put("idNomina", getIdNomina());
 		regresar.put("registro", getRegistro());
@@ -171,7 +195,7 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getNeto(), getIdPersona(), getDeducciones(), getIdNominaPersona(), getPercepciones(), getIdNomina(), getRegistro()
+    getNeto(), getIdEmpresaPersona(), getDeducciones(), getIdNominaPersona(), getPersonas(), getAportaciones(), getPercepciones(), getIdNomina(), getRegistro()
     };
     return regresar;
   }
@@ -229,4 +253,7 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdNominaPersona() != null ? getIdNominaPersona().hashCode() : 0);
     return hash;
   }
+
 }
+
+

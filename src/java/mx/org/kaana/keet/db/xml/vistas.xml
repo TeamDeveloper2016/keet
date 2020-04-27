@@ -5,6 +5,60 @@
 <process>
 	<dml> 
 		<unit id="VistaNominaDto">
+			<select id="lazy">
+				select
+					tc_keet_nominas.id_nomina as id_key,
+					tc_keet_nominas.id_nomina,
+					tc_keet_nominas_periodos.inicio,
+					tc_keet_nominas_periodos.termino,
+					tc_keet_nominas_periodos.orden as semana,
+					tc_keet_tipos_nominas.nombre as tipo,
+					tc_keet_nominas_periodos.corte,
+					tc_keet_nominas.id_nomina_estatus,
+					tc_keet_nominas_estatus.nombre as estatus,
+					tc_keet_nominas_personas.personas,
+					tc_keet_nominas_personas.neto
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				inner join 
+					tc_keet_tipos_nominas on tc_keet_nominas.id_tipo_nomina= tc_keet_tipos_nominas.id_tipo_nomina
+				inner join 
+					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
+				inner join 
+					tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
+				where
+					tc_keet_nominas.id_empresa in (1, 2)
+				  and {condicion}
+				{sortOrder}
+			</select>
+			<select id="ejercicios">
+				select
+					distinct(tc_keet_nominas_periodos.ejercicio) as id_key,
+					tc_keet_nominas_periodos.ejercicio
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+					tc_keet_nominas.id_empresa in ({sucursales})
+				order by
+				  tc_keet_nominas_periodos.ejercicio desc				
+			</select>
+			<select id="semanas">
+				select
+					distinct(tc_keet_nominas_periodos.orden) as id_key,
+					tc_keet_nominas_periodos.orden as semana
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+					tc_keet_nominas.id_empresa in ({sucursales})
+				order by
+				  tc_keet_nominas_periodos.orden asc				
+			</select>
 			<select id="semana">
 				select
 					max(tc_keet_nominas_periodos.orden) as semana
@@ -32,8 +86,25 @@
 				order by
 					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave
 			</select>
+			<select id="complementaria">
+				select
+					tr_mantic_empresa_personal.id_empresa_persona,
+					tr_mantic_empresa_personal.clave,
+						tr_mantic_empresa_personal.sueldo_semanal
+				from
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				left join
+					tc_keet_nominas_personas on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_nominas_personas.id_empresa_persona
+				where
+					tr_mantic_empresa_personal.id_empresa in ({sucursales})
+					and tr_mantic_empresa_personal.id_activo= 1
+					and tc_mantic_personas.id_tipo_persona!= 1
+				order by
+					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave				
+			</select>
 		</unit>
-			
 		<unit id="VistaContratosLotesDto">
 			<select id="principal">
 				select 

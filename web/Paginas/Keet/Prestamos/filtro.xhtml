@@ -54,7 +54,7 @@
 							<p:calendar id="termino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-80" value="#{keetPrestamosFiltro.termino}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
 							<p:outputLabel for="estatus" value="Estatus:"/>
 							<p:selectOneMenu id="estatus" value="#{keetPrestamosFiltro.attrs.estatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetPrestamosFiltro.attrs.listaEstatus}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <f:selectItems value="#{keetPrestamosFiltro.attrs.catalogo}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   

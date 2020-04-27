@@ -198,7 +198,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			loadEmpresas();
 			//doLoadDeudores();
-			loadEstatus();
+			this.loadEstatus();
 			inicio= LocalDate.of(Fecha.getAnioActual(),1, 1);
       termino= LocalDate.now();
 		} // try
@@ -210,19 +210,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	
 	private void loadEstatus(){
+		Map<String, Object>params= null;
 	  try {
-		  this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("listaEstatus", UIEntity.seleccione("TcKeetPrestamosEstatusDto", "row", this.attrs, "nombre"));
+			params = new HashMap<>();
+		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      this.attrs.put("catalogo", UIEntity.seleccione("TcKeetPrestamosEstatusDto", "row", params, "nombre"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // doLoadDeudores
+    finally {
+			Methods.clean(params);
+		}	// finally
+	} // loadEstatus
 	
 	public List<UISelectEntity> doCompleteDeudor(String deudor) {
- 		List<Columna> campos     = null;
-		UISelectEntity empresa= null;
+ 		List<Columna> campos      = null;
+		UISelectEntity empresa    = null;
     Map<String, Object> params= new HashMap<>();
     try {
 			campos= new ArrayList<>();

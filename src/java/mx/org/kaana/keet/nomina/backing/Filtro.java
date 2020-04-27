@@ -1,0 +1,195 @@
+package mx.org.kaana.keet.nomina.backing;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.IBaseFilter;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
+
+@Named(value = "keetNominasFiltro")
+@ViewScoped
+public class Filtro extends IBaseFilter implements Serializable {
+
+	private static final long serialVersionUID = 6319984968937774153L;
+	LocalDate fecha;
+
+	public LocalDate getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
+	}
+
+  @PostConstruct
+  @Override
+  protected void init() {
+    try {
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			if(JsfBase.getFlashAttribute("idNomina")!= null){
+				this.attrs.put("idNomina", JsfBase.getFlashAttribute("idNomina"));
+				this.doLoad();
+				this.attrs.put("idNomina", null);
+			} // if
+			this.loadCatalogs();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // init
+
+  @Override
+  public void doLoad() {
+    List<Columna> columns    = null;
+		Map<String, Object>params= null;
+    try {
+      params= this.toPrepare();	
+			params.put("sortOrder", "order by tc_keet_nominas.id_nomina desc");
+      columns= new ArrayList<>();
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("personas", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("neto", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.lazyModel = new FormatCustomLazy("VistaNominaDto", params, columns);
+      UIBackingUtilities.resetDataTable();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  } // doLoad
+
+	private void loadEmpresas() {
+		Map<String, Object>params= null;
+		List<Columna> columns    = null;
+		try {
+			params = new HashMap<>();
+			columns= new ArrayList<>();			
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    finally{
+			Methods.clean(params);
+		}	// finally	
+	} // loadEmpresas
+
+  public String doAccion(String accion) {
+    String regresar= null;
+		EAccion eaccion= null;
+    try {
+      eaccion = EAccion.valueOf(accion.toUpperCase());
+      JsfBase.setFlashAttribute("accion", eaccion);      
+      JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
+      JsfBase.setFlashAttribute("idNomina", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nomina/filtro");
+			switch (eaccion){
+				case SUBIR:
+				  regresar= "importar".concat(Constantes.REDIRECIONAR);	
+				break;
+				case CONSULTAR:
+				case MODIFICAR:
+				case AGREGAR:
+				  regresar= "accion".concat(Constantes.REDIRECIONAR);
+					break;
+				case REGISTRAR:
+					JsfBase.setFlashAttribute("isLiquidar", false);
+				case COMPLETO:
+				  regresar= "/Paginas/Keet/Prestamos/Pagos/accion".concat(Constantes.REDIRECIONAR);
+					break;
+				case MOVIMIENTOS:
+				  regresar= "/Paginas/Keet/Prestamos/Pagos/filtro".concat(Constantes.REDIRECIONAR);
+					break;
+			} // switch
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  } // doAccion
+
+	private Map<String, Object> toPrepare() {
+	  Map<String, Object> regresar  = new HashMap<>();	
+		StringBuilder sb              = new StringBuilder();
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
+			sb.append("(tc_keet_nominas.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
+		else
+			sb.append("(tc_keet_nominas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+		if(this.attrs.get("idNomina")!= null && !Cadena.isVacio(this.attrs.get("idNomina")))
+			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
+		sb.append("date_format(tc_keet_nominas_periodos.inicio, '%Y%m%d')<= '").append(fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+		sb.append("date_format(tc_keet_nominas_periodos.termino, '%Y%m%d')>= '").append(fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && ((UISelectEntity)this.attrs.get("ejercicio")).getKey()>= 1L)				
+			sb.append("tc_keet_nominas_periodos.ejercicio = ").append(((UISelectEntity)this.attrs.get("ejercicio")).getKey()).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("semana")) && ((UISelectEntity)this.attrs.get("semana")).getKey()>= 1L)				
+			sb.append("tc_keet_nominas_periodos.orden = ").append(((UISelectEntity)this.attrs.get("semana")).getKey()).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("tipo")) && ((UISelectEntity)this.attrs.get("tipo")).getKey()>= 1L)				
+			sb.append("tc_keet_nomina.id_tipo_nomina= ").append(((UISelectEntity)this.attrs.get("tipo")).getKey()).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
+			sb.append("tc_keet_nomina.id_nomina_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
+		if(sb.length()== 0)
+		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		return regresar;		
+	} // toPrepare
+
+	private void loadCatalogs() {
+		Map<String, Object>params= null;
+		try {
+			this.loadEmpresas();
+      fecha= LocalDate.now();
+			params = new HashMap<>();
+		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("ejercicios", UIEntity.seleccione("VistaNominaDto", "ejercicios", params, "ejercicio"));
+      this.attrs.put("ejercicio", new UISelectEntity(-1L));
+      this.attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, "semana"));
+      this.attrs.put("semana", new UISelectEntity(-1L));
+      this.attrs.put("tipos", UIEntity.seleccione("TcKeetTiposNominasDto", "row", params, "nombre"));
+      this.attrs.put("tipo", new UISelectEntity(-1L));
+      this.attrs.put("catalogo", UIEntity.seleccione("TcKeetNominasEstatusDto", "row", params, "nombre"));
+      this.attrs.put("estatus", new UISelectEntity(-1L));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);	
+		} // catch				
+    finally {
+			Methods.clean(params);
+		}	// finally
+	} // loadCatalogs
+	
+}
