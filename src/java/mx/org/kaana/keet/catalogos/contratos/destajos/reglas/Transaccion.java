@@ -1,6 +1,5 @@
 package mx.org.kaana.keet.catalogos.contratos.destajos.reglas;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -13,6 +12,8 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
+import mx.org.kaana.keet.nomina.reglas.Semanas;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -178,8 +179,17 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // processPuntosSubContratistas
 	
-	private Long toSemana(){
-		return Long.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR));
+	private Long toSemana() throws Exception{
+		Long regresar  = -1L;
+		Semanas semanas= null;
+		try {
+			semanas= new Semanas();
+			regresar= Long.valueOf(semanas.getSemana());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
 	} // toSemana
 	
 	private Long toPeriodo(){
