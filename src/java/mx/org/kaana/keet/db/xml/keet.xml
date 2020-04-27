@@ -846,7 +846,7 @@
 					tc_keet_bitacoras.campo,
 					tc_keet_bitacoras.antes,
 					tc_keet_bitacoras.despues,
-					tc_keet_bitacoras.id_key AS id_principal,
+					tc_keet_bitacoras.id_key as id_principal,
 					tc_keet_bitacoras.id_usuario,
 					tc_keet_bitacoras.registro
 				from 
@@ -978,7 +978,7 @@
           tc_keet_nominas
         where      
           id_tipo_nomina = 1
-				  and id_nomina_estatus in (1, 2)
+				  and id_nomina_estatus in ({sucursales})
 			  order by
 				  id_nomina_estatus desc
       </select>
