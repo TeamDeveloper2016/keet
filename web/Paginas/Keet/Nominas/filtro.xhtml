@@ -15,9 +15,23 @@
         fecha    : {validaciones: 'libre', mascara: 'fecha'},
         ejercicio: {validaciones: 'libre', mascara: 'libre'},
         semana   : {validaciones: 'libre', mascara: 'libre'},
-        tipo     : {validaciones: 'libre', mascara: 'libre'},
+        idTipoNomina: {validaciones: 'libre', mascara: 'libre'},
         estatus  : {validaciones: 'libre', mascara: 'libre'}
       };
+			
+			fieldsDialog= {
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}				
+			};
+			
+			function validaJustificacion() {
+				var ok= janal.partial('dialogo');
+				if(ok) {
+					PF('dlgEstatus').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validaJustificacion			
     </script>		
   </ui:define>
   <ui:define name="contenido">
@@ -57,7 +71,7 @@
                 </p:column>   
               </p:selectOneMenu>	
 							<p:outputLabel for="tipo" value="Tipo nómina:"/>
-							<p:selectOneMenu id="tipo" value="#{keetNominasFiltro.attrs.tipo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:selectOneMenu id="tipo" value="#{keetNominasFiltro.attrs.idTipoNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetNominasFiltro.attrs.tipos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
@@ -163,13 +177,36 @@
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{keetNominasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
-            <p:menuitem id="reprocesar" action="#{keetNominasFiltro.doAccion('COMPLETO')}" icon="fa fa-refresh" ajax="false" value="Registrar pago" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() lt 3? '': 'none'}" />										
-            <p:menuitem id="exportar" action="#{keetNominasFiltro.doAccion('EXPORTAR')}" icon="fa fa-file-excel-o" ajax="false" value="Liquidar deudas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>										
-						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() lt 3? '': 'none'}"/>
-            <p:menuitem id="reporte" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
+            <p:menuitem id="reprocesar" action="#{keetNominasFiltro.doAccion('REPROCESAR')}" icon="fa fa-refresh" ajax="false" value="Re-procesar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() lt 3? '': 'none'}" />										
+            <p:menuitem id="exportar" actionListener="#{keetNominasFiltro.doExportar}" icon="fa fa-file-excel-o" ajax="false" value="Exportar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>										
+						<p:separator rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus eq '2'}"/>
+						<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus eq '2'}"/>
+						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+            <p:menuitem id="reporte" actionListener="#{keetNominasFiltro.doReporte}" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
           </p:contextMenu>
         </div>
       </div>
     </div>		           				
   </ui:define>    
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la nómina" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
+			<h:form id="formDialogoEstatus" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+					<p:selectOneMenu id="estatusDlg" value="#{keetNominasFiltro.attrs.estatusDlg}" styleClass="janal-wid-100-txt">															
+						<f:selectItems value="#{keetNominasFiltro.attrs.allEstatus}"/>					
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:panelGrid id="salida" columns="1" layout="grid" styleClass="janal-wid-99" style="height:250px !important;overflow-y: auto" columnClasses="janal-wid-100">				
+					<p:outputLabel for="justificacion" value="Justificación"/>
+					<p:inputTextarea id="justificacion" value="#{keetNominasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="1"/>														
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" actionListener="#{keetNominasFiltro.doActualizarEstatus}" onstart="return validaJustificacion();" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();janal.restore();janal.refresh();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
 </ui:composition>

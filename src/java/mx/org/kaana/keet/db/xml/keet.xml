@@ -971,6 +971,17 @@
         where      
           id_nomina_periodo = {idNominaPeriodo} and id_empresa = {idEmpresa} and id_tipo_nomina = {idTipoNomina}
       </select>
+      <select id="ultima">
+        select      
+          *
+        from      
+          tc_keet_nominas
+        where      
+          id_tipo_nomina = 1
+				  and id_nomina_estatus in (1, 2)
+			  order by
+				  id_nomina_estatus desc
+      </select>
     </unit>		
     <unit id="TcKeetNominasBitacoraDto">
       <select id="row">

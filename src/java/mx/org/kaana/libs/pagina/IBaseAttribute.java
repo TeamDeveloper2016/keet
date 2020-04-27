@@ -3,6 +3,7 @@ package mx.org.kaana.libs.pagina;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,6 +70,10 @@ public abstract class IBaseAttribute implements Serializable {
 	}
 	
   public String doFechaEstandar(LocalDateTime fecha) {
+		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
+	}
+	
+  public String doFechaEstandar(LocalDate fecha) {
 		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
 	}
 	

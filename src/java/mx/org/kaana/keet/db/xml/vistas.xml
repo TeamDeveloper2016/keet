@@ -107,6 +107,23 @@
 				order by
 					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave				
 			</select>
+			<select id="nominas">
+        select
+					distinct(tc_keet_nominas_periodos.ejercicio) as id_key,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden< 10, '0', ''), tc_keet_nominas_periodos.orden) as nombre,
+					tc_keet_nominas_periodos.ejercicio,
+					tc_keet_nominas_periodos.orden as semana
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+					tc_keet_nominas.id_empresa in ({sucursales})
+					and tc_keet_nominas.id_tipo_nomina= {idTipoNomina}
+					and tc_keet_nominas_periodos.ejercicio&gt;= {ejercicio}
+				order by
+				  nombre desc				
+			</select>
 		</unit>
 		<unit id="VistaContratosLotesDto">
 			<select id="principal">

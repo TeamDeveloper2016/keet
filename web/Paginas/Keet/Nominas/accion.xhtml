@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Procesar nómina"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idTipoNomina': {validaciones: 'requerido', mascara: 'libre', grupo: 'tipo'},
+				'contenedorGrupos\\:idNominaPeriodo': {validaciones: 'requerido', mascara: 'libre', grupo: 'nomina'}
+			};	
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+      function cancel() {
+				janal.console('cancel: Se terminó el proceso de nómina');
+        PF('progressBar').cancel();
+        PF('progressBar').setValue(0);
+        clearInterval(window['progress']);
+      }
+      
+      function startTask() {
+        PF('progressBar').cancel();
+        PF('progressBar').setValue(0);
+        PF('progressBar').start(parseInt($('#contenedorGrupos\\:registros').html(), 10));
+				longProcess();
+      }
+			
+			function longProcess() {
+				var tuplas= parseInt($('#contenedorGrupos\\:tuplas').html().replace(/[,]/g, ''), 10);
+				if(tuplas> 1000) {
+  				janal.console("progreso.longProcess(): Entro para cambiar de pagina de seguimiento");
+					setTimeout("$('#progreso').click();", 6000);
+				} // if
+			}
+		</script>
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:commandButton id="progreso" action="progreso?faces-redirect=true" process="@this" style="display: none;" immediate="true" ajax="false"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+          <p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{keetNominasAccion.doTabChange}" process="@this" update="contenedorGrupos:tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								            						            																																																
+            <p:tab title="Generales">
+							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+								<p:outputLabel for="idTipoNomina" value="Tipo nómina:"/>
+								<p:selectOneMenu id="idTipoNomina" value="#{keetNominasAccion.attrs.idTipoNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" process="@this" update="@(.nominas)" listener="#{keetNominasAccion.doLoadNominas}" onstart="return janal..partial('tipo');" oncomplete="janal.desbloquear()"/> 
+									<f:selectItems value="#{keetNominasAccion.attrs.tipos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>	
+								<p:outputLabel for="idNominaPeriodo" value="Nómina:"/>
+								<p:selectOneMenu id="idNominaPeriodo" value="#{keetNominasAccion.attrs.idNominaPeriodo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 nominas" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" process="@this" update="@(.nominas)" listener="#{keetNominasAccion.doLoadNomina}" onstart="return janal.partial('nomina');" oncomplete="janal.desbloquear()"/> 
+									<f:selectItems value="#{keetNominasAccion.attrs.nominas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+									<p:column headerText="Ejercicio">
+										<h:outputText value="#{item.ejercicio}"/>
+									</p:column>   
+									<p:column headerText="Semana">
+										<h:outputText value="#{item.semana}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-column-center">
+									<p:outputLabel for="inicio" value="Inicio:"/>
+									<p:outputLabel for="termino" value="Término:"/>
+									<p:inputText id="fechaFin" value="#{keetNominasAccion.doFechaEstandar(keetNominasAccion.attrs.nomina.inicio)}" styleClass="janal-wid-100-txt nominas" readonly="true"/>
+									<p:inputText id="fechaFin" value="#{keetNominasAccion.doFechaEstandar(keetNominasAccion.attrs.nomina.termino)}" styleClass="janal-wid-100-txt nominas" readonly="true"/>
+								</p:panelGrid>
+								<p:outputLabel for="observaciones" value="Observaciones:"/>
+								<p:inputTextarea id="observaciones" value="#{keetNominasAccion.attrs.nomina.observaciones}" rows="2" styleClass="janal-wid-100-txt nominas"/>
+							</p:panelGrid>
+              <p:panel styleClass="tabla-filtro" id="barra">
+                Proceso:
+                <p:progressBar interval="10000" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true">
+                  <p:ajax event="complete" listener="#{keetNominasAccion.doCompleto}"/>  
+                </p:progressBar>  			
+              </p:panel>
+							<p:outputLabel id="registros" value="#{keetNominasAccion.attrs.tuplas}" styleClass="importado" style="display: none"/>
+            </p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" action="#{keetNominasAccion.doAceptar}" onstart="if(janal.execute()){ startTask(); return janal.bloquear(); } else return false;" oncomplete="cancel(); janal.desbloquear();" disabled="#{empty keetNominasAccion.attrs.alias}" styleClass="importado"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{keetNominasAccion.doCancelar}" ajax="false" onstart="cancel(); return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.importado)" action="#{keetNominasAccion.doAceptar}" onstart="if(janal.execute()){ startTask(); return janal.bloquear(); } else return false;" oncomplete="cancel(); janal.desbloquear();" disabled="#{empty keetNominasAccion.attrs.alias}" styleClass="importado"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{keetNominasAccion.doCancelar}" ajax="false" onstart="cancel(); return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

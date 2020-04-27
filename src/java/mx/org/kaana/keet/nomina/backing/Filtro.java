@@ -4,25 +4,32 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
+import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 
 @Named(value = "keetNominasFiltro")
@@ -111,25 +118,29 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
-      JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-      JsfBase.setFlashAttribute("idNomina", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase())); 
+//			if(eaccion.equals(EAccion.AGREGAR)) {
+//				TcKeetNominasDto nomina= (TcKeetNominasDto)DaoFactory.getInstance().toEntity(TcKeetNominasDto.class, "TcKeetNominasDto", "ultima", Collections.EMPTY_MAP);
+//				if(nomina!= null) {
+//          JsfBase.setFlashAttribute("idNomina", nomina.getKey());
+//          JsfBase.setFlashAttribute("idNominaEstatus", nomina.getIdNominaEstatus());
+//				} // if
+//			} // if
+//			else {
+//        JsfBase.setFlashAttribute("idNomina",((Entity)this.attrs.get("seleccionado")).getKey());
+//        JsfBase.setFlashAttribute("idNominaEstatus", ((Entity) this.attrs.get("seleccionado")).toLong("idNominaEstatus"));
+//			} // else
+			JsfBase.setFlashAttribute("idNomina",  eaccion.equals(EAccion.AGREGAR)? -1L: ((Entity)this.attrs.get("seleccionado")).getKey());
       JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nomina/filtro");
 			switch (eaccion){
-				case SUBIR:
-				  regresar= "importar".concat(Constantes.REDIRECIONAR);	
-				break;
-				case CONSULTAR:
-				case MODIFICAR:
 				case AGREGAR:
 				  regresar= "accion".concat(Constantes.REDIRECIONAR);
 					break;
-				case REGISTRAR:
-					JsfBase.setFlashAttribute("isLiquidar", false);
-				case COMPLETO:
-				  regresar= "/Paginas/Keet/Prestamos/Pagos/accion".concat(Constantes.REDIRECIONAR);
+				case REPROCESAR:
+				  regresar= "accion".concat(Constantes.REDIRECIONAR);
 					break;
-				case MOVIMIENTOS:
-				  regresar= "/Paginas/Keet/Prestamos/Pagos/filtro".concat(Constantes.REDIRECIONAR);
+				case CONSULTAR:
+				  regresar= "consultar".concat(Constantes.REDIRECIONAR);
 					break;
 			} // switch
     } // try
@@ -158,8 +169,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("tc_keet_nominas_periodos.ejercicio = ").append(((UISelectEntity)this.attrs.get("ejercicio")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("semana")) && ((UISelectEntity)this.attrs.get("semana")).getKey()>= 1L)				
 			sb.append("tc_keet_nominas_periodos.orden = ").append(((UISelectEntity)this.attrs.get("semana")).getKey()).append(" and ");
-		if(!Cadena.isVacio(this.attrs.get("tipo")) && ((UISelectEntity)this.attrs.get("tipo")).getKey()>= 1L)				
-			sb.append("tc_keet_nomina.id_tipo_nomina= ").append(((UISelectEntity)this.attrs.get("tipo")).getKey()).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("idTipoNomina")) && ((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()>= 1L)				
+			sb.append("tc_keet_nomina.id_tipo_nomina= ").append(((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
 			sb.append("tc_keet_nomina.id_nomina_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
 		if(sb.length()== 0)
@@ -194,5 +205,55 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		}	// finally
 	} // loadCatalogs
+
+	public void doLoadEstatus() {
+		Entity seleccionado          = null;
+		Map<String, Object>params    = null;
+		List<UISelectItem> allEstatus= null;		
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			params= new HashMap<>();			
+			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
+			allEstatus= UISelect.build("TcKeetNominasEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			this.attrs.put("allEstatus", allEstatus);
+			this.attrs.put("estatusDlg", UIBackingUtilities.toFirstKeySelectItem(allEstatus));		
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadEstatus
+	
+	public void doActualizarEstatus() {
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;
+		TcKeetNominasDto dto   = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			dto= (TcKeetNominasDto) DaoFactory.getInstance().findById(TcKeetNominasDto.class, seleccionado.getKey());
+			dto.setIdNominaEstatus(Long.valueOf(this.attrs.get("estatusDlg").toString()));
+			transaccion= null; // new Transaccion(incidente);
+			if(transaccion.ejecutar(EAccion.ASIGNAR)) 			
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);			
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally {
+			this.attrs.put("justificacion", "");			
+		} // finally
+	}	// doActualizaEstatus
+	
+  public void doExportar() {
+	}	
+	
+	public void doReporte() {
+	}
 	
 }
