@@ -4,6 +4,20 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaNominaDto">
+			<select id="semana">
+				select
+					max(tc_keet_nominas_periodos.orden) as semana
+				from
+					tc_keet_nominas
+				inner join
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+					tc_keet_nominas.id_tipo_nomina= 1
+					and tc_keet_nominas.id_nomina_estatus= 1
+			</select>
+		</unit>
+			
 		<unit id="VistaContratosLotesDto">
 			<select id="principal">
 				select 
