@@ -150,8 +150,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(this.attrs.get("idNomina")!= null && !Cadena.isVacio(this.attrs.get("idNomina")))
 			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
-		sb.append("date_format(tc_keet_nominas_periodos.inicio, '%Y%m%d')<= '").append(fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
-		sb.append("date_format(tc_keet_nominas_periodos.termino, '%Y%m%d')>= '").append(fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+		if(!Cadena.isVacio(this.fecha)) {
+  		sb.append("date_format(tc_keet_nominas_periodos.inicio, '%Y%m%d')<= '").append(fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+	  	sb.append("date_format(tc_keet_nominas_periodos.termino, '%Y%m%d')>= '").append(fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+		} // if
 		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && ((UISelectEntity)this.attrs.get("ejercicio")).getKey()>= 1L)				
 			sb.append("tc_keet_nominas_periodos.ejercicio = ").append(((UISelectEntity)this.attrs.get("ejercicio")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("semana")) && ((UISelectEntity)this.attrs.get("semana")).getKey()>= 1L)				
@@ -171,8 +173,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
 		try {
 			this.loadEmpresas();
-      fecha= LocalDate.now();
-			params = new HashMap<>();
+      // this.fecha  = LocalDate.now();
+			params= new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("ejercicios", UIEntity.seleccione("VistaNominaDto", "ejercicios", params, "ejercicio"));
