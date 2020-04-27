@@ -110,7 +110,7 @@
 			<select id="nominas">
         select
 					distinct(tc_keet_nominas_periodos.ejercicio) as id_key,
-					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden< 10, '0', ''), tc_keet_nominas_periodos.orden) as nombre,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nombre,
 					tc_keet_nominas_periodos.ejercicio,
 					tc_keet_nominas_periodos.orden as semana
 				from
