@@ -97,6 +97,18 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>														
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.ejercicio}">
+              <f:facet name="header">
+                <h:outputText value="Ejercicio"/>
+              </f:facet>
+              <h:outputText value="#{row['ejercicio']}"/>
+            </p:column>														
             <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.semana}">
               <f:facet name="header">
                 <h:outputText value="Semana"/>

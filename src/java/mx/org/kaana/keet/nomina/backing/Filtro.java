@@ -147,6 +147,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("(tc_keet_nominas.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
 			sb.append("(tc_keet_nominas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+  	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(this.attrs.get("idNomina")!= null && !Cadena.isVacio(this.attrs.get("idNomina")))
 			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
 		sb.append("date_format(tc_keet_nominas_periodos.inicio, '%Y%m%d')<= '").append(fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
