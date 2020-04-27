@@ -60,7 +60,7 @@ public class Semanas {
 		return this.end== null? LocalDate.of(this.year, this.month, this.day): this.end;
 	}
 	
-	public int getSemana() throws Exception {
+	public int getSemanaActual() throws Exception {
 	  int regresar= 1;
 		Value data= DaoFactory.getInstance().toField("TcKeetNominasPeriodosDto", "semana", Collections.EMPTY_MAP, "semana");
 		if(data!= null && data.getData()!= null) 
@@ -68,7 +68,7 @@ public class Semanas {
 		return regresar;
 	}
 	
-	public int getNominaSemana() throws Exception {
+	public int getSemana() throws Exception {
 	  int regresar= 1;
 		Value data= DaoFactory.getInstance().toField("VistaNominaDto", "semana", Collections.EMPTY_MAP, "semana");
 		if(data!= null && data.getData()!= null) 
