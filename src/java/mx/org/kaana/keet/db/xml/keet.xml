@@ -7,6 +7,24 @@
   </model>
 
   <dml>		
+    <unit id="TcKeetNominasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas
+        where      
+          id_nomina_periodo = {idNominaPeriodo} and id_tipo_nomina = {idTipoNomina}
+      </select>
+    </unit>		
     <unit id="TcKeetNominasPeriodosDto">
       <select id="row">
         select      

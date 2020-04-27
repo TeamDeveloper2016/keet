@@ -1,13 +1,10 @@
-package mx.org.kaana.keet.db.dto;
+package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -33,6 +30,8 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="fecha_dispersion")
   private LocalDate fechaDispersion;
+  @Column (name="id_nomina_estatus")
+  private Long idNominaEstatus;
   @Column (name="id_nomina_periodo")
   private Long idNominaPeriodo;
   @Column (name="id_usuario")
@@ -53,12 +52,13 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetNominasDto(Long key) {
-    this(LocalDate.now(), null, null, null, new Long(-1L), LocalDate.now());
+    this(LocalDate.now(), null, null, null, null, new Long(-1L), LocalDate.now());
     setKey(key);
   }
 
-  public TcKeetNominasDto(LocalDate fechaDispersion, Long idNominaPeriodo, Long idUsuario, Long idTipoNomina, Long idNomina, LocalDate fechaPago) {
+  public TcKeetNominasDto(LocalDate fechaDispersion, Long idNominaEstatus, Long idNominaPeriodo, Long idUsuario, Long idTipoNomina, Long idNomina, LocalDate fechaPago) {
     setFechaDispersion(fechaDispersion);
+    setIdNominaEstatus(idNominaEstatus);
     setIdNominaPeriodo(idNominaPeriodo);
     setIdUsuario(idUsuario);
     setIdTipoNomina(idTipoNomina);
@@ -73,6 +73,14 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 
   public LocalDate getFechaDispersion() {
     return fechaDispersion;
+  }
+
+  public void setIdNominaEstatus(Long idNominaEstatus) {
+    this.idNominaEstatus = idNominaEstatus;
+  }
+
+  public Long getIdNominaEstatus() {
+    return idNominaEstatus;
   }
 
   public void setIdNominaPeriodo(Long idNominaPeriodo) {
@@ -140,6 +148,8 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getFechaDispersion());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdNominaEstatus());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNominaPeriodo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
@@ -159,6 +169,7 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("fechaDispersion", getFechaDispersion());
+		regresar.put("idNominaEstatus", getIdNominaEstatus());
 		regresar.put("idNominaPeriodo", getIdNominaPeriodo());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idTipoNomina", getIdTipoNomina());
@@ -171,7 +182,7 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getFechaDispersion(), getIdNominaPeriodo(), getIdUsuario(), getIdTipoNomina(), getIdNomina(), getFechaPago(), getRegistro()
+    getFechaDispersion(), getIdNominaEstatus(), getIdNominaPeriodo(), getIdUsuario(), getIdTipoNomina(), getIdNomina(), getFechaPago(), getRegistro()
     };
     return regresar;
   }
@@ -229,4 +240,7 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdNomina() != null ? getIdNomina().hashCode() : 0);
     return hash;
   }
+
 }
+
+
