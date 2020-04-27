@@ -26,11 +26,11 @@ public class Semanas {
 	private int top;
 	private LocalDate end;
 	
-	private Semanas() throws Exception {
+	public Semanas() throws Exception {
 		this(1);
 	}
 	
-	private Semanas(int years) throws Exception {
+	public Semanas(int years) throws Exception {
 	  Value data= DaoFactory.getInstance().toField("TcKeetNominasPeriodosDto", "ultimo", Collections.EMPTY_MAP, "ultimo");
 		if(data!= null && data.getData()!= null) {
 			LocalDate tomorrow= data.toDate().plusDays(1);
@@ -41,7 +41,7 @@ public class Semanas {
 		} // if
 	}
 	
-	private Semanas(int year, int month, int day) {
+	public Semanas(int year, int month, int day) {
 		this.year= year;
 		this.month= month;
 		this.day= day;
