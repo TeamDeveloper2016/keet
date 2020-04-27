@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.catalogos.contratos.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -21,6 +22,7 @@ import mx.org.kaana.keet.catalogos.contratos.beans.RegistroContrato;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import org.primefaces.event.SelectEvent;
 
 
 @Named(value = "keetCatalogosContratosAccion")
@@ -29,6 +31,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private RegistroContrato contrato;
+	private List<Lote> lotesOrden;
 
 	public RegistroContrato getContrato() {
 		return contrato;
@@ -147,7 +150,29 @@ public class Accion extends IBaseAttribute implements Serializable {
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion	
 	
-	
+public void onSelect(SelectEvent<Lote> event) {
+	try {
+		this.lotesOrden= new ArrayList<>();
+		for(Lote item: this.contrato.getContrato().getLotes())
+			this.lotesOrden.add(item);
+			
+  } // try
+  catch (Exception e) {
+    Error.mensaje(e);
+    JsfBase.addMessageError(e);
+  } // catch		
+}	
+
+public void onReorder() {
+	try {
+		for(int i=0; this.contrato.getContrato().getLotes().size()<i; i++)
+			this.contrato.getContrato().getLotes().get(i).setOrden(this.lotesOrden.get(i).getOrden());
+  } // try
+  catch (Exception e) {
+    Error.mensaje(e);
+    JsfBase.addMessageError(e);
+  } // catch			
+}
 
 	
 }

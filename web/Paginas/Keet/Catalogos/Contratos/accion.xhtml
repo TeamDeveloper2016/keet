@@ -66,7 +66,7 @@
 								<p:column  headerText="Prototipo" class="janal-wid-30">										
 									<p:selectOneMenu rendered="#{lote.mostar}" value="#{lote.ikPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
 										<f:selectItems value="#{keetCatalogosContratosAccion.attrs.prototipos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-										<p:ajax event="change" listener="#{keetCatalogosContratosAccion.contrato.contrato.doCalculateFecha(lote)}" process="@this tablaLotes" update="tablaLotes" />
+										<p:ajax event="change" listener="#{keetCatalogosContratosAccion.contrato.contrato.doCalculateFecha(lote)}" process="@this tablaLotes" update="tablaLotes loteOrden" />
 										<p:column headerText="Nombre">
 										  <h:outputText value="#{item.nombre}"/>
 									  </p:column>  
@@ -101,14 +101,24 @@
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.atributos}" styleClass="janal-wid-100-txt"/>
 								</p:column>								
 								<p:column  style="width:35px;text-align: center" >
-									<p:commandButton rendered="#{lote.mostar}" update="tablaLotes" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosContratosAccion.contrato.contrato.doRemoveLote}">
+									<p:commandButton rendered="#{lote.mostar}" update="tablaLotes loteOrden" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosContratosAccion.contrato.contrato.doRemoveLote}">
 										<f:setPropertyActionListener value="#{lote}" target="#{keetCatalogosContratosAccion.contrato.contrato.loteSeleccion}" />
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">
-									<p:commandButton actionListener="#{keetCatalogosContratosAccion.contrato.contrato.doAddLote}" process="@this tablaLotes" update="tablaLotes" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+									<p:commandButton actionListener="#{keetCatalogosContratosAccion.contrato.contrato.doAddLote}" process="@this tablaLotes" update="tablaLotes loteOrden" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
 								</f:facet>
 							</p:dataTable>	
+						</p:tab>	
+						<p:tab title="Ordenar siembra" >	
+							<p:orderList id="loteOrden" var="loteOrden"  value="#{keetCatalogosContratosAccion.contrato.contrato.lotes}"  itemValue="M#{loteOrden.manzana}-L#{loteOrden.lote}" controlsLocation="none" >
+								<p:ajax event="select" listener="#{keetCatalogosContratosAccion.onSelect}"/>
+								<p:ajax event="reorder" listener="#{keetCatalogosContratosAccion.onReorder}" />
+								<f:facet name="caption">Orden de priroidad de los lotes</f:facet>
+								<p:column>
+									<h:outputLabel rendered="#{loteOrden.mostar}"  value="M#{loteOrden.manzana}-L#{loteOrden.lote}" />
+								</p:column>
+							</p:orderList>
 						</p:tab>	
 					</p:tabView>
 				</div>
