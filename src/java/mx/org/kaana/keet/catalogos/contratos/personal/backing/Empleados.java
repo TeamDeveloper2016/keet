@@ -191,12 +191,21 @@ public class Empleados extends IBaseFilter implements Serializable {
 	} // toDomicilio
 	
 	public String doAccion(Entity seleccionado){
-		String regresar= null;
+		String regresar          = null;
+		EOpcionesResidente opcion= null;
 		try {
-			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente) this.attrs.get("opcionResidente"));
+			opcion= (EOpcionesResidente) this.attrs.get("opcionResidente");
+			JsfBase.setFlashAttribute("opcionResidente", opcion);
 			JsfBase.setFlashAttribute("idDesarrollo", (Long) this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("idContratoPersona", seleccionado.getKey());
-			regresar= "incidencias".concat(Constantes.REDIRECIONAR);
+			switch(opcion){
+				case INCIDENCIAS:
+					regresar= "incidencias".concat(Constantes.REDIRECIONAR);
+					break;
+				case DIAS_FERIADOS:
+					regresar= "feriados".concat(Constantes.REDIRECIONAR);
+					break;
+			} // switch			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
