@@ -19,7 +19,11 @@ public enum ETiposIncidentes {
 	BAJA             ("BAJA"            , "incidencia-rojo"),
 	REINGRESO        ("REINGRESO"       , "incidencia-verde"),
 	DEPOSITO         ("DEPOSITO"        , "incidencia-rojo"),
-	NO_DEPOSITO      ("NO DEPOSITO"     , "incidencia-verde");
+	NO_DEPOSITO      ("NO DEPOSITO"     , "incidencia-verde"),
+	DIA_FESTIVO      ("DIA FESTIVO"     , "incidencia-verde"),
+	EXEDENTE_NOMINA  ("EXCEDENTE NOMINA", "incidencia-amarilla"),
+	DIA_TRIPLE       ("DIA TRIPLE"      , "incidencia-rojo"),
+	PRESTAMO_NOMINA  ("PRESTAMO NOMINA" , "incidencia-rojo");
 	
 	private static final Map<Long, ETiposIncidentes> lookup= new HashMap<>();		
 	private String nombre;	
