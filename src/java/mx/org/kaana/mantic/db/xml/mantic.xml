@@ -5544,6 +5544,9 @@
 			<delete id="rows">
 				delete from tc_mantic_incidentes where id_incidente= {idIncidente}
 			</delete>
+			<update id="nomina">
+				update tc_mantic_incidentes set id_nomina= null where id_nomina= {idNomina}
+			</update>
     </unit>
 		<unit id="TcManticIncidentesBitacoraDto">
       <select id="row">

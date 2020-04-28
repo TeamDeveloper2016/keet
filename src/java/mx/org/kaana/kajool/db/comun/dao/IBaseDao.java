@@ -105,6 +105,8 @@ public abstract class IBaseDao<T extends IBaseDto> {
   public abstract Long deleteAll(Map params) throws Exception;
 
   public abstract Long deleteAll(Session session, Map params) throws Exception;
+ 
+	public abstract Long deleteAll(Session session, String idXml, Map params) throws Exception;
 
   public abstract Long updateAll(Map params, String idSeccionXml) throws Exception;
 

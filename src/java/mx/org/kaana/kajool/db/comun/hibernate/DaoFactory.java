@@ -1173,6 +1173,30 @@ public final class DaoFactory<T extends IBaseDto> {
   }
 
   /**
+   * Elimina todos los registros de la tabla mapeada por la clase "Class dto", y que coinciden con la condicion descrita
+   * en "params". Teniendo una Session de hibernate para la persistencia de los datos.
+   *
+   * @param session Session de hibernate en la que persisten los datos.
+   * @param dto Clase dto que hace referencia a la tabla en la que se va a buscar
+   * @param idXml Nombre de id del select de la consulta a utilizar.
+   * @param params Map que contiene la condicion a evaluar en la base de datos
+   * @return Valor del Id de registro eliminado Si valor=-1, no se eliminó registro alguno
+   * @throws Exception
+   */
+  public Long deleteAll(Session session, Class dto, String idXml, Map params) throws Exception {
+    IBaseDao dao = null;
+    Long regresar = -1L;
+    try {
+      dao = new DaoFacade(dto);
+      regresar = dao.deleteAll(session, params);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    return regresar;
+  }
+
+  /**
    * Actualiza todos los registros de la tabla mapeada por la clase "Class dto", obtenidos por la consulta indicada
    * contendida en los archivos xml, definidos por las condiciones de "params"
    *

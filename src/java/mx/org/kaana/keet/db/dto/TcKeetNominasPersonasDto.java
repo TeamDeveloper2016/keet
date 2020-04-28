@@ -37,8 +37,6 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_nomina_persona")
   private Long idNominaPersona;
-  @Column (name="personas")
-  private Long personas;
   @Column (name="aportaciones")
   private Double aportaciones;
   @Column (name="percepciones")
@@ -53,16 +51,15 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetNominasPersonasDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKeetNominasPersonasDto(Double neto, Long idEmpresaPersona, Double deducciones, Long idNominaPersona, Long personas, Double aportaciones, Double percepciones, Long idNomina) {
+  public TcKeetNominasPersonasDto(Double neto, Long idEmpresaPersona, Double deducciones, Long idNominaPersona, Double aportaciones, Double percepciones, Long idNomina) {
     setNeto(neto);
     setIdEmpresaPersona(idEmpresaPersona);
     setDeducciones(deducciones);
     setIdNominaPersona(idNominaPersona);
-    setPersonas(personas);
     setAportaciones(aportaciones);
     setPercepciones(percepciones);
     setIdNomina(idNomina);
@@ -99,14 +96,6 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
 
   public Long getIdNominaPersona() {
     return idNominaPersona;
-  }
-
-  public void setPersonas(Long personas) {
-    this.personas = personas;
-  }
-
-  public Long getPersonas() {
-    return personas;
   }
 
   public void setAportaciones(Double aportaciones) {
@@ -164,8 +153,6 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNominaPersona());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPersonas());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getAportaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPercepciones());
@@ -184,7 +171,6 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
 		regresar.put("deducciones", getDeducciones());
 		regresar.put("idNominaPersona", getIdNominaPersona());
-		regresar.put("personas", getPersonas());
 		regresar.put("aportaciones", getAportaciones());
 		regresar.put("percepciones", getPercepciones());
 		regresar.put("idNomina", getIdNomina());
@@ -195,7 +181,7 @@ public class TcKeetNominasPersonasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getNeto(), getIdEmpresaPersona(), getDeducciones(), getIdNominaPersona(), getPersonas(), getAportaciones(), getPercepciones(), getIdNomina(), getRegistro()
+    getNeto(), getIdEmpresaPersona(), getDeducciones(), getIdNominaPersona(), getAportaciones(), getPercepciones(), getIdNomina(), getRegistro()
     };
     return regresar;
   }

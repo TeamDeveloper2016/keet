@@ -18,8 +18,8 @@
 					tc_keet_nominas_periodos.corte,
 					tc_keet_nominas.id_nomina_estatus,
 					tc_keet_nominas_estatus.nombre as estatus,
-					tc_keet_nominas_personas.personas,
-					tc_keet_nominas_personas.neto
+					tc_keet_nominas.personas,
+					tc_keet_nominas.neto
 				from
 					tc_keet_nominas
 				inner join 
@@ -77,7 +77,7 @@
 				select
 					tr_mantic_empresa_personal.id_empresa_persona,
 					tr_mantic_empresa_personal.clave,
-						tr_mantic_empresa_personal.sueldo_semanal
+				  tr_mantic_empresa_personal.sueldo_semanal
 				from
 					tr_mantic_empresa_personal
 				inner join 
@@ -109,7 +109,7 @@
 			</select>
 			<select id="nominas">
         select
-					distinct(tc_keet_nominas_periodos.ejercicio) as id_key,
+					tc_keet_nominas.id_nomina as id_key,
 					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nombre,
 					tc_keet_nominas_periodos.ejercicio,
 					tc_keet_nominas_periodos.orden as semana
@@ -123,6 +123,22 @@
 					and tc_keet_nominas_periodos.ejercicio&gt;= {ejercicio}
 				order by
 				  nombre desc				
+			</select>
+			<select id="nomina">
+        select
+					tc_keet_nominas.id_nomina as id_key,
+					tc_keet_nominas_periodos.*,
+				  tc_keet_nominas_estatus.id_nomina_estatus,
+				  tc_keet_nominas_estatus.nombre as estatus,
+				  tc_keet_nominas.observaciones
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				inner join 
+					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
+				where
+					tc_keet_nominas.id_nomina= {idNomina}
 			</select>
 		</unit>
 		<unit id="VistaContratosLotesDto">
