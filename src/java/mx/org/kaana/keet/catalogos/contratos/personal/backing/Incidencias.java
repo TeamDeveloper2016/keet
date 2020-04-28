@@ -104,7 +104,8 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			tiposIncidentes= UISelect.build("TcManticTiposIncidentesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
+			params.put("grupo", 1L);
+			tiposIncidentes= UISelect.build("TcManticTiposIncidentesDto", "byGrupo", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("tiposIncidentes", tiposIncidentes);
 		} // try
 		catch (Exception e) {			
@@ -132,7 +133,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		MotorBusqueda motor          = null;
 		try {
 			motor= new MotorBusqueda((Long)this.attrs.get("idContratoPersona"));
-			incidencias= motor.toIncidencias();
+			incidencias= motor.toIncidencias(1L);
 			if(!incidencias.isEmpty()){
 				for(Incidente incidente: incidencias){
 					incidente.setAccion(ESql.UPDATE);
@@ -158,10 +159,12 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 	public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
 		Incidente newIncidente           = null;
 		DefaultScheduleEvent defaultEvent= null;
+		boolean editable                 = true;
 		try {			
 			this.count++;
-			newIncidente= loadNewIncidente(selectEvent);			
-			if(verificaExistente(newIncidente)){				
+			newIncidente= loadNewIncidente(selectEvent);
+			editable= !newIncidente.getIdTipoIncidente().equals(ETiposIncidentes.FALTA.getKey());			
+			if(verificaExistente(newIncidente) && verificaExistenteAllTipos(newIncidente)){				
 				defaultEvent= DefaultScheduleEvent.builder()
 								.id(newIncidente.getIdIncidente().toString())
 								.allDay(true)
@@ -171,6 +174,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 								.startDate(newIncidente.getVigenciaInicio().atStartOfDay())
 								.endDate(newIncidente.getVigenciaFin().atStartOfDay())
 								.styleClass(ETiposIncidentes.fromId(newIncidente.getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(newIncidente.getIdIncidente().toString())))
+								.editable(editable)
 								.build();	
 				this.eventModel.addEvent(defaultEvent);
 				this.attrs.put("idSelectionEvent", ".incidencia-".concat(newIncidente.getIdIncidente().toString()));				
@@ -211,6 +215,42 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		} // catch		
 		return regresar;
 	} // verificaExistente
+	
+	private boolean verificaExistenteAllTipos(Incidente incidente) throws Exception{
+		boolean regresar           = true;
+		long totalDias             = 0L;
+		LocalDate initDate         = null;		
+		List<Incidente> incidencias= null;
+		MotorBusqueda motor        = null;
+		try {			
+			motor= new MotorBusqueda((Long)this.attrs.get("idContratoPersona"));
+			incidencias= motor.toAllIncidencias();
+			for(Incidente incidenteDelete: this.incidenciasDelete){
+				if(incidencias.indexOf(incidenteDelete)>= 0)
+					incidencias.remove(incidencias.indexOf(incidenteDelete));
+			} // for
+			totalDias= DAYS.between(incidente.getVigenciaInicio(), incidente.getVigenciaFin());
+			initDate = incidente.getVigenciaInicio();
+			if(totalDias== 0)
+				totalDias=1;
+			for(int co=0; co< totalDias; co++){				
+				for(Incidente ev: incidencias){
+					if(initDate.isEqual(ev.getVigenciaInicio()) || initDate.isEqual(ev.getVigenciaFin()) || (initDate.isAfter(ev.getVigenciaInicio()) && initDate.isBefore(ev.getVigenciaFin()))){
+						regresar= false;
+						break;
+					} // if
+				} // for
+				if(!regresar)
+					break;
+				else 
+					initDate= initDate.plusDays(1);
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // verificaExistenteAllTipos
 	
 	private Incidente loadNewIncidente(SelectEvent<LocalDateTime> selectEvent){
 		Incidente regresar= null;
@@ -279,23 +319,29 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 	
 	public void doApplyChange(){			
 		DefaultScheduleEvent defaultEvent= null;
-		try {			
-			((Incidente)this.event.getData()).setEstatus(EEstatusIncidentes.fromIdEstatusIncidente(Long.valueOf((String)this.attrs.get("idIncidenteEstatus"))).name());
-			((Incidente)this.event.getData()).setIdIncidenteEstatus(EEstatusIncidentes.fromIdEstatusIncidente(Long.valueOf((String)this.attrs.get("idIncidenteEstatus"))).getIdEstatusInicidente());			
-			((Incidente)this.event.getData()).setIdTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getKey());
-			((Incidente)this.event.getData()).setTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getNombre());			
-			defaultEvent= DefaultScheduleEvent.builder()
-								.id(this.event.getId())
-								.allDay(this.event.isAllDay())
-								.data(this.event.getData())
-								.description(((Incidente)this.event.getData()).getTipoIncidente().concat("\n ").concat(((Incidente)this.event.getData()).getEstatus()))
-								.title(((Incidente)this.event.getData()).getTipoIncidente().concat("\n ").concat(((Incidente)this.event.getData()).getEstatus()))
-								.startDate(((Incidente)this.event.getData()).getVigenciaInicio().atStartOfDay())
-								.endDate(((Incidente)this.event.getData()).getVigenciaFin().atStartOfDay())
-								.styleClass(ETiposIncidentes.fromId(((Incidente)this.event.getData()).getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString())))
-								.build();		
-			this.eventModel.updateEvent(defaultEvent);
-			this.attrs.put("idSelectionEvent", ".incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString()));				
+		Incidente incidente              = null;
+		try {		
+			incidente= ((Incidente)this.event.getData());			
+			if(!ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).equals(ETiposIncidentes.FALTA) || (DAYS.between(incidente.getVigenciaInicio(), incidente.getVigenciaFin())== 0 && ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).equals(ETiposIncidentes.FALTA))){
+				((Incidente)this.event.getData()).setEstatus(EEstatusIncidentes.fromIdEstatusIncidente(Long.valueOf((String)this.attrs.get("idIncidenteEstatus"))).name());
+				((Incidente)this.event.getData()).setIdIncidenteEstatus(EEstatusIncidentes.fromIdEstatusIncidente(Long.valueOf((String)this.attrs.get("idIncidenteEstatus"))).getIdEstatusInicidente());			
+				((Incidente)this.event.getData()).setIdTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getKey());
+				((Incidente)this.event.getData()).setTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getNombre());			
+				defaultEvent= DefaultScheduleEvent.builder()
+									.id(this.event.getId())
+									.allDay(this.event.isAllDay())
+									.data(this.event.getData())
+									.description(((Incidente)this.event.getData()).getTipoIncidente().concat("\n ").concat(((Incidente)this.event.getData()).getEstatus()))
+									.title(((Incidente)this.event.getData()).getTipoIncidente().concat("\n ").concat(((Incidente)this.event.getData()).getEstatus()))
+									.startDate(((Incidente)this.event.getData()).getVigenciaInicio().atStartOfDay())
+									.endDate(((Incidente)this.event.getData()).getVigenciaFin().atStartOfDay())
+									.styleClass(ETiposIncidentes.fromId(((Incidente)this.event.getData()).getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString())))
+									.build();		
+				this.eventModel.updateEvent(defaultEvent);
+				this.attrs.put("idSelectionEvent", ".incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString()));				
+			} // if
+			else
+				JsfBase.addAlert("Actualizar falta", "La captura de las faltas solo deben de ser por un día.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -331,7 +377,8 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 	public void onEventResize(ScheduleEntryResizeEvent event) {
 		try {
 			this.event= event.getScheduleEvent();
-			updateEvent();
+			if(!ETiposIncidentes.fromId(((Incidente)this.event.getData()).getIdTipoIncidente()).equals(ETiposIncidentes.FALTA))
+				updateEvent();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
