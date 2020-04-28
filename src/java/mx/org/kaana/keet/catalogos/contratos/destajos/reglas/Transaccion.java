@@ -74,7 +74,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setPeriodo(toPeriodo());
 			dto.setIdEstacion(this.idEstacion);
 			dto.setIdContratoLoteContratista(this.idFigura);
-			dto.setIdNomina(toIdNomina());
+			dto.setIdNomina(null);
 			dto.setCosto(0D);
 			dto.setPorcentaje(0D);
 			dto.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
@@ -110,7 +110,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setPeriodo(toPeriodo());
 			dto.setIdEstacion(this.idEstacion);
 			dto.setIdContratoLoteProveedor(this.idFigura);
-			dto.setIdNomina(toIdNomina());
+			dto.setIdNomina(null);
 			dto.setCosto(0D);
 			dto.setPorcentaje(0D);
 			dto.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
@@ -194,11 +194,7 @@ public class Transaccion extends IBaseTnx {
 	
 	private Long toPeriodo(){
 		return 1L;
-	} // toPeriodo
-	
-	private Long toIdNomina(){
-		return 1L;
-	} // toPeriodo
+	} // toPeriodo	
 	
 	private Long toIdEstacionEstatus(TcKeetEstacionesDto estacion, Double costoActual){
 		Long regresar   = -1L;		
