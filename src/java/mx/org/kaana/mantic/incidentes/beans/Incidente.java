@@ -23,16 +23,17 @@ public class Incidente implements Serializable{
 	private String puesto;
 	private ESql accion;
 	private String estatusAsociados;
+	private Double costo;
 
 	public Incidente() {
-		this(-1L, -1L, -1L, -1L, LocalDate.now(), LocalDate.now(), "", -1L, null, null, null, null, null, ESql.UPDATE, null);
+		this(-1L, -1L, -1L, -1L, LocalDate.now(), LocalDate.now(), "", -1L, null, null, null, null, null, ESql.UPDATE, null, null);
 	}
 
 	public Incidente(TcManticIncidentesDto dto){
-		this(dto.getIdIncidente(), dto.getIdEmpresaPersona(), dto.getIdTipoIncidente(), dto.getIdIncidenteEstatus(), dto.getVigenciaInicio(), dto.getVigenciaFin(), dto.getObservaciones(), dto.getIdDesarrollo(), null, null, null, null, null, ESql.UPDATE, null);
+		this(dto.getIdIncidente(), dto.getIdEmpresaPersona(), dto.getIdTipoIncidente(), dto.getIdIncidenteEstatus(), dto.getVigenciaInicio(), dto.getVigenciaFin(), dto.getObservaciones(), dto.getIdDesarrollo(), null, null, null, null, null, ESql.UPDATE, null, dto.getCosto());
 	}
 	
-	public Incidente(Long idIncidente, Long idEmpresaPersona, Long idTipoIncidente, Long idIncidenteEstatus, LocalDate vigenciaInicio, LocalDate vigenciaFin, String observaciones, Long idDesarrollo, String nombre, String tipoIncidente, String nombreUsuario, String estatus, String puesto, ESql accion, String estatusAsociados) {
+	public Incidente(Long idIncidente, Long idEmpresaPersona, Long idTipoIncidente, Long idIncidenteEstatus, LocalDate vigenciaInicio, LocalDate vigenciaFin, String observaciones, Long idDesarrollo, String nombre, String tipoIncidente, String nombreUsuario, String estatus, String puesto, ESql accion, String estatusAsociados, Double costo) {
 		this.idIncidente       = idIncidente;
 		this.idEmpresaPersona  = idEmpresaPersona;
 		this.idTipoIncidente   = idTipoIncidente;
@@ -163,4 +164,34 @@ public class Incidente implements Serializable{
 	public void setEstatusAsociados(String estatusAsociados) {
 		this.estatusAsociados = estatusAsociados;
 	}	
+
+	public Double getCosto() {
+		return costo;
+	}
+
+	public void setCosto(Double costo) {
+		this.costo = costo;
+	}
+
+	@Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Incidente other = (Incidente) obj;
+    if (getIdIncidente() != other.idIncidente && (getIdIncidente() == null || !getIdIncidente().equals(other.idIncidente))) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 67 * hash + (getIdIncidente() != null ? getIdIncidente().hashCode() : 0);
+    return hash;
+  }
 }
