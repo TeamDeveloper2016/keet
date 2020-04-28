@@ -116,6 +116,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		Map<String, Object>params       = null;
 		try {
 			params= new HashMap<>();
+			params.put("grupo", ((EOpcionesResidente)this.attrs.get("opcionResidente")).equals(EOpcionesResidente.INCIDENCIAS) ? 1L : 3L);						
 			params.put("idEmpresaPersona", (Long)this.attrs.get("idEmpresaPersona"));						
 			incidencias= UIEntity.seleccione("VistaIncidentesDto", "incidenciasPersonal", params, "consecutivo");			
       this.attrs.put("incidencias", incidencias);			
