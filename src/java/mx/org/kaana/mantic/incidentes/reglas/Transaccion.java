@@ -143,6 +143,8 @@ public class Transaccion extends IBaseTnx {
 			if(this.incidente.getIdDesarrollo()!= null && this.incidente.getIdDesarrollo() > 0)
 				dto.setIdDesarrollo(this.incidente.getIdDesarrollo());
 			dto.setIdEmpresaPersona(this.incidente.getIdEmpresaPersona());
+			if(this.incidente.getCosto()!= null && this.incidente.getCosto()>0D)
+				dto.setCosto(this.incidente.getCosto());
 			dto.setIdTipoIncidente(this.incidente.getIdTipoIncidente());
 			dto.setIdUsuario(JsfBase.getIdUsuario());
 			dto.setObservaciones(this.incidente.getObservaciones());
