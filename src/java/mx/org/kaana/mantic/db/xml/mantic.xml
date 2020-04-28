@@ -5580,6 +5580,19 @@
 				  tc_mantic_tipos_incidentes.grupo= 1
 					and {condicion}
 			</select>
+			<select id="byGrupo">
+				select 
+					tc_mantic_tipos_incidentes.id_tipo_incidente as id_key,
+					tc_mantic_tipos_incidentes.id_tipo_incidente,
+					tc_mantic_tipos_incidentes.nombre,
+					tc_mantic_tipos_incidentes.descripcion,
+					tc_mantic_tipos_incidentes.registro
+				from 
+					tc_mantic_tipos_incidentes
+				where 
+				  tc_mantic_tipos_incidentes.grupo= {grupo}
+					and {condicion}
+			</select>
 		</unit>
 		<unit id="TcManticIncidentesEstatusDto">
 			<select id="estatus">
