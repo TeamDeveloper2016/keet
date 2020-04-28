@@ -73,7 +73,7 @@
 					tc_keet_nominas.id_tipo_nomina= 1
 					and tc_keet_nominas.id_nomina_estatus= 1
 			</select>
-			<select id="personal">
+			<select id="todos">
 				select
 					tr_mantic_empresa_personal.id_empresa_persona,
 					tr_mantic_empresa_personal.clave,
@@ -90,22 +90,45 @@
 					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave
 			</select>
 			<select id="complementaria">
-				select
+        select
 					tr_mantic_empresa_personal.id_empresa_persona,
 					tr_mantic_empresa_personal.clave,
-						tr_mantic_empresa_personal.sueldo_semanal
+					tr_mantic_empresa_personal.sueldo_semanal
 				from
 					tr_mantic_empresa_personal
 				inner join 
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-				left join
-					tc_keet_nominas_personas on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_nominas_personas.id_empresa_persona
 				where
 					tr_mantic_empresa_personal.id_empresa in ({sucursales})
 					and tr_mantic_empresa_personal.id_activo= 1
 					and tc_mantic_personas.id_tipo_persona!= 1
+				  and tr_mantic_empresa_personal.id_empresa_persona not in (
+				    select
+				      tc_keet_nominas_personas.id_empresa_persona
+				    from 
+				      tc_keet_nominas_personas 
+				    where
+				      tc_keet_nominas_personas.id_nomina= {idNomina}
+				 )
 				order by
-					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave				
+					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave	
+			</select>
+			<select id="persona">
+				select
+					tr_mantic_empresa_personal.id_empresa_persona,
+					tr_mantic_empresa_personal.clave,
+				  tr_mantic_empresa_personal.sueldo_semanal
+				from
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				where
+					tr_mantic_empresa_personal.id_empresa in ({sucursales})
+					and tr_mantic_empresa_personal.id_activo= 1
+					and tc_mantic_personas.id_tipo_persona!= 1
+				  and tr_mantic_empresa_personal.id_empresa_persona= {idEmpresaPersona}
+				order by
+					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave
 			</select>
 			<select id="nominas">
         select

@@ -1178,7 +1178,85 @@ c			<select id="periodo">
 				  tc_keet_nominas.id_nomina= {idNomina}
 				  and tc_keet_nominas_personas.id_empresa_persona= {idEmpresaPersona}
 			</delete>
+    </unit>
+    <unit id="TcKeetNominasProveedoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_proveedores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_proveedores
+        where      
+          id_proveedor = {idProveedor} and id_nomina = {idNomina}
+      </select>
+			<delete id="nomina">
+				delete 
+				  tc_keet_nominas_proveedores 
+			  from 	
+			    tc_keet_nominas_proveedores 
+				where 
+				  id_nomina= {idNomina}				
+			</delete>
+			<delete id="proveedor">
+				delete 
+				  tc_keet_nominas_proveedores 
+			  from 	
+			    tc_keet_nominas_proveedores 
+				where 
+				  id_nomina= {idNomina}
+				  and id_proveedor= {idProveedor}
+			</delete>
     </unit>		
+    <unit id="TcKeetNominasRubrosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_rubros
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_rubros
+        where      
+          id_nomina_proveedor = {idNominaProveedor} and id_rubro = {idRubro}
+      </select>
+			<delete id="nomina">
+				delete
+				  tc_keet_nominas_rubros 
+				from 
+				  tc_keet_nominas_rubros 
+			  inner join
+				  tc_keet_nominas_proveedores on tc_keet_nominas_rubros.id_nomina_proveedor= tc_keet_nominas_proveedores.id_nomina_proveedor
+			  inner join
+				  tc_keet_nominas on tc_keet_nominas_proveedores.id_nomina= tc_keet_nominas.id_nomina
+				where 
+				  tc_keet_nominas.id_nomina= {idNomina}				
+			</delete>
+			<delete id="proveedor">
+				delete
+				  tc_keet_nominas_rubros 
+				from 
+				  tc_keet_nominas_rubros 
+			  inner join
+				  tc_keet_nominas_proveedores on tc_keet_nominas_rubros.id_nomina_proveedor= tc_keet_nominas_proveedores.id_nomina_proveedor
+			  inner join
+				  tc_keet_nominas on tc_keet_nominas_proveedores.id_nomina= tc_keet_nominas.id_nomina
+				where 
+				  tc_keet_nominas.id_nomina= {idNomina}				
+				  and tc_keet_nominas_proveedores.id_proveedor= {idProveedor}
+			</delete>
+    </unit>				
     <unit id="TcKeetPersonasBancosDto">
       <select id="row">
         select      
@@ -2038,6 +2116,17 @@ c			<select id="periodo">
 				  id_nomina= null 
 				where 
 				  id_nomina= {idNomina}
+			</update>
+			<update id="proveedor">
+				update 
+				  tc_keet_contratos_destajos_proveedores 
+				inner join
+				  tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+				set 
+				  tc_keet_contratos_destajos_proveedores.id_nomina= null 
+				where 
+				  tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina}
+				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}
 			</update>
     </unit>
   </dml>    

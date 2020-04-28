@@ -1188,7 +1188,7 @@ public final class DaoFactory<T extends IBaseDto> {
     Long regresar = -1L;
     try {
       dao = new DaoFacade(dto);
-      regresar = dao.deleteAll(session, params);
+      regresar = dao.deleteAll(session, idXml, params);
     } // try
     catch (Exception e) {
       throw e;
