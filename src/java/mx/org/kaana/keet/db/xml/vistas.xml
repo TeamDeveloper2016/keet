@@ -1746,5 +1746,48 @@
 				)final
 			</select>
 		</unit>
+		<unit id="VistaPuntosControlDto">
+			<select id="lazy">
+				select 
+					tc_keet_puntos_controles.id_punto_control id_key,
+					tc_keet_puntos_controles.nombre,
+					tc_keet_puntos_controles.factor,
+					tc_keet_puntos_grupos.descripcion paquete,
+					tc_keet_departamentos.descripcion departamento, 
+					tc_keet_puntos_controles.registro
+				from tc_keet_puntos_controles
+					inner join tc_keet_puntos_paquetes on tc_keet_puntos_paquetes.id_punto_control= tc_keet_puntos_controles.id_punto_control
+					inner join tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo= tc_keet_puntos_paquetes.id_punto_grupo
+					inner join tc_keet_departamentos on tc_keet_departamentos.id_departamento= tc_keet_puntos_grupos.id_departamento
+				where
+				  {condicion}	
+				{sortOrder}	
+			</select>
+			<select id="persona">
+				select
+					tc_keet_prestamos_pagos.id_prestamo_pago id_key,
+				  tc_keet_prestamos.consecutivo as prestamo,
+					tc_keet_prestamos_pagos.consecutivo,
+					tc_keet_prestamos_pagos.pago,
+					tc_keet_prestamos_pagos.abono,
+					tc_keet_prestamos_pagos.abono as abonos,
+					tc_keet_prestamos_pagos.cambio,
+				  tc_keet_prestamos.saldo,
+					tc_keet_prestamos_pagos.observaciones,
+					tc_keet_prestamos_pagos.registro,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario
+				from
+					tc_keet_prestamos_pagos
+				inner join 
+				  tc_keet_prestamos on tc_keet_prestamos_pagos.id_prestamo= tc_keet_prestamos.id_prestamo
+				inner join 
+					tc_janal_usuarios on tc_keet_prestamos_pagos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  tc_keet_prestamos.id_deudor= {idDeudor}
+				{sortOrder}	
+			</select>
+		</unit>	
 	</dml>    
 </process>
