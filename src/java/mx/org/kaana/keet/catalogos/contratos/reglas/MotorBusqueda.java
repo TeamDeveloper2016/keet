@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.catalogos.contratos.reglas;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,9 @@ import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.beans.Contrato;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoPersonal;
 import mx.org.kaana.keet.catalogos.contratos.contratistas.beans.ContratistaLote;
+import mx.org.kaana.keet.db.dto.TcKeetDiasFestivosDto;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -130,13 +133,48 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toPersonasDisponibles	
 	
-	public List<Incidente> toIncidencias() throws Exception{
+	public List<Incidente> toIncidencias(Long grupo) throws Exception{
 		List<Incidente> regresar= null;
 		Map<String, Object>params= null;
 		try {
 		  params= new HashMap<>();
 			params.put("idContratoPersona", this.idPivote);						
+			params.put("grupo", grupo);						
 			regresar= DaoFactory.getInstance().toEntitySet(Incidente.class, "VistaIncidentesDto", "personalDesarrollo", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toInicidencias
+	
+	public List<Incidente> toAllIncidencias() throws Exception{
+		List<Incidente> regresar= null;
+		Map<String, Object>params= null;
+		try {
+		  params= new HashMap<>();
+			params.put("idContratoPersona", this.idPivote);									
+			regresar= DaoFactory.getInstance().toEntitySet(Incidente.class, "VistaIncidentesDto", "allPersonalDesarrollo", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toInicidencias
+	
+	public List<TcKeetDiasFestivosDto> toAllDiasFeriados() throws Exception{
+		List<TcKeetDiasFestivosDto> regresar= null;
+		Map<String, Object>params= null;
+		try {
+		  params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "ejercicio='"+Fecha.getAnioActual()+"'");									
+			regresar= DaoFactory.getInstance().toEntitySet(TcKeetDiasFestivosDto.class, "TcKeetDiasFestivosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {			
 			throw e;
