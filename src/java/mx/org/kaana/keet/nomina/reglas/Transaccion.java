@@ -40,6 +40,7 @@ public class Transaccion extends IBaseTnx {
 	private Long idNomina;
 	private Autentifica autentifica;
 	private Long idEmpresaPersona;
+	private Long idProveedor;
 	private String messageError;
 	private TcKeetNominasDto nomina;
 	
@@ -48,13 +49,14 @@ public class Transaccion extends IBaseTnx {
 	}
 
 	public Transaccion(Long idNomina, Autentifica autentifica) {
-		this(idNomina, autentifica, -1L);
+		this(idNomina, autentifica, -1L, -1L);
 	}
 	
-	public Transaccion(Long idNomina, Autentifica autentifica, Long idEmpresaPersona) {
-		this.idNomina   = idNomina;
+	public Transaccion(Long idNomina, Autentifica autentifica, Long idEmpresaPersona, Long idProveedor) {
+		this.idNomina= idNomina;
 		this.autentifica= autentifica;
 		this.idEmpresaPersona= idEmpresaPersona;
+		this.idProveedor= idProveedor;
 	}
 
 	@Override
@@ -91,7 +93,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;	
   }
 
-	private TcKeetNominasPersonasDto exist(Session sesion, Long idEmpresaPersona) throws Exception {
+	private TcKeetNominasPersonasDto existPersona(Session sesion, Long idEmpresaPersona) throws Exception {
 		TcKeetNominasPersonasDto regresar= null;
     Map<String, Object> params= null;
 		try {		
@@ -99,6 +101,21 @@ public class Transaccion extends IBaseTnx {
 			params.put("idNomina", this.idNomina);
 			params.put("idEmpresaPersona", idEmpresaPersona);
 			regresar= (TcKeetNominasPersonasDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasPersonasDto.class, "TcKeetNominasPersonasDto", "identically", params);
+    } // try
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	private TcKeetNominasProveedoresDto existProveedor(Session sesion, Long idProveedor) throws Exception {
+		TcKeetNominasProveedoresDto regresar= null;
+    Map<String, Object> params= null;
+		try {		
+			params= new HashMap<>();
+			params.put("idNomina", this.idNomina);
+			params.put("idProveedor", idProveedor);
+			regresar= (TcKeetNominasProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasProveedoresDto.class, "TcKeetNominasProveedoresDto", "identically", params);
     } // try
 		finally {
 			Methods.clean(params);
@@ -187,7 +204,7 @@ public class Transaccion extends IBaseTnx {
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", proceso, params);
 			int count= 1;
 			for (Entity persona: personal) {
-				empleado= this.exist(sesion, persona.toLong("idEmpresaPersona"));
+				empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
 				if(empleado== null) {
 					empleado= new TcKeetNominasPersonasDto(
 						0D, // Double neto, 
@@ -226,7 +243,7 @@ public class Transaccion extends IBaseTnx {
 			int count= 1;
 			this.cleanNomina(sesion);
 			for (Entity persona: personal) {
-				empleado= this.exist(sesion, persona.toLong("idEmpresaPersona"));
+				empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
 				if(empleado== null) {
 					empleado= new TcKeetNominasPersonasDto(
 						0D, // Double neto, 
@@ -254,7 +271,7 @@ public class Transaccion extends IBaseTnx {
 		} // finally		
 	}
 	
-	private void individual(Session sesion) throws Exception {
+	private void persona(Session sesion) throws Exception {
 		Map<String, Object> params       = null;
 		TcKeetNominasPersonasDto empleado= null;
 		try {
@@ -263,11 +280,11 @@ public class Transaccion extends IBaseTnx {
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
 			params.put("idEmpresaPersona", this.idEmpresaPersona);
-			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "persona", params);
+			List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "persona", params);
 			int count= 1;
 			this.cleanPersona(sesion, this.idEmpresaPersona);
-			for (Entity persona: personal) {
-				empleado= this.exist(sesion, persona.toLong("idEmpresaPersona"));
+			for (Entity persona: personas) {
+				empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
 				if(empleado== null) {
 					empleado= new TcKeetNominasPersonasDto(
 						0D, // Double neto, 
@@ -280,7 +297,41 @@ public class Transaccion extends IBaseTnx {
 					);
 					this.calculos(sesion, empleado);
 			  } // if
-				LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
+				LOG.info("["+ count+ " de "+ personas.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
+			  count++;
+			} // for
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally		
+	}
+	
+	private void proveedor(Session sesion) throws Exception {
+		Map<String, Object> params          = null;
+		TcKeetNominasProveedoresDto proveedor= null;
+		try {
+			params= new HashMap<>();
+			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
+			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
+			params.put("idNomina", this.idNomina);
+			params.put("idProveedor", this.idProveedor);
+			List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "proveedor", params);
+			int count= 1;
+			this.cleanPersona(sesion, this.idProveedor);
+			for (Entity persona: personas) {
+				proveedor= this.existProveedor(sesion, persona.toLong("idProveedor"));
+				if(proveedor== null) {
+					proveedor= new TcKeetNominasProveedoresDto(
+						persona.toLong("idProveedor") , // Long idProveedor,
+						0D, // Double total, 
+						-1L, // Long idNominaProveedor, 
+						0D, // Double iva, 
+						0D, // Double subtotal, 
+						this.idNomina // Long idNomina
+					);
+					this.calculos(sesion, proveedor);
+			  } // if
+				LOG.info("["+ count+ " de "+ personas.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ proveedor);
 			  count++;
 			} // for
 		} // try
@@ -295,6 +346,18 @@ public class Transaccion extends IBaseTnx {
 			params=new HashMap<>();
 			
 			DaoFactory.getInstance().insert(sesion, empleado);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
+	public void calculos(Session sesion, TcKeetNominasProveedoresDto proveedor) throws Exception {
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			
+			DaoFactory.getInstance().insert(sesion, proveedor);
 		} // try
 		finally {
 			Methods.clean(params);
