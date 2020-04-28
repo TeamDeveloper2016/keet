@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Registro de incidencia al empleado" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {        				
+				'costo': {validaciones: 'requerido|min-valor({"cuanto": 1})', mascara: 'flotante'}				
+      };							
+			
+			function validateCriterios(){
+				var ok= janal.execute();
+				if(ok)
+					janal.bloquear();
+				return ok;
+			} // validateCriterios					
+			
+			function showPanelIncidencia(){
+				$('#panelIncidencia').css('display','block');
+				top.location.href = '#panelIncidencia';
+			} // showPanelIncidencia
+			
+			function hidePanelIncidencia(){
+				$('#panelIncidencia').css('display','none');
+				var text= $('#idSelectionEvent').text();
+				top.location.href = '#'.concat(text.substring(1));
+			} // hidePanelIncidencia
+			
+			function applyIdEvent(){
+				var text= $('#idSelectionEvent').text();
+				var event = $(text);
+				event.attr('id', text.substring(1));
+				top.location.href = '#'.concat(text.substring(1));
+			} // applyIdEvent
+			
+			function applyIdEventHide(){
+				$('#panelIncidencia').css('display','none');
+				var text= $('#idSelectionEvent').text();
+				var event = $(text);
+				event.attr('id', text.substring(1));
+				top.location.href = '#'.concat(text.substring(1));
+			} // applyIdEvent
+    </script>		
+		<style type="text/css">    			
+			.ui-picklist .ui-picklist-item {
+				cursor: pointer;
+				border: 0 none;
+				font-weight: inherit;
+				width: 90% !important;
+			}
+			.ui-picklist .ui-picklist-filter {
+				width: 100% !important;
+			}
+			.ui-picklist-button-add-all{
+				display: none !important
+			}
+			.ui-picklist-button-remove-all{
+				display: none !important
+			}
+			.ui-picklist table {				
+				border-collapse: collapse;
+				width: 0%;
+			}
+			.fc-timeGridWeek-button{
+				display: none !important;
+			}
+			.fc-timeGridDay-button{
+				display: none !important;
+			}
+			.incidencia-rojo{
+				background-color: red !important;
+				border: solid 1px red !important;
+			}
+			.incidencia-amarilla{
+				background-color: #c99f15 !important;
+				border: solid 1px yellow !important;
+			}
+			.incidencia-verde{
+				background-color: green !important;
+				border: solid 1px green !important;
+			}
+			.incidencia-azul{
+				background-color: blue !important;
+				border: solid 1px blue !important;
+			}
+			.incidencia-naranja{
+				background-color: orange !important;
+				border: solid 1px orange !important;
+			}
+    </style>
+  </ui:define>
+  <ui:define name="contenido">				
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:accordionPanel id="tabla" activeIndex="1" multiple="false">						
+						<p:tab title="Empleado: #{keetCatalogosContratosPersonalFeriados.contratoPersonal.nombres} #{keetCatalogosContratosPersonalFeriados.contratoPersonal.paterno} #{keetCatalogosContratosPersonalFeriados.contratoPersonal.materno}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Curp:"/>
+								<p:inputText value="#{keetCatalogosContratosPersonalFeriados.contratoPersonal.curp}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Rfc:"/>																		
+								<p:inputText value="#{keetCatalogosContratosPersonalFeriados.contratoPersonal.rfc}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:separator/>								
+								<p:outputLabel value="Desarrollo:"/>
+								<p:inputText value="[#{keetCatalogosContratosPersonalFeriados.contratoPersonal.claveDesarrollo}] #{keetCatalogosContratosPersonalFeriados.contratoPersonal.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:separator/>
+								<p:outputLabel value="Departamento:"/>
+								<p:inputText value="#{keetCatalogosContratosPersonalFeriados.contratoPersonal.departamento}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Puesto:"/>
+								<p:inputText value="#{keetCatalogosContratosPersonalFeriados.contratoPersonal.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>
+							</p:panelGrid>										
+						</p:tab>									
+					</p:accordionPanel>															
+          <p:panel id="panelIncidencia" header="Incidencia" toggleable="false" style="display: none">						
+            <p:panelGrid id="panelDetalle" columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+              <p:inputText id="fechaInicio" value="#{keetCatalogosContratosPersonalFeriados.attrs.fechaInicio}" styleClass="janal-wid-100-txt" readonly="true"/>                
+              <p:outputLabel for="fechaFin" value="Fecha fin:"/>
+              <p:inputText id="fechaFin" value="#{keetCatalogosContratosPersonalFeriados.attrs.fechaFin}" styleClass="janal-wid-100-txt" readonly="true"/>                
+              <p:outputLabel for="titulo" value="Descripción:"/>
+              <p:inputText id="titulo" value="#{keetCatalogosContratosPersonalFeriados.event.title}" styleClass="janal-wid-100-txt" readonly="true"/>                
+							<p:outputLabel for="idTipoIncidente" value="Tipo:"/>
+							<p:selectOneMenu id="idTipoIncidente" value="#{keetCatalogosContratosPersonalFeriados.attrs.idTipoIncidente}" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" process="@this idTipoIncidente" update="costo @(.class-costo)"/>
+								<f:selectItems value="#{keetCatalogosContratosPersonalFeriados.attrs.tiposIncidentes}"/>							
+							</p:selectOneMenu>
+							<p:outputLabel for="idIncidenteEstatus" value="Estatus:"/>
+							<p:selectOneMenu id="idIncidenteEstatus" value="#{keetCatalogosContratosPersonalFeriados.attrs.idIncidenteEstatus}" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItems value="#{keetCatalogosContratosPersonalFeriados.attrs.allEstatus}"/>							
+							</p:selectOneMenu>
+							<p:outputLabel for="costo" value="Costo:" class="class-costo" style="#{keetCatalogosContratosPersonalFeriados.attrs.idTipoIncidente eq '16' ? '' : 'display: none'}"/>
+							<p:inputText id="costo" value="#{keetCatalogosContratosPersonalFeriados.attrs.costo}" style="#{keetCatalogosContratosPersonalFeriados.attrs.idTipoIncidente eq '16' ? '' : 'display:none'}" styleClass="janal-wid-100-txt"/>
+            </p:panelGrid>						
+						<p:separator/>
+						<div class="janal-line-button">
+							<div class="lg-pantalla janal-column-right">
+								<p:commandButton value="Aplicar" iconPos="left" styleClass="janal-text-white" accesskey="z" icon="fa fa-check" process="@this panelIncidencia" onstart="return validateCriterios();" actionListener="#{keetCatalogosContratosPersonalFeriados.doApplyChange}" oncomplete="janal.desbloquear();findSelectEventOk();" update="dataEmpleados"/>
+								<p:commandButton value="Eliminar" iconPos="left" styleClass="janal-text-white" accesskey="d" icon="fa fa-trash" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalFeriados.doDelete}" oncomplete="janal.desbloquear();hidePanelIncidencia();" update="dataEmpleados" rendered="#{keetCatalogosContratosPersonalFeriados.attrs.isDelete}"/>
+								<p:commandButton value="Cancelar" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" oncomplete="janal.desbloquear();hidePanelIncidencia();"/>
+							</div>
+							<div class="xs-pantalla janal-column-right">
+								<p:commandButton title="Aplicar cambios" iconPos="left" styleClass="janal-text-whit" accesskey="z" icon="fa fa-check" process="@this panelIncidencia" onstart="return validateCriterios();" actionListener="#{keetCatalogosContratosPersonalFeriados.doApplyChange}" oncomplete="janal.desbloquear();findSelectEventOk();" update="dataEmpleados"/>
+								<p:commandButton title="Eliminar evento" iconPos="left" styleClass="janal-text-whit" accesskey="d" icon="fa fa-trash" process="@this panelIncidencia" actionListener="#{keetCatalogosContratosPersonalFeriados.doDelete}" oncomplete="janal.desbloquear();hidePanelIncidencia();" update="dataEmpleados" rendered="#{keetCatalogosContratosPersonalFeriados.attrs.isDelete}"/>
+								<p:commandButton title="Cancelar cambios" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" oncomplete="janal.desbloquear();hidePanelIncidencia();"/>
+							</div>
+						</div>	
+          </p:panel>        
+					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalFeriados.eventModel}" widgetVar="myschedule" styleClass="janal-column-center">
+						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalFeriados.onDateSelect}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent();"/>
+						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalFeriados.onEventSelect}" update="panelIncidencia idSelectionEvent costo" oncomplete="findSelectEventShow();"/>
+						<p:ajax event="eventMove" listener="#{keetCatalogosContratosPersonalFeriados.onEventMove}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent();"/>
+						<p:ajax event="eventResize" listener="#{keetCatalogosContratosPersonalFeriados.onEventResize}" update="dataEmpleados idSelectionEvent costo" oncomplete="findSelectEvent();"/>
+					</p:schedule>	
+					<p:outputLabel id="idSelectionEvent" value="#{keetCatalogosContratosPersonalFeriados.attrs.idSelectionEvent}" style="display: none !important"/>
+					<p:remoteCommand name="findSelectEvent" oncomplete="applyIdEvent();"/>
+					<p:remoteCommand name="findSelectEventShow" oncomplete="applyIdEvent();showPanelIncidencia();"/>
+					<p:remoteCommand name="findSelectEventOk" oncomplete="applyIdEventHide();" />
+				</div>						        
+      </div>
+    </div>		           							
+  </ui:define>
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosPersonalFeriados.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosPersonalFeriados.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosPersonalFeriados.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosPersonalFeriados.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
