@@ -39,6 +39,7 @@ public class Calculos {
       mx.org.kaana.libs.formato.Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
+		// LOG.info("=ROUND({HOLA})".replace("{HOLA}", "1222.12"));
 	}
 
 }

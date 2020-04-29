@@ -8,20 +8,25 @@ import com.eteks.parser.CompilationException;
 import com.eteks.parser.CompiledExpression;
 import mx.org.kaana.libs.formato.Error;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.keet.db.dto.TcKeetNominasConceptosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPersonasDto;
 import mx.org.kaana.keet.nomina.beans.Concepto;
+import mx.org.kaana.keet.nomina.enums.ECodigosIncidentes;
+import mx.org.kaana.keet.nomina.enums.EGrupoConceptos;
 import mx.org.kaana.keet.nomina.functions.Redondea;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -41,10 +46,6 @@ public class Nomina implements Serializable {
 	private static final Integer ROWS            = 1;
 	private static final Integer COLUMNS         = 200;
 	private static final Integer NUMERO_DE_LETRAS= 25;
-	private static final String APORTACIONES     = "C1";
-	private static final String DEDUCCIONES      = "D1";
-	private static final String PERCEPCIONES     = "E1";
-	private static final String NETO             = "F1";
 	
 	private Session sesion;
   private JeksTableModel model;
@@ -54,6 +55,7 @@ public class Nomina implements Serializable {
 	private Map<String, Double> constants;
 	private TcKeetNominasDto nomina;
 	private List<Concepto> conceptos;
+	private List<Concepto> personales;
 	
 	public Nomina(Session sesion, TcKeetNominasDto nomina) throws Exception {
 		this.sesion= sesion;
@@ -78,9 +80,11 @@ public class Nomina implements Serializable {
 			TcKeetNominasPeriodosDto semana= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(this.sesion, TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo());
 			params.put("semana", semana.getOrden());
 			this.conceptos= (List<Concepto>)DaoFactory.getInstance().toEntitySet(this.sesion, Concepto.class, "TcKeetNominasConceptosDto", "todos", params);
-			for (Concepto concepto: conceptos) {
+			for (Concepto concepto: conceptos) 
 				concepto.setColumna(this.toColumn(concepto.getCelda()));
-			} // for
+			this.personales= (List<Concepto>)DaoFactory.getInstance().toEntitySet(this.sesion, Concepto.class, "TcKeetNominasConceptosDto", "personales", params);
+			for (Concepto concepto: personales)
+				concepto.setColumna(this.toColumn(concepto.getCelda()));
 		} // try
 		finally {
 			Methods.clean(params);
@@ -172,30 +176,92 @@ public class Nomina implements Serializable {
 	  Double regresar= 0D;
 		int index= this.conceptos.indexOf(new Concepto(cell));
 		if(index>= 0)
-			regresar= this.conceptos.get(index).getValor();
+			regresar= Cadena.isVacio(this.conceptos.get(index).getValor())? 0D: this.conceptos.get(index).getValor();
 		return regresar;
 	}
 	
+	private List<Concepto> toClone() throws CloneNotSupportedException {
+		List<Concepto> regresar= new ArrayList<>();
+		for (Concepto concepto: this.conceptos) {
+			regresar.add((Concepto)concepto.clone());
+		} // for
+		return regresar;
+	}
+	
+	private void toLookForEquals(List<Concepto> particulares, List<TcManticIncidentesDto> incidentes, ECodigosIncidentes incidente) throws CloneNotSupportedException {
+		int count= 0;
+		for (TcManticIncidentesDto item: incidentes) {
+			// BUSCAR LOS INCIDENTES QUE COINCIDAN EN LA LISTA QUE SE TIENE DE CONCEPTOS
+			if(Objects.equals(item.getIdTipoIncidente(), incidente.idTipoIncidente()) && count< incidente.size()) {
+				item.setIdNomina(this.nomina.getIdNomina());
+				int index= this.personales.indexOf(new Concepto(incidente.celdas()[count]));
+				// PARA AQUELLOS INCIDENTES ENCONTRADOS BUSCAR EL CONCEPTO CORRESPONDIENTE
+				if(index>= 0) {
+					Concepto concepto= (Concepto)this.personales.get(index).clone();
+					if(incidente.recuperar())
+						concepto.setFormula(concepto.getFormula().replace("{".concat(incidente.name()).concat("}"), item.getCosto().toString()));
+					particulares.add(concepto);
+				}
+			  count++;
+			} // if
+		} // for
+	}
+	
+	private void toIncidencias(List<Concepto> particulares, Long idEmpresaPersona) throws Exception {
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idNomina", this.nomina.getIdNomina());
+			params.put("idEmpresaPersona", idEmpresaPersona);
+			List<TcManticIncidentesDto> incidentes= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcManticIncidentesDto.class, "VistaNominaDto", "incidentes", params);
+			if(incidentes!= null && !incidentes.isEmpty()) {
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.FALTA);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.DIAFESTIVO);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.TRIPLE);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.EXEDENTE);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.PRESTAMO);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.ABONO);
+				int count= 0;
+				// REMOVER TODOS LOS INCIDENTES QUE SE ALCANZARON A APLICAR EN LA NOMINA
+				while(count< incidentes.size()) {
+					if(Cadena.isVacio(incidentes.get(count).getIdNomina()))
+						incidentes.remove(count);
+					else {
+						// APLICAR AQUELLOS INCIDENTES QUE SI FUERON SELECCIONADOS
+						DaoFactory.getInstance().update(this.sesion, incidentes.get(count));
+						count++;
+					} // else
+				} // while
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+
 	public void process(TcKeetNominasPersonasDto empleado) throws CompilationException, Exception {
 		this.constants.put("sueldo", empleado.getNeto());
-		LOG.debug("------------------------[ "+ empleado.getIdEmpresaPersona()+ " ]----------------------------");
-		String value= null;
+		LOG.info("------------------------[ "+ empleado.getIdEmpresaPersona()+ " ]----------------------------");
 		this.cleanRow();
-		for (Concepto concepto: this.conceptos) {
-			value = this.transform(concepto.getFormula());
- 			this.addCell(concepto.getColumna(), value);
+		// CLONAR LOS CONCEPTOS GLOBALES PARA QUE SOLO APLIQUE AL EMPLEADO
+		List<Concepto> particulares= this.toClone();
+		// BUSCAR LAS INCIDENCIAS DE ESE EMPLEADO
+		this.toIncidencias(particulares, empleado.getIdEmpresaPersona());
+		for (Concepto concepto: particulares) {
+ 			this.addCell(concepto.getColumna(), this.transform(concepto.getFormula()));
 		} // for
-		for (Concepto concepto: this.conceptos) {
-			value = this.transform(concepto.getFormula());
+		for (Concepto concepto: particulares) {
 			concepto.setValor(this.toValue(concepto.getColumna()));
-  		LOG.debug("("+ concepto.getColumna()+ ") ["+ value+ "] {"+ concepto.getValor()+ "}");
+  		LOG.info("("+ concepto.getColumna()+ ") ["+ this.transform(concepto.getFormula())+ "] {"+ concepto.getValor()+ "}");
 		} // for
-		empleado.setAportaciones(this.toTotal(this.APORTACIONES));
-		empleado.setDeducciones(this.toTotal(this.DEDUCCIONES));
-		empleado.setPercepciones(this.toTotal(this.PERCEPCIONES));
-		empleado.setNeto(this.toTotal(this.NETO));
+		// RECUPERAR LOS CALCULOS Y SACAR LOS TOTALES PARA EL PAGO DE NOMINA
+		empleado.setAportaciones(this.toTotal(EGrupoConceptos.APORTACIONES.celda()));
+		empleado.setDeducciones(this.toTotal(EGrupoConceptos.DEDUCCIONES.celda()));
+		empleado.setPercepciones(this.toTotal(EGrupoConceptos.PERCEPCIONES.celda()));
+		empleado.setNeto(this.toTotal(EGrupoConceptos.NETO.celda()));
 		DaoFactory.getInstance().insert(this.sesion, empleado);
-		for (Concepto concepto: this.conceptos) {
+		// ALMACENAR EL DETALLE DE CALCULO DE LA NOMINA
+		for (Concepto concepto: particulares) {
 			concepto.setIdNominaPersona(empleado.getIdNominaPersona());
   		DaoFactory.getInstance().insert(this.sesion, concepto);
 		} // for
@@ -208,5 +274,5 @@ public class Nomina implements Serializable {
     this.interprete= null;
     this.expression= null;
 	}
-	
+
 }

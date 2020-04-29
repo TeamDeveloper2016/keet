@@ -1047,11 +1047,20 @@
         from      
           tc_keet_nominas_conceptos
         where  
-				  (id_cargar= 1
+				  id_cargar= 1
 				  and id_activo= 1
-				  and aplicar= '*')
-				  or (id_activo= 1
-				  and position('{semana}' in aplicar)> 0)
+				  and (aplicar= '*' or position('{semana}' in aplicar)> 0)
+        order by
+				  clave 
+      </select>
+      <select id="personales">
+        select      
+          *
+        from      
+          tc_keet_nominas_conceptos
+        where  
+				  id_cargar= 2
+				  and id_activo= 1
         order by
 				  clave 
       </select>
@@ -1348,24 +1357,6 @@
 				delete from tc_keet_personas_beneficiarios where id_empresa_persona = {idEmpresaPersona}
 			</delete>
     </unit>		
-    <unit id="TcKeetPersonasConceptosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_keet_personas_conceptos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_personas_conceptos
-        where      
-          id_persona = {idPersona} and id_activo = {idActivo} and inicio = {inicio} and id_nomina_concepto = {idNominaConcepto}
-      </select>
-    </unit>			
     <unit id="TcKeetProyectosArchivosDto">
       <select id="row">
         select      
