@@ -172,11 +172,11 @@ public class Nomina implements Serializable {
 		return regresar.toString();
 	}
 	
-	private Double toTotal(String cell) {
+	private Double toTotal(List<Concepto> particulares, String cell) {
 	  Double regresar= 0D;
-		int index= this.conceptos.indexOf(new Concepto(cell));
+		int index= particulares.indexOf(new Concepto(cell));
 		if(index>= 0)
-			regresar= Cadena.isVacio(this.conceptos.get(index).getValor())? 0D: this.conceptos.get(index).getValor();
+			regresar= Cadena.isVacio(particulares.get(index).getValor())? 0D: particulares.get(index).getValor();
 		return regresar;
 	}
 	
@@ -252,13 +252,13 @@ public class Nomina implements Serializable {
 		} // for
 		for (Concepto concepto: particulares) {
 			concepto.setValor(this.toValue(concepto.getColumna()));
-  		LOG.info("("+ concepto.getColumna()+ ") ["+ this.transform(concepto.getFormula())+ "] {"+ concepto.getValor()+ "}");
+  		LOG.info("("+ concepto.getNombre()+ ") ["+ this.transform(concepto.getFormula())+ "] {"+ concepto.getValor()+ "}");
 		} // for
 		// RECUPERAR LOS CALCULOS Y SACAR LOS TOTALES PARA EL PAGO DE NOMINA
-		empleado.setAportaciones(this.toTotal(EGrupoConceptos.APORTACIONES.celda()));
-		empleado.setDeducciones(this.toTotal(EGrupoConceptos.DEDUCCIONES.celda()));
-		empleado.setPercepciones(this.toTotal(EGrupoConceptos.PERCEPCIONES.celda()));
-		empleado.setNeto(this.toTotal(EGrupoConceptos.NETO.celda()));
+		empleado.setAportaciones(this.toTotal(particulares, EGrupoConceptos.APORTACIONES.celda()));
+		empleado.setDeducciones(this.toTotal(particulares, EGrupoConceptos.DEDUCCIONES.celda()));
+		empleado.setPercepciones(this.toTotal(particulares, EGrupoConceptos.PERCEPCIONES.celda()));
+		empleado.setNeto(this.toTotal(particulares, EGrupoConceptos.NETO.celda()));
 		DaoFactory.getInstance().insert(this.sesion, empleado);
 		// ALMACENAR EL DETALLE DE CALCULO DE LA NOMINA
 		for (Concepto concepto: particulares) {

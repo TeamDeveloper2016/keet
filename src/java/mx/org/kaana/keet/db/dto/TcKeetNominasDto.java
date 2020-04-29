@@ -48,12 +48,20 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   private LocalDate fechaPago;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="proveedores")
+  private Long proveedores;
+  @Column (name="total")
+  private Double total;
   @Column (name="fecha_dispersion")
   private LocalDate fechaDispersion;
   @Column (name="id_nomina_periodo")
   private Long idNominaPeriodo;
+  @Column (name="iva")
+  private Double iva;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="subtotal")
+  private Double subtotal;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="id_empresa")
@@ -66,11 +74,11 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetNominasDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), LocalDate.now(), LocalDate.now(), null, null, null, null, null);
+    this(null, null, null, null, null, null, new Long(-1L), LocalDate.now(), null, null, LocalDate.now(), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetNominasDto(Double neto, Long idNominaEstatus, Double deducciones, Long idTipoNomina, Long personas, Double aportaciones, Long idNomina, LocalDate fechaPago, LocalDate fechaDispersion, Long idNominaPeriodo, Long idUsuario, String observaciones, Long idEmpresa, Double percepciones) {
+  public TcKeetNominasDto(Double neto, Long idNominaEstatus, Double deducciones, Long idTipoNomina, Long personas, Double aportaciones, Long idNomina, LocalDate fechaPago, Long proveedores, Double total, LocalDate fechaDispersion, Long idNominaPeriodo, Double iva, Long idUsuario, Double subtotal, String observaciones, Long idEmpresa, Double percepciones) {
     setNeto(neto);
     setIdNominaEstatus(idNominaEstatus);
     setDeducciones(deducciones);
@@ -80,9 +88,13 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
     setIdNomina(idNomina);
     setFechaPago(fechaPago);
     setRegistro(LocalDateTime.now());
+    setProveedores(proveedores);
+    setTotal(total);
     setFechaDispersion(fechaDispersion);
     setIdNominaPeriodo(idNominaPeriodo);
+    setIva(iva);
     setIdUsuario(idUsuario);
+    setSubtotal(subtotal);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setPercepciones(percepciones);
@@ -160,6 +172,22 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public void setProveedores(Long proveedores) {
+    this.proveedores = proveedores;
+  }
+
+  public Long getProveedores() {
+    return proveedores;
+  }
+
+  public void setTotal(Double total) {
+    this.total = total;
+  }
+
+  public Double getTotal() {
+    return total;
+  }
+
   public void setFechaDispersion(LocalDate fechaDispersion) {
     this.fechaDispersion = fechaDispersion;
   }
@@ -176,12 +204,28 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
     return idNominaPeriodo;
   }
 
+  public void setIva(Double iva) {
+    this.iva = iva;
+  }
+
+  public Double getIva() {
+    return iva;
+  }
+
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
 
   public Long getIdUsuario() {
     return idUsuario;
+  }
+
+  public void setSubtotal(Double subtotal) {
+    this.subtotal = subtotal;
+  }
+
+  public Double getSubtotal() {
+    return subtotal;
   }
 
   public void setObservaciones(String observaciones) {
@@ -241,11 +285,19 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getProveedores());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTotal());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFechaDispersion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNominaPeriodo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIva());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSubtotal());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
@@ -268,9 +320,13 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 		regresar.put("idNomina", getIdNomina());
 		regresar.put("fechaPago", getFechaPago());
 		regresar.put("registro", getRegistro());
+		regresar.put("proveedores", getProveedores());
+		regresar.put("total", getTotal());
 		regresar.put("fechaDispersion", getFechaDispersion());
 		regresar.put("idNominaPeriodo", getIdNominaPeriodo());
+		regresar.put("iva", getIva());
 		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("subtotal", getSubtotal());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("percepciones", getPercepciones());
@@ -280,7 +336,7 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getNeto(), getIdNominaEstatus(), getDeducciones(), getIdTipoNomina(), getPersonas(), getAportaciones(), getIdNomina(), getFechaPago(), getRegistro(), getFechaDispersion(), getIdNominaPeriodo(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getPercepciones()
+    getNeto(), getIdNominaEstatus(), getDeducciones(), getIdTipoNomina(), getPersonas(), getAportaciones(), getIdNomina(), getFechaPago(), getRegistro(), getProveedores(), getTotal(), getFechaDispersion(), getIdNominaPeriodo(), getIva(), getIdUsuario(), getSubtotal(), getObservaciones(), getIdEmpresa(), getPercepciones()
     };
     return regresar;
   }

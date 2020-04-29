@@ -200,7 +200,7 @@
 				  and tc_mantic_incidentes.id_incidente_estatus= 2
 				  and tc_mantic_incidentes.id_empresa_persona= {idEmpresaPersona}
 			  order by
-				  tc_mantic_incidentes.id_tipo_incidente
+				  tc_mantic_incidentes.id_tipo_incidente, tc_mantic_incidentes.vigencia_inicio desc
 			</select>			
       <select id="aplicar">
 			  select
