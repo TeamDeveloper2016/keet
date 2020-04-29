@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.catalogos.contratos.personal.backing;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +21,7 @@ import mx.org.kaana.keet.catalogos.contratos.beans.ContratoPersonal;
 import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
 import mx.org.kaana.keet.catalogos.contratos.reglas.MotorBusqueda;
 import mx.org.kaana.keet.db.dto.TcKeetDiasFestivosDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
@@ -31,6 +33,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
+import org.joda.time.DateTimeConstants;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -163,32 +166,51 @@ public class Feriados extends IBaseAttribute implements Serializable {
 		DefaultScheduleEvent defaultEvent= null;
 		boolean editable                 = true;
 		try {			
-			this.count++;
-			newIncidente= loadNewIncidente(selectEvent);			
-			editable= !newIncidente.getIdTipoIncidente().equals(ETiposIncidentes.DIA_FESTIVO.getKey());
-			if(verificaExistente(newIncidente) && verificaExistenteAllTipos(newIncidente)){				
-				defaultEvent= DefaultScheduleEvent.builder()
-								.id(newIncidente.getIdIncidente().toString())
-								.allDay(true)
-								.data(newIncidente)
-								.description(newIncidente.getTipoIncidente().concat("\n ").concat(newIncidente.getEstatus()))
-								.title(newIncidente.getTipoIncidente().concat("\n ").concat(newIncidente.getEstatus()))
-								.startDate(newIncidente.getVigenciaInicio().atStartOfDay())
-								.endDate(newIncidente.getVigenciaFin().atStartOfDay())
-								.styleClass(ETiposIncidentes.fromId(newIncidente.getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(newIncidente.getIdIncidente().toString())))
-								.editable(editable)
-								.build();	
-				this.eventModel.addEvent(defaultEvent);
-				this.attrs.put("idSelectionEvent", ".incidencia-".concat(newIncidente.getIdIncidente().toString()));				
+			if(validateSemana(selectEvent.getObject().toLocalDate())){
+				this.count++;
+				newIncidente= loadNewIncidente(selectEvent);			
+				editable= !newIncidente.getIdTipoIncidente().equals(ETiposIncidentes.DIA_FESTIVO.getKey());
+				if(verificaExistente(newIncidente) && verificaExistenteAllTipos(newIncidente)){				
+					defaultEvent= DefaultScheduleEvent.builder()
+									.id(newIncidente.getIdIncidente().toString())
+									.allDay(true)
+									.data(newIncidente)
+									.description(newIncidente.getTipoIncidente().concat("\n ").concat(newIncidente.getEstatus()))
+									.title(newIncidente.getTipoIncidente().concat("\n ").concat(newIncidente.getEstatus()))
+									.startDate(newIncidente.getVigenciaInicio().atStartOfDay())
+									.endDate(newIncidente.getVigenciaFin().atStartOfDay())
+									.styleClass(ETiposIncidentes.fromId(newIncidente.getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(newIncidente.getIdIncidente().toString())))
+									.editable(editable)
+									.build();	
+					this.eventModel.addEvent(defaultEvent);
+					this.attrs.put("idSelectionEvent", ".incidencia-".concat(newIncidente.getIdIncidente().toString()));				
+				} // if
+				else
+					JsfBase.addAlert("Agregar incidencia", "Ya se encuentra registrada una incidencia en esa fecha.", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addAlert("Agregar incidencia", "Ya se encuentra registrada una incidencia en esa fecha.", ETipoMensaje.INFORMACION);
+				JsfBase.addAlert("Agregar incidencia", "Solo se pueden realizar registros sobre la semana en curso.", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch				    
   } // onDateSelect
+	
+	private boolean validateSemana(LocalDate date){						
+		boolean regresar= false;
+		LocalDate inicio= null;
+		LocalDate fin   = null;
+		try {									
+			inicio= LocalDate.now().minusWeeks(1).with(DayOfWeek.SUNDAY);
+			fin= LocalDate.now().with(DayOfWeek.SATURDAY);
+			regresar= date.isEqual(inicio) || date.isEqual(fin) || (date.isAfter(inicio) && date.isBefore(fin));
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch
+		return regresar;
+	} // validateSemana
 	
 	private boolean verificaExistente(Incidente incidente) throws Exception{
 		boolean regresar  = true;
