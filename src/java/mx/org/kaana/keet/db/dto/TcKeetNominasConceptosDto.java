@@ -1,10 +1,10 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,20 +28,26 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="id_tipo_concepto")
-  private Long idTipoConcepto;
   @Column (name="descripcion")
   private String descripcion;
   @Column (name="clave")
   private String clave;
+  @Column (name="celda")
+  private String celda;
+  @Column (name="inicio")
+  private LocalDate inicio;
+  @Column (name="nombre")
+  private String nombre;
+  @Column (name="registro")
+  private LocalDateTime registro;
+  @Column (name="id_tipo_concepto")
+  private Long idTipoConcepto;
   @Column (name="id_activo")
   private Long idActivo;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="aplicar")
   private String aplicar;
-  @Column (name="inicio")
-  private LocalDate inicio;
   @Column (name="formula")
   private String formula;
   @Id
@@ -50,43 +56,35 @@ public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
   private Long idNominaConcepto;
   @Column (name="termino")
   private LocalDate termino;
-  @Column (name="nombre")
-  private String nombre;
-  @Column (name="registro")
-  private LocalDateTime registro;
+  @Column (name="id_cargar")
+  private Long idCargar;
 
   public TcKeetNominasConceptosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetNominasConceptosDto(Long key) {
-    this(null, null, null, null, null, null, LocalDate.now(), null, new Long(-1L), LocalDate.now(), null);
+    this(null, null, null, LocalDate.now(), null, null, null, null, null, null, new Long(-1L), LocalDate.now(), null);
     setKey(key);
   }
 
-  public TcKeetNominasConceptosDto(Long idTipoConcepto, String descripcion, String clave, Long idActivo, Long idUsuario, String aplicar, LocalDate inicio, String formula, Long idNominaConcepto, LocalDate termino, String nombre) {
-    setIdTipoConcepto(idTipoConcepto);
+  public TcKeetNominasConceptosDto(String descripcion, String clave, String celda, LocalDate inicio, String nombre, Long idTipoConcepto, Long idActivo, Long idUsuario, String aplicar, String formula, Long idNominaConcepto, LocalDate termino, Long idCargar) {
     setDescripcion(descripcion);
     setClave(clave);
+    setCelda(celda);
+    setInicio(inicio);
+    setNombre(nombre);
+    setRegistro(LocalDateTime.now());
+    setIdTipoConcepto(idTipoConcepto);
     setIdActivo(idActivo);
     setIdUsuario(idUsuario);
     setAplicar(aplicar);
-    setInicio(inicio);
     setFormula(formula);
     setIdNominaConcepto(idNominaConcepto);
     setTermino(termino);
-    setNombre(nombre);
-    setRegistro(LocalDateTime.now());
+    setIdCargar(idCargar);
   }
 	
-  public void setIdTipoConcepto(Long idTipoConcepto) {
-    this.idTipoConcepto = idTipoConcepto;
-  }
-
-  public Long getIdTipoConcepto() {
-    return idTipoConcepto;
-  }
-
   public void setDescripcion(String descripcion) {
     this.descripcion = descripcion;
   }
@@ -101,6 +99,46 @@ public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
 
   public String getClave() {
     return clave;
+  }
+
+  public void setCelda(String celda) {
+    this.celda = celda;
+  }
+
+  public String getCelda() {
+    return celda;
+  }
+
+  public void setInicio(LocalDate inicio) {
+    this.inicio = inicio;
+  }
+
+  public LocalDate getInicio() {
+    return inicio;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setRegistro(LocalDateTime registro) {
+    this.registro = registro;
+  }
+
+  public LocalDateTime getRegistro() {
+    return registro;
+  }
+
+  public void setIdTipoConcepto(Long idTipoConcepto) {
+    this.idTipoConcepto = idTipoConcepto;
+  }
+
+  public Long getIdTipoConcepto() {
+    return idTipoConcepto;
   }
 
   public void setIdActivo(Long idActivo) {
@@ -127,14 +165,6 @@ public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
     return aplicar;
   }
 
-  public void setInicio(LocalDate inicio) {
-    this.inicio = inicio;
-  }
-
-  public LocalDate getInicio() {
-    return inicio;
-  }
-
   public void setFormula(String formula) {
     this.formula = formula;
   }
@@ -159,20 +189,12 @@ public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
     return termino;
   }
 
-  public void setNombre(String nombre) {
-    this.nombre = nombre;
+  public void setIdCargar(Long idCargar) {
+    this.idCargar = idCargar;
   }
 
-  public String getNombre() {
-    return nombre;
-  }
-
-  public void setRegistro(LocalDateTime registro) {
-    this.registro = registro;
-  }
-
-  public LocalDateTime getRegistro() {
-    return registro;
+  public Long getIdCargar() {
+    return idCargar;
   }
 
   @Transient
@@ -190,11 +212,19 @@ public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdTipoConcepto());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getClave());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCelda());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getInicio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoConcepto());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdActivo());
 		regresar.append(Constantes.SEPARADOR);
@@ -202,17 +232,13 @@ public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getAplicar());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getInicio());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFormula());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNominaConcepto());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTermino());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getNombre());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
+		regresar.append(getIdCargar());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -220,25 +246,27 @@ public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idTipoConcepto", getIdTipoConcepto());
 		regresar.put("descripcion", getDescripcion());
 		regresar.put("clave", getClave());
+		regresar.put("celda", getCelda());
+		regresar.put("inicio", getInicio());
+		regresar.put("nombre", getNombre());
+		regresar.put("registro", getRegistro());
+		regresar.put("idTipoConcepto", getIdTipoConcepto());
 		regresar.put("idActivo", getIdActivo());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("aplicar", getAplicar());
-		regresar.put("inicio", getInicio());
 		regresar.put("formula", getFormula());
 		regresar.put("idNominaConcepto", getIdNominaConcepto());
 		regresar.put("termino", getTermino());
-		regresar.put("nombre", getNombre());
-		regresar.put("registro", getRegistro());
+		regresar.put("idCargar", getIdCargar());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoConcepto(), getDescripcion(), getClave(), getIdActivo(), getIdUsuario(), getAplicar(), getInicio(), getFormula(), getIdNominaConcepto(), getTermino(), getNombre(), getRegistro()
+    getDescripcion(), getClave(), getCelda(), getInicio(), getNombre(), getRegistro(), getIdTipoConcepto(), getIdActivo(), getIdUsuario(), getAplicar(), getFormula(), getIdNominaConcepto(), getTermino(), getIdCargar()
     };
     return regresar;
   }
@@ -296,4 +324,7 @@ public class TcKeetNominasConceptosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdNominaConcepto() != null ? getIdNominaConcepto().hashCode() : 0);
     return hash;
   }
+
 }
+
+

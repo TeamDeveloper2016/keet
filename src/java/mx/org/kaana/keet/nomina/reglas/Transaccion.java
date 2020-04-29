@@ -43,6 +43,7 @@ public class Transaccion extends IBaseTnx {
 	private Long idProveedor;
 	private String messageError;
 	private TcKeetNominasDto nomina;
+	private Nomina calculos;
 	
 	public Transaccion(Long idNomina) {
 		this(idNomina, new Autentifica());
@@ -51,8 +52,16 @@ public class Transaccion extends IBaseTnx {
 	public Transaccion(Long idNomina, Autentifica autentifica) {
 		this(idNomina, autentifica, -1L, -1L);
 	}
+
+	public Transaccion(Long idNomina, Long idEmpresaPersona, Autentifica autentifica) {
+		this(idNomina, autentifica, idEmpresaPersona, -1L);
+	}
 	
-	public Transaccion(Long idNomina, Autentifica autentifica, Long idEmpresaPersona, Long idProveedor) {
+	public Transaccion(Long idNomina, Autentifica autentifica, Long idProveedor) {
+		this(idNomina, autentifica, -1L, idProveedor);
+	}
+	
+	private Transaccion(Long idNomina, Autentifica autentifica, Long idEmpresaPersona, Long idProveedor) {
 		this.idNomina= idNomina;
 		this.autentifica= autentifica;
 		this.idEmpresaPersona= idEmpresaPersona;
@@ -66,20 +75,27 @@ public class Transaccion extends IBaseTnx {
     try {
       this.messageError= "Ocurrio un error en el proceso de calculo de la nómina.";
 			params= new HashMap<>();
-			this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
+			this.nomina  = (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
+			this.calculos= new Nomina(sesion, nomina);
 			switch(accion) {
 				case AGREGAR:
 					switch(this.nomina.getIdNominaEstatus().intValue()) {
 						case 1:  // INICIADA
-							this.procesar(sesion, "todos");
+							this.procesarPersona(sesion, "todos");
 							break;
 						case 2:  // ENPROCESO
-							this.procesar(sesion, "complementaria");
+							this.procesarPersona(sesion, "complementaria");
 							break;
 						case 3:  // CALCULADA
-							this.reprocesar(sesion);
+							this.reprocesarPersona(sesion);
 							break;
 					} // switch
+					break;
+				case REPROCESAR:
+					this.persona(sesion);
+					break;
+				case DEPURAR:
+					this.proveedor(sesion);
 					break;
 			} // switch
 		} // try
@@ -89,6 +105,8 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		finally {
 			Methods.clean(params);
+			this.nomina  = null;
+			this.calculos= null;
 		} // finally
 		return regresar;	
   }
@@ -193,7 +211,7 @@ public class Transaccion extends IBaseTnx {
 		} // if
 	}
 	
-	private void procesar(Session sesion, String proceso) throws Exception {
+	private void procesarPersona(Session sesion, String proceso) throws Exception {
 		Map<String, Object> params       = null;
 		TcKeetNominasPersonasDto empleado= null;
 		try {
@@ -207,7 +225,7 @@ public class Transaccion extends IBaseTnx {
 				empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
 				if(empleado== null) {
 					empleado= new TcKeetNominasPersonasDto(
-						0D, // Double neto, 
+						persona.toDouble("sueldoSemanal"), // Double neto, 
 						persona.toLong("idEmpresaPersona") , // Long idEmpresaPersona, 
 						0D, // Double deducciones,
 						-1L, // Long idNominaPersona, 
@@ -225,13 +243,14 @@ public class Transaccion extends IBaseTnx {
 			} // for
 			if(count== 1 && this.nomina.getIdNominaEstatus()< ENominaEstatus.CALCULADA.getIdKey())
 			  this.bitacora(sesion, ENominaEstatus.ENPROCESO.getIdKey());
+			DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params);
 		} // try
 		finally {
 			Methods.clean(params);
 		} // finally
 	}
 	
-	private void reprocesar(Session sesion) throws Exception {
+	private void reprocesarPersona(Session sesion) throws Exception {
 		Map<String, Object> params       = null;
 		TcKeetNominasPersonasDto empleado= null;
 		try {
@@ -246,7 +265,7 @@ public class Transaccion extends IBaseTnx {
 				empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
 				if(empleado== null) {
 					empleado= new TcKeetNominasPersonasDto(
-						0D, // Double neto, 
+						persona.toDouble("sueldoSemanal"), // Double neto, 
 						persona.toLong("idEmpresaPersona") , // Long idEmpresaPersona, 
 						0D, // Double deducciones,
 						-1L, // Long idNominaPersona, 
@@ -265,41 +284,7 @@ public class Transaccion extends IBaseTnx {
 			  count++;
 			} // for
 			this.bitacora(sesion, ENominaEstatus.ENPROCESO.getIdKey());
-		} // try
-		finally {
-			Methods.clean(params);
-		} // finally		
-	}
-	
-	private void persona(Session sesion) throws Exception {
-		Map<String, Object> params       = null;
-		TcKeetNominasPersonasDto empleado= null;
-		try {
-			params= new HashMap<>();
-			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
-			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
-			params.put("idNomina", this.idNomina);
-			params.put("idEmpresaPersona", this.idEmpresaPersona);
-			List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "persona", params);
-			int count= 1;
-			this.cleanPersona(sesion, this.idEmpresaPersona);
-			for (Entity persona: personas) {
-				empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
-				if(empleado== null) {
-					empleado= new TcKeetNominasPersonasDto(
-						0D, // Double neto, 
-						persona.toLong("idEmpresaPersona") , // Long idEmpresaPersona, 
-						0D, // Double deducciones,
-						-1L, // Long idNominaPersona, 
-						0D, // Double aportaciones, 
-						0D, // Double percepciones, 
-						this.idNomina // Long idNomina
-					);
-					this.calculos(sesion, empleado);
-			  } // if
-				LOG.info("["+ count+ " de "+ personas.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
-			  count++;
-			} // for
+			DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params);
 		} // try
 		finally {
 			Methods.clean(params);
@@ -340,12 +325,48 @@ public class Transaccion extends IBaseTnx {
 		} // finally		
 	}
 	
+	private void persona(Session sesion) throws Exception {
+		Map<String, Object> params       = null;
+		TcKeetNominasPersonasDto empleado= null;
+		try {
+			params= new HashMap<>();
+			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
+			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
+			params.put("idNomina", this.idNomina);
+			params.put("idEmpresaPersona", this.idEmpresaPersona);
+			List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "persona", params);
+			int count= 1;
+			this.cleanPersona(sesion, this.idEmpresaPersona);
+			for (Entity persona: personas) {
+				empleado= this.existPersona(sesion, persona.toLong("idEmpresaPersona"));
+				if(empleado== null) {
+					empleado= new TcKeetNominasPersonasDto(
+						persona.toDouble("sueldoSemanal"), // Double neto, 
+						persona.toLong("idEmpresaPersona") , // Long idEmpresaPersona, 
+						0D, // Double deducciones,
+						-1L, // Long idNominaPersona, 
+						0D, // Double aportaciones, 
+						0D, // Double percepciones, 
+						this.idNomina // Long idNomina
+					);
+					this.calculos(sesion, empleado);
+			  } // if
+				LOG.info("["+ count+ " de "+ personas.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
+			  count++;
+			} // for
+			DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally		
+	}
+		
 	public void calculos(Session sesion, TcKeetNominasPersonasDto empleado) throws Exception {
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
-			
-			DaoFactory.getInstance().insert(sesion, empleado);
+			params.put("idNomina", this.nomina.getIdNomina());
+			this.calculos.process(empleado);
 		} // try
 		finally {
 			Methods.clean(params);
@@ -356,7 +377,7 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
-			
+
 			DaoFactory.getInstance().insert(sesion, proveedor);
 		} // try
 		finally {

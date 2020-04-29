@@ -982,6 +982,29 @@
 			  order by
 				  id_nomina_estatus desc
       </select>
+			<update id="rows">
+				update
+					tc_keet_nominas
+				inner join
+				(select
+					tc_keet_nominas_personas.id_nomina,
+					count(*) as personas,
+					sum(tc_keet_nominas_personas.aportaciones) as aportaciones,
+					sum(tc_keet_nominas_personas.deducciones) as deducciones,
+					sum(tc_keet_nominas_personas.percepciones) as percepciones,
+					sum(tc_keet_nominas_personas.neto) as neto
+				from
+					tc_keet_nominas_personas
+				where
+					tc_keet_nominas_personas.id_nomina= {idNomina}
+				group by
+					tc_keet_nominas_personas.id_nomina) as totales on tc_keet_nominas.id_nomina= totales.id_nomina
+				set 
+					tc_keet_nominas.personas= totales.personas,
+					tc_keet_nominas.deducciones= totales.deducciones,
+					tc_keet_nominas.percepciones= totales.percepciones,
+					tc_keet_nominas.neto= totales.neto				
+			</update>
     </unit>		
     <unit id="TcKeetNominasBitacoraDto">
       <select id="row">
@@ -1018,6 +1041,20 @@
         where      
           id_tipo_concepto = {idTipoConcepto} and id_activo = {idActivo} and clave = '{clave}' and nombre = '{nombre}'
       </select>
+      <select id="todos">
+        select      
+          *
+        from      
+          tc_keet_nominas_conceptos
+        where  
+				  (id_cargar= 1
+				  and id_activo= 1
+				  and aplicar= '*')
+				  or (id_activo= 1
+				  and position('{semana}' in aplicar)> 0)
+        order by
+				  clave 
+      </select>
     </unit>
     <unit id="TcKeetNominasConstantesDto">
       <select id="row">
@@ -1036,7 +1073,7 @@
         where      
           id_activo = {idActivo} and siglas = '{siglas}' and nombre = '{nombre}'
       </select>
-c			<select id="periodo">
+			<select id="periodo">
 				select
 					siglas,
 					nombre,
