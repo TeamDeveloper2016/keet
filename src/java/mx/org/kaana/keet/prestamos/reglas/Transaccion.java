@@ -10,6 +10,7 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.prestamos.beans.Documento;
 import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetPrestamosBitacoraDto;
 import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
 import mx.org.kaana.keet.prestamos.enums.EEstatusPrestamos;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -36,6 +37,7 @@ public class Transaccion extends IBaseTnx {
 		Long idUsuario               = -1L;
 		Siguiente siguiente          = null;
 		TcKeetDeudoresDto deudoresDto= null;
+		TcKeetPrestamosBitacoraDto bitacoraDto= null;
 		try {
 			idUsuario= JsfBase.getIdUsuario();
 			switch(accion){
@@ -52,6 +54,8 @@ public class Transaccion extends IBaseTnx {
 					deudoresDto.setDisponible(deudoresDto.getDisponible()- this.prestamo.getPrestamo().getImporte());
 					DaoFactory.getInstance().update(sesion, deudoresDto);
 					regresar= DaoFactory.getInstance().insert(sesion, this.prestamo.getPrestamo())>= 1L;
+					bitacoraDto= new TcKeetPrestamosBitacoraDto("", this.prestamo.getPrestamo().getKey(), -1L, idUsuario, this.prestamo.getPrestamo().getIdPrestamoEstatus());
+					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
 					break;
 				case DESACTIVAR:
 					this.prestamo.getPrestamo().setIdPrestamoEstatus(EEstatusPrestamos.CANCELADA.getIdEstatusPrestamo());// CANCELADA
@@ -60,6 +64,8 @@ public class Transaccion extends IBaseTnx {
 					deudoresDto.setDisponible(deudoresDto.getDisponible()+ this.prestamo.getPrestamo().getSaldo());
 					DaoFactory.getInstance().update(sesion, deudoresDto);
 					regresar= DaoFactory.getInstance().update(sesion, this.prestamo.getPrestamo())>= 1L;
+					bitacoraDto= new TcKeetPrestamosBitacoraDto("", this.prestamo.getPrestamo().getKey(), -1L, idUsuario, this.prestamo.getPrestamo().getIdPrestamoEstatus());
+					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
 					break;
 				case SUBIR:					
 					for (Documento dto : this.prestamo.getDocumentos()) {

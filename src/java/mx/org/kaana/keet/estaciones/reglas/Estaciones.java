@@ -25,12 +25,12 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
       new Configuracion("Configuración de estaciones", 10),
       new ArrayList<Detalle>(
       Arrays.asList(
-      new Detalle(1, 3, 2, "0", "[1..999]", ""), // idEmpresa
-      new Detalle(2, 4, 2, "0", "[1..9999]", ""), // ejercicio
-      new Detalle(3, 3, 2, "0", "[1..999]", ""),
-      new Detalle(4, 3, 2, "0", "[1..999]", ""),
-      new Detalle(5, 3, 2, "0", "[1..999]", ""),
-      new Detalle(6, 3, 2, "0", "[1..999]", ""),
+      new Detalle(1, 3, 2, "0", "[1..999]", ""),  // 1er nivel idEmpresa a 3 digitos
+      new Detalle(2, 4, 2, "0", "[1..9999]", ""), // 2do nivel ejercicio a 4 digitos
+      new Detalle(3, 3, 2, "0", "[1..999]", ""),  // 3er nviel campo de orden de la tabla de contratos a 3 digitos para el caso de las plantillas se va a tener el 999
+      new Detalle(4, 3, 2, "0", "[1..999]", ""),  // 4to nivel campo de orden de la tabla de contratos_lotes a 3 digitos para el caso de las plantillas se va a tener el id_prototipo a 3 dígitos
+      new Detalle(5, 3, 2, "0", "[1..999]", ""),  // 5to nivel estación a  3 dígitos
+      new Detalle(6, 3, 2, "0", "[1..999]", ""),  // 6to nivel concepto a 3 digitos
       new Detalle(7, 3, 2, "0", "[1..999]", ""),
       new Detalle(8, 3, 2, "0", "[1..999]", ""))));
 	}

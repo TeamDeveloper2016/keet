@@ -11,13 +11,17 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				'contenedorGrupos\\:pago': {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:pago': {validaciones: 'requerido|flotante', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
 
 			$(document).ready(function () {
 				janal.readingMode('#{keetPrestamosPagosAccion.attrs.nombreAccion}');
 			});
+			
+			function refreshValidateObs(){
+				$('#contenedorGrupos\\:pago').text() < 0? janal.renovates([{id: 'contenedorGrupos\\:observaciones', value: {validaciones: 'requerido', mascara: 'libre',  formatos: 'cambiar-mayusculas', grupo: 'general'}}]) : janal.renovates([{id: 'contenedorGrupos\\:observaciones', value: {validaciones: 'libre', mascara: 'libre',  formatos: 'cambiar-mayusculas', grupo: 'general'}}]);
+			}
 		</script>   
 		<style type="text/css">
 			.ui-selectcheckboxmenu-token-label {

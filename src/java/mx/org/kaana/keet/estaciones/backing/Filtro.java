@@ -33,6 +33,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
 	private List<TcKeetEstacionesDto> estacionesHijas;
 	protected TcKeetEstacionesDto current;
+	private Estaciones estaciones;
 
 	public List<TcKeetEstacionesDto> getEstacionesHijas() {
 		return estacionesHijas;
@@ -45,10 +46,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-		Estaciones estaciones=null;
     try {
 			estaciones=new Estaciones();
-			estaciones.cleanLevels();
+			this.estaciones.cleanLevels();
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
 				this.current= (TcKeetEstacionesDto)JsfBase.getFlashAttribute("estacionProcess");
@@ -56,7 +56,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			} // if
 			else{
 				this.current=new TcKeetEstacionesDto();
-				this.current.setClave(estaciones.toCode("0012020999"));
+				this.current.setClave(this.estaciones.toCode("0012020999"));
 				this.current.setNivel(3L);
 				actualizarChildren(1);
 			} // if	
@@ -74,7 +74,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		String nodo                  = "";
 		TcKeetPrototiposDto prototipo= null;
     try {
-			estaciones= new Estaciones();
 			if(this.attrs.get("idPrototipo")!=null && ((UISelectEntity)this.attrs.get("idPrototipo")).getKey()>0L){
 				prototipo= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, ((UISelectEntity)this.attrs.get("idPrototipo")).getKey());
 				this.current= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, prototipo.getIdEstacion());
@@ -83,7 +82,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			else if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
 				nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
 				this.current= new TcKeetEstacionesDto();
-				this.current.setClave(estaciones.toCode(nodo));
+				this.current.setClave(this.estaciones.toCode(nodo));
 				this.current.setNivel(1L);
 				actualizarChildren(1,2);
 				this.current.setNivel(3L);
@@ -146,8 +145,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		List<TcKeetEstacionesDto> regresar=null;
 		Estaciones estaciones=null;
 		try {
-			estaciones=new Estaciones();
-			regresar=estaciones.toFather(((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current.getClave() : ((TcKeetEstacionesDto)this.attrs.get("seleccionado")).getClave());
+			regresar=this.estaciones.toFather(((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current.getClave() : ((TcKeetEstacionesDto)this.attrs.get("seleccionado")).getClave());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -161,11 +159,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	protected void actualizarChildren(int nivel, int aumentarNivel) throws Exception {
-		Estaciones estaciones=null;
 		try {
 			this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
-			estaciones=new Estaciones();
-			this.estacionesHijas=estaciones.toChildren(aumentarNivel, this.current.getClave(), this.current.getNivel().intValue()+nivel, 0);
+			this.estacionesHijas=this.estaciones.toChildren(aumentarNivel, this.current.getClave(), this.current.getNivel().intValue()+nivel, 0);
 		} // try
 		catch (Exception e) {
 			throw e;
