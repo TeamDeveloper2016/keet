@@ -14,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
  *@project KAJOOL (Control system polls)
  *@date 27/04/2020
  *@time 09:08:54 PM 
- *author Team Developer 2016 <team.developer@kaana.org.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Calculos {
 

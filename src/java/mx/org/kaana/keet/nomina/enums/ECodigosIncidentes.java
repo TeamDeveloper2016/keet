@@ -7,7 +7,7 @@ import mx.org.kaana.libs.Constantes;
  *@project KAJOOL (Control system polls)
  *@date 29/04/2020
  *@time 08:58:47 AM 
- *author Team Developer 2016 <team.developer@kaana.org.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public enum ECodigosIncidentes {
   

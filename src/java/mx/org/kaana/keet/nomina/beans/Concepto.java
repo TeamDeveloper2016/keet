@@ -1,7 +1,6 @@
 package mx.org.kaana.keet.nomina.beans;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDetallesDto;
 

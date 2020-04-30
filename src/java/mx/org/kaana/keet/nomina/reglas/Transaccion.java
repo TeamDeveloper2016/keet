@@ -30,7 +30,7 @@ import org.hibernate.Session;
  *@project KAJOOL (Control system polls)
  *@date 27/04/2020
  *@time 07:38:52 PM 
- *author Team Developer 2016 <team.developer@kaana.org.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 public class Transaccion extends IBaseTnx {
@@ -44,6 +44,7 @@ public class Transaccion extends IBaseTnx {
 	private String messageError;
 	private TcKeetNominasDto nomina;
 	private Nomina calculos;
+	private Factura factura;
 	
 	public Transaccion(Long idNomina) {
 		this(idNomina, new Autentifica());
@@ -76,7 +77,8 @@ public class Transaccion extends IBaseTnx {
       this.messageError= "Ocurrio un error en el proceso de calculo de la nómina.";
 			params= new HashMap<>();
 			this.nomina  = (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
-			this.calculos= new Nomina(sesion, nomina);
+			this.calculos= new Nomina(sesion, this.nomina);
+			this.factura = new Factura(sesion, this.nomina);
 			switch(accion) {
 				case AGREGAR:
 					switch(this.nomina.getIdNominaEstatus().intValue()) {
@@ -362,27 +364,11 @@ public class Transaccion extends IBaseTnx {
 	}
 		
 	public void calculos(Session sesion, TcKeetNominasPersonasDto empleado) throws Exception {
-		Map<String, Object> params=null;
-		try {
-			params=new HashMap<>();
-			params.put("idNomina", this.nomina.getIdNomina());
-			this.calculos.process(empleado);
-		} // try
-		finally {
-			Methods.clean(params);
-		} // finally
+		this.calculos.process(empleado);
 	}
 	
 	public void calculos(Session sesion, TcKeetNominasProveedoresDto proveedor) throws Exception {
-		Map<String, Object> params=null;
-		try {
-			params=new HashMap<>();
-
-			DaoFactory.getInstance().insert(sesion, proveedor);
-		} // try
-		finally {
-			Methods.clean(params);
-		} // finally
+		this.factura.process(proveedor);
 	}
 	
 }

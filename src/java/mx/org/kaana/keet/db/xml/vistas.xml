@@ -269,6 +269,17 @@
 				order by
 					tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden				
 			</select>	
+      <select id="subContratista">
+        select 
+				  tc_keet_contratos_destajos_contratistas.*
+				from
+				  tc_keet_contratos_destajos_contratistas 
+				inner join
+				  tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+				where 
+				  tc_keet_contratos_destajos_contratistas.id_nomina is null
+				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}
+			</select>			
 		</unit>
 		<unit id="VistaContratosLotesDto">
 			<select id="principal">

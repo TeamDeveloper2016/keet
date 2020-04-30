@@ -37,7 +37,7 @@ import org.hibernate.Session;
  *@project KAJOOL (Control system polls)
  *@date 28/04/2020
  *@time 07:53:30 PM 
- *author Team Developer 2016 <team.developer@kaana.org.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 public class Nomina implements Serializable {

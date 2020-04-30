@@ -7,7 +7,7 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
  *@project KAJOOL (Control system polls)
  *@date 27/04/2020
  *@time 07:38:52 PM 
- *author Team Developer 2016 <team.developer@kaana.org.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 public class Nomina extends TcKeetNominasPeriodosDto {

@@ -5,7 +5,7 @@ package mx.org.kaana.keet.nomina.enums;
  *@project KAJOOL (Control system polls)
  *@date 28/04/2020
  *@time 02:41:10 PM 
- *author Team Developer 2016 <team.developer@kaana.org.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public enum ENominaEstatus {
   
