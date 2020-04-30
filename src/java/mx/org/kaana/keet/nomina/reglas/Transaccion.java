@@ -294,7 +294,7 @@ public class Transaccion extends IBaseTnx {
 	}
 	
 	private void proveedor(Session sesion) throws Exception {
-		Map<String, Object> params          = null;
+		Map<String, Object> params           = null;
 		TcKeetNominasProveedoresDto proveedor= null;
 		try {
 			params= new HashMap<>();
@@ -304,7 +304,7 @@ public class Transaccion extends IBaseTnx {
 			params.put("idProveedor", this.idProveedor);
 			List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "proveedor", params);
 			int count= 1;
-			this.cleanPersona(sesion, this.idProveedor);
+			this.cleanProveedor(sesion, this.idProveedor);
 			for (Entity persona: personas) {
 				proveedor= this.existProveedor(sesion, persona.toLong("idProveedor"));
 				if(proveedor== null) {

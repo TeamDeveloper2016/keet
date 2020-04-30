@@ -1275,7 +1275,7 @@
         from      
           tc_keet_nominas_rubros
         where      
-          id_nomina_proveedor = {idNominaProveedor} and id_rubro = {idRubro}
+          id_nomina_proveedor = {idNominaProveedor} and id_rubro = {idRubro} and lote = {lote}
       </select>
 			<delete id="nomina">
 				delete

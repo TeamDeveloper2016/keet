@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.time.LocalDateTime;
@@ -44,6 +45,8 @@ public class TcKeetNominasDetallesDto implements IBaseDto, Serializable {
   @Column (name="clave")
   private String clave;
   @Column (name="registro")
+  private LocalDate fecha;
+  @Column (name="fecha")
   private LocalDateTime registro;
 
   public TcKeetNominasDetallesDto() {
@@ -51,11 +54,11 @@ public class TcKeetNominasDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetNominasDetallesDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, LocalDate.now());
     setKey(key);
   }
 
-  public TcKeetNominasDetallesDto(Double valor, Long idNominaDetalle, String formula, Long idNominaConcepto, Long idNominaPersona, String nombre, String clave) {
+  public TcKeetNominasDetallesDto(Double valor, Long idNominaDetalle, String formula, Long idNominaConcepto, Long idNominaPersona, String nombre, String clave, LocalDate fecha) {
     setValor(valor);
     setIdNominaDetalle(idNominaDetalle);
     setFormula(formula);
@@ -64,6 +67,7 @@ public class TcKeetNominasDetallesDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
 		this.clave= clave;
+		this.fecha= fecha;
   }
 	
   public void setValor(Double valor) {
@@ -122,6 +126,14 @@ public class TcKeetNominasDetallesDto implements IBaseDto, Serializable {
 		this.clave=clave;
 	}
 
+	public LocalDate getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(LocalDate fecha) {
+		this.fecha=fecha;
+	}
+
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -159,6 +171,8 @@ public class TcKeetNominasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getClave());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFecha());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -174,6 +188,7 @@ public class TcKeetNominasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("idNominaPersona", getIdNominaPersona());
 		regresar.put("nombre", getNombre());
 		regresar.put("clave", getClave());
+		regresar.put("fecha", getFecha());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -181,7 +196,7 @@ public class TcKeetNominasDetallesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getValor(), getIdNominaDetalle(), getFormula(), getIdNominaConcepto(), getIdNominaPersona(), getNombre(), getClave(), getRegistro()
+    getValor(), getIdNominaDetalle(), getFormula(), getIdNominaConcepto(), getIdNominaPersona(), getNombre(), getClave(), getFecha(), getRegistro()
     };
     return regresar;
   }

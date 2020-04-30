@@ -270,15 +270,44 @@
 					tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden				
 			</select>	
       <select id="subContratista">
-        select 
-				  tc_keet_contratos_destajos_contratistas.*
+         select 
+				  tc_keet_contratos_destajos_proveedores.*
 				from
-				  tc_keet_contratos_destajos_contratistas 
+				  tc_keet_contratos_destajos_proveedores 
 				inner join
-				  tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+				  tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
 				where 
-				  tc_keet_contratos_destajos_contratistas.id_nomina is null
-				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}
+				  tc_keet_contratos_destajos_proveedores.id_nomina is null
+				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}
+			</select>
+			<select id="rubros">
+				select 
+				  tc_keet_rubros.id_rubro,
+ 				  concat('C', tc_keet_contratos.clave, '-M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+				  tc_keet_estaciones.codigo,
+				  '00111100' as sat,
+				  tc_keet_estaciones.nombre,
+				  0 as cantidad,
+				  round(tc_keet_contratos_destajos_proveedores.costo, 4) as subtotal,
+				  round(tc_keet_contratos_destajos_proveedores.costo* 0.16, 4) as iva,
+				  round(tc_keet_contratos_destajos_proveedores.costo* 1.16, 4) as total
+			  from
+				  tc_keet_contratos_lotes_proveedores
+			  inner join
+				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+			  inner join
+				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+			  inner join
+			    tc_keet_contratos_destajos_proveedores on tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor
+			  inner join	 
+			    tc_keet_estaciones on tc_keet_contratos_destajos_proveedores.id_estacion = tc_keet_estaciones.id_estacion 
+        inner join
+				  tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo
+			  where 
+			    tc_keet_contratos_destajos_proveedores.id_nomina is null
+				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
+		    order by
+			    lote, tc_keet_estaciones.codigo				
 			</select>			
 		</unit>
 		<unit id="VistaContratosLotesDto">

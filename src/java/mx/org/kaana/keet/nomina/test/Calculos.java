@@ -28,8 +28,9 @@ public class Calculos {
       Autentifica autentifica= new Autentifica();
 			if (autentifica.tieneAccesoBD(Configuracion.getInstance().getPropiedad("sistema.autenticar.cuenta"), password, "127.0.0.1")) {
 				autentifica.loadSucursales();
-				Transaccion transaccion= new Transaccion(1L, 74L, autentifica);
-				if(transaccion.ejecutar(EAccion.REPROCESAR))
+				// Transaccion transaccion= new Transaccion(1L, 74L, autentifica); // contratista patrocinio
+				Transaccion transaccion= new Transaccion(1L, autentifica, 1L); 
+				if(transaccion.ejecutar(EAccion.DEPURAR))
 					LOG.info("Se procesó la nómina.");
 				else
 					LOG.info("Ocurrió un error en el proceso de nómina.");

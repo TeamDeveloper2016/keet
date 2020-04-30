@@ -199,6 +199,7 @@ public class Nomina implements Serializable {
 				// PARA AQUELLOS INCIDENTES ENCONTRADOS BUSCAR EL CONCEPTO CORRESPONDIENTE
 				if(index>= 0) {
 					Concepto concepto= (Concepto)this.personales.get(index).clone();
+					concepto.setFecha(item.getVigenciaInicio());
 					if(incidente.recuperar())
 						concepto.setFormula(concepto.getFormula().replace("{".concat(incidente.name()).concat("}"), item.getCosto().toString()));
 					particulares.add(concepto);

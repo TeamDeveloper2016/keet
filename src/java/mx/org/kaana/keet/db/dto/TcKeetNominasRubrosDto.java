@@ -49,6 +49,8 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
   private Long idRubro;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="lote")
+  private String lote;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -57,11 +59,11 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetNominasRubrosDto(Long key) {
-    this(null, null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKeetNominasRubrosDto(String codigo, Double total, Long idNominaProveedor, Double iva, Double subtotal, String sat, String cantidad, Long idNominaRubro, Long idRubro, String nombre) {
+  public TcKeetNominasRubrosDto(String codigo, Double total, Long idNominaProveedor, Double iva, Double subtotal, String sat, String cantidad, Long idNominaRubro, Long idRubro, String nombre, String lote) {
     setCodigo(codigo);
     setTotal(total);
     setIdNominaProveedor(idNominaProveedor);
@@ -73,6 +75,7 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
     setIdRubro(idRubro);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
+		this.lote= lote;
   }
 	
   public void setCodigo(String codigo) {
@@ -163,6 +166,14 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public String getLote() {
+		return lote;
+	}
+
+	public void setLote(String lote) {
+		this.lote=lote;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -199,6 +210,8 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLote());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -216,6 +229,7 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
 		regresar.put("idNominaRubro", getIdNominaRubro());
 		regresar.put("idRubro", getIdRubro());
 		regresar.put("nombre", getNombre());
+		regresar.put("lote", getLote());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -223,7 +237,7 @@ public class TcKeetNominasRubrosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getTotal(), getIdNominaProveedor(), getIva(), getSubtotal(), getSat(), getCantidad(), getIdNominaRubro(), getIdRubro(), getNombre(), getRegistro()
+    getCodigo(), getTotal(), getIdNominaProveedor(), getIva(), getSubtotal(), getSat(), getCantidad(), getIdNominaRubro(), getIdRubro(), getNombre(), getLote(), getRegistro()
     };
     return regresar;
   }
