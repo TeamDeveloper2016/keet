@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPersonasDto;
@@ -80,10 +81,10 @@ public class Nomina implements Serializable {
 			TcKeetNominasPeriodosDto semana= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(this.sesion, TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo());
 			params.put("semana", semana.getOrden());
 			this.conceptos= (List<Concepto>)DaoFactory.getInstance().toEntitySet(this.sesion, Concepto.class, "TcKeetNominasConceptosDto", "todos", params);
-			for (Concepto concepto: conceptos) 
+			for (Concepto concepto: this.conceptos) 
 				concepto.setColumna(this.toColumn(concepto.getCelda()));
 			this.personales= (List<Concepto>)DaoFactory.getInstance().toEntitySet(this.sesion, Concepto.class, "TcKeetNominasConceptosDto", "personales", params);
-			for (Concepto concepto: personales)
+			for (Concepto concepto: this.personales)
 				concepto.setColumna(this.toColumn(concepto.getCelda()));
 		} // try
 		finally {
@@ -239,20 +240,62 @@ public class Nomina implements Serializable {
 		} // finally
 	}
 
+	private void toLookUpConcepto(List<Concepto> particulares, ECodigosIncidentes concepto, Double value) throws CloneNotSupportedException {
+		// LOS CONCEPTOS DEL CONTRATISTA YA ESTAN CARGADOS SOLO ES ACTUALIZAR LOS VALORES
+		int index= particulares.indexOf(new Concepto(concepto.codigos()));
+		if(index>= 0) {
+			Concepto item= (Concepto)particulares.get(index);
+			item.setFormula(item.getFormula().replace("{".concat(concepto.name()).concat("}"), value.toString()));
+		} // if
+	}
+	
+	private Double toSueldoContratista(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
+		Double regresar= empleado.getNeto();
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idNomina", this.nomina.getIdNomina());
+			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
+			List<TcKeetContratosDestajosContratistasDto> lotes= (List<TcKeetContratosDestajosContratistasDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcKeetContratosDestajosContratistasDto.class, "VistaNominaDto", "contratista", params);
+			if(lotes!= null && !lotes.isEmpty()) {
+				regresar= 0D;
+				for(TcKeetContratosDestajosContratistasDto lote: lotes) {
+					lote.setIdNomina(this.nomina.getIdNomina());
+					regresar+= lote.getCosto();
+					DaoFactory.getInstance().update(this.sesion, lote);
+				} // for
+				this.toLookUpConcepto(particulares, ECodigosIncidentes.DESTAJO, regresar);
+				Entity agremiados= (Entity)DaoFactory.getInstance().toEntity(this.sesion, "VistaNominaDto", "agremiados", params);
+				if(agremiados!= null && !agremiados.isEmpty()) {
+					this.toLookUpConcepto(particulares, ECodigosIncidentes.AGREMIADOS, agremiados.toDouble("agremiados"));
+					this.toLookUpConcepto(particulares, ECodigosIncidentes.SALARIOS, agremiados.toDouble("salarios"));
+					regresar-= agremiados.toDouble("salarios");
+				} // if
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
 	public void process(TcKeetNominasPersonasDto empleado) throws CompilationException, Exception {
-		this.constants.put("sueldo", empleado.getNeto());
-		LOG.info("------------------------[ "+ empleado.getIdEmpresaPersona()+ " ]----------------------------");
+		LOG.warn("------------------------[ "+ empleado.getIdEmpresaPersona()+ " ]----------------------------");
 		this.cleanRow();
 		// CLONAR LOS CONCEPTOS GLOBALES PARA QUE SOLO APLIQUE AL EMPLEADO
 		List<Concepto> particulares= this.toClone();
 		// BUSCAR LAS INCIDENCIAS DE ESE EMPLEADO
 		this.toIncidencias(particulares, empleado.getIdEmpresaPersona());
+		// FIJAR EL SUELDO BASE DEPENDIENDO SI ES O NO CONTRATISTA
+		Double sueldo= this.toSueldoContratista(particulares, empleado);
+		this.constants.put("SUELDO", sueldo);
 		for (Concepto concepto: particulares) {
- 			this.addCell(concepto.getColumna(), this.transform(concepto.getFormula()));
+			concepto.setFormula(this.transform(concepto.getFormula()));
+ 			this.addCell(concepto.getColumna(), concepto.getFormula());
 		} // for
 		for (Concepto concepto: particulares) {
 			concepto.setValor(this.toValue(concepto.getColumna()));
-  		LOG.info("("+ concepto.getNombre()+ ") ["+ this.transform(concepto.getFormula())+ "] {"+ concepto.getValor()+ "}");
+  		LOG.warn("<"+ concepto.getClave()+ "> ("+ concepto.getNombre()+ ") ["+ concepto.getFormula()+ "] {"+ concepto.getValor()+ "}");
 		} // for
 		// RECUPERAR LOS CALCULOS Y SACAR LOS TOTALES PARA EL PAGO DE NOMINA
 		empleado.setAportaciones(this.toTotal(particulares, EGrupoConceptos.APORTACIONES.celda()));

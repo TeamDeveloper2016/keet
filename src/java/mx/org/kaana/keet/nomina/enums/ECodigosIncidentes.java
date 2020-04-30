@@ -16,7 +16,10 @@ public enum ECodigosIncidentes {
   EXEDENTE(16L, "V1|W1|X1|Z1|Y1", Boolean.TRUE), 
   TRIPLE(17L, "U1", Boolean.FALSE), 
   PRESTAMO(18L, "AA1|AB1", Boolean.TRUE), 
-  ABONO(19L, "AJ1|AK1|AL1|AM1|AN1|AO1", Boolean.TRUE);
+  ABONO(19L, "AJ1|AK1|AL1|AM1|AN1|AO1", Boolean.TRUE),
+  AGREMIADOS(-1L, "J1", Boolean.TRUE),
+  SALARIOS(-1L, "K1", Boolean.TRUE),
+  DESTAJO(-1L, "L1", Boolean.TRUE);
 	
 	private Long idTipoIncidente;
 	private String codigos;

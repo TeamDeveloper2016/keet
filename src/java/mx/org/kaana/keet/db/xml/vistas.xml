@@ -221,7 +221,54 @@
 			  where
 				  tc_mantic_incidentes.id_nomina= {idNomina}
 				  and tc_mantic_incidentes.id_incidente_estatus= 2			
-			</select>			
+			</select>	
+			<select id="contratista">
+        select 
+				  tc_keet_contratos_destajos_contratistas.*
+				from
+				  tc_keet_contratos_destajos_contratistas 
+				inner join
+				  tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+				where 
+				  tc_keet_contratos_destajos_contratistas.id_nomina is null
+				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}
+			</select>
+			<select id="agremiados">
+				select 
+					{idEmpresaPersona} as id_contratista,
+					count(*) as agremiados,
+					sum(sueldo_semanal) as salarios
+				from
+					tr_mantic_empresa_personal
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				inner join
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
+				where
+					tr_mantic_empresa_personal.id_contratista= {idEmpresaPersona}
+					and tr_mantic_empresa_personal.id_activo= 1
+					and tr_mantic_empresa_personal.id_empresa_persona!= {idEmpresaPersona}				
+			</select>	
+			<select id="detalle">
+				select
+					tc_keet_nominas_conceptos.id_tipo_concepto,
+					tc_keet_nominas_conceptos.orden,
+					tc_keet_nominas_detalles.clave,
+					tc_keet_nominas_detalles.nombre,
+					tc_keet_nominas_detalles.formula,
+					tc_keet_nominas_detalles.valor
+				from
+					tc_keet_nominas_detalles
+				inner join
+					tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona = tc_keet_nominas_personas.id_nomina_persona
+				inner join
+					tc_keet_nominas_conceptos on tc_keet_nominas_detalles.id_nomina_concepto = tc_keet_nominas_conceptos.id_nomina_concepto
+				where
+					tc_keet_nominas_personas.id_nomina= {idNomina}
+					and tc_keet_nominas_detalles.id_nomina_persona= {idEmpresaPersona}
+				order by
+					tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden				
+			</select>	
 		</unit>
 		<unit id="VistaContratosLotesDto">
 			<select id="principal">
