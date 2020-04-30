@@ -165,11 +165,14 @@
 			</select>
 			<select id="proveedor">
 				select
-					distinct(tc_keet_contratos_lotes_proveedores.id_proveedor) as id_proveedor
+					distinct(tc_keet_contratos_lotes_proveedores.id_proveedor) as id_proveedor,
+				  tc_mantic_proveedores.clave
 				from
 					tc_keet_contratos_destajos_proveedores
 				inner join
 					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+				inner join
+				  tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
 				where
 					tc_keet_contratos_destajos_proveedores.id_nomina is null
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}
@@ -178,11 +181,14 @@
 			</select>
 			<select id="proveedores">
 				select
-					distinct(tc_keet_contratos_lotes_proveedores.id_proveedor) as id_proveedor
+					distinct(tc_keet_contratos_lotes_proveedores.id_proveedor) as id_proveedor,
+				  tc_mantic_proveedores.clave
 				from
 					tc_keet_contratos_destajos_proveedores
 				inner join
 					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+				inner join
+				  tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
 				where
 					tc_keet_contratos_destajos_proveedores.id_nomina is null
 				order by

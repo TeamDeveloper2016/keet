@@ -982,7 +982,7 @@
 			  order by
 				  id_nomina_estatus desc
       </select>
-			<update id="rows">
+			<update id="personas">
 				update
 					tc_keet_nominas
 				inner join
@@ -1001,9 +1001,32 @@
 					tc_keet_nominas_personas.id_nomina) as totales on tc_keet_nominas.id_nomina= totales.id_nomina
 				set 
 					tc_keet_nominas.personas= totales.personas,
+				  tc_keet_nominas.aportaciones= totales.aportaciones,
 					tc_keet_nominas.deducciones= totales.deducciones,
 					tc_keet_nominas.percepciones= totales.percepciones,
 					tc_keet_nominas.neto= totales.neto				
+			</update>
+			<update id="proveedores">
+				update
+					tc_keet_nominas
+				inner join
+				(select
+					tc_keet_nominas_proveedores.id_nomina,
+					count(*) as proveedores,
+					sum(tc_keet_nominas_proveedores.subtotal) as subtotal,
+					sum(tc_keet_nominas_proveedores.iva) as iva,
+					sum(tc_keet_nominas_proveedores.total) as total
+				from
+					tc_keet_nominas_proveedores
+				where
+					tc_keet_nominas_proveedores.id_nomina= {idNomina}
+				group by
+					tc_keet_nominas_proveedores.id_nomina) as totales on tc_keet_nominas.id_nomina= totales.id_nomina
+				set 
+					tc_keet_nominas.proveedores= totales.proveedores,
+					tc_keet_nominas.subtotal= totales.subtotal,
+					tc_keet_nominas.iva= totales.iva,
+					tc_keet_nominas.total= totales.total				
 			</update>
     </unit>		
     <unit id="TcKeetNominasBitacoraDto">
@@ -1275,7 +1298,7 @@
         from      
           tc_keet_nominas_rubros
         where      
-          id_nomina_proveedor = {idNominaProveedor} and id_rubro = {idRubro} and lote = {lote}
+          id_nomina_proveedor = {idNominaProveedor} and id_rubro = {idRubro} and lote = '{lote}'
       </select>
 			<delete id="nomina">
 				delete

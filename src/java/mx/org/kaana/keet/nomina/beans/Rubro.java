@@ -16,21 +16,18 @@ public class Rubro extends TcKeetNominasRubrosDto implements Cloneable, Serializ
 
 	private static final long serialVersionUID=-7582735668635861130L;
 
-	private String codigo;
-	
 	public Rubro() {
 		this(null);
 	}
 	
 	public Rubro(String codigo) {
-		this.codigo= codigo;
 		this.setCodigo(codigo);
 	}
 
 	@Override
 	public int hashCode() {
 		int hash=7;
-		hash=79*hash+Objects.hashCode(this.codigo);
+		hash=79*hash+Objects.hashCode(this.getCodigo());
 		return hash;
 	}
 
@@ -46,7 +43,7 @@ public class Rubro extends TcKeetNominasRubrosDto implements Cloneable, Serializ
 			return false;
 		}
 		final Rubro other=(Rubro) obj;
-		if (!Objects.equals(this.codigo, other.codigo)) {
+		if (!Objects.equals(this.getCodigo(), other.getCodigo())) {
 			return false;
 		}
 		return true;

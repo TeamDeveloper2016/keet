@@ -302,9 +302,9 @@ public class Transaccion extends IBaseTnx {
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
 			params.put("idProveedor", this.idProveedor);
+			this.cleanProveedor(sesion, this.idProveedor);
 			List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "proveedor", params);
 			int count= 1;
-			this.cleanProveedor(sesion, this.idProveedor);
 			for (Entity persona: personas) {
 				proveedor= this.existProveedor(sesion, persona.toLong("idProveedor"));
 				if(proveedor== null) {
@@ -321,6 +321,7 @@ public class Transaccion extends IBaseTnx {
 				LOG.info("["+ count+ " de "+ personas.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ proveedor);
 			  count++;
 			} // for
+			DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "proveedores");
 		} // try
 		finally {
 			Methods.clean(params);
@@ -336,7 +337,7 @@ public class Transaccion extends IBaseTnx {
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
 			params.put("idEmpresaPersona", this.idEmpresaPersona);
-			List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "persona", params);
+			List<Entity> personas= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "personas", params);
 			int count= 1;
 			this.cleanPersona(sesion, this.idEmpresaPersona);
 			for (Entity persona: personas) {
@@ -356,7 +357,7 @@ public class Transaccion extends IBaseTnx {
 				LOG.info("["+ count+ " de "+ personas.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
 			  count++;
 			} // for
-			DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params);
+			DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "persona");
 		} // try
 		finally {
 			Methods.clean(params);
