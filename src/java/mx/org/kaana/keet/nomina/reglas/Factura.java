@@ -39,9 +39,6 @@ public class Factura implements Serializable {
 		this.nomina=nomina;
 	}
 	
-	private void toDestajos(TcKeetNominasProveedoresDto proveedor) throws Exception {
-	}
-	
 	public void process(TcKeetNominasProveedoresDto proveedor) throws Exception {
 		Map<String, Object> params= null;
 		try {
