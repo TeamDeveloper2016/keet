@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.nomina.reglas;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasRubrosDto;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.mantic.db.dto.TcManticIncidentesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,6 +47,7 @@ public class Transaccion extends IBaseTnx {
 	private TcKeetNominasDto nomina;
 	private Nomina calculos;
 	private Factura factura;
+	private TcKeetNominasBitacoraDto bitacora;
 	
 	public Transaccion(Long idNomina) {
 		this(idNomina, new Autentifica());
@@ -52,6 +55,16 @@ public class Transaccion extends IBaseTnx {
 
 	public Transaccion(Long idNomina, Autentifica autentifica) {
 		this(idNomina, autentifica, -1L, -1L);
+	}
+
+	public Transaccion(Long idNomina, TcKeetNominasBitacoraDto bitacora) {
+		this.idNomina= idNomina;
+		this.bitacora= bitacora;
+	}
+
+	public Transaccion(TcKeetNominasDto nomina, Autentifica autentifica) {
+		this(-1L, autentifica, -1L, -1L);
+		this.nomina= nomina;
 	}
 
 	public Transaccion(Long idNomina, Long idEmpresaPersona, Autentifica autentifica) {
@@ -76,7 +89,12 @@ public class Transaccion extends IBaseTnx {
     try {
       this.messageError= "Ocurrio un error en el proceso de calculo de la nómina.";
 			params= new HashMap<>();
-			this.nomina  = (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
+			if(!this.nomina.isValid()) {
+				DaoFactory.getInstance().insert(sesion, this.nomina);
+				this.idNomina= this.nomina.getIdNomina();
+			} // if
+			else
+			  this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
 			this.calculos= new Nomina(sesion, this.nomina);
 			this.factura = new Factura(sesion, this.nomina);
 			switch(accion) {
@@ -99,6 +117,14 @@ public class Transaccion extends IBaseTnx {
 				case DEPURAR:
 					this.proveedor(sesion);
 					break;
+				case JUSTIFICAR:
+				  if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
+					  this.nomina.setIdNominaEstatus(this.bitacora.getIdNominaEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, this.nomina)>= 1L;
+						// CAMBIAR EL ESTATUS A TODOS LOS INCIDENTES Y REGISTAR EN SUS RESPECTIVA BITACORA 
+            this.closeIncidentes(sesion);				
+					} // if
+					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
@@ -109,6 +135,7 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 			this.nomina  = null;
 			this.calculos= null;
+			this.factura = null;
 		} // finally
 		return regresar;	
   }
@@ -405,6 +432,32 @@ public class Transaccion extends IBaseTnx {
 	
 	public void calculos(Session sesion, TcKeetNominasProveedoresDto proveedor) throws Exception {
 		this.factura.process(proveedor);
+	}
+
+	private void closeIncidentes(Session sesion) throws Exception {
+    Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idNomina", this.nomina.getIdNomina());
+			List<TcManticIncidentesDto> incidentes= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticIncidentesDto.class, "VistaNominaDto", "aplicar", params);
+			if(incidentes!= null && !incidentes.isEmpty()) {		
+				for (TcManticIncidentesDto incidente: incidentes) {
+					incidente.setIdIncidenteEstatus(3L);
+					DaoFactory.getInstance().update(sesion, incidente);
+					TcManticIncidentesBitacoraDto estatus= new TcManticIncidentesBitacoraDto(
+						"CAMBIO AUTOMATICO POR NOMINA", // String justificacion, 
+						incidente.getIdIncidente(), // Long idIncidente, 
+						-1L, // Long idIncidenteBitacora, 
+						this.autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
+						3L // Long idIncidenteEstatus
+					);
+					DaoFactory.getInstance().insert(sesion, estatus);
+				} // for
+      } // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 	
 }

@@ -6,9 +6,9 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="[#{manticCatalogosMasivosProgreso.monitoreo.id}] Monitoreo del avance de la importacion de registros"/>
+  <ui:param name="titulo" value="[#{keetNominasProgreso.monitoreo.id}] Monitoreo del proceso de nómina"/>
   <ui:define name="librerias">
-		<meta id="refresh" http-equiv="#{manticCatalogosMasivosProgreso.attrs.cancelar? 'refresh': 'description'}" content="120"/>
+		<meta id="refresh" http-equiv="#{keetNominasProgreso.attrs.cancelar? 'refresh': 'description'}" content="120"/>
 		<script type="text/javascript">
 		  function cancel() {
 				janal.console("progreso.cancel(): Entro a cancelar el refrescado de la pagina");
@@ -17,7 +17,7 @@
 		</script>	
 	</ui:define>	
   <ui:define name="contenido">
-		<p:poll autoStart="true" interval="3" global="true" process="@this" update="@(.filas)" listener="#{manticCatalogosMasivosProgreso.doProgreso}" stop="#{not manticCatalogosMasivosProgreso.attrs.cancelar}"/>
+		<p:poll autoStart="true" interval="3" global="true" process="@this" update="@(.filas)" listener="#{keetNominasProgreso.doProgreso}" stop="#{not keetNominasProgreso.attrs.cancelar}"/>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
@@ -29,10 +29,10 @@
       </div>
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
-					<p:inputText readonly="true" value="#{manticCatalogosMasivosProgreso.monitoreo.elapsed.formatElapsed}" styleClass="janal-column-center janal-wid-100-txt filas"/>
+					<p:inputText readonly="true" value="#{keetNominasProgreso.monitoreo.elapsed.formatElapsed}" styleClass="janal-column-center janal-wid-100-txt filas"/>
         </div>
         <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
-					<p:inputText readonly="true" value="#{manticCatalogosMasivosProgreso.monitoreo.elapsed.formatMissing}" styleClass="janal-column-center janal-wid-100-txt filas"/>
+					<p:inputText readonly="true" value="#{keetNominasProgreso.monitoreo.elapsed.formatMissing}" styleClass="janal-column-center janal-wid-100-txt filas"/>
         </div>
       </div>
   		<br/>
@@ -41,15 +41,15 @@
 					<p:outputLabel value="0"/>
         </div>
         <div id="collapse-content" class="ui-grid-col-4 janal-column-center">
-					<p:outputLabel value="#{manticCatalogosMasivosProgreso.doNumerico(manticCatalogosMasivosProgreso.monitoreo.progreso)}" styleClass="filas janal-color-blue"/>
+					<p:outputLabel value="#{keetNominasProgreso.doNumerico(keetNominasProgreso.monitoreo.progreso)}" styleClass="filas janal-color-blue"/>
         </div>
         <div id="collapse-content" class="ui-grid-col-4 janal-column-right">
-					<p:outputLabel value="#{manticCatalogosMasivosProgreso.doNumerico(manticCatalogosMasivosProgreso.monitoreo.total)}"/>
+					<p:outputLabel value="#{keetNominasProgreso.doNumerico(keetNominasProgreso.monitoreo.total)}"/>
         </div>
       </div>
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-					<p:progressBar value="#{manticCatalogosMasivosProgreso.attrs.value}" labelTemplate="{value}%" displayOnly="true" styleClass="filas"/>
+					<p:progressBar value="#{keetNominasProgreso.attrs.value}" labelTemplate="{value}%" displayOnly="true" styleClass="filas"/>
         </div>
       </div>
     </div>		   
@@ -57,12 +57,12 @@
   </ui:define>   
   <ui:define name="acciones">
   	<div class="lg-pantalla">
-  		<p:commandButton id="aceptar" process="@this" update="cancelar @(.filas)" icon="fa fa-remove" value="Cancelar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doCancelar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? '': 'none'}"/>
-	  	<p:commandButton id="cancelar" process="@this" update="cancelar @(.filas)" icon="fa fa-reply" value="Regresar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doRegresar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? 'none': ''}"/>
+  		<p:commandButton id="aceptar" process="@this" update="cancelar @(.filas)" icon="fa fa-remove" value="Cancelar" styleClass="filas" action="#{keetNominasProgreso.doCancelar}" style="display: #{keetNominasProgreso.attrs.cancelar? '': 'none'}"/>
+	  	<p:commandButton id="cancelar" process="@this" update="cancelar @(.filas)" icon="fa fa-reply" value="Regresar" styleClass="filas" action="#{keetNominasProgreso.doRegresar}" style="display: #{keetNominasProgreso.attrs.cancelar? 'none': ''}"/>
 		</div>
   	<div class="xs-pantalla">
-  		<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-remove" title="Cancelar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doCancelar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? '': 'none'}"/>
-	  	<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-reply" title="Regresar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doRegresar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? 'none': ''}"/>
+  		<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-remove" title="Cancelar" styleClass="filas" action="#{keetNominasProgreso.doCancelar}" style="display: #{keetNominasProgreso.attrs.cancelar? '': 'none'}"/>
+	  	<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-reply" title="Regresar" styleClass="filas" action="#{keetNominasProgreso.doRegresar}" style="display: #{keetNominasProgreso.attrs.cancelar? 'none': ''}"/>
 		</div>		
 
   </ui:define>   

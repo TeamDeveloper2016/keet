@@ -18,8 +18,11 @@
 					tc_keet_nominas_periodos.corte,
 					tc_keet_nominas.id_nomina_estatus,
 					tc_keet_nominas_estatus.nombre as estatus,
+					tc_keet_nominas.proveedores,
+					tc_keet_nominas.total,
 					tc_keet_nominas.personas,
-					tc_keet_nominas.neto
+					tc_keet_nominas.neto,
+				  (tc_keet_nominas.neto+ tc_keet_nominas.total) as global
 				from
 					tc_keet_nominas
 				inner join 
@@ -28,8 +31,6 @@
 					tc_keet_tipos_nominas on tc_keet_nominas.id_tipo_nomina= tc_keet_tipos_nominas.id_tipo_nomina
 				inner join 
 					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
-				inner join 
-					tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
 				inner join 
 					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
 				where
@@ -71,7 +72,7 @@
 					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
 				where
 					tc_keet_nominas.id_tipo_nomina= 1
-					and tc_keet_nominas.id_nomina_estatus= 1
+					and tc_keet_nominas.id_nomina_estatus in (1, 2, 3)
 			</select>
 			<select id="todos">
 				select
@@ -129,6 +130,37 @@
 				  and tr_mantic_empresa_personal.id_empresa_persona= {idEmpresaPersona}
 				order by
 					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave
+			</select>
+			<select id="ultima">
+        select
+					tc_keet_nominas.id_nomina as id_key,
+					tc_keet_nominas_periodos.*,
+				  tc_keet_nominas_estatus.id_nomina_estatus,
+				  tc_keet_nominas_estatus.nombre as estatus,
+				  tc_keet_nominas.observaciones
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				inner join 
+					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
+				where
+					tc_keet_nominas.id_tipo_nomina= {idTipoNomina}
+					and tc_keet_nominas.id_nomina_estatus in (1, 2, 3)
+			</select>			
+			<select id="activa">
+				select
+					tc_keet_nominas.id_nomina as id_key,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nombre,
+					tc_keet_nominas_periodos.ejercicio,
+					tc_keet_nominas_periodos.orden as semana
+				from
+					tc_keet_nominas
+				inner join
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+					tc_keet_nominas.id_tipo_nomina= {idTipoNomina}
+					and tc_keet_nominas.id_nomina_estatus in (1, 2, 3)
 			</select>
 			<select id="nominas">
         select
@@ -215,10 +247,10 @@
 				  tc_mantic_incidentes
 				inner join
  				  tc_mantic_tipos_incidentes on tc_mantic_incidentes.id_tipo_incidente= tc_mantic_tipos_incidentes.id_tipo_incidente 
-				  and tc_mantic_tipos_incidentes.id_afecta_nomina= 2
 			  where
 				  tc_mantic_incidentes.id_nomina is null
 				  and tc_mantic_incidentes.id_incidente_estatus= 2
+				  and tc_mantic_tipos_incidentes.id_afecta_nomina= 2
 			  union all
  			  select
 				  tc_mantic_incidentes.*

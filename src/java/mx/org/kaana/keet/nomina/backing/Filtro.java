@@ -4,14 +4,12 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -19,8 +17,8 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
-import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
+import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -76,8 +74,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("proveedores", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("personas", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("neto", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("global", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaNominaDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -119,17 +120,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase())); 
-//			if(eaccion.equals(EAccion.AGREGAR)) {
-//				TcKeetNominasDto nomina= (TcKeetNominasDto)DaoFactory.getInstance().toEntity(TcKeetNominasDto.class, "TcKeetNominasDto", "ultima", Collections.EMPTY_MAP);
-//				if(nomina!= null) {
-//          JsfBase.setFlashAttribute("idNomina", nomina.getKey());
-//          JsfBase.setFlashAttribute("idNominaEstatus", nomina.getIdNominaEstatus());
-//				} // if
-//			} // if
-//			else {
-//        JsfBase.setFlashAttribute("idNomina",((Entity)this.attrs.get("seleccionado")).getKey());
-//        JsfBase.setFlashAttribute("idNominaEstatus", ((Entity) this.attrs.get("seleccionado")).toLong("idNominaEstatus"));
-//			} // else
 			JsfBase.setFlashAttribute("idNomina",  eaccion.equals(EAccion.AGREGAR)? -1L: ((Entity)this.attrs.get("seleccionado")).getKey());
       JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nomina/filtro");
 			switch (eaccion){
@@ -137,7 +127,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				  regresar= "accion".concat(Constantes.REDIRECIONAR);
 					break;
 				case REPROCESAR:
-				  regresar= "accion".concat(Constantes.REDIRECIONAR);
+				  regresar= "progreso".concat(Constantes.REDIRECIONAR);
 					break;
 				case CONSULTAR:
 				  regresar= "consultar".concat(Constantes.REDIRECIONAR);
@@ -193,7 +183,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, "semana"));
       this.attrs.put("semana", new UISelectEntity(-1L));
       this.attrs.put("tipos", UIEntity.seleccione("TcKeetTiposNominasDto", "row", params, "nombre"));
-      this.attrs.put("tipo", new UISelectEntity(-1L));
+      this.attrs.put("idTipoNomina", new UISelectEntity(-1L));
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetNominasEstatusDto", "row", params, "nombre"));
       this.attrs.put("estatus", new UISelectEntity(-1L));
 		} // try
@@ -216,7 +206,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
 			allEstatus= UISelect.build("TcKeetNominasEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
-			this.attrs.put("estatusDlg", UIBackingUtilities.toFirstKeySelectItem(allEstatus));		
+			this.attrs.put("idEstatus", UIBackingUtilities.toFirstKeySelectItem(allEstatus));		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -230,13 +220,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void doActualizarEstatus() {
 		Transaccion transaccion= null;
 		Entity seleccionado    = null;
-		TcKeetNominasDto dto   = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			dto= (TcKeetNominasDto) DaoFactory.getInstance().findById(TcKeetNominasDto.class, seleccionado.getKey());
-			dto.setIdNominaEstatus(Long.valueOf(this.attrs.get("estatusDlg").toString()));
-			transaccion= null; // new Transaccion(incidente);
-			if(transaccion.ejecutar(EAccion.ASIGNAR)) 			
+			TcKeetNominasBitacoraDto bitacora= new TcKeetNominasBitacoraDto(
+				(String) this.attrs.get("justificacion"), // String justificacion, 
+				Long.valueOf((String)this.attrs.get("estatus")), // Long idNominaEstatus, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				-1L, // Long idNominaBitacora, 
+				seleccionado.getKey() // Long idNomina
+			);
+			transaccion= new Transaccion(seleccionado.getKey(), bitacora);
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) 			
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);			
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);

@@ -11,12 +11,12 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        idEmpresa: {validaciones: 'libre', mascara: 'libre'},
-        fecha    : {validaciones: 'libre', mascara: 'fecha'},
-        ejercicio: {validaciones: 'libre', mascara: 'libre'},
-        semana   : {validaciones: 'libre', mascara: 'libre'},
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre'},
+        fecha       : {validaciones: 'libre', mascara: 'fecha'},
+        ejercicio   : {validaciones: 'libre', mascara: 'libre'},
+        semana      : {validaciones: 'libre', mascara: 'libre'},
         idTipoNomina: {validaciones: 'libre', mascara: 'libre'},
-        estatus  : {validaciones: 'libre', mascara: 'libre'}
+        estatus     : {validaciones: 'libre', mascara: 'libre'}
       };
 			
 			fieldsDialog= {
@@ -117,56 +117,71 @@
               </f:facet>
               <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>														
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.ejercicio}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.ejercicio}">
               <f:facet name="header">
                 <h:outputText value="Ejercicio"/>
               </f:facet>
               <h:outputText value="#{row['ejercicio']}"/>
             </p:column>														
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.semana}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.semana}">
               <f:facet name="header">
                 <h:outputText value="Semana"/>
               </f:facet>
               <h:outputText value="#{row['semana']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.tipo}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
               <f:facet name="header">
                 <h:outputText value="Tipo"/>
               </f:facet>
               <h:outputText value="#{row['tipo']}"/>
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.inicio}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.inicio}">
               <f:facet name="header">
                 <h:outputText value="Inicio"/>
               </f:facet>
               <h:outputText value="#{row['inicio']}"/>
             </p:column>														
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.termino}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.termino}">
               <f:facet name="header">
                 <h:outputText value="Termino"/>
               </f:facet>
               <h:outputText value="#{row['termino']}"/>
             </p:column>	
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.personas}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.personas}">
               <f:facet name="header">
                 <h:outputText value="Personas"/>
               </f:facet>
               <h:outputText value="#{row['personas']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.neto}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.neto}">
               <f:facet name="header">
                 <h:outputText value="Neto ($)"/>
               </f:facet>
               <h:outputText value="#{row['neto']}"/>
             </p:column>
-            <p:column styleClass="janal-wid-col-38 janal-column-center">
-							<p:commandButton icon="fa fa-refresh" process="@this tabla" ajax="false" action="#{keetNominasFiltro.doAccion('COMPLETO')}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 3)}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.proveedores}">
+              <f:facet name="header">
+                <h:outputText value="Subcontratistas"/>
+              </f:facet>
+              <h:outputText value="#{row['proveedores']}"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
+              <f:facet name="header">
+                <h:outputText value="Total ($)"/>
+              </f:facet>
+              <h:outputText value="#{row['total']}"/>
+            </p:column>
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstatusNomina eq '1'? 'circulo-rojo': row.idEstatusNomina eq '2' or row.idEstatusNomina eq '3'? 'circulo-amarillo' : 'circulo-verde'}.png" title="Importa global de la nómina [${row.global}]"/>
+						</p:column>
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38">
+							<p:commandButton icon="fa fa-refresh" process="@this tabla" ajax="false" action="#{keetNominasFiltro.doAccion('COMPLETO')}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}">
 							  <f:setPropertyActionListener value="#{row}" target="#{keetNominasFiltro.attrs.seleccionado}" />
 							</p:commandButton>
 						</p:column>
@@ -177,10 +192,10 @@
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{keetNominasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
-            <p:menuitem id="reprocesar" action="#{keetNominasFiltro.doAccion('REPROCESAR')}" icon="fa fa-refresh" ajax="false" value="Re-procesar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() lt 3? '': 'none'}" />										
+            <p:menuitem id="reprocesar" action="#{keetNominasFiltro.doAccion('REPROCESAR')}" icon="fa fa-refresh" ajax="false" value="Re-procesar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() lt 4? '': 'none'}" />										
             <p:menuitem id="exportar" actionListener="#{keetNominasFiltro.doExportar}" icon="fa fa-file-excel-o" ajax="false" value="Exportar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>										
 						<p:separator rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus eq '2'}"/>
-						<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus eq '2'}"/>
+						<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus eq '3'}"/>
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
             <p:menuitem id="reporte" actionListener="#{keetNominasFiltro.doReporte}" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
           </p:contextMenu>
@@ -193,7 +208,7 @@
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-					<p:selectOneMenu id="estatusDlg" value="#{keetNominasFiltro.attrs.estatusDlg}" styleClass="janal-wid-100-txt">															
+					<p:selectOneMenu id="estatusDlg" value="#{keetNominasFiltro.attrs.idEstatus}" styleClass="janal-wid-100-txt">															
 						<f:selectItems value="#{keetNominasFiltro.attrs.allEstatus}"/>					
 					</p:selectOneMenu>
 				</h:panelGrid>
