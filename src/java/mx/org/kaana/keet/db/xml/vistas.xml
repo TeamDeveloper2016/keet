@@ -146,7 +146,8 @@
 					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
 				where
 					tc_keet_nominas.id_tipo_nomina= {idTipoNomina}
-					and tc_keet_nominas.id_nomina_estatus in (1, 2, 3)
+				order by
+					tc_keet_nominas.id_nomina_estatus desc
 			</select>			
 			<select id="activa">
 				select

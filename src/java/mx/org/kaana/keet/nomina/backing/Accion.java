@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.keet.nomina.beans.Nomina;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -36,7 +37,7 @@ public class Accion extends IBaseImportar implements Serializable {
 	public Boolean getActivar() {
 		Long idTipoNomina   = ((UISelectEntity)this.attrs.get("idTipoNomina")).getKey();
 		Long idNominaEstatus= ((Nomina)this.attrs.get("ultima")).getIdNominaEstatus();
-	  return idTipoNomina== -1L || (idTipoNomina== 2L && (idNominaEstatus== 1L || idNominaEstatus== 2L));
+	  return idTipoNomina== -1L || (idTipoNomina== 2L && idNominaEstatus!= 1L);
 	}
 	
 	@PostConstruct
@@ -60,24 +61,28 @@ public class Accion extends IBaseImportar implements Serializable {
   } // doCancelar
 	
 	public String doAceptar() {
-		String regresar        = null;
-		Transaccion transaccion= null;
-    try {
+		String regresar           = null;
+		Transaccion transaccion   = null;
+    Map<String, Object> params= null;
+		try {		
+			params= new HashMap<>();
 			Long idNomina= ((UISelectEntity)this.attrs.get("idNomina")).getKey();
-			if(idNomina== null || idNomina== -1L) {
+			if((idNomina== null || idNomina== -1L) && ((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()== 2L) {
+				params.put("idNominaPeriodo", ((Nomina)this.attrs.get("ultima")).getIdNominaPeriodo());
+				TcKeetNominasPeriodosDto periodo= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().toEntity(TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "anterior", params);
 				TcKeetNominasDto nomina= new TcKeetNominasDto(
 					0D, // Double neto, 
 					1L, // Long idNominaEstatus, 
 					0D, // Double deducciones, 
-					((UISelectEntity)this.attrs.get("idTipoNomina")).getKey(), // Long idTipoNomina, 
+					2L, // Long idTipoNomina, 
 					0L, // Long personas, 
 					0D, // Double aportaciones, 
 					-1L, // Long idNomina, 
-					((Nomina)this.attrs.get("ultima")).getTermino().plusDays(-1), // LocalDate fechaPago, 
+					periodo.getTermino().plusDays(-1), // LocalDate fechaPago, 
 					0L, // Long proveedores, 
 					0D, // Double total, 
-					((Nomina)this.attrs.get("ultima")).getTermino().plusDays(-2), // LocalDate fechaDispersion, 
-					((Nomina)this.attrs.get("ultima")).getIdNominaPeriodo(), // Long idNominaPeriodo, 
+					periodo.getTermino().plusDays(-2), // LocalDate fechaDispersion, 
+					periodo.getIdNominaPeriodo(), // Long idNominaPeriodo, 
 					0D, // Double iva, 
 					JsfBase.getIdUsuario(), // Long idUsuario, 
 					0D, // Double subtotal, 
@@ -86,7 +91,7 @@ public class Accion extends IBaseImportar implements Serializable {
 					0D // Double percepciones
 				);
   			transaccion= new Transaccion(nomina, JsfBase.getAutentifica());
-			}
+			} // if
 			else
   			transaccion= new Transaccion(idNomina, JsfBase.getAutentifica());
 			if(transaccion.ejecutar(EAccion.AGREGAR))
@@ -98,7 +103,10 @@ public class Accion extends IBaseImportar implements Serializable {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-    return regresar;
+    finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
 	} // doAceptar	
   
   public void doCompleto() {
