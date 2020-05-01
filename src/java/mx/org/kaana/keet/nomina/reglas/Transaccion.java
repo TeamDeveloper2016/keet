@@ -92,7 +92,7 @@ public class Transaccion extends IBaseTnx {
     try {
       this.messageError= "Ocurrio un error en el proceso de calculo de la nómina.";
 			params= new HashMap<>();
-			if(!this.nomina.isValid()) {
+			if(this.idNomina== -1L) {
 				DaoFactory.getInstance().insert(sesion, this.nomina);
 				this.idNomina= this.nomina.getIdNomina();
 			} // if
@@ -271,7 +271,7 @@ public class Transaccion extends IBaseTnx {
 	private void procesarPersonas(Session sesion, String proceso) throws Exception {
 		Map<String, Object> params       = null;
 		TcKeetNominasPersonasDto empleado= null;
-		Monitoreo monitoreo              = JsfBase.getAutentifica().getMonitoreo();
+		Monitoreo monitoreo              = this.autentifica.getMonitoreo();
 		try {
 			monitoreo.comenzar(0L);
 			params= new HashMap<>();
@@ -319,7 +319,7 @@ public class Transaccion extends IBaseTnx {
 	private void reprocesarPersonas(Session sesion) throws Exception {
 		Map<String, Object> params       = null;
 		TcKeetNominasPersonasDto empleado= null;
-		Monitoreo monitoreo              = JsfBase.getAutentifica().getMonitoreo();
+		Monitoreo monitoreo              = this.autentifica.getMonitoreo();
 		try {
 			monitoreo.comenzar(0L);
 			params= new HashMap<>();
@@ -345,7 +345,7 @@ public class Transaccion extends IBaseTnx {
 							this.idNomina // Long idNomina
 						);
 						this.calculos(sesion, monitoreo, empleado);
-						// this.commit();
+						// 
 					} // if
 					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
 					if(count== 1) {
@@ -354,7 +354,9 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					count++;
 				} // for
-				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params);
+				this.commit();
+				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "personas");
+				monitoreo.terminar();
 				this.reprocesarProveedores(sesion);
 				this.bitacora(sesion, ENominaEstatus.ENPROCESO.getIdKey());
 			} // if
@@ -369,7 +371,7 @@ public class Transaccion extends IBaseTnx {
 	private void reprocesarProveedores(Session sesion) throws Exception {
 		Map<String, Object> params           = null;
 		TcKeetNominasProveedoresDto proveedor= null;
-		Monitoreo monitoreo                  = JsfBase.getAutentifica().getMonitoreo();
+		Monitoreo monitoreo                  = this.autentifica.getMonitoreo();
 		try {
 			monitoreo.comenzar(0L);
 			params= new HashMap<>();
@@ -397,6 +399,7 @@ public class Transaccion extends IBaseTnx {
 					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ proveedor);
 					count++;
 				} // for
+				this.commit();
 				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "proveedores");
 			} //if
 		} // try
@@ -410,7 +413,7 @@ public class Transaccion extends IBaseTnx {
 	private void proveedor(Session sesion) throws Exception {
 		Map<String, Object> params           = null;
 		TcKeetNominasProveedoresDto proveedor= null;
-		Monitoreo monitoreo                  = JsfBase.getAutentifica().getMonitoreo();
+		Monitoreo monitoreo                  = this.autentifica.getMonitoreo();
 		try {
 			monitoreo.comenzar(0L);
 			params= new HashMap<>();
@@ -453,7 +456,7 @@ public class Transaccion extends IBaseTnx {
 	private void persona(Session sesion) throws Exception {
 		Map<String, Object> params       = null;
 		TcKeetNominasPersonasDto empleado= null;
-		Monitoreo monitoreo              = JsfBase.getAutentifica().getMonitoreo();
+		Monitoreo monitoreo              = this.autentifica.getMonitoreo();
 		try {
 			monitoreo.comenzar(0L);
 			params= new HashMap<>();
@@ -461,7 +464,7 @@ public class Transaccion extends IBaseTnx {
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
 			params.put("idEmpresaPersona", this.idEmpresaPersona);
-			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "personas", params);
+			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "persona", params);
 			if(personal!= null && !personal.isEmpty()) {
   			monitoreo.setTotal(new Long(personal.size()));
 	  		monitoreo.setId("NOMINA DEL PERSONAL");				
@@ -484,7 +487,7 @@ public class Transaccion extends IBaseTnx {
 					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
 					count++;
 				} // for
-				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "persona");
+				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "personas");
 			} // if
 		} // try
 		finally {
