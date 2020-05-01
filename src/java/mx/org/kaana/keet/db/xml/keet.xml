@@ -39,6 +39,16 @@
 				  date_format(inicio, '%Y%m%d')&lt;= '{fecha}'
   				and date_format(termino, '%Y%m%d')&gt;= '{fecha}'
       </select>			
+      <select id="semanaEnCurso">
+        select      
+          tc_keet_nominas_periodos.*
+        from      
+          tc_keet_nominas_periodos
+				where
+				  date_format(inicio, '%Y%m%d')&lt;= date_format('{fecha}','%Y%m%d')
+  			and 
+					date_format(termino, '%Y%m%d')&gt;= date_format('{fecha}','%Y%m%d')
+      </select>			
     </unit>		
 		<unit id="TcKeetContratosLotesContratistasDto">
       <select id="row">

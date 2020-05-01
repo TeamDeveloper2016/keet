@@ -184,7 +184,7 @@ public class Transaccion extends IBaseTnx {
 		Semanas semanas= null;
 		try {
 			semanas= new Semanas();
-			regresar= Long.valueOf(semanas.getSemana());
+			regresar= semanas.getSemanaEnCurso();
 		} // try
 		catch (Exception e) {			
 			throw e;

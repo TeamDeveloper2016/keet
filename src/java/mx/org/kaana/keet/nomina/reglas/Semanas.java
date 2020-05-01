@@ -3,9 +3,13 @@ package mx.org.kaana.keet.nomina.reglas;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,6 +72,37 @@ public class Semanas {
 		return regresar;
 	}
 	
+	public Long getSemanaEnCurso() {
+	  Long regresar               = 1L;		
+		TcKeetNominasPeriodosDto dto= null;
+		try {			
+			dto= getSemanaEnCursoDto();
+			if(dto!= null && dto.isValid())
+				regresar= dto.getOrden();
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+		return regresar;
+	} // getSemanaEnCurso
+	
+	public TcKeetNominasPeriodosDto getSemanaEnCursoDto() {
+	  TcKeetNominasPeriodosDto regresar= null;
+		Map<String, Object>params        = null;
+		try {
+			params= new HashMap<>();
+			params.put("fecha", LocalDate.now().toString());
+			regresar= (TcKeetNominasPeriodosDto) DaoFactory.getInstance().toEntity(TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "semanaEnCurso", params);			
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally		
+		return regresar;
+	} // getSemanaEnCursoDto
+	
 	public int getSemana() throws Exception {
 	  int regresar= 1;
 		Value data= DaoFactory.getInstance().toField("VistaNominaDto", "semana", Collections.EMPTY_MAP, "semana");
@@ -115,5 +150,4 @@ public class Semanas {
 		Semanas semanas= new Semanas(2);
 		semanas.process();
 	}
-
 }

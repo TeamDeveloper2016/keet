@@ -25,6 +25,7 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
+import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -33,7 +34,6 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
-import org.joda.time.DateTimeConstants;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -197,14 +197,14 @@ public class Feriados extends IBaseAttribute implements Serializable {
 		} // catch				    
   } // onDateSelect
 	
-	private boolean validateSemana(LocalDate date){						
-		boolean regresar= false;
-		LocalDate inicio= null;
-		LocalDate fin   = null;
-		try {									
-			inicio= LocalDate.now().minusWeeks(1).with(DayOfWeek.SUNDAY);
-			fin= LocalDate.now().with(DayOfWeek.SATURDAY);
-			regresar= date.isEqual(inicio) || date.isEqual(fin) || (date.isAfter(inicio) && date.isBefore(fin));
+	private boolean validateSemana(LocalDate date) throws Exception{						
+		boolean regresar            = false;
+		TcKeetNominasPeriodosDto dto= null;
+		Semanas semana              = null;		
+		try {					
+			semana= new Semanas();
+			dto= semana.getSemanaEnCursoDto();			
+			regresar= date.isEqual(dto.getInicio()) || date.isEqual(dto.getTermino()) || (date.isAfter(dto.getInicio()) && date.isBefore(dto.getTermino()));
 		} // try
 		catch (Exception e) {		
 			throw e;
