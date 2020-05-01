@@ -49,7 +49,7 @@
       </div>
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-					<p:progressBar value="#{keetNominasProgreso.attrs.value}" labelTemplate="{value}%" displayOnly="true" styleClass="filas"/>
+					<p:progressBar value="#{keetNominasProgreso.attrs.value}" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" displayOnly="true" styleClass="filas"/>
         </div>
       </div>
     </div>		   
@@ -64,7 +64,6 @@
   		<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-remove" title="Cancelar" styleClass="filas" action="#{keetNominasProgreso.doCancelar}" style="display: #{keetNominasProgreso.attrs.cancelar? '': 'none'}"/>
 	  	<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-reply" title="Regresar" styleClass="filas" action="#{keetNominasProgreso.doRegresar}" style="display: #{keetNominasProgreso.attrs.cancelar? 'none': ''}"/>
 		</div>		
-
   </ui:define>   
   <ui:param name="componenteBloqueo" value="aceptar cancelar"/>
 </ui:composition>

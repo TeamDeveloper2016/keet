@@ -107,7 +107,7 @@ public class Transaccion extends IBaseTnx {
 							this.procesarPersonas(sesion, "todos");
 							break;
 						case 2:  // ENPROCESO
-							this.procesarPersonas(sesion, "complementaria");
+							this.procesarPersonas(sesion, "algunos");
 							break;
 						case 3:  // CALCULADA
 							this.reprocesarPersonas(sesion);
@@ -302,9 +302,11 @@ public class Transaccion extends IBaseTnx {
 					if(count== 1 && this.nomina.getIdNominaEstatus()< ENominaEstatus.ENPROCESO.getIdKey())
 						this.bitacora(sesion, ENominaEstatus.INICIADA.getIdKey());
 					count++;
+					if(!monitoreo.isCorriendo())
+						break;
 				} // for
-				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params);
-				this.reprocesarProveedores(sesion);
+				this.toTakeOutPersonas(sesion);
+				this.reprocesarProveedores(sesion, monitoreo);
 				if(count== 1 && this.nomina.getIdNominaEstatus()< ENominaEstatus.CALCULADA.getIdKey())
 					this.bitacora(sesion, ENominaEstatus.ENPROCESO.getIdKey());
 			} // if
@@ -328,7 +330,8 @@ public class Transaccion extends IBaseTnx {
 			params.put("idNomina", this.idNomina);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "todos", params);
 			if(personal!= null && !personal.isEmpty()) {
-  			monitoreo.setTotal(new Long(personal.size()));
+			  Long proveedores= DaoFactory.getInstance().toSize(sesion, "VistaNominaDto", "proveedores", params);
+  			monitoreo.setTotal(proveedores+ personal.size());
 	  		monitoreo.setId("NOMINA DEL PERSONAL");				
 				int count= 1;
 				this.cleanNomina(sesion);
@@ -353,11 +356,12 @@ public class Transaccion extends IBaseTnx {
 						this.bitacora(sesion, ENominaEstatus.INICIADA.getIdKey());
 					} // if
 					count++;
+					if(!monitoreo.isCorriendo())
+						break;
 				} // for
-				this.commit();
-				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "personas");
-				monitoreo.terminar();
-				this.reprocesarProveedores(sesion);
+				sesion.flush();
+				this.toTakeOutPersonas(sesion);
+				this.reprocesarProveedores(sesion, monitoreo);
 				this.bitacora(sesion, ENominaEstatus.ENPROCESO.getIdKey());
 			} // if
 		} // try
@@ -368,20 +372,16 @@ public class Transaccion extends IBaseTnx {
 		} // finally		
 	}
 	
-	private void reprocesarProveedores(Session sesion) throws Exception {
+	private void reprocesarProveedores(Session sesion, Monitoreo monitoreo) throws Exception {
 		Map<String, Object> params           = null;
 		TcKeetNominasProveedoresDto proveedor= null;
-		Monitoreo monitoreo                  = this.autentifica.getMonitoreo();
 		try {
-			monitoreo.comenzar(0L);
 			params= new HashMap<>();
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "proveedores", params);
 			if(personal!= null && !personal.isEmpty()) {
-  			monitoreo.setTotal(new Long(personal.size()));
-	  		monitoreo.setId("NOMINA DEL LOS SUBCONTRATISTAS");				
 				int count= 1;
 				for (Entity persona: personal) {
 					proveedor= this.existProveedor(sesion, persona.toLong("idProveedor"));
@@ -398,14 +398,14 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ proveedor);
 					count++;
+					if(!monitoreo.isCorriendo())
+						break;
 				} // for
-				this.commit();
-				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "proveedores");
+				sesion.flush();
+				this.toTakeOutProveedores(sesion);
 			} //if
 		} // try
 		finally {
-      monitoreo.terminar();
-			monitoreo.setProgreso(0L);			
 			Methods.clean(params);
 		} // finally		
 	}
@@ -443,7 +443,7 @@ public class Transaccion extends IBaseTnx {
 					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ proveedor);
 					count++;
 				} // for
-				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "proveedores");
+				this.toTakeOutProveedores(sesion);
 			} // if
 		} // try
 		finally {
@@ -487,7 +487,7 @@ public class Transaccion extends IBaseTnx {
 					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
 					count++;
 				} // for
-				DaoFactory.getInstance().updateAll(sesion, TcKeetNominasDto.class, params, "personas");
+				this.toTakeOutPersonas(sesion);
 			} // if
 		} // try
 		finally {
@@ -527,6 +527,39 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().insert(sesion, estatus);
 				} // for
       } // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+
+	private void toTakeOutPersonas(Session sesion) throws Exception {
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idNomina", this.nomina.getIdNomina());
+			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasDto", "personas", params);
+			this.nomina.setPersonas(entity.toLong("personas"));
+			this.nomina.setAportaciones(entity.toDouble("aportaciones"));
+			this.nomina.setDeducciones(entity.toDouble("deducciones"));
+			this.nomina.setPercepciones(entity.toDouble("percepciones"));
+			this.nomina.setNeto(entity.toDouble("neto"));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
+	private void toTakeOutProveedores(Session sesion) throws Exception {
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idNomina", this.nomina.getIdNomina());
+			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasDto", "proveedores", params);
+			this.nomina.setProveedores(entity.toLong("proveedores"));
+			this.nomina.setSubtotal(entity.toDouble("subtotal"));
+			this.nomina.setIva(entity.toDouble("iva"));
+			this.nomina.setTotal(entity.toDouble("total"));
 		} // try
 		finally {
 			Methods.clean(params);

@@ -90,7 +90,7 @@
 				order by
 					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave
 			</select>
-			<select id="complementaria">
+			<select id="algunos">
         select
 					tr_mantic_empresa_personal.id_empresa_persona,
 					tr_mantic_empresa_personal.clave,
@@ -134,6 +134,8 @@
 			<select id="ultima">
         select
 					tc_keet_nominas.id_nomina as id_key,
+				  tc_keet_nominas.id_nomina,
+				  tc_keet_nominas.id_tipo_nomina,
 					tc_keet_nominas_periodos.*,
 				  tc_keet_nominas_estatus.id_nomina_estatus,
 				  tc_keet_nominas_estatus.nombre as estatus,
@@ -197,6 +199,8 @@
 			<select id="nomina">
         select
 					tc_keet_nominas.id_nomina as id_key,
+				  tc_keet_nominas.id_nomina,
+				  tc_keet_nominas.id_tipo_nomina,
 					tc_keet_nominas_periodos.*,
 				  tc_keet_nominas_estatus.id_nomina_estatus,
 				  tc_keet_nominas_estatus.nombre as estatus,
@@ -213,6 +217,8 @@
 			<select id="complemento">
         select
 					-1 as id_key,
+				  tc_keet_nominas.id_nomina,
+				  2 as id_tipo_nomina,
 					tc_keet_nominas_periodos.*,
 				  1 as id_nomina_estatus,
 				  'INICIADA' as estatus,
@@ -378,7 +384,69 @@
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
 		    order by
 			    lote, tc_keet_estaciones.codigo				
-			</select>			
+			</select>		
+			<select id="ordinaria">
+        select
+          sum(total) as tuplas
+        from (				
+				select
+					count(*) as total
+				from
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				where
+					tr_mantic_empresa_personal.id_empresa in ({sucursales})
+					and tr_mantic_empresa_personal.id_activo= 1
+					and tc_mantic_personas.id_tipo_persona!= 1
+        union all
+        select
+					count(distinct(tc_keet_contratos_lotes_proveedores.id_proveedor)) as total
+				from
+					tc_keet_contratos_destajos_proveedores
+				inner join
+					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+				inner join
+				  tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+				where
+					(tc_keet_contratos_destajos_proveedores.id_nomina is null or tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina})
+				) total				
+			</select>	
+			<select id="complementaria">
+        select
+          sum(total) as tuplas
+        from (				
+        select
+					count(*) as total
+				from
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				where
+					tr_mantic_empresa_personal.id_empresa in ({sucursales})
+					and tr_mantic_empresa_personal.id_activo= 1
+					and tc_mantic_personas.id_tipo_persona!= 1
+				  and tr_mantic_empresa_personal.id_empresa_persona not in (
+				    select
+				      tc_keet_nominas_personas.id_empresa_persona
+				    from 
+				      tc_keet_nominas_personas 
+				    where
+				      tc_keet_nominas_personas.id_nomina= {idNomina}
+				)        
+			  union all
+        select
+					count(distinct(tc_keet_contratos_lotes_proveedores.id_proveedor)) as total
+				from
+					tc_keet_contratos_destajos_proveedores
+				inner join
+					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+				inner join
+				  tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+				where
+					tc_keet_contratos_destajos_proveedores.id_nomina is null
+				) total				
+			</select>
 		</unit>
 		<unit id="VistaContratosLotesDto">
 			<select id="principal">

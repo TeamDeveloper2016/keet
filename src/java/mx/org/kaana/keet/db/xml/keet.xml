@@ -992,11 +992,8 @@
 			  order by
 				  id_nomina_estatus desc
       </select>
-			<update id="personas">
-				update
-					tc_keet_nominas
-				inner join
-				(select
+			<select id="personas">
+			  select
 					tc_keet_nominas_personas.id_nomina,
 					count(*) as personas,
 					sum(tc_keet_nominas_personas.aportaciones) as aportaciones,
@@ -1008,19 +1005,10 @@
 				where
 					tc_keet_nominas_personas.id_nomina= {idNomina}
 				group by
-					tc_keet_nominas_personas.id_nomina) as totales on tc_keet_nominas.id_nomina= totales.id_nomina
-				set 
-					tc_keet_nominas.personas= totales.personas,
-				  tc_keet_nominas.aportaciones= totales.aportaciones,
-					tc_keet_nominas.deducciones= totales.deducciones,
-					tc_keet_nominas.percepciones= totales.percepciones,
-					tc_keet_nominas.neto= totales.neto				
-			</update>
-			<update id="proveedores">
-				update
-					tc_keet_nominas
-				inner join
-				(select
+					tc_keet_nominas_personas.id_nomina				
+			</select>
+			<select id="proveedores">
+				select
 					tc_keet_nominas_proveedores.id_nomina,
 					count(*) as proveedores,
 					sum(tc_keet_nominas_proveedores.subtotal) as subtotal,
@@ -1031,13 +1019,8 @@
 				where
 					tc_keet_nominas_proveedores.id_nomina= {idNomina}
 				group by
-					tc_keet_nominas_proveedores.id_nomina) as totales on tc_keet_nominas.id_nomina= totales.id_nomina
-				set 
-					tc_keet_nominas.proveedores= totales.proveedores,
-					tc_keet_nominas.subtotal= totales.subtotal,
-					tc_keet_nominas.iva= totales.iva,
-					tc_keet_nominas.total= totales.total				
-			</update>
+					tc_keet_nominas_proveedores.id_nomina		
+			</select>
     </unit>		
     <unit id="TcKeetNominasBitacoraDto">
       <select id="row">

@@ -40,7 +40,8 @@ public class Accion extends IBaseImportar implements Serializable {
 	public Boolean getActivar() {
 		Long idTipoNomina   = ((UISelectEntity)this.attrs.get("idTipoNomina")).getKey();
 		Long idNominaEstatus= ((Nomina)this.attrs.get("ultima")).getIdNominaEstatus();
-	  return idTipoNomina== -1L || (idTipoNomina== 2L && idNominaEstatus!= 4L);
+		Long tuplas         = (Long)this.attrs.get("tuplas");
+	  return idTipoNomina== -1L || tuplas== 0L || (idTipoNomina== 2L && idNominaEstatus!= 4L);
 	}
 	
 	@PostConstruct
@@ -51,6 +52,7 @@ public class Accion extends IBaseImportar implements Serializable {
 		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 		this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		this.attrs.put("nomina", new Nomina());
+		this.attrs.put("tuplas", 0L);
 		this.loadCatalogs();
   } // init
   
@@ -63,8 +65,7 @@ public class Accion extends IBaseImportar implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
-	public String doAceptar() {
-		String regresar        = null;
+	public void doAceptar() {
 		Transaccion transaccion= null;
 		try {		
 			Long idNomina= ((UISelectEntity)this.attrs.get("idNomina")).getKey();
@@ -102,7 +103,6 @@ public class Accion extends IBaseImportar implements Serializable {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-		return regresar;
 	} // doAceptar	
   
   public void doCompleto() {
@@ -166,12 +166,18 @@ public class Accion extends IBaseImportar implements Serializable {
     try {
 			params= new HashMap<>();
 		  params.put("idNomina", ((UISelectEntity)this.attrs.get("idNomina")).getKey());
+			params.put("sucursales", this.attrs.get("sucursales"));
 			Nomina nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "nomina", params);
 			if(nomina== null) 
 			  nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "complemento", params);
 			if(nomina== null)
 				nomina= new Nomina();
       this.attrs.put("nomina", nomina);
+			if(nomina.getIdTipoNomina()== 2L)
+				params.put("idNomina", ((Nomina)this.attrs.get("ultima")).getIdNomina());
+			Value value= DaoFactory.getInstance().toField("VistaNominaDto", nomina.getIdTipoNomina()== 1L? "ordinaria": "complementaria", params, "tuplas");
+			if(value!= null && value.getData()!= null)
+				this.attrs.put("tuplas", value.toLong());
     } // try
     catch (Exception e) {
       Error.mensaje(e);

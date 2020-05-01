@@ -12,10 +12,34 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 
 public class Nomina extends TcKeetNominasPeriodosDto {
 
+	private Long idNomina;
+	private Long idTipoNomina;
 	private Long idNominaEstatus;
 	private String estatus;
 	private String observaciones;
 
+	public Nomina() {
+	  this.idNomina= -1L;
+		this.idTipoNomina= 2L;
+		this.idNominaEstatus= 1L;
+		this.estatus= "";
+	}
+	
+	public Long getIdNomina() {
+		return idNomina;
+	}
+
+	public void setIdNomina(Long idNomina) {
+		this.idNomina=idNomina;
+	}
+
+	public Long getIdTipoNomina() {
+		return idTipoNomina;
+	}
+
+	public void setIdTipoNomina(Long idTipoNomina) {
+		this.idTipoNomina=idTipoNomina;
+	}
 	public Long getIdNominaEstatus() {
 		return idNominaEstatus;
 	}

@@ -89,15 +89,15 @@
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center">
 									<p:outputLabel for="inicio" value="Inicio:"/>
 									<p:outputLabel for="termino" value="Término:"/>
-									<p:inputText id="inicio" value="#{keetNominasAccion.doFechaEstandar(keetNominasAccion.attrs.nomina.inicio)}" styleClass="janal-wid-100-txt nominas" readonly="true"/>
-									<p:inputText id="termino" value="#{keetNominasAccion.doFechaEstandar(keetNominasAccion.attrs.nomina.termino)}" styleClass="janal-wid-100-txt nominas" readonly="true"/>
+									<p:inputText id="inicio" value="#{keetNominasAccion.doFechaEstandar(keetNominasAccion.attrs.nomina.inicio)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
+									<p:inputText id="termino" value="#{keetNominasAccion.doFechaEstandar(keetNominasAccion.attrs.nomina.termino)}" styleClass="janal-column-center janal-wid-100-txt nominas"  readonly="true"/>
 								</p:panelGrid>
 								<p:outputLabel for="observaciones" value="Observaciones:"/>
 								<p:inputTextarea id="observaciones" value="#{keetNominasAccion.attrs.nomina.observaciones}" rows="2" styleClass="janal-wid-100-txt nominas"/>
 							</p:panelGrid>
               <p:panel styleClass="tabla-filtro" id="barra">
-                Proceso:
-                <p:progressBar interval="1000" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true">
+                <span class="FontBold janal-color-orange">Registros a procesar en la nómina:</span> <p:outputLabel id="tuplas" value="[#{keetNominasAccion.attrs.tuplas}]" styleClass="nominas janal-color-orange FontBold janal-steps-boton-siguiente"/>
+                <p:progressBar interval="1000" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true">
                   <p:ajax event="complete" listener="#{keetNominasAccion.doCompleto}"/>  
                 </p:progressBar>  			
               </p:panel>
@@ -109,12 +109,13 @@
 		</div>		
 	</ui:define>    
 	<ui:define name="acciones">
+		<p:remoteCommand name="procesar" actionListener="#{keetNominasAccion.doAceptar}" onstart="if(janal.partial('tipoNomina')){ startTask(); return true; } else return false;" oncomplete="cancel(); janal.desbloquear();"/>
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" action="#{keetNominasAccion.doAceptar}" onstart="if(janal.partial('tipoNomina')){ startTask(); return janal.bloquear(); } else return false;" oncomplete="cancel(); janal.desbloquear();" disabled="#{keetNominasAccion.activar}" styleClass="nominas"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" onstart="return janal.bloquear();" oncomplete="procesar();" disabled="#{keetNominasAccion.activar}" styleClass="nominas"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{keetNominasAccion.doCancelar}" ajax="false" onstart="cancel(); return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.importado)" action="#{keetNominasAccion.doAceptar}" onstart="if(janal.partial('tipoNomina')){ startTask(); return janal.bloquear(); } else return false;" oncomplete="cancel(); janal.desbloquear();" disabled="#{keetNominasAccion.activar}" styleClass="nominas"/>
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.importado)" onclick="janal.bloquear(); procesar();" disabled="#{keetNominasAccion.activar}" styleClass="nominas" type="button"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{keetNominasAccion.doCancelar}" ajax="false" onstart="cancel(); return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
