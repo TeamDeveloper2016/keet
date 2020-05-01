@@ -31,6 +31,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Gestor;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -242,11 +243,13 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
+    Parametros comunes           = null;
 		try {		
       params= new HashMap<>();            
       reporteSeleccion= EReportes.valueOf(nombre);
       this.reporte= JsfBase.toReporte();	
-      parametros= new HashMap<>();
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
