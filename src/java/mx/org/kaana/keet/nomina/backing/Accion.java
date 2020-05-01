@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.nomina.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
@@ -37,7 +40,7 @@ public class Accion extends IBaseImportar implements Serializable {
 	public Boolean getActivar() {
 		Long idTipoNomina   = ((UISelectEntity)this.attrs.get("idTipoNomina")).getKey();
 		Long idNominaEstatus= ((Nomina)this.attrs.get("ultima")).getIdNominaEstatus();
-	  return idTipoNomina== -1L || (idTipoNomina== 2L && idNominaEstatus!= 1L);
+	  return idTipoNomina== -1L || (idTipoNomina== 2L && idNominaEstatus!= 4L);
 	}
 	
 	@PostConstruct
@@ -61,15 +64,11 @@ public class Accion extends IBaseImportar implements Serializable {
   } // doCancelar
 	
 	public String doAceptar() {
-		String regresar           = null;
-		Transaccion transaccion   = null;
-    Map<String, Object> params= null;
+		String regresar        = null;
+		Transaccion transaccion= null;
 		try {		
-			params= new HashMap<>();
 			Long idNomina= ((UISelectEntity)this.attrs.get("idNomina")).getKey();
-			if((idNomina== null || idNomina== -1L) && ((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()== 2L) {
-				params.put("idNominaPeriodo", ((Nomina)this.attrs.get("ultima")).getIdNominaPeriodo());
-				TcKeetNominasPeriodosDto periodo= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().toEntity(TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "anterior", params);
+			if(idNomina== null || idNomina== -1L) {
 				TcKeetNominasDto nomina= new TcKeetNominasDto(
 					0D, // Double neto, 
 					1L, // Long idNominaEstatus, 
@@ -78,11 +77,11 @@ public class Accion extends IBaseImportar implements Serializable {
 					0L, // Long personas, 
 					0D, // Double aportaciones, 
 					-1L, // Long idNomina, 
-					periodo.getTermino().plusDays(-1), // LocalDate fechaPago, 
+					((Nomina)this.attrs.get("nomina")).getTermino().plusDays(-1), // LocalDate fechaPago, 
 					0L, // Long proveedores, 
 					0D, // Double total, 
-					periodo.getTermino().plusDays(-2), // LocalDate fechaDispersion, 
-					periodo.getIdNominaPeriodo(), // Long idNominaPeriodo, 
+					((Nomina)this.attrs.get("nomina")).getTermino().plusDays(-2), // LocalDate fechaDispersion, 
+					((Nomina)this.attrs.get("nomina")).getIdNominaPeriodo(), // Long idNominaPeriodo, 
 					0D, // Double iva, 
 					JsfBase.getIdUsuario(), // Long idUsuario, 
 					0D, // Double subtotal, 
@@ -95,7 +94,7 @@ public class Accion extends IBaseImportar implements Serializable {
 			else
   			transaccion= new Transaccion(idNomina, JsfBase.getAutentifica());
 			if(transaccion.ejecutar(EAccion.AGREGAR))
-				JsfBase.addMessage("Se procesó la nómina.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se procesó la nómina con éxito.", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("Ocurrió un error en el proceso de nómina.", ETipoMensaje.ALERTA);	
     } // try
@@ -103,14 +102,11 @@ public class Accion extends IBaseImportar implements Serializable {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-    finally {
-			Methods.clean(params);
-		} // finally
 		return regresar;
 	} // doAceptar	
   
   public void doCompleto() {
-		// JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente el catalogo !.", ETipoMensaje.INFORMACION);		
+		JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente la nómina.", ETipoMensaje.INFORMACION);		
 	} // doCompleto
 
 	private void loadCatalogs() {
@@ -143,11 +139,16 @@ public class Accion extends IBaseImportar implements Serializable {
 		  params.put("ejercicio", Fecha.getAnioActual()- 1);
 		  params.put("sucursales", this.attrs.get("sucursales"));
 			List<UISelectEntity> nominas= UIEntity.build("VistaNominaDto", "activa", params);
-      this.attrs.put("nominas", nominas);
 			if(nominas!= null && !nominas.isEmpty())
 				this.attrs.put("idNomina", nominas.get(0));
-			else
-        this.attrs.put("idNomina", new UISelectEntity(-1L));
+			else {
+	      nominas= UIEntity.build("VistaNominaDto", "anterior", params);
+				if(nominas!= null && !nominas.isEmpty()) 
+          this.attrs.put("idNomina", nominas.get(0));
+				else
+			    this.attrs.put("idNomina", new UISelectEntity(-1L));
+			} // if
+      this.attrs.put("nominas", nominas);
 			this.doLoadNomina();
     } // try
     catch (Exception e) {
@@ -166,6 +167,8 @@ public class Accion extends IBaseImportar implements Serializable {
 			params= new HashMap<>();
 		  params.put("idNomina", ((UISelectEntity)this.attrs.get("idNomina")).getKey());
 			Nomina nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "nomina", params);
+			if(nomina== null) 
+			  nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "complemento", params);
 			if(nomina== null)
 				nomina= new Nomina();
       this.attrs.put("nomina", nomina);

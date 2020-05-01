@@ -163,6 +163,20 @@
 					tc_keet_nominas.id_tipo_nomina= {idTipoNomina}
 					and tc_keet_nominas.id_nomina_estatus in (1, 2, 3)
 			</select>
+			<select id="anterior">
+				select
+					-1 as id_key,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nombre,
+					tc_keet_nominas_periodos.ejercicio,
+					tc_keet_nominas_periodos.orden as semana
+				from
+					tc_keet_nominas
+				inner join
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+					tc_keet_nominas.id_tipo_nomina= 1
+					and tc_keet_nominas.id_nomina_estatus in (4)
+			</select>
 			<select id="nominas">
         select
 					tc_keet_nominas.id_nomina as id_key,
@@ -195,6 +209,23 @@
 					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
 				where
 					tc_keet_nominas.id_nomina= {idNomina}
+			</select>
+			<select id="complemento">
+        select
+					-1 as id_key,
+					tc_keet_nominas_periodos.*,
+				  1 as id_nomina_estatus,
+				  'INICIADA' as estatus,
+				  ' ' as observaciones
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				inner join 
+					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
+				where
+					tc_keet_nominas.id_tipo_nomina= 1
+					and tc_keet_nominas.id_nomina_estatus in (4)
 			</select>
 			<select id="proveedor">
 				select
