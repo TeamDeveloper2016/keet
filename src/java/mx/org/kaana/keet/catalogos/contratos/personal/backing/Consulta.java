@@ -23,6 +23,7 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
 
@@ -149,12 +150,14 @@ public class Consulta extends IBaseFilter implements Serializable {
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
+    Parametros comunes           = null;
 		try {		
       params= new HashMap<>();      
       params.put("idPersona", JsfBase.getAutentifica().getPersona().getIdPersona());			
       reporteSeleccion= JsfBase.isAdminEncuestaOrAdmin() ? EReportes.EMPLEADOS : EReportes.EMPLEADOS_DESARROLLO;
-      this.reporte= JsfBase.toReporte();	
-      parametros= new HashMap<>();
+      this.reporte= JsfBase.toReporte();
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
