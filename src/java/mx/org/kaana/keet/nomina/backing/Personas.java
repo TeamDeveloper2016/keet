@@ -13,6 +13,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -99,7 +100,7 @@ public class Personas extends IBaseFilter implements Serializable {
 		else
 			sb.append("(tc_keet_nominas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
   	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(this.attrs.get("idNomina")!= null && !Cadena.isVacio(this.attrs.get("idNomina")))
+		if(!Cadena.isVacio(this.attrs.get("idNomina")) && ((UISelectEntity)this.attrs.get("idNomina")).getKey()>= 1L)
 			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && ((UISelectEntity)this.attrs.get("ejercicio")).getKey()>= 1L)				
 			sb.append("tc_keet_nominas_periodos.ejercicio = ").append(((UISelectEntity)this.attrs.get("ejercicio")).getKey()).append(" and ");
@@ -109,6 +110,19 @@ public class Personas extends IBaseFilter implements Serializable {
 			sb.append("tc_keet_nomina.id_tipo_nomina= ").append(((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
 			sb.append("tc_keet_nomina.id_nomina_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
+		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
+			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
+		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
+			sb.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
+		if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)			
+			if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
+				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
+			else
+				sb.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
+		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
+			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+  		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, ' '), ' ', ifnull(tc_mantic_personas.apodo, ' '))) regexp '.*").append(nombre).append(".*') and ");
+		} // if
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -117,24 +131,20 @@ public class Personas extends IBaseFilter implements Serializable {
 	} // toPrepare
 
 	private void loadCatalogs() {
-		List<Columna> columns    = null;
 		Map<String, Object>params= null;
 		try {
 			this.loadEmpresas();
-      columns= new ArrayList<>();
-      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
-      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			params= new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put("anterior", Fecha.getAnioActual()- 1);
-			List<UISelectEntity> nominas= UIEntity.seleccione("VistaNominaConsultasDto", "nominas", params, columns, "nomina");
-      this.attrs.put("idNomina", nominas);
-      this.attrs.put("idNomina", new UISelectEntity(-1L));
-      this.attrs.put("tipos", UIEntity.seleccione("TcKeetTiposNominasDto", "row", params, "nombre"));
-      this.attrs.put("idTipoNomina", new UISelectEntity(-1L));
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetNominasEstatusDto", "row", params, "nombre"));
       this.attrs.put("estatus", new UISelectEntity(-1L));
+			Catalogos.toLoadNominas(this.attrs);
+			Catalogos.toLoadEjercicios(this.attrs);
+			Catalogos.toLoadSemanas(this.attrs);
+			Catalogos.toLoadTiposNominas(this.attrs);
+			Catalogos.toLoadDepartamentos(this.attrs);
+			Catalogos.toLoadPuestos(this.attrs);
+			Catalogos.toLoadContratistas(this.attrs);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
