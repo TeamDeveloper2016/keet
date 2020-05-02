@@ -242,6 +242,7 @@ public class Accion extends IBaseFilter implements Serializable {
 			  else
 					JsfBase.addMessage("Ocurrio un error en el reproceso del subcontratista "+ row.toString("nombreCompleto"), ETipoMensaje.ERROR);
 			} // if
+			this.doLoad();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -4,6 +4,73 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaNominaConsultasDto">
+			<select id="personas">
+				select
+				  principal.*,
+				  concat(if(principal.id_contratista is null, principal.departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')))) as contratista
+				from(
+				select
+					tc_keet_nominas.id_nomina as id_key,
+					tc_keet_nominas.id_nomina,
+					tr_mantic_empresa_personal.id_empresa_persona,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+					tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_keet_departamentos.nombre as departamento,
+					tc_mantic_puestos.nombre as puesto,
+					tr_mantic_empresa_personal.clave,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
+					tc_mantic_personas.apodo,
+					tc_keet_nominas_personas.percepciones,
+					tc_keet_nominas_personas.deducciones,
+					tc_keet_nominas_personas.neto,
+					tr_mantic_empresa_personal.id_contratista
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				inner join 
+					tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento= tc_keet_departamentos.id_departamento
+				inner join 
+					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+				where
+					{condicion}
+				) principal
+        left join
+			    tr_mantic_empresa_personal on principal.id_contratista= tr_mantic_empresa_personal.id_empresa_persona
+			  left join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1				
+        {sortOrder}
+			</select>
+			<select id="nominas">
+        select
+					tc_keet_nominas.id_nomina as id_key,
+					concat(tc_keet_tipos_nominas.nombre, '[', tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden, ']') as nomina,
+					tc_keet_nominas_periodos.ejercicio,
+					tc_keet_nominas_periodos.orden as semana,
+					tc_keet_nominas_periodos.inicio,
+					tc_keet_nominas_periodos.termino
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_tipos_nominas on tc_keet_nominas.id_tipo_nomina= tc_keet_tipos_nominas.id_tipo_nomina
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+					tc_keet_nominas.id_empresa in ({sucursales})
+					and tc_keet_nominas_periodos.ejercicio&gt;= {anterior}
+				order by
+				  tc_keet_nominas.id_tipo_nomina, tc_keet_nominas_periodos.ejercicio desc, tc_keet_nominas_periodos.orden desc				
+			</select>
+		</unit>
 		<unit id="VistaNominaDto">
 			<select id="lazy">
 				select

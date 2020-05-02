@@ -130,7 +130,7 @@
 									</f:facet>
 									<h:outputText value="#{row['nombreEmpresa']}"/>
 								</p:column>														
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.nomina}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.nomina}">
 									<f:facet name="header">
 										<h:outputText value="Nomina"/>
 									</f:facet>
@@ -148,20 +148,20 @@
 									</f:facet>
 									<h:outputText value="#{row['nombreCompleto']}"/>
 								</p:column>
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-20" sortBy="#{row.apodo}">
+								<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.apodo}">
 									<f:facet name="header">
 										<h:outputText value="Apodo"/>
 									</f:facet>
 									<h:outputText value="#{row['apodo']}"/>
 								</p:column>														
-								<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.sueldo}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.sueldo}">
 									<f:facet name="header">
 										<h:outputText value="Sueldo"/>
 									</f:facet>
 									<h:outputText value="#{row['sueldo']}"/>
 								</p:column>	
 								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38">
-									<p:commandButton icon="fa fa-refresh" process="@this tabla" ajax="false" action="#{keetNominasAccion.doAccion}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}">
+									<p:commandButton icon="fa fa-refresh" process="@this tabla" actionListener="#{keetNominasAccion.doAccion}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
 										<f:setPropertyActionListener value="#{row}" target="#{keetNominasAccion.attrs.seleccionado}" />
 									</p:commandButton>
 								</p:column>
