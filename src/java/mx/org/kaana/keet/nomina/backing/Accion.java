@@ -12,27 +12,30 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
-import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.keet.nomina.beans.Nomina;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.IBaseFilter;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 import org.primefaces.event.TabChangeEvent;
 
 @Named(value= "keetNominasAccion")
 @ViewScoped
-public class Accion extends IBaseImportar implements Serializable {
+public class Accion extends IBaseFilter implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 318633488565639323L;
@@ -57,8 +60,8 @@ public class Accion extends IBaseImportar implements Serializable {
   } // init
   
 	public void doTabChange(TabChangeEvent event) {
-		// if(event.getTab().getTitle().equals("Archivos")) 
-		//	this.doLoadArhivos("VistaCargasMasivasDto", "importados", this.attrs);
+		if(event.getTab().getTitle().equals("Detalle")) 
+			this.doLoad();
 	} // doTabChange		
 	
 	public String doCancelar() {   
@@ -187,6 +190,66 @@ public class Accion extends IBaseImportar implements Serializable {
       Methods.clean(params);
     } // finally
 	}
+
+	@Override
+	public void doLoad() {
+    List<Columna> columns    = null;
+		Map<String, Object>params= null;
+    try {
+      params= this.toPrepare();	
+			params.put("sortOrder", "order by nomina, clave");
+      columns= new ArrayList<>();
+      columns.add(new Columna("sueldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.lazyModel = new FormatCustomLazy("VistaNominaDto", "detalle", params, columns);
+      UIBackingUtilities.resetDataTable();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+	}
 	
+	private Map<String, Object> toPrepare() {
+	  Map<String, Object> regresar  = new HashMap<>();	
+		regresar.put("idNomina", ((Nomina)this.attrs.get("nomina")).getIdNomina());
+		regresar.put("nombre", "");
+		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
+			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+  		regresar.put("nombre", nombre);
+		} // if
+		return regresar;		
+	} // toPrepare
+
+  public void doAccion() {
+		Transaccion transaccion= null;
+		try {
+			Entity row= (Entity)this.attrs.get("seleccionado");
+			if(row.toLong("idTipoProceso")== 1L) {
+				transaccion= new Transaccion(((Nomina)this.attrs.get("nomina")).getIdNomina(), row.toLong("idPersonaReprocesar"), JsfBase.getAutentifica());
+			  if(transaccion.ejecutar(EAccion.REPROCESAR))
+					JsfBase.addMessage("Se reprocesó con éxito la nómina de "+ row.toString("nombreCompleto"), ETipoMensaje.INFORMACION);
+			  else
+					JsfBase.addMessage("Ocurrio un error en el reproceso de "+ row.toString("nombreCompleto"), ETipoMensaje.ERROR);
+			} // if
+			else {
+				transaccion= new Transaccion(((Nomina)this.attrs.get("nomina")).getIdNomina(), JsfBase.getAutentifica(), row.toLong("idPersonaReprocesar"));
+			  if(transaccion.ejecutar(EAccion.DEPURAR))
+					JsfBase.addMessage("Se reprocesó con éxito la nómina del subcontratista "+ row.toString("nombreCompleto"), ETipoMensaje.INFORMACION);
+			  else
+					JsfBase.addMessage("Ocurrio un error en el reproceso del subcontratista "+ row.toString("nombreCompleto"), ETipoMensaje.ERROR);
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			transaccion= null;
+		} // finally
+	}	
 	
 }

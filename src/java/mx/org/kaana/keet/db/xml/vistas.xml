@@ -37,6 +37,58 @@
 					{condicion}
 				{sortOrder}
 			</select>
+			<select id="detalle">
+				select
+					tc_keet_nominas.id_nomina as id_key,
+					tc_keet_nominas.id_nomina,
+				  tc_keet_nominas.id_nomina_estatus,
+					tc_mantic_empresas.nombre as nombre_empresa,  
+				  1 as id_tipo_proceso,
+				  tr_mantic_empresa_personal.id_empresa_persona as id_persona_reprocesar,
+					'PERSONAL' as nomina,
+					tr_mantic_empresa_personal.clave,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
+					tc_mantic_personas.apodo,
+					tc_keet_nominas_personas.neto as sueldo
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+				where
+					tc_keet_nominas.id_nomina= {idNomina}
+					and (upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, ''), ' ', ifnull(tc_mantic_personas.apodo, ''))) regexp '.*{nombre}.*')
+				union all
+				select
+					tc_keet_nominas.id_nomina as id_key,
+					tc_keet_nominas.id_nomina,
+				  tc_keet_nominas.id_nomina_estatus,
+					tc_mantic_empresas.nombre as nombre_empresa,  
+				  2 as id_tipo_proceso,
+				  tc_mantic_proveedores.id_proveedor as id_persona_reprocesar,
+					'SUBCONTRATISTA' as nomina,
+					tc_mantic_proveedores.clave,
+					tc_mantic_proveedores.razon_social as nombre_completo,
+					tc_mantic_proveedores.rfc as apodo,
+					tc_keet_nominas_proveedores.total as sueldo
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_proveedores on tc_keet_nominas.id_nomina= tc_keet_nominas_proveedores.id_nomina
+				inner join 
+					tc_mantic_proveedores on tc_keet_nominas_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join 
+					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+				where
+					tc_keet_nominas.id_nomina= {idNomina}
+					and upper(ifnull(tc_mantic_proveedores.razon_social, '')) regexp '.*{nombre}.*'
+				{sortOrder}
+			</select>
 			<select id="ejercicios">
 				select
 					distinct(tc_keet_nominas_periodos.ejercicio) as id_key,
