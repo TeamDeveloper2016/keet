@@ -7,6 +7,44 @@
   </model>
 
   <dml>		
+		<unit id="TcKeetContratosContratistasArchivosDto">
+      <select id="row">
+        select      
+					tc_keet_contratos_contratistas_archivos.id_contrato_contratista_archivo as id_key,
+          tc_keet_contratos_contratistas_archivos.*
+        from      
+          tc_keet_contratos_contratistas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_contratistas_archivos
+        where      
+          id_contrato_contratista_archivo = {idContratoContratistaArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcKeetContratosProveedoresArchivosDto">
+      <select id="row">
+        select      
+					tc_keet_contratos_proveedores_archivos.id_contrato_proveedor_archivo as id_key,
+          tc_keet_contratos_proveedores_archivos.*
+        from      
+          tc_keet_contratos_proveedores_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_proveedores_archivos
+        where      
+          id_contrato_proveedor_archivo = {idContratoProveedorArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>
     <unit id="TcKeetNominasPeriodosDto">
       <select id="row">
         select      
