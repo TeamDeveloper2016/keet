@@ -12,6 +12,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				'contenedorGrupos\\:pago': {validaciones: 'requerido|flotante', mascara: 'libre'},
+				'contenedorGrupos\\:idAfectaNomina': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
 
@@ -51,7 +52,13 @@
                 <p:inputText id="numeroPrestamos" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.numeroPrestamos}" rendered="#{keetPrestamosPagosAccion.attrs.isLiquidar}" readonly="true"/>	
 								<p:separator/>
 								<p:outputLabel for="pago" value="Importe del pago:"/>
-                <p:inputText id="pago" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosPagosAccion.pagoDto.pago}" />																								
+                <p:inputText id="pago" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosPagosAccion.pagoDto.pago}" />	
+								<p:outputLabel for="idAfectaNomina" value="Proviene de nómina:"/>
+								<p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosPagosAccion.pagoDto.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+									<f:selectItem itemValue="1" itemLabel="SI"/>
+									<f:selectItem itemValue="2" itemLabel="NO"/>
+								</p:selectOneMenu>						
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.pagoDto.observaciones}" />
               </p:panelGrid>
