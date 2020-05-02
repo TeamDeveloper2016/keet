@@ -2221,5 +2221,63 @@
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}
 			</update>
     </unit>
+		<unit id="TcKeetPuntosControlesDto">
+      <select id="row">
+        select      
+				  tc_keet_puntos_controles.id_punto_control id_key,
+          tc_keet_puntos_controles.*
+        from      
+          tc_keet_puntos_controles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_puntos_controles
+        where      
+          id_punto_control = {idPuntoControl}
+      </select>
+    </unit>
+		<unit id="TcKeetPuntosGruposDto">
+      <select id="row">
+        select      
+          tc_keet_puntos_grupos.id_punto_grupo id_key,
+          tc_keet_puntos_grupos.*
+        from      
+          tc_keet_puntos_grupos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_puntos_grupos
+        where      
+          id_departamento = {idDepartamento} and grupo = {grupo} and id_punto_grupo = {idPuntoGrupo}
+      </select>
+    </unit>
+		    <unit id="TcKeetPuntosPaquetesDto">
+      <select id="row">
+        select      
+          tc_keet_puntos_paquetes.id_punto_paquete
+				id_key,
+          tc_keet_puntos_paquetes.*
+        from      
+          tc_keet_puntos_paquetes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_puntos_paquetes
+        where      
+          id_punto_paquete = {idPuntoPaquete} and id_punto_control = {idPuntoControl} and id_punto_grupo = {idPuntoGrupo}
+      </select>
+    </unit>
   </dml>    
 </process>

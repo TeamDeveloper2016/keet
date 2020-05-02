@@ -35,6 +35,8 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
   private Long idPrestamo;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="id_afecta_nomina")
+  private Long idAfectaNomina;
   @Column (name="id_deudor")
   private Long idDeudor;
   @Column (name="observaciones")
@@ -57,14 +59,15 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPrestamosDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetPrestamosDto(String consecutivo, Long idPrestamo, Long idUsuario, Long idDeudor, String observaciones, Double saldo, Long orden, Double importe, Long idPrestamoEstatus, Long ejercicio) {
+  public TcKeetPrestamosDto(String consecutivo, Long idPrestamo, Long idUsuario, Long idAfectaNomina, Long idDeudor, String observaciones, Double saldo, Long orden, Double importe, Long idPrestamoEstatus, Long ejercicio) {
     setConsecutivo(consecutivo);
     setIdPrestamo(idPrestamo);
     setIdUsuario(idUsuario);
+    setIdAfectaNomina(idAfectaNomina);
     setIdDeudor(idDeudor);
     setObservaciones(observaciones);
     setSaldo(saldo);
@@ -97,6 +100,14 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
 
   public Long getIdUsuario() {
     return idUsuario;
+  }
+
+  public void setIdAfectaNomina(Long idAfectaNomina) {
+    this.idAfectaNomina = idAfectaNomina;
+  }
+
+  public Long getIdAfectaNomina() {
+    return idAfectaNomina;
   }
 
   public void setIdDeudor(Long idDeudor) {
@@ -184,6 +195,8 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAfectaNomina());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdDeudor());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
@@ -209,6 +222,7 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idPrestamo", getIdPrestamo());
 		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idAfectaNomina", getIdAfectaNomina());
 		regresar.put("idDeudor", getIdDeudor());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("saldo", getSaldo());
@@ -223,7 +237,7 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdPrestamo(), getIdUsuario(), getIdDeudor(), getObservaciones(), getSaldo(), getOrden(), getImporte(), getIdPrestamoEstatus(), getEjercicio(), getRegistro()
+    getConsecutivo(), getIdPrestamo(), getIdUsuario(), getIdAfectaNomina(), getIdDeudor(), getObservaciones(), getSaldo(), getOrden(), getImporte(), getIdPrestamoEstatus(), getEjercicio(), getRegistro()
     };
     return regresar;
   }
@@ -281,4 +295,7 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdPrestamo() != null ? getIdPrestamo().hashCode() : 0);
     return hash;
   }
+
 }
+
+
