@@ -6,5 +6,47 @@
   <model>
   </model>
   <dml>
+    <unit id="VistaReportesPrestamosDto">
+			<select id="prestamosPagos">
+        select
+					tc_keet_prestamos_pagos.id_prestamo_pago id_key,
+				  tc_keet_prestamos.consecutivo as prestamo,
+				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) deudor,
+				  tc_keet_prestamos.importe importe_prestamo,
+					tc_keet_prestamos.saldo saldo_prestamo,
+          tc_keet_prestamos.observaciones observaciones_prestamo,
+          tc_keet_prestamos.registro fecha_prestamo,
+          tc_keet_prestamos.saldo,
+					tc_keet_deudores.saldo saldo_total_deudor,
+					tc_keet_deudores.limite limite_deudor,
+					tc_keet_deudores.disponible disponible_deudor,
+					tc_keet_prestamos_pagos.consecutivo,
+					tc_keet_prestamos_pagos.pago,
+					tc_keet_prestamos_pagos.abono,
+         (tc_keet_prestamos.saldo-tc_keet_prestamos_pagos.pago) saldo_despues_abono,
+					tc_keet_prestamos_pagos.abono as total_abonos,
+					tc_keet_prestamos_pagos.cambio,
+          tc_keet_prestamos_pagos.observaciones observaciones_pago,
+					tc_keet_prestamos_pagos.registro fecha_pago
+				from
+					tc_keet_prestamos
+				left join 
+				  tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo = tc_keet_prestamos_pagos.id_prestamo
+				inner join 
+				  tc_keet_deudores on tc_keet_prestamos.id_deudor= tc_keet_deudores.id_deudor
+				inner join 
+				  tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+				  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_keet_prestamos.id_prestamo_estatus in (1,2) and
+          {condicion}
+          /*
+				  tc_keet_deudores.id_deudor= {idDeudor}
+				  tc_keet_prestamos_pagos.id_prestamo= {idPrestamo}
+				  */
+				order by tc_mantic_personas.id_persona, tc_keet_prestamos.consecutivo, tc_keet_prestamos_pagos.consecutivo
+			</select>				
+		</unit>
   </dml>
 </process>
