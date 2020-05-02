@@ -52,7 +52,7 @@ public enum EReportes implements IReportAttribute{
 	EMPLEADOS                 ("VistaEmpleadosEstatusDto", "empleados", "Plantilla de personal por desarrollo", "/Paginas/Mantic/Catalogos/Empleados/Reportes/empleados", EFormatos.PDF, "plantilla_de_personal", "/Paginas/Mantic/Catalogos/Empleados/filtro"),
 	EMPLEADOS_DESARROLLO      ("VistaEmpleadosEstatusDto", "desarrollo", "Plantilla de personal por desarrollo", "/Paginas/Keet/Catalogos/Contratos/Personal/Reportes/empleados", EFormatos.PDF, "plantilla_de_personal", "/Paginas/Mantic/Catalogos/Contratos/Personal/consulta"),
 	PRESTAMOS                 ("VistaPrestamosDto", "lazy", "Prestamos", "/Paginas/Keet/Prestamos/Reportes/prestamos", EFormatos.PDF, "prestamos", "Paginas/Keet/Prestamos/filtro"),
-	PRESTAMOS_PAGOS           ("VistaReportesPrestamosDto", "prestamosPagos", "Prestamos y pagos", "/Paginas/Keet/Prestamos/Reportes/prestamosPagos", EFormatos.PDF, "prestamos_pagos", "/Paginas/Keet/Prestamos/filtro");
+	PRESTAMOS_PAGOS           ("VistaReportesPrestamosDto", "prestamosPagos", "Resumen de pagos", "/Paginas/Keet/Prestamos/Reportes/pagosPrestamos", EFormatos.PDF, "pagos_prestamo", "/Paginas/Keet/Prestamos/filtro");
 	
 	
 	private final String proceso;
