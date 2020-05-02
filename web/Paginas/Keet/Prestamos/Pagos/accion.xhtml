@@ -20,9 +20,7 @@
 				janal.readingMode('#{keetPrestamosPagosAccion.attrs.nombreAccion}');
 			});
 			
-			function refreshValidateObs(){
-				$('#contenedorGrupos\\:pago').text() < 0? janal.renovates([{id: 'contenedorGrupos\\:observaciones', value: {validaciones: 'requerido', mascara: 'libre',  formatos: 'cambiar-mayusculas', grupo: 'general'}}]) : janal.renovates([{id: 'contenedorGrupos\\:observaciones', value: {validaciones: 'libre', mascara: 'libre',  formatos: 'cambiar-mayusculas', grupo: 'general'}}]);
-			}
+
 		</script>   
 		<style type="text/css">
 			.ui-selectcheckboxmenu-token-label {
@@ -52,7 +50,9 @@
                 <p:inputText id="numeroPrestamos" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.numeroPrestamos}" rendered="#{keetPrestamosPagosAccion.attrs.isLiquidar}" readonly="true"/>	
 								<p:separator/>
 								<p:outputLabel for="pago" value="Importe del pago:"/>
-                <p:inputText id="pago" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosPagosAccion.pagoDto.pago}" />	
+                <p:inputText id="pago" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosPagosAccion.pagoDto.pago}" >
+									<!--p:ajax event="valueChange" listener="refreshValidateObs();"  -->
+								</p:inputText>
 								<p:outputLabel for="idAfectaNomina" value="Proviene de nómina:"/>
 								<p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosPagosAccion.pagoDto.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>

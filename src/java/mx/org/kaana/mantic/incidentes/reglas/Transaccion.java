@@ -77,7 +77,7 @@ public class Transaccion extends IBaseTnx {
 			throw new Exception(this.messageError.concat("<br/>") + e);
 		} // catch		
 		return regresar;
-	} // ejecutar
+	} // ejecutar		
 	
 	private boolean verificaExistente(Session sesion) throws Exception{
 		boolean regresar         = true;
@@ -145,7 +145,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setIdEmpresaPersona(this.incidente.getIdEmpresaPersona());
 			if(this.incidente.getCosto()!= null && this.incidente.getCosto()>0D)
 				dto.setCosto(this.incidente.getCosto());
-			dto.setIdTipoIncidente(this.incidente.getIdTipoIncidente());
+			dto.setIdTipoIncidente(this.incidente.getIdTipoIncidente());	
 			dto.setIdUsuario(JsfBase.getIdUsuario());
 			dto.setObservaciones(this.incidente.getObservaciones());
 			dto.setVigenciaInicio(this.incidente.getVigenciaInicio());
