@@ -73,7 +73,8 @@
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-naranja'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'Sin iniciar': (row.idEstacionEstatus eq '2' ? 'En proceso' : (row.idEstacionEstatus eq '3' ? 'Finalizado' : 'Cancelado'))}.png"/>
 						</p:column>
 						<p:column class="janal-wid-6 janal-column-center">
-							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión."/>																						
+							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión." disabled="#{row.idEstacionEstatus eq '3'}"/>																						
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModel==null?0:keetCatalogosContratosDestajosConceptos.lazyModel.rowCount}] registros"/>

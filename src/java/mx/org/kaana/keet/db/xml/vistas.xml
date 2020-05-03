@@ -1963,7 +1963,7 @@
 			</select>
 		</unit>	
 		<unit id="VistaCapturaDestajosDto">
-			<select id="importados">
+			<select id="importadosContratista">
 				select 
 					tc_keet_contratos_contratistas_archivos.id_contrato_contratista_archivo as id_key,
 					tc_keet_contratos_contratistas_archivos.nombre,
@@ -2002,6 +2002,46 @@
 					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
 				where 
 					tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista = {idContratoLoteContratista}
+				and 
+					tc_keet_estaciones.id_estacion= {idEstacion}												
+			</select>
+			<select id="importadosProveedor">
+				select 
+					tc_keet_contratos_proveedores_archivos.id_contrato_proveedor_archivo as id_key,
+					tc_keet_contratos_proveedores_archivos.nombre,
+					tc_keet_contratos_proveedores_archivos.archivo,
+					tc_keet_contratos_proveedores_archivos.ruta,
+					tc_keet_contratos_proveedores_archivos.alias,
+					tc_keet_contratos_proveedores_archivos.observaciones,
+					tc_keet_contratos_proveedores_archivos.registro,
+					tc_keet_contratos_proveedores_archivos.id_tipo_archivo,					
+					tc_keet_contratos_destajos_proveedores.id_usuario,	
+					tc_mantic_proveedores.razon_social nombre_persona,
+					concat(persona_usuario.nombres, ' ', persona_usuario.paterno, ' ', persona_usuario.materno) nombre_usuario,
+					tc_keet_estaciones.clave consecutivo,
+					tc_keet_estaciones.nombre concepto,					
+					'SUBCONTRATISTA' puesto,
+					tc_keet_departamentos.nombre especialidad				
+				from 
+					tc_keet_contratos_proveedores_archivos
+				inner join 
+					tc_keet_contratos_destajos_proveedores on tc_keet_contratos_proveedores_archivos.id_contrato_destajo_proveedor = tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor
+				inner join 
+					tc_keet_estaciones on tc_keet_contratos_destajos_proveedores.id_estacion = tc_keet_estaciones.id_estacion
+				inner join
+					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor = tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+				inner join
+					tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
+				inner join 
+					tc_keet_proveedores_departamentos on tc_mantic_proveedores.id_proveedor = tc_keet_proveedores_departamentos.id_proveedor
+				inner join 
+					tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento				
+				inner join 
+					tc_janal_usuarios on tc_keet_contratos_proveedores_archivos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
+				where 
+					tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor = {idContratoLoteProveedor}
 				and 
 					tc_keet_estaciones.id_estacion= {idEstacion}												
 			</select>
@@ -2178,6 +2218,7 @@
 				select
 					tc_keet_puntos_paquetes.id_punto_grupo,  
 					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_departamentos.nombre departamento,
 					tc_keet_puntos_grupos.grupo,
 					tc_keet_puntos_grupos.descripcion,
 					tc_keet_rubros_grupos.id_rubro_grupo,
@@ -2193,11 +2234,14 @@
 					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
 				inner join
 					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+				inner join
+					tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
 				where
 					tc_keet_puntos_grupos.id_departamento= {idDepartamento} and tc_keet_rubros.nombre like upper('%{nombreConcepto}%')
 				group by
 					tc_keet_puntos_paquetes.id_punto_grupo,   
 					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_departamentos.nombre,
 					tc_keet_puntos_grupos.grupo,
 					tc_keet_puntos_grupos.descripcion,
 					tc_keet_rubros_grupos.id_rubro_grupo,

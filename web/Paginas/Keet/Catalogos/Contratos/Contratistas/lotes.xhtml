@@ -64,7 +64,7 @@
 							</h:panelGrid>
 							<f:facet name="footer">
 								<div class="janal-column-right">
-									<p:outputLabel value="Contratistas: #{row.contratistas}" styleClass="janal-color-blue"/>							
+									<p:outputLabel value="#{row.contratistas eq '' ? ' ' : 'Contratistas: '.concat(row.contratistas)}" styleClass="janal-color-blue"/>							
 								</div>	
 							</f:facet>
 						</p:panel>						

@@ -1,11 +1,16 @@
 package mx.org.kaana.keet.catalogos.contratos.destajos.reglas;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoContratistaArchivo;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoProveedorArchivo;
+import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseDestajoArchivo;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosContratistasDto;
@@ -13,7 +18,6 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -28,6 +32,7 @@ public class Transaccion extends IBaseTnx {
 	private Long idEstacion;
 	private Entity[] puntosRevision;
 	private Double factorAcumulado;
+	private List<IBaseDestajoArchivo>documentos;
 
 	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision) {
 		this.idFigura      = idFigura;
@@ -35,12 +40,17 @@ public class Transaccion extends IBaseTnx {
 		this.idEstacion    = idEstacion;
 		this.puntosRevision= puntosRevision;
 	} // Transaccion
+
+	public Transaccion(List<IBaseDestajoArchivo> documentos) {
+		this.documentos= documentos;
+	}
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar         = true;
 		Map<String, Object>params= null;
 		Long idUsuario           = -1L;
+		IBaseDto dto             = null;
 		try {
 			switch(accion){
 				case PROCESAR:									
@@ -50,7 +60,17 @@ public class Transaccion extends IBaseTnx {
 						processDestajoContratista(sesion, idUsuario);
 					else
 						processDestajoSubContratista(sesion, idUsuario);
-					break;								
+					break;						
+				case SUBIR:
+					for(IBaseDestajoArchivo incidencia: this.documentos){
+						if(incidencia.getTipo().equals(1L))
+							dto= (DestajoContratistaArchivo) incidencia;
+						else
+							dto= (DestajoProveedorArchivo) incidencia;
+						if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
+							toSaveFile(incidencia.getIdArchivo());
+					} // for
+					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
