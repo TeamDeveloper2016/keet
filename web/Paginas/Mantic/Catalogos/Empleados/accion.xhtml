@@ -17,6 +17,7 @@
 				'contenedorGrupos\\:materno'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:rfc'          : {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:curp'         : {validaciones: 'curp', mascara: 'curp', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:apodo'        : {validaciones: 'libre', mascara: 'letras', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:nacimiento'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},				
 				'contenedorGrupos\\:idEstadoCivil': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},								
 				'contenedorGrupos\\:tipoPersona'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},				
@@ -108,6 +109,8 @@
 								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.rfc}" />                    								
 								<p:outputLabel for="curp" value="CURP:"/>
 								<p:inputText id="curp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.curp}" />                    								
+								<p:outputLabel for="apodo" value="Apodo del empleado:"/>
+								<p:inputText id="apodo" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.apodo}" />                    								
 								<p:outputLabel for="tipoPersona" value="Tipo persona:" rendered="#{manticCatalogosPersonasAccion.attrs.general}"/>
 								<p:selectOneMenu id="tipoPersona" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idTipoPersona}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.general}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.tiposPersonas}"/>

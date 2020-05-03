@@ -109,7 +109,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     setSueldoMensual(sueldoMensual);
     setSueldoImss(sueldoImss);
 		setIdNomina(idNomina);
-		setIdSeguro(idSeguro);		
+		setIdSeguro(idSeguro);	
   }
 	
   public void setClave(String clave) {
@@ -295,7 +295,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 	public void setIdSeguro(Long idSeguro) {
 		this.idSeguro = idSeguro;
 	}	
-	
+
   @Transient
   @Override
   public Long getKey() {
