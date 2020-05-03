@@ -93,12 +93,12 @@ public class Lotes extends IBaseFilter implements Serializable {
 	private Entity toLoteDefault() {
 		Entity regresar= new Entity(Constantes.USUARIO_INACTIVO);
 		regresar.put("clave", new Value("clave", "ASIGNACIÓN GENERAL"));
-		regresar.put("manzana", new Value("manzana", this.lotes.get(0).toString("manzana")));
+		regresar.put("manzana", new Value("manzana", "00N"));
 		regresar.put("lote", new Value("lote", "N"));
 		regresar.put("fechaInicio", new Value("fechaInicio", "-"));
 		regresar.put("fechaTermino", new Value("fechaTermino", "-"));
 		regresar.put("diasConstruccion", new Value("diasConstruccion", "-"));
-		regresar.put("contratistas", new Value("contratistas", 0L));
+		regresar.put("contratistas", new Value("contratistas", ""));
 		return regresar;
 	} // toLoteDefault
 	
