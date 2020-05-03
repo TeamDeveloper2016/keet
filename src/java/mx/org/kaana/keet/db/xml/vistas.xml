@@ -619,7 +619,7 @@
 				  tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor as id_key,
 				  tc_keet_rubros.id_rubro,
 				  tc_keet_contratos_lotes.id_contrato_lote,
- 				  concat('-M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+ 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
 				  tc_keet_estaciones.codigo,
 				  '00111100' as sat,
 				  tc_keet_estaciones.nombre,
