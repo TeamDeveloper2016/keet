@@ -165,7 +165,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			idXml= figura.toLong("tipo").equals(1L) ? "lotesContratistas" : "lotesSubContratistas";
 	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);			
 			if(!this.lotes.isEmpty()){ 
-			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);							
+			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
+				this.lotes.add(0, this.toLoteDefault());
 				toEstatusManzanaLote();
 			} //
     } // try
@@ -179,6 +180,21 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad	
 	
+	private Entity toLoteDefault() {
+		Entity regresar= new Entity(Constantes.USUARIO_INACTIVO);
+		regresar.put("clave", new Value("clave", "EVIDENCIAS"));
+		regresar.put("manzana", new Value("manzana", "00N"));
+		regresar.put("lote", new Value("lote", "N"));
+		regresar.put("fechaInicio", new Value("fechaInicio", "-"));
+		regresar.put("fechaTermino", new Value("fechaTermino", "-"));
+		regresar.put("diasConstruccion", new Value("diasConstruccion", "-"));
+		regresar.put("contratistas", new Value("contratistas", ""));
+		regresar.put("orden", new Value("orden", ""));
+		regresar.put("ordenContrato", new Value("ordenContrato", ""));
+		regresar.put("claveContrato", new Value("claveContrato", ""));
+		return regresar;
+	} // toLoteDefault
+	
 	private void toEstatusManzanaLote() throws Exception{
 		Map<String, Object>params= null;
 		Entity estatus           = null;
@@ -189,7 +205,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				params.put("idDepartamento", this.attrs.get("especialidad"));
 				params.put("clave", toClaveEstacion(mzaLote));
 				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaDestajosDto", "estatusManzanaLote", params);
-				if(estatus.isValid()){
+				if(estatus.toString("total")!= null){
 					if(estatus.toLong("total").equals(estatus.toLong("terminado")))
 						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.TERMINADO.getSemaforo()));
 					else if(estatus.toLong("total").equals(estatus.toLong("iniciado")))
@@ -197,6 +213,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 					else
 						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.EN_PROCESO.getSemaforo()));
 				} // if
+				else
+					mzaLote.put("iconEstatus", new Value("iconEstatus", ""));
 			} // for
 		} // try
 		catch (Exception e) {			
