@@ -177,13 +177,13 @@
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'detalle')" oncomplete="janal.desbloquear()"/>
 							</div>  
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.lote}">
+						<p:column class="MarAuto Responsive janal-wid-18" sortBy="#{row.lote}">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
 							<h:outputText value="#{row['lote']}"/>
 						</p:column>														
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
 							<f:facet name="header">
 								<h:outputText value="Codigo"/>
 							</f:facet>
@@ -201,7 +201,7 @@
 							</f:facet>
 							<h:outputText value="#{row['subtotal']}"/>
 						</p:column>	
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.iva}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.iva}">
 							<f:facet name="header">
 								<h:outputText value="IVA"/>
 							</f:facet>

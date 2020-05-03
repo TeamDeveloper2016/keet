@@ -57,7 +57,6 @@
 			<select id="proveedores">
 				select
 					tc_keet_nominas_proveedores.id_nomina_proveedor as id_key,
-				  tc_keet_nominas_proveedores.id_nomina_proveedor,
   				concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
 					tc_keet_nominas.id_nomina,
 				  tc_keet_nominas.id_nomina_estatus,
