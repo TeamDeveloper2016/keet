@@ -1,7 +1,6 @@
 package mx.org.kaana.keet.nomina.backing;
 
 import java.io.Serializable;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,14 +8,15 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -30,6 +30,16 @@ public class Personas extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 6319984968937774153L;
 
+	private FormatLazyModel lazyDetalle;
+
+	public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}
+
+	public void setLazyDetalle(FormatLazyModel lazyDetalle) {
+		this.lazyDetalle=lazyDetalle;
+	}
+	
 	@PostConstruct
   @Override
   protected void init() {
@@ -51,9 +61,9 @@ public class Personas extends IBaseFilter implements Serializable {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by nomina desc");
       columns= new ArrayList<>();
-      columns.add(new Columna("percepciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("percepciones", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("deducciones", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("neto", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("neto", EFormatoDinamicos.MILES_SIN_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaNominaConsultasDto", "personas", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -160,5 +170,29 @@ public class Personas extends IBaseFilter implements Serializable {
 	
 	public void doReporte() {
 	}
+	
+  public void doLoadDetalle() {
+    List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+    try {
+			Entity entity= (Entity)this.attrs.get("seleccionado");
+			params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
+			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("idNominaPersona", entity.toLong("idNominaPersona"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("valor", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
+      this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "persona", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  } // doLoad
 	
 }

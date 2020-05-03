@@ -11,9 +11,10 @@
 				  concat(if(principal.id_contratista is null, principal.departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')))) as contratista
 				from(
 				select
-					tc_keet_nominas.id_nomina as id_key,
+					tc_keet_nominas_personas.id_nomina_persona as id_key,
 					tc_keet_nominas.id_nomina,
 					tr_mantic_empresa_personal.id_empresa_persona,
+				  tc_keet_nominas_personas.id_nomina_persona,
 					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
 					tc_mantic_empresas.nombre as nombre_empresa,  
 					tc_keet_departamentos.nombre as departamento,
@@ -73,6 +74,60 @@
 				order by
 				  tc_keet_nominas.id_tipo_nomina, tc_keet_nominas_periodos.ejercicio desc, tc_keet_nominas_periodos.orden desc				
 			</select>
+			<select id="persona">
+				select
+				  tc_keet_nominas_detalles.id_nomina_detalle as id_key,
+					tc_keet_nominas_conceptos.id_tipo_concepto,
+				  tc_keet_tipos_conceptos.nombre as tipo_concepto,
+					tc_keet_nominas_conceptos.orden,
+					tc_keet_nominas_detalles.clave,
+					tc_keet_nominas_detalles.nombre,
+					tc_keet_nominas_detalles.formula,
+					tc_keet_nominas_detalles.valor,
+				  tc_keet_nominas_detalles.fecha
+				from
+					tc_keet_nominas_detalles
+				inner join
+					tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona = tc_keet_nominas_personas.id_nomina_persona
+				inner join
+					tc_keet_nominas_conceptos on tc_keet_nominas_detalles.id_nomina_concepto = tc_keet_nominas_conceptos.id_nomina_concepto
+				inner join
+					tc_keet_tipos_conceptos on tc_keet_nominas_conceptos.id_tipo_concepto = tc_keet_tipos_conceptos.id_tipo_concepto
+				where
+					tc_keet_nominas_personas.id_nomina= {idNomina}
+					and tc_keet_nominas_detalles.id_nomina_persona= {idNominaPersona}
+				{sortOrder}				
+			</select>				
+			<select id="proveedor">
+				select 
+				  tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor as id_key,
+				  tc_keet_rubros.id_rubro,
+ 				  concat('C', tc_keet_contratos.clave, '-M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+				  tc_keet_estaciones.codigo,
+				  '00111100' as sat,
+				  tc_keet_estaciones.nombre,
+				  0 as cantidad,
+				  round(tc_keet_contratos_destajos_proveedores.costo, 4) as subtotal,
+				  round(tc_keet_contratos_destajos_proveedores.costo* 0.16, 4) as iva,
+				  round(tc_keet_contratos_destajos_proveedores.costo* 1.16, 4) as total
+			  from
+				  tc_keet_contratos_lotes_proveedores
+			  inner join
+				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+			  inner join
+				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+			  inner join
+			    tc_keet_contratos_destajos_proveedores on tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor
+			  inner join	 
+			    tc_keet_estaciones on tc_keet_contratos_destajos_proveedores.id_estacion = tc_keet_estaciones.id_estacion 
+        inner join
+				  tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo
+			  where 
+			    tc_keet_contratos_destajos_proveedores.id_nomina is null
+				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
+		    order by
+			    lote, tc_keet_estaciones.codigo				
+			</select>		
 		</unit>
 		<unit id="VistaNominaDto">
 			<select id="lazy">
@@ -447,26 +502,6 @@
 					and tr_mantic_empresa_personal.id_activo= 1
 					and tr_mantic_empresa_personal.id_empresa_persona!= {idEmpresaPersona}				
 			</select>	
-			<select id="detalle">
-				select
-					tc_keet_nominas_conceptos.id_tipo_concepto,
-					tc_keet_nominas_conceptos.orden,
-					tc_keet_nominas_detalles.clave,
-					tc_keet_nominas_detalles.nombre,
-					tc_keet_nominas_detalles.formula,
-					tc_keet_nominas_detalles.valor
-				from
-					tc_keet_nominas_detalles
-				inner join
-					tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona = tc_keet_nominas_personas.id_nomina_persona
-				inner join
-					tc_keet_nominas_conceptos on tc_keet_nominas_detalles.id_nomina_concepto = tc_keet_nominas_conceptos.id_nomina_concepto
-				where
-					tc_keet_nominas_personas.id_nomina= {idNomina}
-					and tc_keet_nominas_detalles.id_nomina_persona= {idEmpresaPersona}
-				order by
-					tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden				
-			</select>	
       <select id="subContratista">
          select 
 				  tc_keet_contratos_destajos_proveedores.*
@@ -478,35 +513,6 @@
 				  tc_keet_contratos_destajos_proveedores.id_nomina is null
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}
 			</select>
-			<select id="rubros">
-				select 
-				  tc_keet_rubros.id_rubro,
- 				  concat('C', tc_keet_contratos.clave, '-M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
-				  tc_keet_estaciones.codigo,
-				  '00111100' as sat,
-				  tc_keet_estaciones.nombre,
-				  0 as cantidad,
-				  round(tc_keet_contratos_destajos_proveedores.costo, 4) as subtotal,
-				  round(tc_keet_contratos_destajos_proveedores.costo* 0.16, 4) as iva,
-				  round(tc_keet_contratos_destajos_proveedores.costo* 1.16, 4) as total
-			  from
-				  tc_keet_contratos_lotes_proveedores
-			  inner join
-				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
-			  inner join
-				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
-			  inner join
-			    tc_keet_contratos_destajos_proveedores on tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor
-			  inner join	 
-			    tc_keet_estaciones on tc_keet_contratos_destajos_proveedores.id_estacion = tc_keet_estaciones.id_estacion 
-        inner join
-				  tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo
-			  where 
-			    tc_keet_contratos_destajos_proveedores.id_nomina is null
-				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
-		    order by
-			    lote, tc_keet_estaciones.codigo				
-			</select>		
 			<select id="ordinaria">
         select
           sum(total) as tuplas
