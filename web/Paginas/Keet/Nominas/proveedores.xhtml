@@ -177,7 +177,19 @@
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'detalle')" oncomplete="janal.desbloquear()"/>
 							</div>  
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-18" sortBy="#{row.lote}">
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
+							<f:facet name="header">
+								<h:outputText value="Contrato"/>
+							</f:facet>
+							<h:outputText value="#{row['clave']}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.etapa}">
+							<f:facet name="header">
+								<h:outputText value="Etapa"/>
+							</f:facet>
+							<h:outputText value="#{row['etapa']}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.lote}">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
@@ -185,7 +197,7 @@
 						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
 							<f:facet name="header">
-								<h:outputText value="Codigo"/>
+								<h:outputText value="Concepto"/>
 							</f:facet>
 							<h:outputText value="#{row['codigo']}"/>
 						</p:column>														

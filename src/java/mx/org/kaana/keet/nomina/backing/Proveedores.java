@@ -45,7 +45,13 @@ public class Proveedores extends IBaseFilter implements Serializable {
   protected void init() {
     try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
 			this.loadCatalogs();
+			if(Cadena.isVacio(idNomina)) {
+				this.attrs.put("idNomina", new UISelectEntity(idNomina));
+				this.doLoad();
+				this.attrs.put("idNomina", new UISelectEntity(-1L));
+		  }
     } // try
     catch (Exception e) {
       Error.mensaje(e);

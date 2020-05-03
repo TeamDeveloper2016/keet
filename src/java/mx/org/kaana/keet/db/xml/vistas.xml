@@ -144,6 +144,9 @@
 			<select id="proveedor">
 				select
 					tc_keet_nominas_rubros.id_nomina_rubro as id_key,
+				  tc_keet_contratos.consecutivo,
+				  tc_keet_contratos.clave,
+				  tc_keet_contratos.etapa,
 					tc_keet_nominas_rubros.lote,
 					tc_keet_nominas_rubros.codigo,
 					tc_keet_nominas_rubros.nombre,
@@ -155,6 +158,10 @@
           tc_keet_nominas_rubros     
         inner join
           tc_keet_nominas_proveedores on tc_keet_nominas_rubros.id_nomina_proveedor = tc_keet_nominas_proveedores.id_nomina_proveedor     
+			  inner join
+				  tc_keet_contratos_lotes on tc_keet_nominas_rubros.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+			  inner join
+				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
         where
           tc_keet_nominas_proveedores.id_nomina= {idNomina}      
           and tc_keet_nominas_rubros.id_nomina_proveedor= {idNominaProveedor}	
@@ -611,7 +618,8 @@
 				select 
 				  tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor as id_key,
 				  tc_keet_rubros.id_rubro,
- 				  concat('C', tc_keet_contratos.clave, '-M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+				  tc_keet_contratos_lotes.id_contrato_lote,
+ 				  concat('-M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
 				  tc_keet_estaciones.codigo,
 				  '00111100' as sat,
 				  tc_keet_estaciones.nombre,

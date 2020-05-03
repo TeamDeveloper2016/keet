@@ -10,10 +10,19 @@
   <ui:define name="librerias">
 		<meta id="refresh" http-equiv="#{keetNominasProgreso.attrs.cancelar? 'refresh': 'description'}" content="120"/>
 		<script type="text/javascript">
-		  function cancel() {
-				janal.console("progreso.cancel(): Entro a cancelar el refrescado de la pagina");
-		    window.stop();
-		  }
+      function cancel() {
+				janal.console('cancel: Se terminó el proceso de nómina');
+        PF('progressBar').cancel();
+        PF('progressBar').setValue(0);
+        clearInterval(window['progress']);
+				window.stop();
+      }
+      
+      function startTask() {
+        PF('progressBar').cancel();
+        PF('progressBar').setValue(0);
+        PF('progressBar').start(parseInt($('#registros').html(), 10));
+      }			
 		</script>	
 	</ui:define>	
   <ui:define name="contenido">
@@ -49,11 +58,14 @@
       </div>
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-					<p:progressBar value="#{keetNominasProgreso.attrs.value}" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" displayOnly="true" styleClass="filas"/>
+          <span class="FontBold janal-color-orange">Registros a procesar en la nómina:</span> <p:outputLabel id="tuplas" value="[#{keetNominasProgreso.attrs.tuplas}]" styleClass="nominas janal-color-orange FontBold janal-steps-boton-siguiente"/>
+          <p:progressBar interval="1000" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true"/>
         </div>
+				<p:outputLabel id="registros" value="#{keetNominasProgreso.attrs.tuplas}" styleClass="importado" style="display: none"/>
       </div>
     </div>		   
 		<br/>
+		<p:remoteCommand name="procesar" actionListener="#{keetNominasProgreso.doAceptar}" onstart="startTask(); return true;" oncomplete="cancel(); janal.desbloquear();"/>
   </ui:define>   
   <ui:define name="acciones">
   	<div class="lg-pantalla">

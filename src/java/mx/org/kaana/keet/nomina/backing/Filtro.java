@@ -129,8 +129,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 				case REPROCESAR:
 				  regresar= "progreso".concat(Constantes.REDIRECIONAR);
 					break;
-				case CONSULTAR:
-				  regresar= "consultar".concat(Constantes.REDIRECIONAR);
+				case CONSULTAR: // personas
+				  regresar= "personas".concat(Constantes.REDIRECIONAR);
+					break;
+				case LISTAR: // proveedores
+				  regresar= "proveedores".concat(Constantes.REDIRECIONAR);
 					break;
 			} // switch
     } // try
