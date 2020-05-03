@@ -61,7 +61,7 @@
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
 											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
 											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
-						<p:panel header="[#{row.claveContrato}] #{row.clave}" style="text-align:center; border: 0px;">
+						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{row.clave}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosDestajosFiltro.doConceptos}" style="cursor: pointer !important;">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" class="manzana-lote-font"/>
@@ -78,7 +78,7 @@
 							</h:panelGrid>
 							<f:facet name="footer">
 								<div class="janal-column-right">
-									<h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png"/>									
+									<h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}"/>									
 								</div>	
 							</f:facet>
 						</p:panel>						
