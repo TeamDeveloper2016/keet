@@ -115,6 +115,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	private void llenarIncidente(Session sesion) throws Exception{
 		this.getIncidente().setCosto(this.prestamo.getPrestamo().getImporte());
 		this.getIncidente().setTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.name());
+		this.getIncidente().setIdTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.getKey());
 		this.getIncidente().setVigenciaInicio(LocalDate.now());
 		this.getIncidente().setVigenciaFin(LocalDate.now());
 		this.getIncidente().setIdIncidenteEstatus(EEstatusIncidentes.APLICADA.getIdEstatusInicidente());

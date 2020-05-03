@@ -14,9 +14,10 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.keet.db.dto.TcKeetPrestamosDto;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
 import mx.org.kaana.keet.prestamos.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
@@ -28,6 +29,9 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
 
 @Named(value = "keetPrestamosFiltro")
 @ViewScoped
@@ -35,6 +39,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 6319984968937774153L;
 	LocalDate inicio, termino;
+  protected Reporte reporte;
+	
+	public Reporte getReporte() {
+		return reporte;
+	}	// getReporte
 
 	public LocalDate getInicio() {
 		return inicio;
@@ -252,4 +261,48 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("deudores");
 	}	// doCompleteCliente
+  
+  public void doReporte(String nombre) throws Exception {    
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;    
+    Map<String, Object>params    = null;
+    Parametros comunes           = null;
+		try {		  
+      reporteSeleccion= EReportes.valueOf(nombre);
+      params= this.toPrepare();
+      if(reporteSeleccion.equals(EReportes.PRESTAMOS_PAGOS)){
+        //params.put(Constantes.SQL_CONDICION,"1=1");
+        params.put(Constantes.SQL_CONDICION,"tc_keet_prestamos_pagos.id_prestamo=".concat(((Entity) this.attrs.get("seleccionado")).getKey().toString()));
+      }
+      params.put("sortOrder", "order by tc_keet_prestamos.consecutivo desc");
+      this.reporte= JsfBase.toReporte();
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      if(doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte 
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		if(this.reporte.getTotal()> 0L) {
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else {
+			UIBackingUtilities.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
 }
