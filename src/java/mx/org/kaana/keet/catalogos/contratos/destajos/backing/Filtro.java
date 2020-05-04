@@ -251,9 +251,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
 			JsfBase.setFlashAttribute("figura", figura);									
-			JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("especialidad"));									
-			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));									
-			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
+			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
+			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
+			if(seleccionado.getKey().equals(Constantes.USUARIO_INACTIVO))				
+				regresar= "galeria".concat(Constantes.REDIRECIONAR);			
+			else
+				regresar= "conceptos".concat(Constantes.REDIRECIONAR);										
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
