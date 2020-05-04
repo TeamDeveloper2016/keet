@@ -1,9 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.destajos.backing;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +36,6 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
-import org.primefaces.model.DefaultStreamedContent;
 
 @Named(value = "keetCatalogosContratosDestajosImportar")
 @ViewScoped
