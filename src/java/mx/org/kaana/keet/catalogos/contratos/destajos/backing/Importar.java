@@ -69,7 +69,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));      			
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);
 			this.attrs.put("idEstacion", ((Entity)this.attrs.get("concepto")).getKey());
-			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat(File.separator).concat("images").concat(File.separator));
+			this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
 			if(((Entity) this.attrs.get("figura")).toLong("tipo").equals(1L))
 				this.attrs.put("idContratoLoteContratista", ((Entity)this.attrs.get("seleccionadoPivote")).toLong("idContratoLoteContratista"));
 			else
@@ -140,7 +140,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
 			importados= (List<Entity>) this.attrs.get("importados");
 			for(Entity importado: importados){
-				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(File.separator).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
+				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
 				importado.put("url", new Value("url", url));
 			} // for
 			this.attrs.put("importados", importados);
