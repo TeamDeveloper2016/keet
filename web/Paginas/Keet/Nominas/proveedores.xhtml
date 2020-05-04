@@ -164,7 +164,7 @@
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTable" var="row" value="#{keetNominasProveedores.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominasProveedores.attrs.detalle}" selectionMode="single" paginator="#{keetNominasProveedores.lazyDetalle.rowCount gt keetNominasProveedores.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<f:facet name="header">
 							<div style="float: left;" class="">
-								<p:outputLabel value="Detalle del pago: [#{keetNominasProveedores.attrs.seleccionado.departameto}] #{keetNominasProveedores.attrs.seleccionado.nombreCompleto}" styleClass="janal-text-white"/>
+								<p:outputLabel value="Detalle del pago: [#{keetNominasProveedores.attrs.seleccionado.departamento}] #{keetNominasProveedores.attrs.seleccionado.nombreCompleto}" styleClass="janal-text-white"/>
 							</div>
 							<div class="lg-pantalla">
 								<p:menuButton value="Opciones">
@@ -183,13 +183,13 @@
 							</f:facet>
 							<h:outputText value="#{row['clave']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.etapa}">
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}">
 							<f:facet name="header">
 								<h:outputText value="Etapa"/>
 							</f:facet>
 							<h:outputText value="#{row['etapa']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.lote}">
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.lote}">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
@@ -207,7 +207,7 @@
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.subtotal}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.subtotal}">
 							<f:facet name="header">
 								<h:outputText value="Subtotal"/>
 							</f:facet>
@@ -219,7 +219,7 @@
 							</f:facet>
 							<h:outputText value="#{row['iva']}"/>
 						</p:column>	
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.total}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
 							<f:facet name="header">
 								<h:outputText value="Total"/>
 							</f:facet>

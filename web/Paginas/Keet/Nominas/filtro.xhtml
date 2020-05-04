@@ -117,31 +117,31 @@
               </f:facet>
               <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>														
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.ejercicio}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}">
               <f:facet name="header">
                 <h:outputText value="Ejercicio"/>
               </f:facet>
               <h:outputText value="#{row['ejercicio']}"/>
             </p:column>														
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.semana}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.semana}">
               <f:facet name="header">
                 <h:outputText value="Semana"/>
               </f:facet>
-              <h:outputText value="#{row['semana']}"/>
+              <h:outputText value="#{row['semana']}" title="Periodo: #{row.inicio} al #{row.termino}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.tipo}">
               <f:facet name="header">
                 <h:outputText value="Tipo"/>
               </f:facet>
               <h:outputText value="#{row['tipo']}"/>
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.inicio}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.inicio}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Inicio"/>
               </f:facet>
               <h:outputText value="#{row['inicio']}"/>
             </p:column>														
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.termino}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.termino}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Termino"/>
               </f:facet>
@@ -159,28 +159,28 @@
               </f:facet>
               <h:outputText value="#{row['personas']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.neto}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.neto}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Neto ($)"/>
               </f:facet>
               <h:outputText value="#{row['neto']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.proveedores}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.proveedores}">
               <f:facet name="header">
                 <h:outputText value="Subcontratistas"/>
               </f:facet>
               <h:outputText value="#{row['proveedores']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.global}">
               <f:facet name="header">
                 <h:outputText value="Total ($)"/>
               </f:facet>
-              <h:outputText value="#{row['total']}"/>
+              <h:outputText value="#{row['global']}" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]" />
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstatusNomina eq '1'? 'circulo-rojo': row.idEstatusNomina eq '2' or row.idEstatusNomina eq '3'? 'circulo-amarillo' : 'circulo-verde'}.png" title="Importa global de la nómina [${row.global}]"/>
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-30">
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstatusNomina eq '1'? 'circulo-rojo': row.idEstatusNomina eq '2' or row.idEstatusNomina eq '3'? 'circulo-amarillo' : 'circulo-verde'}.png" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]"/>
 						</p:column>
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-30">
 							<p:commandButton icon="fa fa-refresh" process="@this tabla" ajax="false" action="#{keetNominasFiltro.doAccion('COMPLETO')}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}">
 							  <f:setPropertyActionListener value="#{row}" target="#{keetNominasFiltro.attrs.seleccionado}" />
 							</p:commandButton>
