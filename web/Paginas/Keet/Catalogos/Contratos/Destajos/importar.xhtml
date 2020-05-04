@@ -45,6 +45,15 @@
 					overflow-x: auto !important;
 					max-height: 470px;
 			}		
+			.pad-description{
+				padding-left: 20px !important;				
+			}
+			.back-table{
+				background-color: rgba(0,0,0,0.5) !important; 				
+			}
+			.border-color-item{
+				border-left-color: rgba(0,0,0,0.5) !important; 				
+			}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -111,6 +120,21 @@
 								</p:column>
 							</p:dataTable>
 						</p:tab>						            						            																																																
+						<p:tab title="Galeria">							
+							<p:carousel id="tabla" value="#{keetCatalogosContratosDestajosImportar.attrs.importados}" headerText="Galeria de evidencias" var="item" styleClass="importado" circular="true" responsive="true">
+								<p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;" styleClass="border-color-item">																		
+									<p:graphicImage url="#{item.url}" width="550" height="250"/>											
+									<p:panelGrid columns="1" style="width: 100% !important" columnClasses="janal-column-left, janal-column-left">
+										<p:outputLabel value="&lt;b&gt;Nombre:&lt;/b&gt; #{item.nombre}" class="pad-description" escape="false"/>										
+										<p:outputLabel value="&lt;b&gt;Consecutivo:&lt;/b&gt; #{item.consecutivo}" class="pad-description" escape="false"/>
+										<p:outputLabel value="&lt;b&gt;Concepto:&lt;/b&gt; #{item.concepto}" class="pad-description" escape="false"/>
+										<p:outputLabel value="&lt;b&gt;Especialidad:&lt;/b&gt; #{item.especialidad}" class="pad-description" escape="false"/>
+										<p:outputLabel value="&lt;b&gt;Usuario:&lt;/b&gt; #{item.nombreUsuario}" class="pad-description" escape="false"/>
+										<p:outputLabel value="&lt;b&gt;Registro:&lt;/b&gt; #{item.registro}" class="pad-description" escape="false"/>
+									</p:panelGrid>									
+								</p:panelGrid>							
+							</p:carousel>
+						</p:tab>
 						<p:tab title="Importar">														
 							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosDestajosImportar.attrs.observaciones}" onblur="processDataFile();"/>
