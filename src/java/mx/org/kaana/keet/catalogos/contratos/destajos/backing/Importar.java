@@ -116,7 +116,7 @@ public class Importar extends IBaseImportar implements Serializable {
   @Override
   public void doLoad() {
 		List<Columna> columns= null;
-		String idXml         = null;
+		String idXml         = null;		
 		try {
 			columns= new ArrayList<>();
       columns.add(new Columna("nombrePersona", EFormatoDinamicos.MAYUSCULAS));
@@ -348,10 +348,4 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
-	
-	public DefaultStreamedContent getFile(String path) throws FileNotFoundException {		
-		File file= new File(path);
-		InputStream stream= new FileInputStream(file);		
-		return DefaultStreamedContent.builder().contentType("image/jpg").stream(()-> stream).build();		
-	} // getFile
 }
