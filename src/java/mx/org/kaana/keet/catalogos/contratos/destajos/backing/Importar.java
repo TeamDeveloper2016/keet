@@ -140,7 +140,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
 			importados= (List<Entity>) this.attrs.get("importados");
 			for(Entity importado: importados){
-				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
+				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
 				importado.put("url", new Value("url", url));
 			} // for
 			this.attrs.put("importados", importados);
