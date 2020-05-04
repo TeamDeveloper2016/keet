@@ -44,7 +44,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			figura= (Entity) JsfBase.getFlashAttribute("figura");	
 			seleccionado= (Entity) JsfBase.getFlashAttribute("seleccionado");	
-			idDepartamento= Long.valueOf((String)JsfBase.getFlashAttribute("idDepartamento"));	
+			idDepartamento= (Long)JsfBase.getFlashAttribute("idDepartamento");	
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("figura", figura);      
 			this.attrs.put("seleccionadoPivote", seleccionado);      			
