@@ -59,25 +59,28 @@
 						</p:tab>														
 					</p:accordionPanel>	
 					<p:spacer/>
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionado}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModel.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" selectionMode="single">            						
-						<p:column class="janal-wid-6 janal-column-center">              
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionado}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModel.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+						<p:column class="janal-wid-col-20 janal-column-center">              
+              <f:facet name="header">
+                <h:outputText value="No"/>
+              </f:facet>
               <h:outputText value="#{index+1}.-"/>
             </p:column>		
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
-                <h:outputText value="Concepto"/>
+                <h:outputText value="Concepto(s) del lote"/>
               </f:facet>
-              <h:outputText value="#{row.nombre}"/>
+              <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold"/>
             </p:column>		                        
-						<p:column class="janal-wid-6 janal-column-center">
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-naranja'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'Sin iniciar': (row.idEstacionEstatus eq '2' ? 'En proceso' : (row.idEstacionEstatus eq '3' ? 'Finalizado' : 'Cancelado'))}.png"/>
+						<p:column class="janal-wid-col-30 janal-column-center">
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-naranja'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'Sin iniciar': (row.idEstacionEstatus eq '2' ? 'En proceso' : (row.idEstacionEstatus eq '3' ? 'Finalizado' : 'Cancelado'))}"/>
 						</p:column>
-						<p:column class="janal-wid-6 janal-column-center">
+						<p:column class="janal-wid-col-80 janal-column-center">
 							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión." disabled="#{row.idEstacionEstatus eq '3'}"/>																						
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 						</p:column>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModel==null?0:keetCatalogosContratosDestajosConceptos.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModel== null? 0: keetCatalogosContratosDestajosConceptos.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
 				</div>						        
