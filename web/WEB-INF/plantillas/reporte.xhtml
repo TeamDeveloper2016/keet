@@ -88,7 +88,11 @@
           $('#barra').hide();
           $('#descargar').hide();
         }
-      </script>
+
+	      $(document).ready(function() {
+					$('div.ui-selectonemenu').attr('style', 'min-width: 100px;');
+        });
+			</script>			
 			<ui:insert name="librerias"/> 
       <title>#{kajoolUtilAplicacion.tituloSistema}</title>
     </h:head>
