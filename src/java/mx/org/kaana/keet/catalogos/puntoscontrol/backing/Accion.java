@@ -27,11 +27,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	private RegistroPunto punto;
 	
-	public RegistroPunto getDesarrollo() {
+	public RegistroPunto getPunto() {
 		return punto;
 	}
 
-	public void setDesarrollo(RegistroPunto punto) {
+	public void setPunto(RegistroPunto punto) {
 		this.punto = punto;
 	}	
 	

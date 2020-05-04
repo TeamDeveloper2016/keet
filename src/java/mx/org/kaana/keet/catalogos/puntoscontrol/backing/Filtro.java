@@ -55,10 +55,8 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       params= this.toPrepare();	
       columns= new ArrayList<>();
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paquete", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("factor", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaPuntosControlDto", params, columns);
       UIBackingUtilities.resetDataTable();
