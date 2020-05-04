@@ -300,24 +300,16 @@ public class Feriados extends IBaseAttribute implements Serializable {
 		return regresar;
 	} // loadNewIncidente
 	
-	private ETiposIncidentes toTipoIncidente(LocalDate dia) throws Exception{
-		ETiposIncidentes regresar           = null;
-		List<TcKeetDiasFestivosDto> festivos= null;
-		MotorBusqueda motor                 = null;
-		try {
-			regresar= ETiposIncidentes.DIA_TRIPLE;
-			motor= new MotorBusqueda(-1L);
-			festivos= motor.toAllDiasFeriados();
-			for(TcKeetDiasFestivosDto diaFestivo: festivos){
-				if(diaFestivo.getDia().isEqual(dia)){
-					regresar= ETiposIncidentes.DIA_FESTIVO;
-					break;
-				} // if
-			} // for
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+	private ETiposIncidentes toTipoIncidente(LocalDate dia) throws Exception {
+		ETiposIncidentes regresar= ETiposIncidentes.EXEDENTE_NOMINA;
+		MotorBusqueda motor= new MotorBusqueda(-1L);
+		List<TcKeetDiasFestivosDto> festivos= motor.toAllDiasFeriados();
+		for(TcKeetDiasFestivosDto diaFestivo: festivos) {
+			if(diaFestivo.getDia().isEqual(dia)) {
+				regresar= ETiposIncidentes.DIA_FESTIVO;
+				break; 
+			} // if
+		} // for
 		return regresar;
 	} // toTipoIncidente
 	
