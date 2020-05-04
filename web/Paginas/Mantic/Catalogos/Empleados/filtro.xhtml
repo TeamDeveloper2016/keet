@@ -13,11 +13,8 @@
 			// |siguiente({"cuantos":3,"cual":"0","token":"BR"})
       Janal.Control.fields = {
         'clave'       : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas'},
-        'nombres'     : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas'},       
-        'paterno'     : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas'},       
-        'materno'     : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas'},       
+        'nombre'      : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas'},       
         'rfc'         : {validaciones: 'rfc'  , mascara: 'fiscal', formatos: 'cambiar-mayusculas'},
-        'curp'        : {validaciones: 'libre', mascara: 'curp'  , formatos: 'cambiar-mayusculas'},
         'idActivo'    : {validaciones: 'libre', mascara: 'libre'},
         'idSeguro'    : {validaciones: 'libre', mascara: 'libre'},
         'tipoPersona' : {validaciones: 'libre', mascara: 'libre'},
@@ -89,14 +86,8 @@
               <p:selectCheckboxMenu id="puesto" label="Puestos" value="#{manticCatalogosEmpleadosFiltro.attrs.selectPuestos}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">
                 <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.puestos}"/>                
               </p:selectCheckboxMenu> 
-              <p:outputLabel for="nombres" value="Nombres:"/>
-              <p:inputText id="nombres" value="#{manticCatalogosEmpleadosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="paterno" value="Apellido paterno:"/>
-              <p:inputText id="paterno" value="#{manticCatalogosEmpleadosFiltro.attrs.paterno}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="materno" value="Apellido materno:"/>
-              <p:inputText id="materno" value="#{manticCatalogosEmpleadosFiltro.attrs.materno}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="curp" value="CURP:" style="display: none"/>
-              <p:inputText id="curp" value="#{manticCatalogosEmpleadosFiltro.attrs.curp}" styleClass="janal-wid-100-txt" style="display: none"/>              														
+              <p:outputLabel for="nombre" value="Nombre o apodo:"/>
+              <p:inputText id="nombre" value="#{manticCatalogosEmpleadosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosEmpleadosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                                                        
 							<p:outputLabel for="salarioMenor" value="Salario menor a:" title="Salario mensual" style="display: none"/>

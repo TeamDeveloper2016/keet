@@ -160,12 +160,10 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			sb.append("tr_mantic_empresa_personal.clave like '%").append(this.attrs.get("clave")).append("%' and ");
 		if(!Cadena.isVacio(this.attrs.get("idPersona")))
 			sb.append("tc_mantic_personas.id_persona=").append(this.attrs.get("idPersona")).append(" and ");
-		if(!Cadena.isVacio(this.attrs.get("nombres")))
-			sb.append("tc_mantic_personas.nombres like '%").append(this.attrs.get("nombres")).append("%' and ");
-		if(!Cadena.isVacio(this.attrs.get("paterno")))
-			sb.append("tc_mantic_personas.paterno like '%").append(this.attrs.get("paterno")).append("%' and ");
-		if(!Cadena.isVacio(this.attrs.get("materno")))
-			sb.append("tc_mantic_personas.materno like '%").append(this.attrs.get("materno")).append("%' and ");
+		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
+			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+  		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, ' '), ' ', ifnull(tc_mantic_personas.apodo, ' '))) regexp '.*").append(nombre).append(".*') and ");
+		} // if
 		if(!Cadena.isVacio(this.attrs.get("rfc")))
 			sb.append("tc_mantic_personas.rfc like '%").append(this.attrs.get("rfc")).append("%' and ");
 		if(!Cadena.isVacio(this.attrs.get("curp")))
