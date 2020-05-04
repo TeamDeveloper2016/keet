@@ -2272,6 +2272,14 @@
         where 
           {condicion} 
       </select>
+      <select id="siguiente">
+        select 
+					concat('PAQUETE ', max(cast(replace(descripcion, 'PAQUETE ', '')as integer)+1)) siguiente
+				from 
+				  tc_keet_puntos_grupos
+				where
+				  id_departamento= {idDepartamento}
+      </select>
       <select id="identically">
         select      
           *
@@ -2284,8 +2292,7 @@
 		    <unit id="TcKeetPuntosPaquetesDto">
       <select id="row">
         select      
-          tc_keet_puntos_paquetes.id_punto_paquete
-				id_key,
+          tc_keet_puntos_paquetes.id_punto_paquete id_key,
           tc_keet_puntos_paquetes.*
         from      
           tc_keet_puntos_paquetes
@@ -2299,6 +2306,15 @@
           tc_keet_puntos_paquetes
         where      
           id_punto_paquete = {idPuntoPaquete} and id_punto_control = {idPuntoControl} and id_punto_grupo = {idPuntoGrupo}
+      </select>
+      <select id="find">
+        select      
+          tc_keet_puntos_paquetes.id_punto_paquete id_key,
+          tc_keet_puntos_paquetes.*
+        from      
+          tc_keet_puntos_paquetes
+        where      
+          id_punto_control = {idPuntoControl} and id_punto_grupo = {idPuntoGrupo}
       </select>
     </unit>
   </dml>    

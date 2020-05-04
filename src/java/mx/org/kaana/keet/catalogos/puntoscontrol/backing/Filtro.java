@@ -34,10 +34,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			if(JsfBase.getFlashAttribute("idPuntoControlProcess")!= null){
-				this.attrs.put("idPuntoControlProcess", JsfBase.getFlashAttribute("idPuntoControlProcess"));
+			if(JsfBase.getFlashAttribute("dPuntoGrupoProcess")!= null){
+				this.attrs.put("dPuntoGrupoProcess", JsfBase.getFlashAttribute("dPuntoGrupoProcess"));
 				doLoad();
-				this.attrs.put("idPuntoControlProcess", null);
+				this.attrs.put("dPuntoGrupoProcess", null);
 			} // if
 			this.attrs.put("departamentos", UIEntity.seleccione("TcKeetDepartamentosDto", "especialidades",  "nombre"));
 			//
@@ -81,7 +81,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-      JsfBase.setFlashAttribute("idPuntoControl", eaccion.equals(EAccion.AGREGAR) ? -1L : ((Entity) this.attrs.get("seleccionado")).getKey());
+      JsfBase.setFlashAttribute("dPuntoGrupo", eaccion.equals(EAccion.AGREGAR) ? -1L : ((Entity) this.attrs.get("seleccionado")).getKey());
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/PuntosControl/filtro");
     } // try
     catch (Exception e) {
@@ -97,10 +97,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
     UISelectEntity cliente        = (UISelectEntity)this.attrs.get("cliente");
     List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("clientes");
-		if(this.attrs.get("idPuntoControlProcess")!= null && !Cadena.isVacio(this.attrs.get("idPuntoControlProcess")))
-			sb.append("tc_keet_puntos_controles.id_punto_control=").append(this.attrs.get("idPuntoControlProcess")).append(" and ");
+		if(this.attrs.get("dPuntoGrupoProcess")!= null && !Cadena.isVacio(this.attrs.get("dPuntoGrupoProcess")))
+			sb.append("tc_keet_puntos_grupos.id_punto_grupo=").append(this.attrs.get("dPuntoGrupoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
-			sb.append("(tc_keet_puntos_controles.nombre like '%").append(this.attrs.get("nombre")).append("%') and ");
+			sb.append("(tc_keet_puntos_grupos.descripcion like '%").append(this.attrs.get("nombre")).append("%') and ");
     if(!Cadena.isVacio(this.attrs.get("departamento")) && ((UISelectEntity)this.attrs.get("departamento")).getKey()>= 1L)				
 			sb.append("(tc_keet_departamentos.id_departamento in (").append(((UISelectEntity)this.attrs.get("departamento")).getKey()).append(")) and ");
 		if(sb.length()== 0)

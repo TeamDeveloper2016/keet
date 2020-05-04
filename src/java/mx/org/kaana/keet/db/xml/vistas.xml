@@ -2376,16 +2376,18 @@
 		<unit id="VistaPuntosControlDto">
 			<select id="lazy">
 				select 
-					tc_keet_puntos_controles.id_punto_control id_key,
-					tc_keet_puntos_controles.nombre,
-					tc_keet_puntos_controles.factor,
+					tc_keet_puntos_grupos.id_punto_grupo id_key,
 					tc_keet_puntos_grupos.descripcion paquete,
 					tc_keet_departamentos.descripcion departamento, 
-					tc_keet_puntos_controles.registro
-				from tc_keet_puntos_controles
-					inner join tc_keet_puntos_paquetes on tc_keet_puntos_paquetes.id_punto_control= tc_keet_puntos_controles.id_punto_control
-					inner join tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo= tc_keet_puntos_paquetes.id_punto_grupo
+					tc_keet_puntos_grupos.registro,
+          puntos_control
+				from tc_keet_puntos_grupos
 					inner join tc_keet_departamentos on tc_keet_departamentos.id_departamento= tc_keet_puntos_grupos.id_departamento
+					inner join
+            (select count(*) puntos_control, id_punto_grupo from tc_keet_puntos_controles
+             inner join tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
+             group by id_punto_grupo
+            ) tc_keet_puntos_controles on tc_keet_puntos_controles.id_punto_grupo = tc_keet_puntos_grupos.id_punto_grupo
 				where
 				  {condicion}	
 				{sortOrder}	
@@ -2414,6 +2416,14 @@
 				where
 				  tc_keet_prestamos.id_deudor= {idDeudor}
 				{sortOrder}	
+			</select>
+			<select id="getOrdenPuntoControl">
+				select 
+					max(orden)+1 orden
+					from tc_keet_puntos_controles
+					inner join tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
+				where
+				  tc_keet_puntos_paquetes.id_punto_grupo= {idPuntoGrupo}
 			</select>
 		</unit>	
 	</dml>    
