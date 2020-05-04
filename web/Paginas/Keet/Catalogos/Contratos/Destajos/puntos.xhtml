@@ -62,15 +62,21 @@
 					</p:accordionPanel>	
 					<p:spacer/>
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosPuntos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosPuntos.selecteds}" paginator="#{keetCatalogosContratosDestajosPuntos.lazyModel.rowCount gt keetCatalogosContratosDestajosPuntos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
-						<p:column selectionMode="multiple" class="janal-wid-6 janal-column-center"/>						
+						<p:column selectionMode="multiple" class="janal-wid-col-30 janal-column-center"/>						
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Punto de revisión"/>
               </f:facet>
               <h:outputText value="#{index+1}.- #{row.nombre}" styleClass="janal-color-black FontBold"/>
             </p:column>		                        						
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-60" sortBy="#{row.factor}">
+              <f:facet name="header">
+                <h:outputText value="Factor"/>
+              </f:facet>
+              <h:outputText value="#{row.factor} %" styleClass="janal-color-blue"/>
+            </p:column>		                        						
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosPuntos.lazyModel==null?0:keetCatalogosContratosDestajosPuntos.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosPuntos.lazyModel== null? 0: keetCatalogosContratosDestajosPuntos.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
 				</div>						        

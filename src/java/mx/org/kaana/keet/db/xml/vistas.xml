@@ -2287,7 +2287,7 @@
 			</select>
 			<select id="puntosRevision">
 				select
-					tc_keet_puntos_paquetes.id_punto_paquete AS id_key,  
+					tc_keet_puntos_paquetes.id_punto_paquete as id_key,  
 					tc_keet_puntos_grupos.grupo,
 					tc_keet_puntos_grupos.descripcion,
 					tc_keet_puntos_controles.id_punto_control,
@@ -2302,14 +2302,14 @@
 					tc_keet_puntos_controles on tc_keet_puntos_paquetes.id_punto_control = tc_keet_puntos_controles.id_punto_control
 				where
 					tc_keet_puntos_grupos.id_departamento={idDepartamento} and tc_keet_puntos_paquetes.id_punto_grupo={idPuntoGrupo}
-				AND 
+				and 
 					tc_keet_puntos_paquetes.id_punto_paquete not in (
 						select
 							id_punto_paquete
 						from
 							tc_keet_contratos_destajos_proveedores
 						inner join
-							tc_keet_contratos_puntos_proveedores ON tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor
+							tc_keet_contratos_puntos_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor
 						where
 							tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion}
 						union 

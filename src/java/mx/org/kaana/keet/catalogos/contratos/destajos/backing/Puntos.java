@@ -79,13 +79,14 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params   = null;
-    List<Columna> columns       = null;				
+		Map<String, Object>params= null;
+    List<Columna> columns    = null;				
     try {      			
 			params= this.toPrepare();
       columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
+      columns.add(new Columna("factor", EFormatoDinamicos.NUMERO_SIN_DECIMALES));                  
 	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRevision", params, columns);			
 			UIBackingUtilities.resetDataTable();
     } // try
