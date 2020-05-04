@@ -85,13 +85,14 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params   = null;
-    List<Columna> columns       = null;				
+		Map<String, Object>params= null;
+    List<Columna> columns    = null;				
     try {      			
 			params= this.toPrepare();
       columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
 	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "conceptos", params, columns);			
 			UIBackingUtilities.resetDataTable();
     } // try

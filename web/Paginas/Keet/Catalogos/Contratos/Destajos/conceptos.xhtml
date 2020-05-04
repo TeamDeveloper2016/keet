@@ -70,7 +70,7 @@
               <f:facet name="header">
                 <h:outputText value="Concepto(s) del lote"/>
               </f:facet>
-              <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold"/>
+              <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
             </p:column>		                        
 						<p:column class="janal-wid-col-30 janal-column-center">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
