@@ -1,6 +1,9 @@
 package mx.org.kaana.keet.catalogos.contratos.destajos.backing;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +14,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -21,7 +25,6 @@ import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoContratistaAr
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoProveedorArchivo;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseDestajoArchivo;
 import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
-import mx.org.kaana.keet.db.dto.TcKeetDepartamentosDto;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -36,6 +39,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.DefaultStreamedContent;
 
 @Named(value = "keetCatalogosContratosDestajosImportar")
 @ViewScoped
@@ -69,6 +73,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));      			
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);
 			this.attrs.put("idEstacion", ((Entity)this.attrs.get("concepto")).getKey());
+			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat(File.separator).concat("images").concat(File.separator));
 			if(((Entity) this.attrs.get("figura")).toLong("tipo").equals(1L))
 				this.attrs.put("idContratoLoteContratista", ((Entity)this.attrs.get("seleccionadoPivote")).toLong("idContratoLoteContratista"));
 			else
@@ -76,7 +81,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("file", ""); 
 			setFile(new Importado());
 			this.documentos= new ArrayList<>();
-			loadCatalogos();			
+			loadCatalogos();	
+			doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -119,6 +125,7 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
 			idXml= ((Entity) this.attrs.get("figura")).toLong("tipo").equals(1L) ? "importadosContratista" : "importadosProveedor";
 		  this.attrs.put("importados", UIEntity.build("VistaCapturaDestajosDto", idXml, this.attrs, columns));
+			doLoadFiles();
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -128,6 +135,26 @@ public class Importar extends IBaseImportar implements Serializable {
       Methods.clean(columns);
     }// finally		
   } // doLoad		
+	
+	private void doLoadFiles(){
+		List<Entity>importados= null;		
+		String dns            = null;
+		String url            = null;
+		try {
+			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
+			importados= (List<Entity>) this.attrs.get("importados");
+			for(Entity importado: importados){
+				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(File.separator).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
+				importado.put("url", new Value("url", url));
+			} // for
+			this.attrs.put("importados", importados);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+	} // doLoadFiles
 	
 	public void doFileUpload(FileUploadEvent event) {				
 		StringBuilder path= new StringBuilder();  
@@ -175,7 +202,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
 	} // doFileUpload		
 	
-private String toClaveEstacion(){
+	private String toClaveEstacion(){
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
@@ -264,8 +291,8 @@ private String toClaveEstacion(){
 	} // toIdContratoDestajoFigura
 	
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoad();		
+		//if(event.getTab().getTitle().equals("Archivos") || event.getTab().getTitle().equals("Galeria"))
+			//this.doLoad();					
 	}	// doTabChange	
 	
 	private EFormatos getFileType(String fileName){
@@ -321,4 +348,10 @@ private String toClaveEstacion(){
 		} // catch		
     return regresar;
   } // doCancelar		
+	
+	public DefaultStreamedContent getFile(String path) throws FileNotFoundException {		
+		File file= new File(path);
+		InputStream stream= new FileInputStream(file);		
+		return DefaultStreamedContent.builder().contentType("image/jpg").stream(()-> stream).build();		
+	} // getFile
 }
