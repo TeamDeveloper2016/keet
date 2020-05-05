@@ -249,6 +249,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
+			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
 			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
 			JsfBase.setFlashAttribute("figura", figura);									
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
