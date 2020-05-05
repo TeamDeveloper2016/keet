@@ -150,7 +150,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
 			JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionadoPivote"));									
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
-			JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento").toString());												
+			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
