@@ -74,5 +74,49 @@
 				order by tc_mantic_personas.id_persona, tc_keet_prestamos.consecutivo, tc_keet_prestamos_pagos.consecutivo
 			</select>				
 		</unit>
+    <unit id="VistaNominaReportesDto">
+      <select id="proveedorDetalle">
+				select
+					tc_keet_nominas_rubros.id_nomina_rubro as id_key,
+				  tc_keet_contratos.consecutivo,
+				  tc_keet_contratos.clave,
+				  tc_keet_contratos.etapa,
+					tc_keet_nominas_rubros.lote,
+					tc_keet_nominas_rubros.codigo,
+					tc_keet_nominas_rubros.nombre,
+					tc_keet_nominas_rubros.subtotal,
+					tc_keet_nominas_rubros.iva,
+					tc_keet_nominas_rubros.total,
+					tc_keet_nominas_rubros.registro,
+					departamentos.departamento,
+          tc_mantic_proveedores.id_proveedor    
+        from
+          tc_keet_nominas_rubros     
+        inner join
+          tc_keet_nominas_proveedores on tc_keet_nominas_rubros.id_nomina_proveedor = tc_keet_nominas_proveedores.id_nomina_proveedor     
+        inner join 
+          tc_mantic_proveedores on tc_keet_nominas_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+        inner join ( 
+          select 
+            tc_keet_proveedores_departamentos.id_proveedor,
+            concat('|', group_concat(tc_keet_departamentos.id_departamento separator '|'), '|') as id_departamentos,
+            group_concat(tc_keet_departamentos.nombre separator ', ') as departamento
+          from
+            tc_keet_proveedores_departamentos
+          inner join
+            tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+          group by
+            tc_keet_proveedores_departamentos.id_proveedor				  
+          ) as departamentos on tc_mantic_proveedores.id_proveedor= departamentos.id_proveedor  
+        inner join
+          tc_keet_contratos_lotes on tc_keet_nominas_rubros.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        inner join
+          tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+        where
+          tc_keet_nominas_proveedores.id_nomina= {idNomina}      
+          and tc_keet_nominas_rubros.id_nomina_proveedor= {idNominaProveedor}	
+				{sortOrder}
+      </select>
+    </unit>
   </dml>
 </process>
