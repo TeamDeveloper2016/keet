@@ -120,10 +120,10 @@
 									<p:outputLabel value="Importe:"/>
 									<p:outputLabel value="Total:"/>
 									<p:inputText value="#{keetNominasAccion.attrs.nomina.proveedores}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
-									<p:inputText value="#{keetNominasAccion.doMiles(keetNominasAccion.attrs.nomina.total)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
+									<p:inputText value="#{keetNominasAccion.doMonedaSat(keetNominasAccion.attrs.nomina.total)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
 									<p:inputText value="#{keetNominasAccion.attrs.nomina.personas}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
-									<p:inputText value="#{keetNominasAccion.doMiles(keetNominasAccion.attrs.nomina.neto)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
-									<p:inputText value="#{keetNominasAccion.doMiles(keetNominasAccion.attrs.nomina.global)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
+									<p:inputText value="#{keetNominasAccion.doMonedaSat(keetNominasAccion.attrs.nomina.neto)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
+									<p:inputText value="#{keetNominasAccion.doMonedaSat(keetNominasAccion.attrs.nomina.global)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
 								</p:panelGrid>
 							</p:panel>
 							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetNominasAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasAccion.lazyModel.rowCount gt keetNominasAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">

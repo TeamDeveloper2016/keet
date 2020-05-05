@@ -114,16 +114,18 @@ public class Consulta extends IBaseFilter implements Serializable {
 	
 	private String toPrepare() {
 		StringBuilder sb= new StringBuilder();
-		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
+		if(!Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
 			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
 			sb.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
-		if(this.attrs.get("idContratista")!= null && !Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)			
+		if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)			
 			if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
 				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
 			else
 				sb.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
-		if(this.attrs.get("idSeguro")!= null && !Cadena.isVacio(this.attrs.get("idSeguro")) && Long.valueOf(this.attrs.get("idSeguro").toString())>= 1L)
+		if(!Cadena.isVacio(this.attrs.get("idActivo")) && Long.valueOf(this.attrs.get("idActivo").toString())>= 1L)
+			sb.append("tr_mantic_empresa_personal.id_activo= ").append(this.attrs.get("idActivo")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("idSeguro")) && Long.valueOf(this.attrs.get("idSeguro").toString())>= 1L)
 	    if(Long.valueOf(this.attrs.get("idSeguro").toString())== 1L)		
   			sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.nss is not null and tr_mantic_empresa_personal.nss!= '') and ");
 		  else

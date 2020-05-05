@@ -109,7 +109,7 @@ public class Accion extends IBaseFilter implements Serializable {
 	} // doAceptar	
   
   public void doCompleto() {
-		JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente la nómina.", ETipoMensaje.INFORMACION);		
+		// JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente la nómina.", ETipoMensaje.INFORMACION);		
 	} // doCompleto
 
 	private void loadCatalogs() {
