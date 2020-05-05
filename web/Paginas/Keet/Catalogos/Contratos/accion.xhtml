@@ -105,7 +105,7 @@
 								</f:facet>
 							</p:dataTable>	
 						</p:tab>	
-						<p:tab title="Ordenar siembra" >	
+						<p:tab title="Ordenar siembra"  rendered="false">	
 							<p:orderList id="loteOrden" var="loteOrden"  value="#{keetCatalogosContratosAccion.contrato.contrato.lotes}"  itemValue="M#{loteOrden.manzana}-L#{loteOrden.lote}" controlsLocation="none" >
 								<p:ajax event="select" listener="#{keetCatalogosContratosAccion.onSelect}"/>
 								<p:ajax event="reorder" listener="#{keetCatalogosContratosAccion.onReorder}" />

@@ -7,6 +7,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.keet.catalogos.puntoscontrol.beans.PuntoControl;
 import mx.org.kaana.keet.catalogos.puntoscontrol.beans.PuntoGrupo;
+import mx.org.kaana.keet.db.dto.TcKeetPuntosGruposDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -23,14 +24,20 @@ public class MotorBusqueda implements Serializable{
 	
 	public PuntoGrupo toPuntoGrupo() throws Exception {
 		PuntoGrupo regresar= null;
+	  Map<String, Object>params              = null;
 		try {
-			regresar= (PuntoGrupo) DaoFactory.getInstance().findById(PuntoGrupo.class, this.idPuntoGrupo);
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_punto_grupo=".concat(this.idPuntoGrupo.toString()));
+			regresar= (PuntoGrupo) DaoFactory.getInstance().toEntity(PuntoGrupo.class, "TcKeetPuntosGruposDto", params);
 			if(regresar!= null && regresar.isValid())
 				regresar.setIkDepartamento(new UISelectEntity(regresar.getIdDepartamento()));
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	} // toDomicilio
 	
@@ -39,8 +46,8 @@ public class MotorBusqueda implements Serializable{
 		Map<String, Object>params              = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_punto_grupo=".concat(this.idPuntoGrupo.toString()));
-			regresar= (List<PuntoControl>)DaoFactory.getInstance().toEntitySet(PuntoControl.class,"TcKeetPuntosControlesDto", "row", params);
+			params.put("idPuntoGrupo", this.idPuntoGrupo);
+			regresar= (List<PuntoControl>)DaoFactory.getInstance().toEntitySet(PuntoControl.class,"VistaPuntosControlDto", "getPuntoControlByGrupo", params);
 		} // try
 		catch (Exception e) {			
 			throw e;

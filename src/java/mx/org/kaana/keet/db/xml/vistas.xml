@@ -2548,8 +2548,19 @@
 			<select id="getOrdenPuntoControl">
 				select 
 					max(orden)+1 orden
-					from tc_keet_puntos_controles
-					inner join tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
+				from
+				  tc_keet_puntos_controles
+				inner join tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
+				where
+				  tc_keet_puntos_paquetes.id_punto_grupo= {idPuntoGrupo}
+			</select>
+			<select id="getPuntoControlByGrupo">
+				select 
+				  tc_keet_puntos_controles.id_punto_control id_key,
+					tc_keet_puntos_controles.*
+				from
+				  tc_keet_puntos_controles
+				inner join tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
 				where
 				  tc_keet_puntos_paquetes.id_punto_grupo= {idPuntoGrupo}
 			</select>

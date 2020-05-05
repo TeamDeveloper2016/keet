@@ -5,6 +5,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 
 public class PuntoGrupo extends TcKeetPuntosGruposDto{
 
+	private static final long serialVersionUID = -4712960422135885229L;
 	private UISelectEntity ikDepartamento;
 
 	public PuntoGrupo() {
@@ -25,5 +26,10 @@ public class PuntoGrupo extends TcKeetPuntosGruposDto{
 		if(this.ikDepartamento!= null)
 			setIdDepartamento(this.ikDepartamento.getKey());
 	}	
+	
+	@Override
+  public Class toHbmClass() {
+    return TcKeetPuntosGruposDto.class;
+  }
 
 }
