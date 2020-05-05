@@ -31,6 +31,7 @@ public class Personas extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID = 6319984968937774153L;
 
 	private FormatLazyModel lazyDetalle;
+	private FormatLazyModel lazyDestajo;
 
 	public FormatLazyModel getLazyDetalle() {
 		return lazyDetalle;
@@ -38,6 +39,14 @@ public class Personas extends IBaseFilter implements Serializable {
 
 	public void setLazyDetalle(FormatLazyModel lazyDetalle) {
 		this.lazyDetalle=lazyDetalle;
+	}
+
+	public FormatLazyModel getLazyDestajo() {
+		return lazyDestajo;
+	}
+
+	public void setLazyDestajo(FormatLazyModel lazyDestajo) {
+		this.lazyDestajo=lazyDestajo;
 	}
 	
 	@PostConstruct
@@ -190,6 +199,7 @@ public class Personas extends IBaseFilter implements Serializable {
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "persona", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
+			this.doLoadDestajo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -199,6 +209,31 @@ public class Personas extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
+  } // doLoadDetalle
+	
+  public void doLoadDestajo() {
+    List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+    try {
+			Entity entity= (Entity)this.attrs.get("seleccionado");
+			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("idNominaPersona", entity.toLong("idEmpresaPersona"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "destajo", params, columns);
+      UIBackingUtilities.resetDataTable("destajo");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  } // doLoadDestajo
 	
 }
