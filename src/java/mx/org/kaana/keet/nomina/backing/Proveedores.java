@@ -60,8 +60,10 @@ public class Proveedores extends IBaseFilter implements Serializable {
 			this.loadCatalogs();
 			if(!Cadena.isVacio(idNomina)) {
 				Entity entity= new Entity(idNomina);
+			  entity.put("idNomina", new Value("idNomina", idNomina));
 				entity.put("idProveedor", new Value("idProveedor", (Long)JsfBase.getFlashAttribute("idProveedor")));
 				this.attrs.put("idNomina", new UISelectEntity(idNomina));
+				this.attrs.put("seleccionado", entity);
 				this.doLoad();
 				if(!Cadena.isVacio(entity.toLong("idProveedor")))
 					this.doLoadDetalle();

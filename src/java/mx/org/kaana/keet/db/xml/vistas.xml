@@ -138,7 +138,7 @@
 					tc_keet_tipos_conceptos on tc_keet_nominas_conceptos.id_tipo_concepto = tc_keet_tipos_conceptos.id_tipo_concepto
 				where
 					tc_keet_nominas_personas.id_nomina= {idNomina}
-					and tc_keet_nominas_detalles.id_nomina_persona= {idNominaPersona}
+					and tc_keet_nominas_personas.id_empresa_persona= {idEmpresaPersona}
 				{sortOrder}				
 			</select>			
 			<select id="proveedor">

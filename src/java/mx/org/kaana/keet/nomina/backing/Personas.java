@@ -59,8 +59,10 @@ public class Personas extends IBaseFilter implements Serializable {
 			this.loadCatalogs();
 			if(!Cadena.isVacio(idNomina)) {
 				Entity entity= new Entity(idNomina);
-				entity.put("idEmpresaPersona", new Value("idEmpresaPersona", (Long)JsfBase.getFlashAttribute("idEmpresa_persona")));
+				entity.put("idNomina", new Value("idNomina", idNomina));
+				entity.put("idEmpresaPersona", new Value("idEmpresaPersona", (Long)JsfBase.getFlashAttribute("idEmpresaPersona")));
 				this.attrs.put("idNomina", new UISelectEntity(entity));
+				this.attrs.put("seleccionado", entity);
 				this.doLoad();
 				if(!Cadena.isVacio(entity.toLong("idEmpresaPersona")))
 					this.doLoadDetalle();
@@ -198,7 +200,7 @@ public class Personas extends IBaseFilter implements Serializable {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
 			params.put("idNomina", entity.toLong("idNomina"));
-			params.put("idNominaPersona", entity.toLong("idNominaPersona"));
+			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
       columns= new ArrayList<>();
       columns.add(new Columna("valor", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
