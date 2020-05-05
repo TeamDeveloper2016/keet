@@ -7114,6 +7114,52 @@
         where
           tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista=2
       </select>
+      <select id="datosSubcontratistas">
+        select
+					tc_mantic_proveedores.id_proveedor,
+          tc_mantic_proveedores.clave,
+          tc_mantic_proveedores.rfc,
+          tc_mantic_proveedores.razon_social,
+					ifnull(domicilio_proveedor.numero_interior,'') numero_interior,
+					ifnull(domicilio_proveedor.calle,'') calle,
+					ifnull(concat(domicilio_proveedor.calle, case  when domicilio_proveedor.numero_exterior is null then ' ' else concat(' # ',domicilio_proveedor.numero_exterior) end, case  when domicilio_proveedor.numero_interior is null then ' ' else concat(' INT. ',domicilio_proveedor.numero_interior) end),'') as proveedor_direccion,
+          ifnull(domicilio_proveedor.codigo_postal,'') codigo_postal, 
+          ifnull(domicilio_proveedor.asentamiento,'') as colonia,
+          ifnull(concat(replace(replace(upper(municipio_proveedor.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_proveedor.descripcion),', ',upper(pais_proveedor.descripcion)),'') as proveedor_region,
+          ifnull(concat(agentes.nombres, ' ' ,  agentes.paterno, ' ',agentes.materno),'') as agente,
+					ifnull(  (select 
+					  group_concat(tr_mantic_proveedor_tipo_contacto.valor separator ' , ') tels 
+           from 
+					   tc_mantic_proveedores left join tr_mantic_proveedor_tipo_contacto on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor and tr_mantic_proveedor_tipo_contacto.id_tipo_contacto between 1 and 8 
+					 where 
+        				tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista=1),'') telefonos_proveedor,
+        	ifnull((select 
+					  group_concat(tr_mantic_proveedor_tipo_contacto.valor separator ' , ') emails 
+          from 
+            tc_mantic_proveedores left join tr_mantic_proveedor_tipo_contacto on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor and tr_mantic_proveedor_tipo_contacto.id_tipo_contacto between 9 and 11 
+          where 
+            tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista=1),'') emails_proveedor
+        from 
+          tc_mantic_proveedores 
+        left join 
+          tr_mantic_proveedor_domicilio  on tc_mantic_proveedores.id_proveedor= tr_mantic_proveedor_domicilio.id_proveedor
+        left join 
+          tc_mantic_domicilios  domicilio_proveedor on tr_mantic_proveedor_domicilio.id_domicilio = domicilio_proveedor.id_domicilio
+        left join 
+          tc_janal_localidades localidad_proveedor on domicilio_proveedor.id_localidad = localidad_proveedor.id_localidad
+        left join
+          tc_janal_municipios municipio_proveedor on localidad_proveedor.id_municipio = municipio_proveedor.id_municipio
+        left join
+          tc_janal_entidades  entidad_proveedor on municipio_proveedor.id_entidad = entidad_proveedor.id_entidad
+        left join
+          tc_janal_paises  pais_proveedor on entidad_proveedor.id_pais = pais_proveedor.id_pais
+        left join 
+          tr_mantic_proveedor_agente on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor and tr_mantic_proveedor_agente.id_principal=1
+        left join 
+          tc_mantic_personas agentes on tr_mantic_proveedor_agente.id_agente= agentes.id_persona
+        where
+          tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista=1
+      </select>
       <select id="telefonos">
         select group_concat(tr_mantic_empresa_tipo_contacto.valor separator ' , ') tels from 
           tc_mantic_ordenes_compras
