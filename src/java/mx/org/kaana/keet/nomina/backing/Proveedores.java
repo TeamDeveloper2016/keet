@@ -11,9 +11,11 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -23,6 +25,9 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
 
 @Named(value = "keetNominasProveedores")
 @ViewScoped
@@ -31,6 +36,11 @@ public class Proveedores extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID = 6319984968937774153L;
 
 	private FormatLazyModel lazyDetalle;
+  protected Reporte reporte;
+	
+	public Reporte getReporte() {
+		return reporte;
+	}
 
 	public FormatLazyModel getLazyDetalle() {
 		return lazyDetalle;
@@ -165,8 +175,49 @@ public class Proveedores extends IBaseFilter implements Serializable {
   public void doExportar() {
 	}	
 	
-	public void doReporte() {
-	}
+	public void doReporte(String nombre) throws Exception {    
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;    
+    Map<String, Object>params    = null;
+    Parametros comunes           = null;
+    Entity entity                = null;
+		try {		
+      params= new HashMap<>();      
+      reporteSeleccion= EReportes.valueOf(nombre);
+      entity= (Entity)this.attrs.get("seleccionado");
+			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
+			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("idNominaProveedor", entity.toLong("idNominaProveedor"));		
+      this.reporte= JsfBase.toReporte();
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), entity.toLong("idProveedor"));
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      if(doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte 
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		if(this.reporte.getTotal()> 0L) {
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else {
+			UIBackingUtilities.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
 	
   public void doLoadDetalle() {
     List<Columna> columns    = null;
