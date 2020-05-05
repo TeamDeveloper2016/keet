@@ -27,6 +27,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.hibernate.Session;
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Collections;
 
 public class Transaccion extends IBaseTnx {
 
@@ -65,6 +66,7 @@ public class Transaccion extends IBaseTnx {
 					this.contrato.getContrato().setOrden(siguiente.getOrden());
 					this.contrato.getContrato().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
 					regresar= DaoFactory.getInstance().insert(sesion, this.contrato.getContrato())>= 1L;
+					Collections.sort(this.contrato.getContrato().getLotes());
 					for(Lote item:this.contrato.getContrato().getLotes())
 						actualizarLote(sesion, item);
 					break;

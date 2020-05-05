@@ -11,13 +11,13 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				'contenedorGrupos\\:paquete'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:factorTotal' : {validaciones: 'requerido|mayor-igual({"cuanto": 100})|menor({"cuanto": 101}), mascara: 'libre', mensaje: 'El total se la suma de los fatores debe ser igual a 100%'},
-				'contenedorGrupos\\:idDepartamento'  : {validaciones: 'requerido', mascara: 'libre'}
-			};
-			
+								'contenedorGrupos\\:paquete'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+								'contenedorGrupos\\:factorTotal' : {validaciones: 'requerido|mayor-igual({"cuanto": 100})|menor({"cuanto": 101})', mascara: 'libre', mensaje: 'El total se la suma de los fatores debe ser igual a 100%'},
+								'contenedorGrupos\\:idDepartamento'  : {validaciones: 'requerido', mascara: 'libre'}
+							};
+							
 			$(document).ready(function () {
-				janal.readingMode('#{keetCatalogosPuntosControlAccion.attrs.nombreAccion}');
+			janal.readingMode('#{keetCatalogosPuntosControlAccion.attrs.nombreAccion}');
 			});
 		</script>   
 		<style type="text/css">
@@ -44,14 +44,12 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:spacer width="1px"/><p:separator/>	
                 <p:outputLabel for="paquete" value="Paquete:"/>
-								<p:inputText id="paquete" styleClass="janal-wid-100-txt" value="#{keetCatalogosPuntosControlAccion.punto.puntoGrupo.descripcion}"  disabled="true"/>
-								<p:panelGrid id="panelTabla" columns="1" layout="grid" styleClass="janal-wid-100-txt janal-panel-tabla" columnClasses="janal-wid-100-txt">
-                 <p:outputLabel for="factorTotal" value="Paquete:"/>
-								<p:inputText id="factorTotal" styleClass="janal-wid-100-txt" value="#{keetCatalogosPuntosControlAccion.attrs.factorTotal}"  disabled="true"/>
-								
-									<p:dataTable id="tabla" rowIndexVar="index" var="row" value="#{keetCatalogosPuntosControlAccion.punto.puntosControles}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated">																					
+								<p:inputText id="paquete" styleClass="janal-wid-100-txt" value="#{keetCatalogosPuntosControlAccion.punto.puntoGrupo.descripcion}"  readonly="true"/>
+								<p:spacer width="1px"/><p:separator/>	
+							</p:panelGrid>
+							<p:panelGrid id="panelTabla" columns="1" layout="grid" styleClass="janal-wid-100-txt janal-panel-tabla" columnClasses="janal-wid-100-txt">
+								<p:dataTable id="tabla" rowIndexVar="index" var="row" value="#{keetCatalogosPuntosControlAccion.punto.puntosControles}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Nombre">										
                     <p:inputText rendered="#{row.visible}" value="#{row.nombre}" styleClass="janal-wid-100-txt"/>
                   </p:column>	                  
@@ -59,18 +57,21 @@
                     <p:inputText rendered="#{row.visible}" value="#{row.descripcion}" styleClass="janal-wid-100-txt"/>
                   </p:column>	                  
                   <p:column headerText="Factor">										
-                    <p:inputText rendered="#{row.visible}" value="#{row.factor}" styleClass="janal-wid-100-txt"/>
+                    <p:inputText rendered="#{row.visible}" value="#{row.factor}" styleClass="janal-wid-100-txt">
+											<p:ajax event="valueChange" listener="#{keetCatalogosPuntosControlAccion.doCalcularFactorTotal}" update="@form" />
+										</p:inputText>
                   </p:column>	                  
                   <p:column style="width:35px;text-align: center">
-                    <p:commandButton rendered="#{row.visible}" update="tabla" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosPuntosControlAccion.punto.doEliminarPunto}">
+                    <p:commandButton rendered="#{row.visible}" update="tabla" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosPuntosControlAccion.punto.doEliminarPuntoControl}">
                       <f:setPropertyActionListener value="#{row}" target="#{keetCatalogosPuntosControlAccion.punto.rowSeleccion}" />
                     </p:commandButton>
                   </p:column>
 									<f:facet name="footer">
-                    <p:commandButton actionListener="#{keetCatalogosPuntosControlAccion.punto.doAgregarPunto}" process="@this tabla" update="tabla" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+                    <p:commandButton actionListener="#{keetCatalogosPuntosControlAccion.punto.doAgregarPuntoControl}" process="@this tabla" update="tabla" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
                   </f:facet>
-                </p:dataTable>	
-              </p:panelGrid>	
+                </p:dataTable>
+								<p:outputLabel for="factorTotal" value="Suma factor:"/>
+								<p:inputText id="factorTotal" styleClass="janal-wid-100-txt" value="#{keetCatalogosPuntosControlAccion.attrs.factorTotal}"  readonly="true" />
               </p:panelGrid>
 						</p:tab>
 					</p:tabView>

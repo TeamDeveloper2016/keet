@@ -1872,7 +1872,7 @@
         where 
           {condicion} 
 				order by
-				  clave, manzana, lote
+				  fecha_inicio, clave, manzana, lote
       </select>
 			<select id="byContrato">
         select      
@@ -2274,7 +2274,7 @@
       </select>
       <select id="siguiente">
         select 
-					concat('PAQUETE ', max(cast(replace(descripcion, 'PAQUETE ', '')as integer)+1)) siguiente
+					max(cast(replace(descripcion, 'PAQUETE ', '')as integer)+1) siguiente
 				from 
 				  tc_keet_puntos_grupos
 				where

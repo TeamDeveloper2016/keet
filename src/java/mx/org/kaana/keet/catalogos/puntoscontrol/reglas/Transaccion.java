@@ -68,7 +68,7 @@ public class Transaccion extends IBaseTnx {
 				case INSERT:	
 					item.setIdUsuario(JsfBase.getIdUsuario());
 					orden= DaoFactory.getInstance().toField(sesion, "VistaPuntosControlDto", "getOrdenPuntoControl", this.registroPunto.getPuntoGrupo().toMap(), "orden");
-					item.setOrden(orden==null? 1L: orden.toLong());
+					item.setOrden(orden==null || orden.getData()== null? 1L: orden.toLong());
 					DaoFactory.getInstance().insert(sesion, item);
 					paqueteDto= new TcKeetPuntosPaquetesDto(-1L,JsfBase.getIdUsuario(), item.getKey(), this.registroPunto.getPuntoGrupo().getKey());
 					DaoFactory.getInstance().insert(sesion, paqueteDto);

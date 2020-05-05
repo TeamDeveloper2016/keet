@@ -5,7 +5,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
-public class Lote extends TcKeetContratosLotesDto{
+public class Lote extends TcKeetContratosLotesDto implements Comparable{
 	
 	private UISelectEntity ikPrototipo;
 	private UISelectEntity ikFachada;
@@ -68,7 +68,13 @@ public class Lote extends TcKeetContratosLotesDto{
     return TcKeetContratosLotesDto.class;
   }
 	
-	
+	@Override
+	public int compareTo(Object o) {
+		int regresar= 0;
+		if(o!= null && ((Lote)o).getFechaInicio()!= null)
+			regresar= ((this.getFechaInicio().isBefore(((Lote)o).getFechaInicio())))? -1:1;
+		return regresar;
+	}
 	
 	
 }

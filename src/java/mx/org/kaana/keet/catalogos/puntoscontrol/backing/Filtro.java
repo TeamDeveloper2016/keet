@@ -79,7 +79,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-      JsfBase.setFlashAttribute("dPuntoGrupo", eaccion.equals(EAccion.AGREGAR) ? -1L : ((Entity) this.attrs.get("seleccionado")).getKey());
+      JsfBase.setFlashAttribute("idPuntoGrupo", eaccion.equals(EAccion.AGREGAR) ? -1L : ((Entity) this.attrs.get("seleccionado")).getKey());
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/PuntosControl/filtro");
     } // try
     catch (Exception e) {

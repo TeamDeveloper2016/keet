@@ -76,6 +76,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:					
         case CONSULTAR:					
 					this.punto= new RegistroPunto((Long)this.attrs.get("idPuntoGrupo"));
+					doCalcularFactorTotal();
           break;
       } // switch
     } // try
@@ -116,8 +117,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 		Value paquete= null;
 		try {
       paquete= DaoFactory.getInstance().toField("TcKeetPuntosGruposDto", "siguiente", this.punto.getPuntoGrupo().toMap(), "siguiente");
-			this.punto.getPuntoGrupo().setDescripcion(paquete==null? "": paquete.getData$());
-			this.punto.getPuntoGrupo().setGrupo(paquete==null? -1L: paquete.toLong());
+			this.punto.getPuntoGrupo().setDescripcion(paquete==null || paquete.getData()==null? "": "PAQUETE ".concat(paquete.toString()));
+			this.punto.getPuntoGrupo().setGrupo(paquete==null || paquete.getData()==null? -1L: paquete.toLong());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
