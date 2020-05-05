@@ -23,7 +23,7 @@
 					tr_mantic_empresa_personal.id_activo,
 					tr_mantic_empresa_personal.id_nomina as id_pago,
 					tr_mantic_empresa_personal.nss,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
 					tc_mantic_personas.apodo,
 					tc_keet_nominas_personas.percepciones,
 					tc_keet_nominas_personas.deducciones,
@@ -240,7 +240,7 @@
 				  tr_mantic_empresa_personal.id_empresa_persona as id_persona_reprocesar,
 					'PERSONAL' as nomina,
 					tr_mantic_empresa_personal.clave,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
 					tc_mantic_personas.apodo,
 					tc_keet_nominas_personas.neto as sueldo
 				from

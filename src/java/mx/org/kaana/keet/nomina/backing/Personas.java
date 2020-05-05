@@ -60,7 +60,8 @@ public class Personas extends IBaseFilter implements Serializable {
 			if(!Cadena.isVacio(idNomina)) {
 				Entity entity= new Entity(idNomina);
 				entity.put("idNomina", new Value("idNomina", idNomina));
-				entity.put("idEmpresaPersona", new Value("idEmpresaPersona", (Long)JsfBase.getFlashAttribute("idEmpresaPersona")));
+  			entity.put("nombreCompleto", new Value("nombreCompleto", (String)JsfBase.getFlashAttribute("nombreCompleto")));
+  			entity.put("idEmpresaPersona", new Value("idEmpresaPersona", (Long)JsfBase.getFlashAttribute("idEmpresaPersona")));
 				this.attrs.put("idNomina", new UISelectEntity(entity));
 				this.attrs.put("seleccionado", entity);
 				this.doLoad();

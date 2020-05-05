@@ -262,15 +262,16 @@ public class Accion extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase())); 
-			JsfBase.setFlashAttribute("idNomina", eaccion.equals(EAccion.AGREGAR)? -1L: ((Entity)this.attrs.get("seleccionado")).toLong("idNomina"));
+			JsfBase.setFlashAttribute("idNomina", ((Entity)this.attrs.get("seleccionado")).toLong("idNomina"));
+			JsfBase.setFlashAttribute("nombreCompleto", ((Entity)this.attrs.get("seleccionado")).toString("nombreCompleto"));
       JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nomina/filtro");
 			switch (eaccion) {
 				case CONSULTAR: // personas
-    			JsfBase.setFlashAttribute("idEmpresaPersona", eaccion.equals(EAccion.AGREGAR)? -1L: ((Entity)this.attrs.get("seleccionado")).toLong("idPersonaReprocesar"));
+    			JsfBase.setFlashAttribute("idEmpresaPersona", ((Entity)this.attrs.get("seleccionado")).toLong("idPersonaReprocesar"));
 				  regresar= "personas".concat(Constantes.REDIRECIONAR);
 					break;
 				case LISTAR: // proveedores
-    			JsfBase.setFlashAttribute("idProveedor", eaccion.equals(EAccion.AGREGAR)? -1L: ((Entity)this.attrs.get("seleccionado")).toLong("idPersonaReprocesar"));
+    			JsfBase.setFlashAttribute("idProveedor", ((Entity)this.attrs.get("seleccionado")).toLong("idPersonaReprocesar"));
 				  regresar= "proveedores".concat(Constantes.REDIRECIONAR);
 					break;
 			} // switch
