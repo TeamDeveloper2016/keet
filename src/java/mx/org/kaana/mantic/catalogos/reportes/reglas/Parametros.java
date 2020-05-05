@@ -34,6 +34,14 @@ public final class Parametros implements Serializable {
       toComplementarAlmacen(this.idAlmacenDestino, false);
   }
   
+  public Parametros(Long idEmpresa, Long idProveedor) throws Exception {
+    this.idEmpresa   = idEmpresa;
+    this.idProveedor = idProveedor;
+    setComunes(toDatosEmpresa());
+    if(this.idProveedor != -1L)
+      toComplementarSubContratistas();
+  }
+  
   public Parametros(Long idEmpresa, Long idAlmacen, Long idProveedor, Long idCliente) throws Exception {
     this.idEmpresa   = idEmpresa;
     this.idAlmacen   = idAlmacen;
@@ -152,6 +160,34 @@ public final class Parametros implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // toComplementarProveedor
+  
+  public void toComplementarSubContratistas() throws Exception {
+		Map<String, Object>params   = null;
+    Entity datosProveedor         = null;
+		try {
+      params= new HashMap<>();	
+      params.put("idProveedor", this.idProveedor);	
+			datosProveedor = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosSubcontratistas", params);
+      if(datosProveedor != null){
+        this.comunes.put("REPORTE_PROVEEDOR", datosProveedor.toString("razonSocial")!=null? datosProveedor.toString("razonSocial"):" ");
+        this.comunes.put("REPORTE_PROVEEDOR_DIRECCION", datosProveedor.toString("proveedorDireccion")!=null? datosProveedor.toString("proveedorDireccion"):" ");
+        this.comunes.put("REPORTE_PROVEEDOR_COLONIA", datosProveedor.toString("colonia")!=null? datosProveedor.toString("colonia"):" ");
+        this.comunes.put("REPORTE_PROVEEDOR_CP", datosProveedor.toString("codigoPostal")!=null? datosProveedor.toString("codigoPostal"):" ");
+        this.comunes.put("REPORTE_PROVEEDOR_CONTACTO", datosProveedor.toString("agente")!=null? datosProveedor.toString("agente"):" ");
+        this.comunes.put("REPORTE_PROVEEDOR_TELEFONOS", datosProveedor.toString("telefonosProveedor")!=null? datosProveedor.toString("telefonosProveedor"):" ");
+        this.comunes.put("REPORTE_PROVEEDOR_EMAILS", datosProveedor.toString("emailsProveedor")!=null? datosProveedor.toString("emailsProveedor"):" ");
+        this.comunes.put("REPORTE_PROVEEDOR_MUNICIPIO", datosProveedor.toString("proveedorRegion")!=null? datosProveedor.toString("proveedorRegion"):" ");
+        this.comunes.put("REPORTE_PROVEEDOR_RFC", datosProveedor.toString("rfc")!=null? datosProveedor.toString("rfc"):" ");
+        this.comunes.put("REPORTE_PROVEEDOR_CLAVE", datosProveedor.toString("clave")!=null? datosProveedor.toString("clave"):" ");
+      }
+		} // try // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+    finally {
+			Methods.clean(params);
+		} // finally
+	} // toComplementarSubContratistas
   
   public void toComplementarCliente() throws Exception {
 		Map<String, Object>params   = null;
