@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -58,8 +59,12 @@ public class Proveedores extends IBaseFilter implements Serializable {
 			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
 			this.loadCatalogs();
 			if(!Cadena.isVacio(idNomina)) {
+				Entity entity= new Entity(idNomina);
+				entity.put("idProveedor", new Value("idProveedor", (Long)JsfBase.getFlashAttribute("idProveedor")));
 				this.attrs.put("idNomina", new UISelectEntity(idNomina));
 				this.doLoad();
+				if(!Cadena.isVacio(entity.toLong("idProveedor")))
+					this.doLoadDetalle();
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
 		  }
     } // try
@@ -126,6 +131,8 @@ public class Proveedores extends IBaseFilter implements Serializable {
 		else
 			sb.append("(tc_keet_nominas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
   	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && ((UISelectEntity)this.attrs.get("idProveedor")).getKey()>= 1L)
+			sb.append("tc_mantic_proveedores.id_proveedor=").append(this.attrs.get("idProveedor")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idNomina")) && ((UISelectEntity)this.attrs.get("idNomina")).getKey()>= 1L)
 			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && ((UISelectEntity)this.attrs.get("ejercicio")).getKey()>= 1L)				
@@ -187,6 +194,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
       entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
 			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("idProveedor", entity.toLong("idProveedor"));		
 			params.put("idNominaProveedor", entity.toLong("idNominaProveedor"));		
       this.reporte= JsfBase.toReporte();
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), entity.toLong("idProveedor"));
@@ -226,7 +234,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
 			params.put("idNomina", entity.toLong("idNomina"));
-			params.put("idNominaProveedor", entity.toLong("idNominaProveedor"));
+			params.put("idProveedor", entity.toLong("idProveedor"));
       columns= new ArrayList<>();
       columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("iva", EFormatoDinamicos.MILES_SIN_DECIMALES));

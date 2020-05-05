@@ -112,7 +112,7 @@
 								</p:inputText>		
 								<p:spacer/>
 							</p:panelGrid>		
-							<p:panel header="Importes de la nómina" toggleable="true" collapsed="true">
+							<p:panel header="Costo de la nómina" toggleable="true" collapsed="true">
 								<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 									<p:outputLabel value="Subcontratistas:"/>
 									<p:outputLabel value="Importe:"/>
@@ -126,7 +126,9 @@
 									<p:inputText value="#{keetNominasAccion.doMonedaSat(keetNominasAccion.attrs.nomina.global)}" styleClass="janal-column-center janal-wid-100-txt nominas" readonly="true"/>
 								</p:panelGrid>
 							</p:panel>
-							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetNominasAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasAccion.lazyModel.rowCount gt keetNominasAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetNominasAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominasAccion.attrs.seleccionado}" selectionMode="single" paginator="#{keetNominasAccion.lazyModel.rowCount gt keetNominasAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+								<p:ajax event="rowSelect" update="contenedorGrupos:kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+								<p:ajax event="contextMenu" update="contenedorGrupos:kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 								<f:facet name="header">
 									<div class="lg-pantalla">
 										<p:menuButton value="Opciones">
@@ -175,8 +177,14 @@
 									</f:facet>
 									<h:outputText value="#{row['sueldo']}"/>
 								</p:column>	
-								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38">
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-80">
 									<p:commandButton icon="fa fa-refresh" process="@this tabla" update="tabla @(.nominas)" action="#{keetNominasAccion.doAccion}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+										<f:setPropertyActionListener value="#{row}" target="#{keetNominasAccion.attrs.seleccionado}" />
+									</p:commandButton>
+									<p:commandButton icon="fa fa-search" process="@this tabla" update="tabla @(.nominas)" action="#{keetNominasAccion.doConsultar('CONSULTAR')}" title="Consultar" disabled="#{row.idNominaEstatus.toLong() eq 1}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idTipoProceso eq '1'}">
+										<f:setPropertyActionListener value="#{row}" target="#{keetNominasAccion.attrs.seleccionado}" />
+									</p:commandButton>
+									<p:commandButton icon="fa fa-search" process="@this tabla" update="tabla @(.nominas)" action="#{keetNominasAccion.doConsultar('LISTAR')}" title="Consultar" disabled="#{row.idNominaEstatus.toLong() eq 1}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idTipoProceso eq '2'}">
 										<f:setPropertyActionListener value="#{row}" target="#{keetNominasAccion.attrs.seleccionado}" />
 									</p:commandButton>
 								</p:column>
@@ -184,6 +192,10 @@
 									<p:outputLabel value="Total [#{keetNominasAccion.lazyModel== null? 0: keetNominasAccion.lazyModel.rowCount}] registros"/>
 								</f:facet>
 							</p:dataTable>
+							<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+								<p:menuitem id="personas" action="#{keetNominasAccion.doConsultar('CONSULTAR')}" icon="fa fa-user" ajax="false" value="Empleados" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetNominasAccion.attrs.seleccionado.idTipoProceso eq '1'}"/>					
+								<p:menuitem id="proveedores" action="#{keetNominasAccion.doConsultar('LISTAR')}" icon="fa fa-truck" ajax="false" value="Subcontratistas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetNominasAccion.attrs.seleccionado.idTipoProceso eq '2'}"/>					
+						  </p:contextMenu>
 						</p:tab>
 					</p:tabView>
 				</div>

@@ -254,4 +254,32 @@ public class Accion extends IBaseFilter implements Serializable {
 		} // finally
 	}	
 	
+	
+	public String doConsultar(String accion) {
+    String regresar= null;
+		EAccion eaccion= null;
+    try {
+      eaccion = EAccion.valueOf(accion.toUpperCase());
+      JsfBase.setFlashAttribute("accion", eaccion);      
+      JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase())); 
+			JsfBase.setFlashAttribute("idNomina", eaccion.equals(EAccion.AGREGAR)? -1L: ((Entity)this.attrs.get("seleccionado")).toLong("idNomina"));
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nomina/filtro");
+			switch (eaccion) {
+				case CONSULTAR: // personas
+    			JsfBase.setFlashAttribute("idEmpresaPersona", eaccion.equals(EAccion.AGREGAR)? -1L: ((Entity)this.attrs.get("seleccionado")).toLong("idPersonaReprocesar"));
+				  regresar= "personas".concat(Constantes.REDIRECIONAR);
+					break;
+				case LISTAR: // proveedores
+    			JsfBase.setFlashAttribute("idProveedor", eaccion.equals(EAccion.AGREGAR)? -1L: ((Entity)this.attrs.get("seleccionado")).toLong("idPersonaReprocesar"));
+				  regresar= "proveedores".concat(Constantes.REDIRECIONAR);
+					break;
+			} // switch
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  } // doAccion
+	
 }

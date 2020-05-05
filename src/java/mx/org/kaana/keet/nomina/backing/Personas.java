@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -57,8 +58,12 @@ public class Personas extends IBaseFilter implements Serializable {
 			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
 			this.loadCatalogs();
 			if(!Cadena.isVacio(idNomina)) {
-				this.attrs.put("idNomina", new UISelectEntity(idNomina));
+				Entity entity= new Entity(idNomina);
+				entity.put("idEmpresaPersona", new Value("idEmpresaPersona", (Long)JsfBase.getFlashAttribute("idEmpresa_persona")));
+				this.attrs.put("idNomina", new UISelectEntity(entity));
 				this.doLoad();
+				if(!Cadena.isVacio(entity.toLong("idEmpresaPersona")))
+					this.doLoadDetalle();
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
 		  }
     } // try

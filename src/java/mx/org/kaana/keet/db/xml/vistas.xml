@@ -164,7 +164,7 @@
 				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
         where
           tc_keet_nominas_proveedores.id_nomina= {idNomina}      
-          and tc_keet_nominas_rubros.id_nomina_proveedor= {idNominaProveedor}	
+          and tc_keet_nominas_proveedores.id_proveedor= {idProveedor}	
 				{sortOrder}			
 			</select>	
 			<select id="destajo">
