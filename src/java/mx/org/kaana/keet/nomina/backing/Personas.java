@@ -63,11 +63,13 @@ public class Personas extends IBaseFilter implements Serializable {
   			entity.put("nombreCompleto", new Value("nombreCompleto", (String)JsfBase.getFlashAttribute("nombreCompleto")));
   			entity.put("idEmpresaPersona", new Value("idEmpresaPersona", (Long)JsfBase.getFlashAttribute("idEmpresaPersona")));
 				this.attrs.put("idNomina", new UISelectEntity(entity));
+				this.attrs.put("idEmpresaPersona", new UISelectEntity((Long)JsfBase.getFlashAttribute("idEmpresaPersona")));
 				this.attrs.put("seleccionado", entity);
 				this.doLoad();
 				if(!Cadena.isVacio(entity.toLong("idEmpresaPersona")))
 					this.doLoadDetalle();
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
+				this.attrs.put("idEmpresaPersona", new UISelectEntity(-1L));
 		  }
     } // try
     catch (Exception e) {
@@ -135,6 +137,8 @@ public class Personas extends IBaseFilter implements Serializable {
   	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(!Cadena.isVacio(this.attrs.get("idNomina")) && ((UISelectEntity)this.attrs.get("idNomina")).getKey()>= 1L)
 			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresaPersona")) && ((UISelectEntity)this.attrs.get("idEmpresaPersona")).getKey()>= 1L)
+			sb.append("tr_mantic_empresa_personal.id_empresa_persona=").append(this.attrs.get("idEmpresaPersona")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && ((UISelectEntity)this.attrs.get("ejercicio")).getKey()>= 1L)				
 			sb.append("tc_keet_nominas_periodos.ejercicio = ").append(((UISelectEntity)this.attrs.get("ejercicio")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("semana")) && ((UISelectEntity)this.attrs.get("semana")).getKey()>= 1L)				
