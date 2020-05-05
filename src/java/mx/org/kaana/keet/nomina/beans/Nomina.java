@@ -15,6 +15,11 @@ public class Nomina extends TcKeetNominasPeriodosDto {
 	private Long idNomina;
 	private Long idTipoNomina;
 	private Long idNominaEstatus;
+	private Long proveedores;
+	private Long personas;
+	private Double total;
+	private Double neto;
+	private Double global;
 	private String estatus;
 	private String observaciones;
 
@@ -23,6 +28,11 @@ public class Nomina extends TcKeetNominasPeriodosDto {
 		this.idTipoNomina= 2L;
 		this.idNominaEstatus= 1L;
 		this.estatus= "";
+		this.proveedores= 0L;
+		this.personas= 0L;
+		this.total= 0D;
+		this.neto= 0D;
+		this.global= 0D;
 	}
 	
 	public Long getIdNomina() {
@@ -62,6 +72,46 @@ public class Nomina extends TcKeetNominasPeriodosDto {
 
 	public void setObservaciones(String observaciones) {
 		this.observaciones=observaciones;
+	}
+
+	public Long getProveedores() {
+		return proveedores;
+	}
+
+	public void setProveedores(Long proveedores) {
+		this.proveedores=proveedores;
+	}
+
+	public Long getPersonas() {
+		return personas;
+	}
+
+	public void setPersonas(Long personas) {
+		this.personas=personas;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total=total;
+	}
+
+	public Double getNeto() {
+		return neto;
+	}
+
+	public void setNeto(Double neto) {
+		this.neto=neto;
+	}
+
+	public Double getGlobal() {
+		return global;
+	}
+
+	public void setGlobal(Double global) {
+		this.global=global;
 	}
 	
 	@Override

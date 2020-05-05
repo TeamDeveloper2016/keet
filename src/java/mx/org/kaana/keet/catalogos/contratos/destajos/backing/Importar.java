@@ -121,7 +121,7 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
 			idXml= ((Entity) this.attrs.get("figura")).toLong("tipo").equals(1L) ? "importadosContratista" : "importadosProveedor";
 		  this.attrs.put("importados", UIEntity.build("VistaCapturaDestajosDto", idXml, this.attrs, columns));
-			doLoadFiles();
+			this.doLoadFiles();
 		} // try
     catch (Exception e) {
       Error.mensaje(e);

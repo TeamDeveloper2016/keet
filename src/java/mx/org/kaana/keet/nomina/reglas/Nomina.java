@@ -251,7 +251,7 @@ public class Nomina implements Serializable {
 	}
 	
 	private Double toSueldoContratista(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
-		Double regresar= empleado.getNeto();
+		Double regresar= 0D;
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
@@ -259,7 +259,6 @@ public class Nomina implements Serializable {
 			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
 			List<TcKeetContratosDestajosContratistasDto> lotes= (List<TcKeetContratosDestajosContratistasDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcKeetContratosDestajosContratistasDto.class, "VistaNominaDto", "contratista", params);
 			if(lotes!= null && !lotes.isEmpty()) {
-				regresar= 0D;
 				for(TcKeetContratosDestajosContratistasDto lote: lotes) {
 					lote.setIdNomina(this.nomina.getIdNomina());
 					regresar+= lote.getCosto();
@@ -272,12 +271,14 @@ public class Nomina implements Serializable {
 					this.toLookUpConcepto(particulares, ECodigosIncidentes.SALARIOS, agremiados.toDouble("salarios"));
 					regresar-= agremiados.toDouble("salarios");
 				} // if
+				regresar-= empleado.getNeto();
+				this.toLookUpConcepto(particulares, ECodigosIncidentes.COMPLEMENTO, regresar);
 			} // if
 		} // try
 		finally {
 			Methods.clean(params);
 		} // finally
-		return regresar;
+		return empleado.getNeto();
 	}
 	
 	public void process(TcKeetNominasPersonasDto empleado) throws CompilationException, Exception {
