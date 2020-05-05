@@ -218,12 +218,12 @@ public class Personas extends IBaseFilter implements Serializable {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
 			params.put("idNomina", entity.toLong("idNomina"));
-			params.put("idNominaPersona", entity.toLong("idEmpresaPersona"));
+			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
       columns= new ArrayList<>();
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "destajo", params, columns);
+      this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajo", params, columns);
       UIBackingUtilities.resetDataTable("destajo");
     } // try
     catch (Exception e) {
