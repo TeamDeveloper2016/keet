@@ -1908,7 +1908,7 @@
         where 
           id_contrato= {idContrato} 
 				order by
-				  clave, manzana, lote
+				  fecha_inicio, clave, manzana, lote
       </select>
 			<select id="byContratoContratistas">
         select      
