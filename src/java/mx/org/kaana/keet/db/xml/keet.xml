@@ -1914,6 +1914,14 @@
         where      
           manzana = '{manzana}' and lote = {lote} and id_contrato = {idContrato} and id_contrato_lote = {idContratoLote}
       </select>
+			 <update id="limpiaOrden">
+				update 
+				  tc_keet_contratos_lotes 
+				set 
+				  orden= 0 
+				where 
+				  id_contrato= {idContrato} 
+			</update>
     </unit>
 	    <unit id="TcKeetContratosPresupuestosDto">
       <select id="row">
