@@ -74,8 +74,10 @@ public class Importar extends IBaseImportar implements Serializable {
 						this.toLoadContratosLotes();
 						break;
 				} // switch
-			else
+			else {
 				this.categoria= ECargaMasiva.ESTACIONES;
+				this.toLoadContratosLotes();
+			} // if
 			this.attrs.put("xls", ""); 
 			this.attrs.put("tuplas", 0L);
 			this.masivo = new TcManticMasivasArchivosDto(
@@ -94,6 +96,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				1L,
 				null
 			);
+			this.attrs.put("idTipoMasivo", this.masivo.getIdTipoMasivo());
   		this.toCheckRequerido();
     } // try
     catch (Exception e) {
@@ -159,31 +162,15 @@ public class Importar extends IBaseImportar implements Serializable {
 		Transaccion transaccion= null;
 		long tuplas            = this.masivo.getTuplas();
 		try {
+			UISelectEntity idContratoLote= ((UISelectEntity)this.attrs.get("idContratoLote"));
 			this.masivo.setArchivo(this.getXls().getOriginal());
-		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-      transaccion= new Transaccion(this.masivo, this.categoria, this.attrs.get("idContratoLote")!= null? ((UISelectEntity)this.attrs.get("idContratoLote")).getKey(): -1L);
+		  this.masivo.setObservaciones((String)this.attrs.get("observaciones"));
+      transaccion= new Transaccion(this.masivo, this.categoria, idContratoLote.getKey());
       if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
-//        UIBackingUtilities.execute("janal.alert('Cátalogo procesado de forma correcta ["+ tuplas+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
-//				this.setXls(null);
-//				this.attrs.put("xls", ""); 
-//				this.masivo = new TcManticMasivasArchivosDto(
-//					-1L, // Long idMasivaArchivo, 
-//					null, // String ruta, 
-//					categoria.getId(), // Long idTipoMasivo, 
-//					1L, // Long idMasivaEstatus, 
-//					null, // String nombre, 
-//					0L, // Long tamanio, 
-//					JsfBase.getIdUsuario(), // Long idUsuario, 
-//					8L, // Long idTipoArchivo, 
-//					0L, // Long tuplas, 
-//					null, // String observaciones, 
-//					null, // String alias, 
-//					JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),
-//					1L
-//				);
+
       } // if
       else
-    		JsfBase.addMessage("Error:", "Ocurrio un error en la cargar masiva del cátalogo !", ETipoMensaje.ERROR);		
+    		JsfBase.addMessage("Error:", "Ocurrio un error en la cargar masiva del archivo !", ETipoMensaje.ERROR);		
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -202,9 +189,10 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doCompleto
 
 	public void doChangeTipo() {
-		this.attrs.put("proveedores", null);
+		// this.attrs.put("lotes", null);
 		switch(this.masivo.getIdTipoMasivo().intValue()) {
-			case 9: this.categoria= ECargaMasiva.ESTACIONES;
+			case 9: 
+				this.categoria= ECargaMasiva.ESTACIONES;
 				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
@@ -260,7 +248,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			columns.add(new Columna("lote", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
  			params.put("ejercicio", Fecha.getAnioActual()- 1);
-  		this.attrs.put("lotes", UIEntity.build("VistaContratosLotesDto", "lotes", params, columns));
+			List<UISelectEntity> lotes= UIEntity.build("VistaContratosLotesDto", "lotes", params, columns);
+  		this.attrs.put("lotes", lotes);
+  		this.attrs.put("idContratoLote", lotes.get(0));
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -686,13 +686,52 @@
 			</select>					
 		</unit>
 		<unit id="VistaContratosLotesDto">
+			<select id="buscar">
+				select
+					tc_keet_temporal.*
+				from (
+				select
+				 1000+ tc_keet_partidas.id_partida as id_key,
+				 tc_keet_partidas.codigo,
+				 5 as nivel
+				from
+					tc_keet_partidas
+				union all
+				select
+				 2000+ tc_keet_rubros.id_rubro as id_key,
+				 tc_keet_rubros.codigo,
+				 6 as nivel
+				from
+					tc_keet_rubros
+				) as tc_keet_temporal
+				where
+					tc_keet_temporal.codigo= '{codigo}'
+			</select>	
+			<select id="estaciones">
+				select
+				  tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*,
+					tc_mantic_unidades_medidas.nombre as unidad
+				from 
+					tc_keet_estaciones
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_keet_estaciones.id_empaque_unidad_medida= tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
+				where
+					tc_keet_estaciones.clave like '{clave}%'
+				order by
+					tc_keet_estaciones.clave;
+			</select>	
 			<select id="lotes">
         select 
 					tc_keet_contratos_lotes.id_contrato_lote as id_key,
 					tc_keet_contratos_lotes.id_contrato_lote,
 					tc_keet_contratos.consecutivo,
 					tc_keet_contratos.clave,
-					concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) lote,
+				  tc_keet_contratos_lotes.manzana,
+				  tc_keet_contratos_lotes.lote,
+					concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) codigo,
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.ejercicio,
 					tc_keet_contratos.orden as contrato,
@@ -704,6 +743,7 @@
 				where
 				  tc_keet_contratos.id_empresa in ({sucursales})
 				  and tc_keet_contratos.ejercicio>= {ejercicio}
+				  and tc_keet_contratos_lotes.id_contrato_lote_estatus= 1
 				order by
 				  tc_keet_contratos.ejercicio desc, tc_keet_contratos.clave, tc_keet_contratos_lotes.orden				
 			</select>
@@ -711,12 +751,17 @@
         select 
 					tc_keet_contratos_lotes.id_contrato_lote as id_key,
 					tc_keet_contratos_lotes.id_contrato_lote,
+				  tc_keet_contratos.id_empresa,
 					tc_keet_contratos.consecutivo,
 					tc_keet_contratos.clave,
-					concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) lote,
+				  tc_keet_contratos_lotes.manzana,
+				  tc_keet_contratos_lotes.lote,
+					concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) codigo,
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.ejercicio,
 					tc_keet_contratos.orden as contrato,
+					tc_keet_contratos_lotes.fecha_inicio as inicio,
+					tc_keet_contratos_lotes.fecha_termino as termino,
 					tc_keet_contratos_lotes.orden
 				from 
 					tc_keet_contratos

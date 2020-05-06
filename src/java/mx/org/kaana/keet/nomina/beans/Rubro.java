@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.nomina.beans;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import mx.org.kaana.keet.db.dto.TcKeetNominasRubrosDto;
 
@@ -55,7 +56,7 @@ public class Rubro extends TcKeetNominasRubrosDto implements Cloneable, Serializ
 	}
 	
 	@Override
-	public Object clone() throws CloneNotSupportedException {  
+	public Rubro clone() throws CloneNotSupportedException {  
 		Rubro clone= new Rubro();
 		clone.setCantidad(this.getCantidad());
 		clone.setCodigo(this.getCodigo());
@@ -67,7 +68,7 @@ public class Rubro extends TcKeetNominasRubrosDto implements Cloneable, Serializ
 		clone.setSat(this.getSat());
 		clone.setSubtotal(this.getSubtotal());
 		clone.setTotal(this.getTotal());
-		clone.setRegistro(this.getRegistro());
+		clone.setRegistro(LocalDateTime.now());
     return clone;  
   }  
 }

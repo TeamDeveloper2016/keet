@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.nomina.beans;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDetallesDto;
 
@@ -74,7 +75,7 @@ public class Concepto extends TcKeetNominasDetallesDto implements Cloneable, Ser
 	}
 	
 	@Override
-	public Object clone() throws CloneNotSupportedException {  
+	public Concepto clone() throws CloneNotSupportedException {  
 		Concepto clone= new Concepto();
 		clone.setCelda(this.getCelda());
 		clone.setColumna(this.getColumna());
@@ -85,7 +86,7 @@ public class Concepto extends TcKeetNominasDetallesDto implements Cloneable, Ser
 		clone.setIdNominaPersona(this.getIdNominaPersona());
 		clone.setNombre(this.getNombre());
 		clone.setClave(this.getClave());
-		clone.setRegistro(this.getRegistro());
+		clone.setRegistro(LocalDateTime.now());
     return clone;  
   }  
 

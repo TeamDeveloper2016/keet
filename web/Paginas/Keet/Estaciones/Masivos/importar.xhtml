@@ -75,15 +75,21 @@
 									<f:selectItem itemLabel="ESTACIONES" itemValue="9"/>
 								</p:selectOneRadio>
 							</p:panel>
-							<br/>
-							<p:outputLabel for="idContratoLote" value="Proveedor:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" styleClass="involucrados"/>
+							<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" styleClass="involucrados"/>
 							<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idContratoLote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}">
-								<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.lote}"/>
-								<p:column headerText="Clave">
+								<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.codigo}"/>
+								<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<p:column headerText="Ejercicio">
+									<h:outputText value="#{item.ejercicio}"/>
+								</p:column>   
+								<p:column headerText="Contrato">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
-								<p:column headerText="Nombre">
-									<h:outputText value="#{item.razonSocial}"/>
+								<p:column headerText="Lote">
+									<h:outputText value="#{item.codigo}"/>
+								</p:column>   
+								<p:column headerText="Etapa">
+									<h:outputText value="#{item.etapa}"/>
 								</p:column>   
 							</p:selectOneMenu>
   						<p:outputLabel for="observacion" value="Observaciones:"/>
@@ -94,7 +100,6 @@
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetEstacionesMasivosImportar.attrs.formatos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
 							<p:inputText id="xls" value="#{keetEstacionesMasivosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="XLS importado: #{keetEstacionesMasivosImportar.xls.ruta}#{keetEstacionesMasivosImportar.xls.name}" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" style="#{(empty keetEstacionesMasivosImportar.xls)? 'display: none': ''}"/>
-							<br/>
               <p:outputLabel id="tuplas" value="#{keetEstacionesMasivosImportar.masivo.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente" style="display: none"/>
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                 <p:outputLabel value="Total de registros a importar: #{keetEstacionesMasivosImportar.attrs.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>

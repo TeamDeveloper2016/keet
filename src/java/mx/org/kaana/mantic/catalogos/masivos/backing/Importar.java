@@ -180,7 +180,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		long tuplas            = this.masivo.getTuplas();
 		try {
 			this.masivo.setArchivo(this.getXls().getOriginal());
-		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
+		  this.masivo.setObservaciones((String)this.attrs.get("observaciones"));
       transaccion= new Transaccion(this.masivo, this.categoria, this.attrs.get("idProveedor")!= null? ((UISelectEntity)this.attrs.get("idProveedor")).getKey(): -1L);
       if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
 //        UIBackingUtilities.execute("janal.alert('Cátalogo procesado de forma correcta ["+ tuplas+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
