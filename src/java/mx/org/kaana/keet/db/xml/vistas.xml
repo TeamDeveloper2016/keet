@@ -721,7 +721,7 @@
 				where
 					tc_keet_estaciones.clave like '{clave}%'
 				order by
-					tc_keet_estaciones.clave;
+					tc_keet_estaciones.clave
 			</select>	
 			<select id="lotes">
         select 

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
@@ -105,7 +106,6 @@ public class Transaccion extends IBaseTnx {
 		File file= new File(this.masivo.getAlias());
 		if(file.exists()) {
 	 		if(!this.masivo.isValid()) {
-			  DaoFactory.getInstance().updateAll(sesion, TcManticMasivasArchivosDto.class, this.masivo.toMap());
 		    DaoFactory.getInstance().insert(sesion, this.masivo);
 				bitacora= new TcManticMasivasBitacoraDto(
 					"", // String justificacion, 
@@ -313,13 +313,13 @@ public class Transaccion extends IBaseTnx {
 	}
 		
 	private Estacion toDeleteEstaciones(Session sesion, String clave) throws Exception {
-		Estacion regresar= null;
-		Map<String, Object> params=null;
+		Estacion regresar         = null;
+		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("clave", clave);
 			DaoFactory.getInstance().deleteAll(sesion, TcKeetEstacionesDto.class, params);
-			regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "TcKeetEstacionesDto", "estaciones", params);
+			regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "estaciones", params);
 		} // try
 		finally {
 			Methods.clean(params);
@@ -373,7 +373,7 @@ public class Transaccion extends IBaseTnx {
 					estaciones.setKeyLevel(contrato.toString("contrato"), 2); // orden del contrato
 					estaciones.setKeyLevel(contrato.toString("orden"), 3); // orden de contrato lote
 					concepto= this.toDeleteEstaciones(sesion, estaciones.toKey(4));
-					for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
+					for(int fila= 1; concepto!= null && fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 						try {
 							if(!Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
 								// 0       1      2     3        4         5         6
@@ -386,11 +386,16 @@ public class Transaccion extends IBaseTnx {
 								double costo   = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8);
 								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
+								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(!Cadena.isVacio(codigo) && codigo.length()> 0 && cantidad> 0 && costo> 0) {
 									Entity item= this.toRubro(sesion, codigo);
 									if(item!= null && !item.isEmpty()) {
 										if(count== 0 && item.toLong("nivel")!= 5L)
 											throw new RuntimeException("El archivo no comienza con una estación correcta");
+										if(!Objects.equals(item.toString("manzana"), manzana))
+											throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
+										if(!Objects.equals(item.toString("lote"), lote))
+											throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
 										if(item.toLong("nivel")== 5L) {
 											if(codigoPartida!= codigo) {
 												codigoPartida= codigo;
@@ -399,7 +404,7 @@ public class Transaccion extends IBaseTnx {
 												partida++;
 											} // if
 											else 
-												throw new RuntimeException("El archivo tiene una estacion duplicada ["+ codigo+ "]");
+												throw new RuntimeException("El archivo tiene una estacion duplicada ["+ codigo+ "] {"+ nombre+ "}");
 										} // if
 										else {
 											if(codigoRubro!= codigo) {
@@ -407,15 +412,16 @@ public class Transaccion extends IBaseTnx {
 												rubro++;
 											} // if
 											else 
-												throw new RuntimeException("El archivo tiene un concepto duplicado ["+ codigo+ "]");
+												throw new RuntimeException("El archivo tiene un concepto duplicado ["+ codigo+ "] {"+ nombre+ "}");
 										} // else
 									} // else
 									else 
-										throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "]");
+										throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "] {"+ nombre+ "}");
 									estaciones.setKeyLevel(String.valueOf(partida), 4); // consecutivo de la estacion
 									estaciones.setKeyLevel(String.valueOf(rubro), 5); // consecutivo del concepto
 									Estacion estacion= concepto.clone();
 									estacion.setNivel(item.toLong("nivel"));
+									estacion.setUltimo(item.toLong("nivel")== 5L? 2L: 1L);
 									estacion.setClave(estaciones.toCode());
 									estacion.setCodigo(codigo);
 									estacion.setNombre(nombre);
@@ -426,23 +432,9 @@ public class Transaccion extends IBaseTnx {
 									estacion.setInicio(contrato.toDate("inicio"));
 									estacion.setTermino(contrato.toDate("termino"));
 									estacion.setIdUsuario(JsfBase.getIdUsuario());
+									LOG.warn(count+ ".-  <"+ estacion.getNivel()+ "> ["+ estacion.getClave()+ "] ("+ estacion.getCodigo()+ ") {"+ estacion.getCosto()+ "} "+ estacion.getDescripcion());
 									DaoFactory.getInstance().insert(sesion, estacion);
-									LOG.warn(count+ ".-  <"+ estacion.getNivel()+ "> ["+ estacion.getClave()+ "] ("+ estacion.getCodigo()+ ") {"+ estacion.getCosto()+ "}");
 									monitoreo.incrementar();
-									if(fila% this.categoria.getTuplas()== 0) {
-										if(bitacora== null) {
-											bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
-											DaoFactory.getInstance().insert(sesion, bitacora);
-										} // if
-										else {
-											bitacora.setProcesados(new Long(fila));
-											bitacora.setRegistro(LocalDateTime.now());
-											DaoFactory.getInstance().update(sesion, bitacora);
-										} // else
-										this.commit();
-										this.procesados= fila;
-										LOG.warn("Realizando proceso de commit en la fila "+ this.procesados);
-									} // if
 								} // if
 								else {
 									this.errores++;
@@ -463,6 +455,7 @@ public class Transaccion extends IBaseTnx {
 						catch(Exception e) {
 							LOG.error("[--->>> ["+ fila+ "] {"+ sheet.getCell(0, fila).getContents().toUpperCase()+ "} {"+ sheet.getCell(2, fila).getContents().toUpperCase()+ "} <<<---]");
 							Error.mensaje(e);
+							throw e;
 						} // catch
 						this.procesados= count;
 						LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
@@ -471,15 +464,8 @@ public class Transaccion extends IBaseTnx {
 				} // if
 //				else 
 //					throw new RuntimeException("El lote no exite en el contrato, por favor verifique");
-				if(bitacora== null) {
-					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
-  				DaoFactory.getInstance().insert(sesion, bitacora);
-				} // if
-			  else {
-					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(LocalDateTime.now());
-					DaoFactory.getInstance().update(sesion, bitacora);
-				} // if
+				bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
+  			DaoFactory.getInstance().insert(sesion, bitacora);
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
  				this.procesados= count;
 				regresar= true;

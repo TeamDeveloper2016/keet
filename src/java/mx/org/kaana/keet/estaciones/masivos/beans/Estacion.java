@@ -27,6 +27,7 @@ public class Estacion extends TcKeetEstacionesDto implements Cloneable, Serializ
 		clone.setIdPlantilla(this.getIdPlantilla());
 		clone.setNivel(this.getNivel());
 		clone.setClave(this.getClave());
+		clone.setUltimo(this.getUltimo());
 		clone.setCodigo(this.getCodigo());
 		clone.setNombre(this.getNombre());
 		clone.setDescripcion(this.getDescripcion());
