@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.kajool.procesos.enums.EEstatus;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.catalogos.contratos.beans.Documento;
@@ -22,6 +23,7 @@ import mx.org.kaana.keet.catalogos.contratos.beans.Presupuesto;
 import mx.org.kaana.keet.catalogos.contratos.beans.RegistroContrato;
 import mx.org.kaana.keet.db.dto.TcKeetContratosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.enums.EArchivosContratos;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -67,7 +69,7 @@ public class Transaccion extends IBaseTnx {
 					this.contrato.getContrato().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
 					regresar= DaoFactory.getInstance().insert(sesion, this.contrato.getContrato())>= 1L;
 					Collections.sort(this.contrato.getContrato().getLotes());
-					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosArchivosDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
+					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
 					for(Lote item:this.contrato.getContrato().getLotes())
 						actualizarLote(sesion, item);
 					break;
@@ -75,7 +77,7 @@ public class Transaccion extends IBaseTnx {
 					siguiente= toSiguiente(sesion);
 					regresar= DaoFactory.getInstance().update(sesion, this.contrato.getContrato())>= 1L;
 					Collections.sort(this.contrato.getContrato().getLotes());
-					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosArchivosDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
+					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
 					for(Lote item:this.contrato.getContrato().getLotes()){
 						actualizarLote(sesion, item);
 					} // for
@@ -152,11 +154,12 @@ public class Transaccion extends IBaseTnx {
 		Value orden               = null;
 		try {
 			//setea el nuevo orden, debido al ordenamiento por fecha
-			orden= DaoFactory.getInstance().toField("TcKeetContratosArchivosDto", "getOrden", item.toMap(), "maxOrden	");
+			orden= DaoFactory.getInstance().toField("TcKeetContratosLotesDto", "getOrden", item.toMap(), "maxOrden");
 			item.setOrden(orden.toLong(1L));
 			switch(item.getAccion()){
 				case INSERT:
           item.setIdContratoLote(-1L);
+          item.setIdContratoLoteEstatus(1L);//ver estatus
 					item.setIdContrato(this.contrato.getContrato().getIdContrato());
 					item.setIdUsuario(JsfBase.getIdUsuario());
 					DaoFactory.getInstance().insert(sesion, item);
