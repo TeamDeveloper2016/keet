@@ -193,16 +193,22 @@ public class Proveedores extends IBaseFilter implements Serializable {
     Map<String, Object>params    = null;
     Parametros comunes           = null;
     Entity entity                = null;
-		try {		
-      params= new HashMap<>();      
+		try {		  
       reporteSeleccion= EReportes.valueOf(nombre);
       entity= (Entity)this.attrs.get("seleccionado");
-			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
-			params.put("idNomina", entity.toLong("idNomina"));
-			params.put("idProveedor", entity.toLong("idProveedor"));		
-			params.put("idNominaProveedor", entity.toLong("idNominaProveedor"));		
+      if(reporteSeleccion.equals(EReportes.NOMINA_SUBCONTRATISTA)){
+        params= new HashMap<>();    
+        params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
+        params.put("idNomina", entity.toLong("idNomina"));
+        params.put("idProveedor", entity.toLong("idProveedor"));		
+        params.put("idNominaProveedor", entity.toLong("idNominaProveedor"));
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), entity.toLong("idProveedor"));
+      }
+      else {
+        params = this.toPrepare();
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      }
       this.reporte= JsfBase.toReporte();
-      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), entity.toLong("idProveedor"));
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
