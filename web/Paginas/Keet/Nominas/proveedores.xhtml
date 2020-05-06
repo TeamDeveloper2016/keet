@@ -103,11 +103,14 @@
 								<p:menuButton value="Opciones">
 									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem id="resumenNominaProvPdf" icon="fa fa-file-pdf-o" value="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasProveedores.doReporte('RESUMEN_NOMINA_SUBC')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
 								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="resumenNominaProvPdfIcon" icon="fa fa-file-pdf-o" title="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasProveedores.doReporte('RESUMEN_NOMINA_SUBC')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.nombreEmpresa}">
@@ -177,7 +180,7 @@
 							<div class="xs-pantalla">              
 								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'detalle')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton id="detalleNominaPovPdfIcon" icon="fa fa-file-pdf-o" title="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasProveedores.doReporte('NOMINA_SUBCONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:commandButton id="detalleNominaPovPdfIcon" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasProveedores.doReporte('NOMINA_SUBCONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
