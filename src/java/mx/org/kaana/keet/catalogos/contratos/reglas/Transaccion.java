@@ -67,12 +67,15 @@ public class Transaccion extends IBaseTnx {
 					this.contrato.getContrato().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
 					regresar= DaoFactory.getInstance().insert(sesion, this.contrato.getContrato())>= 1L;
 					Collections.sort(this.contrato.getContrato().getLotes());
+					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosArchivosDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
 					for(Lote item:this.contrato.getContrato().getLotes())
 						actualizarLote(sesion, item);
 					break;
 				case MODIFICAR:
 					siguiente= toSiguiente(sesion);
 					regresar= DaoFactory.getInstance().update(sesion, this.contrato.getContrato())>= 1L;
+					Collections.sort(this.contrato.getContrato().getLotes());
+					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosArchivosDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
 					for(Lote item:this.contrato.getContrato().getLotes()){
 						actualizarLote(sesion, item);
 					} // for
@@ -146,25 +149,20 @@ public class Transaccion extends IBaseTnx {
 	} // toSiguiente
 	
 	private void actualizarLote(Session sesion, Lote item) throws Exception {
-		Value orden= null;
+		Value orden               = null;
 		try {
+			//setea el nuevo orden, debido al ordenamiento por fecha
+			orden= DaoFactory.getInstance().toField("TcKeetContratosArchivosDto", "getOrden", item.toMap(), "maxOrden	");
+			item.setOrden(orden.toLong(1L));
 			switch(item.getAccion()){
 				case INSERT:
           item.setIdContratoLote(-1L);
 					item.setIdContrato(this.contrato.getContrato().getIdContrato());
 					item.setIdUsuario(JsfBase.getIdUsuario());
-					if(item.getOrden()== null){ //verfica si no tiene un orden, debido al ordenamiento
-						orden= DaoFactory.getInstance().toField("TcKeetContratosArchivosDto", "getOrden", item.toMap(), "maxOrden	");
-						item.setOrden(orden.toLong(1L));
-					} // if
 					DaoFactory.getInstance().insert(sesion, item);
 					cargarPlanos(sesion, (List<TcKeetContratosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toContratos", item.toMap()));
 					break;
 				case UPDATE:
-					if(item.getOrden()== null){ //verfica si no tiene un orden, debido al ordenamiento 
-						orden= DaoFactory.getInstance().toField("TcKeetContratosArchivosDto", "getOrden", item.toMap(), "maxOrden	");
-						item.setOrden(orden.toLong(1L));
-					} // if
 					DaoFactory.getInstance().update(sesion, item);
 					break;
 				case DELETE:

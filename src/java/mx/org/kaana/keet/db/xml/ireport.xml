@@ -117,6 +117,65 @@
           and tc_keet_nominas_rubros.id_nomina_proveedor= {idNominaProveedor}	
 				{sortOrder}
       </select>
+      <select id="resumen">
+				select
+          tc_keet_nominas_proveedores.id_nomina_proveedor,
+          tc_mantic_empresas.nombre as nombre_empresa,
+  				concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+					tc_keet_nominas.id_nomina,
+				  tc_keet_nominas.id_nomina_estatus,
+					departamentos.id_departamentos,
+					departamentos.departamento,
+				  tc_mantic_proveedores.id_proveedor,
+					tc_mantic_proveedores.clave cve_proveedor,
+					tc_mantic_proveedores.razon_social as proveedor,
+					tc_mantic_proveedores.rfc,
+					tc_keet_nominas_proveedores.subtotal subtotal_dpto,
+					tc_keet_nominas_proveedores.iva iva_dpto,
+					tc_keet_nominas_proveedores.total total_depto,
+					tc_keet_nominas_rubros.id_nomina_rubro,
+				  tc_keet_contratos.consecutivo,
+				  tc_keet_contratos.clave cve_contrato,
+				  tc_keet_contratos.etapa,
+					tc_keet_nominas_rubros.lote,
+					tc_keet_nominas_rubros.codigo,
+					tc_keet_nominas_rubros.nombre,
+					tc_keet_nominas_rubros.subtotal,
+					tc_keet_nominas_rubros.iva,
+					tc_keet_nominas_rubros.total,
+					tc_keet_nominas_rubros.registro
+        from
+        		tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				inner join 
+					tc_keet_nominas_proveedores on tc_keet_nominas.id_nomina= tc_keet_nominas_proveedores.id_nomina
+				inner join 
+					tc_mantic_proveedores on tc_keet_nominas_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join ( 
+					select 
+						tc_keet_proveedores_departamentos.id_proveedor,
+						concat('|', group_concat(tc_keet_departamentos.id_departamento separator '|'), '|') as id_departamentos,
+						group_concat(tc_keet_departamentos.nombre separator ', ') as departamento
+					from
+						tc_keet_proveedores_departamentos
+					inner join
+						tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+					group by
+						tc_keet_proveedores_departamentos.id_proveedor				  
+          ) as departamentos on tc_mantic_proveedores.id_proveedor= departamentos.id_proveedor
+				inner join 
+					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join
+					tc_keet_nominas_rubros     
+	      inner join
+          tc_keet_contratos_lotes on tc_keet_nominas_rubros.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+	      inner join
+          tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+        where
+          {condicion}
+				order by  tc_mantic_proveedores.id_proveedor,departamentos.departamento, tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo
+      </select>
     </unit>
   </dml>
 </process>

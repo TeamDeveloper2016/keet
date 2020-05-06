@@ -1931,6 +1931,14 @@
         where 
           id_contrato= {idContrato} 
       </select>
+			 <update id="limpiaOrden">
+				update 
+				  tc_keet_contratos_lotes 
+				set 
+				  orden= 0 
+				where 
+				  id_contrato= {idContrato} 
+			</update>
     </unit>
 	    <unit id="TcKeetContratosPresupuestosDto">
       <select id="row">
@@ -2141,6 +2149,12 @@
         where      
           id_punto_paquete = {idPuntoPaquete} and id_contrato_punto_contratista = {idContratoPuntoContratista} and id_contrato_destajo_contratista = {idContratoDestajoContratista}
       </select>
+      <delete id="rechazo">
+        delete from      
+          tc_keet_contratos_puntos_contratistas
+        where      
+          id_punto_paquete = {idPuntoPaquete} and id_contrato_destajo_contratista = {idContratoDestajoContratista}
+      </delete>
     </unit>
 		<unit id="TcKeetContratosPuntosProveedoresDto">
       <select id="row">
@@ -2160,6 +2174,12 @@
         where      
           id_contrato_destajo_proveedor = {idContratoDestajoProveedor} and id_punto_paquete = {idPuntoPaquete} and id_contrato_punto_proveedor = {idContratoPuntoProveedor}
       </select>
+      <delete id="rechazo">
+        delete from      
+          tc_keet_contratos_puntos_proveedores
+        where      
+          id_contrato_destajo_proveedor = {idContratoDestajoProveedor} and id_punto_paquete = {idPuntoPaquete}
+      </delete>
     </unit>
 		<unit id="TcKeetContratosDestajosContratistasDto">
       <select id="row">
@@ -2209,7 +2229,7 @@
           tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}
 				and 
 					tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= {idContratoLoteContratista}
-			</select>
+			</select>			
 		</unit>
 		<unit id="TcKeetContratosDestajosProveedoresDto">
       <select id="row">
@@ -2258,7 +2278,7 @@
           tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion}
 				and 
 					tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= {idContratoLoteProveedor}
-			</select>
+			</select>			
     </unit>
 		<unit id="TcKeetPuntosControlesDto">
       <select id="row">
@@ -2332,6 +2352,44 @@
           tc_keet_puntos_paquetes
         where      
           id_punto_control = {idPuntoControl} and id_punto_grupo = {idPuntoGrupo}
+      </select>
+    </unit>
+		<unit id="TcKeetContratosRechazosContratistasDto">
+      <select id="row">
+        select      
+					tc_keet_contratos_rechazos_contratistas.id_contrato_rechazo_contratista as id_key,
+          tc_keet_contratos_rechazos_contratistas.*
+        from      
+          tc_keet_contratos_rechazos_contratistas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_rechazos_contratistas
+        where      
+          id_contrato_rechazo_contratista = {idContratoRechazoContratista}
+      </select>
+    </unit>
+		<unit id="TcKeetContratosRechazosProveedoresDto">
+      <select id="row">
+        select
+					tc_keet_contratos_rechazos_proveedores.id_contrato_rechazo_proveedor as id_key,      
+          tc_keet_contratos_rechazos_proveedores.*
+        from      
+          tc_keet_contratos_rechazos_proveedores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_rechazos_proveedores
+        where      
+          id_contrato_rechazo_proveedor = {idContratoRechazoProveedor}
       </select>
     </unit>
   </dml>    

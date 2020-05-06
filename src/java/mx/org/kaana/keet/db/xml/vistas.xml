@@ -2537,6 +2537,129 @@
 							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}   
 					)
 			</select>
+			<select id="puntosRevisionRechazos">
+				select
+					rechazos.id_pivote as id_key,  
+					tc_keet_puntos_paquetes.id_punto_paquete,  
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_puntos_controles.id_punto_control,
+					tc_keet_puntos_controles.nombre,
+					tc_keet_puntos_controles.factor,
+					tc_keet_puntos_controles.orden,
+					rechazos.registro,
+					rechazos.observaciones,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario
+				from
+					tc_keet_puntos_paquetes
+				inner join
+					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+				inner join 
+					tc_keet_puntos_controles on tc_keet_puntos_paquetes.id_punto_control = tc_keet_puntos_controles.id_punto_control
+				inner join(
+					select 
+						id_pivote, id_punto_paquete, registro, observaciones, id_usuario
+					from(
+						select
+							convert(concat(9000,tc_keet_contratos_rechazos_proveedores.id_contrato_rechazo_proveedor), unsigned integer) as id_pivote,
+							id_punto_paquete, registro, observaciones, id_usuario
+						from 
+				      tc_keet_contratos_rechazos_proveedores
+						union
+						select 
+							convert(concat(8000,tc_keet_contratos_rechazos_contratistas.id_contrato_rechazo_contratista), unsigned integer) as id_pivote,
+							id_punto_paquete, registro, observaciones, id_usuario
+						from
+							tc_keet_contratos_rechazos_contratistas
+					) general
+					group by 
+						id_pivote, id_punto_paquete, registro, observaciones, id_usuario
+				) rechazos on tc_keet_puntos_paquetes.id_punto_paquete = rechazos.id_punto_paquete
+				inner join
+					tc_janal_usuarios on rechazos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+					tc_keet_puntos_grupos.id_departamento={idDepartamento} and tc_keet_puntos_paquetes.id_punto_grupo={idPuntoGrupo}
+				and 
+					tc_keet_puntos_paquetes.id_punto_paquete not in (
+						select
+							id_punto_paquete
+						from
+							tc_keet_contratos_destajos_proveedores
+						inner join
+							tc_keet_contratos_puntos_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor
+						where
+							tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion}
+						union 
+						select 
+							id_punto_paquete
+						from 
+							tc_keet_contratos_destajos_contratistas
+						inner join
+							tc_keet_contratos_puntos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista
+						where
+							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}   
+					)
+				and 
+					tc_keet_puntos_paquetes.id_punto_paquete in (
+						select
+							id_punto_paquete
+						from
+							tc_keet_contratos_destajos_proveedores
+						inner join
+							tc_keet_contratos_rechazos_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_rechazos_proveedores.id_contrato_destajo_proveedor
+						where
+							tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion}
+						union 
+						select 
+							id_punto_paquete
+						from 
+							tc_keet_contratos_destajos_contratistas
+						inner join
+							tc_keet_contratos_rechazos_contratistas ON tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_rechazos_contratistas.id_contrato_destajo_contratista
+						where
+							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}   
+					)
+			</select>
+			<select id="puntosRechazos">
+				select
+					tc_keet_puntos_paquetes.id_punto_paquete as id_key,  
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_puntos_controles.id_punto_control,
+					tc_keet_puntos_controles.nombre,
+					tc_keet_puntos_controles.factor,
+					tc_keet_puntos_controles.orden  
+				from
+					tc_keet_puntos_paquetes
+				inner join
+					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+				inner join 
+					tc_keet_puntos_controles on tc_keet_puntos_paquetes.id_punto_control = tc_keet_puntos_controles.id_punto_control
+				where
+					tc_keet_puntos_grupos.id_departamento={idDepartamento} and tc_keet_puntos_paquetes.id_punto_grupo={idPuntoGrupo}
+				and 
+					tc_keet_puntos_paquetes.id_punto_paquete in (
+						select
+							id_punto_paquete
+						from
+							tc_keet_contratos_destajos_proveedores
+						inner join
+							tc_keet_contratos_puntos_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor
+						where
+							tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion}
+						union 
+						select 
+							id_punto_paquete
+						from 
+							tc_keet_contratos_destajos_contratistas
+						inner join
+							tc_keet_contratos_puntos_contratistas ON tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista
+						where
+							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}   
+					)
+			</select>
 			<select id="estatusManzanaLote">
 				select
 					sum(iniciado) iniciado,
