@@ -39,6 +39,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		Entity seleccionado      = null;
 		Long idDepartamento      = null;
     try {
+			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
@@ -137,14 +138,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	} // toClaveEstacion
 	
 	public String doPuntosRevision(Entity seleccionado) {
-    String regresar             = null;    				
+    String regresar= null;    				
     try {						
-			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));									
-			JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
-			JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionadoPivote"));									
-			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
-			JsfBase.setFlashAttribute("idDepartamento", (Long)this.attrs.get("idDepartamento"));									
-			JsfBase.setFlashAttribute("concepto", seleccionado);									
+			toSetFlash(seleccionado);
 			regresar= "puntos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -155,14 +151,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
   } // doPagina
 	
 	public String doImportar(Entity seleccionado) {
-    String regresar             = null;    				
+    String regresar= null;    				
     try {						
-			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));									
-			JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
-			JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionadoPivote"));									
-			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
-			JsfBase.setFlashAttribute("idDepartamento", (Long)this.attrs.get("idDepartamento"));									
-			JsfBase.setFlashAttribute("concepto", seleccionado);									
+			toSetFlash(seleccionado);
 			regresar= "importar".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -171,6 +162,28 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doPagina
+	
+	public String doRechazar(Entity seleccionado) {
+    String regresar= null;    				
+    try {						
+			toSetFlash(seleccionado);
+			regresar= "rechazos".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doPagina
+	
+	private void toSetFlash(Entity seleccionado){
+		JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));									
+		JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
+		JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionadoPivote"));									
+		JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
+		JsfBase.setFlashAttribute("idDepartamento", (Long)this.attrs.get("idDepartamento"));									
+		JsfBase.setFlashAttribute("concepto", seleccionado);	
+	} // toSetFlash
 	
 	public String doCancelar() {
     String regresar          = null;    

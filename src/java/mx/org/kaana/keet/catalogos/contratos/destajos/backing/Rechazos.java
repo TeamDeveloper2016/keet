@@ -24,20 +24,11 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 
-@Named(value = "keetCatalogosContratosDestajosPuntos")
+@Named(value = "keetCatalogosContratosDestajosRechazos")
 @ViewScoped
-public class Puntos extends IBaseFilterMultiple implements Serializable {
+public class Rechazos extends IBaseFilterMultiple implements Serializable {
 
 	private static final long serialVersionUID = 154600879172477099L;
-	private FormatLazyModel lazyModelRechazos;
-
-	public FormatLazyModel getLazyModelRechazos() {
-		return lazyModelRechazos;
-	}
-
-	public void setLazyModelRechazos(FormatLazyModel lazyModelRechazos) {
-		this.lazyModelRechazos = lazyModelRechazos;
-	}
 	
   @PostConstruct
   @Override
@@ -95,12 +86,9 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
       columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
-      columns.add(new Columna("factor", EFormatoDinamicos.NUMERO_SIN_DECIMALES));                        
-	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRevision", params, columns);			
+      columns.add(new Columna("factor", EFormatoDinamicos.NUMERO_SIN_DECIMALES));                  
+	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRechazos", params, columns);			
 			UIBackingUtilities.resetDataTable();
-			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));                  
-	    this.lazyModelRechazos= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRevisionRechazos", params, columns);			
-			UIBackingUtilities.resetDataTable("tablaRechazos");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -137,16 +125,16 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 				figura= (Entity) this.attrs.get("figura");
 				seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
 				idFigura= figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");
-				transaccion= new Transaccion(idFigura, figura.toLong("tipo"), ((Entity) this.attrs.get("concepto")).getKey(), this.selecteds);
-				if(transaccion.ejecutar(EAccion.PROCESAR)){
-					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
+				transaccion= new Transaccion(idFigura, figura.toLong("tipo"), ((Entity) this.attrs.get("concepto")).getKey(), this.selecteds, (String)this.attrs.get("observaciones"));
+				if(transaccion.ejecutar(EAccion.REPROCESAR)){
+					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();
 				} // if
 				else
-					JsfBase.addMessage("Captura de puntos de revisión", "Ocurrió un error al realizar la captura de los puntos de revision.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Rechazo de puntos de revisión", "Ocurrió un error al realizar el rechazo de los puntos de revision.", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Captura de puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Rechazo de puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
