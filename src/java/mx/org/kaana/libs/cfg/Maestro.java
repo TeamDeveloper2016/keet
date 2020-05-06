@@ -148,7 +148,7 @@ public class Maestro {
 	private String toCode(char token, String value, int levels) {
 		cleanLevels();
 		Integer count=0;
-		for (int x=0; x<this.niveles.size()&&x<levels; x++) {
+		for (int x=0; x<this.niveles.size() && x< levels; x++) {
 			this.niveles.get(x).setValue(cutLevel(count, this.niveles.get(x).getLongitud(), value));
 			count+=this.niveles.get(x).getLongitud();
 		} // for

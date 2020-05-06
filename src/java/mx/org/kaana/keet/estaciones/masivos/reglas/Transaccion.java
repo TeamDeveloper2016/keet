@@ -45,20 +45,22 @@ public class Transaccion extends IBaseTnx {
   private TcManticMasivasArchivosDto masivo;	
 	private ECargaMasiva categoria;
 	private Long idContatoLote;
+	private Long idLimpiar;
 	private int errores;
 	private int procesados;
 	private String messageError;
   
   public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) {
-		this(masivo, categoria, -1L);
+		this(masivo, categoria, -1L, 1L);
 	}
 	
-  public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria, Long idContatoLote) {
+  public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria, Long idContatoLote, Long idLimpiar) {
 		this.masivo     = masivo;		
 		this.categoria  = categoria;
-		this.errores    = 0;
-		this.procesados = 0;
+		this.errores      = 0;
+		this.procesados   = 0;
 		this.idContatoLote= idContatoLote;
+		this.idLimpiar    = idLimpiar;
 	} // Transaccion
 
 	protected void setMessageError(String messageError) {
@@ -318,8 +320,9 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("clave", clave);
-			DaoFactory.getInstance().deleteAll(sesion, TcKeetEstacionesDto.class, params);
-			regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "estaciones", params);
+			if(Objects.equals(this.idLimpiar, 1L))
+	  		DaoFactory.getInstance().deleteAll(sesion, TcKeetEstacionesDto.class, params);
+  		regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "estaciones", params);
 		} // try
 		finally {
 			Methods.clean(params);
@@ -341,11 +344,27 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}
 	
+	private Estacion toConcepto(Session sesion, String clave, String codigo) throws Exception {
+		Estacion regresar           = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("clave", clave);
+			params.put("codigo", codigo);
+			regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "estacion", params);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
   private Boolean toEstaciones(Session sesion, File archivo) throws Exception {
 		Boolean regresar	      = false;
 		Workbook workbook	      = null;
 		Sheet sheet             = null;
 		Estacion concepto       = null;
+		Estacion estacion       = null; 
 		TcManticMasivasBitacoraDto bitacora= null;
 		try {
 			Estaciones estaciones= new Estaciones();
@@ -419,21 +438,38 @@ public class Transaccion extends IBaseTnx {
 										throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "] {"+ nombre+ "}");
 									estaciones.setKeyLevel(String.valueOf(partida), 4); // consecutivo de la estacion
 									estaciones.setKeyLevel(String.valueOf(rubro), 5); // consecutivo del concepto
-									Estacion estacion= concepto.clone();
-									estacion.setNivel(item.toLong("nivel"));
-									estacion.setUltimo(item.toLong("nivel")== 5L? 2L: 1L);
-									estacion.setClave(estaciones.toCode());
-									estacion.setCodigo(codigo);
-									estacion.setNombre(nombre);
-									estacion.setDescripcion(nombre);
-									estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
-									estacion.setCantidad(cantidad);
-									estacion.setCosto(costo);
-									estacion.setInicio(contrato.toDate("inicio"));
-									estacion.setTermino(contrato.toDate("termino"));
-									estacion.setIdUsuario(JsfBase.getIdUsuario());
+									if(Objects.equals(this.idLimpiar, 1L))
+  									estacion= concepto.clone();
+									else {
+										estacion= this.toConcepto(sesion, estaciones.toKey(4), codigo);
+										if(estacion== null)
+											estacion= concepto.clone();
+									} // if
+									if(Objects.equals(this.idLimpiar, 1L) || !estacion.isValid()) {
+										estacion.setNivel(item.toLong("nivel"));
+										estacion.setUltimo(item.toLong("ultimo"));
+										estacion.setClave(estaciones.toCode());
+										estacion.setCodigo(codigo);
+										estacion.setNombre(nombre);
+										estacion.setDescripcion(nombre);
+										estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
+										estacion.setCantidad(cantidad);
+										estacion.setCosto(costo);
+										estacion.setInicio(contrato.toDate("inicio"));
+										estacion.setTermino(contrato.toDate("termino"));
+										estacion.setIdUsuario(JsfBase.getIdUsuario());
+									  DaoFactory.getInstance().insert(sesion, estacion);
+									}
+									else {
+										estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
+										estacion.setCantidad(cantidad);
+										estacion.setCosto(costo);
+										estacion.setInicio(contrato.toDate("inicio"));
+										estacion.setTermino(contrato.toDate("termino"));
+										estacion.setIdUsuario(JsfBase.getIdUsuario());
+									  DaoFactory.getInstance().update(sesion, estacion);
+									}
 									LOG.warn(count+ ".-  <"+ estacion.getNivel()+ "> ["+ estacion.getClave()+ "] ("+ estacion.getCodigo()+ ") {"+ estacion.getCosto()+ "} "+ estacion.getDescripcion());
-									DaoFactory.getInstance().insert(sesion, estacion);
 									monitoreo.incrementar();
 								} // if
 								else {

@@ -65,7 +65,9 @@ public class Importar extends IBaseImportar implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			this.attrs.put("ikContratoLote", JsfBase.getFlashAttribute("idContratoLote"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_MASIVO);
+			this.attrs.put("idLimpiar", 1L);
 			this.attrs.put("procesados", 0L);
 			if(JsfBase.getFlashAttribute("idTipoMasivo")!= null)
 				switch(((Long)JsfBase.getFlashAttribute("idTipoMasivo")).intValue()) {
@@ -165,7 +167,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			UISelectEntity idContratoLote= ((UISelectEntity)this.attrs.get("idContratoLote"));
 			this.masivo.setArchivo(this.getXls().getOriginal());
 		  this.masivo.setObservaciones((String)this.attrs.get("observaciones"));
-      transaccion= new Transaccion(this.masivo, this.categoria, idContratoLote.getKey());
+      transaccion= new Transaccion(this.masivo, this.categoria, idContratoLote.getKey(), (Long)this.attrs.get("idLimpiar"));
       if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
 
       } // if
@@ -250,7 +252,16 @@ public class Importar extends IBaseImportar implements Serializable {
  			params.put("ejercicio", Fecha.getAnioActual()- 1);
 			List<UISelectEntity> lotes= UIEntity.build("VistaContratosLotesDto", "lotes", params, columns);
   		this.attrs.put("lotes", lotes);
-  		this.attrs.put("idContratoLote", lotes.get(0));
+			if(this.attrs.get("ikContratoLote")!= null) {
+				int index= lotes.indexOf(new UISelectEntity((Long)this.attrs.get("ikContratoLote")));
+				if(index>= 0)
+					this.attrs.put("idContratoLote", lotes.get(index));
+				else
+					this.attrs.put("idContratoLote", lotes.get(0));
+			  this.attrs.put("ikContratoLote", null);
+			} // if
+			else
+  		  this.attrs.put("idContratoLote", lotes.get(0));
     } // try
     catch (Exception e) {
       Error.mensaje(e);

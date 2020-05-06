@@ -24,6 +24,7 @@ public class Estacion extends TcKeetEstacionesDto implements Cloneable, Serializ
 	@Override
 	public Estacion clone() throws CloneNotSupportedException {
 		Estacion clone= new Estacion();
+		clone.setIdEstacion(-1L);
 		clone.setIdPlantilla(this.getIdPlantilla());
 		clone.setNivel(this.getNivel());
 		clone.setClave(this.getClave());

@@ -75,23 +75,30 @@
 									<f:selectItem itemLabel="ESTACIONES" itemValue="9"/>
 								</p:selectOneRadio>
 							</p:panel>
-							<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" styleClass="involucrados"/>
-							<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idContratoLote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}">
-								<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.codigo}"/>
-								<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-								<p:column headerText="Ejercicio">
-									<h:outputText value="#{item.ejercicio}"/>
-								</p:column>   
-								<p:column headerText="Contrato">
-									<h:outputText value="#{item.clave}"/>
-								</p:column>   
-								<p:column headerText="Lote">
-									<h:outputText value="#{item.codigo}"/>
-								</p:column>   
-								<p:column headerText="Etapa">
-									<h:outputText value="#{item.etapa}"/>
-								</p:column>   
-							</p:selectOneMenu>
+							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados">
+								<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" styleClass="involucrados"/>
+								<p:outputLabel for="idLimpiar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" styleClass="involucrados"/>
+								<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idContratoLote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}">
+									<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.codigo}"/>
+									<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:column headerText="Ejercicio">
+										<h:outputText value="#{item.ejercicio}"/>
+									</p:column>   
+									<p:column headerText="Contrato">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Lote">
+										<h:outputText value="#{item.codigo}"/>
+									</p:column>   
+									<p:column headerText="Etapa">
+										<h:outputText value="#{item.etapa}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:selectOneMenu id="idLimpiar" value="#{keetEstacionesMasivosImportar.attrs.idLimpiar}" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" converter="javax.faces.Long" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItem itemLabel="SI" itemValue="1"/>
+									<f:selectItem itemLabel="NO" itemValue="2"/>								
+								</p:selectOneMenu>
+							</p:panelGrid>	
   						<p:outputLabel for="observacion" value="Observaciones:"/>
 							<p:inputTextarea id="observacion" value="#{keetEstacionesMasivosImportar.masivo.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
 							<p:fileUpload listener="#{keetEstacionesMasivosImportar.doFileUpload}" 
@@ -101,8 +108,8 @@
 							<p:inputText id="xls" value="#{keetEstacionesMasivosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="XLS importado: #{keetEstacionesMasivosImportar.xls.ruta}#{keetEstacionesMasivosImportar.xls.name}" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" style="#{(empty keetEstacionesMasivosImportar.xls)? 'display: none': ''}"/>
               <p:outputLabel id="tuplas" value="#{keetEstacionesMasivosImportar.masivo.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente" style="display: none"/>
-              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-                <p:outputLabel value="Total de registros a importar: #{keetEstacionesMasivosImportar.attrs.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
+              <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt">
+                <p:outputLabel value="Total de registros a importar: #{keetEstacionesMasivosImportar.attrs.tuplas}" styleClass="importado janal-color-blue janal-font-bold"/>
                 <p:outputLabel value="Total de registros procesados: #{keetEstacionesMasivosImportar.attrs.procesados}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
 							</p:panelGrid>
               <p:panel styleClass="tabla-filtro" id="barra" >

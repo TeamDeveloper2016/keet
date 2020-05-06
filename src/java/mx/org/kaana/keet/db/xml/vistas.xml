@@ -693,14 +693,16 @@
 				select
 				 1000+ tc_keet_partidas.id_partida as id_key,
 				 tc_keet_partidas.codigo,
-				 5 as nivel
+				 5 as nivel,
+				 2 as ultimo
 				from
 					tc_keet_partidas
 				union all
 				select
 				 2000+ tc_keet_rubros.id_rubro as id_key,
 				 tc_keet_rubros.codigo,
-				 6 as nivel
+				 6 as nivel,
+				 2 as ultimo
 				from
 					tc_keet_rubros
 				) as tc_keet_temporal
@@ -720,6 +722,19 @@
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
 				where
 					tc_keet_estaciones.clave like '{clave}%'
+				order by
+					tc_keet_estaciones.clave
+			</select>	
+			<select id="estacion">
+				select
+				  tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
+				from 
+					tc_keet_estaciones
+				where
+					tc_keet_estaciones.clave like '{clave}%'
+				  and tc_keet_estaciones.codigo= '{codigo}'
+				  and tc_keet_estaciones.nivel> 4
 				order by
 					tc_keet_estaciones.clave
 			</select>	
