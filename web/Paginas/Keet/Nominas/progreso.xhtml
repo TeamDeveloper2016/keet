@@ -59,7 +59,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
           <span class="FontBold janal-color-orange">Registros a procesar en la nómina:</span> <p:outputLabel id="tuplas" value="[#{keetNominasProgreso.attrs.tuplas}]" styleClass="nominas janal-color-orange FontBold janal-steps-boton-siguiente"/>
-          <p:progressBar interval="1000" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true"/>
+          <p:progressBar interval="500" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true"/>
         </div>
 				<p:outputLabel id="registros" value="#{keetNominasProgreso.attrs.tuplas}" styleClass="importado" style="display: none"/>
       </div>

@@ -107,7 +107,7 @@
 							</p:panelGrid>
               <p:panel styleClass="tabla-filtro" id="barra" >
                 Proceso:
-                <p:progressBar interval="10000" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true">
+                <p:progressBar interval="500" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true">
                   <p:ajax event="complete" listener="#{keetEstacionesMasivosImportar.doCompleto}"/>  
                 </p:progressBar>  			
               </p:panel>

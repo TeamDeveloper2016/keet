@@ -388,14 +388,14 @@ public class Transaccion extends IBaseTnx {
 								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(!Cadena.isVacio(codigo) && codigo.length()> 0 && cantidad> 0 && costo> 0) {
+									if(!Objects.equals(contrato.toString("manzana"), manzana))
+										throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
+									if(!Objects.equals(contrato.toString("lote"), lote))
+										throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
 									Entity item= this.toRubro(sesion, codigo);
 									if(item!= null && !item.isEmpty()) {
 										if(count== 0 && item.toLong("nivel")!= 5L)
 											throw new RuntimeException("El archivo no comienza con una estación correcta");
-										if(!Objects.equals(item.toString("manzana"), manzana))
-											throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
-										if(!Objects.equals(item.toString("lote"), lote))
-											throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
 										if(item.toLong("nivel")== 5L) {
 											if(codigoPartida!= codigo) {
 												codigoPartida= codigo;
@@ -460,10 +460,9 @@ public class Transaccion extends IBaseTnx {
 						this.procesados= count;
 						LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 					} // for
-					throw new KajoolBaseException("Este error fue provocado intencionalmente !");
 				} // if
-//				else 
-//					throw new RuntimeException("El lote no exite en el contrato, por favor verifique");
+				else 
+					throw new RuntimeException("El lote no exite en el contrato, por favor verifique");
 				bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
   			DaoFactory.getInstance().insert(sesion, bitacora);
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
