@@ -244,7 +244,7 @@
 								<p:ajax event="rowSelect" update="kajoolListadoContextMenu" oncomplete="PF('kajoolListado').writeSelections()" process="listado" skipChildren="false"/>
 								<p:ajax event="contextMenu" update="kajoolListadoContextMenu" oncomplete="PF('kajoolListado').writeSelections();PF('kajoolListadoContextMenu').show(currentEvent);" process="@this listado" skipChildren="false"/>
 								<f:facet name="header" >
-									<div style="float: left;">
+									<div style="float: left;  text-align: left;">
 										<h:outputText value="Listado de tickets que han sido seleccionados"/>
 									</div>
 									<div class="lg-pantalla">
