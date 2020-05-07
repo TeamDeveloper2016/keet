@@ -8,11 +8,14 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -28,6 +31,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.enums.EReportes;
 
 @Named(value = "keetNominasProveedores")
@@ -186,7 +190,28 @@ public class Proveedores extends IBaseFilter implements Serializable {
 		}	// finally
 	} // loadCatalogs
 
-  public void doExportar() {
+  public String doExportar() {
+		String regresar           = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			Entity entity= (Entity)this.attrs.get("seleccionado");
+			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
+			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("nomina", entity.toString("nomina"));
+			params.put("idProveedor", entity.toLong("idProveedor"));
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.DESTAJO_PROVEEDOR.getProceso(), EExportacionXls.DESTAJO_PROVEEDOR.getIdXml(), EExportacionXls.DESTAJO_PROVEEDOR.getNombreArchivo()), EExportacionXls.DESTAJO_PROVEEDOR, "NOMINA,DESARROLLO,CONTRATO,ETAPA,LOTE,CODIGO,CONCEPTO,SUBTOTAL,IVA,TOTAL"));
+			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;			
 	}	
 	
 	public void doReporte(String nombre) throws Exception {    
@@ -247,6 +272,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
 			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("nomina", entity.toString("nomina"));
 			params.put("idProveedor", entity.toLong("idProveedor"));
       columns= new ArrayList<>();
       columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_SIN_DECIMALES));

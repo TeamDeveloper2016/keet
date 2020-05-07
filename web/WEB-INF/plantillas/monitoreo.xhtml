@@ -66,7 +66,7 @@
                 <ui:insert name="contenido"/>
                 <p:panel styleClass="janal-content-table" id="barra">
                   Proceso:
-                  <p:progressBar interval="1000" styleClass="animate" labelTemplate="Registro [{index} de {count}] procesados, porcentaje {value}%" ajax="true" widgetVar="progreso" value="#{sessionScope.autentifica.monitoreo.progreso}" >
+                  <p:progressBar interval="500" styleClass="animate" labelTemplate="Registro [{index} de {count}] procesados, porcentaje {value}%" ajax="true" widgetVar="progreso" value="#{sessionScope.autentifica.monitoreo.progreso}" >
                     <p:ajax event="complete" listener="#{accionConfirmacion[eventoProgreso]}"/>
                   </p:progressBar>  			
                 </p:panel>

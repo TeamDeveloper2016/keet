@@ -45,6 +45,10 @@
 					setTimeout("$('#progreso').click();", 6000);
 				} // if
 			}
+			
+			$(document).ready(function() {
+			  PF('progressBar').setValue(0);
+			});
 		</script>
 		<style>
 			.janal-upload-frame {
@@ -95,7 +99,7 @@
 											<h:outputText value="#{item.etapa}"/>
 										</p:column>   
 									</p:selectOneMenu>
-									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" action="#{keetEstacionesMasivosImportar.doExportar}" process="@this idContratoLote" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" />
+									<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetEstacionesMasivosImportar.doExportar}" process="@this idContratoLote" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" />
 								</p:panelGrid>
 								<p:selectOneMenu id="idLimpiar" value="#{keetEstacionesMasivosImportar.attrs.idLimpiar}" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" converter="javax.faces.Long" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItem itemLabel="SI" itemValue="1"/>

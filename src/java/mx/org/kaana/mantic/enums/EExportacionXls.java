@@ -8,7 +8,9 @@ public enum EExportacionXls implements IExportacionXls {
 	CONTEOS     ("VistaArticulosDto", "conteo", "Conteos", "/Paginas/Mantic/Inventarios/Almacenes/filtro", ""),
 	PERSONAS    ("VistaPersonasDto", "exportar", "Pesonal", "/Paginas/Mantic/Catalogos/Empleados/filtro", ""),
 	ESTACIONES  ("VistaContratosLotesDto", "exportar", "Estaciones", "/Paginas/Keet/Estaciones/Masivos/importar", ""),
-	INCIDENCIAS ("VistaIncidentesDto", "principal", "Incidencias", "/Paginas/Keet/Catalogos/Contratos/Personal/exportar", "");
+	INCIDENCIAS ("VistaIncidentesDto", "principal", "Incidencias", "/Paginas/Keet/Catalogos/Contratos/Personal/exportar", ""),
+	DESTAJO_PERSONA  ("VistaNominaConsultasDto", "destajo", "Contratista", "/Paginas/Keet/Nominas/personas", ""),
+	DESTAJO_PROVEEDOR("VistaNominaConsultasDto", "proveedor", "SubContratista", "/Paginas/Keet/Nominas/proveedores", "");
   
   private final String proceso;
   private final String idXml;

@@ -264,11 +264,14 @@
 								<p:menuButton value="Opciones">
 									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+									<p:separator/>
+									<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
 								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 							</div>  
 						</f:facet>												
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
@@ -277,11 +280,11 @@
 							</f:facet>
 							<h:outputText value="#{row['desarrollo']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.contrato}">
 							<f:facet name="header">
 								<h:outputText value="Contrato"/>
 							</f:facet>
-							<h:outputText value="#{row['clave']}"/>
+							<h:outputText value="#{row['contrato']}"/>
 						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}">
 							<f:facet name="header">
@@ -301,11 +304,11 @@
 							</f:facet>
 							<h:outputText value="#{row['codigo']}"/>
 						</p:column>	
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.concepto}">
 							<f:facet name="header">
 								<h:outputText value="Concepto"/>
 							</f:facet>
-							<h:outputText value="#{row['nombre']}"/>
+							<h:outputText value="#{row['concepto']}"/>
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.porcentaje}">
 							<f:facet name="header">
