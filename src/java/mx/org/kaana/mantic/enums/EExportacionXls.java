@@ -2,11 +2,12 @@ package mx.org.kaana.mantic.enums;
 
 import mx.org.kaana.kajool.procesos.reportes.reglas.IExportacionXls;
 
-public enum EExportacionXls implements IExportacionXls{
+public enum EExportacionXls implements IExportacionXls {
 
 	ARTICULOS   ("VistaArticulosDto", "exportar", "Articulos", "/Paginas/Mantic/Catalogos/Articulos/filtro", ""),
 	CONTEOS     ("VistaArticulosDto", "conteo", "Conteos", "/Paginas/Mantic/Inventarios/Almacenes/filtro", ""),
 	PERSONAS    ("VistaPersonasDto", "exportar", "Pesonal", "/Paginas/Mantic/Catalogos/Empleados/filtro", ""),
+	ESTACIONES  ("VistaContratosLotesDto", "exportar", "Estaciones", "/Paginas/Keet/Estaciones/Masivos/importar", ""),
 	INCIDENCIAS ("VistaIncidentesDto", "principal", "Incidencias", "/Paginas/Keet/Catalogos/Contratos/Personal/exportar", "");
   
   private final String proceso;

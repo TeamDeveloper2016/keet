@@ -9,10 +9,13 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -29,9 +32,11 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 import mx.org.kaana.keet.estaciones.masivos.reglas.Transaccion;
+import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
+import mx.org.kaana.mantic.enums.EExportacionXls;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 
@@ -271,6 +276,40 @@ public class Importar extends IBaseImportar implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
+	}
+	
+	public String doExportar() {
+		String regresar           = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			UISelectEntity idContratoLote= (UISelectEntity)this.attrs.get("idContratoLote");
+			if(idContratoLote!= null) {
+				List<UISelectEntity> lotes= (List<UISelectEntity>)this.attrs.get("lotes");
+				idContratoLote= lotes.get(lotes.indexOf(idContratoLote));
+				Estaciones estaciones=new Estaciones();
+				estaciones.setKeyLevel(idContratoLote.toString("idEmpresa"), 0); // idEmpresa
+				estaciones.setKeyLevel(idContratoLote.toString("ejercicio"), 1); // ejercicio
+				estaciones.setKeyLevel(idContratoLote.toString("contrato"), 2); // orden del contrato
+				estaciones.setKeyLevel(idContratoLote.toString("orden"), 3); // orden de contrato lote
+				params.put("manzana", idContratoLote.toString("manzana"));
+				params.put("lote", idContratoLote.toString("lote"));
+				params.put("clave", estaciones.toKey(4));
+        JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ESTACIONES.getProceso(), EExportacionXls.ESTACIONES.getIdXml(), EExportacionXls.ESTACIONES.getNombreArchivo()), EExportacionXls.ESTACIONES, "MANZANA,LOTE,CODIGO,NOMBRE,CANTIDAD,COSTO S/IVA,UNIDAD MEDIDA"));
+			  JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+			  regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
+			} // if
+			else
+				JsfBase.addMessage("Error:", "No se tiene un lote seleccionado !", ETipoMensaje.ALERTA);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
 	}
 	
 }
