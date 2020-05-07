@@ -72,6 +72,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
 				this.attrs.put("idProveedor", new UISelectEntity(-1L));
 		  }
+			this.attrs.put("nomina", false);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -92,6 +93,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MILES_SIN_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaNominaConsultasDto", "proveedores", params, columns);
       UIBackingUtilities.resetDataTable();
+			this.attrs.put("nomina", false);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -253,6 +255,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "proveedor", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
+			this.attrs.put("nomina", true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
