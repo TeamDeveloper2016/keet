@@ -2392,5 +2392,43 @@
           id_contrato_rechazo_proveedor = {idContratoRechazoProveedor}
       </select>
     </unit>
+		    <unit id="TcKeetRubrosDto">
+      <select id="row">
+        select      
+				  tc_keet_rubros.id_rubro id_key,
+          tc_keet_rubros.*
+        from      
+          tc_keet_rubros
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_rubros
+        where      
+          codigo = '{codigo}' and id_rubro = {idRubro}
+      </select>
+    </unit>
+		    <unit id="TcKeetRubrosGruposDto">
+      <select id="row">
+        select      
+				  tc_keet_rubros_grupos.id_rubro_grupo id_key,
+          tc_keet_rubros_grupos.*
+        from      
+          tc_keet_rubros_grupos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_rubros_grupos
+        where      
+          id_rubro_grupo = {idRubroGrupo} and id_punto_grupo = {idPuntoGrupo} and id_rubro = {idRubro}
+      </select>
+    </unit>
   </dml>    
 </process>
