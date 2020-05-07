@@ -164,7 +164,7 @@
 							<p:outputLabel value="Total [#{keetNominasProveedores.lazyModel== null? 0: keetNominasProveedores.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>
-          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTable" var="row" value="#{keetNominasProveedores.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominasProveedores.attrs.detalle}" selectionMode="single" paginator="#{keetNominasProveedores.lazyDetalle.rowCount gt keetNominasProveedores.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetNominasProveedores.attrs.nomina? '': 'none'}">
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTable" var="row" value="#{keetNominasProveedores.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasProveedores.lazyDetalle.rowCount gt keetNominasProveedores.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetNominasProveedores.attrs.nomina? '': 'none'}">
 						<f:facet name="header">
 							<div style="float: left;" class="">
 								<p:outputLabel value="Detalle del pago: [#{keetNominasProveedores.attrs.seleccionado.departamento}] #{keetNominasProveedores.attrs.seleccionado.nombreCompleto}" styleClass="janal-text-white"/>
