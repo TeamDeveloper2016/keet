@@ -51,6 +51,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("mostrarGeo", false);
       loadCombos();
 			doLoad();
     } // try
@@ -150,29 +151,62 @@ public class Accion extends IBaseAttribute implements Serializable {
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion	
 	
-public void onSelect(SelectEvent<Lote> event) {
-	try {
-		this.lotesOrden= new ArrayList<>();
-		for(Lote item: this.contrato.getContrato().getLotes())
-			this.lotesOrden.add(item);
-			
-  } // try
-  catch (Exception e) {
-    Error.mensaje(e);
-    JsfBase.addMessageError(e);
-  } // catch		
-}	
+	public void onSelect(SelectEvent<Lote> event) {
+		try {
+			this.lotesOrden= new ArrayList<>();
+			for(Lote item: this.contrato.getContrato().getLotes())
+				this.lotesOrden.add(item);
 
-public void onReorder() {
-	try {
-		for(int i=0; this.contrato.getContrato().getLotes().size()<i; i++)
-			this.contrato.getContrato().getLotes().get(i).setOrden(this.lotesOrden.get(i).getOrden());
-  } // try
-  catch (Exception e) {
-    Error.mensaje(e);
-    JsfBase.addMessageError(e);
-  } // catch			
-}
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	}	
 
+	public void onReorder() {
+		try {
+			for(int i=0; this.contrato.getContrato().getLotes().size()<i; i++)
+				this.contrato.getContrato().getLotes().get(i).setOrden(this.lotesOrden.get(i).getOrden());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch			
+	}
+
+	public void doGeoreferencia(Lote lote){
+		try {
+			this.attrs.put("loteGeoreferencia", lote);			
+			this.attrs.put("mostrarGeo", true);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doGeoreferencia	
 	
+	public void doAceptarGeo(){
+		Lote lote= null;
+		try {
+			lote= (Lote) this.attrs.get("loteGeoreferencia");						
+			this.attrs.put("mostrarGeo", false);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doGeoreferencia	
+	
+	public void doCancelarGeo(){
+		Lote lote= null;
+		try {
+			lote= (Lote) this.attrs.get("loteGeoreferencia");			
+			this.attrs.put("mostrarGeo", false);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // 
 }
