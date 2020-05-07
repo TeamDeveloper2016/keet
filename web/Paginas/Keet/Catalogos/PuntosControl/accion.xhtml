@@ -58,7 +58,7 @@
                   </p:column>	                  
                   <p:column headerText="Factor">										
                     <p:inputText rendered="#{row.visible}" value="#{row.factor}" styleClass="janal-wid-100-txt">
-											<p:ajax event="valueChange" listener="#{keetCatalogosPuntosControlAccion.doCalcularFactorTotal}" update="@form" />
+											<p:ajax event="valueChange" listener="#{keetCatalogosPuntosControlAccion.doCalcularFactorTotal}" update="@form" process="@form"/>
 										</p:inputText>
                   </p:column>	                  
                   <p:column style="width:35px;text-align: center">

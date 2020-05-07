@@ -29,6 +29,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar   = false;
 		Siguiente siguiente= null;
 		try {
+
 			switch(accion){
 				case AGREGAR:			
 					this.registroPunto.getPuntoGrupo().setIdUsuario(JsfBase.getIdUsuario());
