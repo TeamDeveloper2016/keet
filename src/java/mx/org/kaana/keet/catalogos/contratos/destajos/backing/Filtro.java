@@ -191,6 +191,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			} //
 			this.attrs.put("persona", figura.toLong("tipo").equals(1L));
 			this.attrs.put("proveedor", figura.toLong("tipo").equals(2L));
+			this.attrs.put("destajos", false);
 			this.attrs.put("figura", figura);
     } // try
     catch (Exception e) {
@@ -218,7 +219,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	} // toLoteDefault
 	
-	private void toEstatusManzanaLote() throws Exception{
+	private void toEstatusManzanaLote() throws Exception {
 		Map<String, Object>params= null;
 		Entity estatus           = null;
 		try {
@@ -240,9 +241,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 					mzaLote.put("iconEstatus", new Value("iconEstatus", ""));
 			} // for
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally		
@@ -323,6 +321,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoPersona", params, columns);
       UIBackingUtilities.resetDataTable("destajo");
 			this.attrs.put("destajos", true);
+			this.attrs.put("figura", figura);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -352,6 +351,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoProveedor", params, columns);
       UIBackingUtilities.resetDataTable("destajo");
 			this.attrs.put("destajos", true);
+			this.attrs.put("figura", figura);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

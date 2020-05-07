@@ -44,7 +44,7 @@
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-96, janal-wid-col-30 janal-column-center">
 									<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosDestajosFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-										<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona" oncomplete="janal.desbloquear();"/>
+										<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona destajo" oncomplete="janal.desbloquear();"/>
 										<f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>									
 										<p:column headerText="Puesto">
 											<h:outputText value="#{item.puesto}"/>
@@ -55,8 +55,8 @@
 									</p:selectOneMenu>	
 									<p:panelGrid columns="3" styleClass="janal-wid-100-txt">
   									<p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar destajo" disabled="true" style="display: #{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
-	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoPersona}" process="@form" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
-		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoProveedor}" process="@form" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
+	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoPersona}" process="@this contratista" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
+		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoProveedor}" process="@this contratista" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
 									</p:panelGrid>
 								</p:panelGrid>	
 							</p:panelGrid>										
@@ -93,7 +93,7 @@
 					<p:spacer height="3px"/>
           <p:dataTable lazy="true" id="destajo" widgetVar="kajoolDestajo" var="row" value="#{keetCatalogosContratosDestajosFiltro.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosFiltro.attrs.destajo}" selectionMode="single" paginator="#{keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount gt keetCatalogosContratosDestajosFiltro.lazyDestajo.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosDestajosFiltro.doColorNomina(row)}" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.destajos? '': 'none'}">
 						<f:facet name="header">
-							<div style="float: left;" class="">
+							<div style="float: left;">
 								<p:outputLabel id="titular" value="Destajos del (sub)contratista: [#{keetCatalogosContratosDestajosFiltro.attrs.figura.puesto}] #{keetCatalogosContratosDestajosFiltro.attrs.figura.nombreCompleto}" styleClass="janal-text-white titular"/>
 							</div>
 							<div class="lg-pantalla">
