@@ -214,18 +214,21 @@
 								<p:menuButton value="Opciones">
 									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+									<p:separator/>
+									<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doAccion}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
 								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasPersonas.doAccion}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 							</div>  
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.tipoConcepto}">
+						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.concepto}">
 							<f:facet name="header">
 								<h:outputText value="Concepto"/>
 							</f:facet>
-							<h:outputText value="#{row['tipoConcepto']}"/>
+							<h:outputText value="#{row['concepto']}"/>
 						</p:column>														
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
 							<f:facet name="header">

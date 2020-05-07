@@ -133,8 +133,29 @@ public class Personas extends IBaseFilter implements Serializable {
 		}	// finally	
 	} // loadEmpresas
 
-  public void doAccion() {
-		
+  public String doAccion() {
+		String regresar           = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			Entity entity= (Entity)this.attrs.get("seleccionado");
+			params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
+			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("nomina", entity.toString("nomina"));
+			params.put("nombreCompleto", entity.toString("nombreCompleto"));
+			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.NOMINA_PERSONA.getProceso(), EExportacionXls.NOMINA_PERSONA.getIdXml(), EExportacionXls.NOMINA_PERSONA.getNombreArchivo()), EExportacionXls.NOMINA_PERSONA, "NOMINA,NOMBRE COMPLETO,CONCEPTO,CLAVE,NOMBRE,VALOR,FECHA"));
+			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;		
   } // doAccion
 
 	private Map<String, Object> toPrepare() {
@@ -211,8 +232,9 @@ public class Personas extends IBaseFilter implements Serializable {
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
 			params.put("idNomina", entity.toLong("idNomina"));
 			params.put("nomina", entity.toString("nomina"));
+			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
-			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.DESTAJO_PERSONA.getProceso(), EExportacionXls.DESTAJO_PERSONA.getIdXml(), EExportacionXls.DESTAJO_PERSONA.getNombreArchivo()), EExportacionXls.DESTAJO_PERSONA, "NOMINA,DESARROLLO,CONTRATO,ETAPA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,COSTO"));
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.NOMINA_PERSONA.getProceso(), EExportacionXls.NOMINA_PERSONA.getIdXml(), EExportacionXls.NOMINA_PERSONA.getNombreArchivo()), EExportacionXls.NOMINA_PERSONA, "NOMINA,NOMBRE COMPLETO,DESARROLLO,CONTRATO,ETAPA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,COSTO"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
 		} // try
@@ -236,6 +258,8 @@ public class Personas extends IBaseFilter implements Serializable {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
 			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("nomina", entity.toString("nomina"));
+			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
       columns= new ArrayList<>();
       columns.add(new Columna("valor", EFormatoDinamicos.MILES_SIN_DECIMALES));
@@ -266,6 +290,7 @@ public class Personas extends IBaseFilter implements Serializable {
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
 			params.put("idNomina", entity.toLong("idNomina"));
 			params.put("nomina", entity.toString("nomina"));
+			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
       columns= new ArrayList<>();
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));

@@ -121,8 +121,10 @@
 			<select id="persona">
 				select
 				  tc_keet_nominas_detalles.id_nomina_detalle as id_key,
+				  '{nomina}' as nomina,
+				  '{nombreCompleto}' as "nombre completo",
 					tc_keet_nominas_conceptos.id_tipo_concepto,
-				  tc_keet_tipos_conceptos.nombre as tipo_concepto,
+				  tc_keet_tipos_conceptos.nombre as concepto,
 					tc_keet_nominas_conceptos.orden,
 					tc_keet_nominas_detalles.clave,
 					tc_keet_nominas_detalles.nombre,
@@ -146,7 +148,8 @@
 				select
 					tc_keet_nominas_rubros.id_nomina_rubro as id_key,
 				  tc_keet_contratos.consecutivo,
-				  {nomina} as nomina,
+				  '{nomina}' as nomina,
+				  '{nombreCompleto}' as "razon social",
 				  tc_keet_desarrollos.nombres as desarrollo,
 				  tc_keet_contratos.clave as contrato,
 				  tc_keet_contratos.etapa,
@@ -177,7 +180,8 @@
 			<select id="destajo">
 				select 
 				  tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista as id_key,
-				  {nomina} as nomina,
+				  '{nomina}' as nomina,
+				  '{nombreCompleto}' as "nombre completo",
 				  tc_keet_contratos.consecutivo,
 				  tc_keet_desarrollos.nombres as desarrollo,
 				  tc_keet_contratos.clave as contrato,

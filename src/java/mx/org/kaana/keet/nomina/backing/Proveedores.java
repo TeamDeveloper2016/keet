@@ -199,8 +199,9 @@ public class Proveedores extends IBaseFilter implements Serializable {
 			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
 			params.put("idNomina", entity.toLong("idNomina"));
 			params.put("nomina", entity.toString("nomina"));
+			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idProveedor", entity.toLong("idProveedor"));
-			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.DESTAJO_PROVEEDOR.getProceso(), EExportacionXls.DESTAJO_PROVEEDOR.getIdXml(), EExportacionXls.DESTAJO_PROVEEDOR.getNombreArchivo()), EExportacionXls.DESTAJO_PROVEEDOR, "NOMINA,DESARROLLO,CONTRATO,ETAPA,LOTE,CODIGO,CONCEPTO,SUBTOTAL,IVA,TOTAL"));
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.DESTAJO_PROVEEDOR.getProceso(), EExportacionXls.DESTAJO_PROVEEDOR.getIdXml(), EExportacionXls.DESTAJO_PROVEEDOR.getNombreArchivo()), EExportacionXls.DESTAJO_PROVEEDOR, "NOMINA,RAZON SOCIAL,DESARROLLO,CONTRATO,ETAPA,LOTE,CODIGO,CONCEPTO,SUBTOTAL,IVA,TOTAL"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
 		} // try
@@ -273,6 +274,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
 			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
 			params.put("idNomina", entity.toLong("idNomina"));
 			params.put("nomina", entity.toString("nomina"));
+			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idProveedor", entity.toLong("idProveedor"));
       columns= new ArrayList<>();
       columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_SIN_DECIMALES));
