@@ -38,7 +38,7 @@
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																							
 								<p:outputLabel for="departamento" value="Departamento:"/>
 								<p:selectOneMenu id="departamento" value="#{keetCatalogosContratosDestajosFiltro.attrs.especialidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosDestajosFiltro.doLoadFiguras}" update="contratista" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosDestajosFiltro.doLoadFiguras}" update="contratista tabla mientras proveedor persona destajo" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.especialidades}"/>
 								</p:selectOneMenu>																
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
@@ -55,8 +55,8 @@
 									</p:selectOneMenu>	
 									<p:panelGrid columns="3" styleClass="janal-wid-100-txt">
   									<p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar destajo" disabled="true" style="display: #{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
-	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoPersona}" process="@this contratista" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
-		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoProveedor}" process="@this contratista" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
+	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoPersona}" process="@this" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
+		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoProveedor}" process="@this" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
 									</p:panelGrid>
 								</p:panelGrid>	
 							</p:panelGrid>										

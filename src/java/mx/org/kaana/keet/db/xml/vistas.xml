@@ -274,7 +274,7 @@
 				  tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo
 				where 
 				  (tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina} or tc_keet_contratos_destajos_proveedores.id_nomina is null) 
-				  and tc_keet_contratos_lotes_contratistas.id_proveedor= {idProveedor}		
+				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
 				  and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
 				{sortOrder}			
 			</select>				

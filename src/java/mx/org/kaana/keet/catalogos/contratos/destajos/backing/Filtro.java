@@ -305,12 +305,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doDestajoPersona() {
     List<Columna> columns       = null;
-		List<UISelectEntity> figuras= null;
-		UISelectEntity figura       = null;
 		Map<String, Object>params   = new HashMap<>();
     try {
-      figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
+      UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");						
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
 		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
@@ -321,7 +318,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoPersona", params, columns);
       UIBackingUtilities.resetDataTable("destajo");
 			this.attrs.put("destajos", true);
-			this.attrs.put("figura", figura);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -335,13 +331,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	public void doDestajoProveedor() {
     List<Columna> columns       = null;
-		List<UISelectEntity> figuras= null;
-		UISelectEntity figura       = null;
 		Map<String, Object>params   = new HashMap<>();
     try {
-      figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
-			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
+			UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");			
+			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
 		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
 			params.put("idProveedor", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
@@ -351,7 +344,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoProveedor", params, columns);
       UIBackingUtilities.resetDataTable("destajo");
 			this.attrs.put("destajos", true);
-			this.attrs.put("figura", figura);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
