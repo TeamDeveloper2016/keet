@@ -70,6 +70,7 @@ public class Personas extends IBaseFilter implements Serializable {
 					this.doLoadDetalle();
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
 				this.attrs.put("idEmpresaPersona", new UISelectEntity(-1L));
+				this.attrs.put("destajos", false);
 		  }
     } // try
     catch (Exception e) {
@@ -211,7 +212,10 @@ public class Personas extends IBaseFilter implements Serializable {
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "persona", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
-			this.doLoadDestajo();
+			Long puesto= entity.toLong("idPuesto");
+			this.attrs.put("destajos", puesto== 6L);
+			if(puesto== 6L)
+			  this.doLoadDestajo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

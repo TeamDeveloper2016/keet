@@ -55,8 +55,8 @@
 									</p:selectOneMenu>	
 									<p:panelGrid columns="3" styleClass="janal-wid-100-txt">
   									<p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar destajo" disabled="true" style="display: #{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
-	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoPersona}" process="@this" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
-		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoProveedor}" process="@this" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
+	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajos}" process="@this" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
+		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajos}" process="@this" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
 									</p:panelGrid>
 								</p:panelGrid>	
 							</p:panelGrid>										

@@ -303,7 +303,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
   } // doCancelar		
 	
-	public void doDestajoPersona() {
+	public void doDestajos() {
     List<Columna> columns       = null;
 		Map<String, Object>params   = new HashMap<>();
     try {
@@ -315,7 +315,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoPersona", params, columns);
+      this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "destajoPersona": "destajoProveedor", params, columns);
       UIBackingUtilities.resetDataTable("destajo");
 			this.attrs.put("destajos", true);
     } // try
@@ -329,32 +329,6 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally				
 	}
 
-	public void doDestajoProveedor() {
-    List<Columna> columns       = null;
-		Map<String, Object>params   = new HashMap<>();
-    try {
-			UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");			
-			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
-		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
-			params.put("idProveedor", figura.getKey().toString().substring(4));
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-      columns= new ArrayList<>();
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoProveedor", params, columns);
-      UIBackingUtilities.resetDataTable("destajo");
-			this.attrs.put("destajos", true);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    finally {
-      Methods.clean(params);
-      Methods.clean(columns);
-    } // finally				
-	}
-	
 	public String doColorNomina(Entity row) {
 		return Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
 	}
