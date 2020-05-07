@@ -2837,10 +2837,10 @@
 					tc_keet_puntos_grupos.descripcion paquete,
 					tc_keet_departamentos.descripcion departamento, 
 					tc_keet_puntos_grupos.registro,
-          puntos_control
+          ifnull(puntos_control, 0) puntos_control
 				from tc_keet_puntos_grupos
 					inner join tc_keet_departamentos on tc_keet_departamentos.id_departamento= tc_keet_puntos_grupos.id_departamento
-					inner join
+					left join
             (select count(*) puntos_control, id_punto_grupo from tc_keet_puntos_controles
              inner join tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
              group by id_punto_grupo
@@ -2892,6 +2892,28 @@
 				inner join tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
 				where
 				  tc_keet_puntos_paquetes.id_punto_grupo= {idPuntoGrupo}
+			</select>
+		</unit>	
+		<unit id="VistaRubrosDto">
+			<select id="lazy">
+				select 
+					tc_keet_rubros.id_rubro id_key,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					ifnull(tc_keet_rubros_grupos.paquetes, 0) paquetes,
+					tc_mantic_empaques.nombre unidad,
+					tc_keet_rubros.registro
+				from
+					tc_keet_rubros
+				left join
+					(select count(*) paquetes, id_rubro from tc_keet_rubros_grupos group by id_rubro) tc_keet_rubros_grupos  on tc_keet_rubros_grupos.id_rubro= tc_keet_rubros.id_rubro
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_keet_rubros.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				where
+				  {condicion}	
+				{sortOrder}	
 			</select>
 		</unit>	
 	</dml>    
