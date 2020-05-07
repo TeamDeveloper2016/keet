@@ -25,7 +25,7 @@ public class Contrato extends TcKeetContratosDto {
 	private String claveDesarrollo;
 	private String desarrollo;		
 	private ESql sqlAccion;
-	private Boolean nuevo;	
+	private Boolean nuevo;		
 
 	public Contrato() {
 		this(-1L);
@@ -201,4 +201,8 @@ public class Contrato extends TcKeetContratosDto {
 		} // for
 		return regresar;
 	}	// addWorkingDays
+
+	public Boolean getPaginator() {
+		return this.lotes.size() > 10;
+	}	
 }	
