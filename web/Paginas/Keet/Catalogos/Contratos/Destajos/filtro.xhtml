@@ -42,16 +42,23 @@
 									<f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.especialidades}"/>
 								</p:selectOneMenu>																
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
-								<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosDestajosFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>									
-									<p:column headerText="Puesto">
-										<h:outputText value="#{item.puesto}"/>
-									</p:column> 
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombreCompleto}"/>
-									</p:column>   
-								</p:selectOneMenu>																	
+								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-96, janal-wid-col-30 janal-column-center">
+									<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosDestajosFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+										<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona" oncomplete="janal.desbloquear();"/>
+										<f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>									
+										<p:column headerText="Puesto">
+											<h:outputText value="#{item.puesto}"/>
+										</p:column> 
+										<p:column headerText="Nombre">
+											<h:outputText value="#{item.nombreCompleto}"/>
+										</p:column>   
+									</p:selectOneMenu>	
+									<p:panelGrid columns="3" styleClass="janal-wid-100-txt">
+  									<p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar destajo" disabled="true" style="display: #{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
+	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoPersona}" process="@form" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
+		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajoProveedor}" process="@form" update="destajo @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
+									</p:panelGrid>
+								</p:panelGrid>	
 							</p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>						
@@ -82,7 +89,59 @@
 								</div>	
 							</f:facet>
 						</p:panel>						
-					</p:dataGrid>	      										
+					</p:dataGrid>	 
+					<p:spacer height="3px"/>
+          <p:dataTable lazy="true" id="destajo" widgetVar="kajoolDestajo" var="row" value="#{keetCatalogosContratosDestajosFiltro.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosFiltro.attrs.destajo}" selectionMode="single" paginator="#{keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount gt keetCatalogosContratosDestajosFiltro.lazyDestajo.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosDestajosFiltro.doColorNomina(row)}" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.destajos? '': 'none'}">
+						<f:facet name="header">
+							<div style="float: left;" class="">
+								<p:outputLabel id="titular" value="Destajos del (sub)contratista: [#{keetCatalogosContratosDestajosFiltro.attrs.figura.puesto}] #{keetCatalogosContratosDestajosFiltro.attrs.figura.nombreCompleto}" styleClass="janal-text-white titular"/>
+							</div>
+							<div class="lg-pantalla">
+								<p:menuButton value="Opciones">
+									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+								</p:menuButton>
+							</div>  
+							<div class="xs-pantalla">              
+								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+							</div>  
+						</f:facet>												
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.lote}">
+							<f:facet name="header">
+								<h:outputText value="Lote"/>
+							</f:facet>
+							<h:outputText value="[#{row['clave']}] #{row['lote']}"/>
+						</p:column>														
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}">
+							<f:facet name="header">
+								<h:outputText value="Etapa"/>
+							</f:facet>
+							<h:outputText value="#{row['etapa']}"/>
+						</p:column>														
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+							<f:facet name="header">
+								<h:outputText value="Código"/>
+							</f:facet>
+							<h:outputText value="#{row['codigo']}"/>
+						</p:column>	
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+							<f:facet name="header">
+								<h:outputText value="Concepto"/>
+							</f:facet>
+							<h:outputText value="#{row['nombre']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.costo}">
+							<f:facet name="header">
+								<h:outputText value="Costo"/>
+							</f:facet>
+							<h:outputText value="#{row['costo']}"/>
+						</p:column>	
+						<f:facet name="footer">
+							<p:outputLabel value="Las filas en color fueron consideradas en la nómina vigente" style="float: left;"/>
+							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosFiltro.lazyDestajo== null? 0: keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount}] registros"/>
+						</f:facet>
+					</p:dataTable>							
         </div>
       </div>
     </div>		           				

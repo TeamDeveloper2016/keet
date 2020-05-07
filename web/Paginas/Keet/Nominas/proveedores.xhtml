@@ -183,6 +183,12 @@
                 <p:commandButton id="detalleNominaPovPdfIcon" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasProveedores.doReporte('NOMINA_SUBCONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
+							<f:facet name="header">
+								<h:outputText value="Desarrollo"/>
+							</f:facet>
+							<h:outputText value="#{row['desarrollo']}"/>
+						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
 							<f:facet name="header">
 								<h:outputText value="Contrato"/>

@@ -14,9 +14,12 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
+import mx.org.kaana.keet.nomina.beans.Nomina;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -36,6 +39,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   private static final long serialVersionUID= 8793667741599428879L;			
 	private RegistroDesarrollo registroDesarrollo;		
 	private List<Entity> lotes;
+	private FormatLazyModel lazyDestajo;
+	private Nomina ultima;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
@@ -52,6 +57,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void setLotes(List<Entity> lotes) {
 		this.lotes = lotes;
 	}
+
+	public FormatLazyModel getLazyDestajo() {
+		return lazyDestajo;
+	}
+
+	public void setLazyDestajo(FormatLazyModel lazyDestajo) {
+		this.lazyDestajo=lazyDestajo;
+	}
 	
   @PostConstruct
   @Override
@@ -63,8 +76,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
-			loadCatalogos();			
+      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
+      this.attrs.put("destajos", false);				
+      this.attrs.put("persona", false);				
+      this.attrs.put("proveedor", false);				
+			this.loadCatalogos();			
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -72,19 +88,23 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos(){
+	private void loadCatalogos() throws Exception {
+		Map<String, Object>params= null;
 		try {
+			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", toDomicilio());			
 			this.loadEspecialidades();			
 			this.doLoadFiguras();
+      params.put("idTipoNomina", "1");
+      this.ultima= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "ultima", params);			
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+    finally {
+			Methods.clean(params);
+		} // finally
 	} // loadCatalogos	
 	
-	private void loadEspecialidades(){
+	private void loadEspecialidades() {
 		List<UISelectItem>especialidades= null;
 		Map<String, Object>params       = null;
 		try {
@@ -94,10 +114,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("especialidades", especialidades);
 			this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 	} // loadEspecialidades
@@ -116,6 +133,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			figuras= UIEntity.seleccione("VistaCapturaDestajosDto", "empleadosAsociados", params, campos, "puesto");
 			this.attrs.put("figuras", figuras);
 			this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
+			this.attrs.put("destajos", false);
+			this.attrs.put("persona", false);
+			this.attrs.put("proveedor", false);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -152,7 +172,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		List<UISelectEntity> figuras= null;
 		UISelectEntity figura       = null;
 		String idXml                = null;
-    try {      
+    try {   
 			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
 			params= new HashMap<>();
@@ -169,6 +189,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.lotes.add(0, this.toLoteDefault());
 				toEstatusManzanaLote();
 			} //
+			this.attrs.put("persona", figura.toLong("tipo").equals(1L));
+			this.attrs.put("proveedor", figura.toLong("tipo").equals(2L));
+			this.attrs.put("figura", figura);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -281,4 +304,67 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+	
+	public void doDestajoPersona() {
+    List<Columna> columns       = null;
+		List<UISelectEntity> figuras= null;
+		UISelectEntity figura       = null;
+		Map<String, Object>params   = new HashMap<>();
+    try {
+      figuras= (List<UISelectEntity>) this.attrs.get("figuras");
+			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
+			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
+			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoPersona", params, columns);
+      UIBackingUtilities.resetDataTable("destajo");
+			this.attrs.put("destajos", true);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally				
+	}
+
+	public void doDestajoProveedor() {
+    List<Columna> columns       = null;
+		List<UISelectEntity> figuras= null;
+		UISelectEntity figura       = null;
+		Map<String, Object>params   = new HashMap<>();
+    try {
+      figuras= (List<UISelectEntity>) this.attrs.get("figuras");
+			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
+			params.put("sortOrder", "order by tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo");
+		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
+			params.put("idProveedor", figura.getKey().toString().substring(4));
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoProveedor", params, columns);
+      UIBackingUtilities.resetDataTable("destajo");
+			this.attrs.put("destajos", true);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally				
+	}
+	
+	public String doColorNomina(Entity row) {
+		return Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
+	}
+
 }

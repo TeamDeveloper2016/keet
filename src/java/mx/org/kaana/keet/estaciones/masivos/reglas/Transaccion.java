@@ -1,7 +1,6 @@
 package mx.org.kaana.keet.estaciones.masivos.reglas;
 
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -26,7 +25,6 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
@@ -245,7 +243,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("codigo", codigo);
-			Value value= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "empaque", params, "idEmpaqueUnidadMedida");
+			Value value= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "unidad", params, "idEmpaqueUnidadMedida");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
 		} // try
