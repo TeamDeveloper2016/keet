@@ -64,7 +64,8 @@
 				currentMarker.setMap(null);
 				PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 				currentMarker= new google.maps.Marker({
-          position: new google.maps.LatLng(lat, lon)
+          position: new google.maps.LatLng(lat, lon),
+					icon:'/KEET/javax.faces.resource/icon/mapa/home-green-grad.png.jsf?ln=janal'
         });                 						
 				PF('wMapa').addOverlay(currentMarker);						
 				updateGeoreferencia(lat, lon);
