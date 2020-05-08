@@ -178,10 +178,10 @@
               <h:outputText value="#{row['global']}" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]" />
             </p:column>
             <p:column class="janal-column-center MarAuto Responsive janal-wid-col-30">
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstatusNomina eq '1'? 'circulo-rojo': row.idEstatusNomina eq '2' or row.idEstatusNomina eq '3'? 'circulo-amarillo' : 'circulo-verde'}.png" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idNominaEstatus eq '1'? 'circulo-verde': row.idNominaEstatus eq '2' or row.idNominaEstatus eq '3'? 'circulo-amarillo' : 'circulo-rojo'}.png" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]"/>
 						</p:column>
             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-30">
-							<p:commandButton icon="fa fa-refresh" process="@this tabla" ajax="false" action="#{keetNominasFiltro.doAccion('COMPLETO')}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}">
+							<p:commandButton icon="fa fa-refresh" process="@this tabla" action="#{keetNominasFiltro.doAccion('REPROCESAR')}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}">
 							  <f:setPropertyActionListener value="#{row}" target="#{keetNominasFiltro.attrs.seleccionado}" />
 							</p:commandButton>
 						</p:column>
@@ -193,10 +193,11 @@
 						<p:menuitem id="personas" action="#{keetNominasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Empleados" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:menuitem id="proveedores" action="#{keetNominasFiltro.doAccion('LISTAR')}" icon="fa fa-search" ajax="false" value="Subcontratistas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
-            <p:menuitem id="reprocesar" action="#{keetNominasFiltro.doAccion('COMPLETO')}" icon="fa fa-refresh" ajax="false" value="Re-procesar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() lt 4? '': 'none'}" />										
-            <p:menuitem id="exportar" actionListener="#{keetNominasFiltro.doExportar}" icon="fa fa-file-excel-o" ajax="false" value="Exportar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>										
+            <p:menuitem id="reprocesar" action="#{keetNominasFiltro.doAccion('REPROCESAR')}" icon="fa fa-refresh" ajax="false" value="Re-procesar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() lt 4? '': 'none'}" />										
 						<p:separator rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus eq '2'}"/>
 						<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus eq '3'}"/>
+						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+            <p:menuitem id="exportar" action="#{keetNominasFiltro.doExportar}" icon="fa fa-file-excel-o" ajax="false" value="Exportar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>										
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
             <p:menuitem id="reporte" actionListener="#{keetNominasFiltro.doReporte}" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
           </p:contextMenu>

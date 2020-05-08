@@ -141,17 +141,17 @@
 										<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</div>  
 								</f:facet>												
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.sucursal}">
 									<f:facet name="header">
 										<h:outputText value="Sucursal"/>
 									</f:facet>
-									<h:outputText value="#{row['nombreEmpresa']}"/>
+									<h:outputText value="#{row['sucursal']}"/>
 								</p:column>														
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.nomina}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.tipo}">
 									<f:facet name="header">
-										<h:outputText value="Nomina"/>
+										<h:outputText value="Tipo"/>
 									</f:facet>
-									<h:outputText value="#{row['nomina']}"/>
+									<h:outputText value="#{row['tipo']}"/>
 								</p:column>														
 								<p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.clave}">
 									<f:facet name="header">
@@ -159,11 +159,11 @@
 									</f:facet>
 									<h:outputText value="#{row['clave']}"/>
 								</p:column>														
-								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreCompleto}">
+								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
 									<f:facet name="header">
 										<h:outputText value="Nombre"/>
 									</f:facet>
-									<h:outputText value="#{row['nombreCompleto']}"/>
+									<h:outputText value="#{row['nombre']}"/>
 								</p:column>
 								<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.apodo}">
 									<f:facet name="header">
@@ -171,11 +171,11 @@
 									</f:facet>
 									<h:outputText value="#{row['apodo']}"/>
 								</p:column>														
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.sueldo}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
 									<f:facet name="header">
-										<h:outputText value="Sueldo"/>
+										<h:outputText value="Importe"/>
 									</f:facet>
-									<h:outputText value="#{row['sueldo']}"/>
+									<h:outputText value="#{row['importe']}"/>
 								</p:column>	
 								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-80">
 									<p:commandButton icon="fa fa-refresh" process="@this tabla" update="tabla @(.nominas)" action="#{keetNominasAccion.doAccion}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">

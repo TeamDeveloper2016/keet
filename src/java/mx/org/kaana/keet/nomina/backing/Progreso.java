@@ -47,17 +47,19 @@ public class Progreso extends IBaseAttribute implements Serializable {
 			this.attrs.put("idNomina", idNomina);
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.monitoreo= JsfBase.getAutentifica().getMonitoreo();
-      this.attrs.put("value", this.monitoreo.getPorcentaje());
-      this.attrs.put("cancelar", this.monitoreo.isCorriendo());
-			if(Cadena.isVacio(idNomina)) {
+      this.attrs.put("value", "0");
+      this.attrs.put("cancelar", false);
+			if(!Cadena.isVacio(idNomina)) {
 				params.put("idNomina", idNomina);
-				params.put("sucursales", this.attrs.get("sucursales"));
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 				Nomina nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "nomina", params);			
 				Value value= DaoFactory.getInstance().toField("VistaNominaDto", nomina.getIdTipoNomina()== 1L? "ordinaria": "complementaria", params, "tuplas");
 				if(value!= null && value.getData()!= null)
 					this.attrs.put("tuplas", value.toLong());
 				UIBackingUtilities.execute("procesar();");
 			} // if
+			else 
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -199,7 +199,7 @@ public class Accion extends IBaseFilter implements Serializable {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by nomina, clave");
       columns= new ArrayList<>();
-      columns.add(new Columna("sueldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaNominaDto", "detalle", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try

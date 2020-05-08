@@ -323,17 +323,20 @@
 				select
 					tc_keet_nominas_personas.id_nomina_persona as id_key,
 					tc_keet_nominas.id_nomina,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
 				  tc_keet_nominas.id_nomina_estatus,
-					tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_empresas.nombre as sucursal,  
 				  1 as id_tipo_proceso,
 				  tr_mantic_empresa_personal.id_empresa_persona as id_persona_reprocesar,
-					'PERSONAL' as nomina,
+					'PERSONAL' as tipo,
 					tr_mantic_empresa_personal.clave,
-					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre,
 					tc_mantic_personas.apodo,
-					tc_keet_nominas_personas.neto as sueldo
+					tc_keet_nominas_personas.neto as importe
 				from
 					tc_keet_nominas
+				inner join
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
 				inner join 
 					tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
 				inner join 
@@ -349,17 +352,20 @@
 				select
 					tc_keet_nominas_proveedores.id_nomina_proveedor as id_key,
 					tc_keet_nominas.id_nomina,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
 				  tc_keet_nominas.id_nomina_estatus,
-					tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_empresas.nombre as sucursal,  
 				  2 as id_tipo_proceso,
 				  tc_mantic_proveedores.id_proveedor as id_persona_reprocesar,
-					'SUBCONTRATISTA' as nomina,
+					'SUBCONTRATISTA' as tipo,
 					tc_mantic_proveedores.clave,
-					tc_mantic_proveedores.razon_social as nombre_completo,
+					tc_mantic_proveedores.razon_social as nombre,
 					tc_mantic_proveedores.rfc as apodo,
-					tc_keet_nominas_proveedores.total as sueldo
+					tc_keet_nominas_proveedores.total as importe
 				from
 					tc_keet_nominas
+				inner join
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
 				inner join 
 					tc_keet_nominas_proveedores on tc_keet_nominas.id_nomina= tc_keet_nominas_proveedores.id_nomina
 				inner join 

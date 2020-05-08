@@ -26,7 +26,7 @@
 		</script>	
 	</ui:define>	
   <ui:define name="contenido">
-		<p:poll autoStart="true" interval="3" global="true" process="@this" update="@(.filas)" listener="#{keetNominasProgreso.doProgreso}" stop="#{not keetNominasProgreso.attrs.cancelar}"/>
+		<p:poll autoStart="true" interval="1" global="true" process="@this" update="@(.filas)" listener="#{keetNominasProgreso.doProgreso}" stop="#{not keetNominasProgreso.attrs.cancelar}"/>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
@@ -46,17 +46,6 @@
       </div>
   		<br/>
       <div class="ui-grid-row janal-grid-row">
-        <div id="collapse-content" class="ui-grid-col-4 janal-column-left">
-					<p:outputLabel value="0"/>
-        </div>
-        <div id="collapse-content" class="ui-grid-col-4 janal-column-center">
-					<p:outputLabel value="#{keetNominasProgreso.doNumerico(keetNominasProgreso.monitoreo.progreso)}" styleClass="filas janal-color-blue"/>
-        </div>
-        <div id="collapse-content" class="ui-grid-col-4 janal-column-right">
-					<p:outputLabel value="#{keetNominasProgreso.doNumerico(keetNominasProgreso.monitoreo.total)}"/>
-        </div>
-      </div>
-      <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
           <span class="FontBold janal-color-orange">Registros a procesar en la nómina:</span> <p:outputLabel id="tuplas" value="[#{keetNominasProgreso.attrs.tuplas}]" styleClass="nominas janal-color-orange FontBold janal-steps-boton-siguiente"/>
           <p:progressBar interval="500" styleClass="animate" labelTemplate="Avance: [{index} de {count}]  ...  {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true"/>
@@ -70,11 +59,11 @@
   <ui:define name="acciones">
   	<div class="lg-pantalla">
   		<p:commandButton id="aceptar" process="@this" update="cancelar @(.filas)" icon="fa fa-remove" value="Cancelar" styleClass="filas" action="#{keetNominasProgreso.doCancelar}" style="display: #{keetNominasProgreso.attrs.cancelar? '': 'none'}"/>
-	  	<p:commandButton id="cancelar" process="@this" update="cancelar @(.filas)" icon="fa fa-reply" value="Regresar" styleClass="filas" action="#{keetNominasProgreso.doRegresar}" style="display: #{keetNominasProgreso.attrs.cancelar? 'none': ''}"/>
+	  	<p:commandButton id="cancelar" process="@this" ajax="false" update="cancelar @(.filas)" icon="fa fa-reply" value="Regresar" styleClass="filas" action="#{keetNominasProgreso.doRegresar}" style="display: #{keetNominasProgreso.attrs.cancelar? 'none': ''}"/>
 		</div>
   	<div class="xs-pantalla">
   		<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-remove" title="Cancelar" styleClass="filas" action="#{keetNominasProgreso.doCancelar}" style="display: #{keetNominasProgreso.attrs.cancelar? '': 'none'}"/>
-	  	<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-reply" title="Regresar" styleClass="filas" action="#{keetNominasProgreso.doRegresar}" style="display: #{keetNominasProgreso.attrs.cancelar? 'none': ''}"/>
+	  	<p:commandButton process="@this" ajax="false" update="cancelar @(.filas)" icon="fa fa-reply" title="Regresar" styleClass="filas" action="#{keetNominasProgreso.doRegresar}" style="display: #{keetNominasProgreso.attrs.cancelar? 'none': ''}"/>
 		</div>		
   </ui:define>   
   <ui:param name="componenteBloqueo" value="aceptar cancelar"/>
