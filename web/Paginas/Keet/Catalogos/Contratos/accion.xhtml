@@ -32,7 +32,8 @@
 						lon= position.coords.longitude.toString();												
 						PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 						currentMarker = new google.maps.Marker({
-              position: new google.maps.LatLng(lat, lon)
+              position: new google.maps.LatLng(lat, lon),
+							icon:'/KEET/javax.faces.resource/icon/mapa/home-red-grad.png.jsf?ln=janal'
             });                 						
 						PF('wMapa').addOverlay(currentMarker);					
 						updateInitGeo(lat,lon);						
@@ -48,7 +49,8 @@
 				if ("geolocation" in navigator){ 															
 					PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 					currentMarker = new google.maps.Marker({
-						position: new google.maps.LatLng(lat, lon)
+						position: new google.maps.LatLng(lat, lon),
+						icon:'/KEET/javax.faces.resource/icon/mapa/home-green-grad.png.jsf?ln=janal'
 					});                 						
 					PF('wMapa').addOverlay(currentMarker);											
 					updateGeoreferencia(lat, lon);
