@@ -60,17 +60,21 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="atributos")
   private String atributos;
+  @Column (name="latitud")
+  private String latitud;
+  @Column (name="longitud")
+  private String longitud;
 
   public TcKeetContratosLotesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetContratosLotesDto(Long key) {
-    this(null, null, LocalDate.now(), null, LocalDate.now(), null, null, null, new Long(-1L), null, null, null, null, null);
+    this(null, null, LocalDate.now(), null, LocalDate.now(), null, null, null, new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate fechaInicio, Long lote, LocalDate fechaTermino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos) {
+  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate fechaInicio, Long lote, LocalDate fechaTermino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud) {
     setManzana(manzana);
     setClave(clave);
     setFechaInicio(fechaInicio);
@@ -86,6 +90,8 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     setIdPrototipo(idPrototipo);
     setOrden(orden);
     setAtributos(atributos);
+		setLatitud(latitud);
+		setLongitud(longitud);
   }
 	
   public void setManzana(String manzana) {
@@ -208,6 +214,22 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     return atributos;
   }
 
+	public String getLatitud() {
+		return latitud;
+	}
+
+	public void setLatitud(String latitud) {
+		this.latitud = latitud;
+	}
+
+	public String getLongitud() {
+		return longitud;
+	}
+
+	public void setLongitud(String longitud) {
+		this.longitud = longitud;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -252,6 +274,10 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getAtributos());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLatitud());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLongitud());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -274,13 +300,15 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
 		regresar.put("idPrototipo", getIdPrototipo());
 		regresar.put("orden", getOrden());
 		regresar.put("atributos", getAtributos());
+		regresar.put("latitud", getLatitud());
+		regresar.put("longitud", getLongitud());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getManzana(), getClave(), getFechaInicio(), getLote(), getFechaTermino(), getRegistro(), getIdUsuario(), getIdContrato(), getIdContratoLoteEstatus(), getIdContratoLote(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos()
+			getManzana(), getClave(), getFechaInicio(), getLote(), getFechaTermino(), getRegistro(), getIdUsuario(), getIdContrato(), getIdContratoLoteEstatus(), getIdContratoLote(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos(), getLatitud(), getLongitud()
     };
     return regresar;
   }
@@ -338,7 +366,4 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdContratoLote() != null ? getIdContratoLote().hashCode() : 0);
     return hash;
   }
-
 }
-
-
