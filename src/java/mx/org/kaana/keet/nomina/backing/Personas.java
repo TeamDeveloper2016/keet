@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.libs.Constantes;
@@ -29,7 +30,11 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EExportacionXls;
+import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.xml.Dml;
 
 @Named(value = "keetNominasPersonas")
 @ViewScoped
@@ -39,6 +44,11 @@ public class Personas extends IBaseFilter implements Serializable {
 
 	private FormatLazyModel lazyDetalle;
 	private FormatLazyModel lazyDestajo;
+   protected Reporte reporte;
+	
+	public Reporte getReporte() {
+		return reporte;
+	}
 
 	public FormatLazyModel getLazyDetalle() {
 		return lazyDetalle;
@@ -248,8 +258,58 @@ public class Personas extends IBaseFilter implements Serializable {
 		return regresar;		
 	}	
 	
-	public void doReporte() {
-	}
+		public void doReporte(String nombre) throws Exception {    
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;    
+    Map<String, Object>params    = null;
+    Parametros comunes           = null;
+    Entity entity                = null;
+    Map<String,Object>paramsPpal = null;
+    try {
+      paramsPpal= this.toPrepare();	
+      params= new HashMap<>();  
+      entity= (Entity)this.attrs.get("seleccionado");
+			paramsPpal.put("sortOrder", "order by nomina desc");
+      paramsPpal.put(Constantes.SQL_CONDICION, "tc_keet_nominas_personas.id_nomina= ".concat(entity.toLong("idNomina").toString()).concat(" and tc_keet_nominas_personas.id_empresa_persona= ").concat(entity.toLong("idEmpresaPersona").toString()));
+      reporteSeleccion= EReportes.valueOf(nombre);  
+      params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
+			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
+			comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
+      parametros.put("SQL_UNO", Dml.getInstance().getSelect("VistaNominaConsultasDto", "persona", params));
+      params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+      parametros.put("SQL_DOS", Dml.getInstance().getSelect("VistaNominaConsultasDto", "destajo", params));
+      parametros.put(Constantes.TILDE.concat("SUBREPORTE_1"), "/Paginas/Keet/Nominas/Reportes/detallePersona_subreport1.jasper");
+      parametros.put(Constantes.TILDE.concat("SUBREPORTE_2"), "/Paginas/Keet/Nominas/Reportes/detallePersona_subreport2.jasper");
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, paramsPpal, parametros));		
+      if(doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte 
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		if(this.reporte.getTotal()> 0L) {
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else {
+			UIBackingUtilities.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
 	
   public void doLoadDetalle() {
     List<Columna> columns    = null;
