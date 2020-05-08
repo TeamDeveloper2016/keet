@@ -79,6 +79,7 @@
 				select
 					tc_keet_nominas_rubros.id_nomina_rubro as id_key,
 				  tc_keet_contratos.consecutivo,
+          tc_keet_desarrollos.nombres as desarrollo,
 				  tc_keet_contratos.clave,
 				  tc_keet_contratos.etapa,
 					tc_keet_nominas_rubros.lote,
@@ -112,6 +113,10 @@
           tc_keet_contratos_lotes on tc_keet_nominas_rubros.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
         inner join
           tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+        inner join
+				  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join
+				  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         where
           tc_keet_nominas_proveedores.id_nomina= {idNomina}      
           and tc_keet_nominas_rubros.id_nomina_proveedor= {idNominaProveedor}	
@@ -124,6 +129,7 @@
   				concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
 					tc_keet_nominas.id_nomina,
 				  tc_keet_nominas.id_nomina_estatus,
+          tc_keet_desarrollos.nombres as desarrollo,
 					departamentos.id_departamentos,
 					departamentos.departamento,
 				  tc_mantic_proveedores.id_proveedor,
@@ -172,6 +178,10 @@
           tc_keet_contratos_lotes on tc_keet_nominas_rubros.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
 	      inner join
           tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+        inner join
+				  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join
+				  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         where
           {condicion}
 				order by  tc_mantic_proveedores.id_proveedor,departamentos.departamento, tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo
