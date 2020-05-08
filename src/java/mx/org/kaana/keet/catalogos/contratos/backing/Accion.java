@@ -82,7 +82,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 	
-	private void loadCombos(){
+	private void loadCombos() {
 		try {
 			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
@@ -96,7 +96,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
 	} // loadCombos
 	
-	public void doLoadPrototipos(){
+	public void doLoadPrototipos() {
 		try {
 			loadPrototipos();
 			this.contrato.getContrato().validaPrototipos((List<UISelectItem>)this.attrs.get("prototipos"));
@@ -107,7 +107,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
 	} // doLoadPrototipos
 	
-	private void loadPrototipos(){
+	private void loadPrototipos() {
 	  try {
 			this.attrs.put("idCliente", ((TcKeetProyectosDto)DaoFactory.getInstance().findById(TcKeetProyectosDto.class, this.contrato.getContrato().getIdProyecto())).getIdCliente());
       this.prototipos= UISelect.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre");
@@ -203,7 +203,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doGeoreferencia	
 	
-	public void doExistGeo(){
+	public void doExistGeo() {
 		Lote lote= null;
 		try {
 			lote= (Lote) this.attrs.get("loteGeoreferencia");
@@ -247,7 +247,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
   } // doMarkerDrag
 	
-	public void doAceptarGeo(){
+	public void doAceptarGeo() {
 		Lote lote= null;
 		try {
 			lote= (Lote) this.attrs.get("loteGeoreferencia");		
@@ -268,7 +268,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doAceptarGeo	
 	
-	public void doCancelarGeo(){		
+	public void doCancelarGeo() {		
 		try {			
 			this.attrs.put("mostrarGeo", false);
 		} // try
@@ -277,4 +277,5 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doCancelarGeo
+	
 }
