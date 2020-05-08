@@ -10,24 +10,16 @@ public class Lote extends TcKeetContratosLotesDto implements Comparable{
 
 	private static final long serialVersionUID = 5298362168423293347L;	
 	private UISelectEntity ikPrototipo;
-	private UISelectEntity ikFachada;
-	private String latitud;
-	private String longitud;	
+	private UISelectEntity ikFachada;	
 	private ESql accion;
 
 	public Lote() {
-		this(ESql.UPDATE, -1L, null, null);
+		this(ESql.UPDATE, -1L);
 	}
 
 	public Lote(ESql accion, Long key) {
-		this(accion, key, null, null);
-	}
-	
-	public Lote(ESql accion, Long key, String latitud, String longitud) {
 		super(key);
-		this.accion  = accion;
-		this.latitud = latitud;
-		this.longitud= longitud;
+		this.accion= accion;		
 	}
 	
 	public UISelectEntity getIkPrototipo() {
@@ -62,24 +54,8 @@ public class Lote extends TcKeetContratosLotesDto implements Comparable{
 		return !this.accion.equals(ESql.DELETE);
 	}
 
-	public String getLatitud() {
-		return latitud;
-	}
-
-	public void setLatitud(String latitud) {
-		this.latitud = latitud;
-	}
-
-	public String getLongitud() {
-		return longitud;
-	}
-
-	public void setLongitud(String longitud) {
-		this.longitud = longitud;
-	}	
-	
 	public String getGeoreferencia() {
-		return !Cadena.isVacio(this.latitud) && !Cadena.isVacio(this.longitud) ? "circulo-verde" : "circulo-rojo";
+		return !Cadena.isVacio(getLatitud()) && !Cadena.isVacio(getLongitud()) ? "circulo-verde" : "circulo-rojo";
 	}	
 	
 	@Override
