@@ -20,34 +20,72 @@
 
 			$(document).ready(function () {
 				janal.readingMode('#{keetCatalogosContratosAccion.attrs.nombreAccion}');
-			});
+			});		
 			
-			function updateLocalization(){								
+			var currentMarker;
+			
+			function initLocalization(){								
 				if ("geolocation" in navigator){ 
 					navigator.geolocation.getCurrentPosition(function(position){ 
-						var lat, lon, currentMarker;
+						var lat, lon;
 						lat= position.coords.latitude.toString();
-						lon= position.coords.longitude.toString();						
-						//console.log("Found your location nLat : "+position.coords.latitude+" nLang :"+ position.coords.longitude);
+						lon= position.coords.longitude.toString();												
 						PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 						currentMarker = new google.maps.Marker({
               position: new google.maps.LatLng(lat, lon)
             });                 						
-						PF('wMapa').addOverlay(currentMarker);						
+						PF('wMapa').addOverlay(currentMarker);					
+						updateInitGeo(lat,lon);						
+						updateGeoreferencia(lat,lon);						
 					}); // navigator
 				} // if
 				else{
 					console.log("Browser doesn't support geolocation!");
 				} // else				
-			} // updateLocalization
+			} // initLocalization
+			
+			function existLocalization(lat, lon){								
+				if ("geolocation" in navigator){ 															
+					PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+					currentMarker = new google.maps.Marker({
+						position: new google.maps.LatLng(lat, lon)
+					});                 						
+					PF('wMapa').addOverlay(currentMarker);											
+					updateGeoreferencia(lat, lon);
+				} // if
+				else{
+					console.log("Browser doesn't support geolocation!");
+				} // else				
+			} // existLocalization
+			
+			function updateLocalization(lat, lon){								
+				currentMarker.setMap(null);
+				PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+				currentMarker= new google.maps.Marker({
+          position: new google.maps.LatLng(lat, lon)
+        });                 						
+				PF('wMapa').addOverlay(currentMarker);						
+				updateGeoreferencia(lat, lon);
+			} // updateLocalization						
+			
+			function updateGeoreferencia(lat, lon){
+				$('#contenedorGrupos\\:latitud').text(lat);
+				$('#contenedorGrupos\\:longitud').text(lon);
+				$('#contenedorGrupos\\:latitud').val(lat);
+				$('#contenedorGrupos\\:longitud').val(lon);				
+			} // updateGeoreferencia						
 		</script>
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="updateInitGeo" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doInitGeo}">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
+			<pe:methodParam name="latitud"/>  
+			<pe:methodParam name="longitud"/>  
+		</pe:remoteCommand>		
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<p:tabView id="contenedorGrupos">
-						<!--p:ajax event="tabChange" oncomplete="updateLocalization();" update="contenedorGrupos:mapa"/-->						
+					<p:tabView id="contenedorGrupos">						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">		
                 <p:outputLabel for="clave" value="Clave:"/>
@@ -74,19 +112,16 @@
               </p:panelGrid>
 						</p:tab>		
 						<p:tab id="tabSiembra" title="Siembra">	
-							<p:remoteCommand name="executeGeo" oncomplete="updateLocalization();" update="tabSiembra"/>
-							<p:remoteCommand name="executeLotes" update="contenedorGrupos"/>
-							<p:dataTable id="tablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosContratosAccion.contrato.contrato.lotes}" rows="10" paginator="#{keetCatalogosContratosAccion.contrato.contrato.paginator}" reflow="true" rowKey="#{lote.key}" emptyMessage=" " styleClass="paginated" paginatorPosition="bottom" rendered="#{!keetCatalogosContratosAccion.attrs.mostrarGeo}">
+							<p:remoteCommand name="executeGeo" oncomplete="initLocalization();"/>
+							<p:remoteCommand name="executeExistGeo" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doExistGeo}"/>														
+							<p:dataTable id="tablaLotes" widgetVar="wTablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosContratosAccion.contrato.contrato.lotes}" rows="10" paginator="#{keetCatalogosContratosAccion.contrato.contrato.paginator}" reflow="true" rowKey="#{lote.key}" emptyMessage=" " styleClass="paginated style-panel" paginatorPosition="bottom" rendered="#{!keetCatalogosContratosAccion.attrs.mostrarGeo}">
 								<p:column  headerText="Codigo">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.clave}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
 								<p:column  headerText="Prototipo" class="janal-wid-30">										
-									<p:selectOneMenu rendered="#{lote.mostar}" value="#{lote.ikPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-										<f:selectItems value="#{keetCatalogosContratosAccion.attrs.prototipos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-										<p:ajax event="change" listener="#{keetCatalogosContratosAccion.contrato.contrato.doCalculateFecha(lote)}" process="@this tablaLotes" update="tablaLotes" />
-										<p:column headerText="Nombre">
-											<h:outputText value="#{item.nombre}"/>
-										</p:column>  
+									<p:selectOneMenu rendered="#{lote.mostar}" value="#{lote.idPrototipo}" styleClass="janal-wid-100-txt" converter="janal.convertidor.EnteroLargo">
+										<f:selectItems value="#{keetCatalogosContratosAccion.prototipos}"/>
+										<p:ajax event="change" listener="#{keetCatalogosContratosAccion.contrato.contrato.doCalculateFecha(lote)}" process="@this tablaLotes" update="tablaLotes" />										
 									</p:selectOneMenu>			
 								</p:column>	                  
 								<p:column  headerText="Fecha inicio" class="janal-wid-20">										
@@ -107,11 +142,8 @@
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.lote}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
 								<p:column  headerText="Tipo de fachada" class="janal-wid-30">										
-									<p:selectOneMenu rendered="#{lote.mostar}" value="#{lote.ikFachada}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-										<f:selectItems value="#{keetCatalogosContratosAccion.attrs.fachadas}"  var="element" itemValue="#{element}" itemLabel="#{element.grupo} - #{element.nombre}"/>
-										<p:column headerText="Nombre">
-											<h:outputText value="#{item.nombre}"/>
-										</p:column>  
+									<p:selectOneMenu rendered="#{lote.mostar}" value="#{lote.idTipoFachada}" styleClass="janal-wid-100-txt" converter="janal.convertidor.EnteroLargo">
+										<f:selectItems value="#{keetCatalogosContratosAccion.fachadas}"/>										
 									</p:selectOneMenu>			
 								</p:column>	                  
 								<p:column  headerText="Atributos" >										
@@ -121,7 +153,7 @@
 									<h:graphicImage library="janal" name="icon/semaforos/#{lote.georeferencia}.png"/>
 								</p:column>	
 								<p:column class="janal-wid-col-100 janal-column-center">										
-									<p:commandButton icon="fa fa-map-marker" title="Georeferencia" actionListener="#{keetCatalogosContratosAccion.doGeoreferencia(lote)}" oncomplete="executeGeo();" update="@(.style-panel)"/>
+									<p:commandButton icon="fa fa-map-marker" title="Georeferencia" process="contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doGeoreferencia(lote)}" update="contenedorGrupos"/>
 									<p:commandButton rendered="#{lote.mostar}" update="tablaLotes" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosContratosAccion.contrato.contrato.doRemoveLote}">
 										<f:setPropertyActionListener value="#{lote}" target="#{keetCatalogosContratosAccion.contrato.contrato.loteSeleccion}" />
 									</p:commandButton>
@@ -130,23 +162,30 @@
 									<p:commandButton actionListener="#{keetCatalogosContratosAccion.contrato.contrato.doAddLote}" process="@this tablaLotes" update="tablaLotes" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
 								</f:facet>
 							</p:dataTable>															
-							<p:panel header="Georeferencia siembra" rendered="#{keetCatalogosContratosAccion.attrs.mostrarGeo}">
-								<p:outputLabel value="Manzana:" styleClass="style-panel FontBold" />
-								<p:inputText value="#{keetCatalogosContratosAccion.attrs.loteGeoreferencia.manzana}" styleClass="style-panel janal-wid-100-txt" readonly="true"/>
-								<p:outputLabel value="Lote:" styleClass="style-panel FontBold"/>
-								<p:inputText value="#{keetCatalogosContratosAccion.attrs.loteGeoreferencia.lote}" styleClass="style-panel janal-wid-100-txt" readonly="true"/>
+							<p:panel id="panelGeoreferencia" header="Georeferencia siembra" rendered="#{keetCatalogosContratosAccion.attrs.mostrarGeo}" styleClass="style-panel">
+								<p:outputLabel value="Manzana:" styleClass="FontBold" />
+								<p:inputText value="#{keetCatalogosContratosAccion.attrs.loteGeoreferencia.manzana}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Lote:" styleClass="FontBold"/>
+								<p:inputText value="#{keetCatalogosContratosAccion.attrs.loteGeoreferencia.lote}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<div class="janal-line-button">
 									<div class="lg-pantalla janal-column-right">
-										<p:commandButton value="Aceptar" iconPos="left" styleClass="janal-text-white" accesskey="z" icon="fa fa-check" process="@this tabSiembra" actionListener="#{keetCatalogosContratosAccion.doAceptarGeo}" oncomplete="executeLotes();"/>										
-										<p:commandButton value="Cancelar" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" actionListener="#{keetCatalogosContratosAccion.doCancelarGeo}" oncomplete="executeLotes();"/>
+										<p:commandButton value="Aceptar" iconPos="left" styleClass="janal-text-white" accesskey="z" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doAceptarGeo}" update="contenedorGrupos"/>										
+										<p:commandButton value="Cancelar" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" actionListener="#{keetCatalogosContratosAccion.doCancelarGeo}" update="contenedorGrupos"/>
 									</div>
 									<div class="xs-pantalla janal-column-right">
-										<p:commandButton title="Aceptar cambios" iconPos="left" styleClass="janal-text-whit" accesskey="z" icon="fa fa-check" process="@this tabSiembra" actionListener="#{keetCatalogosContratosAccion.doAceptarGeo}" oncomplete="executeLotes();"/>										
-										<p:commandButton title="Cancelar cambios" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" actionListener="#{keetCatalogosContratosAccion.doCancelarGeo}" oncomplete="executeLotes();"/>
+										<p:commandButton title="Aceptar cambios" iconPos="left" styleClass="janal-text-whit" accesskey="z" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doAceptarGeo}" update="contenedorGrupos"/>										
+										<p:commandButton title="Cancelar cambios" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" actionListener="#{keetCatalogosContratosAccion.doCancelarGeo}" update="contenedorGrupos"/>
 									</div>
-								</div>
-							</p:panel>							
-							<p:gmap id="mapa" widgetVar="wMapa" center="21.8818,-102.291" zoom="75" type="HYBRID" style="width:100%;height:500px" styleClass="style-panel" rendered="#{keetCatalogosContratosAccion.attrs.mostrarGeo}" streetView="true"/>							
+								</div>									
+							</p:panel>																					
+							<p:gmap id="mapa" widgetVar="wMapa" center="21.8818,-102.291" zoom="75" type="HYBRID" style="width:100%;height:500px" rendered="#{keetCatalogosContratosAccion.attrs.mostrarGeo}" streetView="true" styleClass="style-panel">
+								<p:ajax event="pointSelect" listener="#{keetCatalogosContratosAccion.onPointSelect}"/>
+							</p:gmap>	
+							<p:panelGrid id="panelCoordenadas" columns="3" rendered="#{keetCatalogosContratosAccion.attrs.mostrarGeo}" styleClass="style-panel">
+								<p:outputLabel id="latitud" value="#{keetCatalogosContratosAccion.attrs.latitud}" styleClass="FontBold"/>
+								<p:outputLabel value="," styleClass="FontBold"/>
+								<p:outputLabel id="longitud" value="#{keetCatalogosContratosAccion.attrs.longitud}" styleClass="FontBold"/>
+							</p:panelGrid>	
 						</p:tab>	
 						<p:tab title="Ordenar siembra" rendered="false">	
 							<p:orderList id="loteOrden" var="loteOrden"  value="#{keetCatalogosContratosAccion.contrato.contrato.lotes}"  itemValue="M#{loteOrden.manzana}-L#{loteOrden.lote}" controlsLocation="none" >
