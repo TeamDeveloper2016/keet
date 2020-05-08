@@ -195,6 +195,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			this.attrs.put("loteGeoreferencia", lote);			
 			this.attrs.put("mostrarGeo", true);						
+			this.attrs.put("latitudAnterior", lote.getLatitud());						
+			this.attrs.put("longitudAnterior", lote.getLongitud());						
 			UIBackingUtilities.execute(Cadena.isVacio(lote.getLatitud()) || Cadena.isVacio(lote.getLongitud()) ? "executeGeo();" : "executeExistGeo();");			
 		} // try
 		catch (Exception e) {
@@ -269,7 +271,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // doAceptarGeo	
 	
 	public void doCancelarGeo() {		
-		try {			
+		Lote lote= null;
+		try {
+			if(this.attrs.get("latitudAnterior")!= null && this.attrs.get("longitudAnterior")!= null){
+				lote= (Lote) this.attrs.get("loteGeoreferencia");		
+				this.contrato.getContrato().getLotes().get(this.contrato.getContrato().getLotes().indexOf(lote)).setLatitud(this.attrs.get("latitudAnterior").toString());
+				this.contrato.getContrato().getLotes().get(this.contrato.getContrato().getLotes().indexOf(lote)).setLongitud(this.attrs.get("longitudAnterior").toString());			
+			} // if
 			this.attrs.put("mostrarGeo", false);
 		} // try
 		catch (Exception e) {
@@ -277,5 +285,4 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doCancelarGeo
-	
 }
