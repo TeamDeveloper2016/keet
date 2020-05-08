@@ -304,7 +304,8 @@
 					tc_keet_nominas.total,
 					tc_keet_nominas.personas,
 					tc_keet_nominas.neto,
-				  (tc_keet_nominas.neto+ tc_keet_nominas.total) as global
+				  (tc_keet_nominas.neto+ tc_keet_nominas.total) as global,
+				  tc_keet_nominas_estatus.estatus_asociados
 				from
 					tc_keet_nominas
 				inner join 

@@ -1190,7 +1190,18 @@
         where      
           nombre = '{nombre}'
       </select>
-    </unit>		
+      <select id="estatus">
+        select      
+				  tc_keet_nominas_estatus.id_nomina_estatus as id_key,
+          tc_keet_nominas_estatus.*
+        from      
+          tc_keet_nominas_estatus
+        where 				  
+				  id_nomina_estatus in ({estatusAsociados})
+				order by 
+				  id_nomina_estatus
+      </select>    
+		</unit>		
     <unit id="TcKeetNominasPeriodosDto">
       <select id="row">
         select      

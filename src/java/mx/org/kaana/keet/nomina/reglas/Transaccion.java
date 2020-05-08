@@ -59,8 +59,9 @@ public class Transaccion extends IBaseTnx {
 		this(idNomina, autentifica, -1L, -1L);
 	}
 
-	public Transaccion(Long idNomina, TcKeetNominasBitacoraDto bitacora) {
+	public Transaccion(Long idNomina, Autentifica autentifica, TcKeetNominasBitacoraDto bitacora) {
 		this.idNomina= idNomina;
+		this.autentifica= autentifica;
 		this.bitacora= bitacora;
 	}
 
@@ -148,7 +149,15 @@ public class Transaccion extends IBaseTnx {
 								JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 								0D // Double percepciones
 							);
-							DaoFactory.getInstance().update(sesion, siguiente);
+							DaoFactory.getInstance().insert(sesion, siguiente);
+							this.bitacora= new TcKeetNominasBitacoraDto(
+								"APERTURA DE NOMINA AUTOMATICO", // String justificacion, 
+								1l, // Long idNominaEstatus, 
+								JsfBase.getIdUsuario(), // Long idUsuario, 
+								-1L, // Long idNominaBitacora, 
+								siguiente.getIdNomina()// Long idNomina
+							);		
+							DaoFactory.getInstance().insert(sesion, bitacora);
 						} // if
 					} // if
 					break;

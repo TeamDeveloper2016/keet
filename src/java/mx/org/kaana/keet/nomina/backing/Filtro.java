@@ -231,12 +231,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			TcKeetNominasBitacoraDto bitacora= new TcKeetNominasBitacoraDto(
 				(String) this.attrs.get("justificacion"), // String justificacion, 
-				Long.valueOf((String)this.attrs.get("estatus")), // Long idNominaEstatus, 
+				Long.valueOf((String)this.attrs.get("idEstatus")), // Long idNominaEstatus, 
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				-1L, // Long idNominaBitacora, 
 				seleccionado.getKey() // Long idNomina
 			);
-			transaccion= new Transaccion(seleccionado.getKey(), bitacora);
+			transaccion= new Transaccion(seleccionado.getKey(), JsfBase.getAutentifica(), bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) 			
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);			
 			else

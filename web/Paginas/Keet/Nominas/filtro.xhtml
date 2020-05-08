@@ -197,7 +197,7 @@
 						<p:separator rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus eq '2'}"/>
 						<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus eq '3'}"/>
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
-            <p:menuitem id="exportar" action="#{keetNominasFiltro.doExportar}" icon="fa fa-file-excel-o" ajax="false" value="Exportar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>										
+            <p:menuitem id="exportar" action="#{keetNominasFiltro.doExportar}" icon="fa fa-cloud-download" ajax="false" value="Exportar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>										
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
             <p:menuitem id="reporte" actionListener="#{keetNominasFiltro.doReporte}" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
           </p:contextMenu>
@@ -214,9 +214,9 @@
 						<f:selectItems value="#{keetNominasFiltro.attrs.allEstatus}"/>					
 					</p:selectOneMenu>
 				</h:panelGrid>
-				<p:panelGrid id="salida" columns="1" layout="grid" styleClass="janal-wid-99" style="height:250px !important;overflow-y: auto" columnClasses="janal-wid-100">				
-					<p:outputLabel for="justificacion" value="Justificación"/>
-					<p:inputTextarea id="justificacion" value="#{keetNominasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="1"/>														
+				<p:panelGrid id="salida" columns="1" layout="grid" styleClass="janal-wid-99" style="height:110px !important;overflow-y: auto" columnClasses="janal-wid-100">				
+					<p:outputLabel for="justificacion" value="Justificación:"/>
+					<p:inputTextarea id="justificacion" value="#{keetNominasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="3"/>														
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
