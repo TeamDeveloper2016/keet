@@ -2930,5 +2930,38 @@
 				{sortOrder}	
 			</select>
 		</unit>	
+		<unit id="VistaGeoreferenciaLotesDto">
+			<select id="lotes">				
+        select 
+					tc_keet_contratos_lotes.id_contrato_lote as id_key,
+					tc_keet_contratos_lotes.id_contrato_lote,
+				  tc_keet_contratos.id_empresa,
+					tc_keet_contratos.consecutivo,
+					tc_keet_contratos.clave,
+				  tc_keet_contratos_lotes.manzana,
+				  tc_keet_contratos_lotes.lote,
+					concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) codigo,
+					tc_keet_contratos.etapa,
+					tc_keet_contratos.ejercicio,
+					tc_keet_contratos.orden as contrato,
+					tc_keet_contratos_lotes.orden,
+					tc_keet_contratos_lotes.latitud,
+					tc_keet_contratos_lotes.longitud
+				from 
+					tc_keet_contratos_lotes
+				inner join 
+					tc_keet_contratos on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join 
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				where				  
+					tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+				and 
+					tc_keet_contratos_lotes.latitud is not null and tc_keet_contratos_lotes.longitud is not null
+				order by
+				  tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
+			</select>
+		</unit>
 	</dml>    
 </process>
