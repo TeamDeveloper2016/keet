@@ -37,17 +37,25 @@ public class Transaccion extends IBaseTnx {
 	private Double factorAcumulado;
 	private List<IBaseDestajoArchivo>documentos;
 	private String observaciones;
+	private String latitud;
+	private String longitud;
 
-	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision) {
-		this(idFigura, tipo, idEstacion, puntosRevision, "");
+	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision, String latitud, String longitud) {
+		this(idFigura, tipo, idEstacion, puntosRevision, "", latitud, longitud);
 	} // Transaccion
 	
 	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision, String observaciones) {
+		this(idFigura, tipo, idEstacion, puntosRevision, observaciones, null, null);
+	}
+	
+	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision, String observaciones, String latitud, String longitud) {
 		this.idFigura      = idFigura;
 		this.tipo          = tipo;
 		this.idEstacion    = idEstacion;
 		this.puntosRevision= puntosRevision;
 		this.observaciones = observaciones;
+		this.latitud       = latitud;
+		this.longitud      = longitud;
 	} // Transaccion
 
 	public Transaccion(List<IBaseDestajoArchivo> documentos) {
@@ -252,6 +260,8 @@ public class Transaccion extends IBaseTnx {
 				dto.setIdPuntoPaquete(puntoRevision.getKey());
 				dto.setIdRevisado(2L);
 				dto.setIdUsuario(idUsuario);
+				dto.setLatitud(this.latitud);
+				dto.setLongitud(this.longitud);
 				DaoFactory.getInstance().insert(sesion, dto);
 				this.factorAcumulado= this.factorAcumulado + dto.getFactor();
 			} // for
@@ -273,6 +283,8 @@ public class Transaccion extends IBaseTnx {
 				dto.setIdPuntoPaquete(puntoRevision.getKey());
 				dto.setIdRevisado(2L);
 				dto.setIdUsuario(idUsuario);
+				dto.setLatitud(this.latitud);
+				dto.setLongitud(this.longitud);
 				DaoFactory.getInstance().insert(sesion, dto);
 				this.factorAcumulado= this.factorAcumulado + dto.getFactor();
 			} // for
