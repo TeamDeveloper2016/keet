@@ -1,6 +1,7 @@
 package mx.org.kaana.kajool.procesos.reportes.backing;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import mx.org.kaana.kajool.seguridad.jarfile.SearchFileJar;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IBaseDatasource;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IReporte;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IReporteDataSource;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.xml.Dml;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -125,8 +127,9 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 		try {
 			params= new HashMap<>();
 			for(String key: parametros.keySet()) {						
-				if(key.startsWith(Constantes.TILDE)) {					
-          JasperReport subreport= (JasperReport)JRLoader.loadObject(SearchFileJar.getInstance().toInputStream((String)parametros.get(key)));
+				if(key.startsWith(Constantes.TILDE)) {	
+          InputStream recurso = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream((String)parametros.get(key));
+          JasperReport subreport= (JasperReport)JRLoader.loadObject(recurso);
           params.put(key.substring(1), subreport);        
 				} // if				
 			} // for			
