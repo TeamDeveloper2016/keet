@@ -125,6 +125,11 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 		} // catch		
 		return regresar;
 	} // toPrepare
+
+	public void doAsignaGeoreferencia(String latitud, String longitud){
+		this.attrs.put("latitud", latitud);
+		this.attrs.put("longitud", longitud);
+	} // doAsignaGeoreferencia
 	
 	public String doAceptar() {
     String regresar        = null;    		
@@ -137,7 +142,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 				figura= (Entity) this.attrs.get("figura");
 				seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
 				idFigura= figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");
-				transaccion= new Transaccion(idFigura, figura.toLong("tipo"), ((Entity) this.attrs.get("concepto")).getKey(), this.selecteds);
+				transaccion= new Transaccion(idFigura, figura.toLong("tipo"), ((Entity) this.attrs.get("concepto")).getKey(), this.selecteds, this.attrs.get("latitud").toString(), this.attrs.get("longitud").toString());
 				if(transaccion.ejecutar(EAccion.PROCESAR)){
 					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();
