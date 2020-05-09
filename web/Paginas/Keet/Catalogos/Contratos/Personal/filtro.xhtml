@@ -67,6 +67,13 @@
 								<p:outputLabel value="Cliente:" styleClass="FontBold"/>
 								<h:outputText value="#{item.razonSocial}" />								
 							</p:panelGrid>
+							<f:facet name="footer" >
+								<div class="janal-line-button">
+									<p:commandButton iconPos="left" title="Georeferencia" styleClass="janal-text-white" accesskey="z" icon="fa fa-map-marker" action="#{keetCatalogosContratosPersonalFiltro.doGeoreferencia}">
+										<f:setPropertyActionListener value="#{item}" target="#{keetCatalogosContratosPersonalFiltro.seleccionado}"  />
+									</p:commandButton>
+								</div>
+							</f:facet>
 						</p:panel>
 					</p:carousel>                      
         </div>
