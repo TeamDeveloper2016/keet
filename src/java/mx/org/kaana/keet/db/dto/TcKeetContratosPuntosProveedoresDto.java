@@ -43,17 +43,21 @@ public class TcKeetContratosPuntosProveedoresDto implements IBaseDto, Serializab
   private Double factor;
   @Column (name="registro")
   private LocalDateTime registro;
+	@Column (name="latitud")
+  private String latitud;
+  @Column (name="longitud")
+  private String longitud;
 
   public TcKeetContratosPuntosProveedoresDto() {
     this(new Long(-1L));
   }
 
   public TcKeetContratosPuntosProveedoresDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKeetContratosPuntosProveedoresDto(Long idContratoDestajoProveedor, Long idPuntoPaquete, Long idRevisado, Long idUsuario, Long idContratoPuntoProveedor, Double factor) {
+  public TcKeetContratosPuntosProveedoresDto(Long idContratoDestajoProveedor, Long idPuntoPaquete, Long idRevisado, Long idUsuario, Long idContratoPuntoProveedor, Double factor, String latitud, String longitud) {
     setIdContratoDestajoProveedor(idContratoDestajoProveedor);
     setIdPuntoPaquete(idPuntoPaquete);
     setIdRevisado(idRevisado);
@@ -61,6 +65,8 @@ public class TcKeetContratosPuntosProveedoresDto implements IBaseDto, Serializab
     setIdContratoPuntoProveedor(idContratoPuntoProveedor);
     setFactor(factor);
     setRegistro(LocalDateTime.now());
+		setLatitud(latitud);
+		setLongitud(longitud);
   }
 	
   public void setIdContratoDestajoProveedor(Long idContratoDestajoProveedor) {
@@ -119,6 +125,22 @@ public class TcKeetContratosPuntosProveedoresDto implements IBaseDto, Serializab
     return registro;
   }
 
+	public String getLatitud() {
+		return latitud;
+	}
+
+	public void setLatitud(String latitud) {
+		this.latitud = latitud;
+	}
+
+	public String getLongitud() {
+		return longitud;
+	}
+
+	public void setLongitud(String longitud) {
+		this.longitud = longitud;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -147,6 +169,10 @@ public class TcKeetContratosPuntosProveedoresDto implements IBaseDto, Serializab
 		regresar.append(getFactor());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLatitud());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLongitud());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -161,13 +187,15 @@ public class TcKeetContratosPuntosProveedoresDto implements IBaseDto, Serializab
 		regresar.put("idContratoPuntoProveedor", getIdContratoPuntoProveedor());
 		regresar.put("factor", getFactor());
 		regresar.put("registro", getRegistro());
+		regresar.put("latitud", getLatitud());
+		regresar.put("longitud", getLongitud());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdContratoDestajoProveedor(), getIdPuntoPaquete(), getIdRevisado(), getIdUsuario(), getIdContratoPuntoProveedor(), getFactor(), getRegistro()
+			getIdContratoDestajoProveedor(), getIdPuntoPaquete(), getIdRevisado(), getIdUsuario(), getIdContratoPuntoProveedor(), getFactor(), getRegistro(), getLatitud(), getLongitud()
     };
     return regresar;
   }
@@ -225,7 +253,4 @@ public class TcKeetContratosPuntosProveedoresDto implements IBaseDto, Serializab
     hash = 67 * hash + (getIdContratoPuntoProveedor() != null ? getIdContratoPuntoProveedor().hashCode() : 0);
     return hash;
   }
-
 }
-
-
