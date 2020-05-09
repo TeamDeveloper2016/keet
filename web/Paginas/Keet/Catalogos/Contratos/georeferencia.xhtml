@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Lotes por desarrollo" />
+	<ui:define name="librerias">
+		<script src="https://maps.google.com/maps/api/js?key=AIzaSyBT_SYV5r3kJdT_bO0ijJmNjxqZqhb7xNY" type="text/javascript"></script>
+		<script type="text/javascript">																								
+		</script>
+	</ui:define>
+	<ui:define name="contenido">		
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:accordionPanel id="panelBusqueda" activeIndex="0" multiple="true">
+						<p:tab title="Desarrollo [ #{keetCatalogosContratosGeoreferencia.registroDesarrollo.desarrollo.clave} ] #{keetCatalogosContratosGeoreferencia.registroDesarrollo.desarrollo.nombres}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Descripcion:"/>
+								<p:inputText value="#{keetCatalogosContratosGeoreferencia.registroDesarrollo.desarrollo.descripcion}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Domicilio:"/>																		
+								<p:inputText value="#{keetCatalogosContratosGeoreferencia.attrs.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+							</p:panelGrid>										
+						</p:tab>
+					</p:accordionPanel>
+					<p:gmap id="mapa" widgetVar="wMapa" model="#{keetCatalogosContratosGeoreferencia.model}" center="#{keetCatalogosContratosGeoreferencia.attrs.coordenadaCentral}" zoom="75" type="HYBRID" style="width:100%;height:500px" streetView="true">						
+					</p:gmap>						
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return janal.execute()" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosGeoreferencia.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return janal.execute()" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosGeoreferencia.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
