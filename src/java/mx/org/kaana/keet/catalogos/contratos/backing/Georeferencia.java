@@ -94,7 +94,7 @@ public class Georeferencia extends IBaseAttribute implements Serializable {
 			this.model= new DefaultMapModel();			
       lotes= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "lotes", Cadena.getMapValues("idDesarrollo~".concat(this.attrs.get("idDesarrollo").toString())), Constantes.SQL_TODOS_REGISTROS);
 			if(!lotes.isEmpty()){
-				icon= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("home-green-grad.png").concat(".jsf?ln=janal");
+				icon= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("home-green.png").concat(".jsf?ln=janal");
 				for(Entity lote: lotes){
 					marker= new Marker(new LatLng(Double.valueOf(lote.toString("latitud")), Double.valueOf(lote.toString("longitud"))), "Contrato: ".concat(lote.toString("clave")).concat(", Lote: ").concat(lote.toString("codigo")), lote, icon);
 					this.model.addOverlay(marker);
