@@ -14,15 +14,37 @@
 				'punto': {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'}
       };							
 			
-			function validateCriterios(){
+			$(document).ready(function () {
+				initLocalization();
+			});		
+			
+			function validateCriterios(){				
 				var ok= janal.execute();
-				if(ok)
-					janal.bloquear();
+				if(ok){
+					janal.bloquear();					
+				} // if
 				return ok;
 			} // validateCriterios
+			
+			function initLocalization(){												
+				if ("geolocation" in navigator) { 
+					navigator.geolocation.getCurrentPosition(function(position){ 						
+						asignaGeoreferencia(position.coords.latitude.toString(), position.coords.longitude.toString());												
+					}); // navigator
+				} // if
+				else{
+					console.log("Browser doesn't support geolocation!");
+				} // else		
+				return true;
+			} // initLocalization
     </script>				    
   </ui:define>
   <ui:define name="contenido">				
+		<pe:remoteCommand name="asignaGeoreferencia" process="@this" actionListener="#{keetCatalogosContratosDestajosPuntos.doAsignaGeoreferencia}">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
+			<pe:methodParam name="latitud"/>  
+			<pe:methodParam name="longitud"/>  
+		</pe:remoteCommand>		
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
