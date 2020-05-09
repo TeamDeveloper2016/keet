@@ -180,4 +180,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doPagina
+	
+	public String doGeoreferencia() {
+    String regresar          = null;    
+		EOpcionesResidente opcion= null;
+    try {
+			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
+			JsfBase.setFlashAttribute("idDesarrollo", this.seleccionado.getKey());
+			JsfBase.setFlashAttribute("opcionResidente", opcion);			
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf");			
+			regresar= "/Paginas/Keet/Catalogos/Contratos/georeferencia.jsf".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doPagina
 }
