@@ -24,7 +24,7 @@
 			
 			var currentMarker;
 			
-			function initLocalization(){								
+			function initLocalization() {								
 				if ("geolocation" in navigator) { 
 					navigator.geolocation.getCurrentPosition(function(position){ 
 						var lat, lon;
@@ -40,12 +40,12 @@
 						updateGeoreferencia(lat,lon);						
 					}); // navigator
 				} // if
-				else{
+				else {
 					console.log("Browser doesn't support geolocation!");
 				} // else				
 			} // initLocalization
 			
-			function existLocalization(lat, lon){								
+			function existLocalization(lat, lon) {								
 				if ("geolocation" in navigator){ 															
 					PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 					currentMarker = new google.maps.Marker({
@@ -55,12 +55,12 @@
 					PF('wMapa').addOverlay(currentMarker);											
 					updateGeoreferencia(lat, lon);
 				} // if
-				else{
+				else {
 					console.log("Browser doesn't support geolocation!");
 				} // else				
 			} // existLocalization
 			
-			function updateLocalization(lat, lon){								
+			function updateLocalization(lat, lon) {								
 				currentMarker.setMap(null);
 				PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 				currentMarker= new google.maps.Marker({
@@ -71,10 +71,11 @@
 				updateGeoreferencia(lat, lon);
 			} // updateLocalization						
 			
-			function updateGeoreferencia(lat, lon){
-				$('#contenedorGrupos\\:coordenadas').text('@'+ lon+ ','+ lat);				
-				$('#contenedorGrupos\\:coordenadas').val('@'+ lon+ ','+ lat);				
-			} // updateGeoreferencia						
+			function updateGeoreferencia(lat, lon) {
+				$('#contenedorGrupos\\:coordenadas').text('@'+ lat+ ','+ lon);				
+				$('#contenedorGrupos\\:coordenadas').val('@'+ lat+ ','+ lon);				
+			} // updateGeoreferencia	
+			
 		</script>
 	</ui:define>
 	<ui:define name="contenido">
