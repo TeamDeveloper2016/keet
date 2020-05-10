@@ -1,19 +1,35 @@
 package mx.org.kaana.keet.catalogos.contratos.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.IBaseFilter;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
+import org.primefaces.event.TabChangeEvent;
+import org.primefaces.event.map.OverlaySelectEvent;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -22,7 +38,7 @@ import org.primefaces.model.map.Marker;
 
 @Named(value = "keetCatalogosContratosGeoreferencia")
 @ViewScoped
-public class Georeferencia extends IBaseAttribute implements Serializable {
+public class Georeferencia extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID      = -1527541903767470918L;
 	protected static final String COORDENADA_CENTRAL= "21.8818,-102.291";
@@ -57,8 +73,11 @@ public class Georeferencia extends IBaseAttribute implements Serializable {
 			this.attrs.put("opcionResidente", opcion);			
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
-			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
-			this.attrs.put("domicilio", toDomicilio());						
+			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));
+			this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
+			this.attrs.put("domicilio", toDomicilio());				
+			this.attrs.put("mostrarDetalle", true);				
+			loadContratos();
 			doLoad();
     } // try // try
     catch (Exception e) {
@@ -85,17 +104,45 @@ public class Georeferencia extends IBaseAttribute implements Serializable {
 		return regresar.toString();
 	} // toDomicilio
 
+	private void loadContratos(){
+		List<UISelectEntity>contratos= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "tc_keet_proyectos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
+			params.put("sortOrder", "");
+			contratos= UIEntity.seleccione("VistaContratosDto", "lazy", params, "clave");
+			this.attrs.put("contratos", contratos);
+			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
+	@Override
   public void doLoad() {
-		List<Entity> lotes= null;
-		Marker marker     = null;
-		String icon       = null;
+		List<Entity> lotes        = null;
+		Marker marker             = null;
+		String icon               = null;
+		Map<String, Object> params= null;
+		UISelectEntity contrato   = null;
     try {
+			this.attrs.put("mostrarDetalle", true);				
+			this.attrs.put("index", 0);				
+			this.model= new DefaultMapModel();
 			this.attrs.put("coordenadaCentral", COORDENADA_CENTRAL);
-			this.model= new DefaultMapModel();			
-      lotes= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "lotes", Cadena.getMapValues("idDesarrollo~".concat(this.attrs.get("idDesarrollo").toString())), Constantes.SQL_TODOS_REGISTROS);
-			if(!lotes.isEmpty()){
-				icon= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("home-green.png").concat(".jsf?ln=janal");
+			contrato= (UISelectEntity) this.attrs.get("contrato");
+			params= new HashMap<>();
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo").toString());
+			params.put(Constantes.SQL_CONDICION, contrato.getKey()>=1L ? "tc_keet_contratos_lotes.id_contrato=".concat(contrato.getKey().toString()) : Constantes.SQL_VERDADERO);			
+      lotes= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "lotes", params, Constantes.SQL_TODOS_REGISTROS);
+			if(!lotes.isEmpty()){				
 				for(Entity lote: lotes){
+					icon= toIcon(lote);
 					marker= new Marker(new LatLng(Double.valueOf(lote.toString("latitud")), Double.valueOf(lote.toString("longitud"))), "Contrato: ".concat(lote.toString("clave")).concat(", Lote: ").concat(lote.toString("codigo")), lote, icon);
 					this.model.addOverlay(marker);
 				} // for
@@ -107,7 +154,203 @@ public class Georeferencia extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // doLoad
-
+	
+	private String toIcon(Entity mzaLote) throws Exception {
+		String regresar          = null;
+		String imagen            = null;
+		String color             = null;
+		Map<String, Object>params= null;
+		Entity estatus           = null;
+		try {
+			imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("home-{color}-{orden}.png").concat(".jsf?ln=janal");
+			color= EEstacionesEstatus.INICIAR.getColor();
+			params= new HashMap<>();			
+			params.put("clave", toClaveEstacion(mzaLote));
+			estatus= (Entity) DaoFactory.getInstance().toEntity("VistaGeoreferenciaLotesDto", "estatusManzanaLote", params);
+			if(estatus.toString("total")!= null){
+				this.attrs.put("porcentaje", new Integer(String.valueOf((estatus.toLong("terminado") * 100)/estatus.toLong("total"))));
+				if(estatus.toLong("total").equals(estatus.toLong("terminado")))
+					color= EEstacionesEstatus.TERMINADO.getColor();
+				else if(estatus.toLong("total").equals(estatus.toLong("iniciado")))
+					color= EEstacionesEstatus.INICIAR.getColor();
+				else
+					color= EEstacionesEstatus.EN_PROCESO.getColor();
+			} // if	
+			else
+				this.attrs.put("porcentaje", new Integer(0));			
+			params.clear();
+			params.put("color", color);
+			params.put("orden", mzaLote.toString("orden"));
+			regresar= Cadena.replaceParams(imagen, params);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally		
+		return regresar;
+	} // toIcon
+	
+	private String toClaveEstacion(Entity lote){
+		StringBuilder regresar= null;
+		try {			
+			regresar= new StringBuilder();
+			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
+			regresar.append(Fecha.getAnioActual());
+			regresar.append(Cadena.rellenar(lote.toString("contrato"), 3, '0', true));
+			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.toString();
+	} // toClaveEstacion
+	
+	public void onTabChange(TabChangeEvent event) {
+		try {
+			if(event.getTab().getTitle().equals("Ubicación")){
+				this.attrs.put("mostrarDetalle", true);				
+				doLoad();
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+	} // onTabChange
+	
+	public void onMarkerSelect(OverlaySelectEvent event) {
+		Marker marker= null;	
+		try {
+			marker= (Marker) event.getOverlay();
+			this.attrs.put("mostrarDetalle", false);
+			this.attrs.put("index", 1);				
+			loadEvidencias((Entity) marker.getData());
+			loadResidentes();
+			loadContratistas((Entity) marker.getData());
+			loadAvances((Entity) marker.getData());
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		                    
+  } // onMarkerSelect
+	
+	private void loadEvidencias(Entity seleccionado){
+		List<Columna> columns    = null;
+		Map<String, Object>params= null;
+		try {
+			this.attrs.put("loteSeleccionado", seleccionado);
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombrePersona", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));						
+			params= new HashMap<>();
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo").toString());
+			params.put("idContratoLote", seleccionado.getKey());
+		  this.attrs.put("importados", UIEntity.build("VistaCapturaDestajosDto", "allImportadosContratoLote", params, columns));
+			this.doLoadFiles();
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally		
+	} // loadEvidencias
+	
+	private void doLoadFiles(){
+		List<Entity>importados= null;		
+		String dns            = null;
+		String url            = null;
+		try {
+			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
+			importados= (List<Entity>) this.attrs.get("importados");
+			for(Entity importado: importados){
+				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
+				importado.put("url", new Value("url", url));
+			} // for
+			this.attrs.put("importados", importados);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+	} // doLoadFiles
+	
+	private void loadResidentes(){
+		List<Entity>residentes   = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			residentes= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "residentes", params);
+			this.attrs.put("residentes", residentes);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadResidentes
+	
+	private void loadContratistas(Entity seleccionado){
+		List<Entity>contratistas = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idContratoLote", seleccionado.getKey());
+			contratistas= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "contratistasAsignado", params);
+			this.attrs.put("contratistas", contratistas);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadContratistas
+	
+	private void loadAvances(Entity seleccionado){
+		Map<String, Object>params= null;
+    List<Columna> columns    = null;				
+    try {      			
+			params= this.toPrepare(seleccionado);
+      columns= new ArrayList<>();      
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
+	    this.lazyModel= new FormatLazyModel("VistaGeoreferenciaLotesDto", "avances", params, columns);			
+			UIBackingUtilities.resetDataTable("tablaAvances");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {      
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	} // loadAvances
+	
+	private Map<String, Object> toPrepare(Entity seleccionado){
+		Map<String, Object> regresar= null;
+		try {
+			regresar= new HashMap<>();			
+			regresar.put("clave", toClaveEstacion(seleccionado));
+			regresar.put("estatus", EEstacionesEstatus.EN_PROCESO.getKey() + "," + EEstacionesEstatus.TERMINADO.getKey());						
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toPrepare
+	
 	public String doCancelar() {
     String regresar          = null;    
 		EOpcionesResidente opcion= null;
