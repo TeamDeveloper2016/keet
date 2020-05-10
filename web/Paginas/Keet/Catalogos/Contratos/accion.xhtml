@@ -183,7 +183,7 @@
 									<p:commandButton title="Cancelar cambios" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" actionListener="#{keetCatalogosContratosAccion.doCancelarGeo}" update="contenedorGrupos" oncomplete="PF('pestanias').select(1);"/>
 								</div>
 							</div>									
-							<p:gmap id="mapa" widgetVar="wMapa" center="21.8818,-102.291" zoom="75" type="TERRAINs" style="width:100%;height:500px" rendered="#{keetCatalogosContratosAccion.attrs.mostrarGeo}" streetView="true" styleClass="style-panel">
+							<p:gmap id="mapa" widgetVar="wMapa" center="21.8818,-102.291" zoom="75" type="HYBRID" style="width:100%;height:500px" rendered="#{keetCatalogosContratosAccion.attrs.mostrarGeo}" streetView="true" styleClass="style-panel">
 								<p:ajax event="pointSelect" listener="#{keetCatalogosContratosAccion.onPointSelect}"/>
 							</p:gmap>	
 						</p:tab>

@@ -40,7 +40,7 @@ public class Galeria extends IBaseFilter implements Serializable {
 			this.attrs.put("figura", (Entity) JsfBase.getFlashAttribute("figura"));
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));									
-			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat(File.separator).concat("images").concat(File.separator));						
+			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/").concat("images").concat("/"));						
 			doLoad();
     } // try
     catch (Exception e) {
@@ -78,7 +78,7 @@ public class Galeria extends IBaseFilter implements Serializable {
 			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
 			importados= (List<Entity>) this.attrs.get("importados");
 			for(Entity importado: importados){
-				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(File.separator).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
+				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote")).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
 				importado.put("url", new Value("url", url));
 			} // for
 			this.attrs.put("importados", importados);
