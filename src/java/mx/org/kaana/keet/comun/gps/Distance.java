@@ -1,6 +1,9 @@
 package mx.org.kaana.keet.comun.gps;
 
 import java.io.Serializable;
+import mx.org.kaana.libs.formato.Numero;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @company KAANA
@@ -9,10 +12,12 @@ import java.io.Serializable;
  * @time 09:49:40 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
+
 public final class Distance implements Serializable {
 
 	private static final long serialVersionUID= -2303254494579255847L;
 	private static final long DISTANCE_LIMIT  = 20; // en metros
+	private static final Log LOG=LogFactory.getLog(Distance.class);
 
 	private Point one;
 	private Point two;
@@ -50,11 +55,11 @@ public final class Distance implements Serializable {
 
 	public double toMt() {
 		//aquí obtienes la distancia en metros por la conversion 1Km= 1000m
-		return this.toKm()*1000;
+		return Numero.toRedondear(this.toKm()* 1000);
 	}
 
 	public double toMt(Point one, Point two) {
-		return this.toKm(one, two)*1000;
+		return Numero.toRedondear(this.toKm(one, two)* 1000);
 	}
 
 	public boolean isValid() {
@@ -63,6 +68,11 @@ public final class Distance implements Serializable {
 	
 	public boolean isValid(Point one, Point two) {
 		return this.toMt(one, two)<= DISTANCE_LIMIT;
+	}
+	
+	public static void main(String ... args) {
+		Distance distance= new Distance(new Point(21.837244, -102.326590), new Point(21.84302, -102.3233));
+	  LOG.info(distance.toMt()+ " metros");
 	}
 	
 }
