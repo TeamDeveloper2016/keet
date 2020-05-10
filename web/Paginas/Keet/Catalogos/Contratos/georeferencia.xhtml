@@ -27,8 +27,122 @@
 							</p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>
-					<p:gmap id="mapa" widgetVar="wMapa" model="#{keetCatalogosContratosGeoreferencia.model}" center="#{keetCatalogosContratosGeoreferencia.attrs.coordenadaCentral}" zoom="75" type="TERRAIN" style="width:100%;height:500px" streetView="true">						
-					</p:gmap>						
+					<p:outputLabel for="contrato" value="Contrato:" styleClass="janal-wid-100-txt"/>							
+					<p:selectOneMenu id="contrato" value="#{keetCatalogosContratosGeoreferencia.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">																
+						<p:ajax event="change" onstart="return janal.bloquear();" process="@this contrato" listener="#{keetCatalogosContratosGeoreferencia.doLoad}" oncomplete="janal.desbloquear();" update="contenedorGrupos"/>
+						<f:selectItems value="#{keetCatalogosContratosGeoreferencia.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.etapa or element.etapa eq ''? '': '-'} #{element.etapa}"/>
+						<p:column headerText="Contrato">
+							<h:outputText value="#{item.clave}"/>
+						</p:column> 
+						<p:column headerText="No. viviendas">
+							<h:outputText value="#{item.noViviendas eq '-1' ? '' : item.noViviendas}"/>
+						</p:column> 
+						<p:column headerText="Prototipo">
+							<h:outputText value="#{item.etapa}"/>
+						</p:column>   
+					</p:selectOneMenu>	
+					<p:tabView id="contenedorGrupos" widgetVar="pestanias" activeIndex="#{keetCatalogosContratosGeoreferencia.attrs.index}">
+						<p:ajax event="tabChange" process="@this" listener="#{keetCatalogosContratosGeoreferencia.onTabChange}" update="contenedorGrupos"/>
+            <p:tab title="Ubicación">
+							<p:gmap id="mapa" widgetVar="wMapa" model="#{keetCatalogosContratosGeoreferencia.model}" center="#{keetCatalogosContratosGeoreferencia.attrs.coordenadaCentral}" zoom="75" type="TERRAIN" style="width:100%;height:500px" streetView="true">						
+								<p:ajax event="overlaySelect" listener="#{keetCatalogosContratosGeoreferencia.onMarkerSelect}" update="contenedorGrupos" />
+							</p:gmap>						
+						</p:tab>							
+            <p:tab title="Detalle" rendered="#{!keetCatalogosContratosGeoreferencia.attrs.mostrarDetalle}">		
+							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+								<p:outputLabel value="Avance"/>
+								<p:progressBar value="#{keetCatalogosContratosGeoreferencia.attrs.porcentaje}" labelTemplate="{value}%" displayOnly="true"/>
+								<p:spacer/>
+							</p:panelGrid>
+							<p:accordionPanel activeIndex="0" multiple="false">
+								<p:tab title="General">
+									<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+										<p:outputLabel value="Manzana:"/>
+										<p:inputText value="#{keetCatalogosContratosGeoreferencia.attrs.loteSeleccionado.manzana}" styleClass="janal-wid-100-txt" readonly="true"/>
+										<p:outputLabel value="Lote:"/>
+										<p:inputText value="#{keetCatalogosContratosGeoreferencia.attrs.loteSeleccionado.lote}" styleClass="janal-wid-100-txt" readonly="true"/>
+										<p:outputLabel value="Prototipo:"/>
+										<p:inputText value="#{keetCatalogosContratosGeoreferencia.attrs.loteSeleccionado.etapa}" styleClass="janal-wid-100-txt" readonly="true"/>
+										<p:outputLabel value="Coordenadas"/>
+										<p:inputText value="@#{keetCatalogosContratosGeoreferencia.attrs.loteSeleccionado.latitud},#{keetCatalogosContratosGeoreferencia.attrs.loteSeleccionado.longitud}" styleClass="janal-wid-100-txt" readonly="true"/>																		
+									</p:panelGrid>
+								</p:tab>
+								<p:tab title="Residente">
+									<ui:repeat var="visitado" value="#{keetCatalogosContratosGeoreferencia.attrs.residentes}" >
+										<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+											<p:outputLabel value="Nombre:"/>
+											<p:inputText value="#{visitado.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>										
+											<p:outputLabel value="Departamento:"/>
+											<p:inputText value="#{visitado.departamento}" styleClass="janal-wid-100-txt" readonly="true"/>										
+											<p:outputLabel value="Puesto:"/>																						
+											<p:inputText value="#{visitado.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>																					
+											<p:separator/>
+										</p:panelGrid>										
+									</ui:repeat>									
+								</p:tab>
+								<p:tab title="Contratistas">
+									<ui:repeat var="visitado" value="#{keetCatalogosContratosGeoreferencia.attrs.contratistas}" >
+										<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+											<p:outputLabel value="Nombre:"/>
+											<p:inputText value="#{visitado.paterno} #{visitado.materno} #{visitado.nombres}" styleClass="janal-wid-100-txt" readonly="true"/>										
+											<p:outputLabel value="Departamento:"/>
+											<p:inputText value="#{visitado.departamento}" styleClass="janal-wid-100-txt" readonly="true"/>										
+											<p:outputLabel value="Puesto:"/>																																	
+											<p:inputText value="#{visitado.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>																					
+											<p:separator/>
+										</p:panelGrid>										
+									</ui:repeat>											
+								</p:tab>
+								<p:tab title="Avances">
+									<p:dataTable lazy="true" id="tablaAvances" widgetVar="kajoolTableAvances" var="row" value="#{keetCatalogosContratosGeoreferencia.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosGeoreferencia.attrs.seleccionado}" paginator="#{keetCatalogosContratosGeoreferencia.lazyModel.rowCount gt keetCatalogosContratosGeoreferencia.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+										<p:column class="janal-wid-col-30 janal-column-center">              
+											<f:facet name="header">
+												<h:outputText value="No"/>
+											</f:facet>
+											<h:outputText value="#{index+1}.-"/>
+										</p:column>		
+										<p:column class="janal-column-left MarAuto Responsive">
+											<f:facet name="header">
+												<h:outputText value="Departamento"/>
+											</f:facet>
+											<h:outputText value="#{row.departamento}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
+										</p:column>		                        
+										<p:column class="janal-column-left MarAuto Responsive">
+											<f:facet name="header">
+												<h:outputText value="Concepto(s) del lote"/>
+											</f:facet>
+											<h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
+										</p:column>		                        
+										<p:column class="janal-wid-col-30 janal-column-center">
+											<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+										</p:column>										
+										<f:facet name="footer">
+											<p:outputLabel value="Total [#{keetCatalogosContratosGeoreferencia.lazyModel== null? 0: keetCatalogosContratosGeoreferencia.lazyModel.rowCount}] registros"/>
+										</f:facet>
+									</p:dataTable> 										
+								</p:tab>
+							</p:accordionPanel>									
+						</p:tab>							
+            <p:tab title="Evidencias" rendered="#{!keetCatalogosContratosGeoreferencia.attrs.mostrarDetalle}">		
+							<p:carousel id="evidencias" value="#{keetCatalogosContratosGeoreferencia.attrs.importados}" headerText="Galeria de evidencias" var="item" styleClass="importado" circular="true" responsive="true">
+								<p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;" styleClass="border-color-item">																		
+									<p:graphicImage url="#{item.url}" width="550" height="250"/>											
+									<p:panelGrid columns="1" style="width: 100% !important" columnClasses="janal-column-left, janal-column-left">
+										<p:outputLabel value="&lt;b&gt;Nombre:&lt;/b&gt; #{item.nombre}" class="pad-description" escape="false"/>										
+										<p:outputLabel value="&lt;b&gt;Consecutivo:&lt;/b&gt; #{item.consecutivo}" class="pad-description" escape="false"/>
+										<p:outputLabel value="&lt;b&gt;Concepto:&lt;/b&gt; #{item.concepto}" class="pad-description" escape="false"/>
+										<p:outputLabel value="&lt;b&gt;Especialidad:&lt;/b&gt; #{item.especialidad}" class="pad-description" escape="false"/>
+										<p:separator/>
+										<p:outputLabel value="&lt;b&gt;Empleado:&lt;/b&gt; #{item.nombrePersona}" class="pad-description" escape="false"/>
+										<p:outputLabel value="&lt;b&gt;Puesto:&lt;/b&gt; #{item.puesto}" class="pad-description" escape="false"/>
+										<p:separator/>
+										<p:outputLabel value="&lt;b&gt;Usuario:&lt;/b&gt; #{item.nombreUsuario}" class="pad-description" escape="false"/>
+										<p:outputLabel value="&lt;b&gt;Registro:&lt;/b&gt; #{item.registro}" class="pad-description" escape="false"/>
+									</p:panelGrid>									
+								</p:panelGrid>							
+							</p:carousel>
+						</p:tab>							
+					</p:tabView>					
 				</div>
 			</div>
 		</div>		
