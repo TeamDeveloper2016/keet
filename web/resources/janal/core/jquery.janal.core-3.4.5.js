@@ -1493,9 +1493,23 @@
 			} // switch
 			return text;
 		},
-		alignCp:function(){
+		alignCp: function() {
 			$('#contenedorGrupos\\:cp').css('text-align','left');
-		} // alignCp
+		}, // alignCp
+		distanceKm: function(pointA, pointB) {
+			radius= function(x) {return x* Math.PI/ 180;};
+			var earthRadio= 6378.137; // Radio de la tierra en km
+			var dLatitud = rad(pointB.latitud - pointA.latitud);
+			var dLongitud= rad(pointB.longitud- pointA.longitud);
+			var a = Math.sin(dLatitud/2)* Math.sin(dLatitud/2)+ Math.cos(rad(pointA.latitud))* Math.cos(rad(pointB.latitud))* Math.sin(dLongitud/2)* Math.sin(dLongitud/2);
+			var c = 2* Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+			var d = earthRadio * c;
+			return d.toFixed(3);
+		},
+		distanceMt: function(pointA, pointB) {
+			//aquí obtienes la distancia en metros por la conversion 1Km =1000m
+			return this.distanceKm(pointA, pointB)* 1000;
+		}
   });
   window.Janal= Janal;
 })(window);
