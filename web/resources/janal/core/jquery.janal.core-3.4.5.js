@@ -1509,6 +1509,9 @@
 		distanceMt: function(pointA, pointB) {
 			//aquí obtienes la distancia en metros por la conversion 1Km =1000m
 			return this.distanceKm(pointA, pointB)* 1000;
+		},
+		distanceValid: function(pointA, pointB) {
+			return this.distanceMt(pointA, pointB)<= 20;
 		}
   });
   window.Janal= Janal;
