@@ -69,7 +69,7 @@
                   </p:column>	                  
                   <p:column headerText="Paquetes de revisión" class="janal-wid-45">										
                     <p:selectOneMenu rendered="#{row.visible}" value="#{row.ikPuntoGrupo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-											<f:selectItems value="#{row.puntosGrupos}"  var="element" itemValue="#{element}" itemLabel="#{element.paquete} - #{element.puntosControl}"/>
+											<f:selectItems value="#{row.puntosGrupos}"  var="element" itemValue="#{element}" itemLabel="#{element.paquete} CON  #{element.puntosControl} PUNTOS DE REVISIÓN"/>
 											<p:column headerText="Nombre">
 												<h:outputText value="#{item.paquete}"/>
 											</p:column>   

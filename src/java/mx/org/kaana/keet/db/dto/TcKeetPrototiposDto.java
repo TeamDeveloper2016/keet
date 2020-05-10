@@ -47,6 +47,8 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_prototipo")
   private Long idPrototipo;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
@@ -57,11 +59,11 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPrototiposDto(Long key) {
-    this(null, null, null, null, null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idTipoDia, Long idUsuario, Long diasConstruccion, Long idEstacion, Long idPrototipo, String nombre) {
+  public TcKeetPrototiposDto(String descripcion, Double metros2, String clave, Long idCliente, Long idTipoDia, Long idUsuario, Long diasConstruccion, Long idEstacion, Long idPrototipo, Long idEmpresa, String nombre) {
     setDescripcion(descripcion);
     setMetros2(metros2);
     setClave(clave);
@@ -71,6 +73,7 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
     setDiasConstruccion(diasConstruccion);
     setIdEstacion(idEstacion);
     setIdPrototipo(idPrototipo);
+    setIdEmpresa(idEmpresa);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
@@ -147,6 +150,14 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
     return idPrototipo;
   }
 
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
   public void setNombre(String nombre) {
     this.nombre = nombre;
   }
@@ -196,6 +207,8 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrototipo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
@@ -215,6 +228,7 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
 		regresar.put("diasConstruccion", getDiasConstruccion());
 		regresar.put("idEstacion", getIdEstacion());
 		regresar.put("idPrototipo", getIdPrototipo());
+		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -223,7 +237,7 @@ public class TcKeetPrototiposDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getMetros2(), getClave(), getIdCliente(), getIdTipoDia(), getIdUsuario(), getDiasConstruccion(), getIdEstacion(), getIdPrototipo(), getNombre(), getRegistro()
+    getDescripcion(), getMetros2(), getClave(), getIdCliente(), getIdTipoDia(), getIdUsuario(), getDiasConstruccion(), getIdEstacion(), getIdPrototipo(), getIdEmpresa(), getNombre(), getRegistro()
     };
     return regresar;
   }

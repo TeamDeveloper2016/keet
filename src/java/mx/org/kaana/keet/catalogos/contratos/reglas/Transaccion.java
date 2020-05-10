@@ -67,6 +67,7 @@ public class Transaccion extends IBaseTnx {
 					this.contrato.getContrato().setConsecutivo(siguiente.getConsecutivo());
 					this.contrato.getContrato().setOrden(siguiente.getOrden());
 					this.contrato.getContrato().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
+					this.contrato.getContrato().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 					regresar= DaoFactory.getInstance().insert(sesion, this.contrato.getContrato())>= 1L;
 					Collections.sort(this.contrato.getContrato().getLotes());
 					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
