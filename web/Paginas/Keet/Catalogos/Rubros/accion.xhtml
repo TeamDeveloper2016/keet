@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{keetCatalogosRubrosAccion.attrs.nombreAccion} al catálogo de rubros" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'contenedorGrupos\\:codigo': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:nombre': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:idEmpaqueUnidadMedida': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+			};
+
+			$(document).ready(function () {
+				janal.readingMode('#{keetCatalogosRubrosAccion.attrs.nombreAccion}');
+			});
+		</script>   
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-90-txt">		
+                <p:outputLabel for="codigo" value="Codigo:"/>
+								<p:inputText id="codigo" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.codigo}" />			
+								<p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.nombre}" />
+                <p:outputLabel for="descripcion" value="Descripción:"/>
+                <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.descripcion}" />								
+								<p:outputLabel for="idEmpaqueUnidadMedida" value="Unidad:"/>
+								<p:selectOneMenu id="idEmpaqueUnidadMedida" value="#{keetCatalogosRubrosAccion.rubro.rubro.ikEmpaqueUnidadMedida}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetCatalogosRubrosAccion.attrs.unidades}"  var="element" itemValue="#{element}" itemLabel="#{element.empaque} - #{element.medida}"/>
+									<p:column headerText="Presentación">
+										<h:outputText value="#{item.empaque}"/>
+									</p:column>   
+									<p:column headerText="Unidad">
+										<h:outputText value="#{item.medida}"/>
+									</p:column>   
+								</p:selectOneMenu>
+              </p:panelGrid>
+						</p:tab>
+						<p:tab title="Puntos de revisión">		
+              <p:panelGrid id="panelTablaConstructivos" columns="1" layout="grid" styleClass="janal-wid-100-txt janal-panel-tabla" columnClasses="janal-wid-100-txt">
+                <p:dataTable id="tabla" rowIndexVar="index" var="row" value="#{keetCatalogosRubrosAccion.rubro.rubrosGrupos}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated">																					
+                  <p:column headerText="Departamento" class="janal-wid-35"  >										
+                    <p:selectOneMenu rendered="#{row.visible}" value="#{row.departamento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+											<p:ajax event="change" listener="#{keetCatalogosRubrosAccion.doCargaPaquetes(row)}" process="@this tabla" update="tabla" />
+											<f:selectItems value="#{keetCatalogosPuntosControlFiltro.attrs.departamentos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+											<p:column headerText="Nombre">
+												<h:outputText value="#{item.nombre}"/>
+											</p:column>   
+										</p:selectOneMenu>
+                  </p:column>	                  
+                  <p:column headerText="Paquetes de revisión" class="janal-wid-45">										
+                    <p:selectOneMenu rendered="#{row.visible}" value="#{row.ikPuntoGrupo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+											<f:selectItems value="#{row.puntosGrupos}"  var="element" itemValue="#{element}" itemLabel="#{element.paquete} - #{element.puntosControl}"/>
+											<p:column headerText="Nombre">
+												<h:outputText value="#{item.paquete}"/>
+											</p:column>   
+											<p:column headerText="No. puntos revisión">
+												<h:outputText value="#{item.puntosControl}"/>
+											</p:column>   
+										</p:selectOneMenu>
+                  </p:column>	                  
+                  <p:column style="width:35px;text-align: center">
+                    <p:commandButton rendered="#{row.visible}" update="tabla" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosRubrosAccion.rubro.doEliminarRubroGrupo(row)}">
+                                     </p:commandButton>
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton actionListener="#{keetCatalogosRubrosAccion.rubro.doAgregarRubroGrupo()}" process="@this tabla" update="tabla" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+                  </f:facet>
+                </p:dataTable>	
+              </p:panelGrid>	
+            </p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosRubrosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosRubrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosRubrosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosRubrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

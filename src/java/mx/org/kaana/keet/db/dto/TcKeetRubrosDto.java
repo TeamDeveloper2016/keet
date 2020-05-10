@@ -29,8 +29,6 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="descripcion")
   private String descripcion;
-  @Column (name="unidad")
-  private String unidad;
   @Column (name="codigo")
   private String codigo;
   @Column (name="id_usuario")
@@ -53,13 +51,12 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetRubrosDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TcKeetRubrosDto(String descripcion, String unidad, String codigo, Long idUsuario, Long idEmpaqueUnidadMedida, Long orden, Long idRubro, String nombre) {
+  public TcKeetRubrosDto(String descripcion, String codigo, Long idUsuario, Long idEmpaqueUnidadMedida, Long orden, Long idRubro, String nombre) {
     setDescripcion(descripcion);
-    setUnidad(unidad);
     setCodigo(codigo);
     setIdUsuario(idUsuario);
     setIdEmpaqueUnidadMedida(idEmpaqueUnidadMedida);
@@ -75,14 +72,6 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
 
   public String getDescripcion() {
     return descripcion;
-  }
-
-  public void setUnidad(String unidad) {
-    this.unidad = unidad;
-  }
-
-  public String getUnidad() {
-    return unidad;
   }
 
   public void setCodigo(String codigo) {
@@ -158,8 +147,6 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getUnidad());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCodigo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
@@ -181,7 +168,6 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
-		regresar.put("unidad", getUnidad());
 		regresar.put("codigo", getCodigo());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idEmpaqueUnidadMedida", getIdEmpaqueUnidadMedida());
@@ -195,7 +181,7 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getUnidad(), getCodigo(), getIdUsuario(), getIdEmpaqueUnidadMedida(), getOrden(), getIdRubro(), getNombre(), getRegistro()
+    getDescripcion(), getCodigo(), getIdUsuario(), getIdEmpaqueUnidadMedida(), getOrden(), getIdRubro(), getNombre(), getRegistro()
     };
     return regresar;
   }

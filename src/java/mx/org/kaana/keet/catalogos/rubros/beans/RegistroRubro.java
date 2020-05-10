@@ -36,7 +36,7 @@ public class RegistroRubro implements Serializable {
 	public void setRubro(Rubro rubro) {
 		this.rubro = rubro;
 	}
-	
+
 	private void init(Long idRubro) {
 		MotorBusqueda motor= null;
 		try {

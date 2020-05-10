@@ -2320,6 +2320,15 @@
         where 
           {condicion} 
       </select>
+      <select id="byDepartamento">
+        select      
+          tc_keet_puntos_grupos.id_punto_grupo id_key,
+          tc_keet_puntos_grupos.*
+        from      
+          tc_keet_puntos_grupos
+        where 
+          id_departamento= {idDepartamento}
+      </select>
       <select id="siguiente">
         select 
 					max(cast(replace(descripcion, 'PAQUETE ', '')as integer)+1) siguiente
@@ -2403,7 +2412,7 @@
           id_contrato_rechazo_proveedor = {idContratoRechazoProveedor}
       </select>
     </unit>
-		    <unit id="TcKeetRubrosDto">
+		<unit id="TcKeetRubrosDto">
       <select id="row">
         select      
 				  tc_keet_rubros.id_rubro id_key,
@@ -2422,7 +2431,7 @@
           codigo = '{codigo}' and id_rubro = {idRubro}
       </select>
     </unit>
-		    <unit id="TcKeetRubrosGruposDto">
+		<unit id="TcKeetRubrosGruposDto">
       <select id="row">
         select      
 				  tc_keet_rubros_grupos.id_rubro_grupo id_key,
@@ -2431,6 +2440,15 @@
           tc_keet_rubros_grupos
         where 
           {condicion} 
+      </select>
+      <select id="byRubro">
+        select      
+				  tc_keet_rubros_grupos.id_rubro_grupo id_key,
+          tc_keet_rubros_grupos.*
+        from      
+          tc_keet_rubros_grupos
+        where 
+          id_rubro = {idRubro}
       </select>
       <select id="identically">
         select      
