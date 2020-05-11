@@ -39,16 +39,17 @@ public class Transaccion extends IBaseTnx {
 	private String observaciones;
 	private String latitud;
 	private String longitud;
+	private Double metros;
 
-	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision, String latitud, String longitud) {
-		this(idFigura, tipo, idEstacion, puntosRevision, "", latitud, longitud);
+	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision, String latitud, String longitud, Double metros) {
+		this(idFigura, tipo, idEstacion, puntosRevision, "", latitud, longitud, metros);
 	} // Transaccion
 	
 	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision, String observaciones) {
-		this(idFigura, tipo, idEstacion, puntosRevision, observaciones, null, null);
+		this(idFigura, tipo, idEstacion, puntosRevision, observaciones, null, null, 0D);
 	}
 	
-	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision, String observaciones, String latitud, String longitud) {
+	public Transaccion(Long idFigura, Long tipo, Long idEstacion, Entity[] puntosRevision, String observaciones, String latitud, String longitud, Double metros) {
 		this.idFigura      = idFigura;
 		this.tipo          = tipo;
 		this.idEstacion    = idEstacion;
@@ -56,6 +57,7 @@ public class Transaccion extends IBaseTnx {
 		this.observaciones = observaciones;
 		this.latitud       = latitud;
 		this.longitud      = longitud;
+		this.metros        = metros;
 	} // Transaccion
 
 	public Transaccion(List<IBaseDestajoArchivo> documentos) {
@@ -253,7 +255,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= true;
 		TcKeetContratosPuntosContratistasDto dto= null;
 		try {
-			for(Entity puntoRevision: this.puntosRevision){
+			for(Entity puntoRevision: this.puntosRevision) {
 				dto= new TcKeetContratosPuntosContratistasDto();
 				dto.setFactor(puntoRevision.toDouble("factor"));
 				dto.setIdContratoDestajoContratista(idContratoDestajo);
@@ -262,6 +264,7 @@ public class Transaccion extends IBaseTnx {
 				dto.setIdUsuario(idUsuario);
 				dto.setLatitud(this.latitud);
 				dto.setLongitud(this.longitud);
+				dto.setDistancia(this.metros);
 				DaoFactory.getInstance().insert(sesion, dto);
 				this.factorAcumulado= this.factorAcumulado + dto.getFactor();
 			} // for
@@ -285,6 +288,7 @@ public class Transaccion extends IBaseTnx {
 				dto.setIdUsuario(idUsuario);
 				dto.setLatitud(this.latitud);
 				dto.setLongitud(this.longitud);
+				dto.setDistancia(this.metros);
 				DaoFactory.getInstance().insert(sesion, dto);
 				this.factorAcumulado= this.factorAcumulado + dto.getFactor();
 			} // for
@@ -300,7 +304,7 @@ public class Transaccion extends IBaseTnx {
 		TcKeetContratosRechazosContratistasDto dto= null;
 		Map<String, Object>params= null;
 		try {
-			for(Entity puntoRevision: this.puntosRevision){
+			for(Entity puntoRevision: this.puntosRevision) {
 				dto= new TcKeetContratosRechazosContratistasDto();
 				dto.setIdContratoDestajoContratista(idContratoDestajo);
 				dto.setIdPuntoPaquete(puntoRevision.getKey());

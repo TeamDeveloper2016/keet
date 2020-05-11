@@ -17,8 +17,11 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
+import mx.org.kaana.keet.comun.gps.Distance;
+import mx.org.kaana.keet.comun.gps.Point;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilterMultiple;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -45,7 +48,11 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
     try {
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());		
+			this.attrs.put("latitud", "21.890563");
+  		this.attrs.put("longitud", "-102.252030");
+  		this.attrs.put("punto", new Point(21.890563, -102.252030));
+			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -53,9 +60,9 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			this.attrs.put("figura", (Entity) JsfBase.getFlashAttribute("figura"));
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));
-			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));      			
-			loadCatalogos();
-			doLoad();
+			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));    
+			this.loadCatalogos();
+			this.doLoad();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -129,7 +136,15 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 	public void doAsignaGeoreferencia(String latitud, String longitud){
 		this.attrs.put("latitud", latitud);
 		this.attrs.put("longitud", longitud);
+ 		this.attrs.put("punto", new Point(Numero.getDouble(latitud, 21.890563), Numero.getDouble(longitud, -102.252030)));
 	} // doAsignaGeoreferencia
+	
+	private double toDistance() {
+		Point gpsA= (Point)this.attrs.get("georreferencia");
+		Point gpsB= (Point)this.attrs.get("punto");
+		Distance distance= new Distance(gpsA, gpsB);
+		return distance.toMt();
+	}
 	
 	public String doAceptar() {
     String regresar        = null;    		
@@ -138,11 +153,11 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 		Entity seleccionado    = null;
 		Long idFigura          = -1L;
     try {						
-			if(this.selecteds.length>=1){
-				figura= (Entity) this.attrs.get("figura");
+			if(this.selecteds.length>= 1) {
+				figura      = (Entity) this.attrs.get("figura");
 				seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
-				idFigura= figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");
-				transaccion= new Transaccion(idFigura, figura.toLong("tipo"), ((Entity) this.attrs.get("concepto")).getKey(), this.selecteds, this.attrs.get("latitud").toString(), this.attrs.get("longitud").toString());
+				idFigura    = figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");
+				transaccion= new Transaccion(idFigura, figura.toLong("tipo"), ((Entity) this.attrs.get("concepto")).getKey(), this.selecteds, (String)this.attrs.get("latitud"), (String)this.attrs.get("longitud"), this.toDistance());
 				if(transaccion.ejecutar(EAccion.PROCESAR)){
 					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();

@@ -47,7 +47,7 @@
 			} // initLocalization
 			
 			function distance(gpsB) {
-				var gpsA= {latitud: 21.850957, longitud: -102.307578};
+				var gpsA= {latitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.latitud}, longitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.longitud}};
 				// var gpsB= {latitud: 21.850957, longitud: -102.307578};
 				var distance= janal.distanceMt(gpsA, gpsB);
 				if(distance&lt;= 10)

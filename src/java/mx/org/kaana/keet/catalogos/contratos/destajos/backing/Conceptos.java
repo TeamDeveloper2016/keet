@@ -40,7 +40,8 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		Long idDepartamento      = null;
     try {
 			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			figura= (Entity) JsfBase.getFlashAttribute("figura");	
@@ -140,7 +141,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	public String doPuntosRevision(Entity seleccionado) {
     String regresar= null;    				
     try {						
-			toSetFlash(seleccionado);
+			this.toSetFlash(seleccionado);
 			regresar= "puntos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -177,12 +178,13 @@ public class Conceptos extends IBaseFilter implements Serializable {
   } // doPagina
 	
 	private void toSetFlash(Entity seleccionado){
-		JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));									
-		JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
-		JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionadoPivote"));									
-		JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
-		JsfBase.setFlashAttribute("idDepartamento", (Long)this.attrs.get("idDepartamento"));									
+		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));									
+		JsfBase.setFlashAttribute("figura", this.attrs.get("figura"));									
+		JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionadoPivote"));									
+		JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));									
+		JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
 		JsfBase.setFlashAttribute("concepto", seleccionado);	
+		JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 	} // toSetFlash
 	
 	public String doCancelar() {
