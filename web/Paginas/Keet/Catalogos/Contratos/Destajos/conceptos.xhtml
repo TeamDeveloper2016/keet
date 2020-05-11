@@ -20,6 +20,40 @@
 					janal.bloquear();
 				return ok;
 			} // validateCriterios
+			
+		  function localization() {												
+				if ("geolocation" in navigator) { 
+					navigator.geolocation.getCurrentPosition(function(position) { 						
+						distance({latitud: position.coords.latitude, longitud: position.coords.longitude});												
+					}); // navigator
+				} // if
+				else{
+					console.log("Browser doesn't support geolocation!");
+				} // else		
+				return true;
+			} // initLocalization
+			
+			function distance(gpsB) {
+				var gpsA= {latitud: 21.850957, longitud: -102.307578};
+				// var gpsB= {latitud: 21.850957, longitud: -102.307578};
+				var distance= janal.distanceMt(gpsA, gpsB);
+				if(distance&lt;= 10)
+				  $('#gps').attr('class', 'ui-info-messages ui-messages-info janal-column-center');
+				else
+					if(distance&gt; 10 &amp;&amp; distance&lt;= 20)
+					  $('#gps').attr('class', 'ui-warn-messages ui-messages-warn janal-column-center');
+				  else
+				    $('#gps').attr('class', 'ui-error-messages ui-messages-error janal-column-center');
+				$('#gps-title').html('GPS: ['+ gpsB.latitud+ ','+ gpsB.longitud+ '] estas a '+ distance+ ' metros del lote seleccionado');
+				var url= "https://www.google.com/maps?q="+ gpsB.latitud+ ","+ gpsB.longitud+ "&amp;z=17&amp;hl=es";
+				$('#gps-button').attr('onclick', 'window.open('+ url+ ')');
+				janal.console('Se actualizo el calculo de la distancia: ['+ distance+']');
+				setTimeout('localization();', 3000);
+			}
+
+			$(document).ready(function () {
+				setTimeout('localization();', 1000);
+			});				
     </script>				
   </ui:define>
   <ui:define name="contenido">				
@@ -60,9 +94,9 @@
 					</p:accordionPanel>	
 					<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100,janal-wid-col-30">
 						<div id="gps" class="ui-info-messages ui-messages-info janal-column-center">
-							<span id="gps-title">GPS: [@21.850957,-102.307578] estas a <strong>10</strong> metros del lote seleccionado</span>
+							<span id="gps-title">GPS: [@21.890563,-102.252030] estas a 0 metros del lote seleccionado</span>
 						</div>
-						<p:commandButton type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.8521917,-102.329551&amp;z=17&amp;hl=es');"/>
+						<p:commandButton id="gps-button" type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.890563,-102.252030&amp;z=17&amp;hl=es');"/>
 					</p:panelGrid>
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionado}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModel.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
 						<p:column class="janal-wid-col-30 janal-column-center">              
