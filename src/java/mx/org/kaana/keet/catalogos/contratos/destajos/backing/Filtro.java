@@ -319,7 +319,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "destajoPersona": "destajoProveedor", params, columns);
-      UIBackingUtilities.resetDataTable("destajo");
+      UIBackingUtilities.resetDataTable("tabla");
 			this.attrs.put("destajos", true);
     } // try
     catch (Exception e) {

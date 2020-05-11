@@ -64,13 +64,13 @@
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
 					<p:dataGrid var="row" value="#{keetCatalogosContratosDestajosFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index"
-											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosDestajosFiltro.lazyModel.rowCount gt Constantes.REGISTROS_POR_PAGINA}" id="tabla"
+											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosDestajosFiltro.lazyModel.rowCount gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
 											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
 											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{row.clave}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
-								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosDestajosFiltro.doConceptos}">
+								<p:commandLink process="@this" update="destajo" title="Ver detalle del articulo" action="#{keetCatalogosContratosDestajosFiltro.doConceptos}">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" class="manzana-lote-font" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosDestajosFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
@@ -91,23 +91,23 @@
 						</p:panel>						
 					</p:dataGrid>	 
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="true" id="destajo" widgetVar="kajoolDestajo" var="row" value="#{keetCatalogosContratosDestajosFiltro.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosFiltro.attrs.destajo}" selectionMode="single" paginator="#{keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount gt keetCatalogosContratosDestajosFiltro.lazyDestajo.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosDestajosFiltro.doColorNomina(row)}" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.destajos? '': 'none'}">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolDestajo" var="row" value="#{keetCatalogosContratosDestajosFiltro.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosFiltro.attrs.destajo}" selectionMode="single" paginator="#{keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount gt keetCatalogosContratosDestajosFiltro.lazyDestajo.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosDestajosFiltro.doColorNomina(row)}" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.destajos? '': 'none'}">
 						<f:facet name="header">
 							<div style="float: left; text-align: left;">
 								<p:outputLabel id="titular" value="Destajos del (sub)contratista: [#{keetCatalogosContratosDestajosFiltro.attrs.figura.puesto}] #{keetCatalogosContratosDestajosFiltro.attrs.figura.nombreCompleto}" styleClass="janal-text-white titular"/>
 							</div>
 							<div class="lg-pantalla">
 								<p:menuButton value="Opciones">
-									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
-								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.nomina}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.nomina}">
 							<f:facet name="header">
 								<h:outputText value="Nómina"/>
 							</f:facet>
