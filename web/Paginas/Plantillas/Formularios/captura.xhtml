@@ -38,6 +38,24 @@
   </ui:define>
 	<ui:define name="contenido">
 		<div class="janal-content-table">
+			<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100,janal-wid-col-30">
+				<div id="gps" class="ui-info-messages ui-messages-info" style="height: 33px;line-height: 2.1;">
+					<span id="gps-title">GPS: [@21.850957,-102.307578] estas a <strong>10</strong> metros del lote seleccionado</span>
+				</div>
+				<p:commandButton type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.8521917,-102.329551&z=17&hl=es');"/>
+			</p:panelGrid>	
+			<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100,janal-wid-col-30">
+				<div iclass="ui-warn-messages" style="height: 33px;line-height: 2.1;">
+					<span class="">GPS: [@21.850957,-102.307578] estas a <strong>20</strong> metros del lote seleccionado</span>
+				</div>
+				<p:commandButton type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.8521917,-102.329551&z=17&hl=es');"/>
+			</p:panelGrid>	
+			<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100,janal-wid-col-30">
+				<div class="ui-error-messages" style="height: 33px;line-height: 2.1;">
+					<span class="">GPS: [@21.850957,-102.307578] estas a <strong>30</strong> metros del lote seleccionado</span>
+				</div>
+				<p:commandButton type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.8521917,-102.329551&z=17&hl=es');"/>
+			</p:panelGrid>	
       <h:panelGrid columns="2">
         <h:panelGrid columns="2">
           <p:outputLabel for="entero" value="Entero: "/>

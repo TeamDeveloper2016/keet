@@ -58,7 +58,13 @@
 							</p:panelGrid>										
 						</p:tab>														
 					</p:accordionPanel>	
-					<p:spacer/>
+					<p:spacer height="2px"/>
+					<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100,janal-wid-col-30">
+						<div id="gps" class="ui-info-messages ui-messages-info">
+							<span id="gps-title">GPS: [@21.850957,-102.307578] estas a <strong>10</strong> metros del lote seleccionado</span>
+						</div>
+						<p:commandButton type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.8521917,-102.329551&amp;z=17&amp;hl=es');"/>
+					</p:panelGrid>
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionado}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModel.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
 						<p:column class="janal-wid-col-30 janal-column-center">              
               <f:facet name="header">
