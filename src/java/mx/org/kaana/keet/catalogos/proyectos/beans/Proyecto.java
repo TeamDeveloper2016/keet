@@ -65,7 +65,7 @@ public class Proyecto extends TcKeetProyectosDto {
 	public void setIkTipoObra(UISelectEntity ikTipoObra) {
 		this.ikTipoObra = ikTipoObra;
 		if(this.ikTipoObra!= null)
-			this.setIdTiposObras(this.ikTipoObra.getKey());
+			this.setIdTipoObra(this.ikTipoObra.getKey());
 	}
 
 	public List<Lote> getLotes() {

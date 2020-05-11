@@ -30,7 +30,7 @@ public class MotorBusqueda implements Serializable{
 			if(regresar!= null && regresar.isValid()){
 				regresar.setIkCliente(new UISelectEntity(regresar.getIdCliente()));
 				regresar.setIkDesarrollo(new UISelectEntity(regresar.getIdDesarrollo()));
-				regresar.setIkTipoObra(new UISelectEntity(regresar.getIdTiposObras()));
+				regresar.setIkTipoObra(new UISelectEntity(regresar.getIdTipoObra()));
 			} // if			
 		} // try
 		catch (Exception e) {			

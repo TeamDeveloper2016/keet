@@ -194,7 +194,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("viviendasMayor")))
 			sb.append("tc_keet_contratos.no_viviendas > ").append(this.attrs.get("viviendasMayor")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("tipoObra")) && ((UISelectEntity)this.attrs.get("tipoObra")).getKey()>= 1L)				
-			sb.append("tc_keet_contratos.id_tipos_obras=").append(((UISelectEntity)this.attrs.get("tipoObra")).getKey()).append(" and ");
+			sb.append("tc_keet_contratos.id_tipo_obra=").append(((UISelectEntity)this.attrs.get("tipoObra")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idContratoEstatus")) && !this.attrs.get("idContratoEstatus").toString().equals("-1"))
   		sb.append("(tc_keet_contratos.id_contrato_estatus= ").append(this.attrs.get("idContratoEstatus")).append(") and ");
 		if(sb.length()== 0)

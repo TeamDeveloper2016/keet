@@ -45,8 +45,8 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
   private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
-  @Column (name="id_tipos_obras")
-  private Long idTiposObras;
+  @Column (name="id_tipo_obra")
+  private Long idTipoObra;
   @Column (name="id_proyecto_estatus")
   private Long idProyectoEstatus;
   @Column (name="id_usuario")
@@ -67,7 +67,7 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetProyectosDto(String clave, Long idCliente, Long idDesarrollo, Long idProyecto, String etapa, Long ejercicio, String consecutivo, Long idTiposObras, Long idProyectoEstatus, Long idUsuario, Long idEmpresa, Long orden, Long noViviendas) {
+  public TcKeetProyectosDto(String clave, Long idCliente, Long idDesarrollo, Long idProyecto, String etapa, Long ejercicio, String consecutivo, Long idTipoObra, Long idProyectoEstatus, Long idUsuario, Long idEmpresa, Long orden, Long noViviendas) {
     setClave(clave);
     setIdCliente(idCliente);
     setIdDesarrollo(idDesarrollo);
@@ -76,7 +76,7 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
-    setIdTiposObras(idTiposObras);
+    setIdTipoObra(idTipoObra);
     setIdProyectoEstatus(idProyectoEstatus);
     setIdUsuario(idUsuario);
     setIdEmpresa(idEmpresa);
@@ -148,12 +148,12 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
     return consecutivo;
   }
 
-  public void setIdTiposObras(Long idTiposObras) {
-    this.idTiposObras = idTiposObras;
+  public void setIdTipoObra(Long idTipoObra) {
+    this.idTipoObra = idTipoObra;
   }
 
-  public Long getIdTiposObras() {
-    return idTiposObras;
+  public Long getIdTipoObra() {
+    return idTipoObra;
   }
 
   public void setIdProyectoEstatus(Long idProyectoEstatus) {
@@ -227,7 +227,7 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTiposObras());
+		regresar.append(getIdTipoObra());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProyectoEstatus());
 		regresar.append(Constantes.SEPARADOR);
@@ -253,7 +253,7 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
-		regresar.put("idTiposObras", getIdTiposObras());
+		regresar.put("idTipoObra", getIdTipoObra());
 		regresar.put("idProyectoEstatus", getIdProyectoEstatus());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idEmpresa", getIdEmpresa());
@@ -265,7 +265,7 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getIdCliente(), getIdDesarrollo(), getIdProyecto(), getEtapa(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTiposObras(), getIdProyectoEstatus(), getIdUsuario(), getIdEmpresa(), getOrden(), getNoViviendas()
+    getClave(), getIdCliente(), getIdDesarrollo(), getIdProyecto(), getEtapa(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTipoObra(), getIdProyectoEstatus(), getIdUsuario(), getIdEmpresa(), getOrden(), getNoViviendas()
     };
     return regresar;
   }

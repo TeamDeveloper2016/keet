@@ -1695,7 +1695,7 @@
         inner join 
 					tc_keet_desarrollos on tc_keet_desarrollos.id_desarrollo= tc_keet_proyectos.id_desarrollo
         inner join 
-					tc_keet_tipos_obras on tc_keet_tipos_obras.id_tipo_obra= tc_keet_proyectos.id_tipos_obras
+					tc_keet_tipos_obras on tc_keet_tipos_obras.id_tipo_obra= tc_keet_proyectos.id_tipo_obra
         inner join
           tc_keet_proyectos_estatus on tc_keet_proyectos_estatus.id_proyecto_estatus= tc_keet_proyectos.id_proyecto_estatus      
         where
