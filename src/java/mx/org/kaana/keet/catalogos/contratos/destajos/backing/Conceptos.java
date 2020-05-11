@@ -167,7 +167,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	public String doRechazar(Entity seleccionado) {
     String regresar= null;    				
     try {						
-			toSetFlash(seleccionado);
+			this.toSetFlash(seleccionado);
 			regresar= "rechazos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

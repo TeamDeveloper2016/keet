@@ -32,7 +32,8 @@ public class Galeria extends IBaseFilter implements Serializable {
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
     try {
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -94,7 +95,8 @@ public class Galeria extends IBaseFilter implements Serializable {
     String regresar= null;    
     try {						
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
-			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));																					
+			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 			regresar= "filtro".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

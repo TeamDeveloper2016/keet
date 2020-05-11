@@ -58,7 +58,8 @@ public class Importar extends IBaseImportar implements Serializable {
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
     try {
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -335,7 +336,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			JsfBase.setFlashAttribute("figura", (Entity)this.attrs.get("figura"));									
 			JsfBase.setFlashAttribute("seleccionado", (Entity)this.attrs.get("seleccionadoPivote"));									
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
-			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));												
+			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));			
+			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
