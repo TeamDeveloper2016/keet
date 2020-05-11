@@ -207,7 +207,7 @@
 					</p:panel>	
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{keetNominasPersonas.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasPersonas.lazyDetalle.rowCount gt keetNominasPersonas.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetNominasPersonas.attrs.nomina? '': 'none'}">
 						<f:facet name="header">
-							<div style="float: left;" class="">
+							<div style="float: left;">
 								<p:outputLabel value="Calculos de nómina: [#{keetNominasPersonas.attrs.seleccionado.contratista}][#{keetNominasPersonas.attrs.seleccionado.puesto}] #{keetNominasPersonas.attrs.seleccionado.nombreCompleto}" styleClass="janal-text-white"/>
 							</div>
 							<div class="lg-pantalla">
