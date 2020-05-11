@@ -1,5 +1,9 @@
 package mx.org.kaana.kajool.enums;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import mx.org.kaana.libs.formato.Cadena;
@@ -59,7 +63,22 @@ public enum EFormatoDinamicos implements IFormatosKajool {
   public String execute(Object value) {
     String regresar = "";
     if (value != null) {
-      regresar = value.toString();
+			if(value instanceof LocalDateTime) {
+				DateTimeFormatter pattern= DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
+				regresar= pattern.format((LocalDateTime)value);
+			} // if
+			else
+				if(value instanceof LocalDate) {
+					DateTimeFormatter pattern= DateTimeFormatter.ofPattern("yyyyMMdd0000000");
+					regresar= pattern.format((LocalDateTime)value);
+				} // if
+				else
+					if(value instanceof LocalTime) {
+						DateTimeFormatter pattern= DateTimeFormatter.ofPattern("20200101HHmmssS");
+						regresar= pattern.format((LocalDateTime)value);
+					} // if
+					else
+					  regresar = value.toString();
       switch (this) {
         case LIBRE:
           break;

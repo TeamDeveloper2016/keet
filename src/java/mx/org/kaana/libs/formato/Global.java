@@ -14,4 +14,5 @@ public final class Global {
   public static String format(IFormatosKajool type, Object value) {
     return type.execute(value);
   } // format 
+	
 }
