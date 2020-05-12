@@ -230,6 +230,27 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doInitGeo
 	
+	public void onBlurPointSelect(String geo) {
+		LatLng coordenadas    = null;
+		Lote lote             = null;
+		String[] georeferencia= null;
+		try {	
+			georeferencia= Cadena.eliminaCaracter(geo, '@').split(",");
+			coordenadas= new LatLng(Double.valueOf(georeferencia[0]), Double.valueOf(georeferencia[1]));
+			lote= (Lote) this.attrs.get("loteGeoreferencia");						
+			lote.setLatitud(String.valueOf(coordenadas.getLat()));
+			lote.setLongitud(String.valueOf(coordenadas.getLng()));
+			this.attrs.put("latitud", lote.getLatitud());
+			this.attrs.put("longitud", lote.getLongitud());			
+			this.attrs.put("loteGeoreferencia", lote);
+			UIBackingUtilities.execute("updateLocalization('".concat(lote.getLatitud()).concat("','").concat(lote.getLongitud()).concat("');"));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+  } // onBlurPointSelect
+	
 	public void onPointSelect(PointSelectEvent event) {
 		LatLng coordenadas= null;
 		Lote lote         = null;
@@ -247,7 +268,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch		
-  } // doMarkerDrag
+  } // onPointSelect
 	
 	public void doAceptarGeo() {
 		Lote lote= null;
