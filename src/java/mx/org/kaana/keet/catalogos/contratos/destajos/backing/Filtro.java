@@ -79,6 +79,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
+			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
       this.attrs.put("destajos", false);				
@@ -301,13 +302,21 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doPagina
 	
 	public String doCancelar() {
-    String regresar          = null;    
-		EOpcionesResidente opcion= null;		
+    String regresar                   = null;    
+		EOpcionesResidente opcion         = null;		
+		EOpcionesResidente opcionAdicional= null;		
     try {			
 			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
 			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("opcion", opcion);			
-			regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);			
+			if(this.attrs.get("opcionAdicional")!= null)
+				opcionAdicional= ((EOpcionesResidente)this.attrs.get("opcionAdicional"));										
+			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));			
+			JsfBase.setFlashAttribute("opcionResidente", opcion);						
+			if(opcionAdicional!= null)				
+				regresar= opcionAdicional.getRetorno().concat(Constantes.REDIRECIONAR);			
+			else
+				regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -345,5 +354,4 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public String doColorNomina(Entity row) {
 		return Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
 	}
-
 }
