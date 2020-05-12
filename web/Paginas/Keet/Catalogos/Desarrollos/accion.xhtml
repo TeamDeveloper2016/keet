@@ -9,6 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{keetCatalogosDesarrollosAccion.attrs.nombreAccion} al catálogo de desarrollos" />
 	<ui:define name="librerias">
+		<script src="https://maps.google.com/maps/api/js?key=AIzaSyBT_SYV5r3kJdT_bO0ijJmNjxqZqhb7xNY" type="text/javascript"></script>
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				'contenedorGrupos\\:clave'      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -35,6 +36,66 @@
 			$(document).ready(function () {
 				janal.readingMode('#{keetCatalogosDesarrollosAccion.attrs.nombreAccion}');
 			});
+			
+				var currentMarker;
+			
+			function initLocalization() {								
+				if ("geolocation" in navigator) { 
+					navigator.geolocation.getCurrentPosition(function(position){ 
+						var lat, lon;
+						lat= position.coords.latitude.toString();
+						lon= position.coords.longitude.toString();												
+						PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+						currentMarker = new google.maps.Marker({
+              position: new google.maps.LatLng(lat, lon),
+							icon:'/KEET/javax.faces.resource/icon/mapa/home-red.png.jsf?ln=janal'
+            });                 						
+						PF('wMapa').addOverlay(currentMarker);					
+						updateInitGeo(lat,lon);						
+						updateGeoreferencia(lat,lon);						
+					}); // navigator
+				} // if
+				else {
+					console.log("Browser doesn't support geolocation!");
+				} // else				
+			} // initLocalization
+			
+			function existLocalization(lat, lon) {								
+				if ("geolocation" in navigator){ 															
+					PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+					currentMarker = new google.maps.Marker({
+						position: new google.maps.LatLng(lat, lon),
+						icon:'/KEET/javax.faces.resource/icon/mapa/home-green.png.jsf?ln=janal'
+					});                 						
+					PF('wMapa').addOverlay(currentMarker);											
+					updateGeoreferencia(lat, lon);
+				} // if
+				else {
+					console.log("Browser doesn't support geolocation!");
+				} // else				
+			} // existLocalization
+			
+			function updateLocalization(lat, lon) {								
+				currentMarker.setMap(null);
+				PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+				currentMarker= new google.maps.Marker({
+          position: new google.maps.LatLng(lat, lon),
+					icon:'/KEET/javax.faces.resource/icon/mapa/home-green.png.jsf?ln=janal'
+        });                 						
+				PF('wMapa').addOverlay(currentMarker);						
+				updateGeoreferencia(lat, lon);
+			} // updateLocalization						
+			
+			function updateGeoreferencia(lat, lon) {
+				$('#contenedorGrupos\\:coordenadas').text('@'+ lat+ ','+ lon);				
+				$('#contenedorGrupos\\:coordenadas').val('@'+ lat+ ','+ lon);				
+			} // updateGeoreferencia	
+			
+			function processGeo(){
+				janal.bloquear();
+				blurPointSelect($('#contenedorGrupos\\:coordenadas').val());
+				return true;
+			} // processGeo
 		</script>   
 		<style type="text/css">
 			.ui-selectcheckboxmenu-token-label {
@@ -143,6 +204,26 @@
                   <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.ycalle}"/>	
                 </p:panelGrid>
             </p:tab>	
+						<!--p:tab id="panelGeoreferencia" title="Georeferencia" rendered="#{keetCatalogosContratosAccion.attrs.mostrarGeo}">
+							<p:outputLabel value="Coordenada:"/>
+							<p:inputText id="coordenadas" styleClass="janal-wid-100-txt">
+								<p:ajax event="blur" onstart="return processGeo();" oncomplete="janal.desbloquear();"/>
+							</p:inputText>
+							<br/>
+							<div class="janal-line-button">
+								<div class="lg-pantalla janal-column-right">
+									<p:commandButton value="Aceptar" iconPos="left" styleClass="janal-text-white" accesskey="z" icon="fa fa-map-marker" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doAceptarGeo}" update="contenedorGrupos" oncomplete="PF('pestanias').select(1);"/>										
+									<p:commandButton value="Cancelar" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" actionListener="#{keetCatalogosContratosAccion.doCancelarGeo}" update="contenedorGrupos" oncomplete="PF('pestanias').select(1);"/>
+								</div>
+								<div class="xs-pantalla janal-column-right">
+									<p:commandButton title="Aceptar cambios" iconPos="left" styleClass="janal-text-whit" accesskey="z" icon="fa fa-map-marker" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doAceptarGeo}" update="contenedorGrupos" oncomplete="PF('pestanias').select(1);"/>										
+									<p:commandButton title="Cancelar cambios" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" actionListener="#{keetCatalogosContratosAccion.doCancelarGeo}" update="contenedorGrupos" oncomplete="PF('pestanias').select(1);"/>
+								</div>
+							</div>									
+							<p:gmap id="mapa" widgetVar="wMapa" center="21.8818,-102.291" zoom="75" type="HYBRID" style="width:100%;height:500px" rendered="#{keetCatalogosContratosAccion.attrs.mostrarGeo}" streetView="true" styleClass="style-panel">
+								<p:ajax event="pointSelect" listener="#{keetCatalogosContratosAccion.onPointSelect}"/>
+							</p:gmap>	
+						</p:tab-->
 					</p:tabView>
 				</div>
 			</div>

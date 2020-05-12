@@ -31,6 +31,10 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   private String descripcion;
   @Column (name="clave")
   private String clave;
+  @Column (name="latitud")
+  private String latitud;
+  @Column (name="longitud")
+  private String longitud;
   @Column (name="id_cliente")
   private Long idCliente;
   @Id
@@ -51,13 +55,15 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetDesarrollosDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKeetDesarrollosDto(String descripcion, String clave, Long idCliente, Long idDesarrollo, Long idUsuario, Long idDomicilio, String nombres) {
+  public TcKeetDesarrollosDto(String descripcion, String clave, String latitud, String longitud, Long idCliente, Long idDesarrollo, Long idUsuario, Long idDomicilio, String nombres) {
     setDescripcion(descripcion);
     setClave(clave);
+    setLatitud(latitud);
+    setLongitud(longitud);
     setIdCliente(idCliente);
     setIdDesarrollo(idDesarrollo);
     setIdUsuario(idUsuario);
@@ -80,6 +86,22 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
 
   public String getClave() {
     return clave;
+  }
+
+  public void setLatitud(String latitud) {
+    this.latitud = latitud;
+  }
+
+  public String getLatitud() {
+    return latitud;
+  }
+
+  public void setLongitud(String longitud) {
+    this.longitud = longitud;
+  }
+
+  public String getLongitud() {
+    return longitud;
   }
 
   public void setIdCliente(Long idCliente) {
@@ -149,6 +171,10 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getClave());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLatitud());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLongitud());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdDesarrollo());
@@ -169,6 +195,8 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
 		regresar.put("clave", getClave());
+		regresar.put("latitud", getLatitud());
+		regresar.put("longitud", getLongitud());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("idUsuario", getIdUsuario());
@@ -181,7 +209,7 @@ public class TcKeetDesarrollosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getClave(), getIdCliente(), getIdDesarrollo(), getIdUsuario(), getIdDomicilio(), getNombres(), getRegistro()
+    getDescripcion(), getClave(), getLatitud(), getLongitud(), getIdCliente(), getIdDesarrollo(), getIdUsuario(), getIdDomicilio(), getNombres(), getRegistro()
     };
     return regresar;
   }

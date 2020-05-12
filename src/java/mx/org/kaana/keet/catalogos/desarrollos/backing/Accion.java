@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -14,6 +15,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.catalogos.desarrollos.beans.Desarrollo;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -27,6 +29,8 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import org.primefaces.event.map.PointSelectEvent;
+import org.primefaces.model.map.LatLng;
 
 
 @Named(value = "keetCatalogosDesarrollosAccion")
@@ -441,5 +445,107 @@ public class Accion extends IBaseAttribute implements Serializable {
 			throw e;
 		} // catch		
 	} // toAsignaEntidad
+	
+	/*public void doExistGeo() {
+		Desarrollo desarrollo= null;
+		try {
+			desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");
+			this.attrs.put("latitud", desarrollo.getLatitud());
+			this.attrs.put("longitud", desarrollo.getLongitud());			
+			UIBackingUtilities.execute("existLocalization('".concat(desarrollo.getLatitud()).concat("','").concat(desarrollo.getLongitud()).concat("');"));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doExistGeo
+	
+	public void doInitGeo(String latitud, String longitud){		
+		try {
+			this.attrs.put("latitud", latitud);
+			this.attrs.put("longitud", longitud);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doInitGeo
+	
+	public void onBlurPointSelect(String geo) {
+		LatLng coordenadas    = null;
+		Desarrollo desarrollo             = null;
+		String[] georeferencia= null;
+		try {	
+			georeferencia= Cadena.eliminaCaracter(geo, '@').split(",");
+			coordenadas= new LatLng(Double.valueOf(georeferencia[0]), Double.valueOf(georeferencia[1]));
+			desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");						
+			desarrollo.setLatitud(String.valueOf(coordenadas.getLat()));
+			desarrollo.setLongitud(String.valueOf(coordenadas.getLng()));
+			this.attrs.put("latitud", desarrollo.getLatitud());
+			this.attrs.put("longitud", desarrollo.getLongitud());			
+			this.attrs.put("desarrolloGeoreferencia", desarrollo);
+			UIBackingUtilities.execute("updateLocalization('".concat(desarrollo.getLatitud()).concat("','").concat(desarrollo.getLongitud()).concat("');"));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+  } // onBlurPointSelect
+	
+	public void onPointSelect(PointSelectEvent event) {
+		LatLng coordenadas= null;
+		Desarrollo desarrollo         = null;
+		try {
+			coordenadas= event.getLatLng();                  
+			desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");						
+			desarrollo.setLatitud(String.valueOf(coordenadas.getLat()));
+			desarrollo.setLongitud(String.valueOf(coordenadas.getLng()));
+			this.attrs.put("latitud", desarrollo.getLatitud());
+			this.attrs.put("longitud", desarrollo.getLongitud());			
+			this.attrs.put("desarrolloGeoreferencia", desarrollo);
+			UIBackingUtilities.execute("updateLocalization('".concat(desarrollo.getLatitud()).concat("','").concat(desarrollo.getLongitud()).concat("');"));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+  } // onPointSelect
+	
+	public void doAceptarGeo() {
+		Desarrollo desarrollo= null;
+		try {
+			desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");		
+			if(Cadena.isVacio(desarrollo.getLatitud()) || Cadena.isVacio(desarrollo.getLongitud())){
+				FacesContext.getCurrentInstance().getExternalContext();
+				this.contrato.getContrato().getDesarrollos().get(this.contrato.getContrato().getDesarrollos().indexOf(desarrollo)).setLatitud(this.attrs.get("latitud").toString());
+				this.contrato.getContrato().getDesarrollos().get(this.contrato.getContrato().getDesarrollos().indexOf(desarrollo)).setLongitud(this.attrs.get("longitud").toString());
+			} // if
+			else{
+				this.desarrollo.getDesarrollo().setLatitud(desarrollo.getLatitud());
+				this.desarrollo.getDesarrollo().setLongitud(desarrollo.getLongitud());
+			} // else
+			this.attrs.put("mostrarGeo", false);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAceptarGeo	
+	
+	public void doCancelarGeo() {		
+		Desarrollo desarrollo= null;
+		try {
+			if(this.attrs.get("latitudAnterior")!= null && this.attrs.get("longitudAnterior")!= null){
+				desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");		
+				this.desarrollo.getDesarrollo().setLatitud(this.attrs.get("latitudAnterior").toString());
+				this.desarrollo.getDesarrollo().setLongitud(this.attrs.get("longitudAnterior").toString());			
+			} // if
+			this.attrs.put("mostrarGeo", false);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doCancelarGeo*/
 
 }
