@@ -93,36 +93,36 @@
 											<p:separator/>
 										</p:panelGrid>										
 									</ui:repeat>											
-								</p:tab>
-								<p:tab title="Avances">
-									<p:dataTable lazy="true" id="tablaAvances" widgetVar="kajoolTableAvances" var="row" value="#{keetCatalogosContratosGeoreferencia.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosGeoreferencia.attrs.seleccionado}" paginator="#{keetCatalogosContratosGeoreferencia.lazyModel.rowCount gt keetCatalogosContratosGeoreferencia.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
-										<p:column class="janal-wid-col-30 janal-column-center">              
-											<f:facet name="header">
-												<h:outputText value="No"/>
-											</f:facet>
-											<h:outputText value="#{index+1}.-"/>
-										</p:column>		
-										<p:column class="janal-column-left MarAuto Responsive">
-											<f:facet name="header">
-												<h:outputText value="Departamento"/>
-											</f:facet>
-											<h:outputText value="#{row.departamento}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
-										</p:column>		                        
-										<p:column class="janal-column-left MarAuto Responsive">
-											<f:facet name="header">
-												<h:outputText value="Concepto(s) del lote"/>
-											</f:facet>
-											<h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
-										</p:column>		                        
-										<p:column class="janal-wid-col-30 janal-column-center">
-											<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
-										</p:column>										
-										<f:facet name="footer">
-											<p:outputLabel value="Total [#{keetCatalogosContratosGeoreferencia.lazyModel== null? 0: keetCatalogosContratosGeoreferencia.lazyModel.rowCount}] registros"/>
-										</f:facet>
-									</p:dataTable> 										
-								</p:tab>
+								</p:tab>								
 							</p:accordionPanel>									
+						</p:tab>							
+            <p:tab title="Estaciones" rendered="#{!keetCatalogosContratosGeoreferencia.attrs.mostrarDetalle}">		
+							<p:dataTable lazy="true" id="tablaAvances" widgetVar="kajoolTableAvances" var="row" value="#{keetCatalogosContratosGeoreferencia.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosGeoreferencia.attrs.seleccionado}" paginator="#{keetCatalogosContratosGeoreferencia.lazyModel.rowCount gt keetCatalogosContratosGeoreferencia.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+								<p:column class="janal-wid-col-30 janal-column-center">              
+									<f:facet name="header">
+										<h:outputText value="No"/>
+									</f:facet>
+									<h:outputText value="#{index+1}.-"/>
+								</p:column>		
+								<p:column class="janal-column-left MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Departamento"/>
+									</f:facet>
+									<h:outputText value="#{row.departamento}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
+								</p:column>		                        
+								<p:column class="janal-column-left MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Concepto(s) del lote"/>
+									</f:facet>
+									<h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
+								</p:column>		                        
+								<p:column class="janal-wid-col-30 janal-column-center">
+									<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+								</p:column>										
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{keetCatalogosContratosGeoreferencia.lazyModel== null? 0: keetCatalogosContratosGeoreferencia.lazyModel.rowCount}] registros"/>
+								</f:facet>
+							</p:dataTable>
 						</p:tab>							
             <p:tab title="Evidencia(s)" rendered="#{!keetCatalogosContratosGeoreferencia.attrs.mostrarDetalle}">		
 							<p:carousel id="evidencias" value="#{keetCatalogosContratosGeoreferencia.attrs.importados}" headerText="Galeria de foto(s)" var="item" styleClass="importado" circular="true" responsive="true">
