@@ -44,7 +44,7 @@
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticIncidentesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
-                <f:selectItems value="#{manticIncidentesFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <f:selectItems value="#{manticIncidentesFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -56,7 +56,7 @@
 							<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesFiltro.attrs.nombre}" completeMethod="#{manticIncidentesFiltro.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
 							<p:outputLabel for="contratista" value="Asignado a contratista:"/>
 							<p:selectOneMenu id="contratista" value="#{manticIncidentesFiltro.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-								<f:selectItems value="#{manticIncidentesFiltro.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+								<f:selectItems value="#{manticIncidentesFiltro.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombre}"/>
 								<p:column headerText="Nombre">
 									<h:outputText value="#{item.nombres}"/>
 								</p:column>   
@@ -104,7 +104,7 @@
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>									
 								</div>	
 							</f:facet>												
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
 									<h:outputText value="Consecutivo"/>
 								</f:facet>
@@ -116,7 +116,7 @@
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
 							</p:column>																					
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{row.puesto}">
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{row.puesto}" rendered="false">
 								<f:facet name="header">
 									<h:outputText value="Puesto"/>
 								</f:facet>
@@ -134,7 +134,7 @@
 								</f:facet>
 								<h:outputText value="#{row['estatus']}"/>
 							</p:column>														
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}" rendered="false">
 								<f:facet name="header">
 									<h:outputText value="Ejercicio"/>
 								</f:facet>
@@ -142,13 +142,13 @@
 							</p:column>					
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.inicio}">
 								<f:facet name="header">
-									<h:outputText value="Vigencia inicio"/>
+									<h:outputText value="Inicio"/>
 								</f:facet>
 								<h:outputText value="#{row['inicio']}"/>
 							</p:column>					
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.termino}">
 								<f:facet name="header">
-									<h:outputText value="Vigencia fin"/>
+									<h:outputText value="Termino"/>
 								</f:facet>
 								<h:outputText value="#{row['termino']}"/>
 							</p:column>					
@@ -158,6 +158,9 @@
 								</f:facet>
 								<h:outputText value="#{row['registro']}"/>
 							</p:column>												
+							<p:column class="janal-wid-col-30 janal-column-center">
+								<h:graphicImage library="janal" name="icon/semaforos/#{row.idIncidenteEstatus eq '1' ? 'circulo-verde': (row.idIncidenteEstatus eq '2' ? 'circulo-amarillo' : (row.idIncidenteEstatus eq '3' ? 'circulo-rojo' : 'circulo-gris'))}.png" title="#{row.idIncidenteEstatus eq '1' ? 'POR APLICAR': (row.idIncidenteEstatus eq '2' ? 'EN PROCESO' : (row.idIncidenteEstatus eq '3' ? 'APLICADA' : 'CANCELADO'))}"/>
+							</p:column>
 							<f:facet name="footer">
 								Total [#{manticIncidentesFiltro.lazyModel== null ? 0: manticIncidentesFiltro.lazyModel.rowCount}] registros
 							</f:facet>
@@ -177,7 +180,7 @@
 		</div>		           				
 	</ui:define>    	
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la incidencia" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
@@ -185,9 +188,9 @@
 						<f:selectItems value="#{manticIncidentesFiltro.attrs.allEstatus}"/>					
 					</p:selectOneMenu>
 				</h:panelGrid>
-				<p:panelGrid id="salida" columns="1" layout="grid" styleClass="janal-wid-99" style="height:250px !important;overflow-y: auto" columnClasses="janal-wid-100">				
-					<p:outputLabel for="justificacion" value="Justificación"/>
-					<p:inputTextarea id="justificacion" value="#{manticIncidentesFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="1"/>														
+				<p:panelGrid id="salida" columns="1" layout="grid" styleClass="janal-wid-99" style="height:120px !important;overflow-y: auto" columnClasses="janal-wid-100">				
+					<p:outputLabel for="justificacion" value="Justificación:"/>
+					<p:inputTextarea id="justificacion" value="#{manticIncidentesFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="3"/>														
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">

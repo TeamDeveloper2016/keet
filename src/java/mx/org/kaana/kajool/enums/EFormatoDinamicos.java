@@ -70,12 +70,12 @@ public enum EFormatoDinamicos implements IFormatosKajool {
 			else
 				if(value instanceof LocalDate) {
 					DateTimeFormatter pattern= DateTimeFormatter.ofPattern("yyyyMMdd0000000");
-					regresar= pattern.format((LocalDateTime)value);
+					regresar= pattern.format((LocalDate)value);
 				} // if
 				else
 					if(value instanceof LocalTime) {
 						DateTimeFormatter pattern= DateTimeFormatter.ofPattern("20200101HHmmssS");
-						regresar= pattern.format((LocalDateTime)value);
+						regresar= pattern.format((LocalTime)value);
 					} // if
 					else
 					  regresar = value.toString();

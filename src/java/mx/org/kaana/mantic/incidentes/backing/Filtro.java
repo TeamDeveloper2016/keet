@@ -83,8 +83,8 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_HORA_CORTA));
-      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("sortOrder", "order by tc_mantic_incidentes.consecutivo desc");
       this.lazyModel = new FormatCustomLazy("VistaIncidentesDto", "principal", params, columns);

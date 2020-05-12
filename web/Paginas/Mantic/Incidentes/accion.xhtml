@@ -29,7 +29,7 @@
 						<p:outputLabel for="inicio" value="Vigencia inicio:"/>
 						<p:outputLabel for="termino" value="Vigencia fin:"/>
 						<p:outputLabel for="tipoIncidente" value="Tipo incidente:"/>												
-						<p:inputText id="orden" styleClass="janal-wid-85" value="#{manticIncidentesAccion.attrs.orden}" disabled="true" readonly="true"/>                    												
+						<p:inputText id="orden" styleClass="janal-wid-80" value="#{manticIncidentesAccion.attrs.orden}" disabled="true" readonly="true"/>                    												
 						<p:calendar id="inicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesAccion.incidente.vigenciaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="trueincidente.inicio" locale="es" />
 						<p:calendar id="termino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesAccion.incidente.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
 						<p:selectOneMenu id="tipoIncidente" value="#{manticIncidentesAccion.incidente.idTipoIncidente}" styleClass="janal-wid-100-txt">
@@ -41,7 +41,8 @@
 						<p:outputLabel for="nombre" value="Empleado:"/>							
 						<p:autoComplete id="nombre" var="custom" placeholder="ej. Juan Perez Lopez" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesAccion.attrs.nombre}" completeMethod="#{manticIncidentesAccion.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-100" class="janal-wid-100"/>																
 						<p:commandButton id="buscar" styleClass="janal-text-white" icon="fa fa-search" onstart="return janal.bloquear();" process="@this nombre" actionListener="#{manticIncidentesAccion.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-					</p:panelGrid>	
+					</p:panelGrid>
+					<p:spacer height="2px"/>
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticIncidentesAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticIncidentesAccion.attrs.seleccionado}" paginator="#{manticIncidentesAccion.lazyModel.rowCount gt manticIncidentesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
 						<p:column selectionMode="single" style="width:25px;text-align:center"/>
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.sucursal}">
@@ -78,9 +79,9 @@
               <p:outputLabel value="Total [#{manticIncidentesAccion.lazyModel==null?0:manticIncidentesAccion.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>                  
-					<p:panelGrid id="panelObservaciones" columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100-txt">
+					<p:panelGrid id="panelObservaciones" columns="1" layout="grid" styleClass="janal-wid-100-txt">
 						<p:outputLabel for="observaciones" value="Observaciones:"/>						
-						<p:inputTextarea id="observaciones" rows="2" value="#{manticIncidentesAccion.incidente.observaciones}" style="width: 99% !important"/>
+						<p:inputTextarea id="observaciones" rows="2" value="#{manticIncidentesAccion.incidente.observaciones}" styleClass="janal-wid-100-txt"/>
 					</p:panelGrid>
         </div>
       </div>
