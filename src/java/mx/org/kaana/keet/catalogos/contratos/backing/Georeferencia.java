@@ -64,13 +64,13 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {		
-    EOpcionesResidente opcion= null;
+    EOpcionesResidente opcion= null;    
 		Long idDesarrollo        = null;
     try {
-			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
+			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");			
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("opcionResidente", opcion);			
+			this.attrs.put("opcionResidente", opcion);						
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));
@@ -353,12 +353,15 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 	
 	public String doCancelar() {
     String regresar          = null;    
-		EOpcionesResidente opcion= null;
+		EOpcionesResidente opcion= null;		
     try {
 			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
 			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("opcion", opcion);			
-			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR_AMPERSON);			
+			if(this.attrs.get("retorno")!= null)
+				regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR_AMPERSON);			
+			else
+				regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -366,4 +369,21 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+	
+	public String doCapturaAvances(){
+		String regresar          = null;    
+		EOpcionesResidente opcion= null;
+    try {
+			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));			
+			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("opcionResidente", opcion);						
+			JsfBase.setFlashAttribute("opcionAdicional", EOpcionesResidente.GEOREFERENCIA);			
+			regresar= "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro.jsf".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+	} // doCapturaAvances
 }
