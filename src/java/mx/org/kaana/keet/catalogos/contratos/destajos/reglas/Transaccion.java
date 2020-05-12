@@ -302,14 +302,22 @@ public class Transaccion extends IBaseTnx {
 	private boolean processRechazosContratistas(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception{
 		boolean regresar= true;
 		TcKeetContratosRechazosContratistasDto dto= null;
+		TcKeetContratosPuntosContratistasDto punto= null;
 		Map<String, Object>params= null;
 		try {
 			for(Entity puntoRevision: this.puntosRevision) {
+				params= new HashMap<>();
+				params.put("idContratoDestajoContratista", idContratoDestajo);
+				params.put("idPuntoPaquete", puntoRevision.getKey());
+				punto= (TcKeetContratosPuntosContratistasDto) DaoFactory.getInstance().toEntity(sesion, TcKeetContratosPuntosContratistasDto.class, "TcKeetContratosPuntosContratistasDto", "puntoPivote", params);
 				dto= new TcKeetContratosRechazosContratistasDto();
 				dto.setIdContratoDestajoContratista(idContratoDestajo);
 				dto.setIdPuntoPaquete(puntoRevision.getKey());
 				dto.setIdUsuario(idUsuario);
 				dto.setObservaciones(this.observaciones);
+				dto.setLatitud(punto.getLatitud());
+				dto.setLongitud(punto.getLongitud());
+				dto.setDistancia(punto.getDistancia());
 				DaoFactory.getInstance().insert(sesion, dto);
 				this.factorAcumulado= this.factorAcumulado + puntoRevision.toDouble("factor");
 				params= new HashMap<>();
@@ -327,19 +335,24 @@ public class Transaccion extends IBaseTnx {
 	private boolean processRechazosSubContratistas(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception{
 		boolean regresar= true;
 		TcKeetContratosRechazosProveedoresDto dto= null;
+		TcKeetContratosPuntosProveedoresDto punto= null;
 		Map<String, Object>params= null;
 		try {
 			for(Entity puntoRevision: this.puntosRevision){
+				params= new HashMap<>();
+				params.put("idContratoDestajoProveedor", idContratoDestajo);
+				params.put("idPuntoPaquete", puntoRevision.getKey());
+				punto= (TcKeetContratosPuntosProveedoresDto) DaoFactory.getInstance().toEntity(sesion, TcKeetContratosPuntosProveedoresDto.class, "TcKeetContratosPuntosProveedoresDto", "puntoPivote", params);
 				dto= new TcKeetContratosRechazosProveedoresDto();
 				dto.setIdContratoDestajoProveedor(idContratoDestajo);
 				dto.setIdPuntoPaquete(puntoRevision.getKey());
 				dto.setIdUsuario(idUsuario);
 				dto.setObservaciones(this.observaciones);
+				dto.setLatitud(punto.getLatitud());
+				dto.setLongitud(punto.getLongitud());
+				dto.setDistancia(punto.getDistancia());
 				DaoFactory.getInstance().insert(sesion, dto);
-				this.factorAcumulado= this.factorAcumulado + puntoRevision.toDouble("factor");
-				params= new HashMap<>();
-				params.put("idContratoDestajoProveedor", idContratoDestajo);
-				params.put("idPuntoPaquete", puntoRevision.getKey());
+				this.factorAcumulado= this.factorAcumulado + puntoRevision.toDouble("factor");				
 				DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosPuntosProveedoresDto", "rechazo", params);
 			} // for
 		} // try

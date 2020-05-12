@@ -41,23 +41,32 @@ public class TcKeetContratosRechazosProveedoresDto implements IBaseDto, Serializ
   private String observaciones;
   @Column (name="registro")
   private LocalDateTime registro;
+	@Column (name="latitud")
+  private String latitud;
+  @Column (name="longitud")
+  private String longitud;
+  @Column (name="distancia")
+  private Double distancia;
 
   public TcKeetContratosRechazosProveedoresDto() {
     this(new Long(-1L));
   }
 
   public TcKeetContratosRechazosProveedoresDto(Long key) {
-    this(new Long(-1L), null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, 0D);
     setKey(key);
   }
 
-  public TcKeetContratosRechazosProveedoresDto(Long idContratoRechazoProveedor, Long idContratoDestajoProveedor, Long idPuntoPaquete, Long idUsuario, String observaciones) {
+  public TcKeetContratosRechazosProveedoresDto(Long idContratoRechazoProveedor, Long idContratoDestajoProveedor, Long idPuntoPaquete, Long idUsuario, String observaciones, String latitud, String longitud, Double distancia) {
     setIdContratoRechazoProveedor(idContratoRechazoProveedor);
     setIdContratoDestajoProveedor(idContratoDestajoProveedor);
     setIdPuntoPaquete(idPuntoPaquete);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setRegistro(LocalDateTime.now());
+		setLatitud(latitud);
+		setLongitud(longitud);
+		setDistancia(distancia);
   }
 	
   public void setIdContratoRechazoProveedor(Long idContratoRechazoProveedor) {
@@ -108,6 +117,30 @@ public class TcKeetContratosRechazosProveedoresDto implements IBaseDto, Serializ
     return registro;
   }
 
+	public String getLatitud() {
+		return latitud;
+	}
+
+	public void setLatitud(String latitud) {
+		this.latitud = latitud;
+	}
+
+	public String getLongitud() {
+		return longitud;
+	}
+
+	public void setLongitud(String longitud) {
+		this.longitud = longitud;
+	}	
+
+	public Double getDistancia() {
+		return distancia;
+	}
+
+	public void setDistancia(Double distancia) {
+		this.distancia=distancia;
+	}
+	
   @Transient
   @Override
   public Long getKey() {
@@ -134,6 +167,12 @@ public class TcKeetContratosRechazosProveedoresDto implements IBaseDto, Serializ
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLatitud());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLongitud());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDistancia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -147,13 +186,16 @@ public class TcKeetContratosRechazosProveedoresDto implements IBaseDto, Serializ
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("registro", getRegistro());
+		regresar.put("latitud", getLatitud());
+		regresar.put("longitud", getLongitud());
+		regresar.put("distancia", getDistancia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdContratoRechazoProveedor(), getIdContratoDestajoProveedor(), getIdPuntoPaquete(), getIdUsuario(), getObservaciones(), getRegistro()
+			getIdContratoRechazoProveedor(), getIdContratoDestajoProveedor(), getIdPuntoPaquete(), getIdUsuario(), getObservaciones(), getRegistro(), getLatitud(), getLongitud(), getDistancia()
     };
     return regresar;
   }

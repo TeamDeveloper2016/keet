@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
@@ -152,7 +153,8 @@ public class Transaccion extends IBaseTnx {
 	} // toSiguiente
 	
 	private void actualizarLote(Session sesion, Lote item) throws Exception {
-		Value orden               = null;
+		Value orden   = null;
+		Entity entity = null;
 		try {
 			//setea el nuevo orden, debido al ordenamiento por fecha
 			orden= DaoFactory.getInstance().toField("TcKeetContratosLotesDto", "getOrden", item.toMap(), "maxOrden");
@@ -163,6 +165,9 @@ public class Transaccion extends IBaseTnx {
           item.setIdContratoLoteEstatus(1L);//ver estatus
 					item.setIdContrato(this.contrato.getContrato().getIdContrato());
 					item.setIdUsuario(JsfBase.getIdUsuario());
+					entity= (Entity)DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "getCoordenadasDesarrollo", this.contrato.getContrato().toMap());
+					item.setLatitud(entity.toString("latitud"));
+					item.setLongitud(entity.toString("longitud"));
 					DaoFactory.getInstance().insert(sesion, item);
 					cargarPlanos(sesion, (List<TcKeetContratosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toContratos", item.toMap()));
 					break;
