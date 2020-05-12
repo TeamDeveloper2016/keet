@@ -140,7 +140,7 @@
 					<p:spacer height="10px"/>
 					<p:dataTable lazy="true" id="tablaRechazos" widgetVar="kajoolTableRechazos" var="row" value="#{keetCatalogosContratosDestajosPuntos.lazyModelRechazos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosPuntos.lazyModelRechazos.rowCount gt keetCatalogosContratosDestajosPuntos.lazyModelRechazos.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
 						<f:facet name="header">
-							<div style="float: left;">
+							<div style="text-align: left">
 								<p:outputLabel value="Puntos de control que fueron rechazados" styleClass="janal-text-white"/>
 							</div>
 						</f:facet>	
