@@ -193,6 +193,9 @@ public class Conceptos extends IBaseFilter implements Serializable {
     try {			
 			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("figura", this.attrs.get("figura"));
+			JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
 			JsfBase.setFlashAttribute("opcionResidente", opcion);			
 			regresar= "filtro".concat(Constantes.REDIRECIONAR);			
 		} // try
