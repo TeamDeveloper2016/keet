@@ -73,6 +73,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {		
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
+		Long idDepartamento      = null;
+		UISelectEntity figura    = null;
     try {
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
@@ -81,8 +83,16 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
       this.attrs.put("destajos", false);				
       this.attrs.put("persona", false);				
-      this.attrs.put("proveedor", false);				
+      this.attrs.put("proveedor", false);							
 			this.loadCatalogos();			
+			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null){
+				idDepartamento= (Long) JsfBase.getFlashAttribute("idDepartamento");
+				figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");
+				this.attrs.put("especialidad", idDepartamento);
+				this.doLoadFiguras();				
+				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));
+				doLoad();
+			} // if
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
