@@ -952,7 +952,7 @@
 				where
 					{condicion}
 				order by 
-					tc_keet_contratos.clave
+					tc_keet_desarrollos.nombres
 			</select>
 			<select id="residentes">
 				select 
@@ -996,7 +996,7 @@
 				where
 					{condicion}
 				order by 
-					tc_keet_contratos.clave
+					tc_keet_desarrollos.nombres
 			</select>
 		</unit>
 		<unit id="VistaDiasFeriadosDto">
@@ -1506,8 +1506,7 @@
         where 
           tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_lotes_contratistas where tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote})
 				and 
-					tr_mantic_empresa_personal.id_empresa= {idEmpresa}
-				  and tr_mantic_empresa_personal.id_activo= 1
+					tr_mantic_empresa_personal.id_empresa= {idEmpresa}				  
 				  and {condicion}
 					and tc_mantic_puestos.nombre= 'CONTRATISTA'
 				order by 
@@ -1543,8 +1542,7 @@
 					tc_mantic_proveedores				
         where 
           tc_mantic_proveedores.id_proveedor not in (select id_proveedor from tc_keet_contratos_lotes_proveedores where tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote})            
-				  and tc_mantic_proveedores.id_empresa= {idEmpresa}
-				  and tc_mantic_proveedores.id_activo= 1
+				  and tc_mantic_proveedores.id_empresa= {idEmpresa}				  
 				  and tc_mantic_proveedores.id_subcontratista= 1
 				  and {condicionProveedor}
 				order by
@@ -1573,8 +1571,7 @@
 				inner join	
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
         where           
-					tr_mantic_empresa_personal.id_empresa= {idEmpresa}
-				  and tr_mantic_empresa_personal.id_activo= 1
+					tr_mantic_empresa_personal.id_empresa= {idEmpresa}				  
 				  and {condicion}
 					and tc_mantic_puestos.nombre= 'CONTRATISTA'
 					and
