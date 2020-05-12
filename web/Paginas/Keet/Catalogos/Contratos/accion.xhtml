@@ -136,7 +136,7 @@
 									</p:selectOneMenu>			
 								</p:column>	                  
 								<p:column headerText="Fecha inicio" class="janal-wid-10">										
-									<p:calendar rendered="#{lote.mostar}" id="fechaInicial" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.fechaInicio}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" >
+									<p:calendar rendered="#{lote.mostar}" id="fechaInicial" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.inicio}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" >
 										<p:ajax event="dateSelect" listener="#{keetCatalogosContratosAccion.contrato.contrato.doCalculateFecha(lote)}" process="@this tablaLotes" update="fechaTermino"/>
 									</p:calendar>
 								</p:column>
@@ -144,7 +144,7 @@
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.diasConstruccion}" styleClass="janal-wid-100-txt" readonly="true"/>
 								</p:column>
 								<p:column headerText="Fecha termino" class="janal-wid-10">										
-									<p:calendar rendered="#{lote.mostar}" id="fechaTermino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.fechaTermino}"  pattern="dd/MM/yyyy" locale="es" readonly="true" disabled="true"/>
+									<p:calendar rendered="#{lote.mostar}" id="fechaTermino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.termino}"  pattern="dd/MM/yyyy" locale="es" readonly="true" disabled="true"/>
 								</p:column>
 								<p:column headerText="Manzana" class="janal-wid-10">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.manzana}" styleClass="janal-wid-100-txt"/>

@@ -73,8 +73,8 @@ public class Lote extends TcKeetContratosLotesDto implements Comparable{
 	@Override
 	public int compareTo(Object o) {
 		int regresar= 0;
-		if(o!= null && ((Lote)o).getFechaInicio()!= null)
-			regresar= ((this.getFechaInicio().isBefore(((Lote)o).getFechaInicio())))? -1:1;
+		if(o!= null && ((Lote)o).getInicio()!= null)
+			regresar= ((this.getInicio().isBefore(((Lote)o).getInicio())))? -1:1;
 		return regresar;
 	}	
 }

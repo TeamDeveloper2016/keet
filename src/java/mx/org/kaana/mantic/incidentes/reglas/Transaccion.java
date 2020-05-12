@@ -148,8 +148,8 @@ public class Transaccion extends IBaseTnx {
 			dto.setIdTipoIncidente(this.incidente.getIdTipoIncidente());	
 			dto.setIdUsuario(JsfBase.getIdUsuario());
 			dto.setObservaciones(this.incidente.getObservaciones());
-			dto.setVigenciaInicio(this.incidente.getVigenciaInicio());
-			dto.setVigenciaFin(this.incidente.getVigenciaFin());		
+			dto.setInicio(this.incidente.getVigenciaInicio());
+			dto.setTermino(this.incidente.getVigenciaFin());		
 			key= DaoFactory.getInstance().insert(sesion, dto);
 			if(key>= 1L)
 				regresar= registrarBitacora(sesion, key, this.estatus ? this.incidente.getIdEmpresaPersona() : EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
@@ -206,8 +206,8 @@ public class Transaccion extends IBaseTnx {
 			dto.setIdEmpresaPersona(this.incidente.getIdEmpresaPersona());
 			dto.setIdTipoIncidente(this.incidente.getIdTipoIncidente());			
 			dto.setObservaciones(this.incidente.getObservaciones());
-			dto.setVigenciaInicio(this.incidente.getVigenciaInicio());
-			dto.setVigenciaFin(this.incidente.getVigenciaFin());		
+			dto.setInicio(this.incidente.getVigenciaInicio());
+			dto.setTermino(this.incidente.getVigenciaFin());		
 			if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 				this.incidente.setObservaciones(this.observaciones);
 				regresar= registrarBitacora(sesion, this.incidente.getIdIncidente(), dto.getIdIncidenteEstatus());

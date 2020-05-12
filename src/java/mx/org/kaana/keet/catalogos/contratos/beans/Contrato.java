@@ -175,10 +175,10 @@ public class Contrato extends TcKeetContratosDto {
 			  tcKeetPrototiposDto= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, lote.getIdPrototipo());
 				lote.setDiasConstruccion(tcKeetPrototiposDto.getDiasConstruccion());
 				if(tcKeetPrototiposDto.getIdTipoDia().equals(1L)) // dias naturales
-				  lote.setFechaTermino(lote.getFechaInicio().plusDays(tcKeetPrototiposDto.getDiasConstruccion()));
+				  lote.setTermino(lote.getInicio().plusDays(tcKeetPrototiposDto.getDiasConstruccion()));
 				else{
 					diasHabiles= (List<DiaHabil>)DaoFactory.getInstance().toEntitySet(DiaHabil.class, "VistaPrototiposDto", "getDias", params);
-					lote.setFechaTermino(addWorkingDays(lote.getFechaInicio(), lote.getDiasConstruccion().intValue(), diasHabiles));
+					lote.setTermino(addWorkingDays(lote.getInicio(), lote.getDiasConstruccion().intValue(), diasHabiles));
 				} // else
 				//lote.getFechaInicio().
 			} // if

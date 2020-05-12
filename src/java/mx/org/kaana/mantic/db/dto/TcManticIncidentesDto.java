@@ -38,8 +38,8 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_incidente")
   private Long idIncidente;
-  @Column (name="vigencia_inicio")
-  private LocalDate vigenciaInicio;
+  @Column (name="inicio")
+  private LocalDate inicio;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_incidente_estatus")
@@ -48,8 +48,8 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
   private String observaciones;
   @Column (name="orden")
   private Long orden;
-  @Column (name="vigencia_fin")
-  private LocalDate vigenciaFin;
+  @Column (name="termino")
+  private LocalDate termino;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
@@ -70,17 +70,17 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticIncidentesDto(String consecutivo, Long idTipoIncidente, Long idEmpresaPersona, Long idIncidente, LocalDate vigenciaInicio, Long idUsuario, Long idIncidenteEstatus, String observaciones, Long orden, LocalDate vigenciaFin, Long ejercicio, Long idDesarrollo, Double costo, Long idNomina) {
+  public TcManticIncidentesDto(String consecutivo, Long idTipoIncidente, Long idEmpresaPersona, Long idIncidente, LocalDate inicio, Long idUsuario, Long idIncidenteEstatus, String observaciones, Long orden, LocalDate termino, Long ejercicio, Long idDesarrollo, Double costo, Long idNomina) {
     setConsecutivo(consecutivo);
     setIdTipoIncidente(idTipoIncidente);
     setIdEmpresaPersona(idEmpresaPersona);
     setIdIncidente(idIncidente);
-    setVigenciaInicio(vigenciaInicio);
+    setInicio(inicio);
     setIdUsuario(idUsuario);
     setIdIncidenteEstatus(idIncidenteEstatus);
     setObservaciones(observaciones);
     setOrden(orden);
-    setVigenciaFin(vigenciaFin);
+    setTermino(termino);
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
 		setIdDesarrollo(idDesarrollo);
@@ -120,12 +120,12 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     return idIncidente;
   }
 
-  public void setVigenciaInicio(LocalDate vigenciaInicio) {
-    this.vigenciaInicio = vigenciaInicio;
+  public void setInicio(LocalDate inicio) {
+    this.inicio = inicio;
   }
 
-  public LocalDate getVigenciaInicio() {
-    return vigenciaInicio;
+  public LocalDate getInicio() {
+    return inicio;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -160,12 +160,12 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     return orden;
   }
 
-  public void setVigenciaFin(LocalDate vigenciaFin) {
-    this.vigenciaFin = vigenciaFin;
+  public void setTermino(LocalDate termino) {
+    this.termino = termino;
   }
 
-  public LocalDate getVigenciaFin() {
-    return vigenciaFin;
+  public LocalDate getTermino() {
+    return termino;
   }
 
   public void setEjercicio(Long ejercicio) {
@@ -233,7 +233,7 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdIncidente());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getVigenciaInicio());
+		regresar.append(getInicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
@@ -243,7 +243,7 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getVigenciaFin());
+		regresar.append(getTermino());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
@@ -264,12 +264,12 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
 		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("idIncidente", getIdIncidente());
-		regresar.put("vigenciaInicio", getVigenciaInicio());
+		regresar.put("vigenciaInicio", getInicio());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idIncidenteEstatus", getIdIncidenteEstatus());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("orden", getOrden());
-		regresar.put("vigenciaFin", getVigenciaFin());
+		regresar.put("vigenciaFin", getTermino());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("costo", getCosto());		
 		regresar.put("idNomina", getIdNomina());		
@@ -280,7 +280,7 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getConsecutivo(), getIdTipoIncidente(), getIdEmpresaPersona(), getIdIncidente(), getVigenciaInicio(), getIdUsuario(), getIdIncidenteEstatus(), getObservaciones(), getOrden(), getVigenciaFin(), getEjercicio(), getIdDesarrollo(), getCosto(), getIdNomina(), getRegistro()
+			getConsecutivo(), getIdTipoIncidente(), getIdEmpresaPersona(), getIdIncidente(), getInicio(), getIdUsuario(), getIdIncidenteEstatus(), getObservaciones(), getOrden(), getTermino(), getEjercicio(), getIdDesarrollo(), getCosto(), getIdNomina(), getRegistro()
     };
     return regresar;
   }

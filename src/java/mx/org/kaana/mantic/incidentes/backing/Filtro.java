@@ -40,31 +40,31 @@ import mx.org.kaana.mantic.incidentes.beans.Incidente;
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
-	private LocalDate fechaInicio;
-	private LocalDate fechaFin;
+	private LocalDate inicio;
+	private LocalDate termino;
 
-	public LocalDate getFechaInicio() {
-		return fechaInicio;
+	public LocalDate getInicio() {
+		return inicio;
 	}
 
-	public void setFechaInicio(LocalDate fechaInicio) {
-		this.fechaInicio = fechaInicio;
+	public void setInicio(LocalDate inicio) {
+		this.inicio = inicio;
 	}
 
-	public LocalDate getFechaFin() {
-		return fechaFin;
+	public LocalDate getTermino() {
+		return termino;
 	}
 
-	public void setFechaFin(LocalDate fechaFin) {
-		this.fechaFin = fechaFin;
+	public void setTermino(LocalDate termino) {
+		this.termino = termino;
 	}
   @PostConstruct
   @Override
   protected void init() {
     try {    	
       this.attrs.put("codigo", "");         
-			this.fechaInicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
-			this.fechaFin= LocalDate.now();
+			this.inicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
+			this.termino= LocalDate.now();
 			this.toLoadCatalog();
 			this.loadContratistas();
     } // try
@@ -83,8 +83,8 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("vigenciaInicio", EFormatoDinamicos.FECHA_HORA_CORTA));
-      columns.add(new Columna("vigenciaFin", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("sortOrder", "order by tc_mantic_incidentes.consecutivo desc");
       this.lazyModel = new FormatCustomLazy("VistaIncidentesDto", "principal", params, columns);
@@ -162,8 +162,8 @@ public class Filtro extends Comun implements Serializable {
 				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
 			else
 				sb.append("tr_mantic_empresa_personal.id_contratista=").append(((UISelectEntity)this.attrs.get("idContratista")).getKey()).append(" and ");
-		sb.append("(date_format(tc_mantic_incidentes.vigencia_inicio, '%Y%m%d')>= date_format('").append(this.fechaInicio.toString()).append("', '%Y%m%d')) and ");					
-		sb.append("(date_format(tc_mantic_incidentes.vigencia_fin, '%Y%m%d')<= date_format('").append(this.fechaFin.toString()).append("', '%Y%m%d')) and ");						
+		sb.append("(date_format(tc_mantic_incidentes.inicio, '%Y%m%d')>= date_format('").append(this.inicio.toString()).append("', '%Y%m%d')) and ");					
+		sb.append("(date_format(tc_mantic_incidentes.termino, '%Y%m%d')<= date_format('").append(this.termino.toString()).append("', '%Y%m%d')) and ");						
 		if(Cadena.isVacio(sb.toString()))
 			regresar.put("condicion", Constantes.SQL_VERDADERO);
 		else

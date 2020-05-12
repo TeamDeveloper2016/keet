@@ -5539,7 +5539,7 @@
 				and 
 					id_incidente_estatus in ({estatus})
 				and 
-					('{fecha}' between tc_mantic_incidentes.vigencia_inicio and tc_mantic_incidentes.vigencia_fin)
+					('{fecha}' between tc_mantic_incidentes.inicio and tc_mantic_incidentes.termino)
 			</select>
 			<delete id="rows">
 				delete tc_mantic_incidentes from tc_mantic_incidentes where id_incidente= {idIncidente}

@@ -30,7 +30,7 @@ public class Incidente implements Serializable{
 	}
 
 	public Incidente(TcManticIncidentesDto dto){
-		this(dto.getIdIncidente(), dto.getIdEmpresaPersona(), dto.getIdTipoIncidente(), dto.getIdIncidenteEstatus(), dto.getVigenciaInicio(), dto.getVigenciaFin(), dto.getObservaciones(), dto.getIdDesarrollo(), null, null, null, null, null, ESql.UPDATE, null, dto.getCosto());
+		this(dto.getIdIncidente(), dto.getIdEmpresaPersona(), dto.getIdTipoIncidente(), dto.getIdIncidenteEstatus(), dto.getInicio(), dto.getTermino(), dto.getObservaciones(), dto.getIdDesarrollo(), null, null, null, null, null, ESql.UPDATE, null, dto.getCosto());
 	}
 	
 	public Incidente(Long idIncidente, Long idEmpresaPersona, Long idTipoIncidente, Long idIncidenteEstatus, LocalDate vigenciaInicio, LocalDate vigenciaFin, String observaciones, Long idDesarrollo, String nombre, String tipoIncidente, String nombreUsuario, String estatus, String puesto, ESql accion, String estatusAsociados, Double costo) {

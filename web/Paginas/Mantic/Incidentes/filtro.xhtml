@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+f<?xml version="1.0" encoding="ISO-8859-1" ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
@@ -65,9 +65,9 @@
 								</p:column> 
 							</p:selectOneMenu>																
               <p:outputLabel for="fechaInicio" value="Vigencia inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.inicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
               <p:outputLabel for="fechaTermino" value="Vigencia termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />														
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.termino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />														
 							<p:outputLabel for="idTipoIncidente" value="Tipo incidente:"/>
 							<p:selectOneMenu id="idTipoIncidente" value="#{manticIncidentesFiltro.attrs.idTipoIncidente}" styleClass="janal-wid-100-txt">
 								<f:selectItems value="#{manticIncidentesFiltro.attrs.incidentes}"/>
@@ -140,17 +140,17 @@
 								</f:facet>
 								<h:outputText value="#{row['ejercicio']}"/>
 							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.vigenciaInicio}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.inicio}">
 								<f:facet name="header">
 									<h:outputText value="Vigencia inicio"/>
 								</f:facet>
-								<h:outputText value="#{row['vigenciaInicio']}"/>
+								<h:outputText value="#{row['inicio']}"/>
 							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.vigenciaFin}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.termino}">
 								<f:facet name="header">
 									<h:outputText value="Vigencia fin"/>
 								</f:facet>
-								<h:outputText value="#{row['vigenciaFin']}"/>
+								<h:outputText value="#{row['termino']}"/>
 							</p:column>					
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
 								<f:facet name="header">

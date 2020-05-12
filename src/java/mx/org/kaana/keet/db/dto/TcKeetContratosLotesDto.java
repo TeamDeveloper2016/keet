@@ -32,12 +32,12 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   private String manzana;
   @Column (name="clave")
   private String clave;
-  @Column (name="fecha_inicio")
-  private LocalDate fechaInicio;
+  @Column (name="inicio")
+  private LocalDate inicio;
   @Column (name="lote")
   private Long lote;
-  @Column (name="fecha_termino")
-  private LocalDate fechaTermino;
+  @Column (name="termino")
+  private LocalDate termino;
   @Column (name="registro")
   private LocalDateTime registro;
   @Column (name="id_usuario")
@@ -74,12 +74,12 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate fechaInicio, Long lote, LocalDate fechaTermino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud) {
+  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, Long lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud) {
     setManzana(manzana);
     setClave(clave);
-    setFechaInicio(fechaInicio);
+    setInicio(inicio);
     setLote(lote);
-    setFechaTermino(fechaTermino);
+    setTermino(termino);
     setRegistro(LocalDateTime.now());
     setIdUsuario(idUsuario);
     setIdContrato(idContrato);
@@ -110,12 +110,12 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     return clave;
   }
 
-  public void setFechaInicio(LocalDate fechaInicio) {
-    this.fechaInicio = fechaInicio;
+  public void setInicio(LocalDate inicio) {
+    this.inicio = inicio;
   }
 
-  public LocalDate getFechaInicio() {
-    return fechaInicio;
+  public LocalDate getInicio() {
+    return inicio;
   }
 
   public void setLote(Long lote) {
@@ -126,12 +126,12 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     return lote;
   }
 
-  public void setFechaTermino(LocalDate fechaTermino) {
-    this.fechaTermino = fechaTermino;
+  public void setTermino(LocalDate termino) {
+    this.termino = termino;
   }
 
-  public LocalDate getFechaTermino() {
-    return fechaTermino;
+  public LocalDate getTermino() {
+    return termino;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -249,11 +249,11 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getClave());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaInicio());
+		regresar.append(getInicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getLote());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaTermino());
+		regresar.append(getTermino());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
@@ -287,9 +287,9 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("manzana", getManzana());
 		regresar.put("clave", getClave());
-		regresar.put("fechaInicio", getFechaInicio());
+		regresar.put("fechaInicio", getInicio());
 		regresar.put("lote", getLote());
-		regresar.put("fechaTermino", getFechaTermino());
+		regresar.put("fechaTermino", getTermino());
 		regresar.put("registro", getRegistro());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idContrato", getIdContrato());
@@ -308,7 +308,7 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getManzana(), getClave(), getFechaInicio(), getLote(), getFechaTermino(), getRegistro(), getIdUsuario(), getIdContrato(), getIdContratoLoteEstatus(), getIdContratoLote(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos(), getLatitud(), getLongitud()
+			getManzana(), getClave(), getInicio(), getLote(), getTermino(), getRegistro(), getIdUsuario(), getIdContrato(), getIdContratoLoteEstatus(), getIdContratoLote(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos(), getLatitud(), getLongitud()
     };
     return regresar;
   }

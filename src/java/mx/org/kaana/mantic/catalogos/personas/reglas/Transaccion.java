@@ -265,8 +265,8 @@ public class Transaccion extends IBaseTnx{
 			incidencia.setIdTipoIncidente(idTipoIncidencia);
 			incidencia.setIdUsuario(JsfBase.getIdUsuario());
 			incidencia.setObservaciones(observaciones);
-			incidencia.setVigenciaInicio(LocalDate.now());
-			incidencia.setVigenciaFin(LocalDate.now());
+			incidencia.setInicio(LocalDate.now());
+			incidencia.setTermino(LocalDate.now());
 			if(DaoFactory.getInstance().insert(sesion, incidencia)>= 1L)
 				regresar= registrarBitacora(sesion, incidencia.getIdIncidente(), EEstatusIncidentes.REGISTRADA.getIdEstatusInicidente(), observaciones);
 		} // try

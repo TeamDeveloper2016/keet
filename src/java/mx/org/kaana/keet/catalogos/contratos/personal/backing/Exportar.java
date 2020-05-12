@@ -88,8 +88,8 @@ public class Exportar extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreUsuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("vigenciaInicio", EFormatoDinamicos.FECHA_CORTA));
-      columns.add(new Columna("vigenciaFin", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("sortOrder", "order by tc_mantic_incidentes.id_desarrollo, tc_mantic_incidentes.consecutivo");
       this.lazyModel = new FormatCustomLazy("VistaIncidentesDto", "principal", params, columns);
@@ -145,8 +145,8 @@ public class Exportar extends IBaseFilter implements Serializable {
 			String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 			sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
 		} // else if			  						
-		sb.append("(date_format(tc_mantic_incidentes.vigencia_inicio, '%Y%m%d')>= date_format('").append(this.fechaInicio.toString()).append("', '%Y%m%d')) and ");					
-		sb.append("(date_format(tc_mantic_incidentes.vigencia_fin, '%Y%m%d')<= date_format('").append(this.fechaFin.toString()).append("', '%Y%m%d')) and ");			
+		sb.append("(date_format(tc_mantic_incidentes.inicio, '%Y%m%d')>= date_format('").append(this.fechaInicio.toString()).append("', '%Y%m%d')) and ");					
+		sb.append("(date_format(tc_mantic_incidentes.termino, '%Y%m%d')<= date_format('").append(this.fechaFin.toString()).append("', '%Y%m%d')) and ");			
 		if(Cadena.isVacio(sb.toString()))
 			regresar.put("condicion", Constantes.SQL_VERDADERO);
 		else
@@ -284,7 +284,7 @@ public class Exportar extends IBaseFilter implements Serializable {
 			params= new HashMap<>();						  
 			params.put("idEmpresa", !Cadena.isVacio(this.attrs.get("idEmpresa")) && this.attrs.get("idEmpresa").toString().equals("-1") ? JsfBase.getAutentifica().getEmpresa().getDependencias() : ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			params.put(Constantes.SQL_CONDICION, toCondicionExporter());
-			params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tc_mantic_incidentes.vigencia_inicio");
+			params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tc_mantic_incidentes.inicio");
 			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.INCIDENCIAS), EExportacionXls.INCIDENCIAS, 
 				"EJERCICIO,CONSECUTIVO,VIGENCIA_INICIO,VIGENCIA_FIN,NOMBRE,PUESTO,TIPO_INCIDENTE,ESTATUS,CLAVE_DESARROLLO,NOMBRE_DESARROLLO,REGISTRO"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
