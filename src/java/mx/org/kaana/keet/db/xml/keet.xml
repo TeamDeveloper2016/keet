@@ -2160,6 +2160,15 @@
         where      
           id_punto_paquete = {idPuntoPaquete} and id_contrato_punto_contratista = {idContratoPuntoContratista} and id_contrato_destajo_contratista = {idContratoDestajoContratista}
       </select>
+      <select id="puntoPivote">
+        select 
+					tc_keet_contratos_puntos_contratistas.id_contrato_punto_contratista as id_key,
+          tc_keet_contratos_puntos_contratistas.*
+				from      
+          tc_keet_contratos_puntos_contratistas
+        where      
+          id_punto_paquete = {idPuntoPaquete} and id_contrato_destajo_contratista = {idContratoDestajoContratista}
+      </select>
       <delete id="rechazo">
         delete from      
           tc_keet_contratos_puntos_contratistas
@@ -2184,6 +2193,15 @@
           tc_keet_contratos_puntos_proveedores
         where      
           id_contrato_destajo_proveedor = {idContratoDestajoProveedor} and id_punto_paquete = {idPuntoPaquete} and id_contrato_punto_proveedor = {idContratoPuntoProveedor}
+      </select>
+      <select id="puntoPivote">
+        select 
+					tc_keet_contratos_puntos_proveedores.id_contrato_punto_proveedor as id_key,
+          tc_keet_contratos_puntos_proveedores.*
+				from      
+          tc_keet_contratos_puntos_proveedores
+        where      
+          id_contrato_destajo_proveedor = {idContratoDestajoProveedor} and id_punto_paquete = {idPuntoPaquete}
       </select>
       <delete id="rechazo">
         delete from      
