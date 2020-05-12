@@ -76,6 +76,11 @@
 				$('#contenedorGrupos\\:coordenadas').val('@'+ lat+ ','+ lon);				
 			} // updateGeoreferencia	
 			
+			function processGeo(){
+				janal.bloquear();
+				blurPointSelect($('#contenedorGrupos\\:coordenadas').val());
+				return true;
+			} // processGeo
 		</script>
 	</ui:define>
 	<ui:define name="contenido">
@@ -83,6 +88,10 @@
 			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
 			<pe:methodParam name="latitud"/>  
 			<pe:methodParam name="longitud"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="blurPointSelect" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.onBlurPointSelect}">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="geo"/>  			
 		</pe:remoteCommand>		
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
@@ -171,7 +180,9 @@
 							<p:outputLabel value="Lote:"/>
 							<p:inputText value="#{keetCatalogosContratosAccion.attrs.loteGeoreferencia.lote}" styleClass="janal-wid-100-txt" readonly="true"/>
 							<p:outputLabel value="Coordenada:"/>
-							<p:inputText id="coordenadas" value="" styleClass="janal-wid-100-txt" readonly="true"/>
+							<p:inputText id="coordenadas" styleClass="janal-wid-100-txt">
+								<p:ajax event="blur" onstart="return processGeo();" oncomplete="janal.desbloquear();"/>
+							</p:inputText>
 							<br/>
 							<div class="janal-line-button">
 								<div class="lg-pantalla janal-column-right">
