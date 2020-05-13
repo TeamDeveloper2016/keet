@@ -70,6 +70,7 @@ public class Transaccion extends IBaseTnx {
 					this.proyecto.getProyecto().setOrden(siguiente.getOrden());
 					this.proyecto.getProyecto().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
 					this.proyecto.getProyecto().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+					this.proyecto.getProyecto().setIdProyectoEstatus(1L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.proyecto.getProyecto())>= 1L;
 					for(Lote item:this.proyecto.getProyecto().getLotes())
 						actualizarLote(sesion, item);
@@ -158,7 +159,7 @@ public class Transaccion extends IBaseTnx {
           item.setIdProyectoLote(-1L);
 					item.setIdProyecto(this.proyecto.getProyecto().getIdProyecto());
 					item.setIdUsuario(JsfBase.getIdUsuario());
-					orden= DaoFactory.getInstance().toField("TcKeetProyectosLotesDto", "getOrden", item.toMap(), "maxOrden	");
+					orden= DaoFactory.getInstance().toField("TcKeetProyectosLotesDto", "getOrden", item.toMap(), "maxOrden");
 					item.setOrden(orden.toLong(1L));
 					DaoFactory.getInstance().insert(sesion, item);
 					cargarPlanos(sesion, (List<TcKeetProyectosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetProyectosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toProyectos", item.toMap()));
