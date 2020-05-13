@@ -143,6 +143,14 @@
 							</f:facet>
 							<h:outputText value="#{row['costo']}"/>
 						</p:column>	
+						<p:summaryRow>
+							<p:column colspan="5" styleClass="janal-column-right">
+                <h:outputText value="Total:" />
+							</p:column>
+							<p:column>
+                <h:outputText value="#{keetCatalogosContratosDestajosFiltro.costoTotal}"/>
+							</p:column>
+						</p:summaryRow>
 						<f:facet name="footer">
 							<p:outputLabel value="Las filas en color fueron consideradas en la nómina vigente" style="float: left;"/>
 							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosFiltro.lazyDestajo== null? 0: keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount}] registros"/>

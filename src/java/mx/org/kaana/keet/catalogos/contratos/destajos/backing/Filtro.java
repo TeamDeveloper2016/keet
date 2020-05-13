@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -24,6 +25,7 @@ import mx.org.kaana.keet.nomina.beans.Nomina;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -66,6 +68,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	public void setLazyDestajo(FormatLazyModel lazyDestajo) {
 		this.lazyDestajo=lazyDestajo;
+	}
+	
+	public String getCostoTotal() {
+    Double costo = 0D;
+		if(this.lazyDestajo!= null)
+			for (IBaseDto item: (List<IBaseDto>)this.lazyDestajo.getWrappedData()) {
+				Entity row= (Entity)item;
+				costo+= new Double(row.toString("total"));
+			} // for	
+		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, costo);
 	}
 	
   @PostConstruct
