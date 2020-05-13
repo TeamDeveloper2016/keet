@@ -40,10 +40,12 @@
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">		
 								<p:outputLabel for="empleado" value="Nombre del empelado:"/>
                 <p:inputText id="empleado" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.empleado}" readonly="true"/>																								
-								<p:outputLabel for="prestamo" value="Prestamo ($):"/>
-                <p:inputText id="prestamo" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.prestamo}" readonly="true"/>																								
-								<p:outputLabel for="saldo" value="Saldo ($):"/>
-                <p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.saldo}"  readonly="true"/>	
+  							<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-column-center">		
+									<p:outputLabel for="prestamo" value="Prestamo ($):"/>
+									<p:outputLabel for="saldo" value="Saldo ($):"/>
+									<p:inputText id="prestamo" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.prestamo}" readonly="true"/>																								
+									<p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.saldo}"  readonly="true"/>	
+								</p:panelGrid>
 								<p:outputLabel for="pagos" value="Pagos realizados:"/>
                 <p:inputText id="pagos" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.pagos}" readonly="true"/>	
 								<p:outputLabel for="numeroPrestamos" value="Numero de prestamos:" rendered="#{keetPrestamosPagosAccion.attrs.isLiquidar}"/>
@@ -53,7 +55,7 @@
                 <p:inputText id="pago" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosPagosAccion.pagoDto.pago}" >
 									<!--p:ajax event="valueChange" listener="refreshValidateObs();"  -->
 								</p:inputText>
-								<p:outputLabel for="idAfectaNomina" value="Proviene de nómina:"/>
+								<p:outputLabel for="idAfectaNomina" value="Con cargo a la nómina:"/>
 								<p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosPagosAccion.pagoDto.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 									<f:selectItem itemValue="1" itemLabel="SI"/>

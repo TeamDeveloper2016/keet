@@ -205,6 +205,12 @@
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
 						</p:panelGrid>	
 					</p:panel>	
+					<h:commandLink id="detallePdf">
+						<pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+					</h:commandLink>
+					<h:commandLink id="detalleXls">
+						<pe:exporter type="xls" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+					</h:commandLink>			
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{keetNominasPersonas.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasPersonas.lazyDetalle.rowCount gt keetNominasPersonas.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetNominasPersonas.attrs.nomina? '': 'none'}">
 						<f:facet name="header">
 							<div style="float: left;">
@@ -212,8 +218,8 @@
 							</div>
 							<div class="lg-pantalla">
 								<p:menuButton value="Opciones">
-									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
 									<p:separator/>
 									<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doAccion}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
                   <p:separator/>
@@ -221,8 +227,8 @@
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
-								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasPersonas.doAccion}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
                 <p:commandButton id="detNominaPersPdf" icon="fa fa-file-pdf-o" title="Detalle" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DETALLE_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
@@ -261,6 +267,12 @@
 							<p:outputLabel value="Total [#{keetNominasPersonas.lazyDetalle== null? 0: keetNominasPersonas.lazyDetalle.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>
+					<h:commandLink id="destajoPdf">
+						<pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="destajo" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+					</h:commandLink>
+					<h:commandLink id="destajoXls">
+						<pe:exporter type="xls" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="destajo" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+					</h:commandLink>			
           <p:dataTable lazy="true" id="destajo" widgetVar="kajoolDestajo" var="row" value="#{keetNominasPersonas.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasPersonas.lazyDestajo.rowCount gt keetNominasPersonas.lazyDestajo.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetNominasPersonas.attrs.destajos? '': 'none'}">
 						<f:facet name="header">
 							<div style="float: left;" class="">
@@ -268,15 +280,15 @@
 							</div>
 							<div class="lg-pantalla">
 								<p:menuButton value="Opciones">
-									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('destajoPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datdestajoXlsaXls', 'destajo')" oncomplete="janal.desbloquear()"/>
 									<p:separator/>
 									<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
-								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('destajoPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('destajoXls', 'destajo')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 							</div>  
 						</f:facet>												

@@ -164,6 +164,12 @@
 							<p:outputLabel value="Total [#{keetNominasProveedores.lazyModel== null? 0: keetNominasProveedores.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>
+					<h:commandLink id="detallePdf">
+						<pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+					</h:commandLink>
+					<h:commandLink id="detalleXls">
+						<pe:exporter type="xls" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+					</h:commandLink>			
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTable" var="row" value="#{keetNominasProveedores.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasProveedores.lazyDetalle.rowCount gt keetNominasProveedores.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetNominasProveedores.attrs.nomina? '': 'none'}">
 						<f:facet name="header">
 							<div style="float: left;" class="">
@@ -171,8 +177,8 @@
 							</div>
 							<div class="lg-pantalla">
 								<p:menuButton value="Opciones">
-									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
 									<p:separator/>
 									<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasProveedores.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
                   <p:separator/>
@@ -180,8 +186,8 @@
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
-								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasProveedores.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
                 <p:commandButton id="detalleNominaPovPdfIcon" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasProveedores.doReporte('NOMINA_SUBCONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  

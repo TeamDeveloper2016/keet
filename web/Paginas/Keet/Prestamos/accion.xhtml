@@ -62,7 +62,7 @@
 								</p:panelGrid>
 								<p:outputLabel for="importe" value="Importe del prestamo:"/>
 								<p:inputText id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" />	
-								<p:outputLabel for="idAfectaNomina" value="Descuento por nómina:"/>
+								<p:outputLabel for="idAfectaNomina" value="Con cargo a la nómina:"/>
 								<p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosAccion.prestamo.prestamo.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 									<f:selectItem itemValue="1" itemLabel="SI"/>

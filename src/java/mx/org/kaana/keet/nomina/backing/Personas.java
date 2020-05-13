@@ -244,7 +244,7 @@ public class Personas extends IBaseFilter implements Serializable {
 			params.put("nomina", entity.toString("nomina"));
 			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
-			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.NOMINA_PERSONA.getProceso(), EExportacionXls.NOMINA_PERSONA.getIdXml(), EExportacionXls.NOMINA_PERSONA.getNombreArchivo()), EExportacionXls.NOMINA_PERSONA, "NOMINA,NOMBRE COMPLETO,DESARROLLO,CONTRATO,ETAPA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,COSTO"));
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.DESTAJO_PERSONA.getProceso(), EExportacionXls.DESTAJO_PERSONA.getIdXml(), EExportacionXls.DESTAJO_PERSONA.getNombreArchivo()), EExportacionXls.DESTAJO_PERSONA, "NOMINA,NOMBRE COMPLETO,DESARROLLO,CONTRATO,ETAPA,LOTE,CODIGO,CONCEPTO,PORCENTAJE,COSTO"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
 		} // try
