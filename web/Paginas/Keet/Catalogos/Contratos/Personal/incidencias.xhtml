@@ -16,25 +16,25 @@
 				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };							
 			
-			function validateCriterios(){
+			function validateCriterios() {
 				var ok= janal.execute();
 				if(ok)
 					janal.bloquear();
 				return ok;
 			} // validateCriterios					
 			
-			function showPanelIncidencia(){
+			function showPanelIncidencia() {
 				$('#panelIncidencia').css('display','block');
 				top.location.href = '#panelIncidencia';
 			} // showPanelIncidencia
 			
-			function hidePanelIncidencia(){
+			function hidePanelIncidencia() {
 				$('#panelIncidencia').css('display','none');
 				var text= $('#idSelectionEvent').text();
 				top.location.href = '#'.concat(text.substring(1));
 			} // hidePanelIncidencia
 			
-			function applyIdEvent(){
+			function applyIdEvent() {
 				var text= $('#idSelectionEvent').text();
 				var event = $(text);
 				event.attr('id', text.substring(1));
@@ -42,13 +42,29 @@
 				janal.html('a'+ event.val()+' span.fc-title');
 			} // applyIdEvent
 			
-			function applyIdEventHide(){
-				$('#panelIncidencia').css('display','none');
+			function applyIdEventHide() {
+				$('#panelIncidencia').css('display', 'none');
 				var text= $('#idSelectionEvent').text();
 				var event = $(text);
 				event.attr('id', text.substring(1));
 				top.location.href = '#'.concat(text.substring(1));
+				janal.html('a'+ event.val()+' span.fc-title');
 			} // applyIdEvent
+			
+			function updateIndicencias() {
+				$.each($('.janal-incidencia'), function() {
+					var items= $(this).attr('class');
+					if(items!== 'undefined' &amp;&amp; items.length> 0)
+						$.each(items.split(' '), function(index, item) {
+							if(item.startsWith("incidencia-"))
+								janal.html('a.'+ item+' span.fc-title');
+						});
+				});
+			}
+			
+			$(document).ready(function () {
+				setTimeout('updateIndicencias();', 2000);
+			});	
     </script>		
 		<style type="text/css">    			
 			.ui-picklist .ui-picklist-item {
@@ -151,7 +167,7 @@
 							</div>
 						</div>	
           </p:panel>        
-					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="myschedule" styleClass="janal-column-center">
+					<p:schedule id="dataEmpleados" value="#{keetCatalogosContratosPersonalIncidencias.eventModel}" widgetVar="myschedule" styleClass="janal-column-center" >
 						<p:ajax event="dateSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onDateSelect}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent();"/>
 						<p:ajax event="eventSelect" listener="#{keetCatalogosContratosPersonalIncidencias.onEventSelect}" update="panelIncidencia idSelectionEvent" oncomplete="findSelectEventShow();"/>
 						<p:ajax event="eventMove" listener="#{keetCatalogosContratosPersonalIncidencias.onEventMove}" update="dataEmpleados idSelectionEvent" oncomplete="findSelectEvent();"/>

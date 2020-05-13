@@ -25,7 +25,6 @@ import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
@@ -43,7 +42,10 @@ import org.primefaces.model.ScheduleModel;
 @ViewScoped
 public class Incidencias extends IBaseAttribute implements Serializable {
 
-  private static final long serialVersionUID= 8793667741599428879L;		
+  private static final long serialVersionUID      = 8793667741599428879L;		
+	private static final String[] FA_ICON_INCIDENCIA= {"fa-user-times", "fa-ship", "fa-male", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md"};
+	private static final String[] FA_ICON_ESTATUS   = {"fa-plus-square", "fa-check-square", "fa-bullseye", "fa-times-circle", "fa-check-square-o"};
+
 	private ScheduleModel eventModel;
 	private ScheduleEvent event;
 	private ContratoPersonal contratoPersonal;		
@@ -99,7 +101,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
   
-	private void loadTiposIncidentes(){
+	private void loadTiposIncidentes() {
 		List<UISelectItem> tiposIncidentes= null;
 		Map<String, Object>params         = null;
 		try {
@@ -114,7 +116,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // loadTiposInicidentes
 	
-	private void loadEmpleado() throws Exception{
+	private void loadEmpleado() throws Exception {
 		MotorBusqueda motor= null;
 		try {
 			motor= new MotorBusqueda((Long)this.attrs.get("idContratoPersona"));
@@ -133,33 +135,31 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		List<Incidente> incidencias  = null;
 		MotorBusqueda motor          = null;
 		try {
-			motor= new MotorBusqueda((Long)this.attrs.get("idContratoPersona"));
+			motor      = new MotorBusqueda((Long)this.attrs.get("idContratoPersona"));
 			incidencias= motor.toIncidencias(1L);
 			if(!incidencias.isEmpty()){
-				for(Incidente incidente: incidencias){
+				for(Incidente incidente: incidencias) {
 					incidente.setAccion(ESql.UPDATE);
+					String icon= this.toShowIcon(incidente);
 					registro= DefaultScheduleEvent.builder()
 									.id(incidente.getIdIncidente().toString())
 									.allDay(true)
 									.data(incidente)
-									.description(incidente.getTipoIncidente().concat("\n ").concat(incidente.getEstatus()))
-									.title(incidente.getTipoIncidente().concat("\n ").concat(incidente.getEstatus()))
+									.description(icon)
+									.title(icon)
 									.startDate(incidente.getVigenciaInicio().atStartOfDay())
 									.endDate(incidente.getVigenciaFin().atStartOfDay())
-									.styleClass(ETiposIncidentes.fromId(incidente.getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(incidente.getIdIncidente().toString())))
+									.styleClass(ETiposIncidentes.fromId(incidente.getIdTipoIncidente()).getStyleClass().concat(" janal-incidencia incidencia-".concat(incidente.getIdIncidente().toString())))
 									.build();
 					this.eventModel.addEvent(registro);
 				} // for
 			} // for
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+		finally {			
+			registro= null;
+		} // finally		
 	} // loadIncidencias	
 	
-	private static final String[] FA_ICON_INCIDENCIA= {"fa-user-times", "fa-ship", "fa-male", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md"};
-	private static final String[] FA_ICON_ESTATUS   = {"fa-plus-square", "fa-check-square", "fa-bullseye", "fa-times-circle", "fa-check-square-o"};
-
 	private String toShowIcon(Incidente newIncidente) {
 		StringBuilder sb= new StringBuilder();
 		sb.append("<div id='janal-update-").
@@ -197,7 +197,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 								.title(icon)
 								.startDate(newIncidente.getVigenciaInicio().atStartOfDay())
 								.endDate(newIncidente.getVigenciaFin().atStartOfDay())
-								.styleClass(ETiposIncidentes.fromId(newIncidente.getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(newIncidente.getIdIncidente().toString())))
+								.styleClass(ETiposIncidentes.fromId(newIncidente.getIdTipoIncidente()).getStyleClass().concat(" janal-incidencia incidencia-".concat(newIncidente.getIdIncidente().toString())))
 								.editable(editable)
 								.build();	
 				this.eventModel.addEvent(defaultEvent);
@@ -341,7 +341,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		} // finally
 	} // doLoadEstatus
 	
-	public void doApplyChange(){			
+	public void doApplyChange() {			
 		DefaultScheduleEvent defaultEvent= null;
 		Incidente incidente              = null;
 		try {		
@@ -351,15 +351,16 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 				((Incidente)this.event.getData()).setIdIncidenteEstatus(EEstatusIncidentes.fromIdEstatusIncidente(Long.valueOf((String)this.attrs.get("idIncidenteEstatus"))).getIdEstatusInicidente());			
 				((Incidente)this.event.getData()).setIdTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getKey());
 				((Incidente)this.event.getData()).setTipoIncidente(ETiposIncidentes.fromId(Long.valueOf((String)this.attrs.get("idTipoIncidente"))).getNombre());			
+				String icon= this.toShowIcon((Incidente)this.event.getData());
 				defaultEvent= DefaultScheduleEvent.builder()
 									.id(this.event.getId())
 									.allDay(this.event.isAllDay())
 									.data(this.event.getData())
-									.description(((Incidente)this.event.getData()).getTipoIncidente().concat("\n ").concat(((Incidente)this.event.getData()).getEstatus()))
-									.title(((Incidente)this.event.getData()).getTipoIncidente().concat("\n ").concat(((Incidente)this.event.getData()).getEstatus()))
+									.description(icon)
+									.title(icon)
 									.startDate(((Incidente)this.event.getData()).getVigenciaInicio().atStartOfDay())
 									.endDate(((Incidente)this.event.getData()).getVigenciaFin().atStartOfDay())
-									.styleClass(ETiposIncidentes.fromId(((Incidente)this.event.getData()).getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString())))
+									.styleClass(ETiposIncidentes.fromId(((Incidente)this.event.getData()).getIdTipoIncidente()).getStyleClass().concat(" janal-incidencia incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString())))
 									.build();		
 				this.eventModel.updateEvent(defaultEvent);
 				this.attrs.put("idSelectionEvent", ".incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString()));				
@@ -414,16 +415,17 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		DefaultScheduleEvent defaultEvent= null;
 		try {
 			((Incidente)this.event.getData()).setVigenciaInicio(this.event.getStartDate().toLocalDate());
-			((Incidente)this.event.getData()).setVigenciaFin(this.event.getEndDate().toLocalDate());			
+			((Incidente)this.event.getData()).setVigenciaFin(this.event.getEndDate().toLocalDate());	
+			String icon= this.toShowIcon((Incidente)this.event.getData());
 			defaultEvent= DefaultScheduleEvent.builder()
 								.id(this.event.getId())
 								.allDay(this.event.isAllDay())
 								.data(this.event.getData())
-								.description(((Incidente)this.event.getData()).getTipoIncidente().concat("\n ").concat(((Incidente)this.event.getData()).getEstatus()))
-								.title(((Incidente)this.event.getData()).getTipoIncidente().concat("\n ").concat(((Incidente)this.event.getData()).getEstatus()))
+								.description(icon)
+								.title(icon)
 								.startDate(((Incidente)this.event.getData()).getVigenciaInicio().atStartOfDay())
 								.endDate(((Incidente)this.event.getData()).getVigenciaFin().atStartOfDay())
-								.styleClass(ETiposIncidentes.fromId(((Incidente)this.event.getData()).getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString())))
+								.styleClass(ETiposIncidentes.fromId(((Incidente)this.event.getData()).getIdTipoIncidente()).getStyleClass().concat(" janal-incidencia incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString())))
 								.build();		
 			this.eventModel.updateEvent(defaultEvent);
 			this.attrs.put("idSelectionEvent", ".incidencia-".concat(((Incidente)this.event.getData()).getIdIncidente().toString()));					
@@ -433,7 +435,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // updateEvent
 	
-	public String doAceptar(){
+	public String doAceptar() {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		try {			
