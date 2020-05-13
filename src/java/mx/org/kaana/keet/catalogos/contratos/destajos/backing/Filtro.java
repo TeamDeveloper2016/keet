@@ -197,7 +197,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
 			idXml= figura.toLong("tipo").equals(1L) ? "lotesContratistas" : "lotesSubContratistas";
 	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);			
-			if(!this.lotes.isEmpty()){ 
+			if(!this.lotes.isEmpty()) { 
 			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
 				this.lotes.add(0, this.toLoteDefault());
 				toEstatusManzanaLote();
