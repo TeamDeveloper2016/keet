@@ -94,11 +94,13 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.desarrollo= new RegistroDesarrollo();
+					UIBackingUtilities.execute("executeGeo();");		
           break;
         case MODIFICAR:					
         case CONSULTAR:					
 					this.desarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));
 					loadAtributosComplemento();
+					UIBackingUtilities.execute(Cadena.isVacio(this.desarrollo.getDesarrollo().getLatitud()) || Cadena.isVacio(this.desarrollo.getDesarrollo().getLongitud()) ? "executeGeo();" : "executeExistGeo();");		
           break;
       } // switch
 			loadEntidades();		
@@ -446,13 +448,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // toAsignaEntidad
 	
-	/*public void doExistGeo() {
-		Desarrollo desarrollo= null;
+	public void doExistGeo() {
 		try {
-			desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");
-			this.attrs.put("latitud", desarrollo.getLatitud());
-			this.attrs.put("longitud", desarrollo.getLongitud());			
-			UIBackingUtilities.execute("existLocalization('".concat(desarrollo.getLatitud()).concat("','").concat(desarrollo.getLongitud()).concat("');"));
+			this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
+			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
+			UIBackingUtilities.execute("existLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -473,18 +473,16 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void onBlurPointSelect(String geo) {
 		LatLng coordenadas    = null;
-		Desarrollo desarrollo             = null;
 		String[] georeferencia= null;
 		try {	
 			georeferencia= Cadena.eliminaCaracter(geo, '@').split(",");
 			coordenadas= new LatLng(Double.valueOf(georeferencia[0]), Double.valueOf(georeferencia[1]));
-			desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");						
-			desarrollo.setLatitud(String.valueOf(coordenadas.getLat()));
-			desarrollo.setLongitud(String.valueOf(coordenadas.getLng()));
-			this.attrs.put("latitud", desarrollo.getLatitud());
-			this.attrs.put("longitud", desarrollo.getLongitud());			
-			this.attrs.put("desarrolloGeoreferencia", desarrollo);
-			UIBackingUtilities.execute("updateLocalization('".concat(desarrollo.getLatitud()).concat("','").concat(desarrollo.getLongitud()).concat("');"));
+			this.desarrollo.getDesarrollo().setLatitud(String.valueOf(coordenadas.getLat()));
+			this.desarrollo.getDesarrollo().setLongitud(String.valueOf(coordenadas.getLng()));
+			this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
+			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
+			this.attrs.put("desarrolloGeoreferencia", this.desarrollo.getDesarrollo());
+			UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -494,16 +492,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void onPointSelect(PointSelectEvent event) {
 		LatLng coordenadas= null;
-		Desarrollo desarrollo         = null;
 		try {
 			coordenadas= event.getLatLng();                  
-			desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");						
-			desarrollo.setLatitud(String.valueOf(coordenadas.getLat()));
-			desarrollo.setLongitud(String.valueOf(coordenadas.getLng()));
-			this.attrs.put("latitud", desarrollo.getLatitud());
-			this.attrs.put("longitud", desarrollo.getLongitud());			
+			this.desarrollo.getDesarrollo().setLatitud(String.valueOf(coordenadas.getLat()));
+			this.desarrollo.getDesarrollo().setLongitud(String.valueOf(coordenadas.getLng()));
+			this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
+			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
 			this.attrs.put("desarrolloGeoreferencia", desarrollo);
-			UIBackingUtilities.execute("updateLocalization('".concat(desarrollo.getLatitud()).concat("','").concat(desarrollo.getLongitud()).concat("');"));
+			UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -512,19 +508,13 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // onPointSelect
 	
 	public void doAceptarGeo() {
-		Desarrollo desarrollo= null;
+		RegistroDesarrollo desarrollo= null;
 		try {
-			desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");		
-			if(Cadena.isVacio(desarrollo.getLatitud()) || Cadena.isVacio(desarrollo.getLongitud())){
-				FacesContext.getCurrentInstance().getExternalContext();
-				this.contrato.getContrato().getDesarrollos().get(this.contrato.getContrato().getDesarrollos().indexOf(desarrollo)).setLatitud(this.attrs.get("latitud").toString());
-				this.contrato.getContrato().getDesarrollos().get(this.contrato.getContrato().getDesarrollos().indexOf(desarrollo)).setLongitud(this.attrs.get("longitud").toString());
+			desarrollo= (RegistroDesarrollo) this.attrs.get("desarrolloGeoreferencia");		
+			if(!(Cadena.isVacio(desarrollo.getDesarrollo().getLatitud()) || Cadena.isVacio(desarrollo.getDesarrollo().getLongitud()))){
+				this.desarrollo.getDesarrollo().setLatitud(desarrollo.getDesarrollo().getLatitud());
+				this.desarrollo.getDesarrollo().setLongitud(desarrollo.getDesarrollo().getLongitud());
 			} // if
-			else{
-				this.desarrollo.getDesarrollo().setLatitud(desarrollo.getLatitud());
-				this.desarrollo.getDesarrollo().setLongitud(desarrollo.getLongitud());
-			} // else
-			this.attrs.put("mostrarGeo", false);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -540,12 +530,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 				this.desarrollo.getDesarrollo().setLatitud(this.attrs.get("latitudAnterior").toString());
 				this.desarrollo.getDesarrollo().setLongitud(this.attrs.get("longitudAnterior").toString());			
 			} // if
-			this.attrs.put("mostrarGeo", false);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // doCancelarGeo*/
+	} // doCancelarGeo
 
 }
