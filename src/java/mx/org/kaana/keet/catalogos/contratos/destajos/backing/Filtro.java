@@ -222,8 +222,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		regresar.put("clave", new Value("clave", "EVIDENCIAS"));
 		regresar.put("manzana", new Value("manzana", "00N"));
 		regresar.put("lote", new Value("lote", "N"));
-		regresar.put("fechaInicio", new Value("fechaInicio", "-"));
-		regresar.put("fechaTermino", new Value("fechaTermino", "-"));
+		regresar.put("inicio", new Value("inicio", "-"));
+		regresar.put("termino", new Value("termino", "-"));
 		regresar.put("diasConstruccion", new Value("diasConstruccion", "-"));
 		regresar.put("contratistas", new Value("contratistas", ""));
 		regresar.put("orden", new Value("orden", ""));
