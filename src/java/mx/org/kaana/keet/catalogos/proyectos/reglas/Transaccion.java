@@ -70,6 +70,7 @@ public class Transaccion extends IBaseTnx {
 					this.proyecto.getProyecto().setOrden(siguiente.getOrden());
 					this.proyecto.getProyecto().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
 					this.proyecto.getProyecto().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+					this.proyecto.getProyecto().setIdProyectoEstatus(1L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.proyecto.getProyecto())>= 1L;
 					for(Lote item:this.proyecto.getProyecto().getLotes())
 						actualizarLote(sesion, item);
