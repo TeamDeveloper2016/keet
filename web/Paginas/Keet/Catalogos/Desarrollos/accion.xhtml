@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{keetCatalogosDesarrollosAccion.attrs.nombreAccion} al catálogo de desarrollos" />
+	<ui:define name="librerias">
+		<script src="https://maps.google.com/maps/api/js?key=AIzaSyBT_SYV5r3kJdT_bO0ijJmNjxqZqhb7xNY" type="text/javascript"></script>
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'contenedorGrupos\\:clave'      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:nombres'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:idCliente'  : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:codigoPostal': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:cp': {validaciones: 'requerido', mascara: 'numero', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:interior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'}
+			};
+			
+			fieldsDialog ={
+				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+			};
+
+			$(document).ready(function () {
+				janal.readingMode('#{keetCatalogosDesarrollosAccion.attrs.nombreAccion}');
+			});
+			
+				var currentMarker;
+			
+			function initLocalization() {								
+				if ("geolocation" in navigator) { 
+					navigator.geolocation.getCurrentPosition(function(position){ 
+						var lat, lon;
+						lat= position.coords.latitude.toString();
+						lon= position.coords.longitude.toString();												
+						PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+						currentMarker = new google.maps.Marker({
+              position: new google.maps.LatLng(lat, lon),
+							icon:'/KEET/javax.faces.resource/icon/mapa/home-red.png.jsf?ln=janal'
+            });                 						
+						PF('wMapa').addOverlay(currentMarker);					
+						updateInitGeo(lat,lon);						
+						updateGeoreferencia(lat,lon);						
+					}); // navigator
+				} // if
+				else {
+					console.log("Browser doesn't support geolocation!");
+				} // else				
+			} // initLocalization
+			
+			function existLocalization(lat, lon) {								
+				if ("geolocation" in navigator){ 															
+					PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+					currentMarker = new google.maps.Marker({
+						position: new google.maps.LatLng(lat, lon),
+						icon:'/KEET/javax.faces.resource/icon/mapa/home-green.png.jsf?ln=janal'
+					});                 						
+					PF('wMapa').addOverlay(currentMarker);											
+					updateGeoreferencia(lat, lon);
+				} // if
+				else {
+					console.log("Browser doesn't support geolocation!");
+				} // else				
+			} // existLocalization
+			
+			function updateLocalization(lat, lon) {								
+				currentMarker.setMap(null);
+				PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+				currentMarker= new google.maps.Marker({
+          position: new google.maps.LatLng(lat, lon),
+					icon:'/KEET/javax.faces.resource/icon/mapa/home-green.png.jsf?ln=janal'
+        });                 						
+				PF('wMapa').addOverlay(currentMarker);						
+				updateGeoreferencia(lat, lon);
+			} // updateLocalization						
+			
+			function updateGeoreferencia(lat, lon) {
+				$('#contenedorGrupos\\:coordenadas').text('@'+ lat+ ','+ lon);				
+				$('#contenedorGrupos\\:coordenadas').val('@'+ lat+ ','+ lon);				
+			} // updateGeoreferencia	
+			
+			function processGeo(){
+				janal.bloquear();
+				blurPointSelect($('#contenedorGrupos\\:coordenadas').val());
+				return true;
+			} // processGeo
+		</script>   
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
+                <p:outputLabel for="idCliente" value="Cliente:"/>
+								<p:selectOneMenu id="idCliente" value="#{keetCatalogosDesarrollosAccion.desarrollo.desarrollo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetCatalogosDesarrollosAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '-'} #{element.razonSocial}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.razonSocial}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:spacer width="1px"/><p:separator/>	
+                <p:outputLabel for="clave" value="Codigo:"/>
+								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.desarrollo.clave}" />			
+								<p:outputLabel for="nombres" value="Nombre:"/>
+                <p:inputText id="nombres" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.desarrollo.nombres}" />
+                <p:outputLabel for="descripcion" value="Descripción:"/>
+                <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.desarrollo.descripcion}" />								
+              </p:panelGrid>
+						</p:tab>
+						<p:tab title="Domicilios">
+                <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-180, janal-wid-100">
+									<p:outputLabel for="domicilio" value="Domicilio:"/>
+                  <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-96, janal-wid-col-38">
+										<p:selectOneMenu id="domicilio" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+											<p:ajax event="change" listener="#{keetCatalogosDesarrollosAccion.doLoadAtributos}" process="@this domicilio" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
+											<f:selectItems value="#{keetCatalogosDesarrollosAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
+											<p:column  styleClass="janal-column-left janal-wid-col-150">
+												<h:outputText value="#{item.entidad}"/>
+											</p:column>   										
+											<p:column  styleClass="janal-column-left">
+												<h:outputText value="#{item.calle}"/>
+											</p:column>   
+											<p:column styleClass="janal-column-right janal-wid-col-50">
+												<h:outputText value="#{item.numeroExterior}"/>
+											</p:column>  										
+											<p:column styleClass="janal-column-left janal-wid-col-250">
+												<h:outputText value="#{item.asentamiento}"/>
+											</p:column>  
+										</p:selectOneMenu>	
+										<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
+									</p:panelGrid>
+									<p:spacer height="5px"/><p:spacer height="5px"/>
+									<p:outputLabel for="entidad" value="Entidad:"/>
+                  <p:selectOneMenu id="entidad" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+                    <p:ajax event="change" listener="#{keetCatalogosDesarrollosAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();"/>
+										<f:selectItems value="#{keetCatalogosDesarrollosAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+										<p:column  styleClass="janal-column-center">
+											<h:outputText value="#{item.clave}"/>
+										</p:column>   
+										<p:column styleClass="janal-column-left">
+											<h:outputText value="#{item.descripcion}"/>
+										</p:column>  
+                  </p:selectOneMenu>								
+                  <p:outputLabel for="municipio" value="Municipio:"/>
+                  <p:selectOneMenu id="municipio" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+                    <p:ajax event="change" listener="#{keetCatalogosDesarrollosAccion.doActualizaLocalidades}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();"/>
+										<f:selectItems value="#{keetCatalogosDesarrollosAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+										<p:column  styleClass="janal-column-center">
+											<h:outputText value="#{item.clave}"/>
+										</p:column>   
+										<p:column styleClass="janal-column-left">
+											<h:outputText value="#{item.descripcion}"/>
+										</p:column>  
+                  </p:selectOneMenu>								
+                  <p:outputLabel for="localidad" value="Localidad:"/>
+                  <p:selectOneMenu id="localidad" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+                    <!--p:ajax event="change" listener="#{keetCatalogosDesarrollosAccion.doActualizaCodigosPostales}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/-->
+										<f:selectItems value="#{keetCatalogosDesarrollosAccion.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+										<p:column  styleClass="janal-column-center">
+											<h:outputText value="#{item.clave}"/>
+										</p:column>   
+										<p:column styleClass="janal-column-left">
+											<h:outputText value="#{item.descripcion}"/>
+										</p:column>  
+                  </p:selectOneMenu>																	
+                  <p:outputLabel for="cp" value="Código postal:"/>                  
+                  <p:inputText id="cp" placeholder="Ejemplo: 20284" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.codigoPostal}"/>
+                  <p:outputLabel for="calle" value="Calle:"/>
+                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.calle}" />
+                  <p:outputLabel for="exterior" value="Número exterior:"/>
+                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.numeroExterior}" />
+                  <p:outputLabel for="interior" value="Número interior:"/>
+                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.numeroInterior}"/>	
+                  <p:outputLabel for="asentamiento" value="Colonia:"/>
+                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.asentamiento}"/>	
+                  <p:outputLabel for="entreCalle" value="Entre calle:"/>
+                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.entreCalle}"/>	
+                  <p:outputLabel for="ycalle" value="Y calle:"/>
+                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.desarrollo.domicilio.ycalle}"/>	
+                </p:panelGrid>
+            </p:tab>	
+						<p:tab id="panelGeoreferencia" title="Georeferencia">
+							<p:remoteCommand name="executeGeo" oncomplete="initLocalization();"/>
+							<p:remoteCommand name="executeExistGeo" process="@this contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAccion.doExistGeo}"/>		
+							<p:outputLabel value="Coordenada:"/>
+							<p:inputText id="coordenadas" styleClass="janal-wid-100-txt">
+								<p:ajax event="blur" onstart="return processGeo();" oncomplete="janal.desbloquear();"/>
+							</p:inputText>
+							<br/>
+							<div class="janal-line-button">
+								<div class="lg-pantalla janal-column-right">
+									<p:commandButton value="Aceptar" iconPos="left" styleClass="janal-text-white" accesskey="z" icon="fa fa-map-marker" process="@this contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAccion.doAceptarGeo}" update="contenedorGrupos"/>										
+									<p:commandButton value="Cancelar" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" actionListener="#{keetCatalogosDesarrollosAccion.doCancelarGeo}" update="contenedorGrupos" />
+								</div>
+								<div class="xs-pantalla janal-column-right">
+									<p:commandButton title="Aceptar cambios" iconPos="left" styleClass="janal-text-whit" accesskey="z" icon="fa fa-map-marker" process="@this contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAccion.doAceptarGeo}" update="contenedorGrupos" />										
+									<p:commandButton title="Cancelar cambios" iconPos="left" styleClass="janal-text-white" accesskey="c" icon="fa fa-close" actionListener="#{keetCatalogosDesarrollosAccion.doCancelarGeo}" update="contenedorGrupos" />
+								</div>
+							</div>									
+							<p:gmap id="mapa" widgetVar="wMapa" center="21.8818,-102.291" zoom="75" type="HYBRID" style="width:100%;height:500px"  streetView="true" styleClass="style-panel">
+								<p:ajax event="pointSelect" listener="#{keetCatalogosDesarrollosAccion.onPointSelect}"/>
+							</p:gmap>	
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosDesarrollosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosDesarrollosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosDesarrollosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosDesarrollosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDialog);janal.refresh();">
+			<h:form id="formDialogoDomicilios" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-130, janal-wid-98 janal-column-right">
+					<p:outputLabel for="calleBusqueda" value="Calle:"/>
+  				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-98, janal-wid-col-38">
+  					<p:inputText id="calleBusqueda" value="#{keetCatalogosDesarrollosAccion.attrs.calle}" styleClass="janal-wid-100-txt"/>
+	  				<p:commandButton icon="fa fa-search" actionListener="#{keetCatalogosDesarrollosAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" onstart="return janal.partial('dialogo')"/>
+					</h:panelGrid>
+					<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
+					<p:selectOneMenu id="domiciliosBusqueda" value="#{keetCatalogosDesarrollosAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+						<f:selectItems value="#{keetCatalogosDesarrollosAccion.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
+						<p:column  styleClass="janal-column-left janal-wid-col-150">
+							<h:outputText value="#{item.entidad}"/>
+						</p:column>   										
+						<p:column  styleClass="janal-column-left">
+							<h:outputText value="#{item.calle}"/>
+						</p:column>   
+						<p:column styleClass="janal-column-right janal-wid-col-50">
+							<h:outputText value="#{item.numeroExterior}"/>
+						</p:column>  										
+						<p:column styleClass="janal-column-left janal-wid-col-250">
+							<h:outputText value="#{item.asentamiento}"/>
+						</p:column>  
+					</p:selectOneMenu>
+					<p:spacer/>
+					<p:outputLabel id="totalResultados" value="Total [#{keetCatalogosDesarrollosAccion.attrs.resultados}]"/>
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" update="contenedorGrupos:formularioDomicilio"  value="Aceptar" action="#{keetCatalogosDesarrollosAccion.doAsignaDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();janal.refresh();janal.alignCp();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
