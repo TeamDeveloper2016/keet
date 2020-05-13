@@ -22,10 +22,9 @@ public class Contrato extends Filtro {
 	@PostConstruct
   @Override
   protected void init() {
-		Estaciones estaciones=null;
     try {
-			estaciones=new Estaciones();
-			estaciones.cleanLevels();
+			this.estaciones= new Estaciones();
+			this.estaciones.cleanLevels();
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
 				this.current= (TcKeetEstacionesDto)JsfBase.getFlashAttribute("estacionProcess");
@@ -48,12 +47,9 @@ public class Contrato extends Filtro {
 	
 	@Override
   public void doLoad() {
-    Estaciones estaciones       = null;
 		String nodo                 = "";
 		TcKeetContratosLotesDto lote= null;
-		Value contrato              = null;
     try {
-			estaciones= new Estaciones();
 			if(this.attrs.get("lote")!= null && ((UISelectEntity)this.attrs.get("lote")).getKey()> 0L) {
 				lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(TcKeetContratosLotesDto.class, ((UISelectEntity)this.attrs.get("lote")).getKey());
 			  nodo= estaciones.toCodeByIdContrato(lote.getIdContrato());
@@ -86,11 +82,12 @@ public class Contrato extends Filtro {
     } // catch
   } // doLoad
 
+	@Override
 	protected void loadCombos() {
 		try {
-			loadEmpresas();
-			doLoadContratos();
-			doLoadLotes();
+			this.loadEmpresas();
+			this.doLoadContratos();
+			this.doLoadLotes();
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -132,8 +129,8 @@ public class Contrato extends Filtro {
 	
 	@Override
 	public String doAccion(String accion) {
-    EAccion eaccion        = null;
-		String regresar        = null;
+    EAccion eaccion= null;
+		String regresar= null;
     try {
       eaccion = EAccion.valueOf(accion.toUpperCase());
 			switch(eaccion){

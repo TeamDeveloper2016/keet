@@ -1892,7 +1892,7 @@
         where 
           {condicion} 
 				order by
-				  fecha_inicio, clave, manzana, lote
+				  inicio, clave, manzana, lote
       </select>
       <select id="identically">
         select      
@@ -1919,7 +1919,7 @@
         where 
           id_contrato= {idContrato} 
 				order by
-				  fecha_inicio, clave, manzana, lote
+				  inicio, clave, manzana, lote
       </select>
 			<select id="byContratoContratistas">
         select      

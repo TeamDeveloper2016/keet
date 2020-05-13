@@ -34,7 +34,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
 	private List<TcKeetEstacionesDto> estacionesHijas;
 	protected TcKeetEstacionesDto current;
-	private Estaciones estaciones;
+	protected Estaciones estaciones;
 
 	public List<TcKeetEstacionesDto> getEstacionesHijas() {
 		return estacionesHijas;
@@ -48,7 +48,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-			estaciones=new Estaciones();
+			this.estaciones= new Estaciones();
 			this.estaciones.cleanLevels();
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
@@ -71,7 +71,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    Estaciones estaciones        = null;
 		String nodo                  = "";
 		TcKeetPrototiposDto prototipo= null;
     try {
@@ -144,9 +143,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public List<TcKeetEstacionesDto> getVisitados() {
 		List<TcKeetEstacionesDto> regresar=null;
-		Estaciones estaciones=null;
 		try {
-			regresar=this.estaciones.toFather(((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current.getClave() : ((TcKeetEstacionesDto)this.attrs.get("seleccionado")).getClave());
+			regresar= this.estaciones.toFather(((TcKeetEstacionesDto)this.attrs.get("seleccionado"))== null? this.current.getClave() : ((TcKeetEstacionesDto)this.attrs.get("seleccionado")).getClave());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -221,7 +219,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	
 	public void doLoadPrototipos(){
-		UISelectEntity cliente         = null;
+		UISelectEntity cliente= null;
 	  try {
 			cliente = (UISelectEntity)this.attrs.get("cliente");
 			if(cliente!= null && cliente.getKey()> 0L) 
@@ -236,7 +234,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
 	} // doLoadPrototipos
 	
-	public void doLoadClientes(){
+	public void doLoadClientes() {
 		UISelectEntity empresa= null;
 	  try {
 			empresa = (UISelectEntity)this.attrs.get("idEmpresa");
@@ -252,11 +250,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
 	} // loadCombos
 	
-	protected void loadCombos(){
+	protected void loadCombos() {
 		try {
-			loadEmpresas();
-			doLoadClientes();
-			doLoadPrototipos();
+			this.loadEmpresas();
+			this.doLoadClientes();
+			this.doLoadPrototipos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
