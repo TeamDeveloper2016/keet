@@ -76,7 +76,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("procesados", 0L);
 			if(JsfBase.getFlashAttribute("idTipoMasivo")!= null)
 				switch(((Long)JsfBase.getFlashAttribute("idTipoMasivo")).intValue()) {
-					case 1:
+					case 9:
 						this.categoria= ECargaMasiva.ESTACIONES;
 						this.toLoadContratosLotes();
 						break;

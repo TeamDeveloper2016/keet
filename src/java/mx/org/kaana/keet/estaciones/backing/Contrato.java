@@ -8,18 +8,16 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
-import mx.org.kaana.keet.estaciones.beans.RegistroEstacion;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
-import mx.org.kaana.keet.estaciones.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 
 @Named(value = "keetEstacionesContrato")
 @ViewScoped
-public class Contrato extends Filtro{
+public class Contrato extends Filtro {
 	
 	@PostConstruct
   @Override
@@ -50,13 +48,13 @@ public class Contrato extends Filtro{
 	
 	@Override
   public void doLoad() {
-    Estaciones estaciones        = null;
-		String nodo                  = "";
+    Estaciones estaciones       = null;
+		String nodo                 = "";
 		TcKeetContratosLotesDto lote= null;
-		Value contrato = null;
+		Value contrato              = null;
     try {
 			estaciones= new Estaciones();
-			if(this.attrs.get("lote")!=null && ((UISelectEntity)this.attrs.get("lote")).getKey()>0L){
+			if(this.attrs.get("lote")!= null && ((UISelectEntity)this.attrs.get("lote")).getKey()> 0L) {
 				lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(TcKeetContratosLotesDto.class, ((UISelectEntity)this.attrs.get("lote")).getKey());
 			  nodo= estaciones.toCodeByIdContrato(lote.getIdContrato());
 				this.current=new TcKeetEstacionesDto();
@@ -88,7 +86,7 @@ public class Contrato extends Filtro{
     } // catch
   } // doLoad
 
-	protected void loadCombos(){
+	protected void loadCombos() {
 		try {
 			loadEmpresas();
 			doLoadContratos();
@@ -100,7 +98,7 @@ public class Contrato extends Filtro{
     } // catch		
 	} // loadCombos
 	
-	public void doLoadLotes(){
+	public void doLoadLotes() {
 		UISelectEntity contrato = null;
 	  try {
 			contrato = (UISelectEntity)this.attrs.get("contrato");
@@ -116,7 +114,7 @@ public class Contrato extends Filtro{
     } // catch		
 	} // doLoadLotes
 	
-	public void doLoadContratos(){
+	public void doLoadContratos() {
 		UISelectEntity empresa= null;
 	  try {
 			empresa = (UISelectEntity)this.attrs.get("idEmpresa");
@@ -164,6 +162,14 @@ public class Contrato extends Filtro{
     return regresar;
   } // doAccion  
 	
-	
+	public String doUploadIndividual() {
+		Long ikContratoLote= -1L;
+		if(this.attrs.get("lote")!= null && ((UISelectEntity)this.attrs.get("lote")).getKey()> 0L) 
+			ikContratoLote= ((UISelectEntity)this.attrs.get("lote")).getKey();
+		JsfBase.setFlashAttribute("ikContratoLote", ikContratoLote);
+		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.ESTACIONES.getId());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
+		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
+	}
 	
 }

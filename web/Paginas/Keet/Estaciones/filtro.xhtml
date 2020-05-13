@@ -24,9 +24,9 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetEstacionesFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{keetEstacionesFiltro.doLoadClientes()}" process="@this" update="panelBusqueda" />
-								<f:selectItems value="#{keetEstacionesFiltro.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+								<f:selectItems value="#{keetEstacionesFiltro.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? ' ': '-'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
@@ -36,7 +36,7 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="idCliente" value="Cliente:"/>
 							<p:selectOneMenu id="idCliente" value="#{keetEstacionesFiltro.attrs.cliente}" var="item" converter="janal.convertidor.Entity"  styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetEstacionesFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+								<f:selectItems value="#{keetEstacionesFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? ' ': '-'} #{element.razonSocial}"/>
 								<p:ajax event="change" listener="#{keetEstacionesFiltro.doLoadPrototipos}" process="@this" update="panelBusqueda" />
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -64,7 +64,6 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-
 					<p:toolbar  styleClass="janal-wid-100-txt" id="seguimiento">
 						<f:facet name="left">
 							<p:commandButton value="Inicio" icon="fa fa-caret-right" actionListener="#{keetEstacionesFiltro.doInicio}"  update="tabla,seguimiento" id="visitados"/>
@@ -75,19 +74,27 @@
 					</p:toolbar>
 					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesFiltro.estacionesHijas}" rowKey="#{row.idEstacion}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetEstacionesFiltro.lazyModel.rowCount gt keetEstacionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowDblselect"  listener="#{keetEstacionesFiltro.doActualizarChildren}" onstart="return janal.bloquear();" process="@this" update="tabla,seguimiento" oncomplete="janal.desbloquear();"/>
-						<f:facet name="header" >							
+						<f:facet name="header" >		
+							<div class="janal-icons-header">
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-estaciones.xls" title="Plantilla de estaciones">
+									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+								</h:outputLink>
+							</div>	
 							<div class="lg-pantalla">
-								<p:menuButton   value="Opciones">
-									<p:menuitem  value="Agregar" action="#{keetEstacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+								<p:menuButton value="Opciones">
+									<p:menuitem value="Agregar" action="#{keetEstacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 									<p:separator/>
-									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:separator/>
+									<p:menuitem icon="fa fa-cloud-upload" value="Importar" action="#{keetEstacionesFiltro.doUpload()}" title="Importar estaciones" onstart="return janal.bloquear()"/>						
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
-								<p:commandButton action="#{keetEstacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton icon="fa fa-plus" title="Agregar" action="#{keetEstacionesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+								<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetEstacionesFiltro.doUpload()}" onstart="return janal.bloquear()"/>						
 							</div>  
 						</f:facet>												
 						<p:column class="MarAuto Responsive janal-wid-8" >
