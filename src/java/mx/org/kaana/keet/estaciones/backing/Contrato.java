@@ -56,25 +56,25 @@ public class Contrato extends Filtro {
 				this.current=new TcKeetEstacionesDto();
 				this.current.setClave(estaciones.toCode(nodo.concat(lote.getOrden().toString())));
 				this.current.setNivel(4L);
-				actualizarChildren(1);
+				this.actualizarChildren(1);
 			} // if
 			else if(this.attrs.get("contrato")!=null && ((UISelectEntity)this.attrs.get("contrato")).getKey()>0L) {
 				nodo= estaciones.toCodeByIdContrato(((UISelectEntity)this.attrs.get("contrato")).getKey());
 				this.current= new TcKeetEstacionesDto();
 				this.current.setClave(nodo);
 				this.current.setNivel(3L);
-				actualizarChildren(1);
+				this.actualizarChildren(1);
 			} // else if
 			else if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
 					nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
 					this.current= new TcKeetEstacionesDto();
 					this.current.setClave(estaciones.toCode(nodo));
 					this.current.setNivel(1L);
-					actualizarChildren(1,2);
+					this.actualizarChildren(1,2);
 					this.current.setNivel(3L);
 				} // else if
 				else
-					doInicio();
+					this.doInicio();
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);

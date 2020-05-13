@@ -25,7 +25,7 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetEstacionesContrato.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesContrato.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{keetEstacionesContrato.doLoadContratos()}" process="@this" update="panelBusqueda" />
-								<f:selectItems value="#{keetEstacionesContrato.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+								<f:selectItems value="#{keetEstacionesContrato.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
@@ -35,7 +35,7 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="idContrato" value="Contrato:"/>
 							<p:selectOneMenu id="idContrato" value="#{keetEstacionesContrato.attrs.contrato}" var="item" converter="janal.convertidor.Entity"  styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetEstacionesContrato.attrs.contratos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.etapa and element.etapa eq ''? '': '-'} #{element.etapa}"/>
+								<f:selectItems value="#{keetEstacionesContrato.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.etapa and one.etapa eq ''? '': '-'} #{one.etapa}"/>
 								<p:ajax event="change" listener="#{keetEstacionesContrato.doLoadLotes}" process="@this" update="panelBusqueda" />
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -46,7 +46,7 @@
 							</p:selectOneMenu>
 								<p:outputLabel for="lote" value="Lote:"/>
 								<p:selectOneMenu id="lote" value="#{keetEstacionesContrato.attrs.lote}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-									<f:selectItems value="#{keetEstacionesContrato.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.manzana and element.manzana eq ''? '': '-'} #{element.manzana} #{empty element.lote and element.lote eq '-1'? '': '-'} #{element.lote}"/>
+									<f:selectItems value="#{keetEstacionesContrato.attrs.lotes}" var="two" itemValue="#{two}" itemLabel="#{two.clave} #{empty two.manzana and two.manzana eq ''? '': '-'} #{two.manzana} #{empty two.lote and two.lote eq '-1'? '': '-'} #{two.lote}"/>
 									 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
@@ -121,13 +121,13 @@
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
-							<h:outputText value="#{row['inicio']}"/>
+							<h:outputText value="#{keetEstacionesContrato.doFecha(row['inicio'])}"/>
 						</p:column>	      
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" >
 							<f:facet name="header">
 								<h:outputText value="Termino" />
 							</f:facet>
-							<h:outputText value="#{row['termino']}"/>
+							<h:outputText value="#{keetEstacionesContrato.doFecha(row['termino'])}"/>
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
 							<f:facet name="header">

@@ -159,8 +159,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	protected void actualizarChildren(int nivel, int aumentarNivel) throws Exception {
 		try {
-			this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
-			this.estacionesHijas=this.estaciones.toChildren(aumentarNivel, this.current.getClave(), this.current.getNivel().intValue()+nivel, 0);
+			this.current        = ((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+			this.estacionesHijas= this.estaciones.toChildren(aumentarNivel, this.current.getClave(), this.current.getNivel().intValue()+nivel, 0);
 		} // try
 		catch (Exception e) {
 			throw e;

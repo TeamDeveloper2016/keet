@@ -157,4 +157,8 @@ public abstract class IBaseAttribute implements Serializable {
 		return Global.format(EFormatoDinamicos.FECHA_HORA, registro);
 	}
 
+  public String doFecha(LocalDate fecha) {
+		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
+	}
+
 }

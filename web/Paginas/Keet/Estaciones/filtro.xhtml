@@ -114,13 +114,13 @@
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
-							<h:outputText value="#{row['inicio']}"/>
+							<h:outputText value="#{keetEstacionesFiltro.doFecha(row['inicio'])}"/>
 						</p:column>	      
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" >
 							<f:facet name="header">
 								<h:outputText value="Termino" />
 							</f:facet>
-							<h:outputText value="#{row['termino']}"/>
+							<h:outputText value="#{keetEstacionesFiltro.doFecha(row['termino'])}"/>
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
 							<f:facet name="header">
