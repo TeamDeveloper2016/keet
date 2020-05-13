@@ -116,9 +116,10 @@ public final class Constantes {
 
   //Atributos utilizados para las tablas en las paginas de filtro
   public static final String NO_EXISTEN_REGISTROS = "No existen registros";
-  public static final int REGISTROS_POR_PAGINA = 15;
-  public static final int REGISTROS_POR_LOTE   = 30;
-  public static final int REGISTROS_LOTE_TOPE  = 50;
+  public static final int REGISTROS_POR_PAGINA  = 15;
+  public static final int REGISTROS_TOTAL_PAGINA= 20;
+  public static final int REGISTROS_POR_LOTE    = 30;
+  public static final int REGISTROS_LOTE_TOPE   = 50;
   public static final String ICONOS_DE_PAGINACION = "{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}";
   public static final String REGISTROS_POR_CADA_PAGINA = "10,15,20";
 
@@ -159,6 +160,10 @@ public final class Constantes {
 
   public Integer getREGISTROS_POR_PAGINA() {
     return Constantes.REGISTROS_POR_PAGINA;
+  }
+
+  public Integer getREGISTROS_TOTAL_PAGINA() {
+    return Constantes.REGISTROS_TOTAL_PAGINA;
   }
 
   public Integer getREGISTROS_POR_LOTE() {
