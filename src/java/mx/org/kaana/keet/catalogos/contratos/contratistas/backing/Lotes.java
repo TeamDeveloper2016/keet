@@ -73,8 +73,8 @@ public class Lotes extends IBaseFilter implements Serializable {
     try {      
       columns= new ArrayList<>();      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
-      columns.add(new Columna("fechaInicio", EFormatoDinamicos.FECHA_CORTA));                  
-      columns.add(new Columna("fechaTermino", EFormatoDinamicos.FECHA_CORTA));                  
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));                  
 	    this.lotes= DaoFactory.getInstance().toEntitySet("TcKeetContratosLotesDto", "byContratoContratistas", this.attrs);			
 			if(!this.lotes.isEmpty()) {
 			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);
