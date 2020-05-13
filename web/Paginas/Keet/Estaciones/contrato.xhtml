@@ -35,7 +35,7 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="idContrato" value="Contrato:"/>
 							<p:selectOneMenu id="idContrato" value="#{keetEstacionesContrato.attrs.contrato}" var="item" converter="janal.convertidor.Entity"  styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetEstacionesContrato.attrs.contratos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.etapa}"/>
+								<f:selectItems value="#{keetEstacionesContrato.attrs.contratos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.etapa and element.etapa eq ''? '': '-'} #{element.etapa}"/>
 								<p:ajax event="change" listener="#{keetEstacionesContrato.doLoadLotes}" process="@this" update="panelBusqueda" />
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -46,7 +46,7 @@
 							</p:selectOneMenu>
 								<p:outputLabel for="lote" value="Lote:"/>
 								<p:selectOneMenu id="lote" value="#{keetEstacionesContrato.attrs.lote}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-									<f:selectItems value="#{keetEstacionesContrato.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} -#{element.manzana} - #{element.lote}"/>
+									<f:selectItems value="#{keetEstacionesContrato.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.manzana and element.manzana eq ''? '': '-'} #{element.manzana} #{empty element.lote and element.lote eq '-1'? '': '-'} #{element.lote}"/>
 									 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
