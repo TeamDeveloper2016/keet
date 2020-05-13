@@ -193,8 +193,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("idFigura", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
       columns= new ArrayList<>();      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
-      columns.add(new Columna("fechaInicio", EFormatoDinamicos.FECHA_CORTA));                  
-      columns.add(new Columna("fechaTermino", EFormatoDinamicos.FECHA_CORTA));    
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
 			idXml= figura.toLong("tipo").equals(1L) ? "lotesContratistas" : "lotesSubContratistas";
 	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);			
 			if(!this.lotes.isEmpty()){ 
