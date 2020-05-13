@@ -340,6 +340,14 @@
 							</f:facet>
 							<h:outputText value="#{row['costo']}"/>
 						</p:column>	
+						<p:summaryRow>
+							<p:column colspan="7" styleClass="janal-column-right">
+                <h:outputText value="Total:" />
+							</p:column>
+							<p:column>
+                <h:outputText value="#{keetNominasPersonas.costoTotal}"/>
+							</p:column>
+						</p:summaryRow>
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetNominasPersonas.lazyDestajo== null? 0: keetNominasPersonas.lazyDestajo.rowCount}] registros"/>
 						</f:facet>

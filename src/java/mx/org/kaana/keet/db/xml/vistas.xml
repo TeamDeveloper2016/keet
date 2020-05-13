@@ -159,6 +159,7 @@
 					tc_keet_nominas_rubros.subtotal,
 					tc_keet_nominas_rubros.iva,
 					tc_keet_nominas_rubros.total,
+				  tc_keet_nominas_rubros.total as costo,
 					tc_keet_nominas_rubros.registro     
         from
           tc_keet_nominas_rubros     
@@ -191,6 +192,7 @@
 				  tc_keet_rubros.nombre as concepto,
 				  tc_keet_contratos_destajos_contratistas.porcentaje,
 				  tc_keet_contratos_destajos_contratistas.costo,
+				  tc_keet_contratos_destajos_contratistas.costo as total,
 				  tc_keet_contratos_destajos_contratistas.registro
 				from
 				  tc_keet_contratos_destajos_contratistas 
