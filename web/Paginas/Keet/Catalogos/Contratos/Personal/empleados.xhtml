@@ -106,7 +106,7 @@
               </f:facet>
               <h:outputText value="#{row['puesto']}"/>
             </p:column>		
-						<p:column styleClass="janal-wid-12 janal-column-center">
+						<p:column styleClass="janal-wid-col-80 janal-column-center">
 							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doAccion(row)}" title="Registrar incidencia"/>															
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosPersonalEmpleados.doImportar(row)}" title="Importar evidencia" disabled="#{row.totalIncidencias eq '0'}"/>															
 						</p:column>

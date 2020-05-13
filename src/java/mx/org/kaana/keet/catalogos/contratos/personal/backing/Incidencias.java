@@ -25,6 +25,7 @@ import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
@@ -127,7 +128,7 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // loadCatalogos			
 	
-	private void loadIncidencias() throws Exception{
+	private void loadIncidencias() throws Exception {
 		DefaultScheduleEvent registro= null;
 		List<Incidente> incidencias  = null;
 		MotorBusqueda motor          = null;
@@ -155,7 +156,29 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			throw e;
 		} // catch		
 	} // loadIncidencias	
+	
+	private static final String[] FA_ICON_INCIDENCIA= {"fa-user-times", "fa-ship", "fa-male", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md", "fa-user-md"};
+	private static final String[] FA_ICON_ESTATUS   = {"fa-plus-square", "fa-check-square", "fa-bullseye", "fa-times-circle", "fa-check-square-o"};
 
+	private String toShowIcon(Incidente newIncidente) {
+		StringBuilder sb= new StringBuilder();
+		sb.append("<div id='janal-update-").
+		append(newIncidente.getIdIncidente()).
+		append("'><span class='lg-pantalla'>").
+		append(newIncidente.getTipoIncidente()).
+		append("\n").
+		append(newIncidente.getEstatus()).
+		append("</span><span class='xs-pantalla'><i class='fa fa-fw ").
+		append(FA_ICON_INCIDENCIA[newIncidente.getIdTipoIncidente().intValue()- 1]).
+		append("'></i>").
+		append("\n").
+		append("<i class='fa fa-fw ").
+		append(FA_ICON_ESTATUS[newIncidente.getIdIncidenteEstatus().intValue()- 1]).
+		append("'></i>").
+		append("</span></div>");
+		return sb.toString();
+	}
+	
 	public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
 		Incidente newIncidente           = null;
 		DefaultScheduleEvent defaultEvent= null;
@@ -164,13 +187,14 @@ public class Incidencias extends IBaseAttribute implements Serializable {
 			this.count++;
 			newIncidente= loadNewIncidente(selectEvent);
 			editable= !newIncidente.getIdTipoIncidente().equals(ETiposIncidentes.FALTA.getKey());			
-			if(verificaExistente(newIncidente) && verificaExistenteAllTipos(newIncidente)){				
+			if(verificaExistente(newIncidente) && verificaExistenteAllTipos(newIncidente)) {
+				String icon= this.toShowIcon(newIncidente);
 				defaultEvent= DefaultScheduleEvent.builder()
 								.id(newIncidente.getIdIncidente().toString())
 								.allDay(true)
 								.data(newIncidente)
-								.description(newIncidente.getTipoIncidente().concat("\n ").concat(newIncidente.getEstatus()))
-								.title(newIncidente.getTipoIncidente().concat("\n ").concat(newIncidente.getEstatus()))
+								.description(icon)
+								.title(icon)
 								.startDate(newIncidente.getVigenciaInicio().atStartOfDay())
 								.endDate(newIncidente.getVigenciaFin().atStartOfDay())
 								.styleClass(ETiposIncidentes.fromId(newIncidente.getIdTipoIncidente()).getStyleClass().concat(" incidencia-".concat(newIncidente.getIdIncidente().toString())))

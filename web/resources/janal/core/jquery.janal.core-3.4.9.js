@@ -1514,6 +1514,12 @@
 		},
 		distanceValid: function(pointA, pointB) {
 			return this.distanceMt(pointA, pointB)<= 20;
+		},
+		escape: function(value) {
+			return value.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&#39;/g, "'");
+		},
+		html: function(id) {
+			$(id).html(this.escape($(id).html()));
 		}
   });
   window.Janal= Janal;

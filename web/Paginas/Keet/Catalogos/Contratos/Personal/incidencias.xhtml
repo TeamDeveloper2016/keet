@@ -39,6 +39,7 @@
 				var event = $(text);
 				event.attr('id', text.substring(1));
 				top.location.href = '#'.concat(text.substring(1));
+				janal.html('a'+ event.val()+' span.fc-title');
 			} // applyIdEvent
 			
 			function applyIdEventHide(){
@@ -125,14 +126,14 @@
               <p:inputText id="fechaInicio" value="#{keetCatalogosContratosPersonalIncidencias.attrs.fechaInicio}" styleClass="janal-wid-100-txt" readonly="true"/>                
               <p:outputLabel for="fechaFin" value="Fecha fin:"/>
               <p:inputText id="fechaFin" value="#{keetCatalogosContratosPersonalIncidencias.attrs.fechaFin}" styleClass="janal-wid-100-txt" readonly="true"/>                
-              <p:outputLabel for="titulo" value="Descripción:"/>
-              <p:inputText id="titulo" value="#{keetCatalogosContratosPersonalIncidencias.event.title}" styleClass="janal-wid-100-txt" readonly="true"/>                
+              <p:outputLabel for="titulo" value="Descripción:" rendered="false"/>
+              <p:inputText id="titulo" value="#{keetCatalogosContratosPersonalIncidencias.event.title}" styleClass="janal-wid-100-txt" readonly="true" rendered="false"/>
 							<p:outputLabel for="idTipoIncidente" value="Tipo:"/>
-							<p:selectOneMenu id="idTipoIncidente" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idTipoIncidente}" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:selectOneMenu id="idTipoIncidente" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idTipoIncidente}" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItems value="#{keetCatalogosContratosPersonalIncidencias.attrs.tiposIncidentes}"/>							
 							</p:selectOneMenu>
 							<p:outputLabel for="idIncidenteEstatus" value="Estatus:"/>
-							<p:selectOneMenu id="idIncidenteEstatus" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idIncidenteEstatus}" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:selectOneMenu id="idIncidenteEstatus" value="#{keetCatalogosContratosPersonalIncidencias.attrs.idIncidenteEstatus}" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItems value="#{keetCatalogosContratosPersonalIncidencias.attrs.allEstatus}"/>							
 							</p:selectOneMenu>
             </p:panelGrid>						
