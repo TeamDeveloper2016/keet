@@ -159,7 +159,7 @@ public class Transaccion extends IBaseTnx {
           item.setIdProyectoLote(-1L);
 					item.setIdProyecto(this.proyecto.getProyecto().getIdProyecto());
 					item.setIdUsuario(JsfBase.getIdUsuario());
-					orden= DaoFactory.getInstance().toField("TcKeetProyectosLotesDto", "getOrden", item.toMap(), "maxOrden	");
+					orden= DaoFactory.getInstance().toField("TcKeetProyectosLotesDto", "getOrden", item.toMap(), "maxOrden");
 					item.setOrden(orden.toLong(1L));
 					DaoFactory.getInstance().insert(sesion, item);
 					cargarPlanos(sesion, (List<TcKeetProyectosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetProyectosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toProyectos", item.toMap()));
