@@ -82,8 +82,8 @@
 									</ui:repeat>									
 								</p:tab>
 								<p:tab title="Contratista(s) ó Subcontratista(s)">									
-									<h:panelGrid style="width: 100% !important" columnClasses="janal-column-right">
-										<p:commandButton icon="fa fa-pencil" title="Capturar avances" onstart="return janal.bloquear();" process="@this contenedorGrupos" action="#{keetCatalogosContratosGeoreferencia.doCapturaAvances}" oncomplete="janal.desbloquear();"/>
+									<h:panelGrid styleClass="janal-wid-100-txt" columnClasses="janal-column-right">
+										<p:commandButton icon="fa fa-pencil" title="Capturar destajo" onstart="return janal.bloquear();" process="@this contenedorGrupos" action="#{keetCatalogosContratosGeoreferencia.doCapturaAvances}" oncomplete="janal.desbloquear();"/>
 									</h:panelGrid>
 									<ui:repeat var="visitado" value="#{keetCatalogosContratosGeoreferencia.attrs.contratistas}" >										
 										<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
