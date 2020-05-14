@@ -24,6 +24,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
@@ -393,28 +394,30 @@ public class Transaccion extends IBaseTnx {
 					for(int fila= 1; concepto!= null && fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 						try {
 							if(!Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
-								// 0       1      2     3        4         5         6
-								//MANZANA|LOTE|CODIGO|NOMBRE|CANTIDAD|COSTOS/IVA|UNIDADMEDIDA
-								String manzana = new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-								String lote    = new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+								// 0       1      2     3        4         5         6				  7			  8
+								//MANZANA|LOTE|CODIGO|NOMBRE|CANTIDAD|COSTOS/IVA|UNIDADMEDIDA|INICIO|TERMINO
+								String manzana = sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
+								String lote    = sheet.getCell(1, fila).getContents()!= null? new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
 								String codigo  = new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 								String nombre  = new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+								String inicio  = sheet.getCell(7, fila).getContents()!= null? new String(sheet.getCell(7, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+								String termino = sheet.getCell(8, fila).getContents()!= null? new String(sheet.getCell(8, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
 								double cantidad= Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 								double costo   = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8);
 								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(!Cadena.isVacio(codigo) && codigo.length()> 0 && cantidad> 0 && costo> 0) {
-									if(!Objects.equals(contrato.toString("manzana"), manzana))
+									if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
 										throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
-									if(!Objects.equals(contrato.toString("lote"), lote))
+									if(!Objects.equals(lote, "*") && !Objects.equals(contrato.toString("lote"), lote))
 										throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
 									Entity item= this.toRubro(sesion, codigo);
 									if(item!= null && !item.isEmpty()) {
 										if(count== 0 && item.toLong("nivel")!= 5L)
 											throw new RuntimeException("El archivo no comienza con una estación correcta");
 										if(item.toLong("nivel")== 5L) {
-											if(codigoPartida!= codigo) {
+											if(!Objects.equals(codigoPartida, codigo)) {
 												codigoPartida= codigo;
 												codigoRubro  = "";
 												rubro        = 0;
@@ -424,7 +427,7 @@ public class Transaccion extends IBaseTnx {
 												throw new RuntimeException("El archivo tiene una estacion duplicada ["+ codigo+ "] {"+ nombre+ "}");
 										} // if
 										else {
-											if(codigoRubro!= codigo) {
+											if(!Objects.equals(codigoRubro, codigo)) {
 												codigoRubro= codigo;
 												rubro++;
 											} // if
@@ -453,11 +456,17 @@ public class Transaccion extends IBaseTnx {
 										estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
 										estacion.setCantidad(cantidad);
 										estacion.setCosto(costo);
-										estacion.setInicio(contrato.toDate("inicio"));
-										estacion.setTermino(contrato.toDate("termino"));
+										if(Cadena.isVacio(inicio))
+										  estacion.setInicio(contrato.toDate("inicio"));
+										else
+										  estacion.setInicio(Fecha.toLocalDate(inicio));
+										if(Cadena.isVacio(termino))
+  										estacion.setTermino(contrato.toDate("termino"));
+										else
+  										estacion.setTermino(Fecha.toLocalDate(termino));
 										estacion.setIdUsuario(JsfBase.getIdUsuario());
 									  DaoFactory.getInstance().insert(sesion, estacion);
-									}
+									} // if
 									else {
 										estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
 										estacion.setCantidad(cantidad);
@@ -466,7 +475,7 @@ public class Transaccion extends IBaseTnx {
 										estacion.setTermino(contrato.toDate("termino"));
 										estacion.setIdUsuario(JsfBase.getIdUsuario());
 									  DaoFactory.getInstance().update(sesion, estacion);
-									}
+									} // if
 									LOG.warn(count+ ".-  <"+ estacion.getNivel()+ "> ["+ estacion.getClave()+ "] ("+ estacion.getCodigo()+ ") {"+ estacion.getCosto()+ "} "+ estacion.getDescripcion());
 									monitoreo.incrementar();
 								} // if

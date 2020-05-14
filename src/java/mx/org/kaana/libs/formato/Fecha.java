@@ -18,8 +18,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import mx.org.kaana.libs.recurso.Configuracion;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public  class Fecha {
+	
+	private static final Log LOG=LogFactory.getLog(Fecha.class);
 	
   public static final int FECHA_NOMBRE_MES = 1;
   public static final int FECHA_CORTA = 2;
@@ -626,12 +630,30 @@ public  class Fecha {
 		// date equals 2018-11-01 and time equals 23:59:59
 		LocalDateTime regresar= LocalDateTime.of(
 			Integer.parseInt(date.substring(0, 4)),
-			Integer.parseInt(date.substring(5, 7))- 1,
+			Integer.parseInt(date.substring(5, 7)),
 			Integer.parseInt(date.substring(8, 10)),
 			Integer.parseInt(time.substring(0, 2)),
 			Integer.parseInt(time.substring(3, 5)),
 			Integer.parseInt(time.substring(6, 8))
 		);
+		return regresar;
+	}
+
+	public static LocalDate toLocalDate(String date) {
+		//             0123456789
+		// date equals 01-01-2018
+		LocalDate regresar= null;
+		try {
+		  regresar= LocalDate.of(
+				Integer.parseInt(date.substring(6, 10)),
+				Integer.parseInt(date.substring(3, 5)),
+				Integer.parseInt(date.substring(0, 2))
+			);
+		} // try
+		catch(Exception e) {
+			regresar= LocalDate.now();
+			Error.mensaje(e);
+		} // catch
 		return regresar;
 	}
 
@@ -670,5 +692,9 @@ public  class Fecha {
       regresar = date.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     return regresar;
   } // getLocalTimeBD
+	
+	public static void main(String ... args) {
+		LOG.info(Fecha.toLocalDate("01/01/2020"));
+	}
 	
 } // Fecha
