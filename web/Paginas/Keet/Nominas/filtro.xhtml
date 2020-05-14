@@ -97,22 +97,18 @@
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header" >
-              <div class="lg-pantalla">
-                <p:menuButton value="Opciones">
-                  <p:menuitem value="Procesar" action="#{keetNominasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" ajax="false"/>						
-									<p:separator/>
-                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:separator/>
-                  <p:menuitem id="dnominaPdfIco" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('LISTADO_NOMINA')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                </p:menuButton>
-              </div>  
-              <div class="xs-pantalla">              
-                <p:commandButton action="#{keetNominasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                 <p:commandButton id="detNominaPdf" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('LISTADO_NOMINA')}" oncomplete="janal.desbloquear();" update="descargar"/>
-              </div>  
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem value="Procesar" action="#{keetNominasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" ajax="false"/>						
+								<p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:separator/>
+								<p:menuitem id="dnominaPdfIco" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('LISTADO_NOMINA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" action="#{keetNominasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" id="detNominaPdf" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('LISTADO_NOMINA')}" oncomplete="janal.desbloquear();" update="descargar"/>
             </f:facet>												
             <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
@@ -180,10 +176,10 @@
               </f:facet>
               <h:outputText value="#{row['global']}" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]" />
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-30">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-30" exportable="false">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idNominaEstatus eq '1'? 'circulo-verde': row.idNominaEstatus eq '2' or row.idNominaEstatus eq '3'? 'circulo-amarillo' : 'circulo-rojo'}.png" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]"/>
 						</p:column>
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-30">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-30" exportable="false">
 							<p:commandButton icon="fa fa-refresh" process="@this tabla" action="#{keetNominasFiltro.doAccion('REPROCESAR')}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}">
 							  <f:setPropertyActionListener value="#{row}" target="#{keetNominasFiltro.attrs.seleccionado}" />
 							</p:commandButton>

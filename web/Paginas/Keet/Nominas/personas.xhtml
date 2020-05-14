@@ -116,16 +116,12 @@
         <div id="collapse-content" class="ui-grid-col-9">
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetNominasPersonas.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetNominasPersonas.lazyModel.rowCount gt keetNominasPersonas.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<f:facet name="header">
-							<div class="lg-pantalla">
-								<p:menuButton value="Opciones">
-									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-								</p:menuButton>
-							</div>  
-							<div class="xs-pantalla">              
-								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton id="xlsx" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							</div>  
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 						</f:facet>												
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.nombreEmpresa}">
 							<f:facet name="header">
@@ -181,10 +177,10 @@
 							</f:facet>
 							<h:outputText value="#{row['neto']}"/>
 						</p:column>	
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and (not empty row.nss.toString) and row.idPago.toLong eq '2' ? 'circulo-azul': (row.idActivo.toLong eq '1' and empty row.nss.toString? 'circulo-amarillo' : 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 						</p:column>	
-						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
 							<p:commandButton icon="fa fa-search" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
 								<f:setPropertyActionListener value="#{row}" target="#{keetNominasPersonas.attrs.seleccionado}" />
 							</p:commandButton>
@@ -215,17 +211,17 @@
 						<f:facet name="header">
 							<p:outputLabel value="Calculos de nómina: [#{keetNominasPersonas.attrs.seleccionado.contratista}][#{keetNominasPersonas.attrs.seleccionado.puesto}] #{keetNominasPersonas.attrs.seleccionado.nombreCompleto}" styleClass="janal-text-white" style="float: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
 								<p:separator/>
 								<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doAccion}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 								<p:separator/>
-								<p:menuitem id="detNominaPersIco" icon="fa fa-file-pdf-o" value="Detalle" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DETALLE_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Detalle" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DETALLE_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasPersonas.doAccion}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
-							<p:commandButton styleClass="xs-pantalla" id="detNominaPersPdf" icon="fa fa-file-pdf-o" title="Detalle" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DETALLE_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Detalle" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DETALLE_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 						</f:facet>												
 						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.concepto}">
 							<f:facet name="header">
@@ -271,13 +267,13 @@
 						<f:facet name="header">
 							<p:outputLabel value="Destajos del contratista: [#{keetNominasPersonas.attrs.seleccionado.puesto}] #{keetNominasPersonas.attrs.seleccionado.nombreCompleto}" styleClass="janal-text-white" style="float: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('destajoPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datdestajoXlsaXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('destajoPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('datdestajoXlsaXls', 'destajo')" oncomplete="janal.desbloquear()"/>
 								<p:separator/>
 								<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('destajoPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('destajoXls', 'destajo')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('destajoPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('destajoXls', 'destajo')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 						</f:facet>												
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
