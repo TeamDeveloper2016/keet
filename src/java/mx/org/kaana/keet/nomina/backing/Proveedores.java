@@ -167,7 +167,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
 			sb.append("tc_keet_nomina.id_nomina_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
-			sb.append("departamentos.id_departamento like '%|").append(this.attrs.get("idDepartamento")).append("%' and ");
+			sb.append("departamentos.id_departamentos like '%|").append(this.attrs.get("idDepartamento")).append("|%' and ");
 		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
 			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
   		sb.append("(upper(tc_mantic_proveedores.razon_social, ' ', ifnull(tc_mantic_proveedores.nombre_comercial, ' '), ' ', ifnull(tc_mantic_proveedores.grupo, ' '))) regexp '.*").append(nombre).append(".*') and ");
