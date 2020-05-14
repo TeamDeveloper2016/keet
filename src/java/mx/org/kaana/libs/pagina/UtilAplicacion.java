@@ -207,7 +207,7 @@ public class UtilAplicacion {
       Document pdf= (Document) document;
       pdf.setPageSize(PageSize.LETTER);
       pdf.setHeader(header);
-      pdf.setFooter(footer);
+      // pdf.setFooter(footer);
       pdf.setMargins(10, 10, 50, 50);
       pdf.open();
     } // try
