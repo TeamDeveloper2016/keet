@@ -77,8 +77,8 @@
 							<h:panelGrid columns="1" styleClass="janal-wid-100">
                 <p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="6" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
                   <f:facet name="header">                      
-                    <p:menuButton styleClass="lg-pantalla" value="Opciones">
-											<p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" action="accion" process="@this" ajax="false" immediate="true"/>
+                    <p:menuButton value="Opciones">
+											<p:menuitem icon="fa fa-plus" value="Agregar" action="accion" process="@this" ajax="false" immediate="true"/>
                     </p:menuButton>                                            
                   </f:facet>
 									<p:column headerText="Id" sortBy="#{car.id}">
