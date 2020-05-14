@@ -60,7 +60,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					regresar= DaoFactory.getInstance().insert(sesion, keetPrestamosPagosDto)>= 1L;
 					this.prestamosPagados= 1;
 					if(this.prestamosPagosDto.getIdAfectaNomina().equals(1L)){
-						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), this.prestamosPagosDto);
+						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
 						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
 					} // if
 					break;
