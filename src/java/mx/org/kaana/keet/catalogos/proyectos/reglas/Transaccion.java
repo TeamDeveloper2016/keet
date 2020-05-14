@@ -222,6 +222,7 @@ public class Transaccion extends IBaseTnx {
 		  for(TcKeetContratosLotesDto lote: (List<TcKeetContratosLotesDto>) DaoFactory.getInstance().toEntitySet(TcKeetContratosLotesDto.class,"TcKeetProyectosLotesDto", "byProyecto", contratosDto.toMap())){
 				lote.setIdContrato(contratosDto.getIdContrato());
 				lote.setIdUsuario(JsfBase.getIdUsuario());
+				lote.setIdContratoLoteEstatus(1L);
 				DaoFactory.getInstance().insert(sesion, lote);
 			} // for
 		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetProyectosArchivosDto", "toContratos", contratosDto.toMap()));
