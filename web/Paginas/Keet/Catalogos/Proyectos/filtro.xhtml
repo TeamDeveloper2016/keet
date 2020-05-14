@@ -93,7 +93,7 @@
 							</p:selectOneMenu>              
             </p:panelGrid>
 						<p:outputLabel for="idProyectoEstatus" value="Estatus:"/>
-						<p:selectOneMenu id="idProyectoEstatus" value="#{keetCatalogosProyectosFiltro.attrs.idProyectoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+						<p:selectOneMenu id="idProyectoEstatus" value="#{keetCatalogosProyectosFiltro.attrs.idProyectoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 							<f:selectItems value="#{keetCatalogosProyectosFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 							<p:column headerText="Nombre">
 								<h:outputText value="#{item.nombre}"/>
