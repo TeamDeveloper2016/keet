@@ -61,7 +61,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					this.prestamosPagados= 1;
 					if(this.prestamosPagosDto.getIdAfectaNomina().equals(1L)){
 						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), this.prestamosPagosDto);
-						super.ejecutar(sesion, EAccion.AGREGAR);
+						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
 					} // if
 					break;
 				case COMPLETO:
@@ -78,9 +78,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						this.prestamosPagados++;
 						if(keetPrestamosPagosDto.getIdAfectaNomina().equals(1L)){
 							this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
-							super.ejecutar(sesion, EAccion.AGREGAR);
+							super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
 						} // if
-						if(keetPrestamosPagosDto.getCambio()==0D)
+						if(keetPrestamosPagosDto.getCambio()== 0D)
 							break;
 					} // for
 					break;

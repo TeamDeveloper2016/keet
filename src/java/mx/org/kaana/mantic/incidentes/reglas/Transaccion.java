@@ -58,6 +58,9 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= false;
 		try {
 			switch(accion){
+				case DESTRANSFORMACION:			
+					regresar= registrarIncidente(sesion);					
+					break;
 				case AGREGAR:			
 					if(verificaExistente(sesion))						
 						regresar= registrarIncidente(sesion);					
@@ -79,40 +82,31 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // ejecutar		
 	
-	private boolean verificaExistente(Session sesion) throws Exception{
+	private boolean verificaExistente(Session sesion) throws Exception {
 		boolean regresar         = true;
-		Entity registro          = null;
-		Map<String, Object>params= null;
-		long totalDias           = 0L;
-		LocalDate initDate       = null;		
-		try {
-			this.messageError= "No es posible agregar una incidencia del mismo tipo al mismo empleado cuando hay una vigente.";
-			totalDias= DAYS.between(this.incidente.getVigenciaInicio(), this.incidente.getVigenciaFin());
-			initDate = this.incidente.getVigenciaInicio();
-			if(totalDias== 0)
-				totalDias=1;
-			for(int count=0; count< totalDias; count++){
-				params= new HashMap<>();
-				params.put("idEmpresaPersona", this.incidente.getIdEmpresaPersona());
-				params.put("idTipoIncidente", this.incidente.getIdTipoIncidente());
-				params.put("estatus", toEstatus());
-				params.put("fecha", initDate.toString());
-				registro= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticIncidentesDto", "existente", params);
-				if(registro!= null && registro.isValid()){
-					regresar= false;
-					break;
-				} // if
-				else 
-					initDate= initDate.plusDays(1);
-			} // for
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+		this.messageError = "No es posible agregar una incidencia del mismo tipo al mismo empleado cuando hay una vigente.";
+		Long totalDias    = DAYS.between(this.incidente.getVigenciaInicio(), this.incidente.getVigenciaFin());
+		LocalDate initDate= this.incidente.getVigenciaInicio();
+		if(totalDias== 0)
+			totalDias=1L;
+		for(int count=0; count< totalDias; count++) {
+			Map<String, Object> params= new HashMap<>();
+			params.put("idEmpresaPersona", this.incidente.getIdEmpresaPersona());
+			params.put("idTipoIncidente", this.incidente.getIdTipoIncidente());
+			params.put("estatus", toEstatus());
+			params.put("fecha", initDate.toString());
+			Entity registro= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticIncidentesDto", "existente", params);
+			if(registro!= null && registro.isValid()){
+				regresar= false;
+				break;
+			} // if
+			else 
+				initDate= initDate.plusDays(1);
+		} // for
 		return regresar;
 	} // verificaExistente
 	
-	private String toEstatus(){
+	private String toEstatus() {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder("");

@@ -56,7 +56,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
 					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)){
 						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona());
-						super.ejecutar(sesion, EAccion.AGREGAR);
+						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
 					} // if
 					break;
 				case DESACTIVAR:
@@ -69,8 +69,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					bitacoraDto= new TcKeetPrestamosBitacoraDto("", this.prestamo.getPrestamo().getKey(), -1L, idUsuario, this.prestamo.getPrestamo().getIdPrestamoEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
 					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)){
-						loadIncidente(sesion, deudoresDto.getIdEmpresaPersona());
-						super.ejecutar(sesion, EAccion.AGREGAR);
+						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona());
+						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
 					} // if
 					break;
 				case SUBIR:					
