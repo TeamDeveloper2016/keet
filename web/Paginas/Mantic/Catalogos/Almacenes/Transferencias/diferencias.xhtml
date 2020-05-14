@@ -48,7 +48,7 @@
 							  <h:outputText value="Detalle de los articulos de la transferencia"/>
 							</div>
               <div class="lg-pantalla">
-                <p:menuButton value="Opciones">
+                <p:menuButton styleClass="lg-pantalla" value="Opciones">
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:separator/>
@@ -131,7 +131,7 @@
   							<h:outputText value="Detalle de los articulos que fueron recibidos en el almacen"/>
 							</div>	
               <div class="lg-pantalla">
-                <p:menuButton value="Opciones">
+                <p:menuButton styleClass="lg-pantalla" value="Opciones">
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>

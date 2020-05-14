@@ -36,7 +36,7 @@
 						<p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="12" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
 							<f:facet name="header">
 								DataTable Header
-								<p:menuButton value="Opciones">
+								<p:menuButton styleClass="lg-pantalla" value="Opciones">
 									<p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" action="/Paginas/Planes/MapaCurricular/detalle" process="@this" ajax="false"/>
 								</p:menuButton>
 							</f:facet>

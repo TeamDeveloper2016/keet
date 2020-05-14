@@ -89,7 +89,7 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
-                <p:menuButton value="Opciones">
+                <p:menuButton styleClass="lg-pantalla" value="Opciones">
                   <p:menuitem value="Retiros parciales" action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-sign-out" title="Retiro" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
                   <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
                   <p:menuitem value="Abono parciales" action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-sign-in" title="Abono" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>

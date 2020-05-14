@@ -25,7 +25,7 @@
 		</div>
     <p:dataTable id="tabla" var="row" paginator="#{kajoolMantenimientoMensajesGruposFiltro.lazyModel.rowCount gt kajoolMantenimientoMensajesGruposFiltro.lazyModel.pageSize}" selectionMode="single"  lazy="true" reflow="true" value="#{kajoolMantenimientoMensajesGruposFiltro.lazyModel}" selection="#{kajoolMantenimientoMensajesGruposFiltro.attrs.selected}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}"  paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
       <f:facet name="header">				
-        <p:menuButton value="Opciones">
+        <p:menuButton styleClass="lg-pantalla" value="Opciones">
           <p:menuitem value="Agregar" icon="fa fa-plus" title="Agregar" ajax="false" action="agregar" actionListener="#{kajoolMantenimientoMensajesGruposFiltro.doEvento('AGREGAR')}"/>
         </p:menuButton>				
       </f:facet>

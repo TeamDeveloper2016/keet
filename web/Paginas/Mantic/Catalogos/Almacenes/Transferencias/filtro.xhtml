@@ -112,7 +112,7 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
-                <p:menuButton value="Opciones">
+                <p:menuButton styleClass="lg-pantalla" value="Opciones">
                   <p:menuitem id="directa" value="Agregar directa" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('ACTIVAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
                   <p:menuitem id="normal" value="Agregar normal" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doNormal('AGREGAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
                   <p:separator/>

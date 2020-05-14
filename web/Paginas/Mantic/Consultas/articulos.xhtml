@@ -107,7 +107,7 @@
 						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticConsultasArticulos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasArticulos.attrs.seleccionado}" selectionMode="single" paginator="#{manticConsultasArticulos.lazyModel.rowCount gt manticConsultasArticulos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 							<f:facet name="header">
 								<div class="lg-pantalla">
-									<p:menuButton value="Opciones">
+									<p:menuButton styleClass="lg-pantalla" value="Opciones">
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</p:menuButton>

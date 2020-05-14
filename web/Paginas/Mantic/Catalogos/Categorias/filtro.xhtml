@@ -42,7 +42,7 @@
 					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosCategoriasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosCategoriasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosCategoriasFiltro.lazyModel.rowCount gt manticCatalogosCategoriasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<f:facet name="header">
               <div class="lg-pantalla">
-								<p:menuButton value="Opciones">
+								<p:menuButton styleClass="lg-pantalla" value="Opciones">
 									<p:menuitem value="Agregar" action="#{manticCatalogosCategoriasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
 									<p:separator/>
 									<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -51,8 +51,8 @@
               </div>  
               <div class="xs-pantalla">              
 								<p:commandButton action="#{manticCatalogosCategoriasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
-								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton styleClass="xs-pantalla" id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton styleClass="xs-pantalla" id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>	
 						</f:facet>						
 						<p:column class="janal-column-left janal-wid-30 MarAuto Responsive" sortBy="#{filtro.nombre}">

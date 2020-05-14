@@ -33,7 +33,7 @@
     <p:spacer height="1px"/>
     <p:dataTable id="tabla" var="row" value="#{kajoolMensajesPerfilesFiltro.lazyModel}" selection="#{kajoolMensajesPerfilesFiltro.attrs.seleccion}" paginator="#{kajoolMensajesPerfilesFiltro.lazyModel.rowCount gt kajoolMensajesPerfilesFiltro.lazyModel.pageSize}" rows="#{Constantes.REGISTROS_POR_PAGINA}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single"  lazy="true" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
       <f:facet name="header">
-        <p:menuButton value="Opciones">
+        <p:menuButton styleClass="lg-pantalla" value="Opciones">
           <p:menuitem id="agregar" value="Agregar" icon="fa fa-plus" title="Agregar" ajax="false" action="agregar" actionListener="#{kajoolMensajesPerfilesFiltro.doEvento('AGREGAR')}"/>
         </p:menuButton>				
       </f:facet>

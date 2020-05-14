@@ -307,14 +307,14 @@
 			<p:dataTable id="faltantesTabla" widgetVar="widgetFaltantes" var="row" styleClass="janal-row-faltantes faltantes janal-wid-100" value="#{kajoolEncabezado.lazyFaltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="250" rowIndexVar="index" reflow="true" scrollRows="150" scrollable="true" virtualScroll="true" scrollHeight="150" style="margin-bottom:0" rowKey="#{row.key}">
 				<f:facet name="header">
 					<div class="lg-pantalla">
-						<p:menuButton value="Opciones">
+						<p:menuButton styleClass="lg-pantalla" value="Opciones">
 							<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 							<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 						</p:menuButton>
 					</div>  
 					<div class="xs-pantalla">              
-						<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
-						<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+						<p:commandButton styleClass="xs-pantalla" id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+						<p:commandButton styleClass="xs-pantalla" id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 					</div>  
 				</f:facet>	            
 				<p:column class="MarAuto Responsive janal-wid-col-38">

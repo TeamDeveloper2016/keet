@@ -92,8 +92,8 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:commandButton id="empleadosPdfIcon" icon="fa fa-file-pdf-o" title="Personal" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosPersonalConsulta.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	  						
