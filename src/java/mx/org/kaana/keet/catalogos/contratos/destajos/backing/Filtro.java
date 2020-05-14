@@ -77,7 +77,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				Entity row= (Entity)item;
 				costo+= new Double(row.toString("total"));
 			} // for	
-		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, costo);
+		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo);
 	}
 	
   @PostConstruct

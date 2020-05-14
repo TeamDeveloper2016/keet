@@ -64,7 +64,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
 				Entity row= (Entity)item;
 				costo+= new Double(row.toString("costo"));
 			} // for	
-		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, costo);
+		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo);
 	}
 
 	@PostConstruct
