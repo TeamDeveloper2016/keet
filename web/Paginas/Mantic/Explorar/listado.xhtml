@@ -66,7 +66,7 @@
 					<p:spacer/>
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticExplorarListado.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticExplorarListado.attrs.seleccionado}" selectionMode="single" paginator="#{manticExplorarListado.lazyModel.rowCount gt manticExplorarListado.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowToggle" listener="#{manticExplorarListado.onRowToggle}" update="tablaDetalle" />  
-						<f:facet name="header" >								
+						<f:facet name="header">								
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">												
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>

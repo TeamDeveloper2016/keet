@@ -326,7 +326,7 @@
 					</p:panel>	
 					<p:panel header="Órdenes de pago" styleClass="janal-wid-99" toggleable="true">		
 						<p:dataTable id="importados" var="row" value="#{manticEgresosDetalle.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
-							<f:facet name="header" >								
+							<f:facet name="header">								
 								<p:menuButton styleClass="lg-pantalla" value="Opciones">																			
 									<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfImportado', 'importados')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsImportado', 'importados')" oncomplete="janal.desbloquear()"/>

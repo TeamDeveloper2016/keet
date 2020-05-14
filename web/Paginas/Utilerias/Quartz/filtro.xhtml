@@ -31,7 +31,7 @@
 					<p:dataTable rowKey="#{row.jobName}" lazy="true" id="tabla" widgetVar="kajoolTable" var="row" rowIndexVar="index" value="#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.listJobs}" paginator="#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.paginator}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" selectionMode="single" selection="#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.seleccionado}" rowStyleClass="#{kajoolMantenimientoUtileriasQuartzFiltro.doAplicarEstilo(row.server) ? 'filaGris' : null}">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
-						<f:facet name="header" >							
+						<f:facet name="header">							
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
                   <p:menuitem id="activar" icon="fa fa-check" value="Activar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doActivar}" oncomplete="janal.desbloquear()" update="tabla" rendered="#{kajoolMantenimientoUtileriasQuartzFiltro.mostrarActivar}"/>

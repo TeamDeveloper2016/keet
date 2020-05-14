@@ -54,7 +54,7 @@
 						<p:ajax event="rowToggle" listener="#{manticCatalogosEmpresasCuentasDeuda.onRowToggle}" update="tablaDetalle" />  
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
-						<f:facet name="header" >
+						<f:facet name="header">
 							<div class="lg-pantalla">
 								<p:menuButton   value="Opciones">
 									<p:menuitem id="pagoIcon" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPagoGeneral').show();" disabled="#{!manticCatalogosEmpresasCuentasDeuda.attrs.activePagoGeneral}"/>

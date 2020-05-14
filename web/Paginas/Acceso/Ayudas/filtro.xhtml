@@ -31,7 +31,7 @@
       </p:panelGrid>
     </p:fieldset>
     <p:dataTable lazy="true" id="tabla" reflow="true" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolAccesoAyudasFiltro.lazyModel}" paginator="#{kajoolAccesoAyudasFiltro.lazyModel.rowCount gt kajoolAccesoAyudasFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolAccesoAyudasFiltro.attrs.selected}">
-      <f:facet name="header" >
+      <f:facet name="header">
         <p:menuButton styleClass="lg-pantalla" value="Opciones" >
           <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
           <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
