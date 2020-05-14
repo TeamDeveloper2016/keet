@@ -25,8 +25,8 @@
 				'contenedorGrupos\\:contrato'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:puesto'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:departamento' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:fechaIngreso' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:fechaContrato': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+				'contenedorGrupos\\:ingreso'      : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+				'contenedorGrupos\\:contrato'     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:sueldoSemanal': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:sueldoMensual': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nss'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
@@ -141,10 +141,10 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column> 
 								</p:selectOneMenu>	
-								<p:outputLabel for="fechaIngreso" value="Fecha ingreso:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:calendar id="fechaIngreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaIngreso}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:outputLabel for="fechaContrato" value="Fecha contratación:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:calendar id="fechaContrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.fechaContratacion}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:outputLabel for="ingreso" value="Fecha ingreso:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:calendar id="ingreso" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.ingreso}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:outputLabel for="contrato" value="Fecha contratación:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
+								<p:calendar id="contrato" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.contratacion}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:outputLabel for="sueldoSemanal" value="Sueldo semanal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" inputStyle="text-align: right;"/>                    
 								<p:outputLabel for="sueldoMensual" value="Sueldo mensual:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>

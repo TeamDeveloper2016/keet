@@ -2127,7 +2127,7 @@
 				  tc_keet_deudores.limite,
 				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) empleado,
 				  disponible,
-				  ifnull(tr_mantic_empresa_personal.fecha_ingreso, tr_mantic_empresa_personal.fecha_contratacion) ingreso,
+				  ifnull(tr_mantic_empresa_personal.ingreso, tr_mantic_empresa_personal.contratacion) ingreso,
 				  1 numero_prestamos,
 				  tc_keet_deudores.id_empresa_persona
 				from
@@ -2209,7 +2209,7 @@
 				  tc_keet_deudores.limite,
 				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) deudor,
 				  disponible,
-				  ifnull(tr_mantic_empresa_personal.fecha_ingreso, tr_mantic_empresa_personal.fecha_contratacion) ingreso
+				  ifnull(tr_mantic_empresa_personal.ingreso, tr_mantic_empresa_personal.contratacion) ingreso
 				from
 				  tc_keet_deudores
         inner join tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona

@@ -325,8 +325,8 @@ public class Transaccion extends IBaseTnx{
 				empresaPersonal.setIdActivo(this.persona.getEmpresaPersona().getIdActivo());
 				empresaPersonal.setClave(this.persona.getEmpresaPersona().getClave());
 				empresaPersonal.setIdContrato(this.persona.getEmpresaPersona().getIdContrato());
-				empresaPersonal.setFechaIngreso(this.persona.getEmpresaPersona().getFechaIngreso());
-				empresaPersonal.setFechaContratacion(this.persona.getEmpresaPersona().getFechaContratacion());
+				empresaPersonal.setIngreso(this.persona.getEmpresaPersona().getIngreso());
+				empresaPersonal.setContratacion(this.persona.getEmpresaPersona().getContratacion());
 				empresaPersonal.setSueldoSemanal(this.persona.getEmpresaPersona().getSueldoSemanal());
 				empresaPersonal.setSueldoMensual(this.persona.getEmpresaPersona().getSueldoMensual());
 				empresaPersonal.setNss(this.persona.getEmpresaPersona().getNss());

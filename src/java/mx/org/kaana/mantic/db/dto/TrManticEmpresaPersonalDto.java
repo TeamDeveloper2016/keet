@@ -50,8 +50,8 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   private Long idActivo;
   @Column (name="infonavit")
   private String infonavit;
-  @Column (name="fecha_contratacion")
-  private LocalDate fechaContratacion;
+  @Column (name="contratacion")
+  private LocalDate contratacion;
   @Column (name="id_departamento")
   private Long idDepartamento;
   @Column (name="id_usuario")
@@ -64,8 +64,8 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   private String observaciones;
   @Column (name="id_empresa")
   private Long idEmpresa;
-  @Column (name="fecha_ingreso")
-  private LocalDate fechaIngreso;
+  @Column (name="ingreso")
+  private LocalDate ingreso;
   @Column (name="sueldo_semanal")
   private Double sueldoSemanal;
   @Column (name="sueldo_mensual")
@@ -86,7 +86,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, Long idContrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate fechaContratacion, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate fechaIngreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss, Long idNomina, Long idSeguro) {
+  public TrManticEmpresaPersonalDto(String clave, Long idPuesto, Long idContrato, Double factorInfonavit, Double diarioImss, Long idContratista, String nss, Long idPersona, Long idActivo, String infonavit, LocalDate contratacion, Long idDepartamento, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, LocalDate ingreso, Double sueldoSemanal, Double sueldoMensual, Double sueldoImss, Long idNomina, Long idSeguro) {
     setClave(clave);
     setIdPuesto(idPuesto);
     setIdContrato(idContrato);
@@ -98,13 +98,13 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     setIdPersona(idPersona);
     setIdActivo(idActivo);
     setInfonavit(infonavit);
-    setFechaContratacion(fechaContratacion);
+    setContratacion(contratacion);
     setIdDepartamento(idDepartamento);
     setIdUsuario(idUsuario);
     setIdEmpresaPersona(idEmpresaPersona);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
-    setFechaIngreso(fechaIngreso);
+    setIngreso(ingreso);
     setSueldoSemanal(sueldoSemanal);
     setSueldoMensual(sueldoMensual);
     setSueldoImss(sueldoImss);
@@ -200,12 +200,12 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     return infonavit;
   }
 
-  public void setFechaContratacion(LocalDate fechaContratacion) {
-    this.fechaContratacion = fechaContratacion;
+  public void setContratacion(LocalDate contratacion) {
+    this.contratacion = contratacion;
   }
 
-  public LocalDate getFechaContratacion() {
-    return fechaContratacion;
+  public LocalDate getContratacion() {
+    return contratacion;
   }
 
   public void setIdDepartamento(Long idDepartamento) {
@@ -248,12 +248,12 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
-  public void setFechaIngreso(LocalDate fechaIngreso) {
-    this.fechaIngreso = fechaIngreso;
+  public void setIngreso(LocalDate ingreso) {
+    this.ingreso = ingreso;
   }
 
-  public LocalDate getFechaIngreso() {
-    return fechaIngreso;
+  public LocalDate getIngreso() {
+    return ingreso;
   }
 
   public void setSueldoSemanal(Double sueldoSemanal) {
@@ -333,7 +333,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getInfonavit());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaContratacion());
+		regresar.append(getContratacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdDepartamento());
 		regresar.append(Constantes.SEPARADOR);
@@ -345,7 +345,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaIngreso());
+		regresar.append(getIngreso());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSueldoSemanal());
 		regresar.append(Constantes.SEPARADOR);
@@ -374,13 +374,13 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.put("idPersona", getIdPersona());
 		regresar.put("idActivo", getIdActivo());
 		regresar.put("infonavit", getInfonavit());
-		regresar.put("fechaContratacion", getFechaContratacion());
+		regresar.put("contratacion", getContratacion());
 		regresar.put("idDepartamento", getIdDepartamento());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("fechaIngreso", getFechaIngreso());
+		regresar.put("ingreso", getIngreso());
 		regresar.put("sueldoSemanal", getSueldoSemanal());
 		regresar.put("sueldoMensual", getSueldoMensual());
 		regresar.put("sueldoImss", getSueldoImss());
@@ -392,7 +392,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getClave(), getIdPuesto(), getIdContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getFechaContratacion(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getFechaIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss(), getIdNomina(), getIdSeguro()
+			getClave(), getIdPuesto(), getIdContrato(), getFactorInfonavit(), getDiarioImss(), getIdContratista(), getNss(), getRegistro(), getIdPersona(), getIdActivo(), getInfonavit(), getContratacion(), getIdDepartamento(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getIngreso(), getSueldoSemanal(), getSueldoMensual(), getSueldoImss(), getIdNomina(), getIdSeguro()
     };
     return regresar;
   }
