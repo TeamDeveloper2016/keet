@@ -46,7 +46,7 @@ public class Personas extends IBaseFilter implements Serializable {
 
 	private FormatLazyModel lazyDetalle;
 	private FormatLazyModel lazyDestajo;
-   protected Reporte reporte;
+  protected Reporte reporte;
 	
 	public Reporte getReporte() {
 		return reporte;
