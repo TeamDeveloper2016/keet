@@ -57,7 +57,8 @@ public enum EReportes implements IReportAttribute{
 	NOMINA_SUBCONTRATISTA     ("VistaNominaReportesDto", "proveedorDetalle", "Detalle nómina del subcontratista", "/Paginas/Keet/Nominas/Reportes/detalleSubcontratista", EFormatos.PDF, "detalle_nomina_subcontratista", "/Paginas/Keet/Prestamos/filtro"),
   RESUMEN_NOMINA_SUBC       ("VistaNominaReportesDto", "resumen", " Resumen de nómina de los subcontratistas", "/Paginas/Keet/Nominas/Reportes/nominaSubcontratistas", EFormatos.PDF, "resumen_nomina_subcontratista", "/Paginas/Keet/Prestamos/filtro"),
   LISTADO_NOMINA            ("VistaNominaDto", "lazy", "Listado de nómina", "/Paginas/Keet/Nominas/Reportes/nomina", EFormatos.PDF, "listado_nomina", "/Paginas/Keet/Prestamos/filtro"),
-  DETALLE_NOMINA_PERSONAS   ("VistaNominaConsultasDto", "personas", "Detalle nómina", "/Paginas/Keet/Nominas/Reportes/detallePersona", EFormatos.PDF, "detalle_nomina_persona", "/Paginas/Keet/Prestamos/filtro");
+  DETALLE_NOMINA_PERSONAS   ("VistaNominaConsultasDto", "personas", "Detalle nómina", "/Paginas/Keet/Nominas/Reportes/detallePersona", EFormatos.PDF, "detalle_nomina_persona", "/Paginas/Keet/Prestamos/filtro"),
+  DESTAJOS_CONTATISTA       ("VistaNominaConsultasDto", "personas", "Detalle destajos contratista", "/Paginas/Keet/Nominas/Reportes/detalleDestajosContratistas", EFormatos.PDF, "detalle_destajos_contratista", "/Paginas/Keet/Prestamos/filtro");
 	
 	
 	private final String proceso;
