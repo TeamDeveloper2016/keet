@@ -100,7 +100,9 @@
 									</p:calendar>
 								</p:column>
 								<p:column  headerText="Dias de construccion" class="janal-wid-10">										
-									<p:inputText rendered="#{lote.mostar}" value="#{lote.diasConstruccion}" styleClass="janal-wid-100-txt" readonly="true"/>
+									<p:inputText rendered="#{lote.mostar}" value="#{lote.diasConstruccion}" styleClass="janal-wid-100-txt">
+										<p:ajax event="valueChange" listener="#{keetCatalogosProyectosAccion.proyecto.proyecto.doCalculateFechaDiasEditado(lote)}" process="@this tablaLotes" update="fechaTermino"/>
+									</p:inputText>
 								</p:column>
 								<p:column  headerText="Fecha termino" class="janal-wid-20">										
 									<p:calendar rendered="#{lote.mostar}" id="fechaTermino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.fechaTermino}"  pattern="dd/MM/yyyy" locale="es" readonly="true" disabled="true"/>

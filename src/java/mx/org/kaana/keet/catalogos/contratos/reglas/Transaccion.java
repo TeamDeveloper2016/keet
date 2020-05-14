@@ -169,7 +169,7 @@ public class Transaccion extends IBaseTnx {
 					item.setLatitud(entity.toString("latitud"));
 					item.setLongitud(entity.toString("longitud"));
 					DaoFactory.getInstance().insert(sesion, item);
-					cargarPlanos(sesion, (List<TcKeetContratosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toContratos", item.toMap()));
+					//cargarPlanos(sesion, (List<TcKeetContratosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toContratos", item.toMap()));
 					break;
 				case UPDATE:
 					DaoFactory.getInstance().update(sesion, item);

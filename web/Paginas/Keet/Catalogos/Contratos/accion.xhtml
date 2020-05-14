@@ -161,10 +161,10 @@
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.atributos}" styleClass="janal-wid-100-txt"/>
 								</p:column>								
 								<p:column headerText="Geo" class="janal-wid-col-20">																				
-									<h:graphicImage library="janal" name="icon/semaforos/#{lote.georeferencia}.png"/>
+									<h:graphicImage rendered="#{lote.mostar}" library="janal" name="icon/semaforos/#{lote.georeferencia}.png"/>
 								</p:column>	
 								<p:column class="janal-wid-col-80 janal-column-center">										
-									<p:commandButton icon="fa fa-map-marker" title="Georeferencia" process="contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doGeoreferencia(lote)}" update="contenedorGrupos" oncomplete="PF('pestanias').select(2);"/>
+									<p:commandButton rendered="#{lote.mostar}" icon="fa fa-map-marker" title="Georeferencia" process="contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doGeoreferencia(lote)}" update="contenedorGrupos" oncomplete="PF('pestanias').select(2);"/>
 									<p:commandButton rendered="#{lote.mostar}" update="tablaLotes" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosContratosAccion.contrato.contrato.doRemoveLote}">
 										<f:setPropertyActionListener value="#{lote}" target="#{keetCatalogosContratosAccion.contrato.contrato.loteSeleccion}" />
 									</p:commandButton>

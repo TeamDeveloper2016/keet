@@ -161,6 +161,33 @@ public class Proyecto extends TcKeetProyectosDto {
 		} // finally		
 	} // doCalculateFecha
 	
+	public void doCalculateFechaDiasEditado(Lote lote){
+		TcKeetPrototiposDto tcKeetPrototiposDto= null;
+		List<DiaHabil> diasHabiles             = null;
+		Map<String, Object>params= null;
+	  try {
+			params= new HashMap<>();
+			params.put("idPrototipo",  lote.getIdPrototipo());
+			if(lote.getIkPrototipo()!= null && lote.getIdPrototipo()>0L){
+			  tcKeetPrototiposDto= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, lote.getIdPrototipo());
+				if(tcKeetPrototiposDto.getIdTipoDia().equals(1L)) // dias naturales
+				  lote.setFechaTermino(lote.getFechaInicio().plusDays(lote.getDiasConstruccion().intValue()));
+				else{
+					diasHabiles= (List<DiaHabil>)DaoFactory.getInstance().toEntitySet(DiaHabil.class, "VistaPrototiposDto", "getDias", params);
+					lote.setFechaTermino(addWorkingDays(lote.getFechaInicio(), lote.getDiasConstruccion().intValue(), diasHabiles));
+				} // else
+				//lote.getFechaInicio().
+			} // if
+    } // try
+    catch (Exception e) {
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+			Methods.clean(params);
+			Methods.clean(diasHabiles);
+		} // finally		
+	} // doCalculateFechaDiasEditado
+	
   @Override
   public Class toHbmClass() {
     return TcKeetProyectosDto.class;

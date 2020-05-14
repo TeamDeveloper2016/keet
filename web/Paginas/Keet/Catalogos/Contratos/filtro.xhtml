@@ -159,7 +159,7 @@
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{keetCatalogosContratosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{keetCatalogosContratosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					            
+            <p:menuitem id="modificar" action="#{keetCatalogosContratosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|3|4|5|6|', keetCatalogosContratosFiltro.attrs.seleccionado.idContratoEstatus)}"/>					            
 						<p:separator/>
             <p:menuitem id="importar" action="#{keetCatalogosContratosFiltro.doAccion('SUBIR')}" icon="fa fa-file-o" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="generadores" action="#{keetCatalogosContratosFiltro.doAccion('PROCESAR')}" icon="fa fa-file-pdf-o" ajax="false" value="Generadores" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
