@@ -212,7 +212,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			if(!this.lotes.isEmpty()) { 
 			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
 				this.lotes.add(0, this.toLoteDefault());
-				toEstatusManzanaLote();
+				this.toEstatusManzanaLote();
 			} //
 			this.attrs.put("persona", figura.toLong("tipo").equals(1L));
 			this.attrs.put("proveedor", figura.toLong("tipo").equals(2L));
@@ -239,6 +239,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		regresar.put("diasConstruccion", new Value("diasConstruccion", "-"));
 		regresar.put("contratistas", new Value("contratistas", ""));
 		regresar.put("orden", new Value("orden", ""));
+		regresar.put("latitud", new Value("latitud", 21.890563));
+		regresar.put("longitud", new Value("longitud", -102.252030));
 		regresar.put("ordenContrato", new Value("ordenContrato", ""));
 		regresar.put("claveContrato", new Value("claveContrato", ""));
 		return regresar;
