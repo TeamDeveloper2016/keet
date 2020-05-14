@@ -29,7 +29,8 @@ import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
-	private static final Log LOG= LogFactory.getLog(Transaccion.class);
+	private static final Log LOG       = LogFactory.getLog(Transaccion.class);
+	private static final Long CANCELADO= 4L;
 	private Long idFigura;
 	private Long tipo;	
 	private Long idEstacion;
@@ -192,21 +193,22 @@ public class Transaccion extends IBaseTnx {
 		Long regresar= -1L;
 		TcKeetContratosDestajosContratistasDto dto= null;
 		TcKeetEstacionesDto estacion= null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= null;		
 		try {
 			params= new HashMap<>();
 			params.put("idEstacion", this.idEstacion);
 			params.put("idContratoLoteContratista", this.idFigura);
+			params.put("idEstacionEstatus", CANCELADO);
 			dto= (TcKeetContratosDestajosContratistasDto) DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDestajosContratistasDto.class, "TcKeetContratosDestajosContratistasDto", "evidenciaDestajo", params);					
-			regresar= dto.getKey();
+			regresar= dto.getKey();			
 			if(processRechazosContratistas(sesion, idUsuario, regresar)){
 				estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.idEstacion);
 				dto.setPorcentaje(dto.getPorcentaje() - this.factorAcumulado);
 				dto.setCosto(dto.getCosto() - ((estacion.getCosto() * this.factorAcumulado) / 100));
-				dto.setIdEstacionEstatus(toIdEstacionEstatus(estacion, dto.getCosto()));
+				dto.setIdEstacionEstatus(CANCELADO);
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 					params.clear();
-					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
+					params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, dto.getCosto()));
 					params.put("cargo".concat(dto.getSemana().toString()), ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) - dto.getCosto());
 					DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.idEstacion, params);						
 				} // if				
@@ -227,16 +229,17 @@ public class Transaccion extends IBaseTnx {
 			params= new HashMap<>();
 			params.put("idEstacion", this.idEstacion);
 			params.put("idContratoLoteProveedor", this.idFigura);
+			params.put("idEstacionEstatus", CANCELADO);
 			dto= (TcKeetContratosDestajosProveedoresDto) DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDestajosProveedoresDto.class, "TcKeetContratosDestajosProveedoresDto", "evidenciaDestajo", params);					
 			regresar= dto.getKey();
 			if(processRechazosSubContratistas(sesion, idUsuario, regresar)){
 				estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.idEstacion);
 				dto.setPorcentaje(dto.getPorcentaje() - this.factorAcumulado);
 				dto.setCosto(dto.getCosto() - ((estacion.getCosto() * this.factorAcumulado) / 100));
-				dto.setIdEstacionEstatus(toIdEstacionEstatus(estacion, dto.getCosto()));
+				dto.setIdEstacionEstatus(CANCELADO);
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 					params= new HashMap<>();
-					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
+					params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, dto.getCosto()));
 					params.put("cargo".concat(dto.getSemana().toString()), ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) - dto.getCosto());
 					DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.idEstacion, params);
 				} // if
@@ -319,10 +322,7 @@ public class Transaccion extends IBaseTnx {
 				dto.setLongitud(punto.getLongitud());
 				dto.setDistancia(punto.getDistancia());
 				DaoFactory.getInstance().insert(sesion, dto);
-				this.factorAcumulado= this.factorAcumulado + puntoRevision.toDouble("factor");
-				params= new HashMap<>();
-				params.put("idContratoDestajoContratista", idContratoDestajo);
-				params.put("idPuntoPaquete", puntoRevision.getKey());
+				this.factorAcumulado= this.factorAcumulado + puntoRevision.toDouble("factor");				
 				DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetContratosPuntosContratistasDto", "rechazo", params);
 			} // for
 		} // try
