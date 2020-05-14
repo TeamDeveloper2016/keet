@@ -86,22 +86,18 @@
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
-              <div class="lg-pantalla">
-                <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                  <p:menuitem value="Agregar" action="#{manticComprasRequisicionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-                  <p:separator/>
-                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:separator/>
-                  <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                </p:menuButton>
-              </div>  
-              <div class="xs-pantalla">              
-                <p:commandButton  value="Agregar" action="#{manticComprasRequisicionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
-              </div>  
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem value="Agregar" action="#{manticComprasRequisicionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+								<p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" title="Agregar" action="#{manticComprasRequisicionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
             </f:facet>	            
             <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.empresa}">
               <f:facet name="header">

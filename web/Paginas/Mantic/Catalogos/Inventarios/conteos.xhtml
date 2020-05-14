@@ -141,16 +141,12 @@
 							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosInventariosConteos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosInventariosConteos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosInventariosConteos.lazyModel.rowCount gt manticCatalogosInventariosConteos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" styleClass="filas">
 								<f:facet name="header">
 									<p:outputLabel value="Historial del articulo" style="float:left" styleClass="janal-text-white"/>
-									<div class="lg-pantalla">
-										<p:menuButton styleClass="lg-pantalla" value="Opciones">
-											<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-											<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-										</p:menuButton>
-									</div>  
-									<div class="xs-pantalla">              
+									<p:menuButton styleClass="lg-pantalla" value="Opciones">
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-									</div>  
+									</p:menuButton>
+									<p:menuitem styleClass="xs-pantalla" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem styleClass="xs-pantalla" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</f:facet>	            
 								<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.ejercicio}">
 									<f:facet name="header">
