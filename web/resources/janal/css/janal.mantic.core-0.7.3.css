@@ -419,7 +419,7 @@ div.ui-panelgrid-content {
   }
   .janal-logo-mini {width: 85px;}
   .janal-grid-row {}
-  .xs-pantalla{display:block;}
+  .xs-pantalla{display:inline;}
   .lg-pantalla{display: none;}
   .titulo-proyecto{margin-bottom: 0px; margin-top: 0px; display:none !important;}
   .titulo-siglas{margin-bottom: 0px; margin-top: 0px; display:block !important;}
@@ -477,7 +477,7 @@ div.ui-panelgrid-content {
     margin: -10px;
   }
   .janal-grid-row {}
-  .xs-pantalla{display:block;}
+  .xs-pantalla{display:inline;}
   .lg-pantalla{display: none;}
   .janal-header-acronym {font-size: 22px;letter-spacing:.3em}
   .margin-fecha {padding-left: 0px;}

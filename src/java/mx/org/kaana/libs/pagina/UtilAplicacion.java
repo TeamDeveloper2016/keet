@@ -1,7 +1,7 @@
 package mx.org.kaana.libs.pagina;
 
-import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
@@ -10,6 +10,9 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -49,7 +52,7 @@ public class UtilAplicacion {
   private static final String STYLE_SHEET = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{0}/javax.faces.resource/css/{1}.jsf?ln={2}\">";
 
   private static final String LESS  = "janal.mantic.less.min-2.5.0.js";
-  private static final String CSS   = "janal.mantic.core-0.7.2.css";
+  private static final String CSS   = "janal.mantic.core-0.7.3.css";
   private static final String CORE  = "jquery.janal.core-3.5.0.js";
   private static final String VENTAS= "jquery.janal.ventas.core-1.0.7.js";
 	private static final String TICKET= "jquery.janal.ticket.core-0.1.7.js";
@@ -139,46 +142,73 @@ public class UtilAplicacion {
     }	// for
   }
 
+	private void addCellText(PdfPTable table, String text, int align, int colspan, Font font) {
+		// create a new cell with the specified Text and Font
+		PdfPCell cell=new PdfPCell(new Phrase(text.trim(), font));
+		cell.setBorder(Rectangle.NO_BORDER);
+    //cell.setBackgroundColor(new Color(255,255,45));
+		// set the cell alignment
+		cell.setHorizontalAlignment(align);
+		// set the cell column span in case you want to merge two or more cells
+		cell.setColspan(colspan);
+		// in case there is no text and you wan to create an empty row
+		if (text.trim().equalsIgnoreCase("")) {
+			cell.setMinimumHeight(10f);
+		}
+		// add the call to the table
+		table.addCell(cell);
+	}
+		
+	private void addCellImage(PdfPTable table, Image image, int align, int colspan, Font font) {
+		// create a new cell with the specified Text and Font
+		PdfPCell cell=new PdfPCell(image);
+		cell.setBorder(Rectangle.NO_BORDER);
+    //cell.setBackgroundColor(new Color(255,255,45));
+		// set the cell alignment
+		cell.setHorizontalAlignment(align);
+		// set the cell column span in case you want to merge two or more cells
+		cell.setColspan(colspan);
+		// in case there is no text and you wan to create an empty row
+		table.addCell(cell);
+	}
+		
   public void doPreProcessPdf(Object document) {
-    Document pdf;
-    Image logoKaajol;
     ServletContext servletContext;
-    String rutaLogoKajool;
-    Chunk kajool;
-    String hora;
-    String version;
-    BaseFont font;
-    Paragraph parrafoEncabezado;
-    HeaderFooter header;
-    Paragraph parrafoPieDePagina;
-    HeaderFooter footer;
     try {
-      font = BaseFont.createFont(BaseFont.HELVETICA_BOLD, "Cp1252", false);
-      servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-      rutaLogoKajool = servletContext.getRealPath("").concat(Constantes.RUTA_IMAGENES).concat("logo.png");
-      logoKaajol = Image.getInstance(rutaLogoKajool);
-      logoKaajol.scalePercent(50);
-      kajool = new Chunk(logoKaajol, 0, -15);
-      parrafoEncabezado = new Paragraph();
-      parrafoEncabezado.add(new Phrase(Cadena.letraCapital(Constantes.NOMBRE_DE_APLICACION), new Font(font)));
-      parrafoEncabezado.add(kajool);
-      parrafoEncabezado.setAlignment(Paragraph.ALIGN_CENTER);
-      header = new HeaderFooter(parrafoEncabezado, false);
+      Font font10   = new Font(BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false), 10F);
+      Font font12   = new Font(BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false), 12F);
+      servletContext= (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+      Image logo = Image.getInstance(servletContext.getRealPath("").concat(Constantes.RUTA_IMAGENES).concat("logo.png"));
+      logo.scalePercent(5);
+      PdfPTable table = new PdfPTable(1);
+			table.getDefaultCell().setBorder(0);
+			table.setWidthPercentage(95f);
+      this.addCellImage(table, logo, Element.ALIGN_LEFT, 1, font10);			
+      
+			Paragraph paragraph = new Paragraph();
+      paragraph.add(table);
+      paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+      HeaderFooter header = new HeaderFooter(paragraph, false);
       header.setBorder(Rectangle.NO_BORDER);
       header.setAlignment(HeaderFooter.ALIGN_CENTER);
-      parrafoPieDePagina = new Paragraph();
-      hora = Fecha.formatear(Fecha.FECHA_HORA_CORTA, Calendar.getInstance().getTime());
-      version = Configuracion.getInstance().isEtapaProduccion() ? getVersionAplicacion() : getVersionAplicacion().concat(" - ").concat(getServidor());
-      parrafoPieDePagina.add(new Phrase(hora.concat("          ").concat(version), new Font(font)));
-      parrafoPieDePagina.setAlignment(Phrase.ALIGN_CENTER);
-      footer = new HeaderFooter(parrafoPieDePagina, true);
+      table = new PdfPTable(3);
+			table.getDefaultCell().setBorder(0);
+			table.setWidthPercentage(95f);
+      this.addCellText(table, Fecha.formatear(Fecha.FECHA_HORA, Calendar.getInstance().getTime()), Element.ALIGN_LEFT, 1, font10);			
+      this.addCellText(table, this.getVersionAplicacion(), Element.ALIGN_CENTER, 1, font10);			
+      this.addCellText(table, this.getServidor(), Element.ALIGN_RIGHT, 1, font10);			
+      paragraph = new Paragraph();
+			paragraph.add(table);
+      paragraph.setAlignment(Phrase.ALIGN_CENTER);
+      HeaderFooter footer = new HeaderFooter(paragraph, true);
       footer.setAlignment(HeaderFooter.ALIGN_CENTER);
       footer.setBorder(Rectangle.NO_BORDER);
-      pdf = (Document) document;
+			footer.setBottom(10);
+      Document pdf= (Document) document;
       pdf.setPageSize(PageSize.LETTER);
       pdf.setHeader(header);
       pdf.setFooter(footer);
-      pdf.setMargins(-40, -40, 50, 20);
+      pdf.setMargins(10, 10, 50, 50);
       pdf.open();
     } // try
     catch (Exception e) {
