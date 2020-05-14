@@ -220,19 +220,13 @@
 						<p:tab title="Costo actual">
 							<p:dataTable lazy="true" id="catalogo" widgetVar="kajoolTable" var="filtro" value="#{manticInventariosDevolucionesAccion.lazyArticulos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticInventariosDevolucionesAccion.lazyArticulos.rowCount gt manticInventariosDevolucionesAccion.lazyArticulos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<f:facet name="header" >
-									<div style="float: left; font-weight: normal !important;">
-										<h:outputText value="Costo(s) actuales de los articulos relacionados"/>
-									</div>
-									<div class="lg-pantalla">
-										<p:menuButton styleClass="lg-pantalla" value="Opciones">
-											<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'catalogo')" oncomplete="janal.desbloquear()"/>
-											<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'catalogo')" oncomplete="janal.desbloquear()"/>
-										</p:menuButton>
-									</div>  
-									<div class="xs-pantalla">              
+									<h:outputText value="Costo(s) actuales de los articulos relacionados" style="float: left; font-weight: normal !important;"/>
+									<p:menuButton styleClass="lg-pantalla" value="Opciones">
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'catalogo')" oncomplete="janal.desbloquear()"/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'catalogo')" oncomplete="janal.desbloquear()"/>
-									</div>  
+									</p:menuButton>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'catalogo')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'catalogo')" oncomplete="janal.desbloquear()"/>
 								</f:facet>	            
 								<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.propio}">
 									<f:facet name="header">
@@ -290,19 +284,13 @@
 						<p:tab title="Costo anterior">
 							<p:dataTable lazy="true" id="bitacora" widgetVar="kajoolTable" var="filtro" value="#{manticInventariosDevolucionesAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticInventariosDevolucionesAccion.lazyModel.rowCount gt manticInventariosDevolucionesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<f:facet name="header" >
-									<div style="float: left; font-weight: normal !important;">
-										<h:outputText value="Relación de articulos de la nota de credito"/>
-									</div>
-									<div class="lg-pantalla">
-										<p:menuButton styleClass="lg-pantalla" value="Opciones">
-											<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'bitacora')" oncomplete="janal.desbloquear()"/>
-											<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'bitacora')" oncomplete="janal.desbloquear()"/>
-										</p:menuButton>
-									</div>  
-									<div class="xs-pantalla">              
+									<h:outputText value="Relación de articulos de la nota de credito" style="float: left; font-weight: normal !important;"/>
+									<p:menuButton styleClass="lg-pantalla" value="Opciones">
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'bitacora')" oncomplete="janal.desbloquear()"/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'bitacora')" oncomplete="janal.desbloquear()"/>
-									</div>  
+									</p:menuButton>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'bitacora')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'bitacora')" oncomplete="janal.desbloquear()"/>
 								</f:facet>	            
 								<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
 									<f:facet name="header">

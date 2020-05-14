@@ -138,16 +138,12 @@
 								<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="@this tabla" skipChildren="false"/>
 								<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 								<f:facet name="header" >
-									<div class="lg-pantalla">
-										<p:menuButton styleClass="lg-pantalla" value="Opciones">
-											<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-											<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-										</p:menuButton>
-									</div>  
-									<div class="xs-pantalla">              
-										<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-										<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-									</div>  
+									<p:menuButton styleClass="lg-pantalla" value="Opciones">
+										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									</p:menuButton>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</f:facet>	            
 								<p:column class="MarAuto Responsive janal-wid-17" sortBy="#{row.nombreEmpresa}">
 									<f:facet name="header">
@@ -247,16 +243,12 @@
 									<div style="float: left;  text-align: left;">
 										<h:outputText value="Listado de tickets que han sido seleccionados"/>
 									</div>
-									<div class="lg-pantalla">
-										<p:menuButton styleClass="lg-pantalla" value="Opciones">
-											<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'listado')" oncomplete="janal.desbloquear()"/>
-											<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'listado')" oncomplete="janal.desbloquear()"/>
-										</p:menuButton>
-									</div>  
-									<div class="xs-pantalla">              
-										<p:menuitem icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'listado')" oncomplete="janal.desbloquear()"/>
-										<p:menuitem icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'listado')" oncomplete="janal.desbloquear()"/>
-									</div>  
+									<p:menuButton styleClass="lg-pantalla" value="Opciones">
+										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'listado')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'listado')" oncomplete="janal.desbloquear()"/>
+									</p:menuButton>
+									<p:menuitem styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'listado')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'listado')" oncomplete="janal.desbloquear()"/>
 								</f:facet>	            
 								<p:column class="MarAuto Responsive janal-wid-3">
 									<f:facet name="header">

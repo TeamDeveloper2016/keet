@@ -92,26 +92,22 @@
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
-              <div class="lg-pantalla">
-                <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                  <p:menuitem value="Agregar directa" action="#{manticInventariosCreditosFiltro.doAccion('AGREGAR', 3)}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
-                  <p:separator/>
-                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:separator/>
-                  <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doReporte('NOTAS_CREDITO')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                  <p:separator/>
-                  <p:menuitem icon="fa fa-download" value="Descargar XML/PDF" onstart="return janal.bloquear()" process="@this" action="facturas?faces-redirect=true" oncomplete="janal.desbloquear();" immediate="true"/>
-                </p:menuButton>
-              </div>  
-              <div class="xs-pantalla">              
-                <p:commandButton title="Agregar" action="#{manticInventariosCreditosFiltro.doAccion('AGREGAR', 2)}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
-                <p:commandButton title="Agregar proveedor" action="#{manticInventariosCreditosFiltro.doAccion('AGREGAR', 3)}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
-                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doReporte('NOTAS_CREDITO')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                <p:commandButton icon="fa fa-download" title="Descargar XML/PDF" onstart="return janal.bloquear()" process="@this" action="facturas?faces-redirect=true" oncomplete="janal.desbloquear();" immediate="true"/>
-              </div>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem value="Agregar directa" action="#{manticInventariosCreditosFiltro.doAccion('AGREGAR', 3)}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
+								<p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doReporte('NOTAS_CREDITO')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-download" value="Descargar XML/PDF" onstart="return janal.bloquear()" process="@this" action="facturas?faces-redirect=true" oncomplete="janal.desbloquear();" immediate="true"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" title="Agregar" action="#{manticInventariosCreditosFiltro.doAccion('AGREGAR', 2)}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" title="Agregar proveedor" action="#{manticInventariosCreditosFiltro.doAccion('AGREGAR', 3)}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doReporte('NOTAS_CREDITO')}" oncomplete="janal.desbloquear();" update="descargar"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-download" title="Descargar XML/PDF" onstart="return janal.bloquear()" process="@this" action="facturas?faces-redirect=true" oncomplete="janal.desbloquear();" immediate="true"/>
             </f:facet>	            
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
               <f:facet name="header">
