@@ -44,27 +44,19 @@
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" styleClass="refrescar" value="#{manticCatalogosAlmacenesTransferenciasDiferencias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosAlmacenesTransferenciasDiferencias.lazyModel.rowCount gt manticCatalogosAlmacenesTransferenciasDiferencias.lazyModel.pageSize}" selection="#{manticCatalogosAlmacenesTransferenciasDiferencias.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosAlmacenesTransferenciasDiferencias.doOrdenColor(row)}">
 						<p:ajax event="rowSelect" listener="#{manticCatalogosAlmacenesTransferenciasDiferencias.doRowSelectEvent}" update="notas tabla" process="@this tabla"  skipChildren="false"/>
             <f:facet name="header" >
-							<div style="float: left;  text-align: left;">
-							  <h:outputText value="Detalle de los articulos de la transferencia"/>
-							</div>
-              <div class="lg-pantalla">
-                <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:separator/>
-                  <p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasDiferencias.doReporte('ORDEN_DETALLE_DIF_DIF')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                  <p:separator/>
-                  <p:menuitem icon="fa fa-rotate-right" value="Recargar orden" actionListener="#{manticCatalogosAlmacenesTransferenciasDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                </p:menuButton>
-              </div>  
-              <div class="xs-pantalla">              
-                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+						  <h:outputText value="Detalle de los articulos de la transferencia" style="float: left;  text-align: left;"/>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:separator/>
-                <p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasDiferencias.doReporte('ORDEN_DETALLE_DIF_DIF')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                <p:separator/>
-                <p:menuitem icon="fa fa-rotate-right" title="Recargar la orden de compra" actionListener="#{manticCatalogosAlmacenesTransferenciasDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-              </div>  
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasDiferencias.doReporte('ORDEN_DETALLE_DIF_DIF')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-rotate-right" value="Recargar orden" actionListener="#{manticCatalogosAlmacenesTransferenciasDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasDiferencias.doReporte('ORDEN_DETALLE_DIF_DIF')}" oncomplete="janal.desbloquear();" update="descargar"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-rotate-right" title="Recargar la orden de compra" actionListener="#{manticCatalogosAlmacenesTransferenciasDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
             </f:facet>	            
             <p:column headerText="Fila" selectionMode="single" style="width:38px; text-align:center"/>
 						<p:column class="MarAuto Responsive janal-wid-3">
@@ -127,19 +119,13 @@
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections()" process="notas" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this notas" skipChildren="false"/>
             <f:facet name="header" >
-							<div style="float: left;  text-align: left;">
-  							<h:outputText value="Detalle de los articulos que fueron recibidos en el almacen"/>
-							</div>	
-              <div class="lg-pantalla">
-                <p:menuButton styleClass="lg-pantalla" value="Opciones">
-                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
-                </p:menuButton>
-              </div>  
-              <div class="xs-pantalla">              
-                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
-              </div>  
+ 							<h:outputText value="Detalle de los articulos que fueron recibidos en el almacen" style="float: left;  text-align: left;"/>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
             </f:facet>	            
             <p:column class="MarAuto Responsive janal-wid-3">
 							<f:facet name="header">

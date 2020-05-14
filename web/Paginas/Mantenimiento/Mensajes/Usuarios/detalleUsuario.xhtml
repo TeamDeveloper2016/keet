@@ -27,7 +27,7 @@
   <ui:define name="contenido">
     <p:dataTable id="tabla" var="row" value="#{kajoolMensajesUsuariosDetalleUsuario.lazyModel}" selection="#{kajoolMensajesUsuariosDetalleUsuario.attrs.seleccion}" paginator="#{kajoolMensajesUsuariosDetalleUsuario.lazyModel.rowCount gt kajoolMensajesUsuariosDetalleUsuario.lazyModel.pageSize}" rows="#{Constantes.REGISTROS_POR_PAGINA}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single"  lazy="true" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
       <f:facet name="header">
-        <p:menuButton styleClass="lg-pantalla" value="Opciones">
+        <p:menuButton value="Opciones">
           <p:menuitem id="agregar" value="Agregar" icon="fa fa-plus" title="Agregar" ajax="false" action="#{kajoolMensajesUsuariosDetalleUsuario.doAgregar}"/>
         </p:menuButton>				
       </f:facet>
