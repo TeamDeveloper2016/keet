@@ -85,6 +85,7 @@
 							</h:panelGrid>
 							<f:facet name="footer">
 								<div class="janal-column-right">
+									<span style="display: #{row.iconEstatus eq '' ? '' : 'none'}">Importar imagenes ...</span>									
 									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}"/>									
 								</div>	
 							</f:facet>
