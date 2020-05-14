@@ -179,11 +179,13 @@ public class UtilAplicacion {
       Font font12   = new Font(BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false), 12F);
       servletContext= (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
       Image logo = Image.getInstance(servletContext.getRealPath("").concat(Constantes.RUTA_IMAGENES).concat("logo.png"));
-      logo.scalePercent(5);
-      PdfPTable table = new PdfPTable(1);
+      logo.scalePercent(8);
+      PdfPTable table = new PdfPTable(3);
 			table.getDefaultCell().setBorder(0);
 			table.setWidthPercentage(95f);
       this.addCellImage(table, logo, Element.ALIGN_LEFT, 1, font10);			
+      this.addCellText(table, "", Element.ALIGN_CENTER, 1, font10);			
+      this.addCellText(table, this.getVersionAplicacion(), Element.ALIGN_RIGHT, 1, font10);			
       
 			Paragraph paragraph = new Paragraph();
       paragraph.add(table);
