@@ -107,7 +107,8 @@ public class Transaccion extends IBaseTnx {
 							this.procesarPersonas(sesion, "todos");
 							break;
 						case 2:  // ENPROCESO
-							this.procesarPersonas(sesion, "algunos");
+							// this.procesarPersonas(sesion, "algunos");
+							this.reprocesarPersonas(sesion);
 							break;
 						case 3:  // CALCULADA
 							this.reprocesarPersonas(sesion);
@@ -315,8 +316,8 @@ public class Transaccion extends IBaseTnx {
 				} // for
 				this.toTakeOutPersonas(sesion);
 				this.reprocesarProveedores(sesion, monitoreo);
-				if(count== 1 && this.nomina.getIdNominaEstatus()< ENominaEstatus.CALCULADA.getIdKey())
-					this.bitacora(sesion, ENominaEstatus.ENPROCESO.getIdKey());
+				if(count== 1 && this.nomina.getIdNominaEstatus()< ENominaEstatus.ENPROCESO.getIdKey())
+					this.bitacora(sesion, ENominaEstatus.CALCULADA.getIdKey());
 			} // if
 		} // try
 		finally {

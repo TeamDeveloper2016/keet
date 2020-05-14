@@ -134,7 +134,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase())); 
 			JsfBase.setFlashAttribute("idNomina",  eaccion.equals(EAccion.AGREGAR)? -1L: ((Entity)this.attrs.get("seleccionado")).getKey());
-      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nomina/filtro");
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nominas/filtro");
 			switch (eaccion){
 				case AGREGAR:
 				  regresar= "accion".concat(Constantes.REDIRECIONAR);
