@@ -8,7 +8,6 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrestamosBitacoraDto;
@@ -61,7 +60,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					regresar= DaoFactory.getInstance().insert(sesion, keetPrestamosPagosDto)>= 1L;
 					this.prestamosPagados= 1;
 					if(this.prestamosPagosDto.getIdAfectaNomina().equals(1L)){
-						llenarIncidente(sesion, this.prestamosPagosDto);
+						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), this.prestamosPagosDto);
 						super.ejecutar(sesion, EAccion.AGREGAR);
 					} // if
 					break;
@@ -78,7 +77,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						regresar= DaoFactory.getInstance().insert(sesion, keetPrestamosPagosDto)>= 1L;
 						this.prestamosPagados++;
 						if(keetPrestamosPagosDto.getIdAfectaNomina().equals(1L)){
-							llenarIncidente(sesion, keetPrestamosPagosDto);
+							this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
 							super.ejecutar(sesion, EAccion.AGREGAR);
 						} // if
 						if(keetPrestamosPagosDto.getCambio()==0D)
@@ -149,14 +148,14 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	}
 	
-		private void llenarIncidente(Session sesion, TcKeetPrestamosPagosDto prestamoPagoDto) throws Exception{
+	private void loadIncidente(Session sesion, Long idEmpresaPersona, TcKeetPrestamosPagosDto prestamoPagoDto) throws Exception{
 		this.getIncidente().setCosto(prestamoPagoDto.getAbono());
-		this.getIncidente().setTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.name());
-		this.getIncidente().setIdTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.getKey());
+		this.getIncidente().setTipoIncidente(ETiposIncidentes.ABONO_NOMINA.name());
+		this.getIncidente().setIdTipoIncidente(ETiposIncidentes.ABONO_NOMINA.getKey());
 		this.getIncidente().setVigenciaInicio(LocalDate.now());
 		this.getIncidente().setVigenciaFin(LocalDate.now());
-		this.getIncidente().setIdIncidenteEstatus(EEstatusIncidentes.APLICADA.getIdEstatusInicidente());
-		this.getIncidente().setIdEmpresaPersona(DaoFactory.getInstance().toField(sesion, "VistaPrestamosDto", "byIdPrestamo", prestamoPagoDto.toMap(), "idEmpresaPersona").getToLong());
+		this.getIncidente().setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
+		this.getIncidente().setIdEmpresaPersona(idEmpresaPersona);
 	}
 
 	

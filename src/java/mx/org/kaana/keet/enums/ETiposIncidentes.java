@@ -23,7 +23,8 @@ public enum ETiposIncidentes {
 	DIA_FESTIVO      ("DIA FESTIVO"     , "incidencia-verde"),
 	EXEDENTE_NOMINA  ("EXCEDENTE NOMINA", "incidencia-amarilla"),
 	DIA_TRIPLE       ("DIA TRIPLE"      , "incidencia-rojo"),
-	PRESTAMO_NOMINA  ("PRESTAMO NOMINA" , "incidencia-rojo");
+	PRESTAMO_NOMINA  ("PRESTAMO NOMINA" , "incidencia-rojo"),
+	ABONO_NOMINA     ("ABONO PRESTAMO"  , "incidencia-rojo");
 	
 	private static final Map<Long, ETiposIncidentes> lookup= new HashMap<>();		
 	private String nombre;	
@@ -40,7 +41,7 @@ public enum ETiposIncidentes {
 	}	
 	
 	public Long getKey(){
-		return this.ordinal() + 1L;
+		return this.ordinal()+ 1L;
 	} // getKey
 
 	public String getNombre() {

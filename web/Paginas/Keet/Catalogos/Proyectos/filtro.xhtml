@@ -130,6 +130,12 @@
               </f:facet>
               <h:outputText value="#{row['clave']}"/>
             </p:column>														
+            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.desarrollo}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo" />
+              </f:facet>
+              <h:outputText value="#{row['desarrollo']}"/>
+            </p:column>
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}">
               <f:facet name="header">
                 <h:outputText value="Etapa"/>
@@ -142,12 +148,6 @@
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>	      
-            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.desarrollo}">
-              <f:facet name="header">
-                <h:outputText value="Desarrollo" />
-              </f:facet>
-              <h:outputText value="#{row['desarrollo']}"/>
-            </p:column>
             <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.tipoObra}">
               <f:facet name="header">
                 <h:outputText value="Tipo obra" />

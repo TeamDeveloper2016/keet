@@ -3,11 +3,9 @@ package mx.org.kaana.keet.prestamos.reglas;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.prestamos.beans.Documento;
 import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
@@ -30,8 +28,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		super(new Incidente());
 		this.prestamo = prestamo;
 	}
-	
-	
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
@@ -59,7 +55,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					bitacoraDto= new TcKeetPrestamosBitacoraDto("", this.prestamo.getPrestamo().getKey(), -1L, idUsuario, this.prestamo.getPrestamo().getIdPrestamoEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
 					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)){
-						llenarIncidente(sesion);
+						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona());
 						super.ejecutar(sesion, EAccion.AGREGAR);
 					} // if
 					break;
@@ -73,7 +69,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					bitacoraDto= new TcKeetPrestamosBitacoraDto("", this.prestamo.getPrestamo().getKey(), -1L, idUsuario, this.prestamo.getPrestamo().getIdPrestamoEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
 					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)){
-						llenarIncidente(sesion);
+						loadIncidente(sesion, deudoresDto.getIdEmpresaPersona());
 						super.ejecutar(sesion, EAccion.AGREGAR);
 					} // if
 					break;
@@ -112,14 +108,14 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	} // toSiguiente
 
-	private void llenarIncidente(Session sesion) throws Exception{
+	private void loadIncidente(Session sesion, Long idEmpresaPersona) throws Exception {
 		this.getIncidente().setCosto(this.prestamo.getPrestamo().getImporte());
 		this.getIncidente().setTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.name());
 		this.getIncidente().setIdTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.getKey());
 		this.getIncidente().setVigenciaInicio(LocalDate.now());
 		this.getIncidente().setVigenciaFin(LocalDate.now());
-		this.getIncidente().setIdIncidenteEstatus(EEstatusIncidentes.APLICADA.getIdEstatusInicidente());
-		this.getIncidente().setIdEmpresaPersona(((TcKeetDeudoresDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.prestamo.getPrestamo().getIdDeudor())).getIdEmpresaPersona());
+		this.getIncidente().setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
+		this.getIncidente().setIdEmpresaPersona(idEmpresaPersona);
 	}
 	
 
