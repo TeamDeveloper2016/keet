@@ -2827,27 +2827,7 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
 				where
 					tc_keet_puntos_grupos.id_departamento={idDepartamento} and tc_keet_puntos_paquetes.id_punto_grupo={idPuntoGrupo}
-				and 
-					tc_keet_puntos_paquetes.id_punto_paquete not in (
-						select
-							id_punto_paquete
-						from
-							tc_keet_contratos_destajos_proveedores
-						inner join
-							tc_keet_contratos_puntos_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor = tc_keet_contratos_puntos_proveedores.id_contrato_destajo_proveedor
-						where
-							tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion}
-						union 
-						select 
-							id_punto_paquete
-						from 
-							tc_keet_contratos_destajos_contratistas
-						inner join
-							tc_keet_contratos_puntos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista
-						where
-							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}   
-					)
-				and 
+				and 					 
 					tc_keet_puntos_paquetes.id_punto_paquete in (
 						select
 							id_punto_paquete
