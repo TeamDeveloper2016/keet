@@ -82,22 +82,18 @@
 									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 								</h:outputLink>
 							</div>	
-							<div class="lg-pantalla">
-								<p:menuButton styleClass="lg-pantalla" value="Opciones">
-									<p:menuitem icon="fa fa-plus" title="Agregar" value="Agregar" action="#{keetEstacionesContrato.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
-									<p:separator/>
-									<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:separator/>
-									<p:menuitem icon="fa fa-cloud-upload" title="Importar estaciones" value="Importar" action="#{keetEstacionesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
-								</p:menuButton>
-							</div>  
-							<div class="xs-pantalla">              
-								<p:commandButton icon="fa fa-plus" title="Agregar" action="#{keetEstacionesContrato.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
-								<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetEstacionesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
-							</div>  
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-plus" title="Agregar" value="Agregar" action="#{keetEstacionesContrato.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+								<p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-cloud-upload" title="Importar estaciones" value="Importar" action="#{keetEstacionesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar" action="#{keetEstacionesContrato.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetEstacionesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
 						</f:facet>												
 						<p:column class="MarAuto Responsive janal-wid-8" >
 							<f:facet name="header">

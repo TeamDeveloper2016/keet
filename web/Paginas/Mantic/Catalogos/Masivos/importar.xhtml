@@ -120,7 +120,7 @@
 							  mode="advanced" process="@form" update="contenedorGrupos:tuplas @(.importado)" label="Selecciona XLS" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
 								multiple="false" allowTypes="#{manticCatalogosMasivosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosMasivosImportar.attrs.formatos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
-							<p:inputText id="xls" value="#{manticCatalogosMasivosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
+							<p:inputText value="#{manticCatalogosMasivosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="XLS importado: #{manticCatalogosMasivosImportar.xls.ruta}#{manticCatalogosMasivosImportar.xls.name}" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" style="#{(empty manticCatalogosMasivosImportar.xls)? 'display: none': ''}"/>
 							<br/>
               <p:outputLabel id="tuplas" value="#{manticCatalogosMasivosImportar.masivo.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente" style="display: none"/>

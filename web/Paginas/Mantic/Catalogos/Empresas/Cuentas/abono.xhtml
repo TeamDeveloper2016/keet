@@ -90,16 +90,16 @@
 											<p:menuitem id="pagoIcon" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" actionListener="#{manticCatalogosEmpresasCuentasAbono.doLoadCuentas}" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosEmpresasCuentasAbono.attrs.permitirPago}" process="@this" update="dialogoPago"/>
 											<p:menuitem id="reabrirIcon" icon="fa fa-unlink" value="Reabrir cuenta" onstart="return janal.bloquear();" oncomplete="PF('dlgReapertura').show();" disabled="#{!manticCatalogosEmpresasCuentasAbono.attrs.permitirPago}" process="@this" update="dialogoReapertura"/>
 											<p:separator/>
-											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 										</p:menuButton>
 									</div>  
 									<div class="xs-pantalla">              
 										<p:menuitem id="pagos" icon="fa fa-money" title="Registrar pago" onstart="return janal.bloquear();" actionListener="#{manticCatalogosEmpresasCuentasAbono.doLoadCuentas}" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosEmpresasCuentasAbono.attrs.permitirPago}" process="@this" update="dialogoPago"/>
 										<p:menuitem id="reabrir" icon="fa fa-unlink" title="Reabrir cuenta" onstart="return janal.bloquear();" oncomplete="PF('dlgReapertura').show();" disabled="#{!manticCatalogosEmpresasCuentasAbono.attrs.permitirPago}" process="@this" update="dialogoReapertura"/>
 										<p:separator/>
-										<p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-										<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</div>  
 								</f:facet>												
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">

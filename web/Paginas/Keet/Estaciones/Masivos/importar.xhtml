@@ -112,7 +112,7 @@
 							  mode="advanced" process="@form" update="contenedorGrupos:tuplas @(.importado)" label="Selecciona XLS" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
 								multiple="false" allowTypes="#{keetEstacionesMasivosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetEstacionesMasivosImportar.attrs.formatos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
-							<p:inputText id="xls" value="#{keetEstacionesMasivosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
+							<p:inputText value="#{keetEstacionesMasivosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="XLS importado: #{keetEstacionesMasivosImportar.xls.ruta}#{keetEstacionesMasivosImportar.xls.name}" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" style="#{(empty keetEstacionesMasivosImportar.xls)? 'display: none': ''}"/>
               <p:outputLabel id="tuplas" value="#{keetEstacionesMasivosImportar.masivo.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente" style="display: none"/>
               <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt">

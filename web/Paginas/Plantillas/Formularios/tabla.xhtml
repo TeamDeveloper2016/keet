@@ -36,8 +36,8 @@
 			<p:ajax event="page" oncomplete="janal.refresh(['entero']);" />
 			<f:facet name="header">
         <p:menuButton styleClass="lg-pantalla" value="Opciones">
-					<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-					<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+					<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+					<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 				</p:menuButton>
       </f:facet>
       <p:column>

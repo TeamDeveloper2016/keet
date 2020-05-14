@@ -78,16 +78,16 @@
 									<p:separator/>
                   <p:menuitem id="prestamosPdf" icon="fa fa-file-pdf-o" value="Reporte préstamos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
                   <p:menuitem id="resumenPdf" icon="fa fa-file-pdf-o" value="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('RESUMEN_PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
                 <p:commandButton action="#{keetPrestamosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>	
                 <p:commandButton id="prestamosPdfIcon" icon="fa fa-file-pdf-o" title="Reporte préstamos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:commandButton id="resumenPdfIcon" icon="fa fa-file-pdf-o" title="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('RESUMEN_PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                <p:commandButton styleClass="xs-pantalla" id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton styleClass="xs-pantalla" id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
             <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.folio}">

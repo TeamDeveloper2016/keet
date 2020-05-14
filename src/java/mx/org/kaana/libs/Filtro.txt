@@ -31,10 +31,10 @@
     <p:dataTable lazy="true" widgetVar="kajoolTable" id="tabla" var="row" rowIndexVar="index" value="#{{backing}.lazyModel}" paginator="#{{backing}.lazyModel.rowCount gt {backing}.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" selectionMode="single" selection="#{{backing}.attrs.selected}">
       <f:facet name="header">
         <p:menuButton styleClass="lg-pantalla" value="Opciones">
-					<p:menuitem id="agregar" icon="icono-agregar" value="Agregar" action="#{{backing}.doEvento('AGREGAR')}" update="@form"/>
+					<p:menuitem icon="icono-agregar" value="Agregar" action="#{{backing}.doEvento('AGREGAR')}" update="@form"/>
 					<p:separator/>
-					<p:menuitem id="pdf" icon="icono-pdf" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear();"/>
-					<p:menuitem id="xls" icon="icono-xls" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear();"/>
+					<p:menuitem icon="icono-pdf" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear();"/>
+					<p:menuitem icon="icono-xls" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear();"/>
 				</p:menuButton>
 			</f:facet>
 {columnas}

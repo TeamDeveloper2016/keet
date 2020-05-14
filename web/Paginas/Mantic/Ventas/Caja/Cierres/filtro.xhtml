@@ -99,8 +99,8 @@
                 <p:menuButton styleClass="lg-pantalla" value="Opciones">
                   <p:menuitem value="Aperturar caja" action="#{manticVentasCajaCierresFiltro.doAperturarCaja}" icon="fa fa-plus" title="Aperturar caja" onstart="return janal.bloquear()"/>						
                   <p:separator/>
-                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
                   <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresFiltro.doReporte('CIERRES_CAJA')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
@@ -108,8 +108,8 @@
               <div class="xs-pantalla">         
                 <p:commandButton action="#{manticVentasCajaCierresFiltro.doAperturarCaja}" icon="fa fa-plus" title="Aperturar caja" onstart="return janal.bloquear()"/>						
                 <p:separator/>
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
                 <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresFiltro.doReporte('CIERRES_CAJA')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  

@@ -94,19 +94,13 @@
 					<p:spacer height="3px"/>
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolDestajo" var="row" value="#{keetCatalogosContratosDestajosFiltro.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosFiltro.attrs.destajo}" selectionMode="single" paginator="#{keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount gt keetCatalogosContratosDestajosFiltro.lazyDestajo.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosDestajosFiltro.doColorNomina(row)}" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.destajos? '': 'none'}">
 						<f:facet name="header">
-							<div style="float: left; text-align: left;">
-								<p:outputLabel id="titular" value="Destajos del (sub)contratista: [#{keetCatalogosContratosDestajosFiltro.attrs.figura.puesto}] #{keetCatalogosContratosDestajosFiltro.attrs.figura.nombreCompleto}" styleClass="janal-text-white titular"/>
-							</div>
-							<div class="lg-pantalla">
-								<p:menuButton styleClass="lg-pantalla" value="Opciones">
-									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-								</p:menuButton>
-							</div>  
-							<div class="xs-pantalla">              
-								<p:commandButton styleClass="xs-pantalla" id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton styleClass="xs-pantalla" id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							</div>  
+							<p:outputLabel id="titular" value="Destajos del (sub)contratista: [#{keetCatalogosContratosDestajosFiltro.attrs.figura.puesto}] #{keetCatalogosContratosDestajosFiltro.attrs.figura.nombreCompleto}" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 						</f:facet>												
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.nomina}">
 							<f:facet name="header">

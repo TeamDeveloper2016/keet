@@ -20,8 +20,8 @@
     <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolIndicadoresFiltro.lazyModel}" paginator="false" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="40" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolIndicadoresFiltro.attrs.selected}" reflow="true" paginatorPosition="bottom">
       <f:facet name="header">
         <p:menuButton styleClass="lg-pantalla" value="Opciones">
-					<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-          <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+					<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+          <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
         </p:menuButton>
       </f:facet>
       <p:column class="" styleClass="janal-column-center ColWid5 Responsive">

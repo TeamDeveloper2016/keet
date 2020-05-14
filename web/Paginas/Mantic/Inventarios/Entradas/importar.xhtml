@@ -144,7 +144,7 @@
 							<p:inputText id="xml" value="#{manticInventariosEntradasImportar.attrs.xml}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="XML importado: #{manticInventariosEntradasImportar.xml.ruta}#{manticInventariosEntradasImportar.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticInventariosEntradasImportar.xml)? 'display: none': ''}"/>
 							<br/>
-							<p:inputText id="pdf" value="#{manticInventariosEntradasImportar.attrs.pdf}" styleClass="importado" style="display:none"/>
+							<p:inputText value="#{manticInventariosEntradasImportar.attrs.pdf}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="PDF importado: #{manticInventariosEntradasImportar.pdf.ruta}#{manticInventariosEntradasImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento PDF" style="#{(empty manticInventariosEntradasImportar.pdf)? 'display: none': ''}"/>
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 								<p:outputLabel value="Articulos XML:"/>

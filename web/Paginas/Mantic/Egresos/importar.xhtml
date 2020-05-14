@@ -121,7 +121,7 @@
 							<p:inputText id="xml" value="#{manticEgresosImportar.attrs.xml}" styleClass="importado" style="display:none"/>							
 							<p:commandLink value="XML importado: #{manticEgresosImportar.xml.ruta}#{manticEgresosImportar.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticEgresosImportar.xml)? 'display: none': ''}"/>
 							<br/>
-							<p:inputText id="pdf" value="#{manticEgresosImportar.attrs.pdf}" styleClass="importado" style="display:none"/>
+							<p:inputText value="#{manticEgresosImportar.attrs.pdf}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="PDF importado: #{manticEgresosImportar.pdf.ruta}#{manticEgresosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento PDF" style="#{(empty manticEgresosImportar.pdf)? 'display: none': ''}"/>							
 						</p:tab>
 					</p:tabView>
