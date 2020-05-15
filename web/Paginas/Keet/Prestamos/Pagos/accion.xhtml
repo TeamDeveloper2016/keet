@@ -66,18 +66,14 @@
               </p:panelGrid>
 						</p:tab>
             <p:tab title="Pagos">
-							<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetPrestamosPagosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetPrestamosPagosAccion.attrs.seleccionado}" selectionMode="single" paginator="#{keetPrestamosPagosAccion.lazyModel.rowCount gt keetPrestamosPagosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetPrestamosPagosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetPrestamosPagosAccion.attrs.seleccionado}" selectionMode="single" paginator="#{keetPrestamosPagosAccion.lazyModel.rowCount gt keetPrestamosPagosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<f:facet name="header">
-									<div class="lg-pantalla">
-										<p:menuButton   value="Opciones">
-											<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-											<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-										</p:menuButton>
-									</div>  
-									<div class="xs-pantalla">              
-										<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-										<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-									</div>  
+									<p:menuButton styleClass="lg-pantalla" value="Opciones">
+										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									</p:menuButton>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</f:facet>												
 								<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.prestamo}">
 									<f:facet name="header">
