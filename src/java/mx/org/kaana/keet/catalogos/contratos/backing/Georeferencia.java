@@ -370,12 +370,20 @@ public class Georeferencia extends IBaseFilter implements Serializable {
     return regresar;
   } // doCancelar		
 	
-	public String doCapturaAvances(){
+	public String doCapturaAvances(Entity visitado){
 		String regresar          = null;    
 		EOpcionesResidente opcion= null;
+		Long idDepartamento      = null;
     try {
+			if(visitado.toString("puesto").equals("SUBCONTRATISTA"))
+				idDepartamento= Long.valueOf(visitado.toString("idsDepartamento").split(",")[0]);			
+			else
+				idDepartamento= Long.valueOf(visitado.toString("idsDepartamento"));			
 			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));			
+			JsfBase.setFlashAttribute("figura", new UISelectEntity(visitado));
+			JsfBase.setFlashAttribute("idDepartamento", idDepartamento);
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("opcionResidente", opcion);						
 			JsfBase.setFlashAttribute("opcionAdicional", EOpcionesResidente.GEOREFERENCIA);			
 			regresar= "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro.jsf".concat(Constantes.REDIRECIONAR);			
