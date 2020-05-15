@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Revision;
 import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
@@ -38,6 +39,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     try {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
+			this.attrs.put("claveEstacion", JsfBase.getFlashAttribute("claveEstacion"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -117,16 +119,10 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 	
 	public String doAceptar() {
     String regresar        = null;    		
-		Transaccion transaccion= null;
-		Entity figura          = null;
-		Entity seleccionado    = null;
-		Long idFigura          = -1L;
+		Transaccion transaccion= null;		
     try {						
-			if(this.selecteds.length>=1){
-				figura= (Entity) this.attrs.get("figura");
-				seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
-				idFigura= figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");
-				transaccion= new Transaccion(idFigura, figura.toLong("tipo"), ((Entity) this.attrs.get("concepto")).getKey(), this.selecteds, (String)this.attrs.get("observaciones"));
+			if(this.selecteds.length>=1){				
+				transaccion= new Transaccion(loadRevision());
 				if(transaccion.ejecutar(EAccion.REPROCESAR)){
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();
@@ -143,6 +139,31 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 		} // catch		
     return regresar;
   } // doPagina
+	
+	private Revision loadRevision(){
+		Revision regresar  = null;
+		Entity figura      = null;
+		Entity seleccionado= null;
+		Long idFigura      = -1L;
+		try {
+			regresar= new Revision();
+			figura= (Entity) this.attrs.get("figura");
+			seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
+			idFigura= figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");
+			regresar.setIdFigura(idFigura);
+			regresar.setTipo(figura.toLong("tipo"));
+			regresar.setIdEstacion(((Entity) this.attrs.get("concepto")).getKey());
+			regresar.setPuntosRevision(this.selecteds);
+			regresar.setObservaciones((String)this.attrs.get("observaciones"));			
+			regresar.setIdContratoLote(((Entity)this.attrs.get("contratoLote")).getKey());
+			regresar.setClave((String)this.attrs.get("claveEstacion"));
+			regresar.setIdDepartamento((Long)this.attrs.get("idDepartamento"));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadRevision
 	
 	public String doCancelar() {
     String regresar= null;    

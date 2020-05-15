@@ -178,6 +178,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
   } // doPagina
 	
 	private void toSetFlash(Entity seleccionado){
+		JsfBase.setFlashAttribute("claveEstacion", toClaveEstacion());									
 		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));									
 		JsfBase.setFlashAttribute("figura", this.attrs.get("figura"));									
 		JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionadoPivote"));									
