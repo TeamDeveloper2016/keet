@@ -7170,7 +7170,7 @@
         left join 
           tc_mantic_personas agentes on tr_mantic_proveedor_agente.id_agente= agentes.id_persona
         where
-          tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista=1
+          tc_mantic_proveedores.id_proveedor in ({idProveedor}) 
       </select>
       <select id="telefonos">
         select group_concat(tr_mantic_empresa_tipo_contacto.valor separator ' , ') tels from 
