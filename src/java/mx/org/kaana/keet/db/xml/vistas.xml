@@ -2818,7 +2818,10 @@
 								inner join
 									tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
 								where
-									tc_keet_estaciones.clave like '{clave}%')) contratistas
+									tc_keet_estaciones.clave like '{clave}%'
+								and 
+									id_estacion_estatus != {estatus}
+							)) contratistas
 				union
 				select 
 					proveedores.*
@@ -2870,7 +2873,10 @@
 								inner join
 									tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
 								where
-									tc_keet_estaciones.clave like '{clave}%')) proveedores) totales
+									tc_keet_estaciones.clave like '{clave}%'
+								and 
+									id_estacion_estatus != {estatus}
+							)) proveedores) totales
 			</select>
 			<select id="puntosRevision">
 				select
