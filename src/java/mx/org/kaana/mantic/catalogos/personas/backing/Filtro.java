@@ -20,6 +20,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Gestor;
@@ -129,4 +130,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
   } // doEliminar
+	
+	public String doUpload() {
+		JsfBase.setFlashAttribute("ikContratoLote", -1L);
+		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PERSONAL.getId());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Personas/filtro");
+		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
+	}
+	
 }

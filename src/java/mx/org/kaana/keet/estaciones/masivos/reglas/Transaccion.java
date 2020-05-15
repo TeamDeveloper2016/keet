@@ -337,6 +337,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			if(Objects.equals(this.idLimpiar, 1L))
 	  		DaoFactory.getInstance().deleteAll(sesion, TcKeetEstacionesDto.class, params);
   		regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "estaciones", params);
+			if(regresar!= null)
+				regresar.setCosto(0D);
 		} // try
 		finally {
 			Methods.clean(params);
@@ -410,7 +412,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					estaciones.setKeyLevel(contrato.toString("orden"), 3); // orden de contrato lote
 					concepto= this.toDeleteEstaciones(sesion, estaciones.toKey(4));
 					for(int fila= 1; concepto!= null && fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
-						concepto.setCosto(0D);
 						try {
 							if(!Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
 								// 0       1      2     3        4         5         6				  7			  8
@@ -436,15 +437,17 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									if(item!= null && !item.isEmpty()) {
 										if(count== 0 && item.toLong("nivel")!= 5L)
 											throw new RuntimeException("El archivo no comienza con una estación correcta");
+										// EL NIVEL 5 ES UNA ESTACION POR LO TANTO EL COSTO SE INICIA EN CERO
 										if(item.toLong("nivel")== 5L) {
 											if(!Objects.equals(codigoPartida, codigo)) {
 												codigoPartida= codigo;
 												codigoRubro  = "";
 												rubro        = 0;
+												costo        = 0D;
 												partida++;
 												// ESTO ACTUALIZA EL COSTO TOTAL DE LOS CONCEPTOS
 												if(parcial!= null) {
-													Methods.setValue(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
+													Methods.setValueSubClass(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
 													DaoFactory.getInstance().update(sesion, parcial);
 												} // if
 											} // if
@@ -489,7 +492,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
 										estacion.setCantidad(cantidad);
 										estacion.setCosto(costo);
-										Methods.setValue(estacion, "abono"+ semana, new Object[] {costo});
+										Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
 										if(Cadena.isVacio(inicio))
 										  estacion.setInicio(contrato.toDate("inicio"));
 										else
@@ -538,11 +541,11 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 					} // for
   				if(parcial!= null) {
-						Methods.setValue(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
+						Methods.setValueSubClass(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
 						DaoFactory.getInstance().update(sesion, parcial);
 					} // if
   				if(concepto!= null) {
-						Methods.setValue(concepto, "abono"+ semana, new Object[] {concepto.getCosto()});
+						Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {concepto.getCosto()});
   					DaoFactory.getInstance().update(sesion, concepto);
 					} // if
 				} // if
@@ -617,29 +620,45 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									if(persona!= null) {
 										// FALTA EL CODIGO NECESARIO PARA REGISTRAR EL INCIDENTE
 										if(Objects.equals(activo.toUpperCase(), "SI")) {
-											persona.setIdActivo(1L);
-											persona.setIngreso(Fecha.toLocalDate(fecha));
+											if(persona.getIdActivo()== 2L) {
+												persona.setIdActivo(1L);
+												persona.setIngreso(Fecha.toLocalDate(fecha));
+												this.toLoadIncidente(persona.getIdActivo(), persona.getIdEmpresaPersona());
+												super.ejecutar(sesion, EAccion.AGREGAR);	
+											} // if
 										} // if
-										else {
-											persona.setIdActivo(2L);
-											// persona.setBaja(Fecha.toLocalDate(fecha));
-										} // else
+										else 
+											if(Objects.equals(activo.toUpperCase(), "NO")) {
+												if(persona.getIdActivo()== 1L) {
+													persona.setIdActivo(2L);
+													persona.setBaja(Fecha.toLocalDate(fecha));
+  												this.toLoadIncidente(persona.getIdActivo(), persona.getIdEmpresaPersona());
+	  											super.ejecutar(sesion, EAccion.AGREGAR);	
+		  									} // if
+											} // if
 										if(sueldo> 0) {
 										  persona.setSueldoSemanal(sueldo);
 										  persona.setSueldoMensual(Numero.toRedondearSat(sueldo* 4));
 										} // if
-										if(!Cadena.isVacio(puesto) && !Objects.equals(puesto, "*"))
-										  persona.setIdPuesto(this.toLookForPuesto(sesion, puesto));
-										if(!Cadena.isVacio(departamento) && !Objects.equals(departamento, "*"))
-	  									persona.setIdDepartamento(this.toLookForDepartamento(sesion, departamento));
+										if(!Cadena.isVacio(puesto) && !Objects.equals(puesto, "*")) {
+											Long idPuesto= this.toLookForPuesto(sesion, puesto);
+											if(idPuesto!= null)
+										    persona.setIdPuesto(idPuesto);
+										} // if
+										if(!Cadena.isVacio(departamento) && !Objects.equals(departamento, "*")) {
+											Long idDepartamento= this.toLookForDepartamento(sesion, departamento);
+											if(idDepartamento!= null)
+	  									  persona.setIdDepartamento(idDepartamento);
+										} // if
 										if(Cadena.isVacio(contratista))
     									persona.setIdContratista(null);
 										else
-											if(!Objects.equals(contratista, "*"))
-  										  persona.setIdContratista(this.toLookForContratista(sesion, contratista));
-										this.toLoadIncidente(persona.getIdActivo(), persona.getIdEmpresaPersona());
-										super.ejecutar(sesion, EAccion.AGREGAR);
-										DaoFactory.getInstance().update(persona);
+											if(!Objects.equals(contratista, "*")) {
+												Long idContratista= this.toLookForContratista(sesion, contratista);
+												if(idContratista!= null)
+  										    persona.setIdContratista(idContratista);
+											} // if
+										DaoFactory.getInstance().update(sesion, persona);
 									} // if
 									monitoreo.incrementar();
 								} // if
@@ -675,7 +694,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
  				this.procesados= count;
 				regresar= true;
-				throw new KajoolBaseException("Este error fue provocado intencionalmente !");
 			} // if
 		} // try
     finally {
@@ -699,7 +717,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	}	// toDeleteXls 	
 
 	private Long toLookForPuesto(Session sesion, String nombre) throws Exception {
-		Long regresar= 2L;
+		Long regresar= null;
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
@@ -718,12 +736,12 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	}
 
 	private Long toLookForDepartamento(Session sesion, String nombre) throws Exception {
-		Long regresar= 1L;
+		Long regresar= null;
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
 			params.put("nombre", nombre);
-  		Value value= (Value)DaoFactory.getInstance().toField(sesion, "TrKeetDepartamentosDto", "igual", params, "idDepartamento");
+  		Value value= (Value)DaoFactory.getInstance().toField(sesion, "TcKeetDepartamentosDto", "igual", params, "idDepartamento");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
 		} // try

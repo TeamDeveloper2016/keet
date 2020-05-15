@@ -985,7 +985,7 @@
         from      
           tc_keet_departamentos
         where      
-          nombre = {nombre}
+          nombre = '{nombre}'
       </select>
 		</unit>	
     <unit id="TcKeetDivisionesDto">
