@@ -2856,7 +2856,10 @@
 									tc_keet_estaciones.clave like '{clave}%'
 								and 
 									id_estacion_estatus != {estatus}
-							)) contratistas
+							)
+						and 
+							{condicionContratista}
+						) contratistas
 				union
 				select 
 					proveedores.*
@@ -2911,7 +2914,10 @@
 									tc_keet_estaciones.clave like '{clave}%'
 								and 
 									id_estacion_estatus != {estatus}
-							)) proveedores) totales
+							)
+						and 
+							{condicionProveedor}
+				) proveedores) totales
 			</select>
 			<select id="puntosRevision">
 				select
