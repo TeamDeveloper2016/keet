@@ -25,6 +25,7 @@ import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -101,7 +102,7 @@ public class Transaccion extends IBaseTnx {
 		boolean inicioTrabajo= false;
 		try {
 			estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());
-			inicioTrabajo= validaInicioTrabajo(sesion, estacion.getClave());
+			inicioTrabajo= validaInicioTrabajo(sesion, null, true);
 			dto= new TcKeetContratosDestajosContratistasDto();		
 			dto.setIdUsuario(idUsuario);
 			dto.setSemana(toSemana());
@@ -145,7 +146,7 @@ public class Transaccion extends IBaseTnx {
 		boolean inicioTrabajo= false;
 		try {
 			estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());
-			inicioTrabajo= validaInicioTrabajo(sesion, estacion.getClave());
+			inicioTrabajo= validaInicioTrabajo(sesion, null, false);
 			dto= new TcKeetContratosDestajosProveedoresDto();
 			dto.setIdUsuario(idUsuario);
 			dto.setSemana(toSemana());
@@ -210,7 +211,7 @@ public class Transaccion extends IBaseTnx {
 						params.clear();
 						params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, costo));
 						params.put("cargo".concat(dto.getSemana().toString()), ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) - costo);											
-						if(validaInicioTrabajo(sesion, estacion.getClave())){							
+						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoContratista(), true)){							
 							actualizaInicioContratoLote(sesion, false);
 							//params.put("abono".concat(dto.getSemana().toString()), 0D);
 						} // if
@@ -253,7 +254,7 @@ public class Transaccion extends IBaseTnx {
 						params= new HashMap<>();
 						params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, dto.getCosto()));
 						params.put("cargo".concat(dto.getSemana().toString()), ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) - costo);											
-						if(validaInicioTrabajo(sesion, estacion.getClave())){
+						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoProveedor(), false)){
 							actualizaInicioContratoLote(sesion, false);
 							//params.put("abono".concat(dto.getSemana().toString()), 0D);
 						} // if
@@ -408,15 +409,23 @@ public class Transaccion extends IBaseTnx {
 		return regresar;				
 	} // toIdEstacionEstatus
 	
-	private boolean validaInicioTrabajo(Session sesion, String clave) throws Exception{
+	private boolean validaInicioTrabajo(Session sesion, Long idContratoDestajo, boolean contratista) throws Exception{
 		boolean regresar         = false;
 		Long total               = 0L;
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			params.put("idDepartamento", this.revision.getIdDepartamento());
-			params.put("clave", clave);
+			params.put("clave", this.revision.getClave());
 			params.put("estatus", CANCELADO);
+			if(contratista){
+				params.put("condicionContratista", idContratoDestajo!= null ? "id_contrato_destajo_contratista != " + idContratoDestajo : Constantes.SQL_VERDADERO);
+				params.put("condicionProveedor", Constantes.SQL_VERDADERO);
+			} // if
+			else{
+				params.put("condicionProveedor", idContratoDestajo!= null ? "id_contrato_destajo_proveedor != " + idContratoDestajo : Constantes.SQL_VERDADERO);
+				params.put("condicionContratista", Constantes.SQL_VERDADERO);				
+			} // else
 			total= DaoFactory.getInstance().toField(sesion, "VistaCapturaDestajosDto", "totalTrabajosLotes", params, "total").toLong();
 			regresar= total.equals(0L);
 		} // try
