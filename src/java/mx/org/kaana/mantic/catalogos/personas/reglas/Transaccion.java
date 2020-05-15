@@ -362,8 +362,13 @@ public class Transaccion extends IBaseTnx{
 			tmp= empresaPersonal.toMap();
 			for(String key: old.keySet()) {
 				if(!Objects.equal(old.get(key),tmp.get(key))) {
-					if(key.equals("idActivo"))
+					if(key.equals("idActivo")){
 						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Reingreso de empleado." : "Baja de empleado.");						
+						if(empresaPersonal.getIdActivo().equals(1L))
+							empresaPersonal.setIngreso(LocalDate.now());
+						else
+							empresaPersonal.setBaja(LocalDate.now());
+					} // if
 					if(key.equals("idNomina"))
 						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Activar deposito." : "Inactivar deposito.");						
 					if(key.equals("idPuesto") && ((Long)old.get("idPuesto")).equals(toIdContratista(sesion))){
