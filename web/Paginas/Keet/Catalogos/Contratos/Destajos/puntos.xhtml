@@ -59,7 +59,7 @@
 				    $('#gps').attr('class', 'ui-error-messages ui-messages-error janal-column-center');
 				$('#gps-title').html('GPS: ['+ gpsB.latitud+ ','+ gpsB.longitud+ '] estas a '+ distance+ ' metros del lote seleccionado');
 				var url= "https://www.google.com/maps?q="+ gpsB.latitud+ ","+ gpsB.longitud+ "&amp;z=17&amp;hl=es";
-				$('#gps-button').attr('onclick', 'window.open('+ url+ ')');
+				$('#gps-button').attr('onclick', 'window.open("'+ url+ '");');
 				janal.console('Se actualizo el calculo de la distancia: ['+ distance+']');
 				setTimeout('localization();', 3000);
 			}
