@@ -2745,6 +2745,112 @@
 				order by 
 				  tc_keet_estaciones.clave
 			</select>
+			<select id="totalTrabajosLotes">
+				select sum(total) total from (
+				select 
+					contratistas.*
+				from (					
+					select 
+						1 llave, count(*) total
+					from 
+						tc_keet_contratos_destajos_contratistas
+					where 
+						id_estacion in (
+							select
+								tc_keet_estaciones.id_estacion
+							from(  
+								select
+									tc_keet_puntos_paquetes.id_punto_grupo,  
+									tc_keet_puntos_grupos.id_departamento,
+									tc_keet_departamentos.nombre departamento,
+									tc_keet_puntos_grupos.grupo,
+									tc_keet_puntos_grupos.descripcion,
+									tc_keet_rubros_grupos.id_rubro_grupo,
+									tc_keet_rubros_grupos.id_rubro,
+									tc_keet_rubros.codigo,
+									tc_keet_rubros.nombre,
+									tc_keet_rubros.orden
+								from 
+									tc_keet_puntos_paquetes
+								inner join 
+									tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+								inner join
+									tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+								inner join
+									tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+								inner join
+									tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
+								where
+									tc_keet_puntos_grupos.id_departamento= {idDepartamento}
+								group by
+									tc_keet_puntos_paquetes.id_punto_grupo,   
+									tc_keet_puntos_grupos.id_departamento,
+									tc_keet_departamentos.nombre,
+									tc_keet_puntos_grupos.grupo,
+									tc_keet_puntos_grupos.descripcion,
+									tc_keet_rubros_grupos.id_rubro_grupo,
+									tc_keet_rubros_grupos.id_rubro,
+									tc_keet_rubros.codigo,
+									tc_keet_rubros.nombre,
+									tc_keet_rubros.orden
+								) principal
+								inner join
+									tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
+								where
+									tc_keet_estaciones.clave like '{clave}%')) contratistas
+				union
+				select 
+					proveedores.*
+				from (					
+					select 
+						2 llave, count(*) total
+					from 
+						tc_keet_contratos_destajos_proveedores
+					where 
+						id_estacion in (
+							select
+								tc_keet_estaciones.id_estacion
+							from(  
+								select
+									tc_keet_puntos_paquetes.id_punto_grupo,  
+									tc_keet_puntos_grupos.id_departamento,
+									tc_keet_departamentos.nombre departamento,
+									tc_keet_puntos_grupos.grupo,
+									tc_keet_puntos_grupos.descripcion,
+									tc_keet_rubros_grupos.id_rubro_grupo,
+									tc_keet_rubros_grupos.id_rubro,
+									tc_keet_rubros.codigo,
+									tc_keet_rubros.nombre,
+									tc_keet_rubros.orden
+								from 
+									tc_keet_puntos_paquetes
+								inner join 
+									tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+								inner join
+									tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+								inner join
+									tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+								inner join
+									tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
+								where
+									tc_keet_puntos_grupos.id_departamento= {idDepartamento}
+								group by
+									tc_keet_puntos_paquetes.id_punto_grupo,   
+									tc_keet_puntos_grupos.id_departamento,
+									tc_keet_departamentos.nombre,
+									tc_keet_puntos_grupos.grupo,
+									tc_keet_puntos_grupos.descripcion,
+									tc_keet_rubros_grupos.id_rubro_grupo,
+									tc_keet_rubros_grupos.id_rubro,
+									tc_keet_rubros.codigo,
+									tc_keet_rubros.nombre,
+									tc_keet_rubros.orden
+								) principal
+								inner join
+									tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
+								where
+									tc_keet_estaciones.clave like '{clave}%')) proveedores) totales
+			</select>
 			<select id="puntosRevision">
 				select
 					tc_keet_puntos_paquetes.id_punto_paquete as id_key,  
