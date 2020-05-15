@@ -174,42 +174,38 @@ public class UtilAplicacion {
 		
   public void doPreProcessPdf(Object document) {
     ServletContext servletContext;
+    String hora;
+    String version;
     try {
       Font font10   = new Font(BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false), 10F);
       Font font12   = new Font(BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false), 12F);
       servletContext= (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
       Image logo = Image.getInstance(servletContext.getRealPath("").concat(Constantes.RUTA_IMAGENES).concat("logo.png"));
-      logo.scalePercent(8);
+      logo.scalePercent(12);
       PdfPTable table = new PdfPTable(3);
 			table.getDefaultCell().setBorder(0);
 			table.setWidthPercentage(95f);
       this.addCellImage(table, logo, Element.ALIGN_LEFT, 1, font10);			
-      this.addCellText(table, "", Element.ALIGN_CENTER, 1, font10);			
-      this.addCellText(table, this.getVersionAplicacion(), Element.ALIGN_RIGHT, 1, font10);			
-      
+      this.addCellText(table, Configuracion.getInstance().getPropiedad("sistema.titulo"), Element.ALIGN_CENTER, 1, font12);			
+      this.addCellText(table, Configuracion.getInstance().isEtapaProduccion() ? " " : getServidor(), Element.ALIGN_RIGHT, 1, font10);			
 			Paragraph paragraph = new Paragraph();
       paragraph.add(table);
       paragraph.setAlignment(Paragraph.ALIGN_LEFT);
       HeaderFooter header = new HeaderFooter(paragraph, false);
       header.setBorder(Rectangle.NO_BORDER);
       header.setAlignment(HeaderFooter.ALIGN_CENTER);
-      table = new PdfPTable(3);
-			table.getDefaultCell().setBorder(0);
-			table.setWidthPercentage(95f);
-      this.addCellText(table, Fecha.formatear(Fecha.FECHA_HORA, Calendar.getInstance().getTime()), Element.ALIGN_LEFT, 1, font10);			
-      this.addCellText(table, this.getVersionAplicacion(), Element.ALIGN_CENTER, 1, font10);			
-      this.addCellText(table, this.getServidor(), Element.ALIGN_RIGHT, 1, font10);			
-      paragraph = new Paragraph();
-			paragraph.add(table);
-      paragraph.setAlignment(Phrase.ALIGN_CENTER);
-      HeaderFooter footer = new HeaderFooter(paragraph, true);
+      Paragraph parrafoPieDePagina = new Paragraph();
+      hora = Fecha.formatear(Fecha.FECHA_HORA_CORTA, Calendar.getInstance().getTime()).concat("                      ");
+      version = "                      ".concat(getVersionAplicacion());
+      parrafoPieDePagina.add(new Phrase(hora.concat("                      ").concat("                      ".concat(version)), new Font(font10)));
+      parrafoPieDePagina.setAlignment(Phrase.ALIGN_CENTER);
+      HeaderFooter footer = new HeaderFooter(parrafoPieDePagina, true);
       footer.setAlignment(HeaderFooter.ALIGN_CENTER);
-      footer.setBorder(Rectangle.NO_BORDER);
-			footer.setBottom(10);
+      footer.setBorder(Rectangle.NO_BORDER);      
       Document pdf= (Document) document;
-      pdf.setPageSize(PageSize.LETTER);
+      pdf.setPageSize(PageSize.LETTER.rotate());
       pdf.setHeader(header);
-      // pdf.setFooter(footer);
+      pdf.setFooter(footer);
       pdf.setMargins(10, 10, 50, 50);
       pdf.open();
     } // try
