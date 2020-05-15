@@ -780,6 +780,14 @@
 				where
 	        clave like '{clave}%'
 			</update>
+			<update id="abonos">
+				update
+				  tc_keet_estaciones
+				set
+				  abono_{semana}= costo 
+				where
+	        clave like '{clave}%'
+			</update>
     </unit>		
     <unit id="TcKeetEspecialidadesDto">
       <select id="row">

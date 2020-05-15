@@ -21,6 +21,7 @@ import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.estaciones.masivos.beans.Estacion;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
+import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
@@ -110,45 +111,50 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	protected boolean toProcess(Session sesion) throws Exception {
 		boolean regresar                   = false;  
 		TcManticMasivasBitacoraDto bitacora= null;
-		File file= new File(this.masivo.getAlias());
-		if(file.exists()) {
-	 		if(!this.masivo.isValid()) {
-		    DaoFactory.getInstance().insert(sesion, this.masivo);
-				bitacora= new TcManticMasivasBitacoraDto(
-					"", // String justificacion, 
-					this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-					JsfBase.getIdUsuario(), // Long idUsuario, 
-					-1L, // Long idMasivaBitacora, 
-					0L, // Long procesados, 
-					1L // Long idMasivaEstatus
-				);
-				DaoFactory.getInstance().insert(sesion, bitacora);
-				this.toDeleteXls();
-			} // if
-			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
-			monitoreo.comenzar(0L);
-			monitoreo.setTotal(this.masivo.getTuplas());
-			monitoreo.setId(file.getName().toUpperCase());
-			try {
-				switch (this.categoria) {
-					case ESTACIONES:
-						this.toEstaciones(sesion, file);
-						break;
-					case PERSONAL:
-						this.toPersonal(sesion, file);
-						break;
-				} // swtich
-			} // try
-			finally {
-				monitoreo.terminar();
-				monitoreo.setProgreso(0L);
-				bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 3L);
-				DaoFactory.getInstance().insert(sesion, bitacora);
-			} // catch
-			regresar= true;
-		} // if	
-		else
-			LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ this.masivo.getNombre());
+		try {
+			File file= new File(this.masivo.getAlias());
+			if(file.exists()) {
+				if(!this.masivo.isValid()) {
+					DaoFactory.getInstance().insert(sesion, this.masivo);
+					bitacora= new TcManticMasivasBitacoraDto(
+						"", // String justificacion, 
+						this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+						JsfBase.getIdUsuario(), // Long idUsuario, 
+						-1L, // Long idMasivaBitacora, 
+						0L, // Long procesados, 
+						1L // Long idMasivaEstatus
+					);
+					DaoFactory.getInstance().insert(sesion, bitacora);
+					this.toDeleteXls();
+				} // if
+				Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+				monitoreo.comenzar(0L);
+				monitoreo.setTotal(this.masivo.getTuplas());
+				monitoreo.setId(file.getName().toUpperCase());
+				try {
+					switch (this.categoria) {
+						case ESTACIONES:
+							this.toEstaciones(sesion, file);
+							break;
+						case PERSONAL:
+							this.toPersonal(sesion, file);
+							break;
+					} // swtich
+				} // try
+				finally {
+					monitoreo.terminar();
+					monitoreo.setProgreso(0L);
+					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 3L);
+					DaoFactory.getInstance().insert(sesion, bitacora);
+				} // catch
+				regresar= true;
+			} // if	
+			else
+				LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ this.masivo.getNombre());
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
     return regresar;
 	} // toProcess
 	
@@ -376,6 +382,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		Estacion estacion       = null; 
 		TcManticMasivasBitacoraDto bitacora= null;
 		try {
+			Semanas semanas= new Semanas();
+			int semana= semanas.getSemana(sesion);
 			Estaciones estaciones= new Estaciones();
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
@@ -418,7 +426,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8);
 								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
-								if(!Cadena.isVacio(codigo) && codigo.length()> 0 && cantidad> 0 && costo> 0) {
+								if(!Cadena.isVacio(codigo) && codigo.length()> 0) {
 									concepto.setCosto(concepto.getCosto()+ costo);
 									if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
 										throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
@@ -435,8 +443,10 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 												rubro        = 0;
 												partida++;
 												// ESTO ACTUALIZA EL COSTO TOTAL DE LOS CONCEPTOS
-												if(parcial!= null)
+												if(parcial!= null) {
+													Methods.setValue(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
 													DaoFactory.getInstance().update(sesion, parcial);
+												} // if
 											} // if
 											else 
 												throw new RuntimeException("El archivo tiene una estacion duplicada ["+ codigo+ "] {"+ nombre+ "}");
@@ -479,6 +489,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
 										estacion.setCantidad(cantidad);
 										estacion.setCosto(costo);
+										Methods.setValue(estacion, "abono"+ semana, new Object[] {costo});
 										if(Cadena.isVacio(inicio))
 										  estacion.setInicio(contrato.toDate("inicio"));
 										else
@@ -526,15 +537,20 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						this.procesados= count;
 						LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 					} // for
-  				if(parcial!= null)
+  				if(parcial!= null) {
+						Methods.setValue(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
 						DaoFactory.getInstance().update(sesion, parcial);
-  				if(concepto!= null)
+					} // if
+  				if(concepto!= null) {
+						Methods.setValue(concepto, "abono"+ semana, new Object[] {concepto.getCosto()});
   					DaoFactory.getInstance().update(sesion, concepto);
+					} // if
 				} // if
 				else 
 					throw new RuntimeException("El lote no existe en el contrato, por favor verifique");
 				bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
   			DaoFactory.getInstance().insert(sesion, bitacora);
+				// this.toUpdateEstaciones(sesion, estaciones.toKey(4));
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
  				this.procesados= count;
 				regresar= true;
@@ -737,6 +753,25 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			Methods.clean(params);
 		} // finally
 		return regresar;
+	}
+
+	private void toUpdateEstaciones(Session sesion, String clave) throws Exception {
+		Map<String, Object> params=null;
+		try {
+			sesion.flush();
+			params=new HashMap<>();
+			Semanas semanas= new Semanas();
+			params.put("semana", semanas.getSemana(sesion));
+			// RECORRER TODAS LAS EMPRESAS PORQUE LA CLAVE DE LA ESTACION TIENE EL ID DE LA EMPRESA
+			params.put("clave", clave);
+			DaoFactory.getInstance().updateAll(sesion, TcKeetEstacionesDto.class, params, "abonos");
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 
 }
