@@ -89,6 +89,7 @@
 							</p:panel>
 							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados">
 								<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" styleClass="involucrados"/>
+								<p:outputLabel for="idPlantilla" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 10? '': 'none'}" styleClass="involucrados"/>
 								<p:outputLabel for="idLimpiar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" styleClass="involucrados"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30">
 									<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idContratoLote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}">
@@ -107,7 +108,7 @@
 											<h:outputText value="#{item.etapa}"/>
 										</p:column>   
 									</p:selectOneMenu>
-									<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idPlantilla}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 10? '': 'none'}">
+									<p:selectOneMenu id="idPlantilla" value="#{keetEstacionesMasivosImportar.attrs.idPlantilla}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 10? '': 'none'}">
 										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.plantillas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.codigo}"/>
 										<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 										<p:column headerText="Ejercicio">
