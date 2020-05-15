@@ -73,10 +73,14 @@
 									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-estaciones.xls" title="Plantilla de estaciones">
 										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>
+									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 10}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-personal.xls" title="Plantilla de personal">
+										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+									</h:outputLink>
 								</f:facet>	
 								<p:selectOneRadio id="tipo" value="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo}" columns="2" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" process="@this" listener="#{keetEstacionesMasivosImportar.doChangeTipo}" update="catalogo @(.involucrados) @(.importado) @(.janal-upload-frame)"/>
 									<f:selectItem itemLabel="ESTACIONES" itemValue="9"/>
+									<f:selectItem itemLabel="PERSONAL" itemValue="10"/>
 								</p:selectOneRadio>
 							</p:panel>
 							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados">

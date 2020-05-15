@@ -22,7 +22,7 @@ import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
-	private Incidente incidente;
+	protected Incidente incidente;
 	private String messageError;	
 	private String observaciones;	
 	private boolean estatus;
@@ -37,11 +37,11 @@ public class Transaccion extends IBaseTnx {
 		this.estatus      = false;
 	}
 
-	public Incidente getIncidente() {
+	protected Incidente getIncidente() {
 		return incidente;
 	}
 
-	public void setIncidente(Incidente incidente) {
+	protected void setIncidente(Incidente incidente) {
 		this.incidente = incidente;
 	}	
 

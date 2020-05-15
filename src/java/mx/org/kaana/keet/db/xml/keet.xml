@@ -963,7 +963,15 @@
 				order by
 				  nombre 
       </select>
-    </unit>	
+      <select id="igual">
+        select      
+          *
+        from      
+          tc_keet_departamentos
+        where      
+          nombre = {nombre}
+      </select>
+		</unit>	
     <unit id="TcKeetDivisionesDto">
       <select id="row">
         select      

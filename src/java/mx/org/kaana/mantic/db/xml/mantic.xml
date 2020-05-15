@@ -2743,6 +2743,14 @@
         where      
           id_persona = {idPersona} and id_puesto = {idPuesto} and id_empresa_persona = {idEmpresaPersona} and id_empresa = {idEmpresa}
       </select>
+      <select id="igual">
+        select      
+          *
+        from      
+          tr_mantic_empresa_personal
+        where      
+          clave = {clave}
+      </select>
 			<delete id="rows">
 				delete from tr_mantic_empresa_personal where id_persona = {idPersona}
 			</delete>
@@ -4089,6 +4097,14 @@
           tc_mantic_puestos
         where      
           id_puesto = {idPuesto}
+      </select>
+      <select id="igual">
+        select      
+          *
+        from      
+          tc_mantic_puestos
+        where      
+          nombre = {nombre}
       </select>
 			<select id="nextOrden">
 				select max(orden)+1 orden from tc_mantic_puestos
