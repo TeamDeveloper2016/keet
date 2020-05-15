@@ -201,6 +201,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 9: 
 				this.categoria= ECargaMasiva.ESTACIONES;
 				break;
+			case 10: 
+				this.categoria= ECargaMasiva.PERSONAL;
+				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
 			this.attrs.put("procesados", 0);
