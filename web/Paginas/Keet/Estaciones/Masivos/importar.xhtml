@@ -84,6 +84,7 @@
 									<p:ajax event="change" process="@this" listener="#{keetEstacionesMasivosImportar.doChangeTipo}" update="catalogo @(.involucrados) @(.importado) @(.janal-upload-frame)"/>
 									<f:selectItem itemLabel="ESTACIONES" itemValue="9"/>
 									<f:selectItem itemLabel="PERSONAL" itemValue="10"/>
+									<f:selectItem itemLabel="PLANTILLAS" itemValue="11"/>
 								</p:selectOneRadio>
 							</p:panel>
 							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados">
@@ -108,7 +109,23 @@
 									</p:selectOneMenu>
 									<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetEstacionesMasivosImportar.doExportar}" process="@this idContratoLote" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" />
 								</p:panelGrid>
-								<p:selectOneMenu id="idLimpiar" value="#{keetEstacionesMasivosImportar.attrs.idLimpiar}" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" converter="javax.faces.Long" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idPlantilla}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 10? '': 'none'}">
+  								<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.plantillas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.codigo}"/>
+									<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:column headerText="Ejercicio">
+										<h:outputText value="#{item.ejercicio}"/>
+									</p:column>   
+									<p:column headerText="Contrato">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Lote">
+										<h:outputText value="#{item.codigo}"/>
+									</p:column>   
+									<p:column headerText="Etapa">
+										<h:outputText value="#{item.etapa}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:selectOneMenu id="idLimpiar" value="#{keetEstacionesMasivosImportar.attrs.idLimpiar}" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 10? '': 'none'}" converter="javax.faces.Long" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItem itemLabel="SI" itemValue="1"/>
 									<f:selectItem itemLabel="NO" itemValue="2"/>								
 								</p:selectOneMenu>

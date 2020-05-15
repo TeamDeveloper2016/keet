@@ -903,6 +903,7 @@
 					tc_keet_contratos.clave,
 				  tc_keet_contratos_lotes.manzana,
 				  tc_keet_contratos_lotes.lote,
+				  tc_keet_contratos_lotes.id_estacion,
 					concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) codigo,
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.ejercicio,
