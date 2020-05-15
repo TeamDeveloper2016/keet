@@ -7,11 +7,14 @@ import java.util.Objects;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
+import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
@@ -19,6 +22,7 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPersonasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasRubrosDto;
+import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
@@ -114,6 +118,7 @@ public class Transaccion extends IBaseTnx {
 							this.reprocesarPersonas(sesion);
 							break;
 					} // switch
+					this.toAddNewNomina(sesion);
 					break;
 				case REPROCESAR:
 					this.persona(sesion);
@@ -127,39 +132,8 @@ public class Transaccion extends IBaseTnx {
 						regresar= DaoFactory.getInstance().update(sesion, this.nomina)>= 1L;
 						// CAMBIAR EL ESTATUS A TODOS LOS INCIDENTES Y REGISTAR EN SUS RESPECTIVA BITACORA 
             this.closeIncidentes(sesion);	
-						if(this.nomina.getIdTipoNomina()== 1L) {
-							params.put("idNominaPeriodo", this.nomina.getIdNominaPeriodo());
-							TcKeetNominasPeriodosDto periodo= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "siguiente", params);
-							TcKeetNominasDto siguiente= new TcKeetNominasDto(
-								0D, // Double neto, 
-								1L, // Long idNominaEstatus, 
-								0D, // Double deducciones, 
-								this.nomina.getIdTipoNomina(), // Long idTipoNomina, 
-								0L, // Long personas, 
-								0D, // Double aportaciones, 
-								-1L, // Long idNomina, 
-								periodo.getTermino().plusDays(-1), // LocalDate fechaPago, 
-								0L, // Long proveedores, 
-								0D, // Double total, 
-								periodo.getTermino().plusDays(-2), // LocalDate fechaDispersion, 
-								periodo.getKey(), // Long idNominaPeriodo, 
-								0D, // Double iva, 
-								JsfBase.getIdUsuario(), // Long idUsuario, 
-								0D, // Double subtotal, 
-								"", // String observaciones, 
-								JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
-								0D // Double percepciones
-							);
-							DaoFactory.getInstance().insert(sesion, siguiente);
-							this.bitacora= new TcKeetNominasBitacoraDto(
-								"APERTURA DE NOMINA AUTOMATICO", // String justificacion, 
-								1l, // Long idNominaEstatus, 
-								JsfBase.getIdUsuario(), // Long idUsuario, 
-								-1L, // Long idNominaBitacora, 
-								siguiente.getIdNomina()// Long idNomina
-							);		
-							DaoFactory.getInstance().insert(sesion, bitacora);
-						} // if
+						this.toOpenNewNomina(sesion);
+						// FALTA HACER EL PROCESO DE MOVER LOS SALDOS A LA NUEVA SEMANA
 					} // if
 					break;
 			} // switch
@@ -547,7 +521,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
-			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasDto", "personas", params);
+			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasPersonasDto", "personas", params);
 			this.nomina.setPersonas(entity.toLong("personas"));
 			this.nomina.setAportaciones(entity.toDouble("aportaciones"));
 			this.nomina.setDeducciones(entity.toDouble("deducciones"));
@@ -564,12 +538,103 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
-			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasDto", "proveedores", params);
+			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasProveedoresDto", "proveedores", params);
 			this.nomina.setProveedores(entity.toLong("proveedores"));
 			this.nomina.setSubtotal(entity.toDouble("subtotal"));
 			this.nomina.setIva(entity.toDouble("iva"));
 			this.nomina.setTotal(entity.toDouble("total"));
 		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+
+	private void toAddNewNomina(Session sesion) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			if(this.nomina.getIdTipoNomina()== 1L) {
+				params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
+				Value value= DaoFactory.getInstance().toField(sesion, "TcKeetNominasDto", "existe", params, "idEstatusNomina");
+				if(value== null || value.getData()== null) {
+					params.put("idNominaPeriodo", this.nomina.getIdNominaPeriodo());
+					TcKeetNominasPeriodosDto periodo= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "siguiente", params);
+					TcKeetNominasDto siguiente= new TcKeetNominasDto(
+						0D, // Double neto, 
+						5L, // Long idNominaEstatus, 
+						0D, // Double deducciones, 
+						this.nomina.getIdTipoNomina(), // Long idTipoNomina, 
+						0L, // Long personas, 
+						0D, // Double aportaciones, 
+						-1L, // Long idNomina, 
+						periodo.getTermino().plusDays(-1), // LocalDate fechaPago, 
+						0L, // Long proveedores, 
+						0D, // Double total, 
+						periodo.getTermino().plusDays(-2), // LocalDate fechaDispersion, 
+						periodo.getKey(), // Long idNominaPeriodo, 
+						0D, // Double iva, 
+						JsfBase.getIdUsuario(), // Long idUsuario, 
+						0D, // Double subtotal, 
+						"", // String observaciones, 
+						JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
+						0D // Double percepciones
+					);
+					DaoFactory.getInstance().insert(sesion, siguiente);
+					this.bitacora= new TcKeetNominasBitacoraDto(
+						"CREAR NOMINA TEMPORAL", // String justificacion, 
+						this.nomina.getIdNominaEstatus(), // Long idNominaEstatus, 
+						JsfBase.getIdUsuario(), // Long idUsuario, 
+						-1L, // Long idNominaBitacora, 
+						siguiente.getIdNomina()// Long idNomina
+					);		
+					DaoFactory.getInstance().insert(sesion, bitacora);
+					// REALIZAR EL PROCESO DE ACTUALIZACION DE SALDOS DE LA TABLA DE ESTACIONES
+					TcKeetNominasPeriodosDto anterior= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "igual", params);
+					params.put("anterior", anterior.getOrden());
+					params.put("semana", periodo.getOrden());
+					Estaciones estaciones= new Estaciones();
+					// RECORRER TODAS LAS EMPRESAS PORQUE LA CLAVE DE LA ESTACION TIENE EL ID DE LA EMPRESA
+					for (Sucursal sucursal: this.autentifica.getSucursales()) {
+						estaciones.setKeyLevel(sucursal.getIdEmpresa().toString(), 0); // idEmpresa
+						estaciones.setKeyLevel(periodo.getEjercicio().toString(), 1); // ejercicio
+						params.put("clave", estaciones.toKey(2));
+  				  DaoFactory.getInstance().updateAll(sesion, TcKeetEstacionesDto.class, params);
+					} // for
+				} // if			
+			} // if			
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
+	private void toOpenNewNomina(Session sesion) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			if(this.nomina.getIdTipoNomina()== 1L) {
+				params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
+				TcKeetNominasDto open= (TcKeetNominasDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasDto.class, "TcKeetNominasDto", "existe", params);
+				if(open!= null) {
+					open.setIdNominaEstatus(1L);
+					DaoFactory.getInstance().update(sesion, open);
+					this.bitacora= new TcKeetNominasBitacoraDto(
+						"APERTURA DE NOMINA AUTOMATICO", // String justificacion, 
+						open.getIdNominaEstatus(), // Long idNominaEstatus, 
+						JsfBase.getIdUsuario(), // Long idUsuario, 
+						-1L, // Long idNominaBitacora, 
+						open.getIdNomina()// Long idNomina
+					);		
+					DaoFactory.getInstance().insert(sesion, bitacora);
+				} // if			
+			} // if			
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally

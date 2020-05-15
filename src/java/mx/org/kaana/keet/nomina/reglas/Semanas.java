@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -105,9 +106,20 @@ public class Semanas {
 	
 	public int getSemana() throws Exception {
 	  int regresar= 1;
-		Value data= DaoFactory.getInstance().toField("VistaNominaDto", "semana", Collections.EMPTY_MAP, "semana");
-		if(data!= null && data.getData()!= null) 
-			regresar= data.toInteger();
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			Value data= DaoFactory.getInstance().toField("VistaNominaDto", "referencia", params, "semana");
+			if(data!= null && data.getData()!= null) 
+				regresar= data.toInteger();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	}
 	

@@ -698,6 +698,16 @@
 				order by
 				  clave 
       </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_estaciones
+        where      
+          clave = '{clave}'
+				order by
+				  clave 
+      </select>
       <select id="byId">
         select      
           tc_keet_estaciones.id_estacion as id_key,
@@ -753,16 +763,6 @@
 				and
 					nivel = {nivel}
       </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_estaciones
-        where      
-          clave = '{clave}'
-				order by
-				  clave 
-      </select>
 			<delete id="rows">
 				delete
 				  tc_keet_estaciones
@@ -772,6 +772,14 @@
 				 tc_keet_estaciones.clave like '{clave}%'
          and tc_keet_estaciones.nivel> 4
 			</delete>
+			<update id="rows">
+				update
+				  tc_keet_estaciones
+				set
+				  abono_{semana}= abono_{anterior}- cargo_{anterior} 
+				where
+	        clave like '{clave}%'
+			</update>
     </unit>		
     <unit id="TcKeetEspecialidadesDto">
       <select id="row">
@@ -1042,40 +1050,23 @@
         from      
           tc_keet_nominas
         where      
-          id_tipo_nomina = 1
-				  and id_nomina_estatus in ({sucursales})
+				  id_empresa in ({sucursales})
+          and id_tipo_nomina = 1
+				  and id_nomina_estatus in (1, 2, 3, 4)
 			  order by
 				  id_nomina_estatus desc
       </select>
-			<select id="personas">
-			  select
-					tc_keet_nominas_personas.id_nomina,
-					count(*) as personas,
-					sum(tc_keet_nominas_personas.aportaciones) as aportaciones,
-					sum(tc_keet_nominas_personas.deducciones) as deducciones,
-					sum(tc_keet_nominas_personas.percepciones) as percepciones,
-					sum(tc_keet_nominas_personas.neto) as neto
-				from
-					tc_keet_nominas_personas
-				where
-					tc_keet_nominas_personas.id_nomina= {idNomina}
-				group by
-					tc_keet_nominas_personas.id_nomina				
-			</select>
-			<select id="proveedores">
-				select
-					tc_keet_nominas_proveedores.id_nomina,
-					count(*) as proveedores,
-					sum(tc_keet_nominas_proveedores.subtotal) as subtotal,
-					sum(tc_keet_nominas_proveedores.iva) as iva,
-					sum(tc_keet_nominas_proveedores.total) as total
-				from
-					tc_keet_nominas_proveedores
-				where
-					tc_keet_nominas_proveedores.id_nomina= {idNomina}
-				group by
-					tc_keet_nominas_proveedores.id_nomina		
-			</select>
+      <select id="existe">
+        select      
+          tc_keet_nominas.id_nomina as id_key,
+				  tc_keet_nominas.*
+        from      
+          tc_keet_nominas
+        where      
+				  id_empresa in ({sucursales})
+          and id_tipo_nomina = 1
+				  and id_nomina_estatus= 5
+      </select>
     </unit>		
     <unit id="TcKeetNominasBitacoraDto">
       <select id="row">
@@ -1190,7 +1181,16 @@
         where 
           {condicion} 
       </select>
-      <select id="identically">
+      <select id="todos">
+        select      
+				  tc_keet_nominas_estatus.id_nomina_estatus as id_key,
+          tc_keet_nominas_estatus.*
+        from      
+          tc_keet_nominas_estatus
+        where 
+          id_nomina_estatus in (1, 2, 3, 4)
+      </select>
+			<select id="identically">
         select      
           *
         from      
@@ -1237,6 +1237,16 @@
 				order by
 			    id_nomina_periodo	
       </select>
+      <select id="igual">
+        select      
+          *
+        from      
+          tc_keet_nominas_periodos
+        where      
+          id_nomina_periodo= {idNominaPeriodo}
+				order by
+			    id_nomina_periodo	
+      </select>
     </unit>							
     <unit id="TcKeetNominasPersonasDto">
       <select id="row">
@@ -1256,6 +1266,21 @@
           id_nomina= {idNomina} 
 				  and id_empresa_persona= {idEmpresaPersona}
       </select>
+			<select id="personas">
+			  select
+					tc_keet_nominas_personas.id_nomina,
+					count(*) as personas,
+					sum(tc_keet_nominas_personas.aportaciones) as aportaciones,
+					sum(tc_keet_nominas_personas.deducciones) as deducciones,
+					sum(tc_keet_nominas_personas.percepciones) as percepciones,
+					sum(tc_keet_nominas_personas.neto) as neto
+				from
+					tc_keet_nominas_personas
+				where
+					tc_keet_nominas_personas.id_nomina= {idNomina}
+				group by
+					tc_keet_nominas_personas.id_nomina				
+			</select>
 			<delete id="nomina">
 				delete 
 				  tc_keet_nominas_personas
@@ -1334,6 +1359,20 @@
         where      
           id_proveedor = {idProveedor} and id_nomina = {idNomina}
       </select>
+			<select id="proveedores">
+				select
+					tc_keet_nominas_proveedores.id_nomina,
+					count(*) as proveedores,
+					sum(tc_keet_nominas_proveedores.subtotal) as subtotal,
+					sum(tc_keet_nominas_proveedores.iva) as iva,
+					sum(tc_keet_nominas_proveedores.total) as total
+				from
+					tc_keet_nominas_proveedores
+				where
+					tc_keet_nominas_proveedores.id_nomina= {idNomina}
+				group by
+					tc_keet_nominas_proveedores.id_nomina		
+			</select>
 			<delete id="nomina">
 				delete 
 				  tc_keet_nominas_proveedores 

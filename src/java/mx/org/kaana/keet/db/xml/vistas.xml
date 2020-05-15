@@ -115,6 +115,7 @@
 				where
 					tc_keet_nominas.id_empresa in ({sucursales})
 					and tc_keet_nominas_periodos.ejercicio&gt;= {anterior}
+					and tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
 				order by
 				  tc_keet_nominas.id_tipo_nomina, tc_keet_nominas_periodos.ejercicio desc, tc_keet_nominas_periodos.orden desc				
 			</select>
@@ -331,7 +332,8 @@
 				inner join 
 					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
 				where
-					{condicion}
+				  tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
+				  and {condicion}
 				{sortOrder}
 			</select>
 			<select id="detalle">
@@ -402,6 +404,7 @@
 					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
 				where
 					tc_keet_nominas.id_empresa in ({sucursales})
+				  and tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
 				order by
 				  tc_keet_nominas_periodos.ejercicio desc				
 			</select>
@@ -415,6 +418,7 @@
 					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
 				where
 					tc_keet_nominas.id_empresa in ({sucursales})
+				  and tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
 				order by
 				  tc_keet_nominas_periodos.orden asc				
 			</select>
@@ -508,9 +512,25 @@
 					tc_keet_nominas_estatus on tc_keet_nominas.id_nomina_estatus= tc_keet_nominas_estatus.id_nomina_estatus
 				where
 					tc_keet_nominas.id_tipo_nomina= {idTipoNomina}
+				  and tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
 				order by
 					tc_keet_nominas.id_nomina_estatus desc
 			</select>			
+			<select id="referencia">
+				select      
+          tc_keet_nominas.id_nomina as id_key,
+          tc_keet_nominas.id_nomina_estatus,
+				  tc_keet_nominas_periodos.orden as semana
+        from      
+          tc_keet_nominas
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        where      
+				  tc_keet_nominas.id_empresa in ({sucursales})
+          and tc_keet_nominas.id_tipo_nomina = 1
+			  order by
+				   tc_keet_nominas.id_nomina_estatus desc
+			</select>
 			<select id="activa">
 				select
 					tc_keet_nominas.id_nomina as id_key,
@@ -553,6 +573,7 @@
 					tc_keet_nominas.id_empresa in ({sucursales})
 					and tc_keet_nominas.id_tipo_nomina= {idTipoNomina}
 					and tc_keet_nominas_periodos.ejercicio&gt;= {ejercicio}
+					and tc_keet_nominas.id_nomina_estatus in (1,2,3,4)
 				order by
 				  nombre desc				
 			</select>
