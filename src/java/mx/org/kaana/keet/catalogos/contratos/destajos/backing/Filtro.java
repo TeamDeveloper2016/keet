@@ -347,6 +347,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
 		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
+			params.put("idProveedor", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       columns= new ArrayList<>();
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
