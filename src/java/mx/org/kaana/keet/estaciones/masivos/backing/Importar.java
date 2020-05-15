@@ -80,6 +80,13 @@ public class Importar extends IBaseImportar implements Serializable {
 						this.categoria= ECargaMasiva.ESTACIONES;
 						this.toLoadContratosLotes();
 						break;
+					case 10:
+						this.categoria= ECargaMasiva.PERSONAL;
+						break;
+					case 11:
+						this.categoria= ECargaMasiva.PLANTILLAS;
+						this.toLoadPlantillas();
+						break;
 				} // switch
 			else {
 				this.categoria= ECargaMasiva.ESTACIONES;
@@ -204,6 +211,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 10: 
 				this.categoria= ECargaMasiva.PERSONAL;
 				break;
+			case 11: 
+				this.categoria= ECargaMasiva.PLANTILLAS;
+				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
 			this.attrs.put("procesados", 0);
@@ -270,6 +280,38 @@ public class Importar extends IBaseImportar implements Serializable {
 			} // if
 			else
   		  this.attrs.put("idContratoLote", lotes.get(0));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+	
+	private void toLoadPlantillas() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("lote", EFormatoDinamicos.MAYUSCULAS));
+ 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+ 			params.put("ejercicio", Fecha.getAnioActual()- 1);
+			List<UISelectEntity> plantillas= UIEntity.build("VistaContratosLotesDto", "lotes", params, columns);
+  		this.attrs.put("plantillas", plantillas);
+			if(this.attrs.get("ikContratoLote")!= null) {
+				int index= plantillas.indexOf(new UISelectEntity((Long)this.attrs.get("ikContratoLote")));
+				if(index>= 0)
+					this.attrs.put("idContratoLote", plantillas.get(index));
+				else
+					this.attrs.put("idContratoLote", plantillas.get(0));
+			  this.attrs.put("ikContratoLote", null);
+			} // if
+			else
+  		  this.attrs.put("idContratoLote", plantillas.get(0));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
