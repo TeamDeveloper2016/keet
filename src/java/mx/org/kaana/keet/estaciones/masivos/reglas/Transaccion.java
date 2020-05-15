@@ -547,6 +547,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
   				if(concepto!= null) {
 						Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {concepto.getCosto()});
   					DaoFactory.getInstance().update(sesion, concepto);
+  					TcKeetContratosLotesDto lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, contrato.toLong("idContratoLote"));
+	  				lote.setIdEstacion(concepto.getIdEstacion());
+  					DaoFactory.getInstance().update(sesion, lote);
 					} // if
 				} // if
 				else 
