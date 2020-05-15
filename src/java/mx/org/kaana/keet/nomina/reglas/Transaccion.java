@@ -240,7 +240,7 @@ public class Transaccion extends IBaseTnx {
 			  this.nomina.setIdNominaEstatus(ENominaEstatus.CALCULADA.getIdKey());
 		if(!Objects.equals(this.nomina.getIdNominaEstatus(), idNominaEstatus)) {
 			TcKeetNominasBitacoraDto estatus= new TcKeetNominasBitacoraDto(
-				null, // String justificacion, 
+				"PROCESO AUTOMATICO DE CALCULO", // String justificacion, 
 				this.nomina.getIdNominaEstatus(), // Long idNominaEstatus, 
 				this.autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
 				-1L, // Long idNominaBitacora, 
@@ -290,7 +290,7 @@ public class Transaccion extends IBaseTnx {
 				} // for
 				this.toTakeOutPersonas(sesion);
 				this.reprocesarProveedores(sesion, monitoreo);
-				if(count== 1 && this.nomina.getIdNominaEstatus()< ENominaEstatus.ENPROCESO.getIdKey())
+				if(count> 0 && this.nomina.getIdNominaEstatus()<= ENominaEstatus.ENPROCESO.getIdKey())
 					this.bitacora(sesion, ENominaEstatus.CALCULADA.getIdKey());
 			} // if
 		} // try
@@ -555,7 +555,7 @@ public class Transaccion extends IBaseTnx {
 			params=new HashMap<>();
 			if(this.nomina.getIdTipoNomina()== 1L) {
 				params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
-				Value value= DaoFactory.getInstance().toField(sesion, "TcKeetNominasDto", "existe", params, "idEstatusNomina");
+				Value value= DaoFactory.getInstance().toField(sesion, "TcKeetNominasDto", "existe", params, "idNominaEstatus");
 				if(value== null || value.getData()== null) {
 					params.put("idNominaPeriodo", this.nomina.getIdNominaPeriodo());
 					TcKeetNominasPeriodosDto periodo= (TcKeetNominasPeriodosDto)DaoFactory.getInstance().toEntity(sesion, TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "siguiente", params);
