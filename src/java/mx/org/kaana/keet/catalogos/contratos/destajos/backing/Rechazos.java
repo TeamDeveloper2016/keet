@@ -39,6 +39,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     try {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
+			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("claveEstacion", JsfBase.getFlashAttribute("claveEstacion"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
@@ -174,6 +175,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
+			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

@@ -42,6 +42,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
+			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			figura= (Entity) JsfBase.getFlashAttribute("figura");	
@@ -186,6 +187,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
 		JsfBase.setFlashAttribute("concepto", seleccionado);	
 		JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
+		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 	} // toSetFlash
 	
 	public String doCancelar() {
@@ -198,6 +200,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("figura", this.attrs.get("figura"));
 			JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
 			JsfBase.setFlashAttribute("opcionResidente", opcion);			
+			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 			regresar= "filtro".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

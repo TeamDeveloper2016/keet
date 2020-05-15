@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
@@ -41,7 +40,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
-import mx.org.kaana.xml.Dml;
 
 @Named(value = "keetCatalogosContratosDestajosFiltro")
 @ViewScoped
@@ -310,6 +308,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
+			if(this.attrs.get("opcionAdicional")!= null)
+				JsfBase.setFlashAttribute("opcionAdicional", (EOpcionesResidente)this.attrs.get("opcionAdicional"));												
 			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
 			JsfBase.setFlashAttribute("figura", figura);									
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									

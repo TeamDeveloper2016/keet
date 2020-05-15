@@ -60,6 +60,7 @@ public class Importar extends IBaseImportar implements Serializable {
     try {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
+			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -338,6 +339,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));			
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
+			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

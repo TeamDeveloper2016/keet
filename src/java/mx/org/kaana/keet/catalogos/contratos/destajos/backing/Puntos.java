@@ -54,6 +54,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
   		this.attrs.put("longitud", "-102.252030");
   		this.attrs.put("punto", new Point(21.890563, -102.252030));
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
+			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("claveEstacion", JsfBase.getFlashAttribute("claveEstacion"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
@@ -207,6 +208,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));									
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
+			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
