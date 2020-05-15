@@ -550,14 +550,14 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	} // toEstaciones
 
 	private void toLoadIncidente(Long idActivo, Long idEmpresaPersona) throws Exception {
-		this.getIncidente().setTipoIncidente(idActivo== 1L? ETiposIncidentes.ALTA.name(): ETiposIncidentes.BAJA.name());
-		this.getIncidente().setIdTipoIncidente(idActivo== 1L? ETiposIncidentes.ALTA.getKey(): ETiposIncidentes.BAJA.getKey());
-		this.getIncidente().setVigenciaInicio(LocalDate.now());
-		this.getIncidente().setVigenciaFin(LocalDate.now());
-		this.getIncidente().setIdIncidenteEstatus(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
-		this.getIncidente().setIdEmpresaPersona(idEmpresaPersona);
-		this.getIncidente().setObservaciones("INCIDENCIA REGISTRADA POR EL PROCESO DE CARGA MASIVA");
-		this.getIncidente().setCosto(0D);
+		this.incidente.setTipoIncidente(idActivo== 1L? ETiposIncidentes.ALTA.name(): ETiposIncidentes.BAJA.name());
+		this.incidente.setIdTipoIncidente(idActivo== 1L? ETiposIncidentes.ALTA.getKey(): ETiposIncidentes.BAJA.getKey());
+		this.incidente.setVigenciaInicio(LocalDate.now());
+		this.incidente.setVigenciaFin(LocalDate.now());
+		this.incidente.setIdIncidenteEstatus(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
+		this.incidente.setIdEmpresaPersona(idEmpresaPersona);
+		this.incidente.setObservaciones("INCIDENCIA REGISTRADA POR EL PROCESO DE CARGA MASIVA");
+		this.incidente.setCosto(0D);
 	}
 	
   private Boolean toPersonal(Session sesion, File archivo) throws Exception {
