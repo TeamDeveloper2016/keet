@@ -99,11 +99,11 @@
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
-								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte destajos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosDestajosFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosDestajosFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte destajos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosDestajosFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosDestajosFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>
 						</f:facet>												
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.nomina}">
 							<f:facet name="header">
