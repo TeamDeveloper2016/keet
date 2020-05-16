@@ -283,14 +283,14 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					LOG.info("["+ count+ " de "+ personal.size()+ "] Procesando: "+ persona.toString("clave")+ ", "+ empleado);
 					if(count== 1 && this.nomina.getIdNominaEstatus()< ENominaEstatus.ENPROCESO.getIdKey())
-						this.bitacora(sesion, ENominaEstatus.INICIADA.getIdKey());
+						this.bitacora(sesion, ENominaEstatus.ENPROCESO.getIdKey());
 					count++;
 					if(!monitoreo.isCorriendo())
 						break;
 				} // for
 				this.toTakeOutPersonas(sesion);
 				this.reprocesarProveedores(sesion, monitoreo);
-				if(count> 0 && this.nomina.getIdNominaEstatus()<= ENominaEstatus.ENPROCESO.getIdKey())
+				if(count> 0 && this.nomina.getIdNominaEstatus()< ENominaEstatus.CALCULADA.getIdKey())
 					this.bitacora(sesion, ENominaEstatus.CALCULADA.getIdKey());
 			} // if
 		} // try

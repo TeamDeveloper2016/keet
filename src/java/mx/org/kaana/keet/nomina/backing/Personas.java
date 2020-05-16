@@ -286,6 +286,8 @@ public class Personas extends IBaseFilter implements Serializable {
       reporteSeleccion= EReportes.valueOf(nombre);  
       params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
 			params.put("idNomina", entity.toLong("idNomina"));
+			params.put("nomina", entity.toString("nomina"));
+			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
 			comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();
