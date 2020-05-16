@@ -24,6 +24,7 @@
 		requested   : '\\:solicitados',
 		prices      : '\\:precios',
 		keys        : '\\:keys',
+		multiplos   : '\\:multiplos',
 		locks       : '\\:locks',
 		origins     : '\\:origins',
 		values      : '\\:values',
@@ -585,6 +586,9 @@
 		key: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.keys;
 		},
+		multiplo: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.multiplos;
+		},
 		lock: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.locks;
 		},
@@ -727,9 +731,18 @@
 			if($(this.amount()) && value.length> 0 && this.isFlotante(value)) {
 			  $(this.amount()).val(value);
 				var ok= janal.precio($(this.amount()), value);
-				if(ok.error)
+				if(ok.error) 
 				  $(this.amount()).val(temp);
 				else {
+					// calcular el multiplo 
+					var multiplo= parseFloat($(this.multiplo()).val(), 10);
+					if(multiplo!== NaN && multiplo> 1) {
+					  var entero= Math.trunc(parseFloat(ok.value, 10)/ multiplo)+ (parseFloat(ok.value, 10)%multiplo> 0? 1: 0);
+						$(this.amount()).val(entero* multiplo);
+					} // if	
+					else 
+						if($(this.multiplo()).val()!== 1)
+						  $(this.multiplo()).val(1);
     			janal.console('jsArticulo.refresh: ');
 					this.set('');
 	 				refresh(this.cursor.index);

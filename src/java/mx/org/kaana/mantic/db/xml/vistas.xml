@@ -6142,7 +6142,6 @@
 				  tc_mantic_empresas.nombre as nombre_empresa,  
           tc_mantic_articulos_codigos.codigo,
           tc_mantic_articulos_codigos.codigo as propio,
-				  ifnull(tc_mantic_articulos_codigos.multiplo, 1) as multiplo,
 				  tc_mantic_articulos.id_articulo,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.precio,
@@ -6194,7 +6193,8 @@
 					tc_mantic_ordenes_detalles.registro,
 					tc_mantic_ordenes_detalles.cantidad as cuantos,
           tc_mantic_ordenes_detalles.cantidad as inicial,
-				  tc_mantic_articulos.precio as valor
+				  tc_mantic_articulos.precio as valor,
+				  tc_mantic_articulos_codigos.multiplo
         from      
           tc_mantic_ordenes_detalles
         inner join

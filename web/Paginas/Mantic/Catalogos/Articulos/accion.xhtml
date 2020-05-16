@@ -17,11 +17,19 @@
 				'contenedorGrupos\\:alto'           : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:largo'          : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:descripcion'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:menudeo'        : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:medio'          : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:mayoreo'        : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:sat'            : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:iva'            : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:pesoEstimado'   : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:desperidicio'   : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:idTipoArticulo' : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:meta'           : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:metaDescripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:metaTeclado'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
 				'codigo'                            : {multiple: '$', validaciones: 'requerido', mascara: 'codigo', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del codigo'},
+				'multiplo'                          : {multiple: '$', validaciones: 'requerido|entero', mascara: 'entero', individual: true, mensaje:'Es necesario la captura del multiplo'},
 				'nombres'                           : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del nombre de la especificacion'},
 				'valor'                             : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor de la especificacion'},
 				'obsv'                              : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
@@ -112,8 +120,16 @@
 								<p:outputLabel for="idBarras" value="Código de barras:"/>
 								<p:inputSwitch id="idBarras" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idBarras}" offLabel="NO" onLabel="SI"/>
 								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="idVigente" value="Vigente/Activo:" styleClass="janal-color-blue strong"/>
-								<p:inputSwitch id="idVigente" styleClass="janal-wid-100-txt janal-color-blue strong" value="#{manticCatalogosArticulosAccion.registroArticulo.idVigente}" offLabel="NO" onLabel="SI"/>
+								<p:outputLabel for="idVigente" value="Vigente:" styleClass="janal-color-blue strong"/>
+								<p:selectOneMenu id="idVigente" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idVigente}" styleClass="janal-wid-100-txt">									
+									<f:selectItem itemLabel="SI" itemValue="1"/>
+									<f:selectItem itemLabel="NO" itemValue="2"/>
+								</p:selectOneMenu>								
+								<p:outputLabel for="idDescontinuado" value="Descontinuado:" styleClass="janal-color-blue strong"/>
+								<p:selectOneMenu id="idDescontinuado" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idDescontinuado}" styleClass="janal-wid-100-txt">									
+									<f:selectItem itemLabel="SI" itemValue="1"/>
+									<f:selectItem itemLabel="NO" itemValue="2"/>
+								</p:selectOneMenu>								
               </p:panelGrid>
 						</p:tab>						
             <p:tab id="tabCodigos" title="Códigos">														
@@ -121,12 +137,16 @@
 								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="15" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt proveedores-codigo" value="#{codigo.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
-											<p:ajax update="tablaCodigos" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<p:ajax update="tablaCodigos @(.multiplo)" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.refresh(); janal.desbloquear();"/>
+											<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>				
 									<p:column headerText="Código" styleClass="janal-wid-30 codigo">		
 										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}" onblur="lookForCodigo($(this).attr('id'), $(this).val(), #{index}); simpleProcess();"/>	
+									</p:column>
+									<p:column headerText="Multiplo" styleClass="janal-wid-30 codigo">		
+										<p:inputText id="multiplo#{codigo.key}" styleClass="janal-wid-100-txt multiplo" value="#{codigo.multiplo}" onblur="$(this).val().trim().length=== 0? '1': $(this).val().trim()" style="display: #{empty codigo.idProveedor or codigo.idProveedor eq -1? 'none': ''}"/>	
 									</p:column>
 									<p:column headerText="Principal" styleClass="janal-wid-5" style="text-align: center">
 										<p:selectBooleanCheckbox value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal}" onblur="simpleProcess();">
@@ -183,8 +203,7 @@
 								<p:outputLabel value="Respetar todos los articulos que cuentan con esta imagen." styleClass="janal-color-blue"/>								
 							</p:panelGrid>
 						</p:tab>
-						<!--p:tab id="tabDescuentos" title="Descuentos" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}"-->
-						<p:tab id="tabDescuentos" title="Descuentos" rendered="false">
+						<p:tab id="tabDescuentos" title="Descuentos" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaDescuentos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaDescuentos" rowIndexVar="index" var="descuento" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuento.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Porcentaje" styleClass="janal-wid-20 porcDesc">		
@@ -243,8 +262,7 @@
 								</p:selectOneMenu>								
 							</p:panelGrid>	
 						</p:tab>
-						<!--p:tab title="Ofertas" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}"-->
-						<p:tab title="Ofertas" rendered="false">
+						<p:tab title="Ofertas" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaPreciosSugeridos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaPreciosSugeridos" rowIndexVar="index" var="precioSugerido" value="#{manticCatalogosArticulosAccion.registroArticulo.preciosSugeridos}" rows="6" paginator="false" reflow="true" rowKey="#{precioSugerido.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										

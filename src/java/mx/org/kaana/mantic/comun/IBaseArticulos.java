@@ -26,6 +26,7 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfUtilities;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -57,12 +58,14 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   private IAdminArticulos adminOrden;
 	private StreamedContent detailImage;
 	private String precio;
+	protected String pathImage;
 
 	public IBaseArticulos() {
 		this("precio");
 		this.attrs.put("paginator", false); 
 		this.attrs.put("filterName", "");
 		this.attrs.put("filterCode", "");
+		this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/");
 	}
 
 	public IBaseArticulos(String precio) {
@@ -89,6 +92,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		this.precio=precio;
 	}
 
+	public String getPathImage() {
+		return pathImage;
+	}
+	
   protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
 		Articulo temporal= this.adminOrden.getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();
@@ -102,8 +109,17 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
 				temporal.setIdProveedor(this.adminOrden.getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
-				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
-				temporal.setCodigo(codigo== null? articulo.containsKey("codigo")? articulo.toString("codigo"): "": codigo.toString());
+				// verificar el codigo principal del articulo y recuperar el valor del multiplo paras las ordenes de compra
+				Entity codigo= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosCodigosDto", "codigo", params);
+				if(codigo== null || codigo.isEmpty()) {
+  				temporal.setCodigo(articulo.containsKey("codigo")? articulo.toString("codigo"): "");
+					temporal.setMultiplo(1L);
+				} // if
+				else {
+				  temporal.setCodigo(codigo.toString("codigo"));
+				  temporal.setMultiplo(codigo.toLong("multiplo"));
+					temporal.setCantidad(Double.valueOf(temporal.getMultiplo()));
+				}	// else
 				if(Cadena.isVacio(articulo.toString("propio")))
 					LOG.warn("El articulo ["+ articulo.toLong("idArticulo")+" ] no tiene codigo asignado '"+ articulo.toString("nombre")+ "'");
 				temporal.setPropio(articulo.toString("propio"));
@@ -140,9 +156,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
 				temporal.setPrecio(articulo.toDouble("precio"));				
 				
-				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				temporal.setStock(stock== null? 0D: stock.toDouble());
-
+				// RECUPERA EL STOCK DEL ALMACEN MAS SABER SI YA FUE HUBO UN CONTEO O NO
+				Entity inventario= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "stock", params);
+				if(inventario!= null && inventario.size()> 0) {
+				  temporal.setStock(inventario.toDouble("stock"));
+				  temporal.setIdAutomatico(inventario.toLong("idAutomatico"));
+				} // if
 				// Esto es para cuando se agregan articulos de forma directa del archivo XML
 				if(articulo.containsKey("disponible")) 
   				temporal.setDisponible(articulo.toBoolean("disponible"));
@@ -679,25 +698,26 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
   	this.doSearchArticulo(seleccionado.toLong("idArticulo"), 0);
 		Map<String, Object> params= null;
-		Value codigo, stock       = null;
+		Value stock               = null;
 		try {
 			params=new HashMap<>();
 			params.put("idArticulo", seleccionado.toLong("idArticulo"));
 			params.put("idProveedor", this.adminOrden.getIdProveedor());
 			params.put("idAlmacen", this.adminOrden.getIdAlmacen());
-			codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+      // verificar el codigo principal del articulo y recuperar el valor del multiplo paras las ordenes de compra
+			Entity codigo= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosCodigosDto", "codigo", params);			
   		stock = (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 			Long multiplo= 1L;
-			if(seleccionado.containsKey("multiplo"))
+			if(codigo!= null && !codigo.isEmpty()) 
 			  multiplo= seleccionado.toLong("multiplo");
-			Double cantidad= seleccionado.toDouble("cantidad");
+			Double cantidad= codigo.toDouble("cantidad");
 			if(multiplo> 1) 
 			  cantidad= (multiplo* (int)(cantidad/ multiplo))+ (cantidad% multiplo== 0? 0D: multiplo);
 			Articulo item= new Articulo(
 				(Boolean)this.attrs.get("sinIva"),
 				this.getAdminOrden().getTipoDeCambio(),
 				seleccionado.toString("nombre"), 
-				codigo== null? "": codigo.toString(),
+				codigo== null || Cadena.isVacio(codigo.toString("codigo"))? "": codigo.toString("codigo"),
 				seleccionado.toDouble(this.precio),
 				this.getAdminOrden().getDescuento(), 
 				-1L,
@@ -720,7 +740,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				"",
 				1L
 			);
-			// item.setMultiplo(multiplo);
+			item.setMultiplo(multiplo);
 			int position= this.getAdminOrden().getArticulos().indexOf(item);
 			if(this.getAdminOrden().getArticulos().size()> 1 && position>= 0) {
 				Articulo articulo= this.getAdminOrden().getArticulos().get(position);

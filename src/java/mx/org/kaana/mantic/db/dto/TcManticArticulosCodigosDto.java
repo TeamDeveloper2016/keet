@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,9 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="registro")
-  private LocalDateTime registro;
+  private Timestamp registro;
+  @Column (name="multiplo")
+  private Long multiplo;
 
   public TcManticArticulosCodigosDto() {
     this(new Long(-1L));
@@ -59,6 +61,10 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosCodigosDto(String codigo, Long idProveedor, Long idUsuario, Long idPrincipal, String observaciones, Long idArticuloCodigo, Long orden, Long idArticulo) {
+ 		this(codigo, idProveedor, idUsuario, idPrincipal, observaciones, idArticuloCodigo, orden, idArticulo, 1L);
+	}
+	
+  public TcManticArticulosCodigosDto(String codigo, Long idProveedor, Long idUsuario, Long idPrincipal, String observaciones, Long idArticuloCodigo, Long orden, Long idArticulo, Long multiplo) {
     setCodigo(codigo);
     setIdProveedor(idProveedor);
     setIdUsuario(idUsuario);
@@ -67,7 +73,8 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
     setIdArticuloCodigo(idArticuloCodigo);
     setOrden(orden);
     setIdArticulo(idArticulo);
-    setRegistro(LocalDateTime.now());
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this.multiplo= multiplo;
   }
 	
   public void setCodigo(String codigo) {
@@ -134,13 +141,21 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setRegistro(LocalDateTime registro) {
+  public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
 
-  public LocalDateTime getRegistro() {
+  public Timestamp getRegistro() {
     return registro;
   }
+
+	public Long getMultiplo() {
+		return multiplo;
+	}
+
+	public void setMultiplo(Long multiplo) {
+		this.multiplo=multiplo;
+	}
 
   @Transient
   @Override
@@ -174,6 +189,8 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMultiplo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -190,13 +207,14 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("registro", getRegistro());
+		regresar.put("multiplo", getMultiplo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getIdProveedor(), getIdUsuario(), getIdPrincipal(), getObservaciones(), getIdArticuloCodigo(), getOrden(), getIdArticulo(), getRegistro()
+    getCodigo(), getIdProveedor(), getIdUsuario(), getIdPrincipal(), getObservaciones(), getIdArticuloCodigo(), getOrden(), getIdArticulo(), getRegistro(), getMultiplo()
     };
     return regresar;
   }

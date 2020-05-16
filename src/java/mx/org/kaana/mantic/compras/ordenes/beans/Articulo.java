@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +62,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private String morado;
 	private String porcentajes;
 	private boolean facturado;
+	private long multiplo;
+	private long idAutomatico;
 
 	public Articulo() {
 		this(-1L);
@@ -85,7 +87,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public Articulo(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida, Long idAplicar, String origen) {
-		super(idArticulo, codigo, costo, descuento, extras, importe, LocalDateTime.now(), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, sat, unidadMedida, excedentes, idAplicar, origen);
+		super(idArticulo, codigo, costo, descuento, extras, importe, new Timestamp(Calendar.getInstance().getTimeInMillis()), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, sat, unidadMedida, excedentes, idAplicar, origen);
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
 		this.idProveedor = idProveedor;
 		this.sinIva      = sinIva;
@@ -105,6 +107,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.morado      = "0";
 		this.porcentajes = "0";
 		this.facturado   = false;
+		this.multiplo    = 1;
+		this.idAutomatico= 1;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -273,6 +277,22 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public void setFacturado(boolean facturado) {
 		this.facturado=facturado;
+	}
+
+	public long getMultiplo() {
+		return multiplo;
+	}
+
+	public void setMultiplo(long multiplo) {
+		this.multiplo=multiplo;
+	}
+
+	public long getIdAutomatico() {
+		return idAutomatico;
+	}
+
+	public void setIdAutomatico(long idAutomatico) {
+		this.idAutomatico=idAutomatico;
 	}
 	
 	public String getImporte$() {

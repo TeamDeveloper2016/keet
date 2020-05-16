@@ -115,7 +115,7 @@
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -129,7 +129,7 @@
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -139,6 +139,7 @@
 								</p:selectOneMenu>
                 <p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -180,7 +181,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="entregaEstimada" value="Entrega estimada:"/>
-								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idGasto" value="Es un gasto:"/>
 								<p:selectOneMenu id="idGasto" value="#{manticComprasOrdendesAccion.adminOrden.orden.idGasto}" styleClass="janal-wid-99">  
@@ -279,12 +280,15 @@
 														<div class="ui-grid-col-12" style="padding-right: 14px;">
 															<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 															<p:inputText id="locks" value="0" style="display:none"/>
+															<p:inputText id="multiplos" value="#{row['multiplo']}" style="display:none"/>
 															<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10">
 																<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 																<f:facet name="itemtip">
 																	<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-col-300" columnClasses="janal-wid-col-110, janal-wid-100">
 																		<f:facet name="header" class="TexAlCenter">
-																			<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-log-mini" width="30"/>
+																			<a data-magnify="gallery" href="#{manticComprasOrdendesAccion.pathImage}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
+																				<p:graphicImage url="#{manticComprasOrdendesAccion.pathImage}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
+																			</a>
 																		</f:facet>
 																		<h:outputText value="Código:" />
 																		<h:outputText value="#{custom.propio}" />
@@ -292,8 +296,6 @@
 																		<p:outputLabel value="$ #{custom.precio}" styleClass="janal-color-blue janal-font-bold"/>
 																		<h:outputText value="Proveedor:" />
 																		<h:outputText value="#{custom.codigo}" />
-																		<h:outputText value="Nombre:" />
-																		<h:outputText value="#{custom.nombre}" />
 																	</p:panelGrid>
 																</f:facet>
 															</p:autoComplete>												
@@ -308,7 +310,7 @@
 													<f:facet name="header">
 														<h:outputText value="Articulo"/>
 													</f:facet>
-													<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false" styleClass="#{empty(row['propio'])? 'janal-color-red janal-font-bold': ''}"/>
+													<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}  Multiplo: #{row['multiplo']}" escape="false" styleClass="#{empty(row['propio'])? 'janal-color-red janal-font-bold': row['multiplo'] gt 1? 'janal-color-blue janal-font-bold': ''}"/>
 												</p:column>		
 												<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-6">
 													<f:facet name="header">
@@ -534,8 +536,8 @@
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
-						<p:tab title="Faltantes">
-							<p:dataTable id="faltantes" var="row" value="#{manticComprasOrdendesAccion.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
+						<p:tab title="Faltantes almacen">
+							<p:dataTable id="faltantes" var="row" value="#{manticComprasOrdendesAccion.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
 									<p:commandButton title="Refrescar articulos faltantes" icon="fa fa-refresh" process="@this" update="faltantes" action="#{manticComprasOrdendesAccion.doLoadFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
@@ -621,15 +623,19 @@
 							</p:panelGrid>
 							<p:dataTable id="perdidos" var="row" value="#{manticComprasOrdendesAccion.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{manticComprasOrdendesAccion.recordCount}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:menuButton styleClass="lg-pantalla" value="Opciones">
-										<p:menuitem value="Actualizar" title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
-										<p:separator/>
-										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
-										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
-									</p:menuButton>
-									<p:commandButton styleClass="xs-pantalla" title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
-									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
-									<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
+									<div class="lg-pantalla">
+										<p:menuButton value="Opciones">
+    									<p:menuitem value="Actualizar" title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+											<p:separator/>
+											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
+										</p:menuButton>
+									</div>  
+									<div class="xs-pantalla">              
+  									<p:commandButton title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+										<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
+										<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
+									</div>  
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">
