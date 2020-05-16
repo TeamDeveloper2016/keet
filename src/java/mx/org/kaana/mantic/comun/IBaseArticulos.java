@@ -687,6 +687,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			params.put("idAlmacen", this.adminOrden.getIdAlmacen());
 			codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
   		stock = (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+			Long multiplo= 1L;
+			if(seleccionado.containsKey("multiplo"))
+			  multiplo= seleccionado.toLong("multiplo");
+			Double cantidad= seleccionado.toDouble("cantidad");
+			if(multiplo> 1) 
+			  cantidad= (multiplo* (int)(cantidad/ multiplo))+ (cantidad% multiplo== 0? 0D: multiplo);
 			Articulo item= new Articulo(
 				(Boolean)this.attrs.get("sinIva"),
 				this.getAdminOrden().getTipoDeCambio(),
@@ -701,7 +707,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				seleccionado.toDouble("iva"), 
 				0D,
 				0D,
-				seleccionado.toDouble("cantidad"), 
+				cantidad, 
 				-1* idOrdenDetalle, 
 				seleccionado.toLong("idArticulo"), 
 				0D,
@@ -714,6 +720,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				"",
 				1L
 			);
+			// item.setMultiplo(multiplo);
 			int position= this.getAdminOrden().getArticulos().indexOf(item);
 			if(this.getAdminOrden().getArticulos().size()> 1 && position>= 0) {
 				Articulo articulo= this.getAdminOrden().getArticulos().get(position);
