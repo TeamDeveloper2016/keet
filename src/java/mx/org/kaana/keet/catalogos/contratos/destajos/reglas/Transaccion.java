@@ -121,7 +121,7 @@ public class Transaccion extends IBaseTnx {
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
-					params.put("cargo".concat(dto.getSemana().toString()), ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) + dto.getCosto());										
+					params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) + dto.getCosto());										
 					if(inicioTrabajo){
 						actualizaInicioContratoLote(sesion, true);
 						//params.put("abono".concat(dto.getSemana().toString()), dto.getCosto());
@@ -165,7 +165,7 @@ public class Transaccion extends IBaseTnx {
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
-					params.put("cargo".concat(dto.getSemana().toString()), ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) + dto.getCosto());					
+					params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) + dto.getCosto());					
 					if(inicioTrabajo){
 						actualizaInicioContratoLote(sesion, true);
 						//params.put("abono".concat(dto.getSemana().toString()), dto.getCosto());
@@ -210,7 +210,7 @@ public class Transaccion extends IBaseTnx {
 					if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 						params.clear();
 						params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, costo));
-						params.put("cargo".concat(dto.getSemana().toString()), ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) - costo);											
+						params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString()))!= null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : null) - costo);											
 						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoContratista(), true)){							
 							actualizaInicioContratoLote(sesion, false);
 							//params.put("abono".concat(dto.getSemana().toString()), 0D);
@@ -253,7 +253,7 @@ public class Transaccion extends IBaseTnx {
 					if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 						params= new HashMap<>();
 						params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, dto.getCosto()));
-						params.put("cargo".concat(dto.getSemana().toString()), ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) - costo);											
+						params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) - costo);											
 						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoProveedor(), false)){
 							actualizaInicioContratoLote(sesion, false);
 							//params.put("abono".concat(dto.getSemana().toString()), 0D);
@@ -395,11 +395,14 @@ public class Transaccion extends IBaseTnx {
 	} // toPeriodo	
 	
 	private Long toIdEstacionEstatus(TcKeetEstacionesDto estacion, Double costoActual){
-		Long regresar   = -1L;		
-		Double acumulado= 0D;
+		Long regresar       = -1L;		
+		Double acumulado    = 0D;
+		Double cargoEstacion= 0D;
 		try {
-			for(int count=0; count<55; count++)
-				acumulado= acumulado + ((Double) estacion.toValue("cargo".concat(String.valueOf(count+1))));
+			for(int count=0; count<55; count++){
+				cargoEstacion= estacion.toValue("cargo".concat(String.valueOf(count+1)))!= null ? ((Double) estacion.toValue("cargo".concat(String.valueOf(count+1)))) : 0D;
+				acumulado= acumulado + cargoEstacion;
+			} // for
 			acumulado= acumulado + costoActual;			
 			regresar= acumulado>= estacion.getCosto() ? EEstacionesEstatus.TERMINADO.getKey() : EEstacionesEstatus.EN_PROCESO.getKey();			
 		} // try
@@ -448,20 +451,22 @@ public class Transaccion extends IBaseTnx {
 	} // actualizaInicioContratoLote
 	
 	private boolean actualizaEstacionPadre(Session sesion, TcKeetEstacionesDto hijo, Double total, String semana, boolean alta) throws Exception{
-		boolean regresar         = false;
+		boolean regresar         = true;
 		Estaciones estaciones    = null;
-		TcKeetEstacionesDto padre= null;
+		List<TcKeetEstacionesDto> padres= null;
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			estaciones= new Estaciones();
-			padre= estaciones.getFather(hijo.getClave());			
-			params.put("idEstacionEstatus", toIdEstacionEstatus(padre, total));
-			if(alta)
-				params.put("cargo".concat(semana), ((Double)padre.toValue("cargo".concat(semana))) + total);								
-			else
-				params.put("cargo".concat(semana), ((Double)padre.toValue("cargo".concat(semana))) - total);								
-			regresar= DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, padre.getIdEstacion(), params)>= 1L;
+			padres= estaciones.toFather(hijo.getClave());			
+			for(TcKeetEstacionesDto padre: padres){
+				params.put("idEstacionEstatus", toIdEstacionEstatus(padre, total));
+				if(alta)
+					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana)) != null ? ((Double)padre.toValue("cargo".concat(semana))) : 0D) + total);								
+				else
+					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana)) != null ? ((Double)padre.toValue("cargo".concat(semana))) : 0D) - total);								
+				DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, padre.getIdEstacion(), params);
+			} // for
 		} // try
 		catch (Exception e) {			
 			throw e; 
