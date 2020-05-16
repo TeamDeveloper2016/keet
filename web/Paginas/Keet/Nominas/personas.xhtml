@@ -272,12 +272,12 @@
 								<p:separator/>
 								<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
                 <p:separator/>
-								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte destajos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DESTAJOS_CONTATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte destajos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DESTAJOS_CONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('destajoPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('destajoXls', 'destajo')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
-              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte destajos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DESTAJOS_CONTATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte destajos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DESTAJOS_CONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 						</f:facet>												
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
 							<f:facet name="header">
