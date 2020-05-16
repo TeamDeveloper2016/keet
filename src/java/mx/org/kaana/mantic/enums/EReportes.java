@@ -58,9 +58,11 @@ public enum EReportes implements IReportAttribute{
   RESUMEN_NOMINA_SUBC       ("VistaNominaReportesDto", "resumen", " Resumen de nómina de los subcontratistas", "/Paginas/Keet/Nominas/Reportes/nominaSubcontratistas", EFormatos.PDF, "resumen_nomina_subcontratista", "/Paginas/Keet/Nominas/filtro"),
   LISTADO_NOMINA            ("VistaNominaDto", "lazy", "Listado de nómina", "/Paginas/Keet/Nominas/Reportes/nomina", EFormatos.PDF, "listado_nomina", "/Paginas/Keet/Nominas/filtro"),
   DETALLE_NOMINA_PERSONAS   ("VistaNominaConsultasDto", "personas", "Detalle nómina", "/Paginas/Keet/Nominas/Reportes/detallePersona", EFormatos.PDF, "detalle_nomina_persona", "/Paginas/Keet/Nominas/filtro"),
-  DESTAJOS_CONTATISTA       ("VistaNominaConsultasDto", "personas", "Detalle destajos contratista", "/Paginas/Keet/Nominas/Reportes/detalleDestajosContratistas", EFormatos.PDF, "detalle_destajos_contratista", "/Paginas/Keet/Nominas/filtro"),
-  DESTAJOS_CAT_CONTATISTA   ("VistaNominaConsultasDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
-  DESTAJOS_CAT_SUBCONTATISTA ("VistaNominaConsultasDto", "destajoProveedor", "Destajos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro");
+  DESTAJOS_CONTRATISTA       ("VistaNominaConsultasDto", "personas", "Detalle destajos contratista", "/Paginas/Keet/Nominas/Reportes/detalleDestajosContratistas", EFormatos.PDF, "detalle_destajos_contratista", "/Paginas/Keet/Nominas/filtro"),
+  DESTAJOS_CAT_CONTRATISTA   ("VistaNominaConsultasDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
+  DESTAJOS_CAT_SUBCONTRATISTA("VistaNominaConsultasDto", "destajoProveedor", "Destajos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
+  DESTAJOS_TOTALES_SUBCONTRATISTA("VistaNominaConsultasReportesDto", "destajoProveedor", "Destajos completos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_completos_subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
+  DESTAJOS_TOTALES_CONTRATISTA("VistaNominaConsultasReportesDto", "destajoPersona", "Destajos completos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_completos_contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro");
 	
 	
 	private final String proceso;
