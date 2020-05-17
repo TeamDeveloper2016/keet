@@ -273,11 +273,14 @@
 								<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
                 <p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DESTAJOS_CONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-envelope-o" value="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('destajoPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('destajoXls', 'destajo')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-download" title="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DESTAJOS_CONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-envelope-o" title="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
 						</f:facet>												
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
 							<f:facet name="header">
@@ -336,4 +339,28 @@
       </div>
     </div>		           				
   </ui:define>    
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar correo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">													
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{keetNominasPersonas.correos}" selection="#{keetNominasPersonas.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del empleado">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{keetNominasPersonas.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{keetNominasPersonas.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{keetNominasPersonas.doSendMail('DESTAJOS_CONTRATISTA')}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
 </ui:composition>
