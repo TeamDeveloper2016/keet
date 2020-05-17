@@ -26,6 +26,7 @@
 					tr_mantic_empresa_personal.nss,
 					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
 					tc_mantic_personas.apodo,
+					tc_mantic_personas.id_persona,
 					tc_keet_nominas_personas.percepciones,
 					tc_keet_nominas_personas.deducciones,
 					tc_keet_nominas_personas.neto,
