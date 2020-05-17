@@ -17,7 +17,6 @@ import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorContactoAgente;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDepartamento;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDomicilio;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorMaterial;
-import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
@@ -30,7 +29,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	private Long idProveedor;
 	
 	public MotorBusqueda(Long idProveedor) {
-		this.idProveedor= idProveedor;
+		super(idProveedor);
+		this.idProveedor= idProveedor;		
 	} // MotoBusqueda
 	
 	public TcManticProveedoresDto toProveedor() throws Exception{
@@ -93,24 +93,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toProveedoresDomicilio
-	
-	public List<ProveedorTipoContacto> toProveedoresTipoContacto() throws Exception {
-		List<ProveedorTipoContacto> regresar= null;
-		Map<String, Object>params    = null;
-		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_proveedor=" + this.idProveedor);
-			regresar= DaoFactory.getInstance().toEntitySet(ProveedorTipoContacto.class, "TrManticProveedorTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-		return regresar;
-	} // toProveedoresTipoContacto
+	} // toProveedoresDomicilio	
 	
 	public List<ProveedorDepartamento> toProveedoresDepartamentos() throws Exception {
 		List<ProveedorDepartamento> regresar= null;
