@@ -24,11 +24,18 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasRubrosDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
+import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
+import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -54,6 +61,9 @@ public class Transaccion extends IBaseTnx {
 	private Nomina calculos;
 	private Factura factura;
 	private TcKeetNominasBitacoraDto bitacora;
+	private Long idFigura;
+	private Long idTipoFigura;
+	private Correo correo;
 	
 	public Transaccion(Long idNomina) {
 		this(idNomina, new Autentifica());
@@ -83,12 +93,18 @@ public class Transaccion extends IBaseTnx {
 	}
 	
 	private Transaccion(Long idNomina, Autentifica autentifica, Long idEmpresaPersona, Long idProveedor) {
-		this.idNomina= idNomina;
-		this.autentifica= autentifica;
+		this.idNomina        = idNomina;
+		this.autentifica     = autentifica;
 		this.idEmpresaPersona= idEmpresaPersona;
-		this.idProveedor= idProveedor;
+		this.idProveedor     = idProveedor;
 	}
 
+	public Transaccion(Long idFigura, Long idTipoFigura, Correo correo) {
+		this.idFigura    = idFigura;
+		this.idTipoFigura= idTipoFigura;
+		this.correo      = correo;
+	}	
+	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar          = true;
@@ -96,14 +112,16 @@ public class Transaccion extends IBaseTnx {
     try {
       this.messageError= "Ocurrio un error en el proceso de calculo de la nómina.";
 			params= new HashMap<>();
-			if(this.idNomina== -1L) {
-				DaoFactory.getInstance().insert(sesion, this.nomina);
-				this.idNomina= this.nomina.getIdNomina();
+			if(!accion.equals(EAccion.COMPLEMENTAR)){
+				if(this.idNomina== -1L) {
+					DaoFactory.getInstance().insert(sesion, this.nomina);
+					this.idNomina= this.nomina.getIdNomina();
+				} // if
+				else
+					this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
+				this.calculos= new Nomina(sesion, this.nomina);
+				this.factura = new Factura(sesion, this.nomina);
 			} // if
-			else
-			  this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
-			this.calculos= new Nomina(sesion, this.nomina);
-			this.factura = new Factura(sesion, this.nomina);
 			switch(accion) {
 				case AGREGAR:
 					switch(this.nomina.getIdNominaEstatus().intValue()) {
@@ -135,6 +153,12 @@ public class Transaccion extends IBaseTnx {
 						this.toOpenNewNomina(sesion);
 						// FALTA HACER EL PROCESO DE MOVER LOS SALDOS A LA NUEVA SEMANA
 					} // if
+					break;
+				case COMPLEMENTAR:
+					if(this.idTipoFigura.equals(1L))
+						regresar= agregarPersonaContacto(sesion);
+					else
+						regresar= agregarProveedorContacto(sesion);
 					break;
 			} // switch
 		} // try
@@ -640,4 +664,93 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 	}
 	
+	private boolean agregarPersonaContacto(Session sesion) throws Exception{
+		boolean regresar                       = true;
+		List<PersonaTipoContacto> correos      = null;
+		TrManticPersonaTipoContactoDto contacto= null;
+		int count                              = 0;
+		Long records                           = 1L;
+		try {
+			correos= toPersonasTipoContacto(sesion);
+			if(!correos.isEmpty()){
+				for(PersonaTipoContacto tipoContacto: correos){
+					if(tipoContacto.getValor().equals(this.correo.getDescripcion()))
+						count++;
+				} // for				
+				records= correos.size() + 1L;
+			} // if
+			if(count== 0){
+				contacto= new TrManticPersonaTipoContactoDto();
+				contacto.setIdPersona(this.idFigura);
+				contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
+				contacto.setIdUsuario(JsfBase.getIdUsuario());
+				contacto.setValor(this.correo.getDescripcion());
+				contacto.setOrden(records);
+				regresar= DaoFactory.getInstance().insert(sesion, contacto)>= 1L;
+			} // else
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // agregarContacto
+	
+	private boolean agregarProveedorContacto(Session sesion) throws Exception{
+		boolean regresar                         = true;
+		List<ProveedorTipoContacto> correos      = null;
+		TrManticProveedorTipoContactoDto contacto= null;
+		int count                                = 0;
+		Long records                             = 1L;
+		try {
+			correos= toProveedorTipoContacto(sesion);
+			if(!correos.isEmpty()){
+				for(ProveedorTipoContacto tipoContacto: correos){
+					if(tipoContacto.getValor().equals(this.correo.getDescripcion()))
+						count++;
+				} // for				
+				records= correos.size() + 1L;
+			} // if
+			if(count== 0){
+				contacto= new TrManticProveedorTipoContactoDto();
+				contacto.setIdProveedor(this.idFigura);
+				contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
+				contacto.setIdUsuario(JsfBase.getIdUsuario());
+				contacto.setValor(this.correo.getDescripcion());
+				contacto.setOrden(records);
+				regresar= DaoFactory.getInstance().insert(sesion, contacto)>= 1L;
+			} // else
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // agregarContacto
+	
+	public List<PersonaTipoContacto> toPersonasTipoContacto(Session sesion) throws Exception {
+		List<PersonaTipoContacto> regresar= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idFigura + " and id_tipo_contacto=" + ETiposContactos.CORREO.getKey());
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, PersonaTipoContacto.class, "TrManticPersonaTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPersonasTipoContacto
+	
+	public List<ProveedorTipoContacto> toProveedorTipoContacto(Session sesion) throws Exception {
+		List<ProveedorTipoContacto> regresar= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_proveedor=" + this.idFigura + " and id_tipo_contacto=" + ETiposContactos.CORREO.getKey());
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, ProveedorTipoContacto.class, "TrManticProveedorTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedorTipoContacto
 }
