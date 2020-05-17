@@ -84,10 +84,9 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 			params= new HashMap<>();
 			condicion= this.toPrepare();									
       columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));									
-			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
-			params.put("nombreEmpleado", "");	
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());						
 			params.put(Constantes.SQL_CONDICION, condicion);	
-      nombres= (List<UISelectEntity>) UIEntity.seleccione("VistaContratosDto", "contratistas", params, columns, Constantes.SQL_TODOS_REGISTROS, "departamento");
+      nombres= (List<UISelectEntity>) UIEntity.seleccione("VistaContratosDto", "contratistasSubAsociados", params, columns, Constantes.SQL_TODOS_REGISTROS, "departamento");
       this.attrs.put("nombres", nombres);
 			this.attrs.put("nombre", UIBackingUtilities.toFirstKeySelectEntity(nombres));
 		} // try
@@ -110,9 +109,11 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 	
 	public String doAceptar() {
     String regresar        = null;
-		Transaccion transaccion= null;
+		Transaccion transaccion= null;		
+		UISelectEntity figura  = null;
     try {			
-			transaccion= new Transaccion(((UISelectEntity)this.attrs.get("nombre")).getKey(), (String[])this.attrs.get("idsLotes"));
+			figura= ((List<UISelectEntity>)this.attrs.get("nombres")).get(((List<UISelectEntity>)this.attrs.get("nombres")).indexOf(((UISelectEntity)this.attrs.get("nombre"))));			
+			transaccion= new Transaccion(Long.valueOf(figura.getKey().toString().substring(4)), (String[])this.attrs.get("idsLotes"), figura.toLong("tipo"));
 			if(transaccion.ejecutar(EAccion.REPROCESAR)){				
 				JsfBase.setFlashAttribute("idContrato", this.attrs.get("idContrato"));			
 				regresar= "lotes".concat(Constantes.REDIRECIONAR);			
