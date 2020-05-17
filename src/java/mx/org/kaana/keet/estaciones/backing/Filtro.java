@@ -264,7 +264,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public String doUpload() {
 		JsfBase.setFlashAttribute("ikContratoLote", -1L);
-		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.ESTACIONES.getId());
+		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PLANTILLAS.getId());
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
 		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}

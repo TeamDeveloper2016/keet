@@ -86,11 +86,13 @@ public class Importar extends IBaseImportar implements Serializable {
 					case 11:
 						this.categoria= ECargaMasiva.PLANTILLAS;
 						this.toLoadPlantillas();
+						toLoadPrototipos();
 						break;
 				} // switch
 			else {
 				this.categoria= ECargaMasiva.ESTACIONES;
 				this.toLoadContratosLotes();
+				toLoadPrototipos();
 			} // if
 			this.attrs.put("xls", ""); 
 			this.attrs.put("tuplas", 0L);
@@ -280,6 +282,27 @@ public class Importar extends IBaseImportar implements Serializable {
 			} // if
 			else
   		  this.attrs.put("idContratoLote", lotes.get(0));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+	
+	private void toLoadPrototipos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+ 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			List<UISelectEntity> lotes= UIEntity.build("TcKeetPrototiposDto", "byEmpresa", params, columns);
+  		this.attrs.put("plantillas", lotes);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -525,6 +525,17 @@
 				order by
 				  nombre 
       </select>
+			<select id="byEmpresa">
+        select      
+				  tc_keet_prototipos.id_prototipo id_key,
+          tc_keet_prototipos.*
+        from      
+          tc_keet_prototipos
+        where 
+          id_empresa in ({sucursales})
+				order by
+				  nombre 
+      </select>
       <select id="identically">
         select      
           *
