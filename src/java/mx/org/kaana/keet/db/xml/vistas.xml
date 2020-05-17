@@ -1622,6 +1622,86 @@
 					tc_mantic_puestos.nombre,
 					tc_mantic_personas.nombres
 			</select>
+			<select id="contratistasSubAsociados">
+				select 
+					principal.*
+				from (
+					select 
+						convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,						
+						concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) nombre_completo,
+						tc_mantic_puestos.nombre puesto,
+						tc_keet_departamentos.nombre departamento,						
+						tr_mantic_empresa_personal.id_activo,												
+						1 tipo  																																																
+					from 
+						tc_keet_proyectos
+					inner join 
+						tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+					inner join 
+						tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+					inner join 
+						tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_contratistas.id_contrato_lote
+					inner join 
+						tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona=tr_mantic_empresa_personal.id_empresa_persona
+					inner join 
+						tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					inner join 
+						tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+					inner join 
+						tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+					where 
+						tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
+				  and 
+						{condicion}
+					and 
+						tc_mantic_puestos.nombre= 'CONTRATISTA'
+					union
+					select 
+						convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,    						
+						tc_mantic_proveedores.razon_social nombre_completo,				
+						'SUBCONTRATISTA' puesto,  
+						(select 
+							group_concat(tc_keet_departamentos.nombre separator ', ')
+						from
+							tc_keet_proveedores_departamentos
+						inner join
+							tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+						where 
+							tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
+						group by
+							tc_keet_proveedores_departamentos.id_proveedor				  
+						 ) as departamento,
+						tc_mantic_proveedores.id_activo,												   										
+						2 tipo  
+					from 
+						tc_keet_proyectos
+					inner join 
+						tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+					inner join 
+						tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+					inner join 
+						tc_keet_contratos_lotes_proveedores on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_proveedores.id_contrato_lote
+					inner join 
+						tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
+					inner join 
+						tc_keet_proveedores_departamentos on tc_mantic_proveedores.id_proveedor = tc_keet_proveedores_departamentos.id_proveedor
+					inner join 
+						tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento
+					where 
+						tc_mantic_proveedores.id_empresa in ({idEmpresa})
+				  and 
+						{condicion}					
+				) principal
+				group by
+					id_key,					
+					nombre_completo,
+					puesto,
+					departamento,						
+					id_activo,											
+					tipo
+				order by 
+					tipo, nombre_completo
+			</select>	
 		</unit>
     <unit id="VistaPrototiposDto">
 			<select id="lazy">
@@ -2676,7 +2756,7 @@
 					select 
 						convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,    
 						tc_mantic_proveedores.razon_social nombre_completo,
-						'subcontratista' puesto,  
+						'SUBCONTRATISTA' puesto,  
 						2 tipo  
 					from 
 						tc_keet_proyectos
