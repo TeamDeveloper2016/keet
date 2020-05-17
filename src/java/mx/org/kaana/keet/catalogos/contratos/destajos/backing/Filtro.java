@@ -14,11 +14,10 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
-import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
 import mx.org.kaana.keet.comun.gps.Point;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
@@ -29,7 +28,6 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -43,18 +41,13 @@ import mx.org.kaana.mantic.enums.EReportes;
 
 @Named(value = "keetCatalogosContratosDestajosFiltro")
 @ViewScoped
-public class Filtro extends IBaseFilter implements Serializable {
+public class Filtro extends IBaseReporteDestajos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;			
 	private RegistroDesarrollo registroDesarrollo;		
 	private List<Entity> lotes;
 	private FormatLazyModel lazyDestajo;
-	private Nomina ultima;
-  protected Reporte reporte;
-	
-	public Reporte getReporte() {
-		return reporte;
-	}
+	private Nomina ultima;  
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
@@ -98,6 +91,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Long idDepartamento      = null;
 		UISelectEntity figura    = null;
     try {
+			initBase();
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -218,6 +212,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
 			idXml= figura.toLong("tipo").equals(1L) ? "lotesContratistas" : "lotesSubContratistas";
+			this.attrs.put("idTipoFiguraCorreo", figura.toLong("tipo"));
+			this.attrs.put("idFiguraCorreo", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
+			this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));
 	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);			
 			if(!this.lotes.isEmpty()) { 
 			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
@@ -378,7 +375,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally				
 	}
   
-   public void doReporte(String tipo) throws Exception {    
+	public void doReporte(String tipo) throws Exception {
+		doReporte(tipo, false);
+	} // doReporte	
+	
+	@Override
+   public void doReporte(String tipo, boolean sendMail) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
@@ -412,30 +414,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
 			params.put("idProveedor", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
       this.reporte= JsfBase.toReporte();
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      if(doVerificarReporte())
-        this.reporte.doAceptar();			
+      if(sendMail)
+        this.reporte.doAceptarSimple();			
+			else{
+				if(doVerificarReporte())
+					this.reporte.doAceptar();			
+			} // else			
     } // try
     catch(Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
-  } // doReporte 
-	
-	public boolean doVerificarReporte() {
-    boolean regresar = false;
-		if(this.reporte.getTotal()> 0L) {
-			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
-      regresar = true;
-    }
-		else {
-			UIBackingUtilities.execute("generalHide();");		
-			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-      regresar = false;
-		} // else
-    return regresar;
-	} // doVerificarReporte	
+  } // doReporte 	
 
 	public String doColorNomina(Entity row) {
 		return Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
