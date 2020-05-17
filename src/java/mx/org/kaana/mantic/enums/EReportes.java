@@ -61,8 +61,8 @@ public enum EReportes implements IReportAttribute{
   DESTAJOS_CONTRATISTA       ("VistaNominaConsultasDto", "personas", "Detalle destajos contratista", "/Paginas/Keet/Nominas/Reportes/detalleDestajosContratistas", EFormatos.PDF, "detalle_destajos_contratista", "/Paginas/Keet/Nominas/filtro"),
   DESTAJOS_CAT_CONTRATISTA   ("VistaNominaConsultasDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
   DESTAJOS_CAT_SUBCONTRATISTA("VistaNominaConsultasDto", "destajoProveedor", "Destajos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
-  DESTAJOS_TOTALES_SUBCONTRATISTA("VistaNominaConsultasReportesDto", "destajoProveedor", "Destajos completos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_completos_subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
-  DESTAJOS_TOTALES_CONTRATISTA("VistaNominaConsultasReportesDto", "destajoPersona", "Destajos completos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_completos_contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro");
+  DESTAJOS_TOTALES_SUBCONTRATISTA("VistaNominaConsultasReportesDto", "destajoProveedor", "Destajos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_subcontratista_desarrollos", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
+  DESTAJOS_TOTALES_CONTRATISTA("VistaNominaConsultasReportesDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_contratista_desarrollos", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro");
 	
 	
 	private final String proceso;
