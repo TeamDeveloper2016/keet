@@ -10,6 +10,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import org.hibernate.Session;
@@ -144,7 +145,7 @@ public abstract class MotorBusquedaCatalogos {
 		return regresar;
 	} // toLocalidad
 	
-	protected List<PersonaTipoContacto> toPersonaContacto(Long idPersona) throws Exception{
+	public List<PersonaTipoContacto> toPersonaContacto(Long idPersona) throws Exception{
 		List<PersonaTipoContacto> regresar= null;
 		Map<String, Object>params    = null;
 		try {
@@ -220,4 +221,21 @@ public abstract class MotorBusquedaCatalogos {
 		} // catch		
 		return regresar;
 	} // toClienteDefault	
+	
+	public List<ProveedorTipoContacto> toProveedoresTipoContacto() throws Exception {
+		List<ProveedorTipoContacto> regresar= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_proveedor=" + this.idCliente);
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorTipoContacto.class, "TrManticProveedorTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedoresTipoContacto
 }
