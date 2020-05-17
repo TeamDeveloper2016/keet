@@ -9,12 +9,17 @@ import mx.org.kaana.libs.recurso.TcConfiguraciones;
  *@time 01:08:38 PM 
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
+
 public enum ECorreos {
 	
   FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "facturas@ferreteriabonanza.com", "Facturas F. Bonanza"), 
 	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
 	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "compras@ferreteriabonanza.com", "Compras F. Bonanza"),
-	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza");
+	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
+	//cafu
+	VENTAS        ("/mx/org/kaana/keet/correos/templates/ventas.html", "resources/janal/img/sistema/", "correo.ventas.user.produccion", "correo.ventas.pass.produccion", "ventas@cafu.jvmhost.net", "Ventas Cafu."),
+	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "resources/janal/img/sistema/", "correo.compras.user.produccion", "correo.compras.pass.produccion", "compras@cafu.jvmhost.net", "Compras Cafu."),
+	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración Cafu.");
 	 
 	private String template;
 	private String images;
@@ -24,12 +29,12 @@ public enum ECorreos {
 	private String alias;
 
 	private ECorreos(String template, String images, String user, String password, String email, String alias) {
-		this.template=template;
-		this.images=images;
-		this.user= user;
+		this.template= template;
+		this.images  = images;
+		this.user    = user;
 		this.password= password;
-		this.email= email;
-		this.alias= alias;
+		this.email   = email;
+		this.alias   = alias;
 	}
 
 	public String getTemplate() {
@@ -55,5 +60,4 @@ public enum ECorreos {
 	public String getAlias() {
 		return alias;
 	}
-
 }
