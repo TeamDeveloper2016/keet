@@ -14,18 +14,16 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
-import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
 import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -38,16 +36,10 @@ import mx.org.kaana.mantic.enums.EReportes;
 
 @Named(value = "keetNominasProveedores")
 @ViewScoped
-public class Proveedores extends IBaseFilter implements Serializable {
+public class Proveedores extends IBaseReporteDestajos implements Serializable {
 
 	private static final long serialVersionUID = 6319984968937774153L;
-
-	private FormatLazyModel lazyDetalle;
-  protected Reporte reporte;
-	
-	public Reporte getReporte() {
-		return reporte;
-	}
+	private FormatLazyModel lazyDetalle;  
 
 	public FormatLazyModel getLazyDetalle() {
 		return lazyDetalle;
@@ -71,6 +63,8 @@ public class Proveedores extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+			initBase();
+			this.attrs.put("idTipoFiguraCorreo", 2L);			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
 			this.loadCatalogs();
@@ -227,7 +221,12 @@ public class Proveedores extends IBaseFilter implements Serializable {
 		return regresar;			
 	}	
 	
-	public void doReporte(String nombre) throws Exception {    
+	public void doReporte(String nombre) throws Exception {
+		doReporte(nombre, false);
+	} // doReporte	
+	
+	@Override
+	public void doReporte(String nombre, boolean sendMail) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
@@ -248,6 +247,7 @@ public class Proveedores extends IBaseFilter implements Serializable {
         params = this.toPrepare();
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       }
+			this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
       this.reporte= JsfBase.toReporte();
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
@@ -255,28 +255,18 @@ public class Proveedores extends IBaseFilter implements Serializable {
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      if(doVerificarReporte())
-        this.reporte.doAceptar();			
+      if(sendMail)
+        this.reporte.doAceptarSimple();			
+			else{
+				if(doVerificarReporte())
+					this.reporte.doAceptar();			
+			} // else		
     } // try
     catch(Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
-  } // doReporte 
-	
-	public boolean doVerificarReporte() {
-    boolean regresar = false;
-		if(this.reporte.getTotal()> 0L) {
-			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
-      regresar = true;
-    }
-		else {
-			UIBackingUtilities.execute("generalHide();");		
-			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-      regresar = false;
-		} // else
-    return regresar;
-	} // doVerificarReporte	
+  } // doReporte 			
 	
   public void doLoadDetalle() {
     List<Columna> columns    = null;
@@ -288,6 +278,8 @@ public class Proveedores extends IBaseFilter implements Serializable {
 			params.put("nomina", entity.toString("nomina"));
 			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idProveedor", entity.toLong("idProveedor"));
+			this.attrs.put("idFiguraCorreo", entity.toLong("idProveedor"));
+			this.attrs.put("figuraNombreCompletoCorreo", entity.toString("nombreCompleto"));
       columns= new ArrayList<>();
       columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("iva", EFormatoDinamicos.MILES_SIN_DECIMALES));
@@ -305,6 +297,5 @@ public class Proveedores extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
-	
+  } // doLoad	
 }
