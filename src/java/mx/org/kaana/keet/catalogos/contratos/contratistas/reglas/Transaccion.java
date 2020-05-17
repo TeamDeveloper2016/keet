@@ -24,15 +24,17 @@ public class Transaccion extends IBaseTnx {
 	private List<SelectionItem> empleados;		
 	private Long idEmpresaPersona;
 	private String[] lotes;
+	private Long tipo;
 	
 	public Transaccion(Long idContratoLote, List<SelectionItem> empleados) {		
 		this.idContratoLote= idContratoLote;		
 		this.empleados     = empleados;
 	}	
 
-	public Transaccion(Long idEmpresaPersona, String[] lotes) {
+	public Transaccion(Long idEmpresaPersona, String[] lotes, Long tipo) {
 		this.idEmpresaPersona= idEmpresaPersona;
 		this.lotes           = lotes;
+		this.tipo            = tipo;
 	}	
 	
 	@Override
@@ -49,7 +51,7 @@ public class Transaccion extends IBaseTnx {
 						if(item.getTipo().equals(1L))
 							dto= loadContratista(Long.valueOf(item.getKey().substring(4)), idUsuario, true);
 						else
-							dto= loadSubContratista(Long.valueOf(item.getKey().substring(4)), idUsuario);
+							dto= loadSubContratista(Long.valueOf(item.getKey().substring(4)), idUsuario, true);
 						DaoFactory.getInstance().insert(sesion, dto);
 					} // for					
 					break;				
@@ -65,7 +67,10 @@ public class Transaccion extends IBaseTnx {
 				case REPROCESAR:
 					idUsuario= JsfBase.getIdUsuario();
 					for(String lote: this.lotes){
-						dto= loadContratista(Long.valueOf(lote), idUsuario, false);						
+						if(this.tipo.equals(1L))
+							dto= loadContratista(Long.valueOf(lote), idUsuario, false);						
+						else
+							dto= loadSubContratista(Long.valueOf(lote), idUsuario, false);
 						if(DaoFactory.getInstance().toEntity(sesion, "TcKeetContratosLotesContratistasDto", "existe", dto.toMap())== null)
 							DaoFactory.getInstance().insert(sesion, dto);
 					} // for					
@@ -105,15 +110,22 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadContratista
 	
-	private IBaseDto loadSubContratista(Long key, Long idUsuario){
+	private IBaseDto loadSubContratista(Long key, Long idUsuario, boolean subcontratista){
 		TcKeetContratosLotesProveedoresDto regresar= null;
 		try {
 			regresar= new TcKeetContratosLotesProveedoresDto();							
-			regresar.setIdContratoLote(this.idContratoLote);
-			regresar.setIdProveedor(key);
+			if(subcontratista){
+				regresar.setIdProveedor(key);
+				regresar.setIdContratoLote(this.idContratoLote);				
+				regresar.setObservaciones("Asignación de empleado al lote [ContratoLote [" + this.idContratoLote + "]]");
+			} // if
+			else{
+				regresar.setIdProveedor(this.idEmpresaPersona);
+				regresar.setIdContratoLote(key);				
+				regresar.setObservaciones("Asignación de empleado al lote");
+			} // else
 			regresar.setIdUsuario(idUsuario);
-			regresar.setIdTrabajo(2L);						
-			regresar.setObservaciones("Asignación de empleado al lote [ContratoLote [" + this.idContratoLote + "]]");
+			regresar.setIdTrabajo(2L);									
 		} // try
 		catch (Exception e) {			
 			throw e;
