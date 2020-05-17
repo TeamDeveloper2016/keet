@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.estaciones.masivos.beans.Estacion;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
@@ -50,23 +51,33 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
   private TcManticMasivasArchivosDto masivo;	
 	private ECargaMasiva categoria;
 	private Long idContatoLote;
+	private Long idPrototipo;
 	private Long idLimpiar;
 	private int errores;
 	private int procesados;
 	private String messageError;
   
   public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) {
-		this(masivo, categoria, -1L, 1L);
+		this(masivo, categoria, -1L, 1L, -1L);
 	}
 	
-  public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria, Long idContatoLote, Long idLimpiar) {
+	public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria, Long idContatoLote, Long idLimpiar) {
+		 this(masivo, categoria, idContatoLote, idLimpiar, -1L);
+	}
+	
+	public Transaccion(TcManticMasivasArchivosDto masivo, Long idPrototipo, ECargaMasiva categoria, Long idLimpiar) {
+		 this(masivo, categoria, -1L, idLimpiar, idPrototipo);
+	}
+	
+  public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria, Long idContatoLote, Long idLimpiar, Long idPrototipo) {
 		super(new Incidente());
-		this.masivo     = masivo;		
-		this.categoria  = categoria;
+		this.masivo       = masivo;		
+		this.categoria    = categoria;
 		this.errores      = 0;
 		this.procesados   = 0;
 		this.idContatoLote= idContatoLote;
 		this.idLimpiar    = idLimpiar;
+		this.idPrototipo  = idPrototipo;
 	} // Transaccion
 
 	protected void setMessageError(String messageError) {
@@ -206,6 +217,10 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			Methods.clean(params);
 		} // finally
 		return regresar;
+	}
+	
+	private TcKeetPrototiposDto toPrototipo(Session sesion) throws Exception {
+		return (TcKeetPrototiposDto)DaoFactory.getInstance().findById(sesion, TcKeetPrototiposDto.class, this.idPrototipo);
 	}
 	
 	private List<TcKeetEstacionesDto> toEstaciones(Session sesion, String clave) throws Exception {
@@ -693,14 +708,16 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		} // finally
 	}
 
-  private Boolean toPlantillas(Session sesion, File archivo) throws Exception {
-		Boolean regresar	      = false;
-		Workbook workbook	      = null;
-		Sheet sheet             = null;
-		Estacion concepto       = null;
-		Estacion parcial        = null;
-		Estacion estacion       = null; 
+ private Boolean toPlantillas(Session sesion, File archivo) throws Exception {
+		Boolean regresar	                 = false;
+		Workbook workbook	                 = null;
+		Sheet sheet                        = null;
+		Estacion concepto                  = null;
+		Estacion parcial                   = null;
+		Estacion estacion                  = null; 
 		TcManticMasivasBitacoraDto bitacora= null;
+		String nivlePrototipo              = null;
+		TcKeetPrototiposDto prototipo      = null;
 		try {
 			Semanas semanas= new Semanas();
 			int semana= semanas.getSemana(sesion);
@@ -714,7 +731,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			sheet		= workbook.getSheet(0);
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
-				Entity contrato= this.toContratoDatos(sesion);
+				prototipo= this.toPrototipo(sesion);
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
@@ -723,11 +740,13 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				int rubro   = 0; 
 				String codigoPartida= "";
 				String codigoRubro  = "";
-				if(contrato!= null) {
-					estaciones.setKeyLevel(contrato.toString("idEmpresa"), 0); // idEmpresa
-					estaciones.setKeyLevel(contrato.toString("ejercicio"), 1); // ejercicio
-					estaciones.setKeyLevel(contrato.toString("contrato"), 2); // orden del contrato
-					estaciones.setKeyLevel(contrato.toString("orden"), 3); // orden de contrato lote
+				if(prototipo!= null) {
+					nivlePrototipo= Cadena.rellenar(this.idPrototipo.toString(), 3, '0', true);
+				  nivlePrototipo= nivlePrototipo.substring(nivlePrototipo.length()-3, nivlePrototipo.length());
+					estaciones.setKeyLevel(prototipo.getIdEmpresa().toString(), 0); // idEmpresa
+					estaciones.setKeyLevel(String.valueOf(this.getCurrentYear()), 1); // ejercicio
+					estaciones.setKeyLevel("999", 2); // 999
+					estaciones.setKeyLevel(nivlePrototipo, 3); // idPrototipo a 3 digitos
 					concepto= this.toDeleteEstaciones(sesion, estaciones.toKey(4));
 					for(int fila= 1; concepto!= null && fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 						try {
@@ -746,10 +765,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(!Cadena.isVacio(codigo) && codigo.length()> 0) {
-									if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
-										throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
-									if(!Objects.equals(lote, "*") && !Objects.equals(contrato.toString("lote"), lote))
-										throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
 									Entity item= this.toRubro(sesion, codigo);
 									if(item!= null && !item.isEmpty()) {
 										if(count== 0 && item.toLong("nivel")!= 5L)
@@ -813,11 +828,11 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										estacion.setCosto(costo);
 										Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
 										if(Cadena.isVacio(inicio))
-										  estacion.setInicio(contrato.toDate("inicio"));
+										  estacion.setInicio(LocalDate.now());
 										else
 										  estacion.setInicio(Fecha.toLocalDate(inicio));
 										if(Cadena.isVacio(termino))
-  										estacion.setTermino(contrato.toDate("termino"));
+  										estacion.setTermino(LocalDate.now().plusDays(prototipo.getDiasConstruccion()));
 										else
   										estacion.setTermino(Fecha.toLocalDate(termino));
 										estacion.setIdUsuario(JsfBase.getIdUsuario());
@@ -828,8 +843,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										estacion.setCantidad(cantidad);
 										estacion.setCosto(costo);
 										Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
-										estacion.setInicio(contrato.toDate("inicio"));
-										estacion.setTermino(contrato.toDate("termino"));
+										estacion.setInicio(LocalDate.now());
+										estacion.setTermino(LocalDate.now().plusDays(prototipo.getDiasConstruccion()));
 										estacion.setIdUsuario(JsfBase.getIdUsuario());
 									  DaoFactory.getInstance().update(sesion, estacion);
 									} // if
@@ -867,15 +882,14 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
   				if(concepto!= null) {
 						Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {concepto.getCosto()});
   					DaoFactory.getInstance().update(sesion, concepto);
-	  				if(Cadena.isVacio(contrato.toLong("idEstacion"))) {
-    					TcKeetContratosLotesDto lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, contrato.toLong("idContratoLote"));
-							lote.setIdEstacion(concepto.getIdEstacion());
-							DaoFactory.getInstance().update(sesion, lote);
+	  				if(Cadena.isVacio(prototipo.getIdEstacion())) {
+							prototipo.setIdEstacion(concepto.getIdEstacion());
+							DaoFactory.getInstance().update(sesion, prototipo);
 						} // if
 					} // if
 				} // if
 				else 
-					throw new RuntimeException("El lote no existe en el contrato, por favor verifique");
+					throw new RuntimeException("El portotipo no existe, por favor verifique");
 				bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
   			DaoFactory.getInstance().insert(sesion, bitacora);
 				// this.toUpdateEstaciones(sesion, estaciones.toKey(4));

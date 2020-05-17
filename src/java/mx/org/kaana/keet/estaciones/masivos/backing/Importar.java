@@ -177,11 +177,20 @@ public class Importar extends IBaseImportar implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		long tuplas            = this.masivo.getTuplas();
+		UISelectEntity idSelect= null;
 		try {
-			UISelectEntity idContratoLote= ((UISelectEntity)this.attrs.get("idContratoLote"));
 			this.masivo.setArchivo(this.getXls().getOriginal());
 		  this.masivo.setObservaciones((String)this.attrs.get("observaciones"));
-      transaccion= new Transaccion(this.masivo, this.categoria, idContratoLote.getKey(), this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
+			switch (this.categoria) {
+				case ESTACIONES:
+					idSelect= ((UISelectEntity)this.attrs.get("idContratoLote"));
+					transaccion= new Transaccion(this.masivo, this.categoria, idSelect.getKey(), this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
+					break;
+				case PLANTILLAS:
+					idSelect= ((UISelectEntity)this.attrs.get("idPlantilla"));
+					transaccion= new Transaccion(this.masivo, idSelect.getKey(), this.categoria, this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
+					break;
+			} // swtich
       if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
 
       } // if
