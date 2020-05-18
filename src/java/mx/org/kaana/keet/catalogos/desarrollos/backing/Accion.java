@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -29,6 +28,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.map.PointSelectEvent;
 import org.primefaces.model.map.LatLng;
 
@@ -37,6 +37,7 @@ import org.primefaces.model.map.LatLng;
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
+	private static final long serialVersionUID = 5870484413138653116L;
 	private RegistroDesarrollo desarrollo;
 	private UISelectEntity domicilioBusqueda;
 
@@ -68,9 +69,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       loadCatalogos();
-			doLoad();
-			if(!(Cadena.isVacio(this.desarrollo.getDesarrollo().getLatitud()) || Cadena.isVacio(this.desarrollo.getDesarrollo().getLongitud())))
-			  UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
+			doLoad();			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -95,14 +94,12 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
-          this.desarrollo= new RegistroDesarrollo();
-					UIBackingUtilities.execute("executeGeo();");		
+          this.desarrollo= new RegistroDesarrollo();					
           break;
         case MODIFICAR:					
         case CONSULTAR:					
 					this.desarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));
-					loadAtributosComplemento();
-					UIBackingUtilities.execute(Cadena.isVacio(this.desarrollo.getDesarrollo().getLatitud()) || Cadena.isVacio(this.desarrollo.getDesarrollo().getLongitud()) ? "executeGeo();" : "executeExistGeo();");		
+					loadAtributosComplemento();					
           break;
       } // switch
 			loadEntidades();		
@@ -549,4 +546,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doCancelarGeo
 
+	public void doTabChange(TabChangeEvent event) {
+		if(event.getTab().getTitle().equals("Georeferencia"))
+			UIBackingUtilities.execute(Cadena.isVacio(this.desarrollo.getDesarrollo().getLatitud()) || Cadena.isVacio(this.desarrollo.getDesarrollo().getLongitud()) ? "executeGeo();" : "executeExistGeo();");		
+	}	// doTabChange	
 }
