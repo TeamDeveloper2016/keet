@@ -257,12 +257,13 @@ public class Transaccion extends IBaseTnx {
 	}
 	
 	private void bitacora(Session sesion, Long idNominaEstatus) throws Exception {
+		Long ikNominaEstatus= this.nomina.getIdNominaEstatus();
 		if(Objects.equals(this.nomina.getIdNominaEstatus(), ENominaEstatus.INICIADA.getIdKey()))
 			this.nomina.setIdNominaEstatus(ENominaEstatus.ENPROCESO.getIdKey());
 		else
 		  if(Objects.equals(this.nomina.getIdNominaEstatus(), ENominaEstatus.ENPROCESO.getIdKey()))
 			  this.nomina.setIdNominaEstatus(ENominaEstatus.CALCULADA.getIdKey());
-		if(!Objects.equals(this.nomina.getIdNominaEstatus(), idNominaEstatus)) {
+		if(!Objects.equals(ikNominaEstatus, idNominaEstatus)) {
 			TcKeetNominasBitacoraDto estatus= new TcKeetNominasBitacoraDto(
 				"PROCESO AUTOMATICO DE CALCULO", // String justificacion, 
 				this.nomina.getIdNominaEstatus(), // Long idNominaEstatus, 
