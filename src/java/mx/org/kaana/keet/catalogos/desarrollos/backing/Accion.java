@@ -69,6 +69,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       loadCatalogos();
 			doLoad();
+			if(!(Cadena.isVacio(this.desarrollo.getDesarrollo().getLatitud()) || Cadena.isVacio(this.desarrollo.getDesarrollo().getLongitud())))
+			  UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -476,13 +478,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 		String[] georeferencia= null;
 		try {	
 			georeferencia= Cadena.eliminaCaracter(geo, '@').split(",");
-			coordenadas= new LatLng(Double.valueOf(georeferencia[0]), Double.valueOf(georeferencia[1]));
-			this.desarrollo.getDesarrollo().setLatitud(String.valueOf(coordenadas.getLat()));
-			this.desarrollo.getDesarrollo().setLongitud(String.valueOf(coordenadas.getLng()));
-			this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
-			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
-			this.attrs.put("desarrolloGeoreferencia", this.desarrollo.getDesarrollo());
-			UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
+			if(georeferencia.length==2){
+				coordenadas= new LatLng(Double.valueOf(georeferencia[0]), Double.valueOf(georeferencia[1]));
+				this.desarrollo.getDesarrollo().setLatitud(String.valueOf(coordenadas.getLat()));
+				this.desarrollo.getDesarrollo().setLongitud(String.valueOf(coordenadas.getLng()));
+				this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
+				this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
+				this.attrs.put("desarrolloGeoreferencia", this.desarrollo.getDesarrollo());
+				UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
+			} // if
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -499,6 +503,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
 			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
 			this.attrs.put("desarrolloGeoreferencia", desarrollo);
+			//this.attrs.put("coordenadas",  this.desarrollo.getDesarrollo().getLatitud().concat(", ").concat(this.desarrollo.getDesarrollo().getLongitud()));
 			UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
 		} // try
 		catch (Exception e) {
@@ -508,13 +513,20 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // onPointSelect
 	
 	public void doAceptarGeo() {
-		RegistroDesarrollo desarrollo= null;
+		String[] coordenadas= null;
 		try {
-			desarrollo= (RegistroDesarrollo) this.attrs.get("desarrolloGeoreferencia");		
-			if(!(Cadena.isVacio(desarrollo.getDesarrollo().getLatitud()) || Cadena.isVacio(desarrollo.getDesarrollo().getLongitud()))){
-				this.desarrollo.getDesarrollo().setLatitud(desarrollo.getDesarrollo().getLatitud());
-				this.desarrollo.getDesarrollo().setLongitud(desarrollo.getDesarrollo().getLongitud());
+			if(!(Cadena.isVacio(this.attrs.get("coordenadas")))){
+				coordenadas= ((String)this.attrs.get("coordenadas")).split(",");
+				if(coordenadas.length==2){
+					this.desarrollo.getDesarrollo().setLatitud(coordenadas[0].replaceAll("@", "").trim());
+					this.desarrollo.getDesarrollo().setLongitud(coordenadas[1].replaceAll("@", "").trim());
+					UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
+				} // if 
+				else
+					JsfBase.addAlert("Las coordenadas deben estar separadas por una coma");
 			} // if
+			else
+			  JsfBase.addAlert("El campo de coordenadas esta vacio");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
