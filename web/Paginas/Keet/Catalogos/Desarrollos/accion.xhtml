@@ -41,18 +41,18 @@
 
 			function initLocalization() {
 				if ("geolocation" in navigator) {
-					navigator.geolocation.getCurrentPosition(function (position) {
+					navigator.geolocation.getCurrentPosition(function(position){
 						var lat, lon;
-						lat = position.coords.latitude.toString();
-						lon = position.coords.longitude.toString();
-						//PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+						lat= position.coords.latitude.toString();
+						lon= position.coords.longitude.toString();
+						PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 						currentMarker = new google.maps.Marker({
 							position: new google.maps.LatLng(lat, lon),
-							icon: '/KEET/javax.faces.resource/icon/mapa/home-red.png.jsf?ln=janal'
+							icon:'/KEET/javax.faces.resource/icon/mapa/home-red.png.jsf?ln=janal'
 						});
 						PF('wMapa').addOverlay(currentMarker);
-						updateInitGeo(lat, lon);
-						updateGeoreferencia(lat, lon);
+						updateInitGeo(lat,lon);
+						updateGeoreferencia(lat,lon);
 					}); // navigator
 				} // if
 				else {
@@ -62,7 +62,7 @@
 
 			function existLocalization(lat, lon) {
 				if ("geolocation" in navigator) {
-					//PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
+					PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 					currentMarker = new google.maps.Marker({
 						position: new google.maps.LatLng(lat, lon),
 						icon: '/KEET/javax.faces.resource/icon/mapa/home-green.png.jsf?ln=janal'
@@ -76,7 +76,7 @@
 			} // existLocalization
 
 			function updateLocalization(lat, lon) {
-				//currentMarker.setMap(null);
+				currentMarker.setMap(null);
 				PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat, lon));
 				currentMarker = new google.maps.Marker({
 					position: new google.maps.LatLng(lat, lon),
@@ -120,6 +120,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
+						<p:ajax event="tabChange" listener="#{keetCatalogosDesarrollosAccion.doTabChange}" process="@this contenedorGrupos" update="contenedorGrupos"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
                 <p:outputLabel for="idCliente" value="Cliente:"/>
@@ -217,7 +218,7 @@
 							<p:remoteCommand name="executeGeo" oncomplete="initLocalization();"/>
 							<p:remoteCommand name="executeExistGeo" process="@this contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAccion.doExistGeo}"/>		
 							<p:outputLabel value="Coordenada:"/>
-							<p:inputText id="coordenadas" styleClass="janal-wid-100-txt" value="#{keetCatalogosDesarrollosAccion.attrs.coordenadas}">
+							<p:inputText id="coordenadas" styleClass="janal-wid-100-txt">
 								<p:ajax event="blur" onstart="return processGeo();" oncomplete="janal.desbloquear();"/>
 							</p:inputText>
 							<br/>
