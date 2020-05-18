@@ -33,6 +33,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 import mx.org.kaana.keet.estaciones.masivos.reglas.Transaccion;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
@@ -74,11 +75,12 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_MASIVO);
 			this.attrs.put("idLimpiar", 1L);
 			this.attrs.put("procesados", 0L);
+			this.toLoadContratosLotes();
+			this.toLoadPrototipos();
 			if(JsfBase.getFlashAttribute("idTipoMasivo")!= null)
 				switch(((Long)JsfBase.getFlashAttribute("idTipoMasivo")).intValue()) {
 					case 9:
 						this.categoria= ECargaMasiva.ESTACIONES;
-						this.toLoadContratosLotes();
 						break;
 					case 10:
 						this.categoria= ECargaMasiva.PERSONAL;
@@ -86,13 +88,10 @@ public class Importar extends IBaseImportar implements Serializable {
 					case 11:
 						this.categoria= ECargaMasiva.PLANTILLAS;
 						this.toLoadPlantillas();
-						toLoadPrototipos();
 						break;
 				} // switch
 			else {
 				this.categoria= ECargaMasiva.ESTACIONES;
-				this.toLoadContratosLotes();
-				toLoadPrototipos();
 			} // if
 			this.attrs.put("xls", ""); 
 			this.attrs.put("tuplas", 0L);
@@ -356,28 +355,52 @@ public class Importar extends IBaseImportar implements Serializable {
 	}
 	
 	public String doExportar() {
-		String regresar           = null;
-		Map<String, Object> params= null;
+		String regresar                = null;
+		String nivlePrototipo          = null;
+		Map<String, Object> params     = null;
+		Estaciones estaciones          = null;
+		List<UISelectEntity> plantillas= null;
+		List<UISelectEntity> lotes     = null;
+		UISelectEntity idContratoLote  = null;
+		UISelectEntity prototipo       = null;
 		try {
 			params=new HashMap<>();
-			UISelectEntity idContratoLote= (UISelectEntity)this.attrs.get("idContratoLote");
-			if(idContratoLote!= null) {
-				List<UISelectEntity> lotes= (List<UISelectEntity>)this.attrs.get("lotes");
-				idContratoLote= lotes.get(lotes.indexOf(idContratoLote));
-				Estaciones estaciones=new Estaciones();
-				estaciones.setKeyLevel(idContratoLote.toString("idEmpresa"), 0); // idEmpresa
-				estaciones.setKeyLevel(idContratoLote.toString("ejercicio"), 1); // ejercicio
-				estaciones.setKeyLevel(idContratoLote.toString("contrato"), 2); // orden del contrato
-				estaciones.setKeyLevel(idContratoLote.toString("orden"), 3); // orden de contrato lote
-				params.put("manzana", idContratoLote.toString("manzana"));
-				params.put("lote", idContratoLote.toString("lote"));
-				params.put("clave", estaciones.toKey(4));
-        JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ESTACIONES.getProceso(), EExportacionXls.ESTACIONES.getIdXml(), EExportacionXls.ESTACIONES.getNombreArchivo()), EExportacionXls.ESTACIONES, "MANZANA,LOTE,CODIGO,NOMBRE,CANTIDAD,COSTO S/IVA,UNIDAD MEDIDA"));
-			  JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
-			  regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
-			} // if
-			else
-				JsfBase.addMessage("Error:", "No se tiene un lote seleccionado !", ETipoMensaje.ALERTA);			
+			estaciones=new Estaciones();
+			switch (this.categoria) {
+				case ESTACIONES:
+					idContratoLote= (UISelectEntity)this.attrs.get("idContratoLote");
+					if(idContratoLote!= null) {
+						lotes= (List<UISelectEntity>)this.attrs.get("lotes");
+						idContratoLote= lotes.get(lotes.indexOf(idContratoLote));
+						estaciones.setKeyLevel(idContratoLote.toString("idEmpresa"), 0); // idEmpresa
+						estaciones.setKeyLevel(idContratoLote.toString("ejercicio"), 1); // ejercicio
+						estaciones.setKeyLevel(idContratoLote.toString("contrato"), 2); // orden del contrato
+						estaciones.setKeyLevel(idContratoLote.toString("orden"), 3); // orden de contrato lote
+						params.put("manzana", idContratoLote.toString("manzana"));
+						params.put("lote", idContratoLote.toString("lote"));
+						params.put("clave", estaciones.toKey(4));
+						JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ESTACIONES.getProceso(), EExportacionXls.ESTACIONES.getIdXml(), EExportacionXls.ESTACIONES.getNombreArchivo()), EExportacionXls.ESTACIONES, "MANZANA,LOTE,CODIGO,NOMBRE,CANTIDAD,COSTO S/IVA,UNIDAD MEDIDA"));
+						JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+					} // if
+			    else
+				    JsfBase.addMessage("Error:", "No se tiene un lote seleccionado !", ETipoMensaje.ALERTA);	
+				break;
+				case PLANTILLAS:
+					  prototipo= ((UISelectEntity)this.attrs.get("idPlantilla"));
+					  plantillas= (List<UISelectEntity>)this.attrs.get("plantillas");
+						prototipo= plantillas.get(plantillas.indexOf(prototipo));
+						nivlePrototipo= Cadena.rellenar(prototipo.getKey().toString(), 3, '0', true);
+						nivlePrototipo= nivlePrototipo.substring(nivlePrototipo.length()-3, nivlePrototipo.length());
+						estaciones.setKeyLevel(prototipo.toString("idEmpresa"), 0);       // idEmpresa
+						estaciones.setKeyLevel(String.valueOf(Fecha.getAnioActual()), 1); // ejercicio
+						estaciones.setKeyLevel("999", 2);                                 // 999
+						estaciones.setKeyLevel(nivlePrototipo, 3);                        // idPrototipo a 3 digitos
+						params.put("clave", estaciones.toKey(4));
+						JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ESTACIONES.getProceso(), EExportacionXls.ESTACIONES.getIdXml(), EExportacionXls.ESTACIONES.getNombreArchivo()), EExportacionXls.ESTACIONES, "MANZANA,LOTE,CODIGO,NOMBRE,CANTIDAD,COSTO S/IVA,UNIDAD MEDIDA"));
+						JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+					break;
+			} // swtich
+			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
