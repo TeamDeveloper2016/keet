@@ -500,7 +500,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
 			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
 			this.attrs.put("desarrolloGeoreferencia", desarrollo);
-			//this.attrs.put("coordenadas",  this.desarrollo.getDesarrollo().getLatitud().concat(", ").concat(this.desarrollo.getDesarrollo().getLongitud()));
+			this.attrs.put("coordenadas",  this.desarrollo.getDesarrollo().getLatitud().concat(",").concat(this.desarrollo.getDesarrollo().getLongitud()));
 			UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
 		} // try
 		catch (Exception e) {
