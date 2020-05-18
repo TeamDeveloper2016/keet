@@ -450,7 +450,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void doExistGeo() {
 		try {
 			this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
-			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
+			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());	
+			this.attrs.put("coordenadas", this.desarrollo.getDesarrollo().getLatitud().concat(",").concat(this.desarrollo.getDesarrollo().getLongitud()));
 			UIBackingUtilities.execute("existLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
 		} // try
 		catch (Exception e) {
@@ -462,7 +463,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void doInitGeo(String latitud, String longitud){		
 		try {
 			this.attrs.put("latitud", latitud);
-			this.attrs.put("longitud", longitud);			
+			this.attrs.put("longitud", longitud);		
+			this.attrs.put("coordenadas", latitud.concat(",").concat(longitud));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -473,16 +475,18 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void onBlurPointSelect(String geo) {
 		LatLng coordenadas    = null;
 		String[] georeferencia= null;
+		String latitud        = null;
+		String longitud       = null;
 		try {	
 			georeferencia= Cadena.eliminaCaracter(geo, '@').split(",");
 			if(georeferencia.length==2){
 				coordenadas= new LatLng(Double.valueOf(georeferencia[0]), Double.valueOf(georeferencia[1]));
-				this.desarrollo.getDesarrollo().setLatitud(String.valueOf(coordenadas.getLat()));
-				this.desarrollo.getDesarrollo().setLongitud(String.valueOf(coordenadas.getLng()));
-				this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
-				this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
-				this.attrs.put("desarrolloGeoreferencia", this.desarrollo.getDesarrollo());
-				UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
+				latitud= String.valueOf(coordenadas.getLat());
+				longitud= String.valueOf(coordenadas.getLng());
+				this.attrs.put("latitud", latitud);
+				this.attrs.put("longitud", longitud);			
+				this.attrs.put("coordenadas",  latitud.concat(",").concat(longitud));
+				UIBackingUtilities.execute("updateLocalization('".concat(String.valueOf(coordenadas.getLat())).concat("','").concat(String.valueOf(coordenadas.getLng())).concat("');"));
 			} // if
 		} // try
 		catch (Exception e) {
@@ -493,15 +497,16 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void onPointSelect(PointSelectEvent event) {
 		LatLng coordenadas= null;
+		String latitud    = null;
+		String longitud   = null;
 		try {
 			coordenadas= event.getLatLng();                  
-			this.desarrollo.getDesarrollo().setLatitud(String.valueOf(coordenadas.getLat()));
-			this.desarrollo.getDesarrollo().setLongitud(String.valueOf(coordenadas.getLng()));
-			this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
-			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());			
-			this.attrs.put("desarrolloGeoreferencia", desarrollo);
-			this.attrs.put("coordenadas",  this.desarrollo.getDesarrollo().getLatitud().concat(",").concat(this.desarrollo.getDesarrollo().getLongitud()));
-			UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
+			latitud= String.valueOf(coordenadas.getLat());
+			longitud= String.valueOf(coordenadas.getLng());
+			this.attrs.put("latitud", latitud);
+			this.attrs.put("longitud", longitud);						
+			this.attrs.put("coordenadas",  latitud.concat(",").concat(longitud));
+			UIBackingUtilities.execute("updateLocalization('".concat(String.valueOf(coordenadas.getLat())).concat("','").concat(String.valueOf(coordenadas.getLng())).concat("');"));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
