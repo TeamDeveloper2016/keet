@@ -16,8 +16,8 @@ public class SMTPAuthenticator extends javax.mail.Authenticator {
 	@Override
   public PasswordAuthentication getPasswordAuthentication() {
     Encriptar encriptado = new Encriptar();
-    //String username = "KAANA\\".concat(TcConfiguraciones.getInstance().getPropiedad("correo.user"));
-    //String password = encriptado.desencriptar(TcConfiguraciones.getInstance().getPropiedad("correo.pass"), Encriptar._CLAVE);
+    //String username = "KAANA\\".concat(TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user"));
+    //String password = encriptado.desencriptar(TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.pass"), Encriptar._CLAVE);
     String username = TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user");
     String password = TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.pass");
     LOG.info("usuario : " + username + "  password : " + encriptado.encriptar(password));

@@ -38,7 +38,7 @@ public class EditMail {
 			titulo.append("Esquema [ ");
 			titulo.append(mx.org.kaana.libs.recurso.Configuracion.getInstance().getEtapaServidor().toUpperCase());
 			titulo.append(" ]");
-  		correo = new Correo(TcConfiguraciones.getInstance().getPropiedad("correo.user").concat(""),getCorreos(), titulo.toString());
+  		correo = new Correo(TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user").concat(""), getCorreos(), titulo.toString());
 			correo.setContenido(toMensajeHtml());
 			correo.enviar();
 			JsfUtilities.addMessage("Se realizo con exito el envio de la tabla");

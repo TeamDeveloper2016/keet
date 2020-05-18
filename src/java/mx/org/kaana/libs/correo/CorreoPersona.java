@@ -36,11 +36,9 @@ public class CorreoPersona implements Serializable {
 
   private void obtenerUsuarioPass() {
     Encriptar encriptar = new Encriptar();
-    this.usuario  =TcConfiguraciones.getInstance().getPropiedad("correo.user");
-    this.password =encriptar.desencriptar(TcConfiguraciones.getInstance().getPropiedad("correo.pass"),Encriptar._CLAVE);
+    this.usuario  =TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user");
+    this.password =encriptar.desencriptar(TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.pass"),Encriptar._CLAVE);
   }
-
-
 
   public void finalize() {
     Methods.clean(empleados);
