@@ -130,6 +130,7 @@
 					tc_keet_nominas_conceptos.orden,
 					tc_keet_nominas_detalles.clave,
 					tc_keet_nominas_detalles.nombre,
+					tc_keet_nominas_detalles.nombre as detalle,
 					tc_keet_nominas_detalles.formula,
 					tc_keet_nominas_detalles.valor,
 				  tc_keet_nominas_detalles.fecha
