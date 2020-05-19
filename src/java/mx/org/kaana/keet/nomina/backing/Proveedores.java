@@ -71,7 +71,8 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 			if(!Cadena.isVacio(idNomina)) {
 				Entity entity= new Entity(idNomina);
 			  entity.put("idNomina", new Value("idNomina", idNomina));
-  			entity.put("nombreCompleto", new Value("nombreCompleto", (String)JsfBase.getFlashAttribute("nombreCompleto")));
+        entity.put("nomina", new Value("nomina", (String)JsfBase.getFlashAttribute("nomina")));
+				entity.put("nombreCompleto", new Value("nombreCompleto", (String)JsfBase.getFlashAttribute("nombreCompleto")));
 				entity.put("idProveedor", new Value("idProveedor", (Long)JsfBase.getFlashAttribute("idProveedor")));
 				this.attrs.put("idNomina", new UISelectEntity(idNomina));
 				this.attrs.put("idProveedor", new UISelectEntity((Long)JsfBase.getFlashAttribute("idProveedor")));

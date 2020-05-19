@@ -349,9 +349,11 @@
 				  tr_mantic_empresa_personal.id_empresa_persona as id_persona_reprocesar,
 					'PERSONAL' as tipo,
 					tr_mantic_empresa_personal.clave,
-					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre,
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
 					tc_mantic_personas.apodo,
-					tc_keet_nominas_personas.neto as importe
+					tc_keet_nominas_personas.neto as importe,
+					tc_mantic_puestos.id_puesto,
+					tc_mantic_personas.id_persona
 				from
 					tc_keet_nominas
 				inner join
@@ -360,6 +362,8 @@
 					tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
 				inner join 
 					tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
 				inner join 
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 				inner join 
@@ -378,9 +382,11 @@
 				  tc_mantic_proveedores.id_proveedor as id_persona_reprocesar,
 					'SUBCONTRATISTA' as tipo,
 					tc_mantic_proveedores.clave,
-					tc_mantic_proveedores.razon_social as nombre,
+					tc_mantic_proveedores.razon_social as nombre_completo,
 					tc_mantic_proveedores.rfc as apodo,
-					tc_keet_nominas_proveedores.total as importe
+					tc_keet_nominas_proveedores.total as importe,
+					-1 as id_puesto,
+					tc_mantic_proveedores.id_proveedor as id_persona
 				from
 					tc_keet_nominas
 				inner join

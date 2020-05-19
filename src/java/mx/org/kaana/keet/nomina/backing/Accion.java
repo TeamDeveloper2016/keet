@@ -263,6 +263,9 @@ public class Accion extends IBaseFilter implements Serializable {
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase())); 
 			JsfBase.setFlashAttribute("idNomina", ((Entity)this.attrs.get("seleccionado")).toLong("idNomina"));
+			JsfBase.setFlashAttribute("idPuesto", ((Entity)this.attrs.get("seleccionado")).toLong("idPuesto"));
+			JsfBase.setFlashAttribute("idPersona", ((Entity)this.attrs.get("seleccionado")).toLong("idPersona"));
+			JsfBase.setFlashAttribute("nomina", ((Entity)this.attrs.get("seleccionado")).toString("nomina"));
 			JsfBase.setFlashAttribute("nombreCompleto", ((Entity)this.attrs.get("seleccionado")).toString("nombreCompleto"));
       JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Nomina/filtro");
 			switch (eaccion) {
