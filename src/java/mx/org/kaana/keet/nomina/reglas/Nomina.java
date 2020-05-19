@@ -8,6 +8,8 @@ import com.eteks.parser.CompilationException;
 import com.eteks.parser.CompiledExpression;
 import mx.org.kaana.libs.formato.Error;
 import java.io.Serializable;
+import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +28,7 @@ import mx.org.kaana.keet.nomina.enums.ECodigosIncidentes;
 import mx.org.kaana.keet.nomina.enums.EGrupoConceptos;
 import mx.org.kaana.keet.nomina.functions.Redondea;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import org.apache.commons.logging.Log;
@@ -55,14 +58,16 @@ public class Nomina implements Serializable {
   private JeksInterpreter interprete;
 	private Map<String, Double> constants;
 	private TcKeetNominasDto nomina;
+	private TcKeetNominasPeriodosDto periodo;
 	private List<Concepto> conceptos;
 	private List<Concepto> personales;
 	
-	public Nomina(Session sesion, TcKeetNominasDto nomina) throws Exception {
-		this.sesion= sesion;
-		this.nomina= nomina;
-		this.model = new JeksTableModel(this.ROWS /*rows*/, this.COLUMNS /*columns*/);
-    this.parser= new JeksExpressionParser(model);
+	public Nomina(Session sesion, TcKeetNominasDto nomina, TcKeetNominasPeriodosDto periodo) throws Exception {
+		this.sesion = sesion;
+		this.nomina = nomina;
+		this.periodo= periodo;
+		this.model  = new JeksTableModel(this.ROWS /*rows*/, this.COLUMNS /*columns*/);
+    this.parser = new JeksExpressionParser(model);
     this.parser.addUserFunction(new Redondea());
     this.interprete= new JeksInterpreter();
 		this.load();
@@ -189,11 +194,11 @@ public class Nomina implements Serializable {
 		return regresar;
 	}
 	
-	private void toLookForEquals(List<Concepto> particulares, List<TcManticIncidentesDto> incidentes, ECodigosIncidentes incidente) throws CloneNotSupportedException {
+	private void toLookForEquals(List<Concepto> particulares, List<TcManticIncidentesDto> incidentes, ECodigosIncidentes incidente, Long dias) throws CloneNotSupportedException {
 		int count= 0;
 		for (TcManticIncidentesDto item: incidentes) {
-			// BUSCAR LOS INCIDENTES QUE COINCIDAN EN LA LISTA QUE SE TIENE DE CONCEPTOS
-			if(Objects.equals(item.getIdTipoIncidente(), incidente.idTipoIncidente()) && count< incidente.size()) {
+			// BUSCAR LOS INCIDENTES QUE COINCIDAN EN LA LISTA QUE SE TIENE DE CONCEPTOS, SOLO SE COBRAN 3 FALTAS PERO SI SE DESEAN QUE SEAN TODAS CAMBIAR POR size()
+			if(Objects.equals(item.getIdTipoIncidente(), incidente.idTipoIncidente()) && count< incidente.max() && (dias== -1L || count< dias)) {
 				item.setIdNomina(this.nomina.getIdNomina());
 				int index= this.personales.indexOf(new Concepto(incidente.celdas()[count]));
 				// PARA AQUELLOS INCIDENTES ENCONTRADOS BUSCAR EL CONCEPTO CORRESPONDIENTE
@@ -203,10 +208,42 @@ public class Nomina implements Serializable {
 					if(incidente.recuperar())
 						concepto.setFormula(concepto.getFormula().replace("{".concat(incidente.name()).concat("}"), item.getCosto().toString()));
 					particulares.add(concepto);
-				}
+				} // if
 			  count++;
 			} // if
 		} // for
+	}
+	
+	private void toLookForEquals(List<Concepto> particulares, List<TcManticIncidentesDto> incidentes, ECodigosIncidentes incidente) throws CloneNotSupportedException {
+		this.toLookForEquals(particulares, incidentes, incidente, -1L);
+	}
+
+	private Long toLookForDia(List<Concepto> particulares, List<TcManticIncidentesDto> incidentes, ECodigosIncidentes incidente) throws CloneNotSupportedException {
+		// SE RECUPERAN LOS DIAS DEL PERIODO A PAGAR PARA CALCULAR DESPUES LOS DIAS A PAGAR BASADOS EN SUS MOVIMIENTOS
+		Long regresar    = Numero.getLong(this.lookForConstants("PERIODO"), 7L);
+		LocalDate inicio = this.periodo.getInicio();
+		LocalDate termino= this.periodo.getTermino();
+		for (TcManticIncidentesDto item: incidentes) {
+			// BUSCAR LOS INCIDENTES QUE SEAN DE ALTA, BAJA O REINGRESO PARA DETERMINAR LOS DIAS A PAGAR 
+			if(Objects.equals(item.getIdTipoIncidente(), 10L /*ALTA*/) || Objects.equals(item.getIdTipoIncidente(), 12L /*RE INGRESO*/)) {
+				item.setIdNomina(this.nomina.getIdNomina());
+				inicio= item.getInicio();
+			} // if
+			if(Objects.equals(item.getIdTipoIncidente(), 11L /*BAJA*/)) {
+				item.setIdNomina(this.nomina.getIdNomina());
+				termino= item.getInicio();
+			} // if
+		} // for
+		if(!Objects.equals(inicio, this.periodo.getInicio()) || !Objects.equals(termino, this.periodo.getTermino())) {
+			int index= particulares.indexOf(new Concepto(incidente.celdas()[0]));
+			// PARA AQUELLOS INCIDENTES ENCONTRADOS BUSCAR EL CONCEPTO CORRESPONDIENTE
+			if(index>= 0) {
+				Concepto concepto= particulares.get(index);
+				regresar= DAYS.between(inicio, termino);
+				concepto.setFormula(concepto.getFormula().replace("{".concat(incidente.name()).concat("}"), String.valueOf(regresar)));
+			} // if
+		} // if
+		return regresar;
 	}
 	
 	private void toIncidencias(List<Concepto> particulares, Long idEmpresaPersona) throws Exception {
@@ -217,7 +254,8 @@ public class Nomina implements Serializable {
 			params.put("idEmpresaPersona", idEmpresaPersona);
 			List<TcManticIncidentesDto> incidentes= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcManticIncidentesDto.class, "VistaNominaDto", "incidentes", params);
 			if(incidentes!= null && !incidentes.isEmpty()) {
-				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.FALTA);
+				Long dias= this.toLookForDia(particulares, incidentes, ECodigosIncidentes.PERIODO);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.FALTA, dias);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.DIAFESTIVO);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.TRIPLE);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.EXEDENTE);
@@ -251,8 +289,8 @@ public class Nomina implements Serializable {
 	}
 	
 	private Double toSueldoContratista(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
-		Double regresar= 0D;
-		Map<String, Object> params=null;
+		Double regresar           = 0D;
+		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());

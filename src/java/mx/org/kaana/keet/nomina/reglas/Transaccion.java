@@ -107,11 +107,9 @@ public class Transaccion extends IBaseTnx {
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar          = true;
-		Map<String, Object> params= null;
+		boolean regresar= true;
     try {
       this.messageError= "Ocurrio un error en el proceso de calculo de la nómina.";
-			params= new HashMap<>();
 			if(!accion.equals(EAccion.COMPLEMENTAR)){
 				if(this.idNomina== -1L) {
 					DaoFactory.getInstance().insert(sesion, this.nomina);
@@ -119,7 +117,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 				else
 					this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
-				this.calculos= new Nomina(sesion, this.nomina);
+				this.calculos= new Nomina(sesion, this.nomina, (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo()));
 				this.factura = new Factura(sesion, this.nomina);
 			} // if
 			switch(accion) {
@@ -167,7 +165,6 @@ public class Transaccion extends IBaseTnx {
 			throw new Exception(this.messageError.concat("<br/>")+ e);		
 		} // catch		
 		finally {
-			Methods.clean(params);
 			this.nomina  = null;
 			this.calculos= null;
 			this.factura = null;
@@ -506,13 +503,13 @@ public class Transaccion extends IBaseTnx {
 	}
 		
 	public void calculos(Session sesion, Monitoreo monitoreo, TcKeetNominasPersonasDto empleado) throws Exception {
-		monitoreo.incrementar();
 		this.calculos.process(empleado);
+		monitoreo.incrementar();
 	}
 	
 	public void calculos(Session sesion, Monitoreo monitoreo, TcKeetNominasProveedoresDto proveedor) throws Exception {
-		monitoreo.incrementar();
 		this.factura.process(proveedor);
+		monitoreo.incrementar();
 	}
 
 	private void closeIncidentes(Session sesion) throws Exception {
