@@ -871,9 +871,21 @@
 				from 
 					tc_keet_estaciones
 				where
+					tc_keet_estaciones.clave= '{clave}'
+				  and tc_keet_estaciones.nivel= 5
+				order by
+					tc_keet_estaciones.clave
+			</select>	
+			<select id="concepto">
+				select
+				  tc_keet_estaciones.id_estacion as id_key,
+					tc_keet_estaciones.*
+				from 
+					tc_keet_estaciones
+				where
 					tc_keet_estaciones.clave like '{clave}%'
 				  and tc_keet_estaciones.codigo= '{codigo}'
-				  and tc_keet_estaciones.nivel> 4
+				  and tc_keet_estaciones.nivel= 6
 				order by
 					tc_keet_estaciones.clave
 			</select>	

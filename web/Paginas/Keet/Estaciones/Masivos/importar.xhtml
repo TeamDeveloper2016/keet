@@ -93,7 +93,6 @@
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30">
 									<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idContratoLote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}">
 										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.codigo}"/>
-										<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 										<p:column headerText="Ejercicio">
 											<h:outputText value="#{item.ejercicio}"/>
 										</p:column>   
@@ -120,7 +119,6 @@
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30">
 									<p:selectOneMenu id="idPlantilla" value="#{keetEstacionesMasivosImportar.attrs.idPlantilla}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 11? '': 'none'}">
 										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.plantillas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
-										<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 										<p:column headerText="Contrato">
 											<h:outputText value="#{item.clave}"/>
 										</p:column>   
