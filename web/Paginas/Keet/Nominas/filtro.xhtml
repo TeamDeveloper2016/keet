@@ -103,7 +103,7 @@
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:separator/>
-								<p:menuitem id="dnominaPdfIco" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('LISTADO_NOMINA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('LISTADO_NOMINA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" action="#{keetNominasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -198,7 +198,7 @@
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
             <p:menuitem id="exportar" action="#{keetNominasFiltro.doExportar}" icon="fa fa-cloud-download" ajax="false" value="Exportar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>										
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
-            <p:menuitem id="reporte" actionListener="#{keetNominasFiltro.doReporte}" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
+            <p:menuitem actionListener="#{keetNominasFiltro.doReporte}" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
           </p:contextMenu>
         </div>
       </div>
@@ -225,4 +225,5 @@
 			</h:form>
 		</p:dialog>
 	</ui:define>
+	<ui:param name="lineaSeparacion" value="false"/>
 </ui:composition>

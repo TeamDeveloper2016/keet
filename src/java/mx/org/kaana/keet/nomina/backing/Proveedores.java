@@ -68,6 +68,7 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
 			this.loadCatalogs();
+			this.attrs.put("nomina", false);
 			if(!Cadena.isVacio(idNomina)) {
 				Entity entity= new Entity(idNomina);
 			  entity.put("idNomina", new Value("idNomina", idNomina));
@@ -83,7 +84,6 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
 				this.attrs.put("idProveedor", new UISelectEntity(-1L));
 		  }
-			this.attrs.put("nomina", false);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
