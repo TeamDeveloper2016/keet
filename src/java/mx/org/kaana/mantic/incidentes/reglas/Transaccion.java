@@ -8,14 +8,17 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.procesos.enums.EEstatus;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
+import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
 import org.hibernate.Session;
@@ -192,9 +195,11 @@ public class Transaccion extends IBaseTnx {
 	
 	private boolean modificarIncidente(Session sesion, boolean estatus) throws Exception{
 		boolean regresar         = false;
+		boolean actualizaEstatus = false;
 		TcManticIncidentesDto dto= null;
 		try {
 			dto= (TcManticIncidentesDto) DaoFactory.getInstance().findById(sesion, TcManticIncidentesDto.class, this.incidente.getIdIncidente());
+			actualizaEstatus= dto.getIdIncidenteEstatus().equals(EEstatusIncidentes.CANCELADA.getIdEstatusInicidente()) || this.incidente.getIdIncidenteEstatus().equals(EEstatusIncidentes.CANCELADA.getIdEstatusInicidente());
 			if(estatus)
 				dto.setIdIncidenteEstatus(this.incidente.getIdIncidenteEstatus());
 			dto.setIdEmpresaPersona(this.incidente.getIdEmpresaPersona());
@@ -204,7 +209,9 @@ public class Transaccion extends IBaseTnx {
 			dto.setTermino(this.incidente.getVigenciaFin());		
 			if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 				this.incidente.setObservaciones(this.observaciones);
-				regresar= registrarBitacora(sesion, this.incidente.getIdIncidente(), dto.getIdIncidenteEstatus());
+				if(registrarBitacora(sesion, this.incidente.getIdIncidente(), dto.getIdIncidenteEstatus())){
+					regresar= actualizaEstatusEmpleado(sesion, dto.getIdIncidenteEstatus(), actualizaEstatus);
+				} // if
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -212,6 +219,44 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // modificarIncidente
+	
+	private boolean actualizaEstatusEmpleado(Session sesion, Long idIncidenteEstatus, boolean actualizaEstatus) throws Exception{
+		boolean regresar                  = true;
+		TrManticEmpresaPersonalDto persona= null;
+		try {
+			if(actualizaEstatus && (ETiposIncidentes.ALTA.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.REINGRESO.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.BAJA.getKey().equals(this.incidente.getIdTipoIncidente()))){
+				persona= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findById(sesion, TrManticEmpresaPersonalDto.class, this.incidente.getIdEmpresaPersona());
+				switch(ETiposIncidentes.fromId(this.incidente.getIdTipoIncidente())){
+					case ALTA:
+					case REINGRESO:
+						if(EEstatusIncidentes.CANCELADA.getIdEstatusInicidente().equals(idIncidenteEstatus)){
+							persona.setIdActivo(2L);						
+							persona.setIngreso(LocalDate.of(2999, 12, 31));
+						} // if
+						else{
+							persona.setIdActivo(1L);						
+							persona.setIngreso(LocalDate.now());
+						} // else
+						break;
+					case BAJA:
+						if(EEstatusIncidentes.CANCELADA.getIdEstatusInicidente().equals(idIncidenteEstatus)){
+							persona.setIdActivo(1L);
+							persona.setIngreso(LocalDate.now());
+						} // if
+						else{
+							persona.setIdActivo(2L);
+							persona.setIngreso(LocalDate.of(2999, 12, 31));
+						} // else
+						break;
+				} // switch				
+				regresar= DaoFactory.getInstance().update(sesion, persona)>= 1L;
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // actualizaEstatusEmpleado
 	
 	private boolean eliminarIncidente(Session sesion) throws Exception{
 		boolean regresar= false;
