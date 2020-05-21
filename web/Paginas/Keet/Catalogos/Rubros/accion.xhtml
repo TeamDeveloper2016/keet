@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{keetCatalogosRubrosAccion.attrs.nombreAccion} al catálogo de rubros" />
+	<ui:param name="titulo" value="#{keetCatalogosRubrosAccion.attrs.nombreAccion} al catálogo de conceptos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
@@ -36,7 +36,7 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-90-txt">		
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-col-120, janal-wid-100-txt">		
                 <p:outputLabel for="codigo" value="Codigo:"/>
 								<p:inputText id="codigo" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.codigo}" />			
 								<p:outputLabel for="nombre" value="Nombre:"/>
@@ -55,7 +55,7 @@
 								</p:selectOneMenu>
               </p:panelGrid>
 						</p:tab>
-						<p:tab title="Puntos de revisión">		
+						<p:tab title="Puntos de control">		
               <p:panelGrid id="panelTablaConstructivos" columns="1" layout="grid" styleClass="janal-wid-100-txt janal-panel-tabla" columnClasses="janal-wid-100-txt">
                 <p:dataTable id="tabla" rowIndexVar="index" var="row" value="#{keetCatalogosRubrosAccion.rubro.rubrosGrupos}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Departamento" class="janal-wid-35"  >										
@@ -67,9 +67,9 @@
 											</p:column>   
 										</p:selectOneMenu>
                   </p:column>	                  
-                  <p:column headerText="Paquetes de revisión" class="janal-wid-45">										
+                  <p:column headerText="Paquetes de control" class="janal-wid-45">										
                     <p:selectOneMenu rendered="#{row.visible}" value="#{row.ikPuntoGrupo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-											<f:selectItems value="#{row.puntosGrupos}"  var="element" itemValue="#{element}" itemLabel="#{element.paquete} CON  #{element.puntosControl} PUNTOS DE REVISIÓN"/>
+											<f:selectItems value="#{row.puntosGrupos}"  var="element" itemValue="#{element}" itemLabel="#{element.paquete} CON #{element.puntosControl} PUNTOS DE CONTROL"/>
 											<p:column headerText="Nombre">
 												<h:outputText value="#{item.paquete}"/>
 											</p:column>   

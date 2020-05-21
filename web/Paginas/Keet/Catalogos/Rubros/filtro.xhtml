@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Catálogo de rubros" />
+  <ui:param name="titulo" value="Catálogo de conceptos" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -28,7 +28,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="codigo" value="Código:" />
 							<p:inputText id="codigo" value="#{keetCatalogosRubrosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt" />  
-							<p:outputLabel for="nombre" value="Nombre del rubro:" />
+							<p:outputLabel for="nombre" value="Nombre:" />
 							<p:inputText id="nombre" value="#{keetCatalogosRubrosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>  
             </p:panelGrid>
 						<p:separator/>
@@ -47,8 +47,8 @@
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>
-							<p:commandButton action="#{keetCatalogosRubrosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-							<p:commandButton icon="fa fa-history" title="Carga masiva" action="#{keetCatalogosRubrosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" action="#{keetCatalogosRubrosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-history" title="Carga masiva" action="#{keetCatalogosRubrosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>												
@@ -60,7 +60,7 @@
             </p:column>	      
             <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.nombre}">
               <f:facet name="header">
-                <h:outputText value="Rubro" />
+                <h:outputText value="Concepto" />
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>
