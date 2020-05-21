@@ -8,7 +8,6 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.procesos.enums.EEstatus;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
@@ -130,13 +129,16 @@ public class Transaccion extends IBaseTnx {
 		TcManticIncidentesDto dto= null;
 		Long key                 = -1L;
 		Siguiente consecutivo    = null;
+		Long idEstatus           = null;
 		try {
 			dto= new TcManticIncidentesDto();
 			consecutivo= this.toSiguiente(sesion);			
 			dto.setConsecutivo(consecutivo.getConsecutivo());			
 			dto.setOrden(consecutivo.getOrden());			
 			dto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
-			dto.setIdIncidenteEstatus(this.estatus ? this.incidente.getIdEmpresaPersona() : EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());			
+			idEstatus= this.estatus ? (isProcesoEmpleado() ? EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente() : this.incidente.getIdEmpresaPersona()) : 
+							                  (isProcesoEmpleado() ? EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente() : EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
+			dto.setIdIncidenteEstatus(idEstatus);			
 			if(this.incidente.getIdDesarrollo()!= null && this.incidente.getIdDesarrollo() > 0)
 				dto.setIdDesarrollo(this.incidente.getIdDesarrollo());
 			dto.setIdEmpresaPersona(this.incidente.getIdEmpresaPersona());
@@ -156,6 +158,10 @@ public class Transaccion extends IBaseTnx {
 		} // catch	
 		return regresar;
 	} // registrarIncidente
+	
+	private boolean isProcesoEmpleado(){
+		return ETiposIncidentes.ALTA.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.REINGRESO.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.BAJA.getKey().equals(this.incidente.getIdTipoIncidente());
+	} // isProcesoEmpleado 
 	
 	private boolean registrarBitacora(Session sesion, Long idIncidente, Long idEstatus) throws Exception{
 		boolean regresar                 = false;
@@ -224,7 +230,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar                  = true;
 		TrManticEmpresaPersonalDto persona= null;
 		try {
-			if(actualizaEstatus && (ETiposIncidentes.ALTA.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.REINGRESO.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.BAJA.getKey().equals(this.incidente.getIdTipoIncidente()))){
+			if(actualizaEstatus && isProcesoEmpleado()){
 				persona= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findById(sesion, TrManticEmpresaPersonalDto.class, this.incidente.getIdEmpresaPersona());
 				switch(ETiposIncidentes.fromId(this.incidente.getIdTipoIncidente())){
 					case ALTA:
