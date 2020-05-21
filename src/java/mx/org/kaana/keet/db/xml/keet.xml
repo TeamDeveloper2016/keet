@@ -2547,5 +2547,24 @@
           id_rubro_grupo = {idRubroGrupo} and id_punto_grupo = {idPuntoGrupo} and id_rubro = {idRubro}
       </select>
     </unit>
+		    <unit id="TcKeetPartidasDto">
+      <select id="row">
+        select    
+				  tc_keet_partidas.id_partida id_key,  
+          tc_keet_partidas.*
+        from      
+          tc_keet_partidas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_partidas
+        where      
+          codigo = '{codigo}' and id_partida = {idPartida}
+      </select>
+    </unit>
   </dml>    
 </process>

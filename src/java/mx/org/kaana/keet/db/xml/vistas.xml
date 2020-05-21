@@ -3543,5 +3543,24 @@
 				  tc_keet_estaciones.clave
 			</select>
 		</unit>
+		<unit id="VistaPartidasDto">
+			<select id="lazy">
+				select 
+					tc_keet_partidas.id_partida id_key,
+					tc_keet_partidas.codigo,
+					tc_keet_partidas.nombre,
+					tc_keet_partidas.registro,
+          concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario
+				from
+					tc_keet_partidas
+				inner join 
+					tc_janal_usuarios on tc_keet_partidas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  {condicion}	
+				{sortOrder}	
+			</select>
+		</unit>	
 	</dml>    
 </process>
