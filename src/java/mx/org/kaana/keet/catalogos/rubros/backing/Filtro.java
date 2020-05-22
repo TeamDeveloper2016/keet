@@ -19,6 +19,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
@@ -39,12 +40,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 				doLoad();
 				this.attrs.put("idRubroProcess", null);
 			} // if
+			loadCatalogos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
   } // init
+	
+	private void loadCatalogos(){
+		Map<String, Object>params= null;
+    try {
+      params=  new HashMap<>();	
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			this.attrs.put("unidadesMedidas", UIEntity.seleccione("VistaEmpaqueUnidadDto", "row", params, "empaque"));
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch	
+		finally{
+			Methods.clean(params);
+		}
+	} // loadCatalogos
 
   @Override
   public void doLoad() {
@@ -92,12 +109,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar  = new HashMap<>();	
 		StringBuilder sb              = new StringBuilder();
+		UISelectEntity unidad         = (UISelectEntity)this.attrs.get("empaqueUnidadMedida");
 		if(this.attrs.get("idRubroProcess")!= null && !Cadena.isVacio(this.attrs.get("idRubroProcess")))
 			sb.append("tc_keet_rubros.id_rubro=").append(this.attrs.get("idRubroProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("codigo")))
 			sb.append("(tc_keet_rubros.codigo like '%").append(this.attrs.get("codigo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
 			sb.append("(tc_keet_rubros.nombre like '%").append(this.attrs.get("nombre")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("paquete")))
+			sb.append("(tc_keet_rubros_grupos.paquetes >= ").append(this.attrs.get("paquete")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("extra")))
+			sb.append("(tc_keet_rubros.id_extra = ").append(this.attrs.get("extra")).append(") and ");
+		if(unidad!= null && unidad.getKey()>0L)
+			sb.append("(tc_keet_rubros.id_empaque_unidad_medida = ").append(unidad.getKey()).append(") and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	

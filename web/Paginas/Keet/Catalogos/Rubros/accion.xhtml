@@ -55,7 +55,7 @@
 								</p:selectOneMenu>
               </p:panelGrid>
 						</p:tab>
-						<p:tab title="Puntos de control">		
+						<p:tab title="Puntos de control" rendered="#{keetCatalogosRubrosAccion.rubro.rubro.idExtra gt 1}">		
               <p:panelGrid id="panelTablaConstructivos" columns="1" layout="grid" styleClass="janal-wid-100-txt janal-panel-tabla" columnClasses="janal-wid-100-txt">
                 <p:dataTable id="tabla" rowIndexVar="index" var="row" value="#{keetCatalogosRubrosAccion.rubro.rubrosGrupos}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Departamento" class="janal-wid-35"  >										

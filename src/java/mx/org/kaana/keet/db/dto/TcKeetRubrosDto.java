@@ -31,6 +31,8 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   private String descripcion;
   @Column (name="codigo")
   private String codigo;
+  @Column (name="id_extra")
+  private Long idExtra;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_empaque_unidad_medida")
@@ -43,6 +45,8 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   private Long idRubro;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="nivel")
+  private Long nivel;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -51,18 +55,20 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetRubrosDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcKeetRubrosDto(String descripcion, String codigo, Long idUsuario, Long idEmpaqueUnidadMedida, Long orden, Long idRubro, String nombre) {
+  public TcKeetRubrosDto(String descripcion, String codigo, Long idExtra, Long idUsuario, Long idEmpaqueUnidadMedida, Long orden, Long idRubro, String nombre, Long nivel) {
     setDescripcion(descripcion);
     setCodigo(codigo);
+    setIdExtra(idExtra);
     setIdUsuario(idUsuario);
     setIdEmpaqueUnidadMedida(idEmpaqueUnidadMedida);
     setOrden(orden);
     setIdRubro(idRubro);
     setNombre(nombre);
+    setNivel(nivel);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -80,6 +86,14 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
 
   public String getCodigo() {
     return codigo;
+  }
+
+  public void setIdExtra(Long idExtra) {
+    this.idExtra = idExtra;
+  }
+
+  public Long getIdExtra() {
+    return idExtra;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -122,6 +136,14 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
     return nombre;
   }
 
+  public void setNivel(Long nivel) {
+    this.nivel = nivel;
+  }
+
+  public Long getNivel() {
+    return nivel;
+  }
+
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -149,6 +171,8 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCodigo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdExtra());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpaqueUnidadMedida());
@@ -158,6 +182,8 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
 		regresar.append(getIdRubro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNivel());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -169,11 +195,13 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
 		regresar.put("codigo", getCodigo());
+		regresar.put("idExtra", getIdExtra());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idEmpaqueUnidadMedida", getIdEmpaqueUnidadMedida());
 		regresar.put("orden", getOrden());
 		regresar.put("idRubro", getIdRubro());
 		regresar.put("nombre", getNombre());
+		regresar.put("nivel", getNivel());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -181,7 +209,7 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getCodigo(), getIdUsuario(), getIdEmpaqueUnidadMedida(), getOrden(), getIdRubro(), getNombre(), getRegistro()
+    getDescripcion(), getCodigo(), getIdExtra(), getIdUsuario(), getIdEmpaqueUnidadMedida(), getOrden(), getIdRubro(), getNombre(), getNivel(), getRegistro()
     };
     return regresar;
   }

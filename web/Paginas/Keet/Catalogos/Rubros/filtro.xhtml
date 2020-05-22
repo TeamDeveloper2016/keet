@@ -12,6 +12,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'nombre'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'paquete'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'codigo'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
     </script>		
@@ -29,7 +30,25 @@
 							<p:outputLabel for="codigo" value="Código:" />
 							<p:inputText id="codigo" value="#{keetCatalogosRubrosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt" />  
 							<p:outputLabel for="nombre" value="Nombre:" />
-							<p:inputText id="nombre" value="#{keetCatalogosRubrosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>  
+							<p:inputText id="nombre" value="#{keetCatalogosRubrosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>
+							<p:outputLabel for="paquete" value="No. de paquetes" />
+							<p:inputText id="paquete" value="#{keetCatalogosRubrosFiltro.attrs.paquete}" styleClass="janal-wid-100-txt"/>
+								<p:outputLabel for="extra" value="Extra:"/>
+								<p:selectOneMenu id="extra" value="#{keetCatalogosRubrosFiltro.attrs.extra}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<f:selectItem itemValue="" itemLabel="TODOS"/>
+									<f:selectItem itemValue="1" itemLabel="SI"/>
+									<f:selectItem itemValue="2" itemLabel="NO"/>
+								</p:selectOneMenu>	
+							<p:outputLabel for="idEmpaqueUnidadMedida" value="Unidad:"/>
+								<p:selectOneMenu id="idEmpaqueUnidadMedida" value="#{keetCatalogosRubrosFiltro.attrs.empaqueUnidadMedida}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetCatalogosRubrosFiltro.attrs.unidadesMedidas}"  var="element" itemValue="#{element}" itemLabel="#{element.empaque} - #{element.medida}"/>
+									<p:column headerText="Presentación">
+										<h:outputText value="#{item.empaque}"/>
+									</p:column>   
+									<p:column headerText="Unidad">
+										<h:outputText value="#{item.medida}"/>
+									</p:column>   
+								</p:selectOneMenu>
             </p:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right">
