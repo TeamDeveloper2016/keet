@@ -2417,6 +2417,17 @@
         where 
           id_departamento= {idDepartamento}
       </select>
+      <select id="byDepartamentoExtra">
+        select      
+          tc_keet_puntos_grupos.id_punto_grupo id_key,
+          tc_keet_puntos_grupos.*
+        from      
+          tc_keet_puntos_grupos
+        where 
+          id_departamento= {idDepartamento}
+				and 
+					id_extra= {idExtra}
+      </select>
       <select id="siguiente">
         select 
 					max(cast(replace(descripcion, 'PAQUETE ', '')as integer)+1) siguiente
