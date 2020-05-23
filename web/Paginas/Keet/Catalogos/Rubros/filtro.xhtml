@@ -40,8 +40,8 @@
 								<f:selectItem itemValue="2" itemLabel="NO"/>
 							</p:selectOneMenu>	
 							<p:outputLabel for="idEmpaqueUnidadMedida" value="Unidad:"/>
-								<p:selectOneMenu id="idEmpaqueUnidadMedida" value="#{keetCatalogosRubrosFiltro.attrs.empaqueUnidadMedida}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosRubrosFiltro.attrs.unidadesMedidas}"  var="element" itemValue="#{element}" itemLabel="#{element.empaque} - #{element.medida}"/>
+								<p:selectOneMenu id="idEmpaqueUnidadMedida" value="#{keetCatalogosRubrosFiltro.attrs.empaqueUnidadMedida}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetCatalogosRubrosFiltro.attrs.unidadesMedidas}"  var="element" itemValue="#{element}" itemLabel="#{element.empaque} #{empty element.medida or element.medida eq ''? '': '-'} #{element.medida}"/>
 									<p:column headerText="Presentación">
 										<h:outputText value="#{item.empaque}"/>
 									</p:column>   
@@ -89,13 +89,13 @@
               </f:facet>
               <h:outputText value="#{row['unidad']}"/>
             </p:column>			     
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.paquetes}">
+						<p:column class="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.paquetes}">
               <f:facet name="header">
                 <h:outputText value="Numero de paquetes"/>
               </f:facet>
               <h:outputText value="#{row['paquetes']}"/>
             </p:column>			     
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro" />
               </f:facet>
