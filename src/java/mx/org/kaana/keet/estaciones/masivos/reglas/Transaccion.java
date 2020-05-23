@@ -1002,7 +1002,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		Estacion raiz           = null;
 		Estacion estacion       = null;
 		Estacion concepto       = null; 
+		String nivlePrototipo   = null;
 		TcManticMasivasBitacoraDto bitacora= null;
+		TcKeetPrototiposDto prototipo      = null;
 		try {
 			Semanas semanas= new Semanas();
 			int semana= semanas.getSemana(sesion);
@@ -1016,16 +1018,18 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			sheet		= workbook.getSheet(0);
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
-				Entity contrato= this.toContratoDatos(sesion);
+				prototipo= this.toPrototipo(sesion);
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
 				int count   = 0; 
-				if(contrato!= null) {
-					estaciones.setKeyLevel(contrato.toString("idEmpresa"), 0); // idEmpresa
-					estaciones.setKeyLevel(contrato.toString("ejercicio"), 1); // ejercicio
-					estaciones.setKeyLevel(contrato.toString("contrato"), 2); // orden del contrato
-					estaciones.setKeyLevel(contrato.toString("orden"), 3); // orden de contrato lote
+				if(prototipo!= null) {
+					nivlePrototipo= Cadena.rellenar(this.idPrototipo.toString(), 3, '0', true);
+				  nivlePrototipo= nivlePrototipo.substring(nivlePrototipo.length()-3, nivlePrototipo.length());
+					estaciones.setKeyLevel(prototipo.getIdEmpresa().toString(), 0); // idEmpresa
+					estaciones.setKeyLevel(String.valueOf(this.getCurrentYear()), 1); // ejercicio
+					estaciones.setKeyLevel("999", 2); // 999
+					estaciones.setKeyLevel(nivlePrototipo, 3); // idPrototipo a 3 digitos
 					raiz= this.toDeleteEstaciones(sesion, estaciones.toKey(4));
 					for(int fila= 1; raiz!= null && fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 						try {
@@ -1043,10 +1047,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8).replaceAll(Constantes.CLEAN_ART, "").trim();
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(!Cadena.isVacio(codigo) && codigo.length()> 0) {
-									if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
-										throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
-									if(!Objects.equals(lote, "*") && !Objects.equals(contrato.toString("lote"), lote))
-										throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
 									Entity item= this.toRubro(sesion, codigo);
 									if(item!= null && !item.isEmpty() && item.toLong("nivel")== 6L) {
 										concepto= this.toConcepto(sesion, estaciones.toKey(4), codigo);
@@ -1058,11 +1058,11 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 											concepto.setCantidad(cantidad);
 											concepto.setCosto(costo);
 											if(Cadena.isVacio(inicio))
-												concepto.setInicio(contrato.toDate("inicio"));
+												concepto.setInicio(LocalDate.now());
 											else
 												concepto.setInicio(Fecha.toLocalDate(inicio));
 											if(Cadena.isVacio(termino))
-												concepto.setTermino(contrato.toDate("termino"));
+												concepto.setTermino(LocalDate.now().plusDays(prototipo.getDiasConstruccion()));
 											else
 												concepto.setTermino(Fecha.toLocalDate(termino));
 											concepto.setIdUsuario(JsfBase.getIdUsuario());
@@ -1104,10 +1104,12 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						this.procesados= count;
 						LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 					} // for
-					if(raiz!= null && Cadena.isVacio(contrato.toLong("idEstacion"))) {
-						TcKeetContratosLotesDto lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, contrato.toLong("idContratoLote"));
-						lote.setIdEstacion(raiz.getIdEstacion());
-						DaoFactory.getInstance().update(sesion, lote);
+  				if(raiz!= null) {
+  					DaoFactory.getInstance().update(sesion, raiz);
+	  				if(Cadena.isVacio(prototipo.getIdEstacion())) {
+							prototipo.setIdEstacion(raiz.getIdEstacion());
+							DaoFactory.getInstance().update(sesion, prototipo);
+						} // if
 					} // if
 				} // if
 				else 
