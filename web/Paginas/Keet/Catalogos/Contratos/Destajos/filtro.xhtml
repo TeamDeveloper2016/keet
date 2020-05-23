@@ -76,6 +76,8 @@
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosDestajosFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
+									<h:outputText value="&lt;b&gt;#{row.etapaContrato}&lt;/b&gt;" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
 									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
 									<h:outputText value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.termino}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
