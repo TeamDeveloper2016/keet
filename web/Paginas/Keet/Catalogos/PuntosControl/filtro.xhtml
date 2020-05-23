@@ -11,7 +11,9 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombre'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'nombre'                   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'nombresPuntoControl'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'numeroPuntoControl'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
     </script>		
   </ui:define>
@@ -34,6 +36,10 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+							<p:outputLabel for="numeroPuntoControl" value="No. de puntos de revisión:"/>
+              <p:inputText id="numeroPuntoControl" value="#{keetCatalogosPuntosControlFiltro.attrs.numeroPuntoControl}" styleClass="janal-wid-100-txt"/>  
+							<p:outputLabel for="nombresPuntoControl" value="Punto de revision:"/>
+              <p:inputText id="nombresPuntoControl" value="#{keetCatalogosPuntosControlFiltro.attrs.nombresPuntoControl}" styleClass="janal-wid-100-txt"/>  
             </p:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right">

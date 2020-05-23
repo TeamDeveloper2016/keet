@@ -3259,7 +3259,7 @@
 				from tc_keet_puntos_grupos
 					inner join tc_keet_departamentos on tc_keet_departamentos.id_departamento= tc_keet_puntos_grupos.id_departamento
 					left join
-            (select count(*) puntos_control, id_punto_grupo from tc_keet_puntos_controles
+            (select count(*) puntos_control, id_punto_grupo, group_concat(nombre) nombres from tc_keet_puntos_controles
              inner join tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
              group by id_punto_grupo
             ) tc_keet_puntos_controles on tc_keet_puntos_controles.id_punto_grupo = tc_keet_puntos_grupos.id_punto_grupo

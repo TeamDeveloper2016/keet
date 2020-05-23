@@ -102,6 +102,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 			sb.append("(tc_keet_puntos_grupos.descripcion like '%").append(this.attrs.get("nombre")).append("%') and ");
     if(!Cadena.isVacio(this.attrs.get("departamento")) && ((UISelectEntity)this.attrs.get("departamento")).getKey()>= 1L)				
 			sb.append("(tc_keet_departamentos.id_departamento in (").append(((UISelectEntity)this.attrs.get("departamento")).getKey()).append(")) and ");
+		if(!Cadena.isVacio(this.attrs.get("numeroPuntoControl")))
+			sb.append("(tc_keet_puntos_controles.puntos_control >= ").append(this.attrs.get("numeroPuntoControl")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("nombresPuntoControl")))
+			sb.append("(tc_keet_puntos_controles.nombres like '%").append(this.attrs.get("nombresPuntoControl")).append("%') and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
