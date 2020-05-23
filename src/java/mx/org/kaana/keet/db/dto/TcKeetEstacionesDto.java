@@ -25,7 +25,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
 @Entity
 @Table(name="tc_keet_estaciones")
-public class TcKeetEstacionesDto implements IBaseDto, Serializable {
+public class TcKeetEstacionesDto implements IBaseDto, Serializable, Cloneable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="inicio")
@@ -1893,6 +1893,8 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable {
     return hash;
   }
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 }
-
-
