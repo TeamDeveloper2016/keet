@@ -119,10 +119,10 @@
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30">
 									<p:selectOneMenu id="idPlantilla" value="#{keetEstacionesMasivosImportar.attrs.idPlantilla}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 11? '': 'none'}">
 										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.plantillas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
-										<p:column headerText="Contrato">
+										<p:column headerText="Clave">
 											<h:outputText value="#{item.clave}"/>
 										</p:column>   
-										<p:column headerText="Lote">
+										<p:column headerText="Prototipo">
 											<h:outputText value="#{item.nombre}"/>
 										</p:column>   
 									</p:selectOneMenu>
