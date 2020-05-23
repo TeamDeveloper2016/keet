@@ -31,7 +31,7 @@ public class RubroGrupo extends TcKeetRubrosGruposDto{
 	}
 
 	public RubroGrupo(ESql accion, Long key, UISelectEntity ikPuntoGrupo) {
-		super(key);
+		super(-1L, key, ikPuntoGrupo.getKey(), -1L);
 		this.accion = accion;
 		this.ikPuntoGrupo = ikPuntoGrupo;
 		this.puntosGrupos= new ArrayList<>();
@@ -81,7 +81,7 @@ public class RubroGrupo extends TcKeetRubrosGruposDto{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_departamentos.id_departamento=".concat(this.departamento.getKey().toString()));
+			params.put(Constantes.SQL_CONDICION, "tc_keet_puntos_grupos.id_extra=2 and tc_keet_departamentos.id_departamento=".concat(this.departamento.getKey().toString()));
 			params.put("sortOrder", "order by tc_keet_puntos_grupos.descripcion");
 			this.puntosGrupos= UIEntity.seleccione("VistaPuntosControlDto", "lazy", params, "paquete");
 		} // try

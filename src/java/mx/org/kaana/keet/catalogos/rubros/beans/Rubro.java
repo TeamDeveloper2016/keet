@@ -8,14 +8,16 @@ public class Rubro extends TcKeetRubrosDto{
 
 	private static final long serialVersionUID = 2814730894955813434L;
 	private UISelectEntity ikEmpaqueUnidadMedida;
+	private UISelectEntity departamento;
 
 	public Rubro() {
-		this(new UISelectEntity(-1L));
+		this(new UISelectEntity(-1L), new UISelectEntity(-1L));
 	}
 
-	public Rubro(UISelectEntity ikEmpaqueUnidadMedida) {
+	public Rubro(UISelectEntity ikEmpaqueUnidadMedida,UISelectEntity departamento) {
 		super();
 		this.ikEmpaqueUnidadMedida = ikEmpaqueUnidadMedida;
+		this.departamento = departamento;
 	}
 		
 	public UISelectEntity getIkEmpaqueUnidadMedida() {
@@ -28,5 +30,11 @@ public class Rubro extends TcKeetRubrosDto{
 			setIdEmpaqueUnidadMedida(this.ikEmpaqueUnidadMedida.getKey());
 	}
 
-	
+	public UISelectEntity getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(UISelectEntity departamento) {
+		this.departamento = departamento;
+	}
 }

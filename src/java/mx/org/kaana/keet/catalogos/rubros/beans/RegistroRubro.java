@@ -44,6 +44,8 @@ public class RegistroRubro implements Serializable {
 				motor= new MotorBusqueda(idRubro);
 				this.rubro= motor.toRubro();
 				this.rubrosGrupos= motor.toRubrosGrupos();
+				if(this.rubrosGrupos.size()>0)
+				  this.rubro.setDepartamento(this.rubrosGrupos.get(0).getDepartamento());
 			} // if
 			else{				
 				this.rubro= new Rubro();

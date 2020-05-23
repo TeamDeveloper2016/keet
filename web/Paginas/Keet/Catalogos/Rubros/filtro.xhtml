@@ -33,12 +33,12 @@
 							<p:inputText id="nombre" value="#{keetCatalogosRubrosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>
 							<p:outputLabel for="paquete" value="No. de paquetes" />
 							<p:inputText id="paquete" value="#{keetCatalogosRubrosFiltro.attrs.paquete}" styleClass="janal-wid-100-txt"/>
-								<p:outputLabel for="extra" value="Extra:"/>
-								<p:selectOneMenu id="extra" value="#{keetCatalogosRubrosFiltro.attrs.extra}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<f:selectItem itemValue="" itemLabel="TODOS"/>
-									<f:selectItem itemValue="1" itemLabel="SI"/>
-									<f:selectItem itemValue="2" itemLabel="NO"/>
-								</p:selectOneMenu>	
+							<p:outputLabel for="extra" value="Extra:"/>
+							<p:selectOneMenu id="extra" value="#{keetCatalogosRubrosFiltro.attrs.extra}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+								<f:selectItem itemValue="" itemLabel="TODOS"/>
+								<f:selectItem itemValue="1" itemLabel="SI"/>
+								<f:selectItem itemValue="2" itemLabel="NO"/>
+							</p:selectOneMenu>	
 							<p:outputLabel for="idEmpaqueUnidadMedida" value="Unidad:"/>
 								<p:selectOneMenu id="idEmpaqueUnidadMedida" value="#{keetCatalogosRubrosFiltro.attrs.empaqueUnidadMedida}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetCatalogosRubrosFiltro.attrs.unidadesMedidas}"  var="element" itemValue="#{element}" itemLabel="#{element.empaque} - #{element.medida}"/>
