@@ -2,7 +2,7 @@ package mx.org.kaana.keet.catalogos.contratos.destajos.beans;
 
 import java.io.Serializable;
 
-public class ConceptoExtra implements Serializable{
+public class ConceptoExtra extends Revision implements Serializable{
 
 	private static final long serialVersionUID= 6911382265102010131L;	
 	private Long idEstacion;
@@ -16,6 +16,7 @@ public class ConceptoExtra implements Serializable{
 	}
 
 	public ConceptoExtra(Long idEstacion, Long idPuntoGrupo, Long idRubro, String descripcion, Double importe) {
+		super();
 		this.idEstacion  = idEstacion;
 		this.idPuntoGrupo= idPuntoGrupo;
 		this.idRubro     = idRubro;
@@ -61,5 +62,5 @@ public class ConceptoExtra implements Serializable{
 
 	public void setIdRubro(Long idRubro) {
 		this.idRubro = idRubro;
-	}
+	}	
 }
