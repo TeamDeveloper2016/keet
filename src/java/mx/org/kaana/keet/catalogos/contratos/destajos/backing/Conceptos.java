@@ -211,6 +211,19 @@ public class Conceptos extends IBaseFilter implements Serializable {
     return regresar;
   } // doPagina
 	
+	public String doRechazarExtras(Entity seleccionado) {
+    String regresar= null;    				
+    try {						
+			this.toSetFlash(seleccionado);
+			regresar= "rechazosExtras".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doPagina
+	
 	public String doCapturarExtra() {
     String regresar= null;    				
     try {						
