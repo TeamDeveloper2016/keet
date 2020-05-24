@@ -104,7 +104,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     } // finally			
   } // doLoad	
 	
-	private Map<String, Object> toPrepare(){
+	protected Map<String, Object> toPrepare(){
 		Map<String, Object> regresar= null;
 		try {
 			regresar= new HashMap<>();
@@ -141,7 +141,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     return regresar;
   } // doPagina
 	
-	private Revision loadRevision(){
+	protected Revision loadRevision(){
 		Revision regresar  = null;
 		Entity figura      = null;
 		Entity seleccionado= null;
