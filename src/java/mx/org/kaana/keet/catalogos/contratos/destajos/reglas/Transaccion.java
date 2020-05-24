@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoContratistaArchivo;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoProveedorArchivo;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.ConceptoExtra;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Revision;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseDestajoArchivo;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
@@ -39,6 +40,7 @@ public class Transaccion extends IBaseTnx {
 	private Revision revision;	
 	private Double factorAcumulado;
 	private List<IBaseDestajoArchivo>documentos;	
+	private ConceptoExtra conceptoExtra;
 
 	public Transaccion(Revision revision) {
 		this.revision= revision;		
@@ -47,6 +49,10 @@ public class Transaccion extends IBaseTnx {
 	public Transaccion(List<IBaseDestajoArchivo> documentos) {
 		this.documentos= documentos;
 	}
+
+	public Transaccion(ConceptoExtra conceptoExtra) {
+		this.conceptoExtra= conceptoExtra;
+	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
@@ -81,6 +87,12 @@ public class Transaccion extends IBaseTnx {
 						if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
 							toSaveFile(incidencia.getIdArchivo());
 					} // for
+					break;
+				case AGREGAR:					
+					regresar= agregarConceptoExtra(sesion);					
+					break;
+				case ELIMINAR:
+					regresar= eliminarConceptoExtra(sesion);
 					break;
 			} // switch
 		} // try
@@ -413,13 +425,17 @@ public class Transaccion extends IBaseTnx {
 	} // toIdEstacionEstatus
 	
 	private boolean validaInicioTrabajo(Session sesion, Long idContratoDestajo, boolean contratista) throws Exception{
+		return validaInicioTrabajoExtra(sesion, idContratoDestajo, contratista, this.revision.getIdDepartamento(), this.revision.getClave());
+	} // validaInicioTrabajo
+	
+	private boolean validaInicioTrabajoExtra(Session sesion, Long idContratoDestajo, boolean contratista, Long idDepartamento, String clave) throws Exception{
 		boolean regresar         = false;
 		Long total               = 0L;
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idDepartamento", this.revision.getIdDepartamento());
-			params.put("clave", this.revision.getClave());
+			params.put("idDepartamento", idDepartamento);
+			params.put("clave", clave);
 			params.put("estatus", CANCELADO);
 			if(contratista){
 				params.put("condicionContratista", idContratoDestajo!= null ? "id_contrato_destajo_contratista != " + idContratoDestajo : Constantes.SQL_VERDADERO);
@@ -439,16 +455,20 @@ public class Transaccion extends IBaseTnx {
 	} // validaInicioTrabajo
 	
 	private void actualizaInicioContratoLote(Session sesion, boolean inicio) throws Exception{
+		actualizaInicioContratoLoteExtra(sesion, inicio, this.revision.getIdContratoLote());
+	} // actualizaInicioContratoLote
+	
+	private void actualizaInicioContratoLoteExtra(Session sesion, boolean inicio, Long idContratoLote) throws Exception{
 		TcKeetContratosLotesDto contratoLote= null;
 		try {
-			contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, this.revision.getIdContratoLote());
+			contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, idContratoLote);
 			contratoLote.setArranque(inicio ? LocalDate.now() : null);			
 			DaoFactory.getInstance().update(sesion, contratoLote);
 		} // try
 		catch (Exception e) {
 			throw e;
 		} // catch		
-	} // actualizaInicioContratoLote
+	} // actualizaInicioContratoLoteExtra
 	
 	private boolean actualizaEstacionPadre(Session sesion, TcKeetEstacionesDto hijo, Double total, String semana, boolean alta) throws Exception{
 		boolean regresar         = true;
@@ -473,4 +493,201 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // actualizaEstacionPadre
+	
+	private boolean agregarConceptoExtra(Session sesion) throws Exception{
+		boolean regresar                 = false;
+		TcKeetEstacionesDto estacion     = null;
+		TcKeetEstacionesDto estacionClon = null;
+		List<TcKeetEstacionesDto> list   = null;
+		Estaciones estaciones            = null;
+		Entity concepto                  = null;
+		String semana                    = null;
+		String clave                     = null;
+		try {
+			estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.conceptoExtra.getIdEstacion());
+			estaciones= new Estaciones();			
+			list= estaciones.toAllChildren(estacion.getClave(), estacion.getNivel().intValue()+1);			
+			clave= estaciones.toNextKey(list.get(list.size()-1).getClave(), estacion.getNivel().intValue()+1);
+			estacionClon= (TcKeetEstacionesDto) estacion.clone();
+			estacionClon.setIdEstacion(-1L);
+			estacionClon.setClave(clave);
+			estacionClon.setNivel(estacionClon.getNivel()+1);
+			for(int count=0; count<55; count++){
+				Methods.setValue(estacionClon, "cargo".concat(String.valueOf(count+1)), new Object[]{0D});
+				Methods.setValue(estacionClon, "abono".concat(String.valueOf(count+1)), new Object[]{0D});
+			} // for
+			estacionClon.setNombre(this.conceptoExtra.getDescripcion());
+			concepto= toConcepto(sesion);
+			estacionClon.setCodigo(concepto.toString("codigo"));
+			estacionClon.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
+			estacionClon.setCosto(this.conceptoExtra.getImporte());
+			semana= toSemana().toString();
+			Methods.setValue(estacionClon, "cargo".concat(semana), new Object[]{this.conceptoExtra.getImporte()});
+			if(DaoFactory.getInstance().insert(sesion, estacionClon)>= 1L){
+				if(actualizaEstacionPadre(sesion, estacionClon, this.conceptoExtra.getImporte(), semana, true)){
+					if(this.conceptoExtra.getTipo().equals(1L))
+						regresar= processDestajoContratistaExtra(sesion, estacionClon);
+					else
+						regresar= processDestajoSubContratistaExtra(sesion, estacionClon);
+				} // if
+			} // if
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		return regresar;
+	} // agregarConceptoExtra
+	
+	private Entity toConcepto(Session sesion) throws Exception{
+		Entity regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idRubro", this.conceptoExtra.getIdRubro());
+			regresar= (Entity) DaoFactory.getInstance().toEntity(sesion, "VistaRubrosDto", "byRubro", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toConcepto
+	
+	private boolean processDestajoContratistaExtra(Session sesion, TcKeetEstacionesDto estacion) throws Exception{		
+		TcKeetContratosDestajosContratistasDto dto= null;
+		Long idContratoDestajo= -1L;
+		boolean regresar= true;		
+		try {
+			dto= new TcKeetContratosDestajosContratistasDto();		
+			dto.setIdUsuario(JsfBase.getIdUsuario());
+			dto.setSemana(toSemana());
+			dto.setPeriodo(toPeriodo());
+			dto.setIdEstacion(estacion.getIdEstacion());
+			dto.setIdContratoLoteContratista(this.conceptoExtra.getIdFigura());
+			dto.setIdNomina(null);
+			dto.setCosto(this.conceptoExtra.getImporte());
+			dto.setPorcentaje(100D);
+			dto.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
+			idContratoDestajo= DaoFactory.getInstance().insert(sesion, dto);
+			this.conceptoExtra.setPuntosRevision(loadPuntosRevision(sesion, estacion.getIdEstacion()));
+			if(processPuntosContratistasExtras(sesion, JsfBase.getIdUsuario(), idContratoDestajo)){												
+				if(validaInicioTrabajoExtra(sesion, null, true, this.conceptoExtra.getIdDepartamento(), estacion.getClave()))
+					actualizaInicioContratoLoteExtra(sesion, true, this.conceptoExtra.getIdContratoLote());				
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadContratista
+	
+	private boolean processPuntosContratistasExtras(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception{
+		boolean regresar= true;
+		TcKeetContratosPuntosContratistasDto dto= null;
+		try {
+			for(Entity puntoRevision: this.conceptoExtra.getPuntosRevision()) {
+				dto= new TcKeetContratosPuntosContratistasDto();
+				dto.setFactor(puntoRevision.toDouble("factor"));
+				dto.setIdContratoDestajoContratista(idContratoDestajo);
+				dto.setIdPuntoPaquete(puntoRevision.getKey());
+				dto.setIdRevisado(2L);
+				dto.setIdUsuario(idUsuario);
+				dto.setLatitud(this.conceptoExtra.getLatitud());
+				dto.setLongitud(this.conceptoExtra.getLongitud());
+				dto.setDistancia(this.conceptoExtra.getMetros());
+				DaoFactory.getInstance().insert(sesion, dto);				
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // processPuntosContratistas
+	
+	private boolean processDestajoSubContratistaExtra(Session sesion, TcKeetEstacionesDto estacion) throws Exception{		
+		TcKeetContratosDestajosProveedoresDto dto= null;
+		Long idContratoDestajo= -1L;
+		boolean regresar= true;		
+		try {
+			dto= new TcKeetContratosDestajosProveedoresDto();		
+			dto.setIdUsuario(JsfBase.getIdUsuario());
+			dto.setSemana(toSemana());
+			dto.setPeriodo(toPeriodo());
+			dto.setIdEstacion(estacion.getIdEstacion());
+			dto.setIdContratoLoteProveedor(this.conceptoExtra.getIdFigura());
+			dto.setIdNomina(null);
+			dto.setCosto(this.conceptoExtra.getImporte());
+			dto.setPorcentaje(100D);
+			dto.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
+			idContratoDestajo= DaoFactory.getInstance().insert(sesion, dto);
+			this.conceptoExtra.setPuntosRevision(loadPuntosRevision(sesion, estacion.getIdEstacion()));
+			if(processPuntosSubContratistasExtras(sesion, JsfBase.getIdUsuario(), idContratoDestajo)){												
+				if(validaInicioTrabajoExtra(sesion, null, true, this.conceptoExtra.getIdDepartamento(), estacion.getClave()))
+					actualizaInicioContratoLoteExtra(sesion, true, this.conceptoExtra.getIdContratoLote());				
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadContratista
+	
+	private boolean processPuntosSubContratistasExtras(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception{
+		boolean regresar= true;
+		TcKeetContratosPuntosProveedoresDto dto= null;
+		try {
+			for(Entity puntoRevision: this.conceptoExtra.getPuntosRevision()) {
+				dto= new TcKeetContratosPuntosProveedoresDto();
+				dto.setFactor(puntoRevision.toDouble("factor"));
+				dto.setIdContratoDestajoProveedor(idContratoDestajo);
+				dto.setIdPuntoPaquete(puntoRevision.getKey());
+				dto.setIdRevisado(2L);
+				dto.setIdUsuario(idUsuario);
+				dto.setLatitud(this.conceptoExtra.getLatitud());
+				dto.setLongitud(this.conceptoExtra.getLongitud());
+				dto.setDistancia(this.conceptoExtra.getMetros());
+				DaoFactory.getInstance().insert(sesion, dto);				
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // processPuntosContratistas
+	
+	private Entity[] loadPuntosRevision(Session sesion, Long idEstacion) throws Exception{
+		Entity[] regresar        = null;
+		List<Entity>puntos       = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idDepartamento", this.conceptoExtra.getIdDepartamento());
+			params.put("idPuntoGrupo", this.conceptoExtra.getIdPuntoGrupo());
+			params.put("idEstacion", idEstacion);
+			puntos= DaoFactory.getInstance().toEntitySet(sesion, "VistaCapturaDestajosDto", "puntosRevision", params);
+			regresar= new Entity[puntos.size()];
+			for(int count=0; count<puntos.size(); count++)
+				regresar[count]= puntos.get(count);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // loadPuntosRevision
+	
+	private boolean eliminarConceptoExtra(Session sesion){ 
+		boolean regresar= false;
+		try {
+			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // eliminarConceptoExtra
 }
