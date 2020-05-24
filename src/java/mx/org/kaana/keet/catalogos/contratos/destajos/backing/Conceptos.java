@@ -29,7 +29,16 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Conceptos extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 2847354766000406350L;  
-	
+	private FormatLazyModel lazyModelExtras;
+
+	public FormatLazyModel getLazyModelExtras() {
+		return lazyModelExtras;
+	}
+
+	public void setLazyModelExtras(FormatLazyModel lazyModelExtras) {
+		this.lazyModelExtras = lazyModelExtras;
+	}
+		
   @PostConstruct
   @Override
   protected void init() {		
@@ -54,8 +63,10 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			this.attrs.put("idDesarrollo", idDesarrollo);      
 			this.attrs.put("idDepartamento", idDepartamento);      			
 			this.attrs.put("nombreConcepto", "");      			
-			loadCatalogos();			
+			loadCatalogos();						
 			doLoad();
+			if(JsfBase.isAdminEncuestaOrAdmin())
+				doLoadExtras();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -98,6 +109,28 @@ public class Conceptos extends IBaseFilter implements Serializable {
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
 	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "conceptos", params, columns);			
 			UIBackingUtilities.resetDataTable();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {      
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally		
+  } // doLoad	
+	  
+  public void doLoadExtras() {
+		Map<String, Object>params= null;
+    List<Columna> columns    = null;				
+    try {      			
+			params= this.toPrepare();
+      columns= new ArrayList<>();      
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
+	    this.lazyModelExtras= new FormatLazyModel("VistaCapturaDestajosDto", "conceptosExtras", params, columns);			
+			UIBackingUtilities.resetDataTable("tablaExtras");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -178,6 +211,19 @@ public class Conceptos extends IBaseFilter implements Serializable {
     return regresar;
   } // doPagina
 	
+	public String doCapturarExtra() {
+    String regresar= null;    				
+    try {						
+			this.toSetFlash(null);
+			regresar= "extra".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doPagina
+	
 	private void toSetFlash(Entity seleccionado){
 		JsfBase.setFlashAttribute("claveEstacion", toClaveEstacion());									
 		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));									
@@ -185,7 +231,8 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionadoPivote"));									
 		JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));									
 		JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
-		JsfBase.setFlashAttribute("concepto", seleccionado);	
+		if(seleccionado!= null)
+			JsfBase.setFlashAttribute("concepto", seleccionado);	
 		JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 	} // toSetFlash
