@@ -136,9 +136,15 @@
               </f:facet>
               <h:outputText value="#{index+1}.-"/>
             </p:column>		
+            <p:column class="janal-wid-col-150 janal-column-left MarAuto Responsive" sortBy="#{row.codigo}">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row.codigo}" title="Costo mano obra: #{row.costo}"/>
+            </p:column>		                        
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
-                <h:outputText value="Concepto(s) extras del lote"/>
+                <h:outputText value="Concepto(s) extras"/>
               </f:facet>
               <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
             </p:column>		                        

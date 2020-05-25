@@ -101,7 +101,7 @@ public class Extra extends IBaseAttribute implements Serializable {
   public void doLoad() {
 		Map<String, Object>params        = null;
     List<UISelectEntity> puntosGrupos= null;
-    List<UISelectItem> estaciones    = null;
+    List<UISelectEntity> estaciones  = null;
     try {      			
 			params= new HashMap<>();
 			params.put("idDepartamento", this.attrs.get("idDepartamento"));
@@ -110,7 +110,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 			params.put("nivel", NIVEL_ESPECIALIDAD);
 			puntosGrupos= UIEntity.seleccione("VistaRubrosDto", "byDepartamentoExtra", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "codigo");
 			this.attrs.put("conceptos", puntosGrupos);									
-			estaciones= UISelect.seleccione("TcKeetEstacionesDto", "byClaveNivel", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			estaciones= UIEntity.seleccione("TcKeetEstacionesDto", "byClaveNivel", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "codigo");
 			this.attrs.put("especialidades", estaciones);
     } // try
     catch (Exception e) {
