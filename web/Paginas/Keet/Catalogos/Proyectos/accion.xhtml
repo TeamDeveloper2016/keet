@@ -82,7 +82,7 @@
 							<p:outputLabel value="*Selecciona el cliente para cargar sus prototipos"/>
 							<p:spacer/>
 							<p:dataTable id="tablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.lotes}" rows="6" paginator="false" reflow="true" rowKey="#{lote.key}" emptyMessage=" " styleClass="paginated">																					
-								<p:column  headerText="Codigo">										
+								<p:column  headerText="Codigo" class="janal-wid-6">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.clave}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
 								<p:column  headerText="Prototipo" class="janal-wid-30">										
@@ -107,10 +107,10 @@
 								<p:column  headerText="Fecha termino" class="janal-wid-20">										
 									<p:calendar rendered="#{lote.mostar}" id="fechaTermino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.fechaTermino}"  pattern="dd/MM/yyyy" locale="es" readonly="true" disabled="true"/>
 								</p:column>
-								<p:column  headerText="Manzana" class="janal-wid-10">										
+								<p:column  headerText="Manzana" class="janal-wid-6">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.manzana}" styleClass="janal-wid-100-txt"/>
 								</p:column>
-                <p:column  headerText="Lote" class="janal-wid-10">										
+                <p:column  headerText="Lote" class="janal-wid-6">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.lote}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
                 <p:column  headerText="Tipo de fachada" class="janal-wid-30">										
@@ -123,6 +123,9 @@
 								</p:column>	                  
 								<p:column  headerText="Atributos" >										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.atributos}" styleClass="janal-wid-100-txt"/>
+								</p:column>								
+								<p:column  headerText="Costo" class="janal-wid-6">										
+									<p:inputNumber rendered="#{lote.mostar}" value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
 								</p:column>								
 								<p:column  style="width:35px;text-align: center" >
 									<p:commandButton rendered="#{lote.mostar}" update="tablaLotes" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosProyectosAccion.proyecto.proyecto.doRemoveLote}">

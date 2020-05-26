@@ -111,6 +111,8 @@
 								<p:calendar id="aceptacion" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetCatalogosContratosAccion.contrato.contrato.aceptacion}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
 								<p:outputLabel for="arranque" value="Arranque:"/>
 								<p:calendar id="arranque" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetCatalogosContratosAccion.contrato.contrato.arranque}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+								<p:outputLabel for="costo" value="Costo:"/>
+								<p:inputNumber id="costo" value="#{keetCatalogosContratosAccion.contrato.contrato.costo}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
 								<p:spacer/>
 								<p:separator/>
 								<p:outputLabel for="idProyecto" value="Proyecto:"/>
@@ -126,7 +128,7 @@
 							<p:remoteCommand name="executeGeo" oncomplete="initLocalization();"/>
 							<p:remoteCommand name="executeExistGeo" process="@this contenedorGrupos" actionListener="#{keetCatalogosContratosAccion.doExistGeo}"/>														
 							<p:dataTable id="tablaLotes" widgetVar="wTablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosContratosAccion.contrato.contrato.lotes}" rows="10" paginator="#{keetCatalogosContratosAccion.contrato.contrato.paginator}" reflow="true" rowKey="#{lote.key}" emptyMessage=" " styleClass="paginated style-panel" paginatorPosition="bottom">
-								<p:column headerText="Codigo" class="janal-wid-col-100">										
+								<p:column headerText="Codigo" class="janal-wid-6">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.clave}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
 								<p:column headerText="Prototipo" class="janal-wid-15">										
@@ -146,10 +148,10 @@
 								<p:column headerText="Fecha termino" class="janal-wid-10">										
 									<p:calendar rendered="#{lote.mostar}" id="fechaTermino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.termino}"  pattern="dd/MM/yyyy" locale="es" readonly="true" disabled="true"/>
 								</p:column>
-								<p:column headerText="Manzana" class="janal-wid-10">										
+								<p:column headerText="Manzana" class="janal-wid-6">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.manzana}" styleClass="janal-wid-100-txt"/>
 								</p:column>
-								<p:column headerText="Lote" class="janal-wid-8">										
+								<p:column headerText="Lote" class="janal-wid-6">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.lote}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
 								<p:column headerText="Tipo de fachada" class="janal-wid-13">										
@@ -159,6 +161,9 @@
 								</p:column>	                  
 								<p:column headerText="Atributos">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.atributos}" styleClass="janal-wid-100-txt"/>
+								</p:column>								
+								<p:column  headerText="Costo" class="janal-wid-6">										
+									<p:inputNumber rendered="#{lote.mostar}" value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
 								</p:column>								
 								<p:column headerText="Geo" class="janal-wid-col-20">																				
 									<h:graphicImage rendered="#{lote.mostar}" library="janal" name="icon/semaforos/#{lote.georeferencia}.png"/>
