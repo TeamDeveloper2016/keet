@@ -57,17 +57,19 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="no_viviendas")
   private Long noViviendas;
-
+	@Column (name="costo")
+  private Double costo;
+	
   public TcKeetProyectosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetProyectosDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetProyectosDto(String clave, Long idCliente, Long idDesarrollo, Long idProyecto, String etapa, Long ejercicio, String consecutivo, Long idTipoObra, Long idProyectoEstatus, Long idUsuario, Long idEmpresa, Long orden, Long noViviendas) {
+  public TcKeetProyectosDto(String clave, Long idCliente, Long idDesarrollo, Long idProyecto, String etapa, Long ejercicio, String consecutivo, Long idTipoObra, Long idProyectoEstatus, Long idUsuario, Long idEmpresa, Long orden, Long noViviendas, Double costo) {
     setClave(clave);
     setIdCliente(idCliente);
     setIdDesarrollo(idDesarrollo);
@@ -82,6 +84,7 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setOrden(orden);
     setNoViviendas(noViviendas);
+		setCosto(costo);
   }
 	
   public void setClave(String clave) {
@@ -195,6 +198,14 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
   public Long getNoViviendas() {
     return noViviendas;
   }
+	
+	public Double getCosto() {
+		return costo;
+	}
+
+	public void setCosto(Double costo) {
+		this.costo = costo;
+	}	
 
   @Transient
   @Override
@@ -238,6 +249,8 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNoViviendas());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCosto());		
     regresar.append("]");
   	return regresar.toString();
   }
@@ -259,13 +272,14 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("noViviendas", getNoViviendas());
+		regresar.put("costo", getCosto());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getIdCliente(), getIdDesarrollo(), getIdProyecto(), getEtapa(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTipoObra(), getIdProyectoEstatus(), getIdUsuario(), getIdEmpresa(), getOrden(), getNoViviendas()
+			getClave(), getIdCliente(), getIdDesarrollo(), getIdProyecto(), getEtapa(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTipoObra(), getIdProyectoEstatus(), getIdUsuario(), getIdEmpresa(), getOrden(), getNoViviendas(), getCosto()
     };
     return regresar;
   }
@@ -323,7 +337,4 @@ public class TcKeetProyectosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdProyecto() != null ? getIdProyecto().hashCode() : 0);
     return hash;
   }
-
 }
-
-
