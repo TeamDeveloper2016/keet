@@ -62,6 +62,8 @@
 										<h:outputText value="#{item.tipoDivision}"/>
 									</p:column>     
 								</p:selectOneMenu>
+								<p:outputLabel for="costo" value="Costo:"/>
+								<p:inputNumber id="costo" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.costo}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
               </p:panelGrid>
 						</p:tab>		
 						<p:tab title="Siembra" >	
