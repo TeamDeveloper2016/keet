@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mx.org.kaana.kajool.beans.SelectionItem;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.catalogos.prototipos.beans.DiaHabil;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
@@ -20,7 +18,7 @@ import mx.org.kaana.libs.reflection.Methods;
 
 public class Contrato extends TcKeetContratosDto {
 
-	private static final long serialVersionUID = -2816173235044810661L;
+	private static final long serialVersionUID= -2816173235044810661L;
 	private UISelectEntity ikProyecto;
   private List<Lote> lotes;
 	private Lote loteSeleccion;
