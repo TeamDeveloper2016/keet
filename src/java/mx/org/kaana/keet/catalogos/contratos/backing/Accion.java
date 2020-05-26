@@ -151,6 +151,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.contrato.getContrato().setIdUsuario(JsfBase.getIdUsuario());
 			transaccion= new Transaccion(this.contrato);
 			if (transaccion.ejecutar(eaccion)) {
+				JsfBase.setFlashAttribute("idContratoProcess", this.contrato.getContrato().getIdContrato());
 				regresar =  "filtro".concat(Constantes.REDIRECIONAR);//this.attrs.get("retorno")!=null? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el contrato de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
@@ -165,6 +166,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
+		if(this.contrato.getContrato().getIdContrato()>= 1L)
+			JsfBase.setFlashAttribute("idContratoProcess", this.contrato.getContrato().getIdContrato());
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion	
 	

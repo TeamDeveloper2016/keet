@@ -2,7 +2,6 @@ package mx.org.kaana.keet.catalogos.contratos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,6 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.catalogos.contratos.beans.Contrato;
 import mx.org.kaana.keet.catalogos.contratos.beans.RegistroContrato;
 import mx.org.kaana.keet.db.dto.TcKeetContratosBitacoraDto;
-import mx.org.kaana.keet.db.dto.TcKeetContratosEstatusDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -33,7 +31,6 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.catalogos.contratos.reglas.Transaccion;
-import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 
@@ -47,10 +44,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
 		List<UISelectEntity> tiposObras= null;
-    Map<String, Object> params     = new HashMap<>();
+    Map<String, Object> params     = new HashMap<>();		
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			loadEmpresas();
 			tiposObras= UIEntity.seleccione("VistaTiposObrasDto", "catalogo", "tipoObra");
 			this.attrs.put("tipoObras", tiposObras);
@@ -58,6 +55,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetContratosEstatusDto", "row", params, Collections.EMPTY_LIST, "nombre"));
 			this.attrs.put("idContratoEstatus", new UISelectEntity("-1"));
+			if(JsfBase.getFlashAttribute("idContratoProcess")!= null){
+				this.attrs.put("idContratoProcess", JsfBase.getFlashAttribute("idContratoProcess"));
+				doLoad();
+				this.attrs.put("idContratoProcess", null);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -175,6 +177,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
     UISelectEntity cliente        = (UISelectEntity)this.attrs.get("cliente");
     List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("clientes");
+		if(this.attrs.get("idContratoProcess")!= null)
+			sb.append("tc_keet_contratos.id_contrato=").append(this.attrs.get("idContratoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
 			sb.append("(tc_mantic_clientes.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
