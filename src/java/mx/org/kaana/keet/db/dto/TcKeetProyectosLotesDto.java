@@ -58,17 +58,19 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="atributos")
   private String atributos;
+  @Column (name="costo")
+  private Double costo;
 
   public TcKeetProyectosLotesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetProyectosLotesDto(Long key) {
-    this(null, null, LocalDate.now(), null, null, LocalDate.now(), new Long(-1L), null, null, null, null, null, null);
+    this(null, null, LocalDate.now(), null, null, LocalDate.now(), new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetProyectosLotesDto(String manzana, String clave, LocalDate fechaInicio, Long idProyecto, Long lote, LocalDate fechaTermino, Long idProyectoLote, Long idUsuario, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos) {
+  public TcKeetProyectosLotesDto(String manzana, String clave, LocalDate fechaInicio, Long idProyecto, Long lote, LocalDate fechaTermino, Long idProyectoLote, Long idUsuario, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, Double costo) {
     setManzana(manzana);
     setClave(clave);
     setFechaInicio(fechaInicio);
@@ -83,6 +85,7 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     setIdPrototipo(idPrototipo);
     setOrden(orden);
     setAtributos(atributos);
+		setCosto(costo);
   }
 	
   public void setManzana(String manzana) {
@@ -197,6 +200,14 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     return atributos;
   }
 
+	public Double getCosto() {
+		return costo;
+	}
+
+	public void setCosto(Double costo) {
+		this.costo = costo;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -239,6 +250,8 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getAtributos());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCosto());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -260,13 +273,14 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
 		regresar.put("idPrototipo", getIdPrototipo());
 		regresar.put("orden", getOrden());
 		regresar.put("atributos", getAtributos());
+		regresar.put("costo", getCosto());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getManzana(), getClave(), getFechaInicio(), getIdProyecto(), getLote(), getFechaTermino(), getIdProyectoLote(), getRegistro(), getIdUsuario(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos()
+			getManzana(), getClave(), getFechaInicio(), getIdProyecto(), getLote(), getFechaTermino(), getIdProyectoLote(), getRegistro(), getIdUsuario(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos(), getCosto()
     };
     return regresar;
   }
@@ -324,7 +338,4 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdProyectoLote() != null ? getIdProyectoLote().hashCode() : 0);
     return hash;
   }
-
 }
-
-
