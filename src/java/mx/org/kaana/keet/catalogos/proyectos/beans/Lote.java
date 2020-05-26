@@ -1,17 +1,15 @@
-
 package mx.org.kaana.keet.catalogos.proyectos.beans;
 
-import java.util.Objects;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosLotesDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
 public class Lote extends TcKeetProyectosLotesDto{
-	
+
+	private static final long serialVersionUID = 1088774352011658013L;	
 	private UISelectEntity ikPrototipo;
 	private UISelectEntity ikFachada;
 	private ESql accion;
-
 
 	public Lote() {
 		this(ESql.UPDATE, -1L);
@@ -22,7 +20,6 @@ public class Lote extends TcKeetProyectosLotesDto{
 		this.accion = accion;
 	}
 	
-	
 	public UISelectEntity getIkPrototipo() {
 		return ikPrototipo;
 	}
@@ -30,7 +27,6 @@ public class Lote extends TcKeetProyectosLotesDto{
 	public UISelectEntity getIkFachada() {
 		return ikFachada;
 	}
-
 
 	public void setIkPrototipo(UISelectEntity ikPrototipo) {
 		this.ikPrototipo = ikPrototipo;
@@ -56,24 +52,6 @@ public class Lote extends TcKeetProyectosLotesDto{
 		return !this.accion.equals(ESql.DELETE);
 	}
 
-/*	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final Lote other = (Lote) obj;
-		//if (getIdProyectoLote() != other.idProyectoLote && (getIdProyectoLote() == null || !getIdProyectoLote().equals(other.idProyectoLote)))
-    if ((getManzana() != other.getManzana() && (getManzana() == null || !getManzana().equals(other.getManzana())))
-		&&
-		(!Objects.equals(getLote(), other.getLote()) && (getLote() == null || !getLote().equals(other.getLote())))){
-      return false;
-    }
-    return true;
-	}*/
-
 	@Override
 	public int hashCode() {
 		int hash = 3;
@@ -84,9 +62,5 @@ public class Lote extends TcKeetProyectosLotesDto{
 	@Override
   public Class toHbmClass() {
     return TcKeetProyectosLotesDto.class;
-  }
-	
-	
-	
-	
+  }	
 }
