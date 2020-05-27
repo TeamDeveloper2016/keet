@@ -186,6 +186,89 @@
           {condicion}
 				order by  tc_mantic_proveedores.id_proveedor,departamentos.departamento, tc_keet_nominas_rubros.lote, tc_keet_nominas_rubros.codigo
       </select>
+      <select id="listadoNomina">
+        select
+          id_key,
+          id_nomina,
+          nomina,
+          nombre_empresa,  
+          puesto puesto_departamento,
+          clave,
+          nombre_completo,
+          percepciones as percepciones_subtotal,
+          deducciones as deducciones_iva,
+          neto as neto_total,
+          tipo_nomina
+        from
+          (select
+              tc_keet_nominas_personas.id_nomina_persona as id_key,
+              tc_keet_nominas.id_nomina,
+              concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+              tc_mantic_empresas.nombre as nombre_empresa,  
+              tc_mantic_puestos.nombre as puesto,
+              tr_mantic_empresa_personal.clave,
+              concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
+              tc_keet_nominas_personas.percepciones,
+              tc_keet_nominas_personas.deducciones,
+              tc_keet_nominas_personas.neto,
+              'personas' as tipo_nomina
+            from
+              tc_keet_nominas
+            inner join 
+              tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+            inner join 
+              tc_keet_nominas_personas on tc_keet_nominas.id_nomina= tc_keet_nominas_personas.id_nomina
+            inner join 
+              tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+            inner join 
+              tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+            inner join 
+              tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
+            inner join 
+              tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento= tc_keet_departamentos.id_departamento
+            inner join 
+              tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+            where
+            {condicion}	
+            union all
+            select
+              tc_keet_nominas_proveedores.id_nomina_proveedor as id_key,
+              tc_keet_nominas.id_nomina,
+              concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+              tc_mantic_empresas.nombre as nombre_empresa, 
+              departamentos.departamento,
+              tc_mantic_proveedores.clave,
+              tc_mantic_proveedores.razon_social as nombre_completo,
+              tc_keet_nominas_proveedores.subtotal,
+              tc_keet_nominas_proveedores.iva,
+              tc_keet_nominas_proveedores.total,
+              'proveedores' as tipo_nomina
+            from
+              tc_keet_nominas
+            inner join 
+              tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+            inner join 
+              tc_keet_nominas_proveedores on tc_keet_nominas.id_nomina= tc_keet_nominas_proveedores.id_nomina
+            inner join 
+              tc_mantic_proveedores on tc_keet_nominas_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+            inner join ( 
+              select 
+                tc_keet_proveedores_departamentos.id_proveedor,
+                concat('|', group_concat(tc_keet_departamentos.id_departamento separator '|'), '|') as id_departamentos,
+                group_concat(tc_keet_departamentos.nombre separator ', ') as departamento
+              from
+                tc_keet_proveedores_departamentos
+              inner join
+                tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+              group by
+                tc_keet_proveedores_departamentos.id_proveedor				  
+            ) as departamentos on tc_mantic_proveedores.id_proveedor= departamentos.id_proveedor
+            inner join 
+              tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+            where
+              {condicion}) ppal
+        order by	tipo_nomina, nombre_empresa, nomina desc	
+      </select>
     </unit>
     <unit id="VistaNominaConsultasReportesDto">
       <select id="destajoPersona">
