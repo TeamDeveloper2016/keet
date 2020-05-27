@@ -193,9 +193,9 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("semana")) && ((UISelectEntity)this.attrs.get("semana")).getKey()>= 1L)				
 			sb.append("tc_keet_nominas_periodos.orden = ").append(((UISelectEntity)this.attrs.get("semana")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idTipoNomina")) && ((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()>= 1L)				
-			sb.append("tc_keet_nomina.id_tipo_nomina= ").append(((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()).append(" and ");
+			sb.append("tc_keet_nominas.id_tipo_nomina= ").append(((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
-			sb.append("tc_keet_nomina.id_nomina_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
+			sb.append("tc_keet_nominas.id_nomina_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
 		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
 			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
@@ -279,31 +279,38 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
     Entity entity                = null;
     Map<String,Object>paramsPpal = null;
     try {
-      paramsPpal= this.toPrepare();	
       params= new HashMap<>();  
-      entity= (Entity)this.attrs.get("seleccionado");
-			paramsPpal.put("sortOrder", "order by nomina desc");
-      paramsPpal.put(Constantes.SQL_CONDICION, "tc_keet_nominas_personas.id_nomina= ".concat(entity.toLong("idNomina").toString()).concat(" and tc_keet_nominas_personas.id_empresa_persona= ").concat(entity.toLong("idEmpresaPersona").toString()));
       reporteSeleccion= EReportes.valueOf(nombre);  
-      params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
-			params.put("idNomina", entity.toLong("idNomina"));
-			params.put("nomina", entity.toString("nomina"));
-			params.put("nombreCompleto", entity.toString("nombreCompleto"));
-			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
-			comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
-      this.reporte= JsfBase.toReporte();
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getNombre());
       parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
-      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
-      parametros.put("SQL_UNO", Dml.getInstance().getSelect("VistaNominaConsultasDto", "persona", params));
-      params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
-      parametros.put("SQL_DOS", Dml.getInstance().getSelect("VistaNominaConsultasDto", "destajo", params));
-      parametros.put(Constantes.TILDE.concat("SUBREPORTE_1"), "/Paginas/Keet/Nominas/Reportes/detallePersona_subreport1.jasper");
-      parametros.put(Constantes.TILDE.concat("SUBREPORTE_2"), "/Paginas/Keet/Nominas/Reportes/detallePersona_subreport2.jasper");
-      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, paramsPpal, parametros));		
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));	
+      this.reporte= JsfBase.toReporte();
+      if(!reporteSeleccion.equals(EReportes.LISTADO_NOMINA_PERSONAS)){
+        paramsPpal= this.toPrepare();
+        entity= (Entity)this.attrs.get("seleccionado");
+        paramsPpal.put("sortOrder", "order by nomina desc");
+        paramsPpal.put(Constantes.SQL_CONDICION, "tc_keet_nominas_personas.id_nomina= ".concat(entity.toLong("idNomina").toString()).concat(" and tc_keet_nominas_personas.id_empresa_persona= ").concat(entity.toLong("idEmpresaPersona").toString()));      
+        params.put("sortOrder", "order by tc_keet_nominas_detalles.id_nomina_persona, tc_keet_nominas_conceptos.id_tipo_concepto desc, tc_keet_nominas_conceptos.orden");
+        params.put("idNomina", entity.toLong("idNomina"));
+        params.put("nomina", entity.toString("nomina"));
+        params.put("nombreCompleto", entity.toString("nombreCompleto"));
+        params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
+        parametros.put("SQL_UNO", Dml.getInstance().getSelect("VistaNominaConsultasDto", "persona", params));
+        params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+        parametros.put("SQL_DOS", Dml.getInstance().getSelect("VistaNominaConsultasDto", "destajo", params));
+        parametros.put(Constantes.TILDE.concat("SUBREPORTE_1"), "/Paginas/Keet/Nominas/Reportes/detallePersona_subreport1.jasper");
+        parametros.put(Constantes.TILDE.concat("SUBREPORTE_2"), "/Paginas/Keet/Nominas/Reportes/detallePersona_subreport2.jasper");
+        this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, paramsPpal, parametros));		
+      }
+      else{
+        params= this.toPrepare();	
+        params.put("sortOrder", "order by	nombre_empresa, nomina desc");
+        this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      }
+      this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
       if(sendMail)
         this.reporte.doAceptarSimple();			
 			else{
