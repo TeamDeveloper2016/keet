@@ -64,7 +64,8 @@ public enum EReportes implements IReportAttribute{
   DESTAJOS_CAT_CONTRATISTA   ("VistaNominaConsultasDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
   DESTAJOS_CAT_SUBCONTRATISTA("VistaNominaConsultasDto", "destajoProveedor", "Destajos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
   DESTAJOS_TOTALES_SUBCONTRATISTA("VistaNominaConsultasReportesDto", "destajoProveedor", "Destajos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_subcontratista_desarrollos", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
-  DESTAJOS_TOTALES_CONTRATISTA("VistaNominaConsultasReportesDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_contratista_desarrollos", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro");
+  DESTAJOS_TOTALES_CONTRATISTA("VistaNominaConsultasReportesDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_contratista_desarrollos", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
+  NOMINA_LISTADO("VistaNominaReportesDto", "listadoNomina", "Listado nómina", "/Paginas/Keet/Nominas/Reportes/nominaEmpresa", EFormatos.PDF, "nomina", "/Paginas/Keet/Nominas/filtro");
 	
 	
 	private final String proceso;
