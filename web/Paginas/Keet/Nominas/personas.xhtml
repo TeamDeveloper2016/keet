@@ -119,9 +119,12 @@
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('LISTADO_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('LISTADO_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 						</f:facet>												
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.nombreEmpresa}">
 							<f:facet name="header">
@@ -216,9 +219,9 @@
 								<p:separator/>
 								<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doAccion}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
 								<p:separator/>
-								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DETALLE_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{keetNominasPersonas.doReporte('DETALLE_NOMINA_PERSONAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 								<p:separator/>
-								<p:menuitem icon="fa fa-envelope-o" value="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doLoadEstatus}" oncomplete="PF('dlgCorreosDetalle').show();" update="dialogoCorreosDetalle"/>
+								<p:menuitem icon="fa fa-envelope-o" value="Enviar" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{keetNominasPersonas.doLoadEstatus}" oncomplete="PF('dlgCorreosDetalle').show();" update="dialogoCorreosDetalle"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
@@ -275,9 +278,9 @@
 								<p:separator/>
 								<p:menuitem icon="fa fa-cloud-download" value="Exportar" action="#{keetNominasPersonas.doExportar}" process="@this" onstart="return janal.desbloquear();" oncomplete="janal.desbloquear();"/>
                 <p:separator/>
-								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doReporte('DESTAJOS_CONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this destajo" actionListener="#{keetNominasPersonas.doReporte('DESTAJOS_CONTRATISTA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 								<p:separator/>
-								<p:menuitem icon="fa fa-envelope-o" value="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasPersonas.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+								<p:menuitem icon="fa fa-envelope-o" value="Enviar" onstart="return janal.bloquear()" process="@this destajo" actionListener="#{keetNominasPersonas.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('destajoPdf', 'destajo')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('destajoXls', 'destajo')" oncomplete="janal.desbloquear()"/>
