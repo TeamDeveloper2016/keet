@@ -44,7 +44,7 @@
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-96, janal-wid-col-30 janal-column-center">
 									<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosDestajosFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-										<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear();"/>
+										<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona destajo reporteDestajos lotes" oncomplete="janal.desbloquear();"/>
 										<f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>									
 										<p:column headerText="Puesto">
 											<h:outputText value="#{item.puesto}"/>
@@ -59,7 +59,15 @@
 		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajos}" process="@this" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
                     <p:commandButton id="reporteDestajos" icon="fa fa-file-pdf-o" title="Destajos" action="#{keetCatalogosContratosDestajosFiltro.doReporte('COMPLETO')}" disabled="#{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor}" process="@this" update="descargar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" />
 									</p:panelGrid>
-								</p:panelGrid>	
+								</p:panelGrid>
+								<p:outputLabel for="lotes" value="Lotes:"/>
+								<p:selectOneMenu id="lotes" value="#{keetCatalogosContratosDestajosFiltro.attrs.loteCriterio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.lotesCriterio}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
+									<p:column headerText="Lote">
+										<h:outputText value="#{item.descripcionLote}"/>
+									</p:column>   
+								</p:selectOneMenu>
               </p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>						
