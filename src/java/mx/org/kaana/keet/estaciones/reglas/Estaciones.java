@@ -31,7 +31,7 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
       new Detalle(4, 3, 2, "0", "[1..999]", ""),  // 4to nivel campo de orden de la tabla de contratos_lotes a 3 digitos para el caso de las plantillas se va a tener el id_prototipo a 3 dígitos
       new Detalle(5, 3, 2, "0", "[1..999]", ""),  // 5to nivel estación a  3 dígitos
       new Detalle(6, 3, 2, "0", "[1..999]", ""),  // 6to nivel concepto a 3 digitos
-      new Detalle(7, 3, 2, "0", "[1..999]", ""),
+      new Detalle(7, 3, 2, "0", "[1..999]", ""),  // 7to nivel material a 3 digitos
       new Detalle(8, 3, 2, "0", "[1..999]", ""))));
 	}
 

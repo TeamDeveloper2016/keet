@@ -1,9 +1,8 @@
 package mx.org.kaana.keet.estaciones.masivos.beans;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
 
 /**
  *@company KAANA
@@ -13,17 +12,16 @@ import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Estacion extends TcKeetEstacionesDto implements Cloneable, Serializable {
+public class Material extends TcKeetMaterialesDto implements Cloneable, Serializable {
 
 	private static final long serialVersionUID=-6170305461966609460L;
 
-	public Estacion() {
+	public Material() {
 		this("", "", "", 0L, 1L, 1L, -1L);
 	}
-	public Estacion(String clave, String codigo, String nombre, Long nivel, Long ultimo, Long idEmpaqueUnidadMedida, Long idUsuario) {
+	public Material(String clave, String codigo, String nombre, Long nivel, Long ultimo, Long idEmpaqueUnidadMedida, Long idUsuario) {
 		super();
-		this.setIdEstacion(-1L);
-		this.setIdPlantilla(2L);
+		this.setIdMaterial(-1L);
 		this.setNivel(nivel);
 		this.setClave(clave);
 		this.setUltimo(ultimo);
@@ -33,8 +31,6 @@ public class Estacion extends TcKeetEstacionesDto implements Cloneable, Serializ
 		this.setIdEmpaqueUnidadMedida(idEmpaqueUnidadMedida);
 		this.setCantidad(1D);
 		this.setIdEstacionEstatus(1L);
-		this.setInicio(LocalDate.now());
-		this.setTermino(LocalDate.now());
 		this.setIdUsuario(idUsuario);
 		this.setRegistro(LocalDateTime.now());
 		this.setCosto(0D);
@@ -151,14 +147,13 @@ public class Estacion extends TcKeetEstacionesDto implements Cloneable, Serializ
 	
 	@Override
 	public Class toHbmClass() {
-		return TcKeetEstacionesDto.class;
+		return TcKeetMaterialesDto.class;
 	}
 	
 	@Override
-	public Estacion clone() throws CloneNotSupportedException {
-		Estacion clone= new Estacion();
-		clone.setIdEstacion(-1L);
-		clone.setIdPlantilla(this.getIdPlantilla());
+	public Material clone() throws CloneNotSupportedException {
+		Material clone= new Material();
+		clone.setIdMaterial(-1L);
 		clone.setNivel(this.getNivel());
 		clone.setClave(this.getClave());
 		clone.setUltimo(this.getUltimo());
@@ -166,8 +161,6 @@ public class Estacion extends TcKeetEstacionesDto implements Cloneable, Serializ
 		clone.setNombre(this.getNombre());
 		clone.setDescripcion(this.getDescripcion());
 		clone.setIdEmpaqueUnidadMedida(this.getIdEmpaqueUnidadMedida());
-		clone.setInicio(this.getInicio());
-		clone.setTermino(this.getTermino());
 		clone.setCantidad(this.getCantidad());
 		clone.setIdEstacionEstatus(this.getIdEstacionEstatus());
 		clone.setIdUsuario(this.getIdUsuario());

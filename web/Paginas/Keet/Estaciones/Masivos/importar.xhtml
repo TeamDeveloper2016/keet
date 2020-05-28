@@ -40,7 +40,7 @@
 			
 			function longProcess() {
 				var tuplas= parseInt($('#contenedorGrupos\\:tuplas').html().replace(/[,]/g, ''), 10);
-				if(tuplas> 1000) {
+				if(tuplas> 4000) {
   				janal.console("progreso.longProcess(): Entro para cambiar de pagina de seguimiento");
 					setTimeout("$('#progreso').click();", 6000);
 				} // if
@@ -79,19 +79,23 @@
 									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 11}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-plantillas.xls" title="Plantilla de estaciones">
 										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>
+									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-materiales.xls" title="Plantilla de estaciones">
+										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+									</h:outputLink>
 								</f:facet>	
 								<p:selectOneRadio id="tipo" value="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo}" columns="2" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" process="@this" listener="#{keetEstacionesMasivosImportar.doChangeTipo}" update="catalogo @(.involucrados) @(.importado) @(.janal-upload-frame)"/>
 									<f:selectItem itemLabel="ESTACIONES" itemValue="9"/>
+									<f:selectItem itemLabel="MATERIALES" itemValue="12"/>
 									<f:selectItem itemLabel="PERSONAL" itemValue="10"/>
 									<f:selectItem itemLabel="PLANTILLAS" itemValue="11"/>
 								</p:selectOneRadio>
 							</p:panel>
 							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados" columnClasses="janal-wid-70, janal-wid-30">
-								<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" styleClass="involucrados"/>
-								<p:outputLabel for="idLimpiar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" styleClass="involucrados"/>
+								<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" styleClass="involucrados"/>
+								<p:outputLabel for="idLimpiar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" styleClass="involucrados"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30">
-									<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idContratoLote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}">
+									<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idContratoLote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}">
 										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.codigo}"/>
 										<p:column headerText="Ejercicio">
 											<h:outputText value="#{item.ejercicio}"/>
@@ -106,9 +110,9 @@
 											<h:outputText value="#{item.etapa}"/>
 										</p:column>   
 									</p:selectOneMenu>
-									<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetEstacionesMasivosImportar.doExportar}" process="@this idContratoLote" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" />
+									<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetEstacionesMasivosImportar.doExportar}" process="@this idContratoLote" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" />
 								</p:panelGrid>
-								<p:selectOneMenu id="idLimpiar" value="#{keetEstacionesMasivosImportar.attrs.idLimpiar}" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9? '': 'none'}" converter="javax.faces.Long" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idLimpiar" value="#{keetEstacionesMasivosImportar.attrs.idLimpiar}" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" converter="javax.faces.Long" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItem itemLabel="SI" itemValue="1"/>
 									<f:selectItem itemLabel="NO" itemValue="2"/>								
 								</p:selectOneMenu>

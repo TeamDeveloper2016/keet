@@ -824,7 +824,72 @@
 			    lote, tc_keet_estaciones.codigo				
 			</select>					
 		</unit>
-		<unit id="VistaContratosLotesDto">
+		<unit id="VistaContratosLotesMaterialesDto">
+			<select id="estaciones">
+				select
+				  tc_keet_materiales.id_material as id_key,
+					tc_keet_materiales.*,
+					tc_mantic_unidades_medidas.nombre as unidad
+				from 
+					tc_keet_materiales
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_keet_materiales.id_empaque_unidad_medida= tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
+				where
+					tc_keet_materiales.clave like '{clave}%'
+				order by
+					tc_keet_materiales.clave
+			</select>	
+			<select id="material">
+				select
+				  tc_keet_materiales.id_material as id_key,
+					tc_keet_materiales.*
+				from 
+					tc_keet_materiales
+				where
+					tc_keet_materiales.clave like '{clave}%'
+				  and tc_keet_materiales.codigo= '{codigo}'
+				  and tc_keet_materiales.nivel= 7
+				order by
+					tc_keet_materiales.clave
+			</select>		
+      <select id="estacion">
+				select
+				  tc_keet_materiales.id_material as id_key,
+					tc_keet_materiales.*
+				from 
+					tc_keet_materiales
+				where
+					tc_keet_materiales.clave= '{clave}'
+				  and tc_keet_materiales.nivel= {nivel}
+				order by
+					tc_keet_materiales.clave
+			</select>		
+			<select id="exportar">
+				select
+				  tc_keet_materiales.id_material as id_key,
+				  '{manzana}' as manzana,
+				  '{lote}' as lote,
+					tc_keet_materiales.codigo,
+					tc_keet_materiales.nombre,
+					tc_keet_materiales.cantidad,
+					tc_keet_materiales.costo as "costo s/iva",
+					tc_mantic_unidades_medidas.clave as "unidad medida",
+				  date_format(tc_keet_materiales.inicio, '%d/%m/%Y') as inicio,
+				  date_format(tc_keet_materiales.termino, '%d/%m/%Y') as termino
+				from 
+					tc_keet_materiales
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_keet_materiales.id_empaque_unidad_medida= tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
+				where
+					tc_keet_materiales.clave like '{clave}%'
+					and tc_keet_materiales.nivel> 4
+				order by
+					tc_keet_materiales.clave
+			</select>	
 			<select id="buscar">
 				select
 					tc_keet_temporal.*
@@ -842,6 +907,41 @@
 				 tc_keet_rubros.codigo,
 				 6 as nivel,
 				 2 as ultimo
+				from
+					tc_keet_rubros
+				union all
+        select
+				 3000+ tc_mantic_articulos.id_articulo as id_key,
+				 tc_mantic_articulos_codigos.codigo,
+				 7 as nivel,
+				 1 as ultimo
+				from
+          tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo				
+				) as tc_keet_temporal
+				where
+					tc_keet_temporal.codigo= '{codigo}'
+			</select>													
+		</unit>
+		<unit id="VistaContratosLotesDto">
+			<select id="buscar">
+				select
+					tc_keet_temporal.*
+				from (
+				select
+				 1000+ tc_keet_partidas.id_partida as id_key,
+				 tc_keet_partidas.codigo,
+				 5 as nivel,
+				 2 as ultimo
+				from
+					tc_keet_partidas
+				union all
+				select
+				 2000+ tc_keet_rubros.id_rubro as id_key,
+				 tc_keet_rubros.codigo,
+				 6 as nivel,
+				 1 as ultimo
 				from
 					tc_keet_rubros
 				) as tc_keet_temporal
@@ -930,11 +1030,14 @@
 					tc_keet_contratos.orden as contrato,
 					tc_keet_contratos_lotes.inicio,
 					tc_keet_contratos_lotes.termino,
-					tc_keet_contratos_lotes.orden
+					tc_keet_contratos_lotes.orden,
+				  tc_keet_prototipos.nombre as prototipo
 				from 
 					tc_keet_contratos
 				inner join 
 					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join
+				  tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 				where
 				  tc_keet_contratos_lotes.id_contrato_lote= {idContratoLote}
 				order by
@@ -949,7 +1052,9 @@
 					tc_keet_estaciones.nombre,
 					tc_keet_estaciones.cantidad,
 					tc_keet_estaciones.costo as "costo s/iva",
-					tc_mantic_unidades_medidas.clave as "unidad medida"
+					tc_mantic_unidades_medidas.clave as "unidad medida",
+				  date_format(tc_keet_estaciones.inicio, '%d/%m/%Y') as inicio,
+				  date_format(tc_keet_estaciones.termino, '%d/%m/%Y') as termino
 				from 
 					tc_keet_estaciones
 				inner join

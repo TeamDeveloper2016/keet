@@ -7,6 +7,52 @@
   </model>
 
   <dml>		
+    <unit id="TcKeetMaterialesDto">
+      <select id="row">
+        select      
+          tc_keet_materiales.id_material as id_key 
+				  tc_keet_materiales.*
+        from      
+          tc_keet_materiales
+        where 
+          {condicion}
+				order by
+				  clave 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_materiales
+        where      
+          id_material = {idMaterial}
+      </select>
+      <delete id="rows">
+				delete
+				  tc_keet_materiales
+			  from
+				  tc_keet_materiales
+				where 
+				 tc_keet_materiales.clave like '{clave}%'
+         and tc_keet_materiales.nivel> 4
+			</delete>
+			<update id="rows">
+				update
+				  tc_keet_materiales
+				set
+				  abono_{semana}= abono_{anterior}- cargo_{anterior} 
+				where
+	        clave like '{clave}%'
+			</update>
+			<update id="abonos">
+				update
+				  tc_keet_materiales
+				set
+				  abono_{semana}= costo 
+				where
+	        clave like '{clave}%'
+			</update>
+		</unit>
 		<unit id="TcKeetContratosContratistasArchivosDto">
       <select id="row">
         select      

@@ -88,6 +88,9 @@ public class Importar extends IBaseImportar implements Serializable {
 					case 11:
 						this.categoria= ECargaMasiva.PLANTILLAS;
 						break;
+					case 12:
+						this.categoria= ECargaMasiva.MATERIALES;
+						break;
 				} // switch
 			else {
 				this.categoria= ECargaMasiva.ESTACIONES;
@@ -188,6 +191,10 @@ public class Importar extends IBaseImportar implements Serializable {
 					idSelect= ((UISelectEntity)this.attrs.get("idPlantilla"));
 					transaccion= new Transaccion(this.masivo, idSelect.getKey(), this.categoria, this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
 					break;
+				case MATERIALES:
+					idSelect= ((UISelectEntity)this.attrs.get("idContratoLote"));
+					transaccion= new Transaccion(this.masivo, this.categoria, idSelect.getKey(), this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
+					break;
 			} // swtich
       if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
 
@@ -223,6 +230,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 11: 
 				this.categoria= ECargaMasiva.PLANTILLAS;
 				break;
+			case 12: 
+				this.categoria= ECargaMasiva.MATERIALES;
+				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
 			this.attrs.put("procesados", 0);
@@ -250,7 +260,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doChangeTipo
 
 	private void toCheckRequerido() {
-		if(this.masivo.getIdTipoMasivo().intValue()== ECargaMasiva.ESTACIONES.getId())
+		if(this.masivo.getIdTipoMasivo().intValue()== ECargaMasiva.ESTACIONES.getId() || this.masivo.getIdTipoMasivo().intValue()== ECargaMasiva.MATERIALES.getId())
       UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'requerido', mascara: 'libre'});");			
 		else
       UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'libre', mascara: 'libre'});");		
@@ -321,7 +331,6 @@ public class Importar extends IBaseImportar implements Serializable {
     } // finally
 	}
 	
-	
 	public String doExportar() {
 		String regresar                = null;
 		String nivlePrototipo          = null;
@@ -347,7 +356,7 @@ public class Importar extends IBaseImportar implements Serializable {
 						params.put("manzana", idContratoLote.toString("manzana"));
 						params.put("lote", idContratoLote.toString("lote"));
 						params.put("clave", estaciones.toKey(4));
-						JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ESTACIONES.getProceso(), EExportacionXls.ESTACIONES.getIdXml(), EExportacionXls.ESTACIONES.getNombreArchivo()), EExportacionXls.ESTACIONES, "MANZANA,LOTE,CODIGO,NOMBRE,CANTIDAD,COSTO S/IVA,UNIDAD MEDIDA"));
+						JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ESTACIONES.getProceso(), EExportacionXls.ESTACIONES.getIdXml(), EExportacionXls.ESTACIONES.getNombreArchivo()), EExportacionXls.ESTACIONES, "MANZANA,LOTE,CODIGO,NOMBRE,CANTIDAD,COSTO S/IVA,UNIDAD MEDIDA,INICIO,TERMINO"));
 						JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 					} // if
 			    else
@@ -367,6 +376,24 @@ public class Importar extends IBaseImportar implements Serializable {
 						JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ESTACIONES.getProceso(), EExportacionXls.ESTACIONES.getIdXml(), EExportacionXls.ESTACIONES.getNombreArchivo()), EExportacionXls.ESTACIONES, "MANZANA,LOTE,CODIGO,NOMBRE,CANTIDAD,COSTO S/IVA,UNIDAD MEDIDA"));
 						JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 					break;
+				case MATERIALES:
+					idContratoLote= (UISelectEntity)this.attrs.get("idContratoLote");
+					if(idContratoLote!= null) {
+						lotes= (List<UISelectEntity>)this.attrs.get("lotes");
+						idContratoLote= lotes.get(lotes.indexOf(idContratoLote));
+						estaciones.setKeyLevel(idContratoLote.toString("idEmpresa"), 0); // idEmpresa
+						estaciones.setKeyLevel(idContratoLote.toString("ejercicio"), 1); // ejercicio
+						estaciones.setKeyLevel(idContratoLote.toString("contrato"), 2); // orden del contrato
+						estaciones.setKeyLevel(idContratoLote.toString("orden"), 3); // orden de contrato lote
+						params.put("manzana", idContratoLote.toString("manzana"));
+						params.put("lote", idContratoLote.toString("lote"));
+						params.put("clave", estaciones.toKey(4));
+						JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.MATERIALES.getProceso(), EExportacionXls.MATERIALES.getIdXml(), EExportacionXls.MATERIALES.getNombreArchivo()), EExportacionXls.MATERIALES, "MANZANA,LOTE,CODIGO,NOMBRE,CANTIDAD,COSTO S/IVA,UNIDAD MEDIDA"));
+						JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+					} // if
+			    else
+				    JsfBase.addMessage("Error:", "No se tiene un lote seleccionado !", ETipoMensaje.ALERTA);	
+				break;
 			} // swtich
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
 		} // try

@@ -12,7 +12,8 @@ public enum EExportacionXls implements IExportacionXls {
 	NOMINA      ("VistaNominaDto", "detalle", "Nomina", "/Paginas/Keet/Nominas/filtro", ""),
 	NOMINA_PERSONA   ("VistaNominaConsultasDto", "persona", "Personas", "/Paginas/Keet/Nominas/personas", ""),
 	DESTAJO_PERSONA  ("VistaNominaConsultasDto", "destajo", "Contratista", "/Paginas/Keet/Nominas/personas", ""),
-	DESTAJO_PROVEEDOR("VistaNominaConsultasDto", "proveedor", "SubContratista", "/Paginas/Keet/Nominas/proveedores", "");
+	DESTAJO_PROVEEDOR("VistaNominaConsultasDto", "proveedor", "SubContratista", "/Paginas/Keet/Nominas/proveedores", ""),
+	MATERIALES  ("VistaContratosLotesMaterialesDto", "exportar", "Materiales", "/Paginas/Keet/Estaciones/Masivos/importar", "");
   
   private final String proceso;
   private final String idXml;
