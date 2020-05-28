@@ -2913,6 +2913,8 @@
 					tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_contratistas.id_contrato_lote
 				where 
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
+				and 
+					{condicion}
 			</select>
 			<select id="lotesSubContratistas">
 				select 
@@ -2935,6 +2937,8 @@
 					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_proveedores.id_contrato_lote
 				where 
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_proveedores.id_proveedor={idFigura}
+				and 
+					{condicion}
 			</select>
 			<select id="conceptos">
 				select
