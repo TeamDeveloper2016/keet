@@ -6,7 +6,79 @@
   <model>    
   </model>
 
-  <dml>		
+  <dml>
+		<unit id="TcKeetValesMaterialesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_vales_materiales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_vales_materiales
+        where      
+          id_vale_material = {idValeMaterial} and id_vale = {idVale} and id_material = {idMaterial}
+      </select>
+    </unit>
+		<unit id="TcKeetValesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_vales_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_vales_detalles
+        where      
+          date_format(entregrado, '%Y%m%d%H%i%S') = '{entregrado}' and id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle}
+      </select>
+    </unit>
+		<unit id="TcKeetValesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_vales_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_vales_bitacora
+        where      
+          id_vale_bitacora = {idValeBitacora}
+      </select>
+		</unit>		
+		<unit id="TcKeetValesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_vales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_vales
+        where      
+          consecutivo = '{consecutivo}' and id_vale = {idVale}
+      </select>
+    </unit>
     <unit id="TcKeetMaterialesDto">
       <select id="row">
         select      
