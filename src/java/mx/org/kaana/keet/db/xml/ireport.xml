@@ -267,7 +267,7 @@
               tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
             where
               {condicion}) ppal
-        order by	tipo_nomina, nombre_empresa, nomina desc	
+        order by	tipo_nomina, nombre_empresa, nomina desc, puesto,nombre_completo asc	
       </select>
     </unit>
     <unit id="VistaNominaConsultasReportesDto">

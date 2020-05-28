@@ -307,7 +307,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       }
       else{
         params= this.toPrepare();	
-        params.put("sortOrder", "order by	nombre_empresa, nomina desc");
+        params.put("sortOrder", "order by	nombre_empresa, nomina, puesto,  nombre_completo asc");
         this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       }
       this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());

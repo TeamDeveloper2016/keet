@@ -247,7 +247,7 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
       else {
         params = this.toPrepare();
         if(reporteSeleccion.equals(EReportes.LISTADO_NOMINA_PROVEEDORES))
-          params.put("sortOrder", "order by	nombre_empresa, nomina desc");
+          params.put("sortOrder", "order by	nombre_empresa, nomina, departamentos.departamento, tc_mantic_proveedores.razon_social desc");
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       }
 			this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
