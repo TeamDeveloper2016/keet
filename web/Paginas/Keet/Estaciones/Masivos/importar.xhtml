@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="Proceso de carga masiva de articulos/clientes/proveedores"/>
+  <ui:param name="titulo" value="Proceso de carga masiva de estacines/materiales/plantillas/personal"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -85,10 +85,10 @@
 								</f:facet>	
 								<p:selectOneRadio id="tipo" value="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo}" columns="2" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" process="@this" listener="#{keetEstacionesMasivosImportar.doChangeTipo}" update="catalogo @(.involucrados) @(.importado) @(.janal-upload-frame)"/>
+									<f:selectItem itemLabel="PLANTILLAS" itemValue="11"/>
 									<f:selectItem itemLabel="ESTACIONES" itemValue="9"/>
 									<f:selectItem itemLabel="MATERIALES" itemValue="12"/>
 									<f:selectItem itemLabel="PERSONAL" itemValue="10"/>
-									<f:selectItem itemLabel="PLANTILLAS" itemValue="11"/>
 								</p:selectOneRadio>
 							</p:panel>
 							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados" columnClasses="janal-wid-70, janal-wid-30">
