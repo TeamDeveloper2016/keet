@@ -196,17 +196,23 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params   = null;
-    List<Columna> columns       = null;		
-		List<UISelectEntity> figuras= null;
-		UISelectEntity figura       = null;
-		String idXml                = null;
+		Map<String, Object>params         = null;
+    List<Columna> columns             = null;		
+		List<UISelectEntity> figuras      = null;
+		List<UISelectEntity> lotesCriterio= null;
+		UISelectEntity figura             = null;
+		UISelectEntity loteCriterio       = null;
+		String idXml                      = null;
     try {   
 			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put("idFigura", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
+			if(this.attrs.get("loteCriterio")!= null && ((UISelectEntity)this.attrs.get("loteCriterio")).getKey()>= 1L)
+				params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=" + ((UISelectEntity)this.attrs.get("loteCriterio")).getKey());			
+			else
+				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns= new ArrayList<>();      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
@@ -215,7 +221,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("idTipoFiguraCorreo", figura.toLong("tipo"));
 			this.attrs.put("idFiguraCorreo", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
 			this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));
-	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);			
+	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);		
+			lotesCriterio= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, "descripcionLote");
+			loteCriterio= UIBackingUtilities.toFirstKeySelectEntity(figuras);
+			this.attrs.put("lotesCriterio", lotesCriterio);
+			this.attrs.put("loteCriterio", loteCriterio);
 			if(!this.lotes.isEmpty()) { 
 			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
 				this.lotes.add(0, this.toLoteDefault());
