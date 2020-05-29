@@ -130,13 +130,11 @@ public class Transaccion extends ComunInventarios {
 					switch(accion) {
 						case ACTIVAR: // RECIBIR
 						case PROCESAR: // INCOMPLETA
-							if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
+							if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L || this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
 								if(item.getDiferencia()== 0L)
 									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+								this.afectoAlmacenDestino= true;
 							} // if	
-							else
-								this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-							this.afectoAlmacenDestino= true;							
 							break;
 						case DEPURAR: // AUTORIZAR
 							break;
