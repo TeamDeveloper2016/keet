@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -33,10 +31,12 @@ public class Transaccion extends ComunInventarios {
 
   private TcManticConfrontasDto dto;
   private TcManticTransferenciasDto transferencia;
+	private boolean afectoAlmacenDestino;
 
 	public Transaccion(TcManticConfrontasDto dto, List<Articulo> articulos) {
 		this.dto= dto;
 		this.articulos= articulos;
+		this.afectoAlmacenDestino= false;
 	}
 	
   @Override
@@ -130,17 +130,13 @@ public class Transaccion extends ComunInventarios {
 					switch(accion) {
 						case ACTIVAR: // RECIBIR
 						case PROCESAR: // INCOMPLETA
-							if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
-								if(articulo.getInicial()- item.getCantidad()!= 0L)
-									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial()- articulo.getCantidad());
+							if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
+								if(item.getDiferencia()== 0L)
+									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 							} // if	
 							else
 								this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-							// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
-							params.put("idArticulo", articulo.getIdArticulo());
-							params.put("idEmpresa", this.transferencia.getIdEmpresa());
-							params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
-							DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+							this.afectoAlmacenDestino= true;							
 							break;
 						case DEPURAR: // AUTORIZAR
 							break;
@@ -169,17 +165,8 @@ public class Transaccion extends ComunInventarios {
 			for (Articulo articulo: this.articulos) {
 				TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
 				TcManticArticulosDto umbrales     = (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
-				if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
-					if(articulo.getInicial()- item.getCantidad()!= 0L)
-						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial()- articulo.getCantidad());
-				} // if	
-				else
+				if(item.getDiferencia()== 0L)
 					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-				// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
-				params.put("idArticulo", articulo.getIdArticulo());
-				params.put("idEmpresa", this.transferencia.getIdEmpresa());
-				params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
-				DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
 			} // for
 		} // try
 		finally {
@@ -192,7 +179,8 @@ public class Transaccion extends ComunInventarios {
 		Value errors= DaoFactory.getInstance().toField(sesion, "VistaConfrontasDto", "errores", this.transferencia.toMap(), "total");
 		if(errors.toLong()!= null && errors.toLong()== 0) 
 			if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
-				this.toApplyMovimientos(sesion);
+				if(!this.afectoAlmacenDestino)
+				  this.toApplyMovimientos(sesion);
 				this.transferencia.setIdTransferenciaEstatus(8L); // TERMINADA
 			} // if
 			else
@@ -211,6 +199,30 @@ public class Transaccion extends ComunInventarios {
 			this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.transferencia.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
 			DaoFactory.getInstance().insert(sesion, this.bitacora);
 		} // if
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			if(this.transferencia.getIdTransferenciaEstatus()== 6L || 
+				 this.transferencia.getIdTransferenciaEstatus()== 7L || 
+				 this.transferencia.getIdTransferenciaEstatus()== 8L || 
+				 this.transferencia.getIdTransferenciaEstatus()== 9L) {
+				for (Articulo articulo: this.articulos) {
+					// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
+					params.put("idArticulo", articulo.getIdArticulo());
+					Long idEmpresa= this.transferencia.getIdEmpresa();
+					params.put("idAlmacen", this.transferencia.getIdDestino());
+					Value empresa= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "empresa", params, "idEmpresa");
+					if(empresa.getData()!= null)
+						idEmpresa= empresa.toLong();
+					params.put("idEmpresa", idEmpresa);
+					params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
+					DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+				} // if
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 
 	private void toCheckArticulos(Session sesion) throws Exception {
