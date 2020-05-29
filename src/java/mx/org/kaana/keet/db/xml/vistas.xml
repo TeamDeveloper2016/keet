@@ -3803,5 +3803,119 @@
 				{sortOrder}	
 			</select>
 		</unit>	
+		<unit id="VistaCapturaMaterialesDto">			
+			<select id="conceptosPadre">
+				select 
+					tc_keet_materiales.id_material as id_key
+					tc_keet_materiales.*
+				from 
+					tc_keet_materiales
+				where 
+					clave like '{clave}%' and nivel=5
+			</select>
+			<select id="conceptos">
+				select
+					tc_keet_materiales.id_estacion as id_key,
+					tc_keet_materiales.nivel,
+					tc_keet_materiales.clave,
+					tc_keet_materiales.id_empaque_unidad_medida,
+					tc_keet_materiales.id_estacion_estatus,
+					tc_keet_materiales.costo,
+					principal.*
+				from(  
+				select
+					tc_keet_puntos_paquetes.id_punto_grupo,  
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_departamentos.nombre departamento,
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_rubros_grupos.id_rubro_grupo,
+					tc_keet_rubros_grupos.id_rubro,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					tc_keet_rubros.orden
+				from 
+					tc_keet_puntos_paquetes
+				inner join 
+					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+				inner join
+					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+				inner join
+					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+				inner join
+					tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
+				where
+					tc_keet_puntos_grupos.id_departamento= {idDepartamento} and tc_keet_rubros.nombre like upper('%{nombreConcepto}%') and tc_keet_puntos_grupos.id_extra=2
+				group by
+					tc_keet_puntos_paquetes.id_punto_grupo,   
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_departamentos.nombre,
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_rubros_grupos.id_rubro_grupo,
+					tc_keet_rubros_grupos.id_rubro,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					tc_keet_rubros.orden
+				) principal
+				inner join
+					tc_keet_materiales on principal.codigo = tc_keet_materiales.codigo
+				where
+					tc_keet_materiales.clave like '{clave}%'
+				and
+					tc_keet_materiales.id_estacion_estatus in ({estatus})
+				order by 
+				  tc_keet_materiales.clave
+			</select>			
+			<select id="estatusManzanaLote">
+				select
+					sum(iniciado) iniciado,
+					sum(en_proceso) en_proceso,
+					sum(terminado) terminado,
+					(sum(iniciado)+sum(en_proceso)+sum(terminado)) total
+				from(
+				select 
+					case when tc_keet_materiales.id_estacion_estatus= 1 then 1 else 0 end iniciado,
+					case when tc_keet_materiales.id_estacion_estatus= 2 then 1 else 0 end en_proceso,
+					case when tc_keet_materiales.id_estacion_estatus= 3 then 1 else 0 end terminado  
+				from(  
+				select
+					tc_keet_puntos_paquetes.id_punto_grupo,  
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_rubros_grupos.id_rubro_grupo,
+					tc_keet_rubros_grupos.id_rubro,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					tc_keet_rubros.orden
+				from 
+					tc_keet_puntos_paquetes
+				inner join
+					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+				inner join
+					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+				inner join
+					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+				where
+					tc_keet_puntos_grupos.id_departamento= {idDepartamento}
+				group by
+					tc_keet_puntos_paquetes.id_punto_grupo,   
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_rubros_grupos.id_rubro_grupo,
+					tc_keet_rubros_grupos.id_rubro,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					tc_keet_rubros.orden
+				) principal
+				inner join
+					tc_keet_materiales on principal.codigo = tc_keet_materiales.codigo
+				where
+					tc_keet_materiales.clave like '{clave}%'
+				)final
+			</select>
+		</unit>
 	</dml>    
 </process>
