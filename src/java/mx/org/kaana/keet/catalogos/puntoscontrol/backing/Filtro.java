@@ -12,8 +12,10 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -22,12 +24,20 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
 
 @Named(value = "keetCatalogosPuntosControlFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+  protected Reporte reporte;
+
+	public Reporte getReporte() {
+		return reporte;
+	}
 
   @PostConstruct
   @Override
@@ -117,4 +127,44 @@ public class Filtro extends IBaseFilter implements Serializable {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/PuntosControl/filtro"); 
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
+  
+  public void doReporte(String nombre) throws Exception {    
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;    
+    Map<String, Object>params    = null;
+    Parametros comunes           = null;
+		try {		  
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      reporteSeleccion= EReportes.valueOf(nombre);
+      params = this.toPrepare();
+      this.reporte= JsfBase.toReporte();
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      if(doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte 
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		if(this.reporte.getTotal()> 0L) {
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else {
+			UIBackingUtilities.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
+  
 }

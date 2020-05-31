@@ -354,5 +354,86 @@
 				order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>		
     </unit>
+    <unit id="VistaPuntosControlReporteDto">
+      <select id="principal">
+        select distinct
+          tc_keet_puntos_paquetes.id_punto_grupo,
+          tc_keet_departamentos.id_departamento,
+          tc_keet_puntos_grupos.grupo,
+          tc_keet_puntos_grupos.descripcion as paquete,
+          tc_keet_departamentos.descripcion as departamento,
+          ifnull(puntos_control, 0) puntos_control
+        from
+          tc_keet_puntos_controles
+        inner join 
+          tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
+        inner join 
+          tc_keet_puntos_grupos on tc_keet_puntos_paquetes.id_punto_grupo = tc_keet_puntos_grupos.id_punto_grupo 
+        inner join 
+          tc_keet_departamentos on tc_keet_departamentos.id_departamento= tc_keet_puntos_grupos.id_departamento
+        left join
+            (select count(*) puntos_control, id_punto_grupo, group_concat(nombre) nombres from tc_keet_puntos_controles
+             inner join tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
+             group by id_punto_grupo
+            ) tc_keet_puntos_controles on tc_keet_puntos_controles.id_punto_grupo = tc_keet_puntos_grupos.id_punto_grupo
+        where
+          {condicion}
+        order by tc_keet_puntos_grupos.id_punto_grupo, tc_keet_departamentos.id_departamento, tc_keet_puntos_controles.orden asc
+      </select>
+      <select id="rubros">
+        select
+					tc_keet_rubros.codigo as codigo_concepto,
+					tc_keet_rubros.nombre as concepto,
+					tc_keet_rubros.orden orden_conecepto
+				from 
+					tc_keet_puntos_paquetes
+				inner join 
+					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+				inner join
+					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+				inner join
+					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+				inner join
+					tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
+				where
+					tc_keet_puntos_paquetes.id_punto_grupo ={idPuntoGrupo} and tc_keet_puntos_grupos.id_departamento= {idDepartamento}
+				group by
+					tc_keet_puntos_paquetes.id_punto_grupo,   
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_departamentos.nombre,
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_rubros_grupos.id_rubro_grupo,
+					tc_keet_rubros_grupos.id_rubro,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					tc_keet_rubros.orden
+      </select>
+      <select id="puntos">
+        select 
+          tc_keet_puntos_controles.id_punto_control id_key,
+          tc_keet_puntos_paquetes.id_punto_grupo,
+          tc_keet_departamentos.id_departamento,
+          tc_keet_puntos_paquetes.id_punto_paquete ,
+          tc_keet_puntos_grupos.grupo,
+          tc_keet_puntos_grupos.descripcion as paquete,
+          tc_keet_departamentos.descripcion as departamento,
+          tc_keet_puntos_controles.nombre,
+          tc_keet_puntos_controles.descripcion,
+          tc_keet_puntos_controles.factor,
+          tc_keet_puntos_controles.orden
+        from
+          tc_keet_puntos_controles
+        inner join 
+          tc_keet_puntos_paquetes on tc_keet_puntos_controles.id_punto_control = tc_keet_puntos_paquetes.id_punto_control
+        inner join 
+          tc_keet_puntos_grupos on tc_keet_puntos_paquetes.id_punto_grupo = tc_keet_puntos_grupos.id_punto_grupo 
+        inner join 
+          tc_keet_departamentos on tc_keet_departamentos.id_departamento= tc_keet_puntos_grupos.id_departamento
+        where
+          tc_keet_puntos_paquetes.id_punto_grupo ={idPuntoGrupo} and tc_keet_puntos_grupos.id_departamento= {idDepartamento}
+        order by tc_keet_puntos_grupos.id_punto_grupo, tc_keet_departamentos.id_departamento, tc_keet_puntos_controles.orden asc
+      </select>
+    </unit>
   </dml>
 </process>

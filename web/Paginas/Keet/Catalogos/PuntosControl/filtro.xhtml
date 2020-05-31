@@ -6,7 +6,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Catálogo de puntos de control" />
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -56,11 +56,14 @@
 								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosPuntosControlFiltro.doReporte('PUNTOS_CONTROL')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" action="#{keetCatalogosPuntosControlFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-history" title="Carga masiva" action="#{keetCatalogosPuntosControlFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosPuntosControlFiltro.doReporte('PUNTOS_CONTROL')}" oncomplete="janal.desbloquear();" update="descargar"/>
             </f:facet>												
             <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{row.paquete}">
               <f:facet name="header">
