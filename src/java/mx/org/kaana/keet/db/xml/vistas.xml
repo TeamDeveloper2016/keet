@@ -3806,7 +3806,7 @@
 		<unit id="VistaCapturaMaterialesDto">			
 			<select id="conceptosPadre">
 				select 
-					tc_keet_materiales.id_material as id_key
+					tc_keet_materiales.id_material as id_key,
 					tc_keet_materiales.*
 				from 
 					tc_keet_materiales
@@ -3815,55 +3815,31 @@
 			</select>
 			<select id="conceptos">
 				select
-					tc_keet_materiales.id_estacion as id_key,
+					tc_keet_materiales.id_material as id_key,
+					tc_keet_materiales.id_material,
 					tc_keet_materiales.nivel,
 					tc_keet_materiales.clave,
 					tc_keet_materiales.id_empaque_unidad_medida,
 					tc_keet_materiales.id_estacion_estatus,
 					tc_keet_materiales.costo,
-					principal.*
-				from(  
-				select
-					tc_keet_puntos_paquetes.id_punto_grupo,  
-					tc_keet_puntos_grupos.id_departamento,
-					tc_keet_departamentos.nombre departamento,
-					tc_keet_puntos_grupos.grupo,
-					tc_keet_puntos_grupos.descripcion,
-					tc_keet_rubros_grupos.id_rubro_grupo,
-					tc_keet_rubros_grupos.id_rubro,
-					tc_keet_rubros.codigo,
-					tc_keet_rubros.nombre,
-					tc_keet_rubros.orden
-				from 
-					tc_keet_puntos_paquetes
-				inner join 
-					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
-				inner join
-					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
-				inner join
-					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
-				inner join
-					tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
-				where
-					tc_keet_puntos_grupos.id_departamento= {idDepartamento} and tc_keet_rubros.nombre like upper('%{nombreConcepto}%') and tc_keet_puntos_grupos.id_extra=2
-				group by
-					tc_keet_puntos_paquetes.id_punto_grupo,   
-					tc_keet_puntos_grupos.id_departamento,
-					tc_keet_departamentos.nombre,
-					tc_keet_puntos_grupos.grupo,
-					tc_keet_puntos_grupos.descripcion,
-					tc_keet_rubros_grupos.id_rubro_grupo,
-					tc_keet_rubros_grupos.id_rubro,
-					tc_keet_rubros.codigo,
-					tc_keet_rubros.nombre,
-					tc_keet_rubros.orden
-				) principal
-				inner join
-					tc_keet_materiales on principal.codigo = tc_keet_materiales.codigo
+					tc_keet_materiales.codigo,
+					tc_keet_materiales.nombre,
+					(select 
+						count(*) 
+					from 
+						tc_keet_vales
+					inner join 
+						tc_keet_vales_detalles on tc_keet_vales.id_vale = tc_keet_vales_detalles.id_vale
+   				where 
+						id_material= tc_keet_materiales.id_material and tc_keet_vales.id_tipo_vale=1) total_detalle
+				from
+					tc_keet_materiales
 				where
 					tc_keet_materiales.clave like '{clave}%'
 				and
 					tc_keet_materiales.id_estacion_estatus in ({estatus})
+				and 
+				  tc_keet_materiales.nivel=6
 				order by 
 				  tc_keet_materiales.clave
 			</select>			
@@ -3916,6 +3892,170 @@
 					tc_keet_materiales.clave like '{clave}%'
 				)final
 			</select>
+			<select id="especialidades">
+				select 
+					principal.*
+				from (
+				  select 
+					  tc_keet_departamentos.id_departamento as id_key,
+						tc_keet_departamentos.descripcion, 
+						tc_keet_departamentos.nombre  
+					from 
+						tc_keet_proyectos
+					inner join 
+						tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+					inner join 
+						tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+					inner join 
+						tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_contratistas.id_contrato_lote
+					inner join 
+						tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona=tr_mantic_empresa_personal.id_empresa_persona
+					inner join 
+						tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+					where 
+						tc_keet_proyectos.id_desarrollo={idDesarrollo}
+					group by 
+						tc_keet_departamentos.id_departamento,
+						tc_keet_departamentos.descripcion, 
+						tc_keet_departamentos.nombre 
+					union
+					select 
+						tc_keet_departamentos.id_departamento as id_key,
+						tc_keet_departamentos.descripcion, 
+						tc_keet_departamentos.nombre  
+					from 
+						tc_keet_proyectos
+					inner join 
+						tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+					inner join 
+						tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+					inner join 
+						tc_keet_contratos_lotes_proveedores on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_proveedores.id_contrato_lote
+					inner join 
+						tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
+					inner join 
+						tc_keet_proveedores_departamentos on tc_mantic_proveedores.id_proveedor = tc_keet_proveedores_departamentos.id_proveedor
+					inner join 
+						tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento
+					where 
+						tc_keet_proyectos.id_desarrollo= {idDesarrollo}
+					group by 
+						tc_keet_departamentos.id_departamento,
+						tc_keet_departamentos.descripcion, 
+						tc_keet_departamentos.nombre ) principal
+					group by
+						id_key,
+						nombre,
+						descripcion
+					order by 
+						id_key
+			</select>
+			<select id="empleadosAsociados">
+				select 
+					principal.*
+				from (
+					select 
+						convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
+						concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ', tc_mantic_personas.materno) nombre_completo, 
+						tc_mantic_puestos.nombre puesto,
+						1 tipo  
+					from 
+						tc_keet_proyectos
+					inner join 
+						tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+					inner join 
+						tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+					inner join 
+						tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_contratistas.id_contrato_lote
+					inner join 
+						tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona=tr_mantic_empresa_personal.id_empresa_persona
+					inner join 
+						tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					inner join 
+						tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+					inner join 
+						tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+					where 
+						tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_departamentos.id_departamento={idDepartamento}
+					union
+					select 
+						convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,    
+						tc_mantic_proveedores.razon_social nombre_completo,
+						'SUBCONTRATISTA' puesto,  
+						2 tipo  
+					from 
+						tc_keet_proyectos
+					inner join 
+						tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+					inner join 
+						tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+					inner join 
+						tc_keet_contratos_lotes_proveedores on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_proveedores.id_contrato_lote
+					inner join 
+						tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
+					inner join 
+						tc_keet_proveedores_departamentos on tc_mantic_proveedores.id_proveedor = tc_keet_proveedores_departamentos.id_proveedor
+					inner join 
+						tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento = tc_keet_departamentos.id_departamento
+					where 
+						tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_departamentos.id_departamento={idDepartamento}
+				) principal
+				group by
+					id_key,
+					nombre_completo,
+					puesto,
+					tipo
+				order by 
+					tipo, nombre_completo
+			</select>
+			<select id="lotesContratistas">
+				select 
+					tc_keet_contratos_lotes.id_contrato_lote id_key,
+					tc_keet_contratos_lotes.*,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					tc_keet_contratos.clave clave_contrato,
+					tc_keet_contratos.etapa etapa_contrato,
+					tc_keet_proyectos.clave clave_proyecto,
+					tc_keet_proyectos.etapa etapa_proyecto,
+					tc_keet_contratos.orden orden_contrato,
+					tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+				from 
+					tc_keet_proyectos
+				inner join 
+					tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+				inner join 
+					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_contratistas.id_contrato_lote
+				where 
+					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
+				and 
+					{condicion}
+			</select>
+			<select id="lotesSubContratistas">
+				select 
+					tc_keet_contratos_lotes.id_contrato_lote id_key,
+					tc_keet_contratos_lotes.*,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					tc_keet_contratos.clave clave_contrato,
+					tc_keet_contratos.etapa etapa_contrato,
+					tc_keet_proyectos.clave clave_proyecto,
+					tc_keet_proyectos.etapa etapa_proyecto,
+					tc_keet_contratos.orden orden_contrato,
+					tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+				from 
+					tc_keet_proyectos
+				inner join 
+					tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+				inner join 
+					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_proveedores.id_contrato_lote
+				where 
+					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_proveedores.id_proveedor={idFigura}
+				and 
+					{condicion}
+			</select>						
 		</unit>
 	</dml>    
 </process>
