@@ -29,47 +29,59 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="surtido")
   private Double surtido;
+  @Column (name="codigo")
+  private String codigo;
   @Column (name="costo")
   private Double costo;
   @Column (name="entregrado")
   private LocalDateTime entregrado;
-  @Column (name="cantidad")
-  private Double cantidad;
   @Column (name="id_vale")
   private Long idVale;
-  @Column (name="id_articulo")
-  private Long idArticulo;
-  @Column (name="id_material")
-  private Long idMaterial;
+  @Column (name="nombre")
+  private String nombre;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_vale_detalle")
   private Long idValeDetalle;
-  @Column (name="diferencia")
-  private Double diferencia;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="precio")
+  private Double precio;
+  @Column (name="cantidad")
+  private Double cantidad;
+  @Column (name="id_articulo")
+  private Long idArticulo;
+  @Column (name="id_material")
+  private Long idMaterial;
+  @Column (name="id_tipo_entrega")
+  private Long idTipoEntrega;
+  @Column (name="diferencia")
+  private Double diferencia;
 
   public TcKeetValesDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetValesDetallesDto(Long key) {
-    this(null, null, LocalDateTime.now(), null, null, null, null, new Long(-1L), null);
+    this(null, null, null, LocalDateTime.now(), null, null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetValesDetallesDto(Double surtido, Double costo, LocalDateTime entregrado, Double cantidad, Long idVale, Long idArticulo, Long idMaterial, Long idValeDetalle, Double diferencia) {
+  public TcKeetValesDetallesDto(Double surtido, String codigo, Double costo, LocalDateTime entregrado, Long idVale, String nombre, Long idValeDetalle, Double precio, Double cantidad, Long idArticulo, Long idMaterial, Long idTipoEntrega, Double diferencia) {
     setSurtido(surtido);
+    setCodigo(codigo);
     setCosto(costo);
     setEntregrado(entregrado);
-    setCantidad(cantidad);
     setIdVale(idVale);
+    setNombre(nombre);
+    setIdValeDetalle(idValeDetalle);
+    setRegistro(LocalDateTime.now());
+    setPrecio(precio);
+    setCantidad(cantidad);
     setIdArticulo(idArticulo);
     setIdMaterial(idMaterial);
-    setIdValeDetalle(idValeDetalle);
+    setIdTipoEntrega(idTipoEntrega);
     setDiferencia(diferencia);
-    setRegistro(LocalDateTime.now());
   }
 	
   public void setSurtido(Double surtido) {
@@ -78,6 +90,14 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
 
   public Double getSurtido() {
     return surtido;
+  }
+
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
+  }
+
+  public String getCodigo() {
+    return codigo;
   }
 
   public void setCosto(Double costo) {
@@ -96,20 +116,52 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
     return entregrado;
   }
 
-  public void setCantidad(Double cantidad) {
-    this.cantidad = cantidad;
-  }
-
-  public Double getCantidad() {
-    return cantidad;
-  }
-
   public void setIdVale(Long idVale) {
     this.idVale = idVale;
   }
 
   public Long getIdVale() {
     return idVale;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setIdValeDetalle(Long idValeDetalle) {
+    this.idValeDetalle = idValeDetalle;
+  }
+
+  public Long getIdValeDetalle() {
+    return idValeDetalle;
+  }
+
+  public void setRegistro(LocalDateTime registro) {
+    this.registro = registro;
+  }
+
+  public LocalDateTime getRegistro() {
+    return registro;
+  }
+
+  public void setPrecio(Double precio) {
+    this.precio = precio;
+  }
+
+  public Double getPrecio() {
+    return precio;
+  }
+
+  public void setCantidad(Double cantidad) {
+    this.cantidad = cantidad;
+  }
+
+  public Double getCantidad() {
+    return cantidad;
   }
 
   public void setIdArticulo(Long idArticulo) {
@@ -128,12 +180,12 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
     return idMaterial;
   }
 
-  public void setIdValeDetalle(Long idValeDetalle) {
-    this.idValeDetalle = idValeDetalle;
+  public void setIdTipoEntrega(Long idTipoEntrega) {
+    this.idTipoEntrega = idTipoEntrega;
   }
 
-  public Long getIdValeDetalle() {
-    return idValeDetalle;
+  public Long getIdTipoEntrega() {
+    return idTipoEntrega;
   }
 
   public void setDiferencia(Double diferencia) {
@@ -142,14 +194,6 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
 
   public Double getDiferencia() {
     return diferencia;
-  }
-
-  public void setRegistro(LocalDateTime registro) {
-    this.registro = registro;
-  }
-
-  public LocalDateTime getRegistro() {
-    return registro;
   }
 
   @Transient
@@ -169,23 +213,31 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getSurtido());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCodigo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCosto());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEntregrado());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getCantidad());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVale());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdValeDetalle());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPrecio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdMaterial());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdValeDetalle());
+		regresar.append(getIdTipoEntrega());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDiferencia());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -194,22 +246,26 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("surtido", getSurtido());
+		regresar.put("codigo", getCodigo());
 		regresar.put("costo", getCosto());
 		regresar.put("entregrado", getEntregrado());
-		regresar.put("cantidad", getCantidad());
 		regresar.put("idVale", getIdVale());
+		regresar.put("nombre", getNombre());
+		regresar.put("idValeDetalle", getIdValeDetalle());
+		regresar.put("registro", getRegistro());
+		regresar.put("precio", getPrecio());
+		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("idMaterial", getIdMaterial());
-		regresar.put("idValeDetalle", getIdValeDetalle());
+		regresar.put("idTipoEntrega", getIdTipoEntrega());
 		regresar.put("diferencia", getDiferencia());
-		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getSurtido(), getCosto(), getEntregrado(), getCantidad(), getIdVale(), getIdArticulo(), getIdMaterial(), getIdValeDetalle(), getDiferencia(), getRegistro()
+    getSurtido(), getCodigo(), getCosto(), getEntregrado(), getIdVale(), getNombre(), getIdValeDetalle(), getRegistro(), getPrecio(), getCantidad(), getIdArticulo(), getIdMaterial(), getIdTipoEntrega(), getDiferencia()
     };
     return regresar;
   }
