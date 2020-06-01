@@ -52,7 +52,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("catalogo", UIEntity.seleccione("TcKeetProyectosEstatusDto", "row", params, Collections.EMPTY_LIST, "nombre"));
 			this.attrs.put("idProyectoEstatus", new UISelectEntity("-1"));
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			loadEmpresas();
+			this.loadEmpresas();
 			if(JsfBase.getFlashAttribute("idProyectoProcess")!= null){
 				this.attrs.put("idProyectoProcess", JsfBase.getFlashAttribute("idProyectoProcess"));
 				this.doLoad();

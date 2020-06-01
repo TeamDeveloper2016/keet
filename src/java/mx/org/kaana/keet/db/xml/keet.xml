@@ -82,7 +82,7 @@
     <unit id="TcKeetMaterialesDto">
       <select id="row">
         select      
-          tc_keet_materiales.id_material as id_key 
+          tc_keet_materiales.id_material as id_key,
 				  tc_keet_materiales.*
         from      
           tc_keet_materiales
@@ -97,7 +97,7 @@
         from      
           tc_keet_materiales
         where      
-          id_material = {idMaterial}
+          clave = '{clave}'
       </select>
       <delete id="rows">
 				delete

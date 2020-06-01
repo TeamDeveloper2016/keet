@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{keetEstacionesAccion.attrs.nombreAccion} a las estaciones" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'contenedorGrupos\\:codigo'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:cantidad'     : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:costo'        : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:ultimo'       : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:inicio'       : {validaciones: 'fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:termino'      : {validaciones: 'fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:idEmpaqueUnidadMedida': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:descripcion'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+			};
+
+			$(document).ready(function () {
+				janal.readingMode('#{keetEstacionesAccion.attrs.nombreAccion}');
+			});
+		</script>   
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+						
+            <p:tab title="General">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
+                <p:outputLabel for="codigo" value="Codigo:"/>
+								<p:inputText id="codigo" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.codigo}" />			
+								<p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.nombre}" />
+                <p:outputLabel for="descripcion" value="Descripción:"/>
+                <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.descripcion}" />	
+								<p:outputLabel for="inicio" value="Inicio:"/>
+								<p:calendar id="inicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94"
+														value="#{keetEstacionesAccion.estacion.estacion.inicio}"  mode="popup" 
+														pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button" />
+								<p:outputLabel for="termino" value="Termino:"/>
+								<p:calendar id="termino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetEstacionesAccion.estacion.estacion.termino}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+								
+				        <p:outputLabel for="cantidad" value="Cantidad:"/>
+                <p:inputNumber id="cantidad" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.cantidad}"/>
+								<p:outputLabel for="idEmpaqueUnidadMedida" value="Unidad:"/>
+								<p:selectOneMenu id="idEmpaqueUnidadMedida" value="#{keetEstacionesAccion.estacion.estacion.ikEmpaqueUnidadMedida}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItems value="#{keetEstacionesAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.empaque} - #{element.medida}"/>
+									<p:column headerText="Presentación">
+										<h:outputText value="#{item.empaque}"/>
+									</p:column>   
+									<p:column headerText="Unidad">
+										<h:outputText value="#{item.medida}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:outputLabel for="costo" value="Costo:"/>
+                <p:inputNumber id="costo" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.costo}"/>
+								<p:outputLabel for="ultimo" value="Ultimo:"/>
+                <p:inputNumber id="ultimo" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.ultimo}"/>
+								<p:spacer width="1px"/><p:separator/>	
+								<p:outputLabel for="plantilla" value="Plantilla:"/>
+                <p:inputSwitch id="plantilla" styleClass="janal-wid-100-txt" value="#{keetEstacionesAccion.estacion.estacion.pantilla}" offLabel="NO" onLabel="SI"/>     
+              </p:panelGrid>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetEstacionesAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetEstacionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetEstacionesAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetEstacionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

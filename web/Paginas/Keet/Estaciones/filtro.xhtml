@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Estaciones" />
+  <ui:param name="titulo" value="Estaciones de los prototipos" />
   <ui:define name="librerias">
     <script type="text/javascript">
 
@@ -72,7 +72,7 @@
 							</ui:repeat>
 						</f:facet>
 					</p:toolbar>
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesFiltro.estacionesHijas}" rowKey="#{row.idEstacion}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetEstacionesFiltro.lazyModel.rowCount gt keetEstacionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesFiltro.hijos}" rowKey="#{row.idEstacion}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetEstacionesFiltro.lazyModel.rowCount gt keetEstacionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowDblselect"  listener="#{keetEstacionesFiltro.doActualizarChildren}" onstart="return janal.bloquear();" process="@this" update="tabla,seguimiento" oncomplete="janal.desbloquear();"/>
 						<f:facet name="header">		
 							<div class="janal-icons-header">
@@ -105,7 +105,6 @@
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>			            
-
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" >
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
@@ -120,18 +119,18 @@
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
 							<f:facet name="header">
-								<h:outputText value="cantiad" />
+								<h:outputText value="Cantidad" />
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}"/>
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
 							<f:facet name="header">
-								<h:outputText value="costo" />
+								<h:outputText value="Costo" />
 							</f:facet>
 							<h:outputText value="#{row['costo']}"/>
 						</p:column>
 						<f:facet name="footer">
-							<p:outputLabel value="Total [#{keetEstacionesFiltro.estacionesHijas==null?0:keetEstacionesFiltro.estacionesHijas.size()}] registros"/>
+							<p:outputLabel value="Total [#{keetEstacionesFiltro.hijos==null?0:keetEstacionesFiltro.hijos.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>
 				</div>

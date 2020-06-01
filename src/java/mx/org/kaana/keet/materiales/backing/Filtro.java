@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.estaciones.backing;
+package mx.org.kaana.keet.materiales.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,11 +13,11 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
-import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
-import mx.org.kaana.keet.estaciones.reglas.Estaciones;
+import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
 import mx.org.kaana.keet.estaciones.beans.RegistroEstacion;
 import mx.org.kaana.keet.estaciones.reglas.Transaccion;
+import mx.org.kaana.keet.materiales.reglas.Materiales;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -27,30 +27,30 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 
-@Named(value = "keetEstacionesFiltro")
+@Named(value = "keetMaterialesFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
-	private List<TcKeetEstacionesDto> hijos;
-	private List<TcKeetEstacionesDto> visitados;
-	protected TcKeetEstacionesDto current;
-	protected Estaciones estaciones;
+	private List<TcKeetMaterialesDto> hijos;
+	private List<TcKeetMaterialesDto> visitados;
+	protected TcKeetMaterialesDto current;
+	protected Materiales materiales;
 
-	public List<TcKeetEstacionesDto> getHijos() {
+	public List<TcKeetMaterialesDto> getHijos() {
 		return hijos;
 	}
 
-	public void setHijos(List<TcKeetEstacionesDto> hijos) {
+	public void setHijos(List<TcKeetMaterialesDto> hijos) {
 		this.hijos = hijos;
 	}
 	
-	public List<TcKeetEstacionesDto> getVisitados() {
+	public List<TcKeetMaterialesDto> getVisitados() {
 		return this.visitados;
 	} // getVisitados
 
 	public String getTitulo() {
-		return this.current== null? "Nombre": this.estaciones.getNiveles().get(this.current.getNivel().intValue()- 1).getDescripcion();
+		return this.current== null? "Nombre": this.materiales.getNiveles().get(this.current.getNivel().intValue()- 1).getDescripcion();
 	} // getVisitados
 
   @PostConstruct
@@ -58,50 +58,62 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
 			this.visitados= new ArrayList<>();
-			this.estaciones= new Estaciones();
-			this.estaciones.cleanLevels();
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			this.materiales= new Materiales();
+			this.materiales.cleanLevels();
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
-				this.current= (TcKeetEstacionesDto)JsfBase.getFlashAttribute("estacionProcess");
+				this.current= (TcKeetMaterialesDto)JsfBase.getFlashAttribute("estacionProcess");
 				this.actualizarChildren(1);
 			} // if
 			else{
-				this.current=new TcKeetEstacionesDto();
-				this.current.setClave(this.estaciones.toCode("0012020999"));
+				this.current=new TcKeetMaterialesDto();
+				this.current.setClave("");
+				this.current.setNivel(1L);
+				this.actualizarChildren(0, 3);
 				this.current.setNivel(3L);
-				this.actualizarChildren(1);
 			} // if	
-		loadCombos();
+		  this.loadCatalogs();
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
+      mx.org.kaana.libs.formato.Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
   } // init
 
   @Override
   public void doLoad() {
-		String nodo                  = "";
-		TcKeetPrototiposDto prototipo= null;
+		String nodo                 = "";
+		TcKeetContratosLotesDto lote= null;
     try {
-			if(this.attrs.get("idPrototipo")!=null && ((UISelectEntity)this.attrs.get("idPrototipo")).getKey()>0L){
-				prototipo= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, ((UISelectEntity)this.attrs.get("idPrototipo")).getKey());
-				this.current= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, prototipo.getIdEstacion());
-				actualizarChildren(1);
+			if(this.attrs.get("lote")!= null && ((UISelectEntity)this.attrs.get("lote")).getKey()> 0L) {
+				lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(TcKeetContratosLotesDto.class, ((UISelectEntity)this.attrs.get("lote")).getKey());
+			  nodo= this.materiales.toCodeByIdContrato(lote.getIdContrato());
+				this.current=new TcKeetMaterialesDto();
+				this.current.setClave(this.materiales.toCode(nodo.concat(lote.getOrden().toString())));
+				this.current.setNivel(4L);
+				this.actualizarChildren(1);
 			} // if
-			else if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
-				nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
-				this.current= new TcKeetEstacionesDto();
-				this.current.setClave(this.estaciones.toCode(nodo));
-				this.current.setNivel(1L);
-				actualizarChildren(1,2);
+			else if(this.attrs.get("contrato")!=null && ((UISelectEntity)this.attrs.get("contrato")).getKey()>0L) {
+				nodo= this.materiales.toCodeByIdContrato(((UISelectEntity)this.attrs.get("contrato")).getKey());
+				this.current= new TcKeetMaterialesDto();
+				this.current.setClave(nodo);
 				this.current.setNivel(3L);
+				this.actualizarChildren(1);
 			} // else if
-			else
-				doInicio();
+			else if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
+					nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
+					this.current= new TcKeetMaterialesDto();
+					this.current.setClave(this.materiales.toCode(nodo));
+					this.current.setNivel(1L);
+					this.actualizarChildren(1,2);
+					this.current.setNivel(3L);
+				} // else if
+				else
+					this.doInicio();
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
+      mx.org.kaana.libs.formato.Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
   } // doLoad
@@ -114,7 +126,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
 			switch(eaccion){
 				case REGISTRAR:
-				  this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+				  this.current=((TcKeetMaterialesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetMaterialesDto)this.attrs.get("seleccionado"));
 					eaccion= EAccion.AGREGAR;
 				case AGREGAR:
 				case MODIFICAR:
@@ -122,25 +134,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 					regresar= "accion".concat(Constantes.REDIRECIONAR);
 					JsfBase.setFlashAttribute("accion", eaccion);      
 					JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(eaccion.name()));      
-					JsfBase.setFlashAttribute("idEstacion", eaccion.equals(EAccion.AGREGAR) ? -1L : ((TcKeetEstacionesDto) this.attrs.get("seleccionado")).getKey());
+					JsfBase.setFlashAttribute("idMaterial", eaccion.equals(EAccion.AGREGAR) ? -1L : ((TcKeetMaterialesDto) this.attrs.get("seleccionado")).getKey());
 					JsfBase.setFlashAttribute("estacionPadre", this.current);
-					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
+					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Materiales/filtro");
 					break;
 				case SUBIR:
 				case BAJAR:
 				case ELIMINAR:
-					transaccion= new Transaccion(new RegistroEstacion(((TcKeetEstacionesDto) this.attrs.get("seleccionado")).getKey()));
+					transaccion= new Transaccion(new RegistroEstacion(((TcKeetMaterialesDto) this.attrs.get("seleccionado")).getKey()));
 					if (transaccion.ejecutar(eaccion)){
-					  actualizarChildren(0);
+					  this.actualizarChildren(0);
 						JsfBase.addMessage("La estación se ".concat(eaccion.getTitle()).concat(" correctamente."));
 					} // if
 				break;
 				case LISTAR:
 					JsfBase.setFlashAttribute("estacionPadre", this.current);
-					this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+					this.current=((TcKeetMaterialesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetMaterialesDto)this.attrs.get("seleccionado"));
 					regresar= "estructura".concat(Constantes.REDIRECIONAR);
 					JsfBase.setFlashAttribute("estacionProcess", this.current);
-					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
+					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
 					break;
 			} // swicth
     } // try
@@ -152,33 +164,32 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion  
 	
 	protected void actualizarChildren(int nivel) throws Exception {
-		actualizarChildren(nivel, 0);
+		this.actualizarChildren(nivel, 0);
 	}
 	
 	protected void actualizarChildren(int nivel, int incremento) throws Exception {
 		try {
-			this.current= ((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
-			if((this.current.getNivel().intValue()+ nivel)<= (this.estaciones.getNiveles().size()- 1)) {
+			if((this.current.getNivel().intValue()+ nivel)<= this.materiales.getNiveles().size()) {
 				if(this.current!= null) {
 					this.visitados.clear();
-					this.visitados= this.estaciones.toFather(this.current.getClave());
+					this.visitados= this.materiales.toFather(this.current.getClave());
 				} // if	
-			  this.hijos= this.estaciones.toChildren(incremento, this.current.getClave(), this.current.getNivel().intValue()+nivel, 0);
+			  this.hijos= this.materiales.toChildren(incremento, this.current.getClave(), this.current.getNivel().intValue()+ nivel, 0);
 			} // if
-		} // try // try
+		} // try 
 		catch (Exception e) {
 			throw e;
 		} // catch
 	} // actualizarChildren
 
 	public void doActualizarChildren() {
-		this.doVisitado(((TcKeetEstacionesDto)this.attrs.get("seleccionado")));
+		this.doVisitado(((TcKeetMaterialesDto)this.attrs.get("seleccionado")));
 	} // doActualizar
 
-	public void doVisitado(TcKeetEstacionesDto estacion) {
+	public void doVisitado(TcKeetMaterialesDto estacion) {
 		try {
 			this.current= estacion;
-			actualizarChildren(1);
+			this.actualizarChildren(1);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -188,15 +199,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doInicio() {
 		JsfBase.setFlashAttribute("current", null);
-		init();
+		this.init();
 	} // doInicio
 
 	protected void loadEmpresas() {
 		Map<String, Object>params= null;
 		List<Columna> columns    = null;
 		try {
-			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			params= new HashMap<>();
+			params = new HashMap<>();
 			columns= new ArrayList<>();		
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -214,24 +224,23 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally				
 	} // loadEmpresas
 	
-	
-	public void doLoadPrototipos(){
-		UISelectEntity cliente= null;
+  public void doLoadLotes() {
+		UISelectEntity contrato = null;
 	  try {
-			cliente = (UISelectEntity)this.attrs.get("cliente");
-			if(cliente!= null && cliente.getKey()> 0L) 
-			  this.attrs.put(Constantes.SQL_CONDICION, "id_cliente= ".concat(cliente.getKey().toString()));
+			contrato = (UISelectEntity)this.attrs.get("contrato");
+			if(contrato!= null && contrato.getKey()> 0L) 
+			  this.attrs.put(Constantes.SQL_CONDICION, "id_contrato= ".concat(contrato.getKey().toString()));
 			else
-				this.attrs.put(Constantes.SQL_CONDICION, "id_estacion is not null");
-      this.attrs.put("prototipos", UIEntity.seleccione("TcKeetPrototiposDto", "row", this.attrs, "nombre"));
+				this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      this.attrs.put("lotes", UIEntity.seleccione("TcKeetContratosLotesDto", "row", this.attrs, "clave"));
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
+      mx.org.kaana.libs.formato.Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // doLoadPrototipos
+	} // doLoadLotes
 	
-	public void doLoadClientes() {
+	public void doLoadContratos() {
 		UISelectEntity empresa= null;
 	  try {
 			empresa = (UISelectEntity)this.attrs.get("idEmpresa");
@@ -239,30 +248,40 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  this.attrs.put("sucursales", empresa.getKey());
 			else
 				this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
+      this.attrs.put("contratos", UIEntity.seleccione("VistaContratosDto", "byEmpresa", this.attrs, "clave"));
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
+      mx.org.kaana.libs.formato.Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // loadCombos
+	} // doLoadContratos
 	
-	protected void loadCombos() {
+	protected void loadCatalogs() {
 		try {
 			this.loadEmpresas();
-			this.doLoadClientes();
-			this.doLoadPrototipos();
+			this.doLoadContratos();
+			this.doLoadLotes();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // loadCombos
+	} // loadCatalogs
 	
 	public String doUpload() {
 		JsfBase.setFlashAttribute("ikContratoLote", -1L);
-		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PLANTILLAS.getId());
-		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
+		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.MATERIALES.getId());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Materiales/filtro");
+		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
+	}
+
+	public String doUploadIndividual() {
+		Long ikContratoLote= -1L;
+		if(this.attrs.get("lote")!= null && ((UISelectEntity)this.attrs.get("lote")).getKey()> 0L) 
+			ikContratoLote= ((UISelectEntity)this.attrs.get("lote")).getKey();
+		JsfBase.setFlashAttribute("ikContratoLote", ikContratoLote);
+		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.MATERIALES.getId());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Materiales/filtro");
 		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
 	
