@@ -170,7 +170,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina
+  } // doAceptar
 	
 	private Revision loadRevision(){
 		Revision regresar  = null;
