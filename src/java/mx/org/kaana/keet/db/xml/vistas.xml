@@ -3843,6 +3843,31 @@
 				order by 
 				  tc_keet_materiales.clave
 			</select>			
+			<select id="materiales">
+				select
+					tc_mantic_articulos.id_articulo as id_key,
+					tc_keet_materiales.id_material,
+					tc_keet_materiales.nivel,
+					tc_keet_materiales.clave,
+					tc_keet_materiales.id_empaque_unidad_medida,
+					tc_keet_materiales.id_estacion_estatus,
+					tc_keet_materiales.costo,
+					tc_keet_materiales.codigo,
+					tc_keet_materiales.nombre,
+					tc_keet_materiales.cantidad,
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_articulos.precio
+				from
+					tc_keet_materiales
+				inner join 
+					tc_mantic_articulos on tc_keet_materiales.codigo = tc_mantic_articulos.codigo
+				where
+					tc_keet_materiales.clave like '{clave}%'				
+				and 
+				  tc_keet_materiales.nivel=7
+				order by 
+				  tc_keet_materiales.clave
+			</select>			
 			<select id="estatusManzanaLote">
 				select
 					sum(iniciado) iniciado,
