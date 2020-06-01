@@ -88,7 +88,7 @@
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:separator/>
-								<p:menuitem icon="fa fa-cloud-upload" title="Importar estaciones" value="Importar" action="#{keetMaterialesFiltro.doUpload()}" onstart="return janal.bloquear()"/>						
+								<p:menuitem icon="fa fa-cloud-upload" title="Importar materiales" value="Importar" action="#{keetMaterialesFiltro.doUpload()}" onstart="return janal.bloquear()"/>						
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar" action="#{keetMaterialesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -146,7 +146,7 @@
         <p:menuitem icon="fa fa-th-list" action="#{keetMaterialesFiltro.doAccion('REGISTRAR')}" ajax="false" value="Descendencia"  title="Agregar descendencia"/>             				
 				<p:menuitem icon="fa fa-tasks" action="#{keetMaterialesFiltro.doAccion('LISTAR')}" ajax="false" value="Estructura"  title="Ver estructura"/> 
 				<p:separator/>
-				<p:menuitem icon="fa fa-cloud-upload" action="#{keetMaterialesFiltro.doUploadIndividual()}" value="Importar" title="Importar estaciones" onstart="return janal.bloquear()"/>						
+				<p:menuitem icon="fa fa-cloud-upload" action="#{keetMaterialesFiltro.doUploadIndividual()}" value="Importar" title="Importar materiales" onstart="return janal.bloquear()"/>						
       </p:contextMenu>
     </div>		           				
   </ui:define>    

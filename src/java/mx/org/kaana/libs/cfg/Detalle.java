@@ -27,8 +27,8 @@ public class Detalle extends DetalleConfiguracion implements IBaseDto {
 		this.descripcion="";
 	}
 
-		public Detalle(Integer nivel, Integer longitud, Integer justificacion, String relleno, String dominio, String value) {
-		this(0L, 0L, value, "", nivel, longitud, justificacion, relleno, dominio);
+	public Detalle(Integer nivel, Integer longitud, Integer justificacion, String relleno, String dominio, String value, String descripcion) {
+		this(0L, 0L, value, descripcion, nivel, longitud, justificacion, relleno, dominio);
 	}
 
 	public Detalle(Long idKey, Long idCfgClave, String value, String descripcion, Integer nivel, Integer longitud, Integer justificacion, String relleno, String dominio) {

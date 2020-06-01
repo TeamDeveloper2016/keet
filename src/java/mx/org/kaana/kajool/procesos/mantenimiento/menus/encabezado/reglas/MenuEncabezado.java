@@ -33,11 +33,11 @@ public class MenuEncabezado extends Maestro implements IArbol, Serializable {
       new Configuracion("Configuración del menu", 10),
       new ArrayList<Detalle>(
       Arrays.asList(
-      new Detalle(1, 2, 2, "0", "[1..99]", ""),
-      new Detalle(2, 2, 2, "0", "[1..99]", ""),
-      new Detalle(3, 2, 2, "0", "[1..99]", ""),
-      new Detalle(4, 2, 2, "0", "[1..99]", ""),
-      new Detalle(5, 2, 2, "0", "[1..99]", ""))));
+      new Detalle(1, 2, 2, "0", "[1..99]", "", ""),
+      new Detalle(2, 2, 2, "0", "[1..99]", "", ""),
+      new Detalle(3, 2, 2, "0", "[1..99]", "", ""),
+      new Detalle(4, 2, 2, "0", "[1..99]", "", ""),
+      new Detalle(5, 2, 2, "0", "[1..99]", "", ""))));
   }
 
   @Override

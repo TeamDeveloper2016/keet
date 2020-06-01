@@ -44,7 +44,8 @@ public class Maestro {
 			detalleConfiguracion.getIdJustificacion(),
 			detalleConfiguracion.getRelleno(),
 			detalleConfiguracion.getDominio(),
-			"");
+			"",
+		  "");
 		this.niveles.add(detalle);
 		LOG.debug(detalle.toString());
 	}

@@ -50,7 +50,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // getVisitados
 
 	public String getTitulo() {
-		return this.current== null? "Nombre": this.materiales.getNiveles().get(this.current.getNivel().intValue()- 1).getDescripcion();
+		return this.current== null? "Nombre": this.materiales.getNiveles().get(this.current.getNivel().intValue()).getDescripcion();
 	} // getVisitados
 
   @PostConstruct
