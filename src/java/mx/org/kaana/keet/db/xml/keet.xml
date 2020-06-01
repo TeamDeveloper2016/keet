@@ -78,6 +78,14 @@
         where      
           consecutivo = '{consecutivo}' and id_vale = {idVale}
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_vales
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>	
     </unit>
     <unit id="TcKeetMaterialesDto">
       <select id="row">
