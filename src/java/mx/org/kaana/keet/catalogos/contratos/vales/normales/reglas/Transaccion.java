@@ -19,6 +19,7 @@ import mx.org.kaana.keet.db.dto.TcKeetValesDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesMaterialesDto;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
+import mx.org.kaana.keet.enums.ETiposEntregas;
 import mx.org.kaana.keet.enums.EValesEstatus;
 import mx.org.kaana.keet.materiales.reglas.Materiales;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
@@ -187,7 +188,8 @@ public class Transaccion extends IBaseTnx {
 				detalle.setIdMaterial(recordDetalle.getIdMaterial());
 				detalle.setIdVale(this.idVale);
 				detalle.setNombre(recordDetalle.getNombre());
-				detalle.setPrecio(recordDetalle.getPrecio());
+				detalle.setPrecio(recordDetalle.getPrecio());				
+				detalle.setIdTipoEntrega(ETiposEntregas.NINGUNO.getKey());				
 				if(DaoFactory.getInstance().insert(sesion, detalle)>= 1L)
 					actualizaMaterial(sesion, detalle.getIdMaterial(), semana, detalle.getCosto());
 			} // for
@@ -266,10 +268,15 @@ public class Transaccion extends IBaseTnx {
 		return regresar;				
 	} // toIdEstacionEstatus
 	
-	private void registrarPadres(Session sesion){
+	private void registrarPadres(Session sesion) throws Exception{
 		TcKeetValesMaterialesDto dto= null;
 		try {
-			
+			for(DetalleVale detalleVale: this.vale.getPadres()){
+				dto= new TcKeetValesMaterialesDto();
+				dto.setIdVale(this.idVale);
+				dto.setIdMaterial(detalleVale.getIdMaterial());
+				DaoFactory.getInstance().insert(sesion, dto);
+			} // for
 		} // try
 		catch (Exception e) {			
 			throw e;
