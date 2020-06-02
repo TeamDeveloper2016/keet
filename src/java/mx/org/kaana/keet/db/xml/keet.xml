@@ -31,6 +31,7 @@
 					id_material,
 					id_articulo,
 					codigo,
+					nombre,
 					sum(precio) precio,
 					sum(cantidad) cantidad,
 					sum(costo) costo 
@@ -43,7 +44,8 @@
 					id_vale, 
 					id_material,
 					id_articulo,
-					codigo
+					codigo,
+					nombre
 			</select>
     </unit>
 		<unit id="TcKeetValesDetallesDto">
