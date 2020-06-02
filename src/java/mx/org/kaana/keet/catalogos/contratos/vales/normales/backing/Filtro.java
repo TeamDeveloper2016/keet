@@ -139,7 +139,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			especialidades= UISelect.seleccione("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			especialidades= UISelect.seleccione("VistaCapturaMaterialesDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("especialidades", especialidades);
 			this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
 		} // try
@@ -159,7 +159,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-			figuras= UIEntity.seleccione("VistaCapturaDestajosDto", "empleadosAsociados", params, campos, "puesto");
+			figuras= UIEntity.seleccione("VistaCapturaMaterialesDto", "empleadosAsociados", params, campos, "puesto");
 			this.attrs.put("figuras", figuras);
 			this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
 			this.attrs.put("destajos", false);
@@ -221,8 +221,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("idTipoFiguraCorreo", figura.toLong("tipo"));
 			this.attrs.put("idFiguraCorreo", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
 			this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));
-	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);		
-			lotesCriterio= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, "descripcionLote");
+	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", idXml, params);		
+			lotesCriterio= UIEntity.seleccione("VistaCapturaMaterialesDto", idXml, params, "descripcionLote");
 			loteCriterio= UIBackingUtilities.toFirstKeySelectEntity(figuras);
 			this.attrs.put("lotesCriterio", lotesCriterio);
 			this.attrs.put("loteCriterio", loteCriterio);
@@ -254,7 +254,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 				params.clear();
 				params.put("idDepartamento", this.attrs.get("especialidad"));
 				params.put("clave", toClaveEstacion(mzaLote));
-				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaDestajosDto", "estatusManzanaLote", params);
+				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaMaterialesDto", "estatusManzanaLote", params);
 				if(estatus.toString("total")!= null){
 					if(estatus.toLong("total").equals(estatus.toLong("terminado")))
 						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.TERMINADO.getSemaforo()));
