@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Conceptos para vales" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {        				
+				'criterios\\:nombreConcepto': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+      };							
+			
+			function validateCriterios(){
+				var ok= janal.execute();
+				if(ok)
+					janal.bloquear();
+				return ok;
+			} // validateCriterios
+			
+		  function localization() {												
+				if ("geolocation" in navigator) { 
+					navigator.geolocation.getCurrentPosition(function(position) { 						
+						distance({latitud: position.coords.latitude, longitud: position.coords.longitude});												
+					}); // navigator
+				} // if
+				else{
+					console.log("Browser doesn't support geolocation!");
+				} // else		
+				return true;
+			} // initLocalization
+			
+			function distance(gpsB) {
+				var gpsA= {latitud: #{keetCatalogosContratosValesNormalesConceptos.attrs.georreferencia.latitud}, longitud: #{keetCatalogosContratosValesNormalesConceptos.attrs.georreferencia.longitud}};
+				// var gpsB= {latitud: 21.850957, longitud: -102.307578};
+				var distance= janal.distanceMt(gpsA, gpsB);
+				if(distance&lt;= 10)
+				  $('#gps').attr('class', 'ui-info-messages ui-messages-info janal-column-center');
+				else
+					if(distance&gt; 10 &amp;&amp; distance&lt;= 20)
+					  $('#gps').attr('class', 'ui-warn-messages ui-messages-warn janal-column-center');
+				  else
+				    $('#gps').attr('class', 'ui-error-messages ui-messages-error janal-column-center');
+				$('#gps-title').html('GPS: ['+ gpsB.latitud+ ','+ gpsB.longitud+ '] estas a '+ distance+ ' metros del lote seleccionado');
+				var url= "https://www.google.com/maps?q="+ gpsB.latitud+ ","+ gpsB.longitud+ "&amp;z=17&amp;hl=es";
+				$('#gps-button').attr('onclick', 'window.open("'+ url+ '");');
+				janal.console('Se actualizo el calculo de la distancia: ['+ distance+']');
+				setTimeout('localization();', 3000);
+			}
+
+			$(document).ready(function () {
+				setTimeout('localization();', 1000);
+			});				
+    </script>
+		<style type="text/css">
+			.ui-widget-header a {
+				color: #0f6ebb !important;
+			}
+		</style>
+  </ui:define>
+  <ui:define name="contenido">				
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:accordionPanel id="criterios" activeIndex="1" multiple="true">																			
+						<p:tab title="[ #{keetCatalogosContratosValesNormalesConceptos.attrs.contrato.clave} ] #{keetCatalogosContratosValesNormalesConceptos.attrs.contrato.etapa} M#{keetCatalogosContratosValesNormalesConceptos.attrs.contratoLote.manzana}L#{keetCatalogosContratosValesNormalesConceptos.attrs.contratoLote.lote}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Viviendas:"/>
+								<p:inputText value="#{keetCatalogosContratosValesNormalesConceptos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Proyecto:"/>
+								<p:inputText value="[#{keetCatalogosContratosValesNormalesConceptos.attrs.contrato.claveProyecto}] #{keetCatalogosContratosValesNormalesConceptos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Desarrollo:"/>
+								<p:inputText value="[#{keetCatalogosContratosValesNormalesConceptos.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosValesNormalesConceptos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCatalogosContratosValesNormalesConceptos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Cliente:"/>
+								<p:inputText value="#{keetCatalogosContratosValesNormalesConceptos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>			
+						<p:tab title="Empleado">
+							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Puesto:"/>
+								<p:inputText value="#{keetCatalogosContratosValesNormalesConceptos.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Nombre:"/>
+								<p:inputText value="#{keetCatalogosContratosValesNormalesConceptos.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>																	
+					</p:accordionPanel>						
+					<p:treeTable id="tabla" value="#{keetCatalogosContratosValesNormalesConceptos.treeConceptos}" var="node" selectionMode="checkbox" selection="#{keetCatalogosContratosValesNormalesConceptos.selectedNodes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="true" paginatorPosition="bottom">						
+						<p:ajax event="select" listener="#{keetCatalogosContratosValesNormalesConceptos.onNodeSelect}" process="@this" update="tablaMaterial"/>
+						<p:ajax event="unselect" listener="#{keetCatalogosContratosValesNormalesConceptos.onNodeUnselect}" process="@this" update="tablaMaterial"/>
+						<p:column class="janal-wid-col-100 janal-column-center">              
+              <f:facet name="header">
+                <h:outputText value=" "/>
+              </f:facet>
+              <h:outputText value=" "/>
+            </p:column>	
+						<p:column class="janal-wid-col-150 janal-column-left">              
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{node.codigo}"/>
+            </p:column>	
+						<p:column class="MarAuto Responsive janal-column-left">              
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{node.nombre}" styleClass="FontBold" />
+            </p:column>	
+						<p:column class="MarAuto Responsive janal-column-right janal-wid-col-130">              
+              <f:facet name="header">
+                <h:outputText value="Costo"/>
+              </f:facet>
+              <h:outputText value="$ #{node.costo}"/>
+            </p:column>							
+					</p:treeTable>
+					<p:spacer height="10px"/>
+					<p:dataTable lazy="true" rowKey="#{row.idArticulo}" id="tablaMaterial" var="row" value="#{keetCatalogosContratosValesNormalesConceptos.materiales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosValesNormalesConceptos.attrs.totalMateriales gt 15}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+						<p:column class="janal-wid-col-30 janal-column-center">              
+              <f:facet name="header">
+                <h:outputText value="No"/>
+              </f:facet>
+              <h:outputText value="#{index+1}.-"/>
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row.codigo}"/>
+            </p:column>		                        
+            <p:column class="janal-column-left MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
+            </p:column>		   
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Cantidad"/>
+              </f:facet>
+              <h:outputText value="#{row.cantidad}"/>
+            </p:column>	
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Costo"/>
+              </f:facet>
+              <h:outputText value="$#{row.costoDecimales}"/>
+            </p:column>	
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetCatalogosContratosValesNormalesConceptos.attrs.totalMateriales}] registros"/>
+            </f:facet>          
+          </p:dataTable> 
+				</div>						        
+      </div>
+    </div>		           							
+  </ui:define>
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosValesNormalesConceptos.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosValesNormalesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosValesNormalesConceptos.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosValesNormalesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
