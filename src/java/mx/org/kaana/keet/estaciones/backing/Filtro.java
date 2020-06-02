@@ -160,7 +160,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.current= ((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
 			if((this.current.getNivel().intValue()+ nivel)<= (this.estaciones.getNiveles().size()- 1)) {
 				if(this.current!= null) {
-					this.visitados.clear();
+					Methods.clean(this.visitados);
 					this.visitados= this.estaciones.toFather(this.current.getClave());
 				} // if	
 			  this.hijos= this.estaciones.toChildren(incremento, this.current.getClave(), this.current.getNivel().intValue()+nivel, 0);
