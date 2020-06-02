@@ -24,6 +24,27 @@
         where      
           id_vale_material = {idValeMaterial} and id_vale = {idVale} and id_material = {idMaterial}
       </select>
+			<delete id="rows">
+				delete from tc_keet_vales_materiales where id_vale= {idVale}
+			</delete>			
+    </unit>
+		<unit id="TcKeetValesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_vales_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_vales_detalles
+        where      
+          date_format(entregrado, '%Y%m%d%H%i%S') = '{entregrado}' and id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle}
+      </select>
 			<select id="resumen">
 				select
 					id_vale_detalle AS id_key,
@@ -47,24 +68,9 @@
 					codigo,
 					nombre
 			</select>
-    </unit>
-		<unit id="TcKeetValesDetallesDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_keet_vales_detalles
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_vales_detalles
-        where      
-          date_format(entregrado, '%Y%m%d%H%i%S') = '{entregrado}' and id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle}
-      </select>
+			<delete id="rows">
+				delete from tc_keet_vales_detalles where id_vale= {idVale}
+			</delete>
     </unit>
 		<unit id="TcKeetValesBitacoraDto">
       <select id="row">
