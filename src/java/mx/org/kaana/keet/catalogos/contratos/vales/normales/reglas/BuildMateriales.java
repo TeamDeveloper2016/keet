@@ -71,15 +71,41 @@ public class BuildMateriales implements Serializable{
 		return regresar;
 	}	// toConceptos
 	
+	public List<MaterialVale> toConceptosRegistrados(Long idVale) throws Exception{
+		List<MaterialVale> regresar= null;
+		Map<String, Object>params  = null;		
+		try {			
+			params= new HashMap<>();			
+			params.put("idVale", idVale);
+			regresar= DaoFactory.getInstance().toEntitySet(MaterialVale.class, "VistaCapturaMaterialesDto", "conceptosRegistrados", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}	// toConceptos
+	
 	public List<MaterialVale> toMateriales(String clavePadre, Long nivel) throws Exception{
+		return toMateriales(clavePadre, nivel, null);
+	}	// toConceptos
+	
+	public List<MaterialVale> toMateriales(String clavePadre, Long nivel, Long idVale) throws Exception{
 		List<MaterialVale> regresar= null;
 		Map<String, Object>params  = null;
 		Estaciones estaciones      = null;
 		try {
 			estaciones= new Estaciones();
 			params= new HashMap<>();
-			params.put("clave", estaciones.toKey(clavePadre, nivel.intValue()));			
-			regresar= DaoFactory.getInstance().toEntitySet(MaterialVale.class, "VistaCapturaMaterialesDto", "materiales", params, Constantes.SQL_TODOS_REGISTROS);
+			params.put("clave", estaciones.toKey(clavePadre, nivel.intValue()));						
+			if(idVale!= null){
+				params.put("idVale", idVale);			
+				regresar= DaoFactory.getInstance().toEntitySet(MaterialVale.class, "VistaCapturaMaterialesDto", "materialesVale", params, Constantes.SQL_TODOS_REGISTROS);
+			} // if
+			else
+				regresar= DaoFactory.getInstance().toEntitySet(MaterialVale.class, "VistaCapturaMaterialesDto", "materiales", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {			
 			throw e;
