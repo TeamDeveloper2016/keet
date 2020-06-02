@@ -1,8 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -47,7 +46,7 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
   @Column (name="multiplo")
   private Long multiplo;
 
@@ -73,7 +72,7 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
     setIdArticuloCodigo(idArticuloCodigo);
     setOrden(orden);
     setIdArticulo(idArticulo);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
 		this.multiplo= multiplo;
   }
 	
@@ -141,11 +140,11 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

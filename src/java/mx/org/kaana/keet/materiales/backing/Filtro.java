@@ -171,7 +171,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			if((this.current.getNivel().intValue()+ nivel)<= this.materiales.getNiveles().size()) {
 				if(this.current!= null) {
-					this.visitados.clear();
+					Methods.clean(this.visitados);
 					this.visitados= this.materiales.toFather(this.current.getClave());
 				} // if	
 			  this.hijos= this.materiales.toChildren(incremento, this.current.getClave(), this.current.getNivel().intValue()+ nivel, 0);
