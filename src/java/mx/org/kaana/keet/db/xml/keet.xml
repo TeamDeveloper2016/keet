@@ -89,6 +89,9 @@
         where      
           id_vale_bitacora = {idValeBitacora}
       </select>
+			<delete id="rows">
+				delete from tc_keet_vales_bitacora where id_vale= {idVale}
+			</delete>
 		</unit>		
 		<unit id="TcKeetValesDto">
       <select id="row">
