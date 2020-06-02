@@ -24,6 +24,27 @@
         where      
           id_vale_material = {idValeMaterial} and id_vale = {idVale} and id_material = {idMaterial}
       </select>
+			<select id="resumen">
+				select
+					id_vale_detalle AS id_key,
+					id_vale, 
+					id_material,
+					id_articulo,
+					codigo,
+					sum(precio) precio,
+					sum(cantidad) cantidad,
+					sum(costo) costo 
+				from
+					tc_keet_vales_detalles
+				where
+					id_vale= {idVale}
+				group by
+					id_vale_detalle,
+					id_vale, 
+					id_material,
+					id_articulo,
+					codigo
+			</select>
     </unit>
 		<unit id="TcKeetValesDetallesDto">
       <select id="row">
