@@ -103,7 +103,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			params= new HashMap<>();
 			params.put("idVale", this.attrs.get("idVale"));
-			this.lazyModel= new FormatLazyModel("TcKeetValesMaterialesDto", "resumen", params, campos);
+			this.lazyModel= new FormatLazyModel("TcKeetValesDetallesDto", "resumen", params, campos);
 			UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -166,7 +166,10 @@ public class Resumen extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
 			JsfBase.setFlashAttribute("opcionResidente", opcion);			
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
-			regresar= "filtro".concat(Constantes.REDIRECIONAR);			
+			JsfBase.setFlashAttribute("flujo", "resumen");										
+			JsfBase.setFlashAttribute("idVale", this.attrs.get("idVale"));										
+			JsfBase.setFlashAttribute("qr", this.attrs.get("qr"));										
+			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -13,7 +13,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.vales.beans.DetalleVale;
 import mx.org.kaana.keet.catalogos.contratos.vales.normales.reglas.Transaccion;
 import mx.org.kaana.keet.catalogos.contratos.vales.beans.MaterialVale;
@@ -38,6 +37,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID= 2847354766000406350L;  	
 	private static final Long NIVEL_CONCEPTO  = 6L;
+	private static final String FLUJO_INICIO  = "filtro";
 	private TreeNode treeConceptos;
 	private TreeNode[] selectedNodes;
 	private List<MaterialVale> materiales;
@@ -76,6 +76,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		Entity figura            = null;
 		Entity seleccionado      = null;
 		Long idDepartamento      = null;
+		String flujo             = null;
     try {
 			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
@@ -86,6 +87,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			figura= (Entity) JsfBase.getFlashAttribute("figura");	
 			seleccionado= (Entity) JsfBase.getFlashAttribute("seleccionado");	
 			idDepartamento= (Long)JsfBase.getFlashAttribute("idDepartamento");	
+			flujo= (String) JsfBase.getFlashAttribute("flujo");
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("figura", figura);      
 			this.attrs.put("seleccionadoPivote", seleccionado);      			
@@ -93,8 +95,18 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			this.attrs.put("idDepartamento", idDepartamento);      			
 			this.attrs.put("nombreConcepto", "");    
 			this.attrs.put("totalMateriales", 0L);
-			loadCatalogos();						
-			doLoad();			
+			loadCatalogos();					
+			preLoad();
+			if(flujo.equals(FLUJO_INICIO)){
+				this.attrs.put("accion", EAccion.AGREGAR);
+				doLoad();			
+			} // if
+			else{
+				this.attrs.put("accion", EAccion.MODIFICAR);
+				this.attrs.put("idVale", JsfBase.getFlashAttribute("idVale"));
+				this.attrs.put("qr", JsfBase.getFlashAttribute("qr"));
+				doLoadExistente();
+			} // else
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -125,20 +137,21 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		} // finally	
 	} // loadCatalogos		
 	
+	private void preLoad(){
+		this.materiales= new ArrayList<>();
+		this.detalle= new ArrayList<>();
+		this.padres= new ArrayList<>();
+		this.treeConceptos= new CheckboxTreeNode("root", new MaterialVale(), null);
+	} // preLoad
+	
   @Override
-  public void doLoad() {
-		Map<String, Object>params    = null;
-    List<Columna> columns        = null;				
+  public void doLoad() {		
 		BuildMateriales buildMaterial= null;
 		List<MaterialVale>partidas   = null;
 		List<MaterialVale>conceptos  = null;		
 		TreeNode partida             = null;
 		TreeNode concepto            = null;
-    try {    
-			this.materiales= new ArrayList<>();
-			this.detalle= new ArrayList<>();
-			this.padres= new ArrayList<>();
-			this.treeConceptos= new CheckboxTreeNode("root", new MaterialVale(), null);
+    try {    			
 			buildMaterial= new BuildMateriales(toClaveEstacion(), Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			partidas= buildMaterial.toPartidas();			
 			for(MaterialVale recordPartida: partidas){
@@ -147,19 +160,70 @@ public class Conceptos extends IBaseFilter implements Serializable {
 				for(MaterialVale recordConcepto: conceptos){
 					concepto= new CheckboxTreeNode("concepto", recordConcepto, partida);
 					concepto.setExpanded(false);
-					concepto.setSelectable(!recordConcepto.isRegistrado());					
+					concepto.setSelectable(!recordConcepto.isRegistrado());										
 				} // for				
 			} // for			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    } // catch
-    finally {      
-      Methods.clean(columns);
-      Methods.clean(params);
-    } // finally		
+    } // catch    
   } // doLoad	  
+	
+	public void doLoadExistente(){
+		BuildMateriales buildMaterial         = null;		
+		List<MaterialVale>conceptosRegistrados= null;						
+		try {
+			doLoad();
+			buildMaterial= new BuildMateriales(toClaveEstacion(), Long.valueOf(this.attrs.get("idDepartamento").toString()));
+			conceptosRegistrados= buildMaterial.toConceptosRegistrados(Long.valueOf(this.attrs.get("idVale").toString()));
+			for(MaterialVale concepto: conceptosRegistrados){
+				for(TreeNode nodePartida: this.treeConceptos.getChildren()){
+					for(TreeNode nodeConcepto: nodePartida.getChildren()){
+						if(((MaterialVale)nodeConcepto.getData()).getIdMaterial().equals(concepto.getIdMaterial())){
+							((CheckboxTreeNode)nodeConcepto).setSelectable(true);
+							((CheckboxTreeNode)nodeConcepto).setSelected(true);
+							initNodeSelect(nodeConcepto);
+						} // if
+					} // if
+				} // if
+			} // for
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doLoadExistente
+	
+	private void initNodeSelect(TreeNode seleccion) {		
+		BuildMateriales buildMaterial= null;
+		List<MaterialVale> articulos = null;
+		MaterialVale pivote          = null;
+		try {
+			buildMaterial= new BuildMateriales("");			
+			loadNodeParents(seleccion);
+			articulos= buildMaterial.toMateriales(((MaterialVale)seleccion.getData()).getClave(), ((MaterialVale)seleccion.getData()).getNivel(), Long.valueOf(this.attrs.get("idVale").toString()));			
+			for(MaterialVale material: articulos){
+				if(this.materiales.isEmpty())
+					this.materiales.add(material);				
+				else{					
+					if(this.materiales.contains(material)){
+						pivote= this.materiales.get(this.materiales.indexOf(material));
+						this.materiales.get(this.materiales.indexOf(material)).setCantidad(pivote.getCantidad() + material.getCantidad());
+						this.materiales.get(this.materiales.indexOf(material)).setCosto(pivote.getCosto() + material.getCosto());
+					} // if
+					else
+						this.materiales.add(material);									
+				} // else			
+				this.detalle.add(new DetalleVale(material));
+			} // for						
+			this.attrs.put("totalMateriales", this.materiales.size());
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+	} // onNodeSelect
 	
 	public void onNodeSelect(NodeSelectEvent event) {
 		TreeNode seleccion           = null;
@@ -170,7 +234,10 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			buildMaterial= new BuildMateriales("");
 			seleccion= event.getTreeNode();		
 			loadNodeParents(seleccion);
-			articulos= buildMaterial.toMateriales(((MaterialVale)seleccion.getData()).getClave(), ((MaterialVale)seleccion.getData()).getNivel());			
+			if(this.attrs.get("idVale")!= null)				
+				articulos= buildMaterial.toMateriales(((MaterialVale)seleccion.getData()).getClave(), ((MaterialVale)seleccion.getData()).getNivel(), Long.valueOf(this.attrs.get("idVale").toString()));			
+			else
+				articulos= buildMaterial.toMateriales(((MaterialVale)seleccion.getData()).getClave(), ((MaterialVale)seleccion.getData()).getNivel());			
 			for(MaterialVale material: articulos){
 				if(this.materiales.isEmpty())
 					this.materiales.add(material);				
@@ -201,7 +268,8 @@ public class Conceptos extends IBaseFilter implements Serializable {
 				this.padres.add(new DetalleVale(material));
 			else{
 				for(TreeNode child: selection.getChildren()){
-					this.padres.add(new DetalleVale((MaterialVale) child.getData()));
+					if(!((MaterialVale) child.getData()).isRegistrado())
+						this.padres.add(new DetalleVale((MaterialVale) child.getData()));
 				} // for
 			} // for
 		} // try
@@ -221,7 +289,10 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			buildMaterial= new BuildMateriales("");
 			seleccion= event.getTreeNode();
 			removeNodeParents(seleccion);
-			articulos= buildMaterial.toMateriales(((MaterialVale)seleccion.getData()).getClave(), ((MaterialVale)seleccion.getData()).getNivel());			
+			if(this.attrs.get("idVale")!= null)				
+				articulos= buildMaterial.toMateriales(((MaterialVale)seleccion.getData()).getClave(), ((MaterialVale)seleccion.getData()).getNivel(), Long.valueOf(this.attrs.get("idVale").toString()));			
+			else
+				articulos= buildMaterial.toMateriales(((MaterialVale)seleccion.getData()).getClave(), ((MaterialVale)seleccion.getData()).getNivel());			
 			for(MaterialVale material: articulos){
 				if(!this.materiales.isEmpty()){					
 					if(this.materiales.contains(material)){
@@ -289,17 +360,29 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	public String doAceptar() {
     String regresar        = null;    		
 		Transaccion transaccion= null;		
-    try {									
-			transaccion= new Transaccion(loadVale());
-			if(transaccion.ejecutar(EAccion.PROCESAR)){
-				JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
-				JsfBase.setFlashAttribute("idVale", transaccion.getIdVale());
-				JsfBase.setFlashAttribute("qr", transaccion.getQr());				
-				toSetFlash();
-				regresar= "resumen".concat(Constantes.REDIRECIONAR);
+		EAccion accion         = null;
+    try {								
+			if(this.materiales.size() > 0){
+				accion= (EAccion) this.attrs.get("accion");
+				transaccion= accion.equals(EAccion.AGREGAR) ? new Transaccion(loadVale()) : new Transaccion(loadVale(), Long.valueOf(this.attrs.get("idVale").toString()));
+				if(transaccion.ejecutar(accion)){
+					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);
+					if(accion.equals(EAccion.AGREGAR)){
+						JsfBase.setFlashAttribute("idVale", transaccion.getIdVale());
+						JsfBase.setFlashAttribute("qr", transaccion.getQr());				
+					} // if
+					else{
+						JsfBase.setFlashAttribute("idVale", this.attrs.get("idVale"));
+						JsfBase.setFlashAttribute("qr", this.attrs.get("qr"));				
+					} // else
+					toSetFlash();
+					regresar= "resumen".concat(Constantes.REDIRECIONAR);
+				} // if
+				else
+					JsfBase.addMessage("Captura de materiales", "Ocurrió un error al realizar la captura de material.", ETipoMensaje.ERROR);			
 			} // if
 			else
-				JsfBase.addMessage("Captura de puntos de revisión", "Ocurrió un error al realizar la captura de los puntos de revision.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Captura de materiales", "No se ha seleccionado ningun concepto.", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -346,16 +429,26 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	
 	public String doCancelar() {
     String regresar          = null;    
-		EOpcionesResidente opcion= null;		
+		EOpcionesResidente opcion= null;				
+		Transaccion transaccion  = null;
+		boolean respuesta        = true;
     try {			
-			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
-			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
-			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
-			JsfBase.setFlashAttribute("figura", this.attrs.get("figura"));
-			JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
-			JsfBase.setFlashAttribute("opcionResidente", opcion);			
-			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
-			regresar= "filtro".concat(Constantes.REDIRECIONAR);			
+			if(this.attrs.get("idVale")!= null){
+				transaccion= new Transaccion(Long.valueOf(this.attrs.get("idVale").toString()));
+				respuesta= transaccion.ejecutar(EAccion.DEPURAR);
+			} // if
+			if(respuesta){
+				opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
+				JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
+				JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
+				JsfBase.setFlashAttribute("figura", this.attrs.get("figura"));
+				JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
+				JsfBase.setFlashAttribute("opcionResidente", opcion);			
+				JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
+				regresar= "filtro".concat(Constantes.REDIRECIONAR);			
+			} // if
+			else
+				JsfBase.addMessage("Cancelar vale", "Ocurrió un error al cacelar el vale", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
