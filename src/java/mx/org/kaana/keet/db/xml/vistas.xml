@@ -3814,34 +3814,63 @@
 					clave like '{clave}%' and nivel=5
 			</select>
 			<select id="conceptos">
-				select
-					tc_keet_materiales.id_material as id_key,
-					tc_keet_materiales.id_material,
-					tc_keet_materiales.nivel,
-					tc_keet_materiales.clave,
-					tc_keet_materiales.id_empaque_unidad_medida,
-					tc_keet_materiales.id_estacion_estatus,
-					tc_keet_materiales.costo,
-					tc_keet_materiales.codigo,
-					tc_keet_materiales.nombre,
+				select 
+					principal.*,
 					(select 
 						count(*) 
 					from 
 						tc_keet_vales
 					inner join 
-						tc_keet_vales_detalles on tc_keet_vales.id_vale = tc_keet_vales_detalles.id_vale
+						tc_keet_vales_materiales on tc_keet_vales.id_vale = tc_keet_vales_materiales.id_vale
    				where 
-						id_material= tc_keet_materiales.id_material and tc_keet_vales.id_tipo_vale=1) total_detalle
-				from
-					tc_keet_materiales
-				where
-					tc_keet_materiales.clave like '{clave}%'
-				and
-					tc_keet_materiales.id_estacion_estatus in ({estatus})
-				and 
-				  tc_keet_materiales.nivel=6
+						tc_keet_vales_materiales.id_material= principal.id_material and tc_keet_vales.id_tipo_vale=1) total_detalle
+				from ( 
+					select
+						tc_keet_materiales.id_material as id_key,
+						tc_keet_materiales.id_material,
+						tc_keet_materiales.nivel,
+						tc_keet_materiales.clave,
+						tc_keet_materiales.id_empaque_unidad_medida,
+						tc_keet_materiales.id_estacion_estatus,
+						tc_keet_materiales.costo,
+						tc_keet_materiales.codigo,
+						tc_keet_materiales.nombre					
+					from
+						tc_keet_materiales
+					where
+						tc_keet_materiales.clave like '{clave}%'
+					and
+						tc_keet_materiales.id_estacion_estatus in ({estatus})
+					and 
+						tc_keet_materiales.nivel=6
+				) principal
 				order by 
-				  tc_keet_materiales.clave
+				  principal.clave
+			</select>			
+			<select id="conceptosRegistrados">
+				select 
+					principal.*,
+					0 total_detalle
+				from ( 
+					select
+						tc_keet_materiales.id_material as id_key,
+						tc_keet_materiales.id_material,
+						tc_keet_materiales.nivel,
+						tc_keet_materiales.clave,
+						tc_keet_materiales.id_empaque_unidad_medida,
+						tc_keet_materiales.id_estacion_estatus,
+						tc_keet_materiales.costo,
+						tc_keet_materiales.codigo,
+						tc_keet_materiales.nombre					
+					from
+						tc_keet_materiales
+				  inner join 
+						tc_keet_vales_materiales on tc_keet_materiales.id_material = tc_keet_vales_materiales.id_material
+					where						
+						tc_keet_vales_materiales.id_vale= {idVale}
+				) principal
+				order by 
+				  principal.clave
 			</select>			
 			<select id="materiales">
 				select
@@ -3865,6 +3894,35 @@
 					tc_keet_materiales.clave like '{clave}%'				
 				and 
 				  tc_keet_materiales.nivel=7
+				and 
+					tc_keet_materiales.id_material not in (select id_material from tc_keet_vales_detalles)
+				order by 
+				  tc_keet_materiales.clave
+			</select>			
+			<select id="materialesVale">
+				select
+					tc_mantic_articulos.id_articulo as id_key,
+					tc_keet_materiales.id_material,
+					tc_keet_materiales.nivel,
+					tc_keet_materiales.clave,
+					tc_keet_materiales.id_empaque_unidad_medida,
+					tc_keet_materiales.id_estacion_estatus,
+					tc_keet_materiales.costo,
+					tc_keet_materiales.codigo,
+					tc_keet_materiales.nombre,
+					tc_keet_materiales.cantidad,
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_articulos.precio
+				from
+					tc_keet_materiales
+				inner join 
+					tc_mantic_articulos on tc_keet_materiales.codigo = tc_mantic_articulos.codigo
+				where
+					tc_keet_materiales.clave like '{clave}%'				
+				and 
+				  tc_keet_materiales.nivel=7
+				and 
+					tc_keet_materiales.id_material not in (select id_material from tc_keet_vales_detalles where id_vale != {idVale})
 				order by 
 				  tc_keet_materiales.clave
 			</select>			
