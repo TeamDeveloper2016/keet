@@ -149,7 +149,7 @@ public class Transaccion extends IBaseTnx {
 	private Double toCosto(){
 		Double regresar=0D;
 		for(MaterialVale material: this.vale.getMateriales()){
-			regresar= regresar + material.getCosto();
+			regresar= regresar + (material.getCosto() * material.getCantidad());
 		} // for
 		return regresar;
 	} // toTotal
@@ -200,7 +200,7 @@ public class Transaccion extends IBaseTnx {
 				detalle= new TcKeetValesDetallesDto();
 				detalle.setCantidad(recordDetalle.getCantidad());
 				detalle.setCodigo(recordDetalle.getCodigo());
-				detalle.setCosto(recordDetalle.getCosto());
+				detalle.setCosto((recordDetalle.getCosto() * recordDetalle.getCantidad()));
 				detalle.setIdArticulo(recordDetalle.getIdArticulo());
 				detalle.setIdMaterial(recordDetalle.getIdMaterial());
 				detalle.setIdVale(this.idVale);
