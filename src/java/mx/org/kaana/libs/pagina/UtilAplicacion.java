@@ -55,6 +55,7 @@ public class UtilAplicacion {
   private static final String CSS   = "janal.mantic.core-0.7.3.css";
   private static final String CORE  = "jquery.janal.core-3.5.0.js";
   private static final String VENTAS= "jquery.janal.ventas.core-1.0.7.js";
+  private static final String VALES = "jquery.janal.vales.core-0.0.1.js";
 	private static final String TICKET= "jquery.janal.ticket.core-0.1.7.js";
   private static final String CALC  = "jquery.janal.arts.core-2.3.1.js";
   private static final String KARDEX= "jquery.janal.kardex.core-0.5.4.js";
@@ -249,6 +250,10 @@ public class UtilAplicacion {
   
 	public String getLibraryVentasJs() {
     return "core/" + this.VENTAS;
+  }
+	
+	public String getLibraryValesJs() {
+    return "core/" + this.VALES;
   }
 	
 	public String getLibraryTicketJs() {
