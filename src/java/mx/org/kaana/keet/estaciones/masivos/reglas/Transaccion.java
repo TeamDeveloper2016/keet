@@ -1300,7 +1300,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									else 
 										throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "] {"+ nombre+ "}");
 									// SE SUMA EL COSTO POR CADA CONCEPTO EXCEPTO LA QUE SON ESTACIONES PORQUE SE LIMPIO SU VALOR
-									concepto.setCosto(concepto.getCosto()+ costo);
+									concepto.setCosto(concepto.getCosto()+ (costo* cantidad));
 									estaciones.setKeyLevel(String.valueOf(partida), 4); // consecutivo de la estacion
 									estaciones.setKeyLevel(String.valueOf(rubro), 5); // consecutivo del concepto
 									estaciones.setKeyLevel(String.valueOf(material), 6); // consecutivo del material
@@ -1315,7 +1315,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										}
 										else
 											if(medio!= null)
-												medio.setCosto(medio.getCosto()+ costo);
+												medio.setCosto(medio.getCosto()+ (costo* cantidad));
 									// SI EL RUBRO ES CERO SIGNIFICA QUE INICIO LA NUEVA ESTACION POR LO TANTO SE COMIENZA CON LA SUMA EN CEROS
 									if(rubro== 0L) {
 										parcial= estacion;
@@ -1323,7 +1323,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									}
 									else
 										if(parcial!= null)
-										  parcial.setCosto(parcial.getCosto()+ costo);
+										  parcial.setCosto(parcial.getCosto()+ (costo* cantidad));
 	                estacion.setNivel(item.toLong("nivel"));
 									estacion.setUltimo(item.toLong("ultimo"));
 									estacion.setClave(estaciones.toCode());
@@ -1466,7 +1466,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 											if(partida== null || !Objects.equals(partida.getClave(), estaciones.toCode(concepto.getClave(), 6)))
 											  partida= this.toPartida(sesion, estaciones.toCode(concepto.getClave(), 6), 6L);
 											if(partida!= null) {
-												partida.setCosto(estacion.getCosto()+ diferencia);
+												partida.setCosto(estacion.getCosto()+ (diferencia* cantidad));
 												Methods.setValueSubClass(partida, "abono"+ semana, new Object[] {estacion.getCosto()});
 												DaoFactory.getInstance().update(sesion, partida);
 											} // if
@@ -1474,7 +1474,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 											if(estacion== null || !Objects.equals(estacion.getClave(), estaciones.toCode(concepto.getClave(), 5)))
 											  estacion= this.toPartida(sesion, estaciones.toCode(concepto.getClave(), 5), 5L);
 											if(estacion!= null) {
-												estacion.setCosto(estacion.getCosto()+ diferencia);
+												estacion.setCosto(estacion.getCosto()+ (diferencia* cantidad));
 												Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {estacion.getCosto()});
 												DaoFactory.getInstance().update(sesion, estacion);
 											} // if

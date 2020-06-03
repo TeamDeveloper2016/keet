@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.inventarios.almacenes.reglas;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,8 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDto;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *@company KAANA
@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 
 public class Transaccion extends IBaseTnx {
 
-  private static final Logger LOG = Logger.getLogger(Transaccion.class);
+	private static final Log LOG= LogFactory.getLog(Transaccion.class);
  
 	private Long idArticulo;
 	private Long idPedido;
@@ -47,6 +47,8 @@ public class Transaccion extends IBaseTnx {
 	private String descuento;
 	private String extra;
 	private String sat;
+	private Long idVigente;
+	private Long idDescontinuado;
 	private List<TiposVentas> articulos;
 	protected String messageError;		
 	private UISelectEntity almacen;
@@ -61,9 +63,11 @@ public class Transaccion extends IBaseTnx {
 		this.cantidad  = cantidad;
 	} // Transaccion
 	
-	public Transaccion(Long idArticulo, Long idRedondear) {
+	public Transaccion(Long idArticulo, Long idRedondear, Long idVigente, Long idDescontinuado) {
 		this.idArticulo= idArticulo;
 		this.idRedondear= idRedondear;
+		this.idVigente= idVigente;
+		this.idDescontinuado= idDescontinuado;
 	}
 
 	public Transaccion(Long idArticulo, String sat) {
@@ -128,6 +132,18 @@ public class Transaccion extends IBaseTnx {
 				case PROCESAR:
 					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
 					articulo.setIdRedondear(this.idRedondear);
+					articulo.setActualizado(LocalDateTime.now());
+					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
+					break;
+				case CALCULAR:
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo.setIdVigente(this.idVigente);
+					articulo.setActualizado(LocalDateTime.now());
+					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
+					break;
+				case LISTAR:
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo.setIdDescontinuado(this.idDescontinuado);
 					articulo.setActualizado(LocalDateTime.now());
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;

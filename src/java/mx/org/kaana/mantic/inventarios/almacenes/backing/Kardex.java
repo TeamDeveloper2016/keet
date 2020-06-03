@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.inventarios.almacenes.backing;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -31,6 +31,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -66,6 +67,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	private StreamedContent image;
 	private Integer tabPage;
 	private TreeNode ubicaciones;
+	protected String pathImage;
 
 	public AdminKardex getAdminKardex() {
 		return adminKardex;
@@ -83,6 +85,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		return ubicaciones;
 	}
 	
+	public String getPathImage() {
+		return pathImage;
+	}
+	
 	@Override
 	@PostConstruct
 	protected void init() {
@@ -90,7 +96,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
   	this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Ventas/accion": JsfBase.getFlashAttribute("retorno"));
   	this.attrs.put("buscaPorCodigo", false);
 		this.attrs.put("costoMayorMenor", 0);
-  	this.attrs.put("redondear", false);
+  	this.attrs.put("idRedondear", false);
+  	this.attrs.put("idVigente", false);
+  	this.attrs.put("idDecontinuar", false);
   	this.attrs.put("sat", Constantes.CODIGO_SAT);
   	this.attrs.put("ultimoCosto", 0.0D);
 		this.adminKardex= new AdminKardex(-1L, false);
@@ -104,6 +112,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			} // if	
 		} // if	
 		this.ubicaciones= new DefaultTreeNode("idKey", new UISelectEntity(-1L), null);	
+		this.pathImage  = Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/");
 	}
 	
 	private void toLoadCatalog() {
@@ -149,7 +158,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				if(solicitado!= null) {
 					UIBackingUtilities.toFormatEntity(solicitado, columns);
 					this.attrs.put("articulo", solicitado);
-					this.attrs.put("redondear", solicitado.toLong("idRedondear")== 1L);
+					this.attrs.put("idRedondear", solicitado.toLong("idRedondear")== 1L);
+					this.attrs.put("idVigente", solicitado.toLong("idVigente")== 1L);
+					this.attrs.put("idDescontinuado", solicitado.toLong("idDescontinuado")== 1L);
         	this.attrs.put("sat", solicitado.toString("sat"));
         	this.attrs.put("ultimo", solicitado.toString("actualizado"));
 					Periodo periodo= new Periodo();
@@ -183,7 +194,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			else {
 				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
 				this.attrs.put("articulo", null);
-				this.attrs.put("redondear", false);
+				this.attrs.put("idRedondear", false);
+				this.attrs.put("idVigente", false);
+				this.attrs.put("idDescontinuado", true);
       	this.attrs.put("sat", Constantes.CODIGO_SAT);
        	this.attrs.put("ultimo", "");
 				this.attrs.put("ultimoCosto", 0.0D);
@@ -286,7 +299,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
    			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
-				this.attrs.put("ultimo", Global.format(EFormatoDinamicos.DIA_FECHA_HORA_CORTA, LocalDateTime.now()));
+				this.attrs.put("ultimo", Global.format(EFormatoDinamicos.DIA_FECHA_HORA_CORTA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
 			}	// if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo.", ETipoMensaje.ERROR);      			
@@ -469,8 +482,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doUpdateCosto(Double precio, Boolean keep) {
-		Entity articulo= (Entity)this.attrs.get("articulo");
-		double value   = articulo.toDouble("value");
+		Entity articulo  = (Entity)this.attrs.get("articulo");
+		double value     = articulo.toDouble("value");
 		double diferencia= Math.abs(articulo.toDouble("precio")- precio);
 		this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(value, precio));
 		articulo.getValue("calculado").setData(precio);
@@ -538,7 +551,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					List<IBaseDto> items= (List<IBaseDto>)list.getWrappedData();
 					if(items.size()> 0)
 						this.updateArticulo(new UISelectEntity((Entity)items.get(0)));
-				} // if
+				} // if				
 			} // else
 			else
 				this.updateArticulo((UISelectEntity)this.attrs.get("encontrado"));
@@ -887,11 +900,11 @@ public class Kardex extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
 		EAccion eaccion        = EAccion.PROCESAR;
     try {			
-			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Boolean)this.attrs.get("redondear")? 1L: 2L);
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Boolean)this.attrs.get("idRedondear")? 1L: 2L, -1L, -1L);
 			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.addMessage("Se modificaron el tipo de redondeo del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificó el atributo de redondeo del articulo.", ETipoMensaje.INFORMACION);
 				for (TiposVentas item: this.adminKardex.getTiposVentas()) {
-					item.setRounded((Boolean)this.attrs.get("redondear"));
+					item.setRounded((Boolean)this.attrs.get("idRedondear"));
 				} // for
 				this.doUpdateCosto((Double)this.attrs.get("precio"), true);
 			}	// if
@@ -1026,6 +1039,38 @@ public class Kardex extends IBaseAttribute implements Serializable {
  	  UISelectEntity almacen= (UISelectEntity)this.attrs.get("identificado");
 		this.attrs.put("min", almacen.toDouble("min"));
 		this.attrs.put("max", almacen.toDouble("max"));
+	}
+
+	public void doChangeVigente() {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.CALCULAR;
+    try {			
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), -1L, (Boolean)this.attrs.get("idVigente")? 1L: 2L, -1L);
+			if (transaccion.ejecutar(eaccion))
+				JsfBase.addMessage("Se modificò el atributo de vigencia del articulo.", ETipoMensaje.INFORMACION);
+			else 
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio de vigente.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	}
+
+	public void doChangeDescontinuado() {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.LISTAR;
+    try {			
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), -1L, -1L, (Boolean)this.attrs.get("idDescontinuado")? 1L: 2L);
+			if (transaccion.ejecutar(eaccion))
+				JsfBase.addMessage("Se cambio el atributo de descontinuado del articulo.", ETipoMensaje.INFORMACION);
+			else 
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio de descontinuado.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 	}
 
 }
