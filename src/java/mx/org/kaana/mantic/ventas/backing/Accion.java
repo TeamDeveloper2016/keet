@@ -66,6 +66,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		return tipoOrden;
 	}
 
+	public void setTipoOrden(EOrdenes tipoOrden) {
+		this.tipoOrden = tipoOrden;
+	}	
+	
 	public StreamedContent getImage() {
 		return image;
 	}
