@@ -2640,7 +2640,7 @@
         from      
           tr_mantic_articulo_tipo_venta
         where      
-          id_articulo_tipo_venta = {idArticuloTipoVenta} and id_articulo = {idArticulo} and id_tipo_venta = {idTipoVenta}
+          id_articulo = {idArticulo} and id_tipo_venta = {idTipoVenta}
       </select>
 			<select id="maximo">
         select      
