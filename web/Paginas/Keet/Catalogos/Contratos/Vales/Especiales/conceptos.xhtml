@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Conceptos para vales especiales" />
+  <ui:define name="librerias">
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryValesJs}"/>
+    <script type="text/javascript">
+      Janal.Control.fields = {        				
+				'justificacion': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'tipoVale'     : {validaciones: 'requerido', mascara: 'libre'}				
+      };							
+			
+			$(document).ready(function() {
+        jsArticulos= new Janal.Control.Articulos.Core(#{keetCatalogosContratosValesEspecialesConceptos.adminOrden.articulos.size()}, 'tabla\\:');				
+      });		
+			
+			function validateCriterios(){
+				var ok= janal.execute();
+				if(ok)
+					janal.bloquear();
+				return ok;
+			} // validateCriterios		  
+    </script>
+		<style type="text/css">			
+		</style>
+  </ui:define>
+  <ui:define name="contenido">		
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{keetCatalogosContratosValesEspecialesConceptos.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
+			<pe:methodParam name="codigo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{keetCatalogosContratosValesEspecialesConceptos.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{keetCatalogosContratosValesEspecialesConceptos.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>				
+		<pe:remoteCommand name="search" process="@this" update="@(.informacion)" actionListener="#{keetCatalogosContratosValesEspecialesConceptos.doSearchArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
+			<pe:methodParam name="idArticulo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>				
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{keetCatalogosContratosValesEspecialesConceptos.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:accordionPanel id="criterios" activeIndex="1" multiple="true">																			
+						<p:tab title="[ #{keetCatalogosContratosValesEspecialesConceptos.attrs.contrato.clave} ] #{keetCatalogosContratosValesEspecialesConceptos.attrs.contrato.etapa} M#{keetCatalogosContratosValesEspecialesConceptos.attrs.contratoLote.manzana}L#{keetCatalogosContratosValesEspecialesConceptos.attrs.contratoLote.lote}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Viviendas:"/>
+								<p:inputText value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Proyecto:"/>
+								<p:inputText value="[#{keetCatalogosContratosValesEspecialesConceptos.attrs.contrato.claveProyecto}] #{keetCatalogosContratosValesEspecialesConceptos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Desarrollo:"/>
+								<p:inputText value="[#{keetCatalogosContratosValesEspecialesConceptos.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosValesEspecialesConceptos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Cliente:"/>
+								<p:inputText value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>			
+						<p:tab title="Empleado">
+							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Puesto:"/>
+								<p:inputText value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Nombre:"/>
+								<p:inputText value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>																	
+					</p:accordionPanel>			
+					<p:outputLabel for="tipoVale" value="Tipo de vale:"/>
+					<p:selectOneMenu id="tipoVale" value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.tipoVale}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">															
+						<f:selectItems value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.tiposVales}"/>
+					</p:selectOneMenu>																
+					<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+						<p:outputLabel value="Justificación:"/>
+						<p:inputTextarea id="justificacion" value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.justificacion}" styleClass="janal-wid-100-txt"/>														
+					</p:panelGrid>															
+					<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosValesEspecialesConceptos.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
+						<p:column class="MarAuto Responsive janal-wid-3">
+							<f:facet name="header">
+								<h:outputText value="No."/>
+							</f:facet>
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>		
+						<p:column  class="MarAuto Responsive janal-wid-13">
+							<f:facet name="header">
+								<p:selectBooleanCheckbox value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+									<p:ajax event="change" process="@this" update="@this"/>
+								</p:selectBooleanCheckbox>
+								<h:outputText value="Código"/>
+								<span class="janal-help-icon janal-help-9 fa fa-fw fa-question-circle Fright" onclick="countHelp(9);"/>	
+								<pe:tooltip for="@(.janal-help-9)" showEvent="click">
+									<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(9)}" styleClass="Fs15" escape="false"/>
+								</pe:tooltip>
+							</f:facet>
+							<div class="ui-grid-row janal-grid-row">
+								<div class="ui-grid-col-12">
+									<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+									<p:inputText id="locks" value="0" style="display:none"/>
+									<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.articulo}" completeMethod="#{keetCatalogosContratosValesEspecialesConceptos.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="ej. CT123">
+										<p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
+										<p:ajax event="focus" process="@this" listener="#{keetCatalogosContratosValesEspecialesConceptos.doActualizaImage(row['idArticulo'], row['nombre'])}" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
+										<f:facet name="itemtip">
+											<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+												<f:facet name="header" class="TexAlCenter">
+													<a data-magnify="gallery" href="#{keetCatalogosContratosValesEspecialesConceptos.pathImage}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
+														<p:graphicImage url="#{keetCatalogosContratosValesEspecialesConceptos.pathImage}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
+													</a>
+												</f:facet>
+												<h:outputText value="Código:" />
+												<h:outputText value="#{custom.propio}" />
+												<h:outputText value="Precio venta:" />
+												<p:outputLabel value="$ #{custom.precioCliente}" styleClass="janal-color-blue janal-font-bold"/>
+												<h:outputText value="Código auxiliar:" />
+												<h:outputText value="#{custom.codigo}" />
+											</h:panelGrid>
+										</f:facet>
+									</p:autoComplete>												
+								</div>	
+							</div>	
+						</p:column>
+						<p:column  class="MarAuto Responsive">
+							<f:facet name="header">
+								<h:outputText value="Articulo"/>
+							</f:facet>
+							<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" title="Código: #{row['codigo']} , Existencias almacen: #{row['stock']}" escape="false"/>
+						</p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+							<f:facet name="header">
+								<h:outputText value="Cantidad"/>
+							</f:facet>
+							<p:outputLabel value="#{row['cantidad']}"/>
+							<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
+						</p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
+							<f:facet name="header">
+								<h:outputText value="Unidad medida"/>
+							</f:facet>
+							<p:outputLabel value="#{row['unidadMedida']}"/>
+						</p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+							<f:facet name="header">
+								<h:outputText value="Precio"/>
+							</f:facet>
+							<div class="ui-grid-row janal-grid-row">
+								<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">											
+									<p:outputLabel value="#{row['costo']}"/>
+									<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
+									<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>																						
+								</div>	 
+								<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+									<h:outputText value="#{row['detallePrecio']}" escape="false"/>
+								 </div>
+							</div>									
+						</p:column>														
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+							<f:facet name="header">
+								<h:outputText value="$ Importe"/>
+							</f:facet>
+							<p:outputLabel value="#{row['importe$']}"/>
+						</p:column>		
+					</p:dataTable>										
+				</div>						        
+      </div>
+    </div>		           							
+  </ui:define>
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosValesEspecialesConceptos.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosValesEspecialesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosValesEspecialesConceptos.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosValesEspecialesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
