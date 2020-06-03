@@ -2,7 +2,6 @@ package mx.org.kaana.keet.catalogos.puntoscontrol.scriptlet;
 
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
