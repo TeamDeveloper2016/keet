@@ -1,8 +1,7 @@
-package mx.org.kaana.keet.catalogos.contratos.vales.normales.reglas;
+package mx.org.kaana.keet.catalogos.contratos.vales.especiales.reglas;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -10,26 +9,19 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.keet.catalogos.contratos.vales.beans.DetalleVale;
-import mx.org.kaana.keet.catalogos.contratos.vales.beans.MaterialVale;
 import mx.org.kaana.keet.catalogos.contratos.vales.beans.Vale;
-import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
-import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesDto;
-import mx.org.kaana.keet.db.dto.TcKeetValesMaterialesDto;
-import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.ETiposEntregas;
 import mx.org.kaana.keet.enums.EValesEstatus;
-import mx.org.kaana.keet.materiales.reglas.Materiales;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
-import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -99,8 +91,7 @@ public class Transaccion extends IBaseTnx {
 			if(this.idVale>= 1L){
 				if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
 					regresar= registrarDetalle(sesion, valeDto.getSemana().toString());				
-					generateQr(siguiente, valeDto.getRegistro());
-					registrarPadres(sesion);
+					generateQr(siguiente, valeDto.getRegistro());					
 				} // if
 			} // if
 		} // try
@@ -139,17 +130,17 @@ public class Transaccion extends IBaseTnx {
 	} // loadVale
 	
 	private Double toCantidad(){
-		Double regresar=0D;
-		for(MaterialVale material: this.vale.getMateriales()){
-			regresar= regresar + material.getCantidad();
+		Double regresar= 0D;
+		for(Articulo articulo: this.vale.getArticulos()){
+			regresar= regresar + articulo.getCantidad();
 		} // for
 		return regresar;
 	} // toCantidad
 	
 	private Double toCosto(){
-		Double regresar=0D;
-		for(MaterialVale material: this.vale.getMateriales()){
-			regresar= regresar + (material.getCosto() * material.getCantidad());
+		Double regresar= 0D;
+		for(Articulo articulo: this.vale.getArticulos()){
+			regresar= regresar + (articulo.getPrecio() * articulo.getCantidad());
 		} // for
 		return regresar;
 	} // toTotal
@@ -196,45 +187,24 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar              = true;
 		TcKeetValesDetallesDto detalle= null;
 		try {
-			for(DetalleVale recordDetalle: this.vale.getDetalle()){
+			for(Articulo recordDetalle: this.vale.getArticulos()){
 				detalle= new TcKeetValesDetallesDto();
 				detalle.setCantidad(recordDetalle.getCantidad());
 				detalle.setCodigo(recordDetalle.getCodigo());
 				detalle.setCosto((recordDetalle.getCosto() * recordDetalle.getCantidad()));
-				detalle.setIdArticulo(recordDetalle.getIdArticulo());
-				detalle.setIdMaterial(recordDetalle.getIdMaterial());
+				detalle.setIdArticulo(recordDetalle.getIdArticulo());				
 				detalle.setIdVale(this.idVale);
 				detalle.setNombre(recordDetalle.getNombre());
 				detalle.setPrecio(recordDetalle.getPrecio());				
 				detalle.setIdTipoEntrega(ETiposEntregas.NINGUNO.getKey());				
-				if(DaoFactory.getInstance().insert(sesion, detalle)>= 1L)
-					actualizaMaterial(sesion, detalle.getIdMaterial(), semana, detalle.getCosto(), true);
+				DaoFactory.getInstance().insert(sesion, detalle);					
 			} // for
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
-	} // registrarDetalle
-	
-	private void actualizaMaterial(Session sesion, Long idMaterial, String semana, Double costo, boolean alta) throws Exception{
-		Map<String, Object>params   = null;
-		TcKeetMaterialesDto material= null;
-		try {
-			material= (TcKeetMaterialesDto) DaoFactory.getInstance().findById(sesion, TcKeetMaterialesDto.class, idMaterial);
-			params= new HashMap<>();
-			params.put("idEstacionEstatus", toIdEstacionEstatus(material, costo, alta));
-			if(alta)
-				params.put("cargo".concat(semana), (material.toValue("cargo".concat(semana)) != null ? ((Double)material.toValue("cargo".concat(semana))) : 0D) + costo);										
-			else
-				params.put("cargo".concat(semana), (material.toValue("cargo".concat(semana)) != null ? ((Double)material.toValue("cargo".concat(semana))) : 0D) - costo);										
-			if(DaoFactory.getInstance().update(sesion, TcKeetMaterialesDto.class, idMaterial, params)>= 1L)
-				actualizaEstacionPadre(sesion, material, costo, semana, alta);
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-	} //actualizaMaterial
+	} // registrarDetalle	
 	
 	private void generateQr(Siguiente siguiente, LocalDateTime registro){
 		StringBuilder cadenaQr= new StringBuilder();
@@ -244,126 +214,32 @@ public class Transaccion extends IBaseTnx {
 		cadenaQr.append(this.vale.getNombreFigura()).append("-");
 		cadenaQr.append(Fecha.formatear(Fecha.FECHA_HORA_LARGA, registro));
 		this.qr= cadenaQr.toString();
-	} // generateQr
-	
-	private boolean actualizaEstacionPadre(Session sesion, TcKeetMaterialesDto hijo, Double total, String semana, boolean alta) throws Exception{
-		boolean regresar                = true;
-		Materiales materiales           = null;
-		List<TcKeetMaterialesDto> padres= null;
-		Map<String, Object>params       = null;
-		try {
-			params= new HashMap<>();
-			materiales= new Materiales();
-			padres= materiales.toFather(hijo.getClave());			
-			for(TcKeetMaterialesDto padre: padres){
-				params.put("idEstacionEstatus", toIdEstacionEstatus(padre, total, alta));
-				if(alta)
-					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana)) != null ? ((Double)padre.toValue("cargo".concat(semana))) : 0D) + total);								
-				else
-					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana)) != null ? ((Double)padre.toValue("cargo".concat(semana))) : 0D) - total);								
-				DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, padre.getIdMaterial(), params);
-			} // for
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch		
-		return regresar;
-	} // actualizaEstacionPadre
-	
-	private Long toIdEstacionEstatus(TcKeetMaterialesDto material, Double costoActual, boolean alta){
-		Long regresar       = -1L;		
-		Double acumulado    = 0D;
-		Double cargoEstacion= 0D;
-		try {
-			for(int count=0; count<55; count++){
-				cargoEstacion= material.toValue("cargo".concat(String.valueOf(count+1)))!= null ? ((Double) material.toValue("cargo".concat(String.valueOf(count+1)))) : 0D;
-				acumulado= acumulado + cargoEstacion;
-			} // for
-			if(alta)
-				acumulado= acumulado + costoActual;			
-			else
-				acumulado= acumulado - costoActual;			
-			regresar= acumulado>= material.getCosto() ? EEstacionesEstatus.TERMINADO.getKey() : EEstacionesEstatus.EN_PROCESO.getKey();			
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;				
-	} // toIdEstacionEstatus
-	
-	private void registrarPadres(Session sesion) throws Exception{
-		TcKeetValesMaterialesDto dto= null;
-		try {
-			for(DetalleVale detalleVale: this.vale.getPadres()){
-				dto= new TcKeetValesMaterialesDto();
-				dto.setIdVale(this.idVale);
-				dto.setIdMaterial(detalleVale.getIdMaterial());
-				DaoFactory.getInstance().insert(sesion, dto);
-			} // for
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // registrarPadres
+	} // generateQr		
 	
 	private boolean modificarVale(Session sesion) throws Exception{
-		boolean regresar                    = false;
-		List<TcKeetValesDetallesDto>detalles= null;
-		Map<String, Object>params           = null;
+		boolean regresar                    = false;		
 		Semanas semanas                     = null;
 		Long semana                         = null;
 		TcKeetValesDto valeDto              = null;
-		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_vale=" + this.idVale);
-			detalles= DaoFactory.getInstance().toEntitySet(sesion, TcKeetValesDetallesDto.class, "TcKeetValesDetallesDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
-			semanas= new Semanas();
-			semana= semanas.getSemanaEnCurso();
-			if(!detalles.isEmpty()){				
-				for(TcKeetValesDetallesDto detalle: detalles){
-					actualizaMaterial(sesion, detalle.getIdMaterial(), semana.toString(), detalle.getCosto(), false);														
-				} // fot
-			} // if
-			if(depurarDetalle(sesion)){
-				if(depurarPadres(sesion)){
-					valeDto= (TcKeetValesDto) DaoFactory.getInstance().findById(sesion, TcKeetValesDto.class, this.idVale);
-					valeDto.setCantidad(toCantidad());
-					valeDto.setCosto(toCosto());
-					if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L){
-						this.vale.setJustificacion("Regeneración del vale");
-						if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
-							regresar= registrarDetalle(sesion, semana.toString());					
-							registrarPadres(sesion);
-						} // if
-					} // if
-				} // if
-			} // if
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-		return regresar;
-	} // modificarVale
-
-	private boolean depurarPadres(Session sesion) throws Exception{
-		boolean regresar         = false;
-		Map<String, Object>params= null;
 		try {			
-			params= new HashMap<>();
-			params.put("idVale", this.idVale);
-			regresar= DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetValesMaterialesDto", "rows", params)>= 1L;
+			semanas= new Semanas();
+			semana= semanas.getSemanaEnCurso();			
+			if(depurarDetalle(sesion)){				
+				valeDto= (TcKeetValesDto) DaoFactory.getInstance().findById(sesion, TcKeetValesDto.class, this.idVale);
+				valeDto.setCantidad(toCantidad());
+				valeDto.setCosto(toCosto());
+				if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L){					
+					if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
+						regresar= registrarDetalle(sesion, semana.toString());											
+					} // if
+				} // if				
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
+		} // catch				
 		return regresar;
-	} // registrarPadres
+	} // modificarVale	
 	
 	private boolean depurarDetalle(Session sesion) throws Exception{
 		boolean regresar         = false;
@@ -403,10 +279,8 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= false;
 		try {
 			if(depurarBitacora(sesion)){
-				if(depurarDetalle(sesion)){
-					if(depurarPadres(sesion)){
-						regresar= DaoFactory.getInstance().delete(sesion, TcKeetValesDto.class, this.idVale)>= 1L;
-					} // if
+				if(depurarDetalle(sesion)){					
+					regresar= DaoFactory.getInstance().delete(sesion, TcKeetValesDto.class, this.idVale)>= 1L;					
 				} // if
 			} // if
 		} // try
