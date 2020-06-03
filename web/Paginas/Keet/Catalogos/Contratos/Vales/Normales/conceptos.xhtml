@@ -90,8 +90,8 @@
 						</p:tab>																	
 					</p:accordionPanel>						
 					<p:treeTable id="tabla" value="#{keetCatalogosContratosValesNormalesConceptos.treeConceptos}" var="node" selectionMode="checkbox" selection="#{keetCatalogosContratosValesNormalesConceptos.selectedNodes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="true" paginatorPosition="bottom">						
-						<p:ajax event="select" listener="#{keetCatalogosContratosValesNormalesConceptos.onNodeSelect}" process="@this" update="tablaMaterial"/>
-						<p:ajax event="unselect" listener="#{keetCatalogosContratosValesNormalesConceptos.onNodeUnselect}" process="@this" update="tablaMaterial"/>
+						<p:ajax event="select" listener="#{keetCatalogosContratosValesNormalesConceptos.onNodeSelect}" process="@this" update="tablaMaterial" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+						<p:ajax event="unselect" listener="#{keetCatalogosContratosValesNormalesConceptos.onNodeUnselect}" process="@this" update="tablaMaterial" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 						<p:column class="janal-wid-col-100 janal-column-center">              
               <f:facet name="header">
                 <h:outputText value=" "/>
@@ -160,11 +160,11 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosValesNormalesConceptos.doAceptar}" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosValesNormalesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCatalogosContratosValesNormalesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosValesNormalesConceptos.doAceptar}" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosValesNormalesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosValesNormalesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

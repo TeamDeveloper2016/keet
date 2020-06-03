@@ -55,7 +55,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo"));
-      this.attrs.put("goKardex", ((Long)JsfBase.getFlashAttribute("idArticulo"))> 0L);
+      this.attrs.put("goKardex", JsfBase.getFlashAttribute("idArticulo")!= null && ((Long)JsfBase.getFlashAttribute("idArticulo"))> 0L);
       this.doLoad();
       this.loadProveedores();
       this.loadCategorias();

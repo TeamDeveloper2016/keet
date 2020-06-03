@@ -134,7 +134,7 @@ public class Transaccion extends IBaseTnx {
 			if(processPuntosContratistas(sesion, idUsuario, key)){				
 				dto.setPorcentaje(this.factorAcumulado);
 				dto.setCosto((estacion.getCosto() * this.factorAcumulado) / 100);
-				dto.setIdEstacionEstatus(toIdEstacionEstatus(estacion, dto.getCosto()));
+				dto.setIdEstacionEstatus(toIdEstacionEstatus(estacion, dto.getCosto(), true));
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
@@ -178,7 +178,7 @@ public class Transaccion extends IBaseTnx {
 			if(processPuntosSubContratistas(sesion, idUsuario, key)){				
 				dto.setPorcentaje(this.factorAcumulado);
 				dto.setCosto((estacion.getCosto() * this.factorAcumulado) / 100);
-				dto.setIdEstacionEstatus(toIdEstacionEstatus(estacion, dto.getCosto()));
+				dto.setIdEstacionEstatus(toIdEstacionEstatus(estacion, dto.getCosto(), true));
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
@@ -226,7 +226,7 @@ public class Transaccion extends IBaseTnx {
 					dto.setIdEstacionEstatus(CANCELADO);
 					if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 						params.clear();
-						params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, costo));
+						params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, costo, false));
 						params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString()))!= null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : null) - costo);											
 						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoContratista(), true)){							
 							actualizaInicioContratoLote(sesion, false);
@@ -269,7 +269,7 @@ public class Transaccion extends IBaseTnx {
 					dto.setIdEstacionEstatus(CANCELADO);
 					if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 						params= new HashMap<>();
-						params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, dto.getCosto()));
+						params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, dto.getCosto(), false));
 						params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) - costo);											
 						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoProveedor(), false)){
 							actualizaInicioContratoLote(sesion, false);
@@ -423,7 +423,7 @@ public class Transaccion extends IBaseTnx {
 		return 1L;
 	} // toPeriodo	
 	
-	private Long toIdEstacionEstatus(TcKeetEstacionesDto estacion, Double costoActual){
+	private Long toIdEstacionEstatus(TcKeetEstacionesDto estacion, Double costoActual, boolean alta){
 		Long regresar       = -1L;		
 		Double acumulado    = 0D;
 		Double cargoEstacion= 0D;
@@ -432,7 +432,10 @@ public class Transaccion extends IBaseTnx {
 				cargoEstacion= estacion.toValue("cargo".concat(String.valueOf(count+1)))!= null ? ((Double) estacion.toValue("cargo".concat(String.valueOf(count+1)))) : 0D;
 				acumulado= acumulado + cargoEstacion;
 			} // for
-			acumulado= acumulado + costoActual;			
+			if(alta)
+				acumulado= acumulado + costoActual;			
+			else
+				acumulado= acumulado - costoActual;			
 			regresar= acumulado>= estacion.getCosto() ? EEstacionesEstatus.TERMINADO.getKey() : EEstacionesEstatus.EN_PROCESO.getKey();			
 		} // try
 		catch (Exception e) {			
@@ -497,7 +500,7 @@ public class Transaccion extends IBaseTnx {
 			estaciones= new Estaciones();
 			padres= estaciones.toFather(hijo.getClave());			
 			for(TcKeetEstacionesDto padre: padres){
-				params.put("idEstacionEstatus", toIdEstacionEstatus(padre, total));
+				params.put("idEstacionEstatus", toIdEstacionEstatus(padre, total, alta));
 				if(alta)
 					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana)) != null ? ((Double)padre.toValue("cargo".concat(semana))) : 0D) + total);								
 				else
