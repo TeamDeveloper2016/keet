@@ -3,12 +3,14 @@ package mx.org.kaana.keet.catalogos.contratos.vales.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 
 public class Vale implements Serializable{
 
 	private static final long serialVersionUID= 5917707650360083012L;	
 	private Long idFigura;
 	private Long tipoFigura;
+	private List<Articulo> articulos;
 	private List<MaterialVale> materiales;
 	private List<DetalleVale> detalle;
 	private List<DetalleVale> padres;
@@ -18,10 +20,10 @@ public class Vale implements Serializable{
 	private String nombreFigura;
 
 	public Vale() {
-		this(-1L, -1L, new ArrayList<>(), -1L, "", -1L, new ArrayList<>(), new ArrayList<>(), "");
+		this(-1L, -1L, new ArrayList<>(), -1L, "", -1L, new ArrayList<>(), new ArrayList<>(), "", new ArrayList<>());
 	}
 	
-	public Vale(Long idFigura, Long tipoFigura, List<MaterialVale> materiales, Long idTipoVale, String justificacion,Long idAlmacen, List<DetalleVale> detalle, List<DetalleVale> padres, String nombreFigura) {
+	public Vale(Long idFigura, Long tipoFigura, List<MaterialVale> materiales, Long idTipoVale, String justificacion,Long idAlmacen, List<DetalleVale> detalle, List<DetalleVale> padres, String nombreFigura, List<Articulo> articulos) {
 		this.idFigura     = idFigura;
 		this.tipoFigura   = tipoFigura;
 		this.materiales   = materiales;
@@ -30,6 +32,7 @@ public class Vale implements Serializable{
 		this.idAlmacen    = idAlmacen;
 		this.detalle      = detalle;
 		this.nombreFigura = nombreFigura;						
+		this.articulos    = articulos;
 	}
 
 	public Long getIdFigura() {
@@ -102,5 +105,13 @@ public class Vale implements Serializable{
 
 	public void setPadres(List<DetalleVale> padres) {
 		this.padres = padres;
+	}	
+
+	public List<Articulo> getArticulos() {
+		return articulos;
+	}
+
+	public void setArticulos(List<Articulo> articulos) {
+		this.articulos = articulos;
 	}	
 }
