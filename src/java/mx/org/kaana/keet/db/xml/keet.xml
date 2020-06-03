@@ -7,6 +7,17 @@
   </model>
 
   <dml>
+		<unit id="TcKeetTiposValesDto">
+			<select id="row">
+				select 
+					tc_keet_tipos_vales.id_tipo_vale as id_key,
+					tc_keet_tipos_vales.*
+				from 
+					tc_keet_tipos_vales
+				where 
+					{condicion}
+			</select>
+		</unit>
 		<unit id="TcKeetValesMaterialesDto">
       <select id="row">
         select      
