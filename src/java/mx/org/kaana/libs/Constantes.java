@@ -117,6 +117,7 @@ public final class Constantes {
   //Atributos utilizados para las tablas en las paginas de filtro
   public static final String NO_EXISTEN_REGISTROS = "No existen registros";
   public static final int REGISTROS_POR_PAGINA  = 15;
+	public static final int REGISTROS_MAX_PAGINA  = 50;
   public static final int REGISTROS_TOTAL_PAGINA= 20;
   public static final int REGISTROS_POR_LOTE    = 30;
   public static final int REGISTROS_LOTE_TOPE   = 50;
@@ -164,6 +165,10 @@ public final class Constantes {
 
   public Integer getREGISTROS_TOTAL_PAGINA() {
     return Constantes.REGISTROS_TOTAL_PAGINA;
+  }
+
+  public Integer getREGISTROS_MAX_PAGINA() {
+    return Constantes.REGISTROS_MAX_PAGINA;
   }
 
   public Integer getREGISTROS_POR_LOTE() {

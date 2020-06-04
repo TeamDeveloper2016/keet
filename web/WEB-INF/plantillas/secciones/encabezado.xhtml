@@ -313,12 +313,12 @@
 						<p:ajax event="keyup" listener="#{kajoolEncabezado.doLookForFaltantes}" process="@this" update="faltantes" onstart="return $('#faltantesTabla\\:tablaLookFaltantes').val().trim().length> 1;"/>
 					</p:inputText>
 					<p:menuButton styleClass="lg-pantalla" value="Opciones">
-						<p:menuitem icon="fa fa-refresh" value="Actualizar" title="Refrescar articulos faltantes" icon="fa fa-refresh" process="@this" update="tablaLookFaltantes faltantesTabla" action="#{kajoolEncabezado.doCleanLookForFaltantes()}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+						<p:menuitem icon="fa fa-refresh" value="Actualizar" title="Refrescar articulos faltantes" process="@this" update="tablaLookFaltantes faltantesTabla" action="#{kajoolEncabezado.doCleanLookForFaltantes()}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
 						<p:separator/>
 						<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 						<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 					</p:menuButton>
-					<p:commandButton styleClass="xs-pantalla" icon="fa fa-refresh" title="Refrescar articulos faltantes" process="@this" update="tablaLookFaltantes faltantesTabla" action="#{kajoolEncabezado.doCleanLookForFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+					<p:commandButton styleClass="xs-pantalla" icon="fa fa-refresh" title="Refrescar articulos faltantes" process="@this" update="tablaLookFaltantes faltantesTabla" action="#{kajoolEncabezado.doCleanLookForFaltantes()}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
 					<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 					<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 				</f:facet>	            
