@@ -87,7 +87,7 @@
 					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
 						<p:outputLabel value="LA TRANSFERENCIA DE ARTICULOS [#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.consecutivo}] SE AUTOGUARDO A LAS #{manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave} HRS." style="display: #{empty(manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-blue"/>
 					</div>
-					<p:tabView id="contenedorGrupos">
+					<p:tabView id="contenedorGrupos" dynamic="">
             <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
@@ -129,6 +129,7 @@
 								</p:selectOneMenu>
                 <p:outputLabel for="idSolicito" value="Solicitó:"/>
 								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.personas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
 									<p:column headerText="Nombre(s)">
 										<h:outputText value="#{item.nombres}"/>
@@ -169,7 +170,7 @@
 													</f:facet>
 													<h:outputText value="#{index+ 1}.-"/>
 												</p:column>													
-												<p:column  class="MarAuto Responsive janal-wid-13">
+												<p:column class="MarAuto Responsive janal-wid-13">
 													<f:facet name="header">
 														<p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 															<p:ajax event="change" process="@this" update="@this"/>
@@ -257,9 +258,12 @@
 							</div>
 						</p:tab>
 						<p:tab title="Faltantes almacen">
-							<p:dataTable id="faltantes" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
+							<p:dataTable id="faltantes" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:commandButton title="Refrescar articulos faltantes del almacen destino" icon="fa fa-refresh" process="@this" update="faltantes" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+									<p:inputText id="lookFaltantes" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.lookForFaltantes}" styleClass="janal-wid-95" style="float: left;">
+										<p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doLookForFaltantes}" process="@this" update="faltantes" onstart="return $('#contenedorGrupos\\:faltantes\\:lookFaltantes').val().trim().length> 1;"/>
+									</p:inputText>
+									<p:commandButton title="Refrescar articulos faltantes del almacen destino" icon="fa fa-refresh" process="@this" update="lookFaltantes faltantes" action="#{manticCatalogosAlmacenesTransferenciasNormal.doCleanLookForFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">
@@ -318,7 +322,10 @@
 						<p:tab title="Ventas perdidas">
 							<p:dataTable id="perdidos" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{manticCatalogosAlmacenesTransferenciasNormal.recordCount}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:commandButton title="Refrescar articulos de las ventas perdidas del almacen destino" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantesAlmacenDestino()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+									<p:inputText id="lookPerdidos" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.lookForPerdidos}" styleClass="janal-wid-95" style="float: left;">
+										<p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doLookForPerdidos}" process="@this" update="perdidos" onstart="return $('#contenedorGrupos\\:perdidos\\:lookPerdidos').val().trim().length> 1;"/>
+									</p:inputText>
+									<p:commandButton title="Refrescar articulos de las ventas perdidas del almacen destino" icon="fa fa-refresh" process="@this" update="lookPerdidos perdidos" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantesAlmacenDestino()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">

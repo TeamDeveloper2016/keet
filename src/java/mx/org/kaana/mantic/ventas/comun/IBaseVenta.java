@@ -818,6 +818,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+			params.put("codigoFaltante", "");
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
