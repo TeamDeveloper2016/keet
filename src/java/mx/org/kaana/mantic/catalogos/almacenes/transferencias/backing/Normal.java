@@ -88,7 +88,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
           break;
       } // switch
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
-			this.doResetDataTable();
+			// this.doResetDataTable();
 			this.toLoadCatalog();
 			this.attrs.put("before", this.getAdminOrden().getIdAlmacen());
     } // try
