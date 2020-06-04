@@ -9,11 +9,15 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
 import mx.org.kaana.keet.estaciones.beans.RegistroEstacion;
 import mx.org.kaana.keet.estaciones.reglas.Transaccion;
@@ -22,10 +26,14 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
 
 @Named(value = "keetMaterialesFiltro")
 @ViewScoped
@@ -36,6 +44,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private List<TcKeetMaterialesDto> visitados;
 	protected TcKeetMaterialesDto current;
 	protected Materiales materiales;
+  protected Reporte reporte;
+
+	public Reporte getReporte() {
+		return reporte;
+	}
 
 	public List<TcKeetMaterialesDto> getHijos() {
 		return hijos;
@@ -284,5 +297,49 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Materiales/filtro");
 		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
+  
+  public void doReporte(String nombre) throws Exception {    
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;    
+    Map<String, Object>params    = null;
+    Parametros comunes           = null;
+    Entity contratosLotes       = null;
+		try {		  
+      params=new HashMap<>();
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      reporteSeleccion= EReportes.valueOf(nombre);
+      params.put("filtroReporte",((TcKeetMaterialesDto)this.attrs.get("seleccionado")).getClave()!= null? ((TcKeetMaterialesDto)this.attrs.get("seleccionado")).getClave().substring(0,13).concat("%"):"%");
+      this.reporte= JsfBase.toReporte();
+      contratosLotes = (Entity) DaoFactory.getInstance().toEntity("VistaReportesEstaciones", "manzanaLote", params);
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
+      parametros.put("MZA", contratosLotes.toString("manzana"));
+      parametros.put("LOTE", contratosLotes.toString("lote"));
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      if(doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte 
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		if(this.reporte.getTotal()> 0L) {
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else {
+			UIBackingUtilities.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
 	
 }

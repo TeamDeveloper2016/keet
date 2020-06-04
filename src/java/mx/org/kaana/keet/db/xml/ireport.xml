@@ -489,6 +489,46 @@
           and tc_keet_contratos.orden =SUBSTRING('{filtroReporte}',10,1)
           and tc_keet_contratos_lotes.orden = SUBSTRING('{filtroReporte}',13,1)
       </select>
+      <select id = "materiales">
+      select 
+          * 
+        from(
+          select
+            tc_keet_materiales.id_material id_key,
+            tc_keet_materiales.nivel,
+            tc_keet_materiales.clave,
+            SUBSTRING(tc_keet_materiales.clave,1,3) as empresa,
+            SUBSTRING(tc_keet_materiales.clave,4,4) as ejercicio,
+            SUBSTRING(tc_keet_materiales.clave,8,3) as contrato,
+            SUBSTRING(tc_keet_materiales.clave,11,3) as lote,
+            SUBSTRING(tc_keet_materiales.clave,14,3) as estacion,
+            SUBSTRING(tc_keet_materiales.clave,17,3) as concepto,
+            SUBSTRING(tc_keet_materiales.clave,20,3) as material,
+            SUBSTRING(tc_keet_materiales.clave,23,3) as consecutivo,
+            tc_keet_materiales.codigo,
+            tc_keet_materiales.nombre,
+            tc_keet_materiales.descripcion,
+            DATE_FORMAT(tc_keet_materiales.inicio,'%d/%m/%Y') as inicio,
+            DATE_FORMAT(tc_keet_materiales.termino,'%d/%m/%Y') as termino,
+            tc_keet_materiales.cantidad,
+            tc_keet_materiales.costo,
+            tc_keet_materiales.ultimo,		
+            tc_mantic_empaques.nombre empaque,    
+            tc_mantic_unidades_medidas.clave medida,
+            tc_keet_estaciones_estatus.nombre as estatus
+           from
+            tc_keet_materiales
+            left join tc_keet_estaciones_estatus on tc_keet_materiales.id_estacion_estatus = tc_keet_estaciones_estatus.id_estacion_estatus
+            left join tr_mantic_empaque_unidad_medida on tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida= tc_keet_materiales.id_empaque_unidad_medida
+            left join tc_mantic_unidades_medidas on tc_mantic_unidades_medidas.id_unidad_medida= tr_mantic_empaque_unidad_medida.id_unidad_medida
+            left join tc_mantic_empaques on tc_mantic_empaques.id_empaque= tr_mantic_empaque_unidad_medida.id_empaque) ppal
+        where
+          clave like '{filtroReporte}' 
+        group by 
+          empresa,ejercicio,contrato,lote,estacion,concepto,material
+        order by 
+          empresa,ejercicio,contrato,lote,estacion,concepto,material
+      </select>
     </unit>
   </dml>
 </process>
