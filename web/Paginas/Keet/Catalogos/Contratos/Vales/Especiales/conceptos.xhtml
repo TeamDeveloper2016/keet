@@ -12,7 +12,7 @@
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryValesJs}"/>
     <script type="text/javascript">
       Janal.Control.fields = {        				
-				'justificacion': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'justificacion': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', mensaje: 'Es necesario capturar una justificación.'},
 				'tipoVale'     : {validaciones: 'requerido', mascara: 'libre'}				
       };							
 			
@@ -121,9 +121,7 @@
 													</a>
 												</f:facet>
 												<h:outputText value="Código:" />
-												<h:outputText value="#{custom.propio}" />
-												<h:outputText value="Precio venta:" />
-												<p:outputLabel value="$ #{custom.precioCliente}" styleClass="janal-color-blue janal-font-bold"/>
+												<h:outputText value="#{custom.propio}" />												
 												<h:outputText value="Código auxiliar:" />
 												<h:outputText value="#{custom.codigo}" />
 											</h:panelGrid>
