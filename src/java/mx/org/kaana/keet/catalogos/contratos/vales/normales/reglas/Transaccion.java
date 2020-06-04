@@ -46,7 +46,7 @@ public class Transaccion extends IBaseTnx {
 	}	
 
 	public Transaccion(Long idVale) {
-		this(null, -1L);
+		this(null, idVale);
 	}	
 
 	public Transaccion(Vale vale, Long idVale) {
