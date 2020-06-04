@@ -172,21 +172,30 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	
 	public void doLoadExistente(){
 		BuildMateriales buildMaterial         = null;		
-		List<MaterialVale>conceptosRegistrados= null;						
+		List<MaterialVale>conceptosRegistrados= null;				
+		int count=0;		
 		try {
 			doLoad();
 			buildMaterial= new BuildMateriales(toClaveEstacion(), Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			conceptosRegistrados= buildMaterial.toConceptosRegistrados(Long.valueOf(this.attrs.get("idVale").toString()));
 			for(MaterialVale concepto: conceptosRegistrados){
 				for(TreeNode nodePartida: this.treeConceptos.getChildren()){
+					count=0;
 					for(TreeNode nodeConcepto: nodePartida.getChildren()){
-						if(((MaterialVale)nodeConcepto.getData()).getIdMaterial().equals(concepto.getIdMaterial())){
+						if(((MaterialVale)nodeConcepto.getData()).getIdMaterial().equals(concepto.getIdMaterial())){							
+							nodePartida.setExpanded(true);
+							nodePartida.setPartialSelected(true);
 							((CheckboxTreeNode)nodeConcepto).setSelectable(true);
 							((CheckboxTreeNode)nodeConcepto).setSelected(true);
 							initNodeSelect(nodeConcepto);
+							count++;
 						} // if
+					} // for
+					if(count== nodePartida.getChildren().size()){
+						nodePartida.setPartialSelected(false);
+						nodePartida.setSelected(true);
 					} // if
-				} // if
+				} // for
 			} // for
 		} // try
 		catch (Exception e) {

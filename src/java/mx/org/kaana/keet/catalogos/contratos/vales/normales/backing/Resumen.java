@@ -169,6 +169,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("flujo", "resumen");										
 			JsfBase.setFlashAttribute("idVale", this.attrs.get("idVale"));										
 			JsfBase.setFlashAttribute("qr", this.attrs.get("qr"));										
+			JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionadoPivote"));									
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
