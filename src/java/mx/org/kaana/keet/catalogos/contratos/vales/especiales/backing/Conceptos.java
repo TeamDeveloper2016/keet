@@ -10,12 +10,13 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.catalogos.contratos.vales.beans.Vale;
 import mx.org.kaana.keet.catalogos.contratos.vales.especiales.reglas.Transaccion;
+import mx.org.kaana.keet.db.dto.TcKeetValesDto;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
-import mx.org.kaana.keet.enums.ETiposVales;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -27,6 +28,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.ventas.backing.Accion;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 
 @Named(value = "keetCatalogosContratosValesEspecialesConceptos")
 @ViewScoped
@@ -139,7 +141,7 @@ public class Conceptos extends Accion implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_tipo_vale != 1");
-			tiposVales= UISelect.seleccione("TcKeetTiposValesDto", "row", params, "nombre");
+			tiposVales= UISelect.seleccione("TcKeetTiposValesDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("tiposVales", tiposVales);
 			this.attrs.put("tipoVale", UIBackingUtilities.toFirstKeySelectItem(tiposVales));
 		} // try
@@ -152,9 +154,16 @@ public class Conceptos extends Accion implements Serializable {
 	} // loadTiposvales
 	
   @Override
-  public void doLoad() {				
+  public void doLoad() {			
+		TcKeetValesDto vale         = null;
+		List<ArticuloVenta> material= null;
     try {    			
-			
+			vale= (TcKeetValesDto) DaoFactory.getInstance().findById(TcKeetValesDto.class, Long.valueOf(this.attrs.get("idVale").toString()));
+			this.attrs.put("justificacion", vale.getJustificacion());
+			this.attrs.put("tipoVale", vale.getIdTipoVale());
+			material=(List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaValesEspecialesDto", "detalle", vale.toMap());
+			material.add(new ArticuloVenta(-1L));
+			this.getAdminOrden().setArticulos(material);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -277,4 +286,7 @@ public class Conceptos extends Accion implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+	
+	@Override
+	public void doSearchArticulo(Long idArticulo, Integer index) {}
 }

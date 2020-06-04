@@ -38,7 +38,7 @@ public class Transaccion extends IBaseTnx {
 	}	
 
 	public Transaccion(Long idVale) {
-		this(null, -1L);
+		this(null, idVale);
 	}	
 
 	public Transaccion(Vale vale, Long idVale) {
@@ -90,7 +90,7 @@ public class Transaccion extends IBaseTnx {
 			this.idVale= DaoFactory.getInstance().insert(sesion, valeDto);
 			if(this.idVale>= 1L){
 				if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
-					regresar= registrarDetalle(sesion, valeDto.getSemana().toString());				
+					regresar= registrarDetalle(sesion);				
 					generateQr(siguiente, valeDto.getRegistro());					
 				} // if
 			} // if
@@ -183,21 +183,23 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // registrarBitacora
 	
-	private boolean registrarDetalle(Session sesion, String semana) throws Exception{
+	private boolean registrarDetalle(Session sesion) throws Exception{
 		boolean regresar              = true;
 		TcKeetValesDetallesDto detalle= null;
 		try {
 			for(Articulo recordDetalle: this.vale.getArticulos()){
-				detalle= new TcKeetValesDetallesDto();
-				detalle.setCantidad(recordDetalle.getCantidad());
-				detalle.setCodigo(recordDetalle.getCodigo());
-				detalle.setCosto((recordDetalle.getCosto() * recordDetalle.getCantidad()));
-				detalle.setIdArticulo(recordDetalle.getIdArticulo());				
-				detalle.setIdVale(this.idVale);
-				detalle.setNombre(recordDetalle.getNombre());
-				detalle.setPrecio(recordDetalle.getPrecio());				
-				detalle.setIdTipoEntrega(ETiposEntregas.NINGUNO.getKey());				
-				DaoFactory.getInstance().insert(sesion, detalle);					
+				if(recordDetalle.isValid()){
+					detalle= new TcKeetValesDetallesDto();
+					detalle.setCantidad(recordDetalle.getCantidad());
+					detalle.setCodigo(recordDetalle.getPropio());
+					detalle.setCosto((recordDetalle.getCosto() * recordDetalle.getCantidad()));
+					detalle.setIdArticulo(recordDetalle.getIdArticulo());				
+					detalle.setIdVale(this.idVale);
+					detalle.setNombre(recordDetalle.getNombre());
+					detalle.setPrecio(recordDetalle.getPrecio());				
+					detalle.setIdTipoEntrega(ETiposEntregas.NINGUNO.getKey());				
+					DaoFactory.getInstance().insert(sesion, detalle);	
+				} // if
 			} // for
 		} // try
 		catch (Exception e) {			
@@ -217,20 +219,16 @@ public class Transaccion extends IBaseTnx {
 	} // generateQr		
 	
 	private boolean modificarVale(Session sesion) throws Exception{
-		boolean regresar                    = false;		
-		Semanas semanas                     = null;
-		Long semana                         = null;
-		TcKeetValesDto valeDto              = null;
+		boolean regresar      = false;		
+		TcKeetValesDto valeDto= null;
 		try {			
-			semanas= new Semanas();
-			semana= semanas.getSemanaEnCurso();			
 			if(depurarDetalle(sesion)){				
 				valeDto= (TcKeetValesDto) DaoFactory.getInstance().findById(sesion, TcKeetValesDto.class, this.idVale);
 				valeDto.setCantidad(toCantidad());
 				valeDto.setCosto(toCosto());
 				if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L){					
 					if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
-						regresar= registrarDetalle(sesion, semana.toString());											
+						regresar= registrarDetalle(sesion);											
 					} // if
 				} // if				
 			} // if
