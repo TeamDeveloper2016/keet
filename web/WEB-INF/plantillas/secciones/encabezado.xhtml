@@ -318,7 +318,7 @@
 						<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 						<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 					</p:menuButton>
-					<p:commandButton styleClass="xs-pantalla" icon="fa fa-refresh" title="Refrescar articulos faltantes" process="@this" update="tablaLookFaltantes faltantesTabla" action="#{kajoolEncabezado.doCleanLookForFaltantes()}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+					<p:commandButton styleClass="xs-pantalla janal-text-white janal-column-center" icon="fa fa-refresh" title="Refrescar articulos faltantes" process="@this" update="tablaLookFaltantes faltantesTabla" action="#{kajoolEncabezado.doCleanLookForFaltantes()}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
 					<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 					<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 				</f:facet>	            
