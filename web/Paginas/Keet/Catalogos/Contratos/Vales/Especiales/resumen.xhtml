@@ -93,7 +93,7 @@
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
-              <h:outputText value="$#{row.costo}"/>
+              <h:outputText value="#{row.costo}"/>
             </p:column>	
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosValesEspecialesResumen.lazyModel== null? 0: keetCatalogosContratosValesEspecialesResumen.lazyModel.rowCount}] registros"/>
