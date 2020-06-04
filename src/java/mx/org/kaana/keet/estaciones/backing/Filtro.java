@@ -292,12 +292,17 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.reporte= JsfBase.toReporte();
       contratosLotes = (Entity) DaoFactory.getInstance().toEntity("VistaReportesEstaciones", "manzanaLote", params);
       parametros= comunes.getComunes();
+      if(reporteSeleccion.equals(EReportes.PROTOTIPOS))
+        parametros.put("PROTOTIPO", ((TcKeetEstacionesDto)this.attrs.get("seleccionado")).getNombre().toLowerCase());
+      else{
+        parametros.put("MZA", contratosLotes.toString("manzana"));
+        parametros.put("LOTE", contratosLotes.toString("lote"));
+        parametros.put("PROTOTIPO", "");
+      }
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
-      parametros.put("MZA", contratosLotes.toString("manzana"));
-      parametros.put("LOTE", contratosLotes.toString("lote"));
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       if(doVerificarReporte())
         this.reporte.doAceptar();			
