@@ -58,9 +58,8 @@
       </select>
 			<select id="resumen">
 				select
-					id_vale_detalle AS id_key,
-					id_vale, 
-					id_material,
+					id_articulo AS id_key,
+					id_vale, 					
 					id_articulo,
 					codigo,
 					nombre,
@@ -71,10 +70,8 @@
 					tc_keet_vales_detalles
 				where
 					id_vale= {idVale}
-				group by
-					id_vale_detalle,
-					id_vale, 
-					id_material,
+				group by					
+					id_vale, 					
 					id_articulo,
 					codigo,
 					nombre
