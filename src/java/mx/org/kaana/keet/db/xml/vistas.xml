@@ -3922,7 +3922,7 @@
 				and 
 				  tc_keet_materiales.nivel=7
 				and 
-					tc_keet_materiales.id_material not in (select id_material from tc_keet_vales_detalles)
+					tc_keet_materiales.id_material not in (select id_material from tc_keet_vales_detalles where id_material is not null)
 				order by 
 				  tc_keet_materiales.clave
 			</select>			
@@ -3949,7 +3949,7 @@
 				and 
 				  tc_keet_materiales.nivel=7
 				and 
-					tc_keet_materiales.id_material not in (select id_material from tc_keet_vales_detalles where id_vale != {idVale})
+					tc_keet_materiales.id_material not in (select id_material from tc_keet_vales_detalles where id_vale != {idVale} and id_material is not null)
 				order by 
 				  tc_keet_materiales.clave
 			</select>			
