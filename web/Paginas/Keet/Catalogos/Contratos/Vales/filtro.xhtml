@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Materiales no entregados en los almacenes" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+				idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				idDesarrollo: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				codigo      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				nombre      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				idFamilia   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaInicio : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetCatalogosContratosValesFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{keetCatalogosContratosValesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetCatalogosContratosValesFiltro.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{keetCatalogosContratosValesFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetCatalogosContratosValesFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="codigo" value="Código:"/>
+              <p:autoComplete id="codigo" placeholder="ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{keetCatalogosContratosValesFiltro.attrs.codigoBuscado}" completeMethod="#{keetCatalogosContratosValesFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{keetCatalogosContratosValesFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini"  width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Código:" />
+										<h:outputText value="#{customCodigo.propio}"/>
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{customCodigo.nombre}"/>
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+							<p:outputLabel for="nombre" value="Nombre:"/>							
+							<p:autoComplete id="nombre" var="custom" placeholder="Nombre articulo" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosValesFiltro.attrs.nombre}" completeMethod="#{keetCatalogosContratosValesFiltro.doCompleteArticuloFiltro}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini"  width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Propio:" />
+										<h:outputText value="#{custom.propio}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />
+										<h:outputText value="IVA:" />
+										<h:outputText value="#{custom.iva}" />
+										<h:outputText value="Costo:" />
+										<h:outputText value="$ #{custom.precio}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+							<p:outputLabel for="idFamilia" value="Familia:"/>
+							<p:selectOneMenu id="idFamilia" value="#{keetCatalogosContratosValesFiltro.attrs.idFamilia}" styleClass="janal-wid-100-txt">									
+                <f:selectItems value="#{keetCatalogosContratosValesFiltro.attrs.familias}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+							</p:selectOneMenu>	
+              <p:outputLabel for="fechaInicio" value="Actualizado inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetCatalogosContratosValesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+              <p:outputLabel for="fechaTermino" value="Actualizado termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetCatalogosContratosValesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+            </p:panelGrid>
+						<p:separator/>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{keetCatalogosContratosValesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{keetCatalogosContratosValesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosValesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosValesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosContratosValesFiltro.lazyModel.rowCount gt keetCatalogosContratosValesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header">							
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+            </f:facet>												
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['empresa']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.desarrollo}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo"/>
+              </f:facet>
+              <h:outputText value="#{row['desarrollo']}"/>
+            </p:column>	      
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{row['clave']}"/>
+            </p:column>														
+            <p:column class="MarAuto Responsive" sortBy="#{row.material}">
+              <f:facet name="header">
+                <h:outputText value="Material"/>
+              </f:facet>
+              <h:outputText value="#{row['material']}"/>
+            </p:column>			            
+            <p:column class="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.cantidad}">
+              <f:facet name="header">
+                <h:outputText value="Cantidad" />
+              </f:facet>
+              <h:outputText value="#{row['cantidad']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.almacenista}">
+              <f:facet name="header">
+                <h:outputText value="Almacenista" />
+              </f:facet>
+              <h:outputText value="#{row['almacenista']}"/>
+            </p:column>
+						<p:column class="MarAuto Responsive janal-column-icon">
+							<p:commandButton icon="fa fa-search" title="Folios de los vales" action="#{keetCatalogosContratosValesFiltro.doDetalleFolios}">
+								<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosValesFiltro.attrs.selected}" />
+							</p:commandButton>
+            </p:column>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetCatalogosContratosValesFiltro.lazyModel==null?0:keetCatalogosContratosValesFiltro.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem id="detalle" icon="fa fa-search" ajax="false" value="Detalle" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+          </p:contextMenu>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>    
+</ui:composition>

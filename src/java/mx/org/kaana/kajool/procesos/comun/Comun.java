@@ -18,8 +18,8 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
  */
 public abstract class Comun extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = -8002497139187570127L;
-  protected static final Long COORDINACION_VACIA = -1L;
+  private static final long serialVersionUID    = -8002497139187570127L;
+  protected static final Long COORDINACION_VACIA= -1L;
   protected List<UISelectItem> entidades;
   protected UISelectEntity entidad;
 
@@ -28,10 +28,10 @@ public abstract class Comun extends IBaseFilter implements Serializable {
   }
 
   public Comun() {
-    Autentifica auntentifica = null;
+    Autentifica autentifica = null;
     try {
-      auntentifica = JsfBase.getAutentifica();
-      this.attrs.put("idGrupo", auntentifica.getPersona().getIdGrupo());
+      autentifica = JsfBase.getAutentifica();
+      this.attrs.put("idGrupo", autentifica.getPersona().getIdGrupo());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
