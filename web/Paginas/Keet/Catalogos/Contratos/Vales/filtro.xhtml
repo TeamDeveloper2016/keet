@@ -158,8 +158,8 @@
               <p:outputLabel value="Total [#{keetCatalogosContratosValesFiltro.lazyModel==null?0:keetCatalogosContratosValesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
-          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="detalle" icon="fa fa-search" process="@this tabla" update="detalle" action="#{keetCatalogosContratosValesFiltro.doLoadDetalle}" value="Detalle" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem icon="fa fa-search" process="@this tabla" update="detalle" action="#{keetCatalogosContratosValesFiltro.doLoadDetalle}" value="Detalle" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
           </p:contextMenu>
 					<h:commandLink id="detallePdf">
 						<pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
@@ -167,7 +167,7 @@
 					<h:commandLink id="detalleXls">
 						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
 					</h:commandLink>			
-          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosValesFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosValesFiltro.lazyDetalle.rowCount gt keetCatalogosContratosValesFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetCatalogosContratosValesFiltro.attrs.detalle? '': 'none'}">
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{keetCatalogosContratosValesFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosValesFiltro.lazyDetalle.rowCount gt keetCatalogosContratosValesFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetCatalogosContratosValesFiltro.attrs.detalle? '': 'none'}">
 						<f:facet name="header">
 							<p:outputLabel value="Vales involucrados en el material seleccionado" styleClass="janal-text-white" style="float: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">

@@ -7,6 +7,7 @@
 		<unit id="VistaComprasAlmacenDto">
 			<select id="lazy">
 				select
+				  tc_keet_vales_detalles.id_vale_detalle as id_key,
 					tc_mantic_empresas.nombre as empresa,
 					tc_keet_desarrollos.nombres as desarrollo,
 					tc_mantic_articulos.id_articulo,
@@ -40,11 +41,11 @@
 				inner join
 					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
 				where
-				  tc_mantic_empresas= {idEmpresa}
-					tc_keet_vales_detalles.id_tipo_entrega in (2, 4)
+				  tc_mantic_empresas.id_empresa in ({idEmpresa})
+					and tc_keet_vales_detalles.id_tipo_entrega in (2, 4)
 					and tc_keet_vales_detalles.entregado is null
-					-- and tc_keet_vales.id_vale_estatus= 7
-				  {condicion}
+					and tc_keet_vales.id_vale_estatus= 1
+				  and {condicion}
 				group by
 					tc_mantic_empresas.nombre,
 					tc_keet_desarrollos.nombres,
@@ -58,6 +59,7 @@
 			</select>
 			<select id="detalle">
 				select
+				  tc_keet_vales_detalles.id_vale_detalle as id_key,
 					tc_mantic_empresas.nombre as empresa,
 					tc_keet_desarrollos.nombres as desarrollo,
 					tc_keet_vales.consecutivo,
@@ -98,7 +100,7 @@
 				where
 					tc_keet_vales_detalles.id_tipo_entrega in (2, 4)
 					and tc_keet_vales_detalles.entregado is null
-					-- and tc_keet_vales.id_vale_estatus= 7
+					and tc_keet_vales.id_vale_estatus= 1
 					and tc_mantic_articulos.id_articulo= {idArticulo}
 				{sortOrder}
 			</select>
