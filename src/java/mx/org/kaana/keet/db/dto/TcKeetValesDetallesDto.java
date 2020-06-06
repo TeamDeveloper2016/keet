@@ -33,8 +33,8 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
   private String codigo;
   @Column (name="costo")
   private Double costo;
-  @Column (name="entregrado")
-  private LocalDateTime entregrado;
+  @Column (name="entregado")
+  private LocalDateTime entregado;
   @Column (name="id_vale")
   private Long idVale;
   @Column (name="nombre")
@@ -67,11 +67,11 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetValesDetallesDto(Double surtido, String codigo, Double costo, LocalDateTime entregrado, Long idVale, String nombre, Long idValeDetalle, Double precio, Double cantidad, Long idArticulo, Long idMaterial, Long idTipoEntrega, Double diferencia) {
+  public TcKeetValesDetallesDto(Double surtido, String codigo, Double costo, LocalDateTime entregado, Long idVale, String nombre, Long idValeDetalle, Double precio, Double cantidad, Long idArticulo, Long idMaterial, Long idTipoEntrega, Double diferencia) {
     setSurtido(surtido);
     setCodigo(codigo);
     setCosto(costo);
-    setEntregrado(entregrado);
+    setEntregado(entregado);
     setIdVale(idVale);
     setNombre(nombre);
     setIdValeDetalle(idValeDetalle);
@@ -108,12 +108,12 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
     return costo;
   }
 
-  public void setEntregrado(LocalDateTime entregrado) {
-    this.entregrado = entregrado;
+  public void setEntregado(LocalDateTime entregado) {
+    this.entregado = entregado;
   }
 
-  public LocalDateTime getEntregrado() {
-    return entregrado;
+  public LocalDateTime getEntregado() {
+    return entregado;
   }
 
   public void setIdVale(Long idVale) {
@@ -217,7 +217,7 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCosto());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getEntregrado());
+		regresar.append(getEntregado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVale());
 		regresar.append(Constantes.SEPARADOR);
@@ -248,7 +248,7 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
 		regresar.put("surtido", getSurtido());
 		regresar.put("codigo", getCodigo());
 		regresar.put("costo", getCosto());
-		regresar.put("entregrado", getEntregrado());
+		regresar.put("entregado", getEntregado());
 		regresar.put("idVale", getIdVale());
 		regresar.put("nombre", getNombre());
 		regresar.put("idValeDetalle", getIdValeDetalle());
@@ -265,7 +265,7 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getSurtido(), getCodigo(), getCosto(), getEntregrado(), getIdVale(), getNombre(), getIdValeDetalle(), getRegistro(), getPrecio(), getCantidad(), getIdArticulo(), getIdMaterial(), getIdTipoEntrega(), getDiferencia()
+    getSurtido(), getCodigo(), getCosto(), getEntregado(), getIdVale(), getNombre(), getIdValeDetalle(), getRegistro(), getPrecio(), getCantidad(), getIdArticulo(), getIdMaterial(), getIdTipoEntrega(), getDiferencia()
     };
     return regresar;
   }
