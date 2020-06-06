@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum EValesEstatus {
+public enum EEstatusVales {
 	
 	DISPONIBLE ("DISPONIBLE", "circulo-rojo"    , "red"),
 	RECHAZADO  ("RECHAZADO" , "circulo-naranja" , "orange"),
@@ -13,17 +13,17 @@ public enum EValesEstatus {
 	INCOMPLETO ("INCOMPLETO", "circulo-amarillo", "yellow"),
 	TERMINADO  ("TERMINADO" , "circulo-verde"   , "green");	
 	
-	private static final Map<Long, EValesEstatus> lookup= new HashMap<>();		
+	private static final Map<Long, EEstatusVales> lookup= new HashMap<>();		
 	private String nombre;	
 	private String semaforo;	
 	private String color;	
 	
 	static {
-    for (EValesEstatus item: EnumSet.allOf(EValesEstatus.class)) 
+    for (EEstatusVales item: EnumSet.allOf(EEstatusVales.class)) 
       lookup.put(item.getKey(), item);    
   } // static
 	
-	private EValesEstatus(String nombre, String semaforo, String color) {
+	private EEstatusVales(String nombre, String semaforo, String color) {
 		this.nombre  = nombre;
 		this.semaforo= semaforo;
 		this.color   = color;
@@ -45,7 +45,7 @@ public enum EValesEstatus {
 		return color;
 	}
 	
-	public static EValesEstatus fromId(Long id) {
+	public static EEstatusVales fromId(Long id) {
     return lookup.get(id);
   } // fromId	
 }

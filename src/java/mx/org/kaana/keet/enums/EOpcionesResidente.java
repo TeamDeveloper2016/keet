@@ -12,7 +12,9 @@ public enum EOpcionesResidente {
 	DESTAJOS        ("Captura del destajo realizado", "e864e872898798a9bd", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro.jsf"),
 	GEOREFERENCIA   ("Georeferencia", "21212738c546c545d62e4cbf3c2e", "", "/Paginas/Keet/Catalogos/Contratos/georeferencia.jsf"),
 	VALES           ("Generación de vales", "708f919397a7", "/Paginas/Keet/Catalogos/Contratos/Vales/Normales/filtro.jsf"),
-	VALES_ESPECIALES("Generación de vales especiales", "051212101a203635c9285d90ec7d808499", "/Paginas/Keet/Catalogos/Contratos/Vales/Especiales/filtro.jsf");
+	VALES_ESPECIALES("Generación de vales especiales", "051212101a203635c9285d90ec7d808499", "/Paginas/Keet/Catalogos/Contratos/Vales/Especiales/filtro.jsf"),
+	//ALMACENISTA	
+	MATERIALES      ("Entrega de materiales", "c95ede7d8d92929da8df03", "/Paginas/Keet/Catalogos/Contratos/Materiales/filtro.jsf");
 	
 	private static final Map<Long, EOpcionesResidente> lookup= new HashMap<>();	
 	private String titulo;
