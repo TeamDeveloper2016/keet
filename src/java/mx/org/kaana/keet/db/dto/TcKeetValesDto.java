@@ -59,17 +59,19 @@ public class TcKeetValesDto implements IBaseDto, Serializable {
   private Double cantidad;
   @Column (name="id_contrato_lote_contratista")
   private Long idContratoLoteContratista;
+  @Column (name="id_vale_estatus")
+  private Long idValeEstatus;
 
   public TcKeetValesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetValesDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetValesDto(String justificacion, Long idValeContratista, Double costo, Long semana, Long idContratoLoteProveedor, Long idVale, Long idTipoVale, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, Long orden, Double cantidad, Long idContratoLoteContratista) {
+  public TcKeetValesDto(String justificacion, Long idValeContratista, Double costo, Long semana, Long idContratoLoteProveedor, Long idVale, Long idTipoVale, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, Long orden, Double cantidad, Long idContratoLoteContratista, Long idValeEstatus) {
     setJustificacion(justificacion);
     setIdValeContratista(idValeContratista);
     setCosto(costo);
@@ -85,6 +87,7 @@ public class TcKeetValesDto implements IBaseDto, Serializable {
     setOrden(orden);
     setCantidad(cantidad);
     setIdContratoLoteContratista(idContratoLoteContratista);
+		setIdValeEstatus(idValeEstatus);
   }
 	
   public void setJustificacion(String justificacion) {
@@ -207,6 +210,14 @@ public class TcKeetValesDto implements IBaseDto, Serializable {
     return idContratoLoteContratista;
   }
 
+	public Long getIdValeEstatus() {
+		return idValeEstatus;
+	}
+
+	public void setIdValeEstatus(Long idValeEstatus) {
+		this.idValeEstatus = idValeEstatus;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -251,6 +262,8 @@ public class TcKeetValesDto implements IBaseDto, Serializable {
 		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdContratoLoteContratista());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdValeEstatus());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -273,13 +286,14 @@ public class TcKeetValesDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idContratoLoteContratista", getIdContratoLoteContratista());
+		regresar.put("idValeEstatus", getIdValeEstatus());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getJustificacion(), getIdValeContratista(), getCosto(), getSemana(), getIdContratoLoteProveedor(), getIdVale(), getIdTipoVale(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getOrden(), getCantidad(), getIdContratoLoteContratista()
+			getJustificacion(), getIdValeContratista(), getCosto(), getSemana(), getIdContratoLoteProveedor(), getIdVale(), getIdTipoVale(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getOrden(), getCantidad(), getIdContratoLoteContratista(), getIdValeEstatus()
     };
     return regresar;
   }
