@@ -21,7 +21,7 @@ import mx.org.kaana.keet.db.dto.TcKeetValesDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesMaterialesDto;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.ETiposEntregas;
-import mx.org.kaana.keet.enums.EValesEstatus;
+import mx.org.kaana.keet.enums.EEstatusVales;
 import mx.org.kaana.keet.materiales.reglas.Materiales;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.Constantes;
@@ -97,7 +97,7 @@ public class Transaccion extends IBaseTnx {
 			valeDto= loadVale(siguiente);			
 			this.idVale= DaoFactory.getInstance().insert(sesion, valeDto);
 			if(this.idVale>= 1L){
-				if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
+				if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
 					regresar= registrarDetalle(sesion, valeDto.getSemana().toString());				
 					generateQr(siguiente, valeDto.getRegistro());
 					registrarPadres(sesion);
@@ -130,8 +130,9 @@ public class Transaccion extends IBaseTnx {
 				regresar.setIdContratoLoteContratista(this.vale.getIdFigura());
 			else
 				regresar.setIdContratoLoteProveedor(this.vale.getIdFigura());
-			regresar.setJustificacion(this.vale.getJustificacion());			
-		} // try
+			regresar.setJustificacion(this.vale.getJustificacion());		
+			regresar.setIdValeEstatus(EEstatusVales.DISPONIBLE.getKey());
+		} // try 
 		catch (Exception e) {			
 			throw e;
 		} // catch				
@@ -183,7 +184,7 @@ public class Transaccion extends IBaseTnx {
 			bitacora.setIdUsuario(JsfBase.getIdUsuario());
 			bitacora.setIdVale(this.idVale);
 			bitacora.setIdValeEstatus(idEstatus);
-			bitacora.setJustificacion(Cadena.isVacio(this.vale.getJustificacion()) ? "Registro de bitacora:" + EValesEstatus.fromId(idEstatus).getNombre() : this.vale.getJustificacion());
+			bitacora.setJustificacion(Cadena.isVacio(this.vale.getJustificacion()) ? "Registro de bitacora:" + EEstatusVales.fromId(idEstatus).getNombre() : this.vale.getJustificacion());
 			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 		} // try
 		catch (Exception e) {			
@@ -331,7 +332,7 @@ public class Transaccion extends IBaseTnx {
 					valeDto.setCosto(toCosto());
 					if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L){
 						this.vale.setJustificacion("Regeneración del vale");
-						if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
+						if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
 							regresar= registrarDetalle(sesion, semana.toString());					
 							registrarPadres(sesion);
 						} // if

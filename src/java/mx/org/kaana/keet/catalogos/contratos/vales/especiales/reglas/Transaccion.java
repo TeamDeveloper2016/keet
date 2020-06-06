@@ -14,7 +14,7 @@ import mx.org.kaana.keet.db.dto.TcKeetValesBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesDto;
 import mx.org.kaana.keet.enums.ETiposEntregas;
-import mx.org.kaana.keet.enums.EValesEstatus;
+import mx.org.kaana.keet.enums.EEstatusVales;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -89,7 +89,7 @@ public class Transaccion extends IBaseTnx {
 			valeDto= loadVale(siguiente);			
 			this.idVale= DaoFactory.getInstance().insert(sesion, valeDto);
 			if(this.idVale>= 1L){
-				if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
+				if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
 					regresar= registrarDetalle(sesion);				
 					generateQr(siguiente, valeDto.getRegistro());					
 				} // if
@@ -174,7 +174,7 @@ public class Transaccion extends IBaseTnx {
 			bitacora.setIdUsuario(JsfBase.getIdUsuario());
 			bitacora.setIdVale(this.idVale);
 			bitacora.setIdValeEstatus(idEstatus);
-			bitacora.setJustificacion(Cadena.isVacio(this.vale.getJustificacion()) ? "Registro de bitacora:" + EValesEstatus.fromId(idEstatus).getNombre() : this.vale.getJustificacion());
+			bitacora.setJustificacion(Cadena.isVacio(this.vale.getJustificacion()) ? "Registro de bitacora:" + EEstatusVales.fromId(idEstatus).getNombre() : this.vale.getJustificacion());
 			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 		} // try
 		catch (Exception e) {			
@@ -227,7 +227,7 @@ public class Transaccion extends IBaseTnx {
 				valeDto.setCantidad(toCantidad());
 				valeDto.setCosto(toCosto());
 				if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L){					
-					if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
+					if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
 						regresar= registrarDetalle(sesion);											
 					} // if
 				} // if				
