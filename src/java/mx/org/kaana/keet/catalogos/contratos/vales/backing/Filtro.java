@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -30,6 +31,11 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+	private FormatLazyModel lazyDetalle;  
+
+  public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}
 
   @PostConstruct
   @Override
@@ -38,6 +44,7 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
     	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
+			this.attrs.put("detalle", false);
       //this.attrs.put("nombre", "");
       this.attrs.put("idTipoArticulo", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
@@ -56,10 +63,13 @@ public class Filtro extends Comun implements Serializable {
 		Map<String, Object> params= this.toPrepare();
     try {
       columns = new ArrayList<>();
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
-      // this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", params, columns);
+      columns.add(new Columna("material", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("almacenista", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+      params.put("sortOrder", "order by tc_mantic_articulos_codigos.codigo, cantidad desc");
+      this.lazyModel = new FormatCustomLazy("VistaComprasAlmacenDto", params, columns);
       UIBackingUtilities.resetDataTable();
+			this.attrs.put("nomina", false);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -89,6 +99,8 @@ public class Filtro extends Comun implements Serializable {
 			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
       this.attrs.put("familias", (List<UISelectEntity>) UIEntity.seleccione("TcKeetFamiliasDto", "familias", params, Collections.EMPTY_LIST, "nombre"));
 			this.attrs.put("idFamilia", new UISelectEntity("-1"));
+			this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, "nombres"));
+			this.attrs.put("idDesarrollo", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       throw e;
@@ -101,9 +113,8 @@ public class Filtro extends Comun implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= new HashMap<>();
-		StringBuilder sb            = null;
+		StringBuilder sb            = new StringBuilder("");
 		try {
-			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
 			if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
 				sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
@@ -113,17 +124,14 @@ public class Filtro extends Comun implements Serializable {
 					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 		  		sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
 				} // if	
-		  sb.append("tc_mantic_articulos.id_vigente=").append(this.attrs.get("idVigente")).append(" and ");
 			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+				sb.append("(date_format(tc_keet_vales.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+				sb.append("(date_format(tc_keet_vales.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("idFamilia")) && !this.attrs.get("idFamilia").toString().equals("-1"))
    		  sb.append("(tc_mantic_articulos.id_familia= ").append(this.attrs.get("idFamilia").toString()).append(") and ");
-			if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
-  		  regresar.put("almacen", " and (tc_mantic_almacenes_articulos.id_almacen= "+ ((UISelectEntity)this.attrs.get("idAlmacen")).getKey()+ ")");
-			else
-  		  regresar.put("almacen", " ");
+			if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1"))
+   		  sb.append("(tc_keet_desarrollos.id_desarrollo= ").append(this.attrs.get("idDesarrollo").toString()).append(") and ");
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
 			else
@@ -276,4 +284,29 @@ public class Filtro extends Comun implements Serializable {
 		return (List<UISelectEntity>)this.attrs.get("codigos");
 	}	// doCompleteCodigo
 
+  public void doLoadDetalle() {
+    List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+    try {
+			Entity entity= (Entity)this.attrs.get("seleccionado");
+			params.put("sortOrder", "order by tc_keet_vales.registro desc, cantidad desc");
+			params.put("idArticulo", entity.toLong("idNomina"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("almacenista", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "proveedor", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");
+			this.attrs.put("detalle", true);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  } // doLoad	
+	
 }

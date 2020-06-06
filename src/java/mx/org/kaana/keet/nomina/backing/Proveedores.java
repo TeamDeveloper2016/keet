@@ -45,10 +45,6 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
 		return lazyDetalle;
 	}
 
-	public void setLazyDetalle(FormatLazyModel lazyDetalle) {
-		this.lazyDetalle=lazyDetalle;
-	}
-	
   public String getCostoTotal() {
     Double costo = 0D;
 		if(this.lazyDetalle!= null)

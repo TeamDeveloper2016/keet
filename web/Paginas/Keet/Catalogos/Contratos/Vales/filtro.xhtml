@@ -44,12 +44,12 @@
               </p:selectOneMenu>
               <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
               <p:selectOneMenu id="idDesarrollo" value="#{keetCatalogosContratosValesFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetCatalogosContratosValesFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                <f:selectItems value="#{keetCatalogosContratosValesFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombres eq ''? '': '-'} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
                 <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
+                  <h:outputText value="#{item.nombres}"/>
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="codigo" value="Código:"/>
@@ -125,11 +125,11 @@
               </f:facet>
               <h:outputText value="#{row['desarrollo']}"/>
             </p:column>	      
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
               <f:facet name="header">
-                <h:outputText value="Clave"/>
+                <h:outputText value="Código"/>
               </f:facet>
-              <h:outputText value="#{row['clave']}"/>
+              <h:outputText value="#{row['codigo']}"/>
             </p:column>														
             <p:column class="MarAuto Responsive" sortBy="#{row.material}">
               <f:facet name="header">
@@ -150,8 +150,8 @@
               <h:outputText value="#{row['almacenista']}"/>
             </p:column>
 						<p:column class="MarAuto Responsive janal-column-icon">
-							<p:commandButton icon="fa fa-search" title="Folios de los vales" action="#{keetCatalogosContratosValesFiltro.doDetalleFolios}">
-								<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosValesFiltro.attrs.selected}" />
+							<p:commandButton icon="fa fa-search" title="Folios de los vales" process="@this" update="detalle" action="#{keetCatalogosContratosValesFiltro.doLoadDetalle}" >
+								<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosValesFiltro.attrs.seleccionado}" />
 							</p:commandButton>
             </p:column>
             <f:facet name="footer">
@@ -159,8 +159,70 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="detalle" icon="fa fa-search" ajax="false" value="Detalle" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="detalle" icon="fa fa-search" process="@this tabla" update="detalle" action="#{keetCatalogosContratosValesFiltro.doLoadDetalle}" value="Detalle" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
           </p:contextMenu>
+					<h:commandLink id="detallePdf">
+						<pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+					</h:commandLink>
+					<h:commandLink id="detalleXls">
+						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+					</h:commandLink>			
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosValesFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosValesFiltro.lazyDetalle.rowCount gt keetCatalogosContratosValesFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetCatalogosContratosValesFiltro.attrs.detalle? '': 'none'}">
+						<f:facet name="header">
+							<p:outputLabel value="Vales involucrados en el material seleccionado" styleClass="janal-text-white" style="float: left;"/>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+						</f:facet>												
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
+							<f:facet name="header">
+								<h:outputText value="Desarrollo"/>
+							</f:facet>
+							<h:outputText value="#{row['desarrollo']}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.contrato}">
+							<f:facet name="header">
+								<h:outputText value="Contrato"/>
+							</f:facet>
+							<h:outputText value="#{row['contrato']}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}">
+							<f:facet name="header">
+								<h:outputText value="Etapa"/>
+							</f:facet>
+							<h:outputText value="#{row['etapa']}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.lote}">
+							<f:facet name="header">
+								<h:outputText value="Lote"/>
+							</f:facet>
+							<h:outputText value="#{row['lote']}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+							<f:facet name="header">
+								<h:outputText value="Codigo"/>
+							</f:facet>
+							<h:outputText value="#{row['codigo']}"/>
+						</p:column>														
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.material}">
+							<f:facet name="header">
+								<h:outputText value="Material"/>
+							</f:facet>
+							<h:outputText value="#{row['material']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
+							<f:facet name="header">
+								<h:outputText value="Cantidad"/>
+							</f:facet>
+							<h:outputText value="#{row['cantidad']}"/>
+						</p:column>	
+						<f:facet name="footer">
+							<p:outputLabel value="Total [#{keetCatalogosContratosValesFiltro.lazyDetalle== null? 0: keetCatalogosContratosValesFiltro.lazyDetalle.rowCount}] registros"/>
+						</f:facet>
+					</p:dataTable>					
         </div>
       </div>
     </div>		           				

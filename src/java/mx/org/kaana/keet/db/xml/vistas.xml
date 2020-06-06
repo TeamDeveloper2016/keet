@@ -4,6 +4,105 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaComprasAlmacenDto">
+			<select id="lazy">
+				select
+					tc_mantic_empresas.nombre as empresa,
+					tc_keet_desarrollos.nombres as desarrollo,
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_articulos_codigos.codigo,
+					tc_mantic_articulos.nombre as material,
+					sum(tc_keet_vales_detalles.cantidad) as cantidad,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) almacenista,
+					tc_keet_vales.id_vale_estatus
+				from
+					tc_keet_vales_detalles
+				inner join 
+					tc_mantic_articulos on tc_keet_vales_detalles.id_articulo= tc_mantic_articulos.id_articulo  
+				inner join 
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				inner join
+					tc_keet_vales on tc_keet_vales_detalles.id_vale= tc_keet_vales.id_vale and tc_keet_vales.id_vale_contratista= 1
+				inner join
+					tc_keet_contratos_lotes_contratistas on tc_keet_vales.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+				inner join
+					tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+				inner join
+					tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+				inner join
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join
+					tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+				inner join
+					tc_janal_usuarios on tc_keet_vales.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				where
+				  tc_mantic_empresas= {idEmpresa}
+					tc_keet_vales_detalles.id_tipo_entrega in (2, 4)
+					and tc_keet_vales_detalles.entregado is null
+					-- and tc_keet_vales.id_vale_estatus= 7
+				  {condicion}
+				group by
+					tc_mantic_empresas.nombre,
+					tc_keet_desarrollos.nombres,
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_articulos_codigos.codigo,
+					tc_mantic_articulos.nombre,
+					tc_keet_vales_detalles.cantidad,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
+					tc_keet_vales.id_vale_estatus  
+				{sortOrder}		
+			</select>
+			<select id="detalle">
+				select
+					tc_mantic_empresas.nombre as empresa,
+					tc_keet_desarrollos.nombres as desarrollo,
+					tc_keet_vales.consecutivo,
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_articulos_codigos.codigo,
+					tc_mantic_articulos.nombre as material,
+					tc_keet_vales_detalles.cantidad,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) almacenista,
+					tc_keet_contratos.clave as contrato,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+					tc_keet_contratos.etapa,
+					tc_keet_vales.id_vale_estatus,
+					tc_keet_vales.registro
+				from
+					tc_keet_vales_detalles
+				inner join 
+					tc_mantic_articulos on tc_keet_vales_detalles.id_articulo= tc_mantic_articulos.id_articulo  
+				inner join 
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				inner join
+					tc_keet_vales on tc_keet_vales_detalles.id_vale= tc_keet_vales.id_vale and tc_keet_vales.id_vale_contratista= 1
+				inner join
+					tc_keet_contratos_lotes_contratistas on tc_keet_vales.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+				inner join
+					tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+				inner join
+					tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+				inner join
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join
+					tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+				inner join
+					tc_janal_usuarios on tc_keet_vales.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				where
+					tc_keet_vales_detalles.id_tipo_entrega in (2, 4)
+					and tc_keet_vales_detalles.entregado is null
+					-- and tc_keet_vales.id_vale_estatus= 7
+					and tc_mantic_articulos.id_articulo= {idArticulo}
+				{sortOrder}
+			</select>
+		</unit>
 		<unit id="VistaValesEspecialesDto">
 			<select id="detalle">
 				select
