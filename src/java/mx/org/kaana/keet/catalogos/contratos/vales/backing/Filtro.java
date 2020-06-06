@@ -290,7 +290,7 @@ public class Filtro extends Comun implements Serializable {
     try {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by tc_keet_vales.registro desc, cantidad desc");
-			params.put("idArticulo", entity.toLong("idNomina"));
+			params.put("idArticulo", entity.toLong("idArticulo"));
       columns= new ArrayList<>();
       columns.add(new Columna("almacenista", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));

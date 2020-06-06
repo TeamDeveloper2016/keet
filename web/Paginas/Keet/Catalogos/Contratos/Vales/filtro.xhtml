@@ -89,9 +89,9 @@
 							<p:selectOneMenu id="idFamilia" value="#{keetCatalogosContratosValesFiltro.attrs.idFamilia}" styleClass="janal-wid-100-txt">									
                 <f:selectItems value="#{keetCatalogosContratosValesFiltro.attrs.familias}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 							</p:selectOneMenu>	
-              <p:outputLabel for="fechaInicio" value="Actualizado inicio:"/>
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetCatalogosContratosValesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
-              <p:outputLabel for="fechaTermino" value="Actualizado termino:"/>
+              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetCatalogosContratosValesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
             </p:panelGrid>
 						<p:separator/>
@@ -102,7 +102,7 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosValesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosValesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosContratosValesFiltro.lazyModel.rowCount gt keetCatalogosContratosValesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosValesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosValesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosContratosValesFiltro.lazyModel.rowCount gt keetCatalogosContratosValesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header">							
@@ -143,7 +143,7 @@
               </f:facet>
               <h:outputText value="#{row['cantidad']}"/>
             </p:column>
-						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.almacenista}">
+						<p:column class="MarAuto Responsive" sortBy="#{row.almacenista}">
               <f:facet name="header">
                 <h:outputText value="Almacenista" />
               </f:facet>
