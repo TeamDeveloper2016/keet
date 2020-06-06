@@ -63,7 +63,7 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetValesDetallesDto(Long key) {
-    this(null, null, null, LocalDateTime.now(), null, null, new Long(-1L), null, null, null, null, null, null);
+    this(null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
