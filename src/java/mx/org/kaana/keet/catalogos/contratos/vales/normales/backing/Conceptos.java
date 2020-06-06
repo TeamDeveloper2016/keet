@@ -417,7 +417,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			regresar.setTipoFigura(figura.toLong("tipo"));
 			regresar.setNombreFigura(figura.toString("nombreCompleto"));
 			regresar.setPadres(this.padres);
-			regresar.setIdAlmacen(JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+			regresar.setIdDesarrollo((Long)this.attrs.get("idDesarrollo"));
 		} // try
 		catch (Exception e) {			
 			throw e;

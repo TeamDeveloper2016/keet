@@ -236,7 +236,7 @@ public class Conceptos extends Accion implements Serializable {
 			regresar.setTipoFigura(figura.toLong("tipo"));
 			regresar.setNombreFigura(figura.toString("nombreCompleto"));
 			regresar.setArticulos(this.getAdminOrden().getArticulos());
-			regresar.setIdAlmacen(JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+			regresar.setIdDesarrollo((Long)this.attrs.get("idDesarrollo"));
 			regresar.setJustificacion(this.attrs.get("justificacion").toString());
 		} // try
 		catch (Exception e) {			

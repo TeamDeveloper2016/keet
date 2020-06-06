@@ -18,12 +18,13 @@ public class Vale implements Serializable{
 	private String justificacion;
 	private Long idAlmacen;
 	private String nombreFigura;
+	private Long idDesarrollo;
 
 	public Vale() {
-		this(-1L, -1L, new ArrayList<>(), -1L, "", -1L, new ArrayList<>(), new ArrayList<>(), "", new ArrayList<>());
+		this(-1L, -1L, new ArrayList<>(), -1L, "", -1L, new ArrayList<>(), new ArrayList<>(), "", new ArrayList<>(), -1L);
 	}
 	
-	public Vale(Long idFigura, Long tipoFigura, List<MaterialVale> materiales, Long idTipoVale, String justificacion,Long idAlmacen, List<DetalleVale> detalle, List<DetalleVale> padres, String nombreFigura, List<Articulo> articulos) {
+	public Vale(Long idFigura, Long tipoFigura, List<MaterialVale> materiales, Long idTipoVale, String justificacion,Long idAlmacen, List<DetalleVale> detalle, List<DetalleVale> padres, String nombreFigura, List<Articulo> articulos, Long idDesarrollo) {
 		this.idFigura     = idFigura;
 		this.tipoFigura   = tipoFigura;
 		this.materiales   = materiales;
@@ -33,6 +34,7 @@ public class Vale implements Serializable{
 		this.detalle      = detalle;
 		this.nombreFigura = nombreFigura;						
 		this.articulos    = articulos;
+		this.idDesarrollo = idDesarrollo;
 	}
 
 	public Long getIdFigura() {
@@ -113,5 +115,13 @@ public class Vale implements Serializable{
 
 	public void setArticulos(List<Articulo> articulos) {
 		this.articulos = articulos;
+	}	
+
+	public Long getIdDesarrollo() {
+		return idDesarrollo;
+	}
+
+	public void setIdDesarrollo(Long idDesarrollo) {
+		this.idDesarrollo = idDesarrollo;
 	}	
 }
