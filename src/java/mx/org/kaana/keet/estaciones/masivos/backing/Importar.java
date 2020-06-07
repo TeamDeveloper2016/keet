@@ -91,6 +91,12 @@ public class Importar extends IBaseImportar implements Serializable {
 					case 12:
 						this.categoria= ECargaMasiva.MATERIALES;
 						break;
+					case 13:
+						this.categoria= ECargaMasiva.PRECIOS;
+						break;
+					case 14:
+						this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
+						break;
 				} // switch
 			else {
 				this.categoria= ECargaMasiva.ESTACIONES;
@@ -195,6 +201,10 @@ public class Importar extends IBaseImportar implements Serializable {
 					idSelect= ((UISelectEntity)this.attrs.get("idContratoLote"));
 					transaccion= new Transaccion(this.masivo, this.categoria, idSelect.getKey(), this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
 					break;
+				case PRECIOS:
+					break;
+				case PRECIOS_CONVENIO:
+					break;
 			} // swtich
       if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
 
@@ -232,6 +242,12 @@ public class Importar extends IBaseImportar implements Serializable {
 				break;
 			case 12: 
 				this.categoria= ECargaMasiva.MATERIALES;
+				break;
+			case 13: 
+				this.categoria= ECargaMasiva.PRECIOS;
+				break;
+			case 14: 
+				this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
 				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
@@ -393,6 +409,10 @@ public class Importar extends IBaseImportar implements Serializable {
 					} // if
 			    else
 				    JsfBase.addMessage("Error:", "No se tiene un lote seleccionado !", ETipoMensaje.ALERTA);	
+				break;
+				case PRECIOS:
+				break;
+				case PRECIOS_CONVENIO:
 				break;
 			} // swtich
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				

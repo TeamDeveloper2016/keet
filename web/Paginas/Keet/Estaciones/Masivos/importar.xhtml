@@ -79,7 +79,13 @@
 									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 11}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-plantillas.xls" title="Plantilla de estaciones">
 										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>
-									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-materiales.xls" title="Plantilla de estaciones">
+									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-materiales.xls" title="Plantilla de materiales">
+										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+									</h:outputLink>
+									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 13}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-precios-proveedores.xls" title="Plantilla de precios de los materiales por proveedor">
+										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+									</h:outputLink>
+									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 14}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-precios-clientes.xls" title="Plantilla de precios de materiales por proveedor y cliente">
 										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>
 								</f:facet>	
@@ -89,6 +95,8 @@
 									<f:selectItem itemLabel="ESTACIONES" itemValue="9"/>
 									<f:selectItem itemLabel="MATERIALES" itemValue="12"/>
 									<f:selectItem itemLabel="PERSONAL" itemValue="10"/>
+									<f:selectItem itemLabel="PRECIOS PROVEEDORES" itemValue="13"/>
+									<f:selectItem itemLabel="PRECIOS CONEVENIOS" itemValue="14"/>
 								</p:selectOneRadio>
 							</p:panel>
 							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados" columnClasses="janal-wid-70, janal-wid-30">
