@@ -79,7 +79,7 @@
 											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.descripcionLote}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
-								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosMaterialesFiltro.doConceptos}">
+								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosMaterialesFiltro.doEntrega}">
 									<p:outputLabel value="#{row.consecutivo}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" class="manzana-lote-font" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosMaterialesFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
