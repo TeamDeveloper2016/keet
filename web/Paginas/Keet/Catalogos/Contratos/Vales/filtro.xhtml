@@ -166,7 +166,8 @@
 					</h:commandLink>
 					<h:commandLink id="detalleXls">
 						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
-					</h:commandLink>			
+					</h:commandLink>	
+					<p:spacer height="2px"/>
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{keetCatalogosContratosValesFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosValesFiltro.lazyDetalle.rowCount gt keetCatalogosContratosValesFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{keetCatalogosContratosValesFiltro.attrs.detalle? '': 'none'}">
 						<f:facet name="header">
 							<p:outputLabel value="Vales involucrados en el material seleccionado" styleClass="janal-text-white" style="float: left;"/>
@@ -177,7 +178,13 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+							<f:facet name="header">
+								<h:outputText value="Vale"/>
+							</f:facet>
+							<h:outputText value="#{row['consecutivo']}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}" rendered="false">
 							<f:facet name="header">
 								<h:outputText value="Desarrollo"/>
 							</f:facet>
@@ -189,13 +196,13 @@
 							</f:facet>
 							<h:outputText value="#{row['contrato']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}">
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.etapa}">
 							<f:facet name="header">
 								<h:outputText value="Etapa"/>
 							</f:facet>
 							<h:outputText value="#{row['etapa']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.lote}">
+						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.lote}">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
@@ -219,6 +226,12 @@
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}"/>
 						</p:column>	
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+							<f:facet name="header">
+								<h:outputText value="Fecha"/>
+							</f:facet>
+							<h:outputText value="#{row['registro']}"/>
+						</p:column>														
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetCatalogosContratosValesFiltro.lazyDetalle== null? 0: keetCatalogosContratosValesFiltro.lazyDetalle.rowCount}] registros"/>
 						</f:facet>

@@ -295,7 +295,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("almacenista", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "proveedor", params, columns);
+      this.lazyDetalle= new FormatCustomLazy("VistaComprasAlmacenDto", "detalle", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
 			this.attrs.put("detalle", true);
     } // try
