@@ -10,24 +10,34 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.keet.catalogos.contratos.materiales.reglas.Transaccion;
+import mx.org.kaana.keet.catalogos.contratos.vales.beans.DetalleVale;
 
 @Named(value = "keetCatalogosContratosMaterialesEntrega")
 @ViewScoped
 public class Entrega extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 2847354766000406350L;  		
+	private List<DetalleVale> materiales;
+
+	public List<DetalleVale> getMateriales() {
+		return materiales;
+	}
+
+	public void setMateriales(List<DetalleVale> materiales) {
+		this.materiales = materiales;
+	}
 	
   @PostConstruct
   @Override
@@ -101,8 +111,8 @@ public class Entrega extends IBaseFilter implements Serializable {
 			campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			params= new HashMap<>();
 			params.put("idVale", ((Entity)this.attrs.get("seleccionadoPivote")).getKey());
-			this.lazyModel= new FormatLazyModel("TcKeetValesDetallesDto", "resumen", params, campos);
-			UIBackingUtilities.resetDataTable();
+			this.materiales= DaoFactory.getInstance().toEntitySet(DetalleVale.class, "TcKeetValesDetallesDto", "entrega", params);			
+			this.attrs.put("totalRegistros", this.materiales.size());			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -132,28 +142,23 @@ public class Entrega extends IBaseFilter implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // toQr
-	
-	private String toClaveEstacion(){
-		StringBuilder regresar= null;
-		try {			
-			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
-			regresar.append(Fecha.getAnioActual());
-			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
-			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("orden"), 3, '0', true));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar.toString();
-	} // toClaveEstacion				
+	} // toQr	
 	
 	public String doAceptar() {
-    String regresar= null;    				
-    try {																
-			toSetFlash();
-			regresar= "filtro".concat(Constantes.REDIRECIONAR);						
+    String regresar        = null;    				
+		Transaccion transaccion= null;
+    try {					
+			if(validarSeleccion()){
+				transaccion= new Transaccion(((Entity)this.attrs.get("seleccionadoPivote")).getKey(), this.materiales);
+				if(transaccion.ejecutar(EAccion.AGREGAR)){
+					toSetFlash();
+					regresar= "filtro".concat(Constantes.REDIRECIONAR);						
+				} // if
+				else
+					JsfBase.addMessage("Entrega de material", "Ocurrió un error al procesar la entrega de material.", ETipoMensaje.ERROR);
+			} // if
+			else
+				JsfBase.addMessage("Entrega de material", "No se ha seleccionado ningun material para realizar la entrega.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -162,14 +167,30 @@ public class Entrega extends IBaseFilter implements Serializable {
     return regresar;
   } // doPagina	  
 	
+	private boolean validarSeleccion(){
+		boolean regresar= false;
+		int count       = 0;
+		try {
+			for(DetalleVale detalle: this.materiales){
+				if(detalle.isCheck())					
+					count++;
+			} // for
+			regresar= count>= 1;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // validarSeleccion
+	
 	private void toSetFlash(){
-		JsfBase.setFlashAttribute("claveEstacion", toClaveEstacion());									
-		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));									
-		JsfBase.setFlashAttribute("figura", this.attrs.get("figura"));									
-		JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionadoPivote"));									
 		JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));									
-		JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));													
-		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
+		JsfBase.setFlashAttribute("figura", this.attrs.get("figura"));											
+		JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));	
+		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));									
+		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));					
+		JsfBase.setFlashAttribute("flujo", "entrega");										
+		JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionadoPivote"));											
 	} // toSetFlash
 	
 	public String doCancelar() {
@@ -184,7 +205,6 @@ public class Entrega extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("opcionResidente", opcion);			
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 			JsfBase.setFlashAttribute("flujo", "resumen");										
-			JsfBase.setFlashAttribute("idVale", this.attrs.get("idVale"));													
 			JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionadoPivote"));									
 			regresar= "filtro".concat(Constantes.REDIRECIONAR);			
 		} // try
