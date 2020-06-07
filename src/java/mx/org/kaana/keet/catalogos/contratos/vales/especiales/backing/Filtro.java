@@ -223,7 +223,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));
 	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", idXml, params);		
 			lotesCriterio= UIEntity.seleccione("VistaCapturaMaterialesDto", idXml, params, "descripcionLote");
-			loteCriterio= UIBackingUtilities.toFirstKeySelectEntity(figuras);
+			loteCriterio= UIBackingUtilities.toFirstKeySelectEntity(lotesCriterio);
 			this.attrs.put("lotesCriterio", lotesCriterio);
 			this.attrs.put("loteCriterio", loteCriterio);
 			if(!this.lotes.isEmpty()) { 
