@@ -32,9 +32,11 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
@@ -1524,10 +1526,44 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	} // toUpdateMateriales
 
+	private TcManticClientesDto toFindCliente(Session sesion, String rfc) {
+		TcManticClientesDto regresar= null;
+		Map<String, Object> params  = null;
+		try {
+			params=new HashMap<>();
+			params.put("rfc", rfc);
+			regresar= (TcManticClientesDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDto.class, "VistaCargasMasivasDto", "cliente", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindCliente
+	
+  private TcManticProveedoresDto toFindProveedor(Session sesion, String rfc) {
+		TcManticProveedoresDto regresar= null;
+		Map<String, Object> params     = null;
+		try {
+			params=new HashMap<>();
+			params.put("rfc", rfc);
+			regresar= (TcManticProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcManticProveedoresDto.class, "VistaCargasMasivasDto", "proveedor", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindProveedor
+
   private Boolean toPreciosProveedor(Session sesion, File archivo) throws Exception {
-		Boolean regresar	      = false;
-		Workbook workbook	      = null;
-		Sheet sheet             = null;
+		Boolean regresar = false;
+		Workbook workbook= null;
+		Sheet sheet      = null;
 		TcManticMasivasBitacoraDto bitacora= null;
 		Map<String, Object> params         = null;
 		try {
@@ -1645,9 +1681,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	} // toPreciosProveedor	
 
   private Boolean toPreciosClientes(Session sesion, File archivo) throws Exception {
-		Boolean regresar	      = false;
-		Workbook workbook	      = null;
-		Sheet sheet             = null;
+		Boolean regresar = false;
+		Workbook workbook= null;
+		Sheet sheet      = null;
 		TcManticMasivasBitacoraDto bitacora= null;
 		Map<String, Object> params         = null;
 		try {

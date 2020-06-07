@@ -287,9 +287,9 @@ public class Importar extends IBaseImportar implements Serializable {
 	private void toCheckRequerido() {
     UIBackingUtilities.execute(
 			"janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'libre', mascara: 'libre'});"+
-			"janal.renovate('contenedorGrupos\\\\:idPlantilla', {validaciones: 'libre', mascara: 'libre'});"+
-			"janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'libre', mascara: 'libre'});"+
-			"janal.renovate('contenedorGrupos\\\\:idCliente', {validaciones: 'libre', mascara: 'libre'});"
+			"janal.renovate('contenedorGrupos\\\\:idPlantilla_focus', {validaciones: 'libre', mascara: 'libre'});"+
+			"janal.renovate('contenedorGrupos\\\\:idProveedor_focus', {validaciones: 'libre', mascara: 'libre'});"+
+			"janal.renovate('contenedorGrupos\\\\:idCliente_focus', {validaciones: 'libre', mascara: 'libre'});"
 	  );		
 		switch(this.masivo.getIdTipoMasivo().intValue()) {
 			case 9: 
@@ -301,15 +301,15 @@ public class Importar extends IBaseImportar implements Serializable {
 				break;
 			case 11: 
 				this.categoria= ECargaMasiva.PLANTILLAS;
-        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idPlantilla', {validaciones: 'requerido', mascara: 'libre'});");			
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idPlantilla_focus', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
 			case 13: 
 				this.categoria= ECargaMasiva.PRECIOS;
-        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'requerido', mascara: 'libre'});");			
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor_focus', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
 			case 14: 
 				this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
-        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'requerido', mascara: 'libre'});janal.renovate('contenedorGrupos\\\\:idCliente', {validaciones: 'requerido', mascara: 'libre'});");			
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor_focus', {validaciones: 'requerido', mascara: 'libre'});janal.renovate('contenedorGrupos\\\\:idCliente_focus', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
 		} // switch
 	}
