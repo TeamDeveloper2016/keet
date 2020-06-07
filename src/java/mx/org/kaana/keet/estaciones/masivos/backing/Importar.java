@@ -75,27 +75,31 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_MASIVO);
 			this.attrs.put("idLimpiar", 1L);
 			this.attrs.put("procesados", 0L);
-			this.toLoadContratosLotes();
-			this.toLoadPrototipos();
 			if(JsfBase.getFlashAttribute("idTipoMasivo")!= null)
 				switch(((Long)JsfBase.getFlashAttribute("idTipoMasivo")).intValue()) {
 					case 9:
 						this.categoria= ECargaMasiva.ESTACIONES;
+   			    this.toLoadContratosLotes();
 						break;
 					case 10:
 						this.categoria= ECargaMasiva.PERSONAL;
 						break;
 					case 11:
 						this.categoria= ECargaMasiva.PLANTILLAS;
+      			this.toLoadPrototipos();
 						break;
 					case 12:
 						this.categoria= ECargaMasiva.MATERIALES;
+   			    this.toLoadContratosLotes();
 						break;
 					case 13:
 						this.categoria= ECargaMasiva.PRECIOS;
+      			this.toLoadProveedores();
 						break;
 					case 14:
 						this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
+      			this.toLoadProveedores();
+      			this.toLoadClientes();
 						break;
 				} // switch
 			else {
@@ -233,21 +237,26 @@ public class Importar extends IBaseImportar implements Serializable {
 		switch(this.masivo.getIdTipoMasivo().intValue()) {
 			case 9: 
 				this.categoria= ECargaMasiva.ESTACIONES;
+		    this.toLoadContratosLotes();
 				break;
 			case 10: 
 				this.categoria= ECargaMasiva.PERSONAL;
 				break;
 			case 11: 
 				this.categoria= ECargaMasiva.PLANTILLAS;
+		    this.toLoadPrototipos();
 				break;
 			case 12: 
 				this.categoria= ECargaMasiva.MATERIALES;
+		    this.toLoadContratosLotes();
 				break;
 			case 13: 
 				this.categoria= ECargaMasiva.PRECIOS;
 				break;
 			case 14: 
 				this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
+				this.toLoadProveedores();
+				this.toLoadClientes();
 				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
@@ -276,10 +285,33 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doChangeTipo
 
 	private void toCheckRequerido() {
-		if(this.masivo.getIdTipoMasivo().intValue()== ECargaMasiva.ESTACIONES.getId() || this.masivo.getIdTipoMasivo().intValue()== ECargaMasiva.MATERIALES.getId())
-      UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'requerido', mascara: 'libre'});");			
-		else
-      UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'libre', mascara: 'libre'});");		
+    UIBackingUtilities.execute(
+			"janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'libre', mascara: 'libre'});"+
+			"janal.renovate('contenedorGrupos\\\\:idPlantilla', {validaciones: 'libre', mascara: 'libre'});"+
+			"janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'libre', mascara: 'libre'});"+
+			"janal.renovate('contenedorGrupos\\\\:idCliente', {validaciones: 'libre', mascara: 'libre'});"
+	  );		
+		switch(this.masivo.getIdTipoMasivo().intValue()) {
+			case 9: 
+			case 12: 
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'requerido', mascara: 'libre'});");			
+				break;
+			case 10: 
+				this.categoria= ECargaMasiva.PERSONAL;
+				break;
+			case 11: 
+				this.categoria= ECargaMasiva.PLANTILLAS;
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idPlantilla', {validaciones: 'requerido', mascara: 'libre'});");			
+				break;
+			case 13: 
+				this.categoria= ECargaMasiva.PRECIOS;
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'requerido', mascara: 'libre'});");			
+				break;
+			case 14: 
+				this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'requerido', mascara: 'libre'});janal.renovate('contenedorGrupos\\\\:idCliente', {validaciones: 'requerido', mascara: 'libre'});");			
+				break;
+		} // switch
 	}
 	
 	public String doMovimientos() {
@@ -297,13 +329,17 @@ public class Importar extends IBaseImportar implements Serializable {
 	private void toLoadContratosLotes() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
+		List<UISelectEntity> lotes= null;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("lote", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
  			params.put("ejercicio", Fecha.getAnioActual()- 1);
-			List<UISelectEntity> lotes= UIEntity.build("VistaContratosLotesDto", "lotes", params, columns);
+			if(this.attrs.get("lotes")== null)
+			  lotes= UIEntity.build("VistaContratosLotesDto", "lotes", params, columns);
+			else
+				lotes= (List<UISelectEntity>)this.attrs.get("lotes");
   		this.attrs.put("lotes", lotes);
 			if(this.attrs.get("ikContratoLote")!= null) {
 				int index= lotes.indexOf(new UISelectEntity((Long)this.attrs.get("ikContratoLote")));
@@ -334,8 +370,9 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			List<UISelectEntity> lotes= UIEntity.build("TcKeetPrototiposDto", "byEmpresa", params, columns);
-  		this.attrs.put("plantillas", lotes);
+			if(this.attrs.get("plantillas")== null)
+    		this.attrs.put("plantillas", UIEntity.build("TcKeetPrototiposDto", "byEmpresa", params, columns));
+	    this.attrs.put("idPlantilla", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -346,6 +383,42 @@ public class Importar extends IBaseImportar implements Serializable {
       Methods.clean(params);
     } // finally
 	}
+	
+  public void toLoadProveedores() {
+    Map<String, Object> params= null;
+    try {
+      params = new HashMap();
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(this.attrs.get("proveedores")== null)
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "sucursales", params));
+      this.attrs.put("idProveedor", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doLoadProveedores	
+	
+	public void toLoadClientes() {
+    Map<String, Object> params= null;
+		try {
+      params = new HashMap();
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(this.attrs.get("clientes")== null)
+        this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", params, "clave"));
+      this.attrs.put("idCliente", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+	} // toLoadClientes
 	
 	public String doExportar() {
 		String regresar                = null;
@@ -409,11 +482,18 @@ public class Importar extends IBaseImportar implements Serializable {
 					} // if
 			    else
 				    JsfBase.addMessage("Error:", "No se tiene un lote seleccionado !", ETipoMensaje.ALERTA);	
-				break;
+		  		break;
 				case PRECIOS:
-				break;
+					params.put("idProveedor", this.attrs.get("idProveedor"));
+					JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.PRECIOS.getProceso(), EExportacionXls.PRECIOS.getIdXml(), EExportacionXls.PRECIOS.getNombreArchivo()), EExportacionXls.PRECIOS, "RFC,RAZON SOCIAL,CLAVE,AUXILIAR,MATERIAL,PRECIO BASE,PRECIO LISTA,PRECIO ESPECIAL"));
+					JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+  				break;
 				case PRECIOS_CONVENIO:
-				break;
+					params.put("idProveedor", this.attrs.get("idProveedor"));
+					params.put("idCliente", this.attrs.get("idCliente"));
+					JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.PRECIOS_CONVENIO.getProceso(), EExportacionXls.PRECIOS_CONVENIO.getIdXml(), EExportacionXls.PRECIOS_CONVENIO.getNombreArchivo()), EExportacionXls.PRECIOS_CONVENIO, "RFC PROVEEDOR,PROVEEDOR,RFC CLIENTE,CLIENTE,CLAVE,AUXILIAR,MATERIAL,PRECIO CONVENIO"));
+					JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+	  			break;
 			} // swtich
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
 		} // try
