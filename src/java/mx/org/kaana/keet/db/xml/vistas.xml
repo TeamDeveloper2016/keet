@@ -4434,7 +4434,10 @@
 				select 
 					tc_keet_vales.id_vale as id_key,
 					tc_keet_vales.*,
-					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					tc_keet_contratos.id_contrato,
+					tc_keet_contratos_lotes.id_contrato_lote,
+					tc_keet_contratos.id_empresa
 				from 
 					tc_keet_proyectos
 				inner join 
@@ -4454,7 +4457,10 @@
 				select 
 					tc_keet_vales.id_vale as id_key,
 					tc_keet_vales.*,
-					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					tc_keet_contratos.id_contrato,
+					tc_keet_contratos_lotes.id_contrato_lote,
+					tc_keet_contratos.id_empresa
 				from 
 					tc_keet_proyectos
 				inner join 
