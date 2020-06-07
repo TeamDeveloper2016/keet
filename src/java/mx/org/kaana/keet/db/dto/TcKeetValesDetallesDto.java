@@ -24,7 +24,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
 @Entity
 @Table(name="tc_keet_vales_detalles")
-public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
+public class TcKeetValesDetallesDto implements IBaseDto, Serializable, Cloneable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="surtido")
@@ -323,4 +323,9 @@ public class TcKeetValesDetallesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdValeDetalle() != null ? getIdValeDetalle().hashCode() : 0);
     return hash;
   }
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 }
