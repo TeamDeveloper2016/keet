@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Vales generados" />
+  <ui:define name="librerias">
+		<style type="text/css">
+			.ui-commandlink {
+				color: transparent !important;
+				text-decoration: underline;
+				margin-right: 5px;
+			}
+			.manzana-lote-font {
+				font-size: 3.2vw !important;
+				font-weight: bold !important;
+			}
+		</style>
+	</ui:define> 
+  <ui:define name="contenido">    		
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
+						<p:tab title="Desarrollo [ #{keetCatalogosContratosMaterialesFiltro.registroDesarrollo.desarrollo.clave} ] #{keetCatalogosContratosMaterialesFiltro.registroDesarrollo.desarrollo.nombres}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Descripcion:"/>
+								<p:inputText value="#{keetCatalogosContratosMaterialesFiltro.registroDesarrollo.desarrollo.descripcion}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Domicilio:"/>																		
+								<p:inputText value="#{keetCatalogosContratosMaterialesFiltro.attrs.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+							</p:panelGrid>										
+						</p:tab>					
+						<p:tab title="Busqueda">
+							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																							
+								<p:outputLabel for="departamento" value="Departamento:"/>
+								<p:selectOneMenu id="departamento" value="#{keetCatalogosContratosMaterialesFiltro.attrs.especialidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoadFiguras}" update="contratista tabla" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.especialidades}"/>
+								</p:selectOneMenu>																
+								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
+								<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosMaterialesFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoadLotes}" update="tabla lotes" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>									
+									<p:column headerText="Puesto">
+										<h:outputText value="#{item.puesto}"/>
+									</p:column> 
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombreCompleto}"/>
+									</p:column>   
+								</p:selectOneMenu>									
+								<p:outputLabel for="lotes" value="Lotes:"/>
+								<p:selectOneMenu id="lotes" value="#{keetCatalogosContratosMaterialesFiltro.attrs.loteCriterio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoad}" update="tabla vales" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.lotesCriterio}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
+									<p:column headerText="Lote">
+										<h:outputText value="#{item.descripcionLote}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:outputLabel for="vales" value="Vale:"/>
+								<p:selectOneMenu id="vales" value="#{keetCatalogosContratosMaterialesFiltro.attrs.valeCriterio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.valesCriterios}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo}"/>																		
+									<p:column headerText="Consecutivo">
+										<h:outputText value="#{item.consecutivo}"/>
+									</p:column>   
+								</p:selectOneMenu>
+              </p:panelGrid>										
+						</p:tab>
+					</p:accordionPanel>						
+					<p:spacer height="3px"/>
+					<p:dataGrid id="tabla" var="row" value="#{keetCatalogosContratosMaterialesFiltro.vales}" columns="4" layout="grid" rowIndexVar="index"
+											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosMaterialesFiltro.attrs.totalRegistros gt Constantes.REGISTROS_POR_PAGINA}"
+											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
+											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
+											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+						<p:panel header="#{row.descripcionLote}" style="text-align:center; border: 0px;">
+							<h:panelGrid columns="1" style="width:100%">
+								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosMaterialesFiltro.doConceptos}">
+									<p:outputLabel value="#{row.consecutivo}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" class="manzana-lote-font" style="cursor: pointer;"/>
+									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosMaterialesFiltro.attrs.seleccionado}"/>
+								</p:commandLink>																	
+								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">									
+									<h:outputText value="&lt;b&gt;Semana:&lt;/b&gt; #{row.semana}" escape="false"/>
+									<h:outputText value="&lt;b&gt;Ejercicio:&lt;/b&gt; #{row.ejercicio}" escape="false"/>
+									<h:outputText value="&lt;b&gt;Cantidad:&lt;/b&gt; #{row.cantidad}" escape="false"/>
+								</p:panelGrid>								
+							</h:panelGrid>
+							<f:facet name="footer">
+								<div class="janal-column-right">
+									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}"/>									
+								</div>	
+							</f:facet>
+						</p:panel>						
+					</p:dataGrid>	 											
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosMaterialesFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosMaterialesFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>	
+</ui:composition>
