@@ -76,6 +76,62 @@
 					codigo,
 					nombre
 			</select>
+			<select id="entrega">
+				select
+					id_articulo AS id_key,
+					id_vale, 					
+					id_articulo,
+					codigo,
+					nombre,
+					sum(precio) precio,
+					sum(cantidad) cantidad,
+					sum(costo) costo 
+				from
+					tc_keet_vales_detalles
+				where
+					id_vale= {idVale} and entregado is null and id_tipo_entrega=4
+				group by					
+					id_vale, 					
+					id_articulo,
+					codigo,
+					nombre
+			</select>
+			<select id="pendienteEntrega">
+        select      
+          *
+        from      
+          tc_keet_vales_detalles
+        where 
+          id_vale= {idVale} and entregado is null and id_tipo_entrega=4 and id_articulo={idArticulo}
+      </select>
+			<select id="pendienteEntregaTotal">
+        select      
+          count(*) total
+        from      
+          tc_keet_vales_detalles
+        where 
+          id_vale= {idVale} and entregado is null and id_tipo_entrega=4
+      </select>
+			<select id="evidencia">
+				select
+					id_articulo AS id_key,
+					id_vale, 					
+					id_articulo,
+					codigo,
+					nombre,
+					sum(precio) precio,
+					sum(cantidad) cantidad,
+					sum(costo) costo 
+				from
+					tc_keet_vales_detalles
+				where
+					id_vale= {idVale} and entregado is not null and id_tipo_entrega != 4
+				group by					
+					id_vale, 					
+					id_articulo,
+					codigo,
+					nombre
+			</select>
 			<delete id="rows">
 				delete from tc_keet_vales_detalles where id_vale= {idVale}
 			</delete>
