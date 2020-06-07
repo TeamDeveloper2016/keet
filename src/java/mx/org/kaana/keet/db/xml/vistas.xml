@@ -51,10 +51,7 @@
 					tc_keet_desarrollos.nombres,
 					tc_mantic_articulos.id_articulo,
 					tc_mantic_articulos_codigos.codigo,
-					tc_mantic_articulos.nombre,
-					tc_keet_vales_detalles.cantidad,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
-					tc_keet_vales.id_vale_estatus  
+					tc_mantic_articulos.nombre
 				{sortOrder}		
 			</select>
 			<select id="detalle">

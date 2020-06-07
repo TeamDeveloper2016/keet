@@ -25,6 +25,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import org.primefaces.event.SelectEvent;
 
 @Named(value = "keetCatalogosContratosValesFiltro")
 @ViewScoped
@@ -216,6 +217,20 @@ public class Filtro extends Comun implements Serializable {
     }// finally
 	}	// doUpdateArticulos
 
+	public void doAsignaCodigo(SelectEvent event) {
+		UISelectEntity seleccion    = null;
+		List<UISelectEntity> codigos= null;
+		try {
+			codigos= (List<UISelectEntity>) this.attrs.get("codigos");
+			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
+			this.attrs.put("codigoSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCodigo		
+	
 	public List<UISelectEntity> doCompleteArticulo(String query) {
 		this.attrs.put("existe", null);
 		this.attrs.put("codigo", query);
