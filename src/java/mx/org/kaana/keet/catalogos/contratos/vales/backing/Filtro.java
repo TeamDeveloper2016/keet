@@ -70,7 +70,7 @@ public class Filtro extends Comun implements Serializable {
       params.put("sortOrder", "order by tc_mantic_articulos_codigos.codigo, cantidad desc");
       this.lazyModel = new FormatCustomLazy("VistaComprasAlmacenDto", params, columns);
       UIBackingUtilities.resetDataTable();
-			this.attrs.put("nomina", false);
+			this.attrs.put("detalle", false);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
