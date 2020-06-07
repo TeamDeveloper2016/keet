@@ -136,6 +136,27 @@
 				delete from tc_keet_vales_detalles where id_vale= {idVale}
 			</delete>
     </unit>
+		<unit id="TcKeetValesDetallesEntregaDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_vales_detalles_entrega
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_vales_detalles_entrega
+        where      
+          date_format(entregrado, '%Y%m%d%H%i%S') = '{entregrado}' and id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle}
+      </select>			
+			<delete id="rows">
+				delete from tc_keet_vales_detalles_entrega where id_vale= {idVale} and clave='{clave}'
+			</delete>
+    </unit>
 		<unit id="TcKeetValesBitacoraDto">
       <select id="row">
         select      
