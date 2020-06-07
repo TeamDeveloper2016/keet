@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
@@ -21,7 +22,7 @@ import mx.org.kaana.keet.db.dto.TcKeetValesDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesMaterialesDto;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.ETiposEntregas;
-import mx.org.kaana.keet.enums.EValesEstatus;
+import mx.org.kaana.keet.enums.EEstatusVales;
 import mx.org.kaana.keet.materiales.reglas.Materiales;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.Constantes;
@@ -94,10 +95,10 @@ public class Transaccion extends IBaseTnx {
 		Siguiente siguiente    = null;
 		try {
 			siguiente= toSiguiente(sesion);			
-			valeDto= loadVale(siguiente);			
+			valeDto= loadVale(sesion, siguiente);			
 			this.idVale= DaoFactory.getInstance().insert(sesion, valeDto);
 			if(this.idVale>= 1L){
-				if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
+				if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
 					regresar= registrarDetalle(sesion, valeDto.getSemana().toString());				
 					generateQr(siguiente, valeDto.getRegistro());
 					registrarPadres(sesion);
@@ -110,7 +111,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // procesarVale
 	
-	private TcKeetValesDto loadVale(Siguiente siguiente) throws Exception{
+	private TcKeetValesDto loadVale(Session sesion, Siguiente siguiente) throws Exception{
 		TcKeetValesDto regresar= null;		
 		Semanas semana         = null;
 		try {
@@ -120,7 +121,7 @@ public class Transaccion extends IBaseTnx {
 			regresar.setConsecutivo(siguiente.getConsecutivo());
 			regresar.setOrden(siguiente.getOrden());
 			regresar.setSemana(semana.getSemanaEnCurso());			
-			regresar.setIdAlmacen(this.vale.getIdAlmacen());			
+			regresar.setIdAlmacen(toIdAlmacen(sesion));			
 			regresar.setCantidad(toCantidad());
 			regresar.setCosto(toCosto());
 			regresar.setIdTipoVale(this.vale.getIdTipoVale());
@@ -130,8 +131,9 @@ public class Transaccion extends IBaseTnx {
 				regresar.setIdContratoLoteContratista(this.vale.getIdFigura());
 			else
 				regresar.setIdContratoLoteProveedor(this.vale.getIdFigura());
-			regresar.setJustificacion(this.vale.getJustificacion());			
-		} // try
+			regresar.setJustificacion(this.vale.getJustificacion());		
+			regresar.setIdValeEstatus(EEstatusVales.DISPONIBLE.getKey());
+		} // try 
 		catch (Exception e) {			
 			throw e;
 		} // catch				
@@ -183,7 +185,7 @@ public class Transaccion extends IBaseTnx {
 			bitacora.setIdUsuario(JsfBase.getIdUsuario());
 			bitacora.setIdVale(this.idVale);
 			bitacora.setIdValeEstatus(idEstatus);
-			bitacora.setJustificacion(Cadena.isVacio(this.vale.getJustificacion()) ? "Registro de bitacora:" + EValesEstatus.fromId(idEstatus).getNombre() : this.vale.getJustificacion());
+			bitacora.setJustificacion(Cadena.isVacio(this.vale.getJustificacion()) ? "Registro de bitacora:" + EEstatusVales.fromId(idEstatus).getNombre() : this.vale.getJustificacion());
 			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 		} // try
 		catch (Exception e) {			
@@ -331,7 +333,7 @@ public class Transaccion extends IBaseTnx {
 					valeDto.setCosto(toCosto());
 					if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L){
 						this.vale.setJustificacion("Regeneración del vale");
-						if(registrarBitacora(sesion, EValesEstatus.DISPONIBLE.getKey())){
+						if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
 							regresar= registrarDetalle(sesion, semana.toString());					
 							registrarPadres(sesion);
 						} // if
@@ -415,4 +417,20 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // depurarVale
+	
+	private Long toIdAlmacen(Session sesion) throws Exception{
+		Long regresar            = null;
+		Entity almacen           = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_desarrollo=" + this.vale.getIdDesarrollo());
+			almacen= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticAlmacenesDto", "row", params);
+			regresar= almacen.toLong("idAlmacen");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toIdAlmacen
 }
