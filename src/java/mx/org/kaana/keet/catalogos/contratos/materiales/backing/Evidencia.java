@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.materiales.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,23 +13,39 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.catalogos.contratos.materiales.beans.ArchivoEvidenciaVale;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.catalogos.contratos.materiales.reglas.Transaccion;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import org.primefaces.event.FileUploadEvent;
 
 @Named(value = "keetCatalogosContratosMaterialesEvidencia")
 @ViewScoped
-public class Evidencia extends IBaseFilter implements Serializable {
+public class Evidencia extends IBaseImportar implements Serializable {
 
 	private static final long serialVersionUID = 2847354766000406350L;  		
+	List<ArchivoEvidenciaVale> documentos;
+
+	public List<ArchivoEvidenciaVale> getDocumentos() {
+		return documentos;
+	}
+
+	public void setDocumentos(List<ArchivoEvidenciaVale> documentos) {
+		this.documentos = documentos;
+	}
 	
   @PostConstruct
   @Override
@@ -59,6 +76,10 @@ public class Evidencia extends IBaseFilter implements Serializable {
 			this.attrs.put("idDepartamento", idDepartamento);      			
 			this.attrs.put("nombreConcepto", "");    
 			this.attrs.put("totalMateriales", 0L);
+			this.attrs.put("file", ""); 
+			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);			
+			setFile(new Importado());			
+			this.documentos= new ArrayList<>();
 			loadCatalogos();						
 			doLoad();			
     } // try // try
@@ -120,18 +141,112 @@ public class Evidencia extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad	  					
 	
+	public void doFileUpload(FileUploadEvent event) {				
+		StringBuilder path= new StringBuilder();  
+		StringBuilder temp= new StringBuilder();  
+		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
+    File result       = null;		
+		Long fileSize     = 0L;			
+		Long idArchivo    = 0L;			
+		Entity figura     = null;
+		try {			
+			figura= (Entity) this.attrs.get("figura");
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("vales"));
+      temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
+      temp.append("/");			
+      temp.append(Fecha.getAnioActual());
+      temp.append("/");      
+      temp.append(((Entity)this.attrs.get("seleccionadoPivote")).getKey()); // contrato
+      temp.append("/");      
+      temp.append(figura.toLong("tipo")); 
+      temp.append("/");      			
+      temp.append(this.attrs.get("claveGenerada")); // estacion
+			temp.append("/");            
+			path.append(temp.toString());
+			result= new File(path.toString());		
+			if (!result.exists())
+				result.mkdirs();
+      path.append(nameFile);
+			result = new File(path.toString());
+			if (result.exists())
+				result.delete();			      
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
+			fileSize= event.getFile().getSize();						
+			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
+  		this.attrs.put("file", this.getFile().getName());	
+			idArchivo= toRegisterFile("destajos");							
+			this.documentos.add(toArchivo(idArchivo, figura.toLong("tipo")));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			if(result!= null)
+			  result.delete();
+		} // catch
+	} // doFileUpload		
+	
+	private ArchivoEvidenciaVale toArchivo(Long idArchivo, Long tipo) throws Exception{					
+		ArchivoEvidenciaVale regresar= new ArchivoEvidenciaVale(
+			idArchivo, // idAchivo
+			tipo, // tipo			
+			this.attrs.get("claveGenerada").toString(), // clave
+			this.getFile().getName(), // archivo			
+			null, // eliminado
+			this.getFile().getRuta(), // ruta			
+			this.getFile().getFileSize(), // tamanio 			
+			JsfBase.getIdUsuario(), // idUsuario			
+			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), // idTipoArchivo			
+			(String)this.attrs.get("observaciones"), // observaciones 			
+			Configuracion.getInstance().getPropiedadSistemaServidor("vales").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // alias
+			-1L,																								
+			((Entity)this.attrs.get("seleccionadoPivote")).getKey(), // idContratoDestajoContratista
+			this.getFile().getOriginal() // nombre
+		); 		
+		return regresar;
+	} // toDestajoContratistaArchivo
+	
+	private EFormatos getFileType(String fileName){
+		EFormatos regresar= EFormatos.FREE;
+		try {
+			if(fileName.contains(".")){
+			  fileName= fileName.split("\\.")[fileName.split("\\.").length-1].toUpperCase();
+				if (fileName.equals(EFormatos.PDF.name()))
+					regresar= EFormatos.PDF;
+				if (fileName.equals(EFormatos.ZIP.name()))
+					regresar= EFormatos.ZIP;
+				if (fileName.equals(EFormatos.DWG.name()))
+					regresar= EFormatos.DWG;
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+    return regresar;
+	} // getFileType
+	
 	public String doAceptar() {
-    String regresar= null;    				
-    try {																
-			toSetFlash();
-			regresar= "resumen".concat(Constantes.REDIRECIONAR);						
+    String regresar        = null;
+		Transaccion transaccion= null;
+    try {									
+			if(!this.documentos.isEmpty()){
+				transaccion= new Transaccion(this.documentos);
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR)){
+					toSetFlash();
+					regresar= "resumen".concat(Constantes.REDIRECIONAR);						
+				} // if
+				else
+					JsfBase.addMessage("Captura de evidencia", "Ocurrió un error al realizar el registro de la evidencia.", ETipoMensaje.ERROR);
+			} // if
+			else
+				JsfBase.addMessage("Captura de evidencia", "No se ha importado ningun archivo.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina	  
+  } // doAceptar	  
 	
 	private void toSetFlash(){
 		JsfBase.setFlashAttribute("claveGenerada", this.attrs.get("claveGenerada"));					
