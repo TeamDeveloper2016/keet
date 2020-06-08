@@ -2,6 +2,7 @@ package mx.org.kaana.keet.estaciones.masivos.reglas;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -15,10 +16,12 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
+import mx.org.kaana.keet.db.dto.TrKeetArticuloPreveedorClienteDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.estaciones.masivos.beans.Estacion;
 import mx.org.kaana.keet.estaciones.masivos.beans.Material;
@@ -32,6 +35,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasBitacoraDto;
@@ -1560,6 +1564,25 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	} // toFindProveedor
 
+	private TcManticArticulosDto toFindArticulo(Session sesion, String codigo, String auxiliar, Long idArticuloTipo) {
+		TcManticArticulosDto regresar= null;
+		Map<String, Object> params   = null;
+		try {
+			params=new HashMap<>();
+			params.put("codigo", codigo);
+			params.put("auxiliar", auxiliar);
+			params.put("idArticuloTipo", idArticuloTipo);
+			regresar= (TcManticArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosDto.class, "VistaCargasMasivasDto", "ambos", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindArticulo
+	
   private Boolean toPreciosProveedor(Session sesion, File archivo) throws Exception {
 		Boolean regresar = false;
 		Workbook workbook= null;
@@ -1584,71 +1607,55 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					try {
 						if(!Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
-							// 0       1      2     3           4         5         6           7
-							//CLAVE|NOMBRE|ACTIVO|SUELDO|REINGRESO/BAJA|PUESTO|DEPARTAMENTO|CONTRATISTA
-							String clave  = sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
-							String activo = sheet.getCell(2, fila).getContents()!= null? new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
-							double sueldo = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							String fecha  = sheet.getCell(4, fila).getContents()!= null? new String(sheet.getCell(4, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): Fecha.getHoy();
-							String puesto = sheet.getCell(5, fila).getContents()!= null? new String(sheet.getCell(5, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
-							String departamento= sheet.getCell(6, fila).getContents()!= null? new String(sheet.getCell(6, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
-							String contratista = sheet.getCell(7, fila).getContents()!= null? new String(sheet.getCell(7, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
-							if(!Cadena.isVacio(clave) && !Cadena.isVacio(activo)) {
-								params.put("clave", clave);
-								TrManticEmpresaPersonalDto persona= (TrManticEmpresaPersonalDto)DaoFactory.getInstance().toEntity(sesion, TrManticEmpresaPersonalDto.class, "TrManticEmpresaPersonalDto", "igual", params);
-								if(persona!= null) {
-									// FALTA EL CODIGO NECESARIO PARA REGISTRAR EL INCIDENTE
-									if(Objects.equals(activo.toUpperCase(), "SI")) {
-										if(persona.getIdActivo()== 2L) {
-											persona.setIdActivo(1L);
-											persona.setIngreso(Fecha.toLocalDate(fecha));
-											this.toLoadIncidente(persona.getIdActivo(), persona.getIdEmpresaPersona());
-											super.ejecutar(sesion, EAccion.AGREGAR);	
-										} // if
+							// 0       1        2      3        4         5          6            7			
+							//RFC|RAZONSOCIAL|CLAVE|AUXILIAR|MATERIAL|PRECIOBASE|PRECIOLISTA|PRECIOESPECIAL
+							String rfc     = sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+							String clave   = sheet.getCell(2, fila).getContents()!= null? new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+							String auxiliar= sheet.getCell(3, fila).getContents()!= null? new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+							double base    = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
+							double lista   = Numero.getDouble(sheet.getCell(6, fila).getContents()!= null? sheet.getCell(6, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
+							double especial= Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
+							if(!Cadena.isVacio(rfc) && !Cadena.isVacio(clave)) {
+								TcManticProveedoresDto proveedor= this.toFindProveedor(sesion, rfc);
+								TcManticArticulosDto articulo   = this.toFindArticulo(sesion, clave, auxiliar, 1L);
+								if(proveedor!= null && articulo!= null) {
+									params.put("idProveedor", proveedor.getIdProveedor());
+									params.put("idArticulo", articulo.getIdArticulo());
+									TcKeetArticulosProveedoresDto precios= (TcKeetArticulosProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcKeetArticulosProveedoresDto.class, "TcKeetArticulosProveedoresDto", "identically", params);
+									if(precios== null) {
+										precios= new TcKeetArticulosProveedoresDto(
+											proveedor.getIdProveedor(), // Long idProveedor, 
+											lista, // Double precioLista, 
+											JsfBase.getIdUsuario(), // Long idUsuario, 
+											-1L, // Long idArticuloProveedor, 
+											articulo.getIdArticulo(), // Long idArticulo, 
+											especial, // Double precioEspecial, 
+											base, // Double precioBase, 
+											null // LocalDateTime actualizado
+										);
+									  DaoFactory.getInstance().insert(sesion, precios);
 									} // if
-									else 
-										if(Objects.equals(activo.toUpperCase(), "NO")) {
-											if(persona.getIdActivo()== 1L) {
-												persona.setIdActivo(2L);
-												persona.setBaja(Fecha.toLocalDate(fecha));
-												this.toLoadIncidente(persona.getIdActivo(), persona.getIdEmpresaPersona());
-												super.ejecutar(sesion, EAccion.AGREGAR);	
-											} // if
-										} // if
-									if(sueldo> 0) {
-										persona.setSueldoSemanal(sueldo);
-										persona.setSueldoMensual(Numero.toRedondearSat(sueldo* 4));
-									} // if
-									if(!Cadena.isVacio(puesto) && !Objects.equals(puesto, "*")) {
-										Long idPuesto= this.toLookForPuesto(sesion, puesto);
-										if(idPuesto!= null)
-											persona.setIdPuesto(idPuesto);
-									} // if
-									if(!Cadena.isVacio(departamento) && !Objects.equals(departamento, "*")) {
-										Long idDepartamento= this.toLookForDepartamento(sesion, departamento);
-										if(idDepartamento!= null)
-											persona.setIdDepartamento(idDepartamento);
-									} // if
-									if(Cadena.isVacio(contratista))
-										persona.setIdContratista(null);
-									else
-										if(!Objects.equals(contratista, "*")) {
-											Long idContratista= this.toLookForContratista(sesion, contratista);
-											if(idContratista!= null)
-												persona.setIdContratista(idContratista);
-										} // if
-									DaoFactory.getInstance().update(sesion, persona);
+									else {
+										if(!"*".equals(sheet.getCell(5, fila).getContents()))
+										  precios.setPrecioBase(base);
+										if(!"*".equals(sheet.getCell(6, fila).getContents()))
+    	  							precios.setPrecioLista(lista);
+										if(!"*".equals(sheet.getCell(7, fila).getContents()))
+   										precios.setPrecioEspecial(especial);
+										precios.setActualizado(LocalDateTime.now());
+										DaoFactory.getInstance().update(sesion, precios);
+									} // else
 								} // if
 								monitoreo.incrementar();
 							} // if
 							else {
 								this.errores++;
-								LOG.warn(fila+ ": ["+ clave+ "] activo: ["+ activo+ "] sueldo: ["+ sueldo+ "] fecha: ["+ fecha+ "] puesto: ["+ puesto+ "]");
+								LOG.warn(fila+ ": rfc: ["+ rfc+ "] codigo: ["+ clave+ "] precio base: ["+ base+ "] precio lista: ["+ lista+ "] precio especial: ["+ especial+ "]");
 								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
 									sheet.getCell(0, fila).getContents(), // String codigo, 
 									-1L, // Long idMasivaDetalle, 
 									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-									"EL CLAVE ["+ clave+ "] ACTIVO["+ activo+ "] SUELDO["+ sueldo+ "], FECHA["+ fecha+ "], PUESTO["+ puesto+ "] ESTAN EN CEROS O VACIO" // String observaciones
+									"EL RFC ["+ rfc+ "] CODIGO["+ clave+ "] PRECIO BASE["+ base+ "], PRECIO LISTA["+ lista+ "], PRECIO ESPECIAL["+ especial+ "] ESTAN EN CEROS O VACIO" // String observaciones
 								);
 								DaoFactory.getInstance().insert(sesion, detalle);
 							} // else	
@@ -1704,71 +1711,54 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					try {
 						if(!Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
-							// 0       1      2     3           4         5         6           7
-							//CLAVE|NOMBRE|ACTIVO|SUELDO|REINGRESO/BAJA|PUESTO|DEPARTAMENTO|CONTRATISTA
-							String clave  = sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
-							String activo = sheet.getCell(2, fila).getContents()!= null? new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
-							double sueldo = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							String fecha  = sheet.getCell(4, fila).getContents()!= null? new String(sheet.getCell(4, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): Fecha.getHoy();
-							String puesto = sheet.getCell(5, fila).getContents()!= null? new String(sheet.getCell(5, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
-							String departamento= sheet.getCell(6, fila).getContents()!= null? new String(sheet.getCell(6, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
-							String contratista = sheet.getCell(7, fila).getContents()!= null? new String(sheet.getCell(7, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
-							if(!Cadena.isVacio(clave) && !Cadena.isVacio(activo)) {
-								params.put("clave", clave);
-								TrManticEmpresaPersonalDto persona= (TrManticEmpresaPersonalDto)DaoFactory.getInstance().toEntity(sesion, TrManticEmpresaPersonalDto.class, "TrManticEmpresaPersonalDto", "igual", params);
-								if(persona!= null) {
-									// FALTA EL CODIGO NECESARIO PARA REGISTRAR EL INCIDENTE
-									if(Objects.equals(activo.toUpperCase(), "SI")) {
-										if(persona.getIdActivo()== 2L) {
-											persona.setIdActivo(1L);
-											persona.setIngreso(Fecha.toLocalDate(fecha));
-											this.toLoadIncidente(persona.getIdActivo(), persona.getIdEmpresaPersona());
-											super.ejecutar(sesion, EAccion.AGREGAR);	
-										} // if
+							//      0          1          2        3      4      5        6          7
+							//RFCPROVEEDOR|PROVEEDOR|RFCCLIENTE|CLIENTE|CLAVE|AUXILIAR|MATERIAL|PRECIOCONVENIO
+							String rfcProveedor= sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+							String rfcCliente  = sheet.getCell(2, fila).getContents()!= null? new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+							String clave   = sheet.getCell(3, fila).getContents()!= null? new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+							String auxiliar= sheet.getCell(4, fila).getContents()!= null? new String(sheet.getCell(4, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+							double precio  = Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
+							if(!Cadena.isVacio(rfcProveedor) && !Cadena.isVacio(rfcCliente) && !Cadena.isVacio(clave)) {
+								TcManticProveedoresDto proveedor= this.toFindProveedor(sesion, rfcProveedor);
+								TcManticClientesDto cliente     = this.toFindCliente(sesion, rfcCliente);
+								TcManticArticulosDto articulo   = this.toFindArticulo(sesion, clave, auxiliar, 1L);
+								if(proveedor!= null && cliente!= null && articulo!= null) {
+									params.put("idProveedor", proveedor.getIdProveedor());
+									params.put("idCliente", cliente.getIdCliente());
+									params.put("idArticulo", articulo.getIdArticulo());
+									TrKeetArticuloPreveedorClienteDto precios= (TrKeetArticuloPreveedorClienteDto)DaoFactory.getInstance().toEntity(sesion, TrKeetArticuloPreveedorClienteDto.class, "TrKeetArticuloPreveedorClienteDto", "igual", params);
+									if(precios== null) {
+										precios= new TrKeetArticuloPreveedorClienteDto(
+											precio, // Double precioConvenio, 
+											proveedor.getIdProveedor(), // Long idProveedor, 
+											cliente.getIdCliente(), // Long idCliente, 
+											JsfBase.getIdUsuario(), // Long idUsuario, 
+											-1L, // Long idArticuloProveedorCliente, 
+											0D, // Double precioAnterior, 
+											articulo.getIdArticulo(), // Long idArticulo, 
+											null // LocalDateTime actualizado
+										);
+									  DaoFactory.getInstance().insert(sesion, precios);
 									} // if
-									else 
-										if(Objects.equals(activo.toUpperCase(), "NO")) {
-											if(persona.getIdActivo()== 1L) {
-												persona.setIdActivo(2L);
-												persona.setBaja(Fecha.toLocalDate(fecha));
-												this.toLoadIncidente(persona.getIdActivo(), persona.getIdEmpresaPersona());
-												super.ejecutar(sesion, EAccion.AGREGAR);	
-											} // if
-										} // if
-									if(sueldo> 0) {
-										persona.setSueldoSemanal(sueldo);
-										persona.setSueldoMensual(Numero.toRedondearSat(sueldo* 4));
-									} // if
-									if(!Cadena.isVacio(puesto) && !Objects.equals(puesto, "*")) {
-										Long idPuesto= this.toLookForPuesto(sesion, puesto);
-										if(idPuesto!= null)
-											persona.setIdPuesto(idPuesto);
-									} // if
-									if(!Cadena.isVacio(departamento) && !Objects.equals(departamento, "*")) {
-										Long idDepartamento= this.toLookForDepartamento(sesion, departamento);
-										if(idDepartamento!= null)
-											persona.setIdDepartamento(idDepartamento);
-									} // if
-									if(Cadena.isVacio(contratista))
-										persona.setIdContratista(null);
-									else
-										if(!Objects.equals(contratista, "*")) {
-											Long idContratista= this.toLookForContratista(sesion, contratista);
-											if(idContratista!= null)
-												persona.setIdContratista(idContratista);
-										} // if
-									DaoFactory.getInstance().update(sesion, persona);
+									else {
+										if(!"*".equals(sheet.getCell(7, fila).getContents())) {
+											precios.setPrecioAnterior(precios.getPrecioConvenio());
+										  precios.setPrecioConvenio(precio);
+										} // if	
+										precios.setActualizado(LocalDateTime.now());
+										DaoFactory.getInstance().update(sesion, precios);
+									} // else
 								} // if
 								monitoreo.incrementar();
 							} // if
 							else {
 								this.errores++;
-								LOG.warn(fila+ ": ["+ clave+ "] activo: ["+ activo+ "] sueldo: ["+ sueldo+ "] fecha: ["+ fecha+ "] puesto: ["+ puesto+ "]");
+								LOG.warn(fila+ ": proveedor: ["+ rfcProveedor+ "] cliente: ["+ rfcCliente+ "] codigo: ["+ clave+ "] precio convenio: ["+ precio+ "]");
 								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
 									sheet.getCell(0, fila).getContents(), // String codigo, 
 									-1L, // Long idMasivaDetalle, 
 									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-									"EL CLAVE ["+ clave+ "] ACTIVO["+ activo+ "] SUELDO["+ sueldo+ "], FECHA["+ fecha+ "], PUESTO["+ puesto+ "] ESTAN EN CEROS O VACIO" // String observaciones
+									"EL PROVEEDOR ["+ rfcProveedor+ "] CLIENTE["+ rfcCliente+ "] CODIGO["+ clave+ "], PRECIO CONVENIO["+ precio+ "] ESTAN EN CEROS O VACIO" // String observaciones
 								);
 								DaoFactory.getInstance().insert(sesion, detalle);
 							} // else	

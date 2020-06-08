@@ -7,6 +7,50 @@
   </model>
 
   <dml>
+    <unit id="TcKeetArticulosProveedoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_articulos_proveedores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_articulos_proveedores
+        where      
+          id_proveedor = {idProveedor} and id_articulo = {idArticulo}
+      </select>
+    </unit>		
+    <unit id="TrKeetArticuloPreveedorClienteDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_keet_articulo_preveedor_cliente
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_keet_articulo_preveedor_cliente
+        where      
+          precio_convenio = {precioConvenio} and id_proveedor = {idProveedor} and id_cliente = {idCliente} and id_articulo = {idArticulo}
+      </select>
+      <select id="igual">
+        select      
+          *
+        from      
+          tr_keet_articulo_preveedor_cliente
+        where      
+          id_proveedor = {idProveedor} and id_cliente = {idCliente} and id_articulo = {idArticulo}
+      </select>
+    </unit>		
 		<unit id="TcKeetTiposValesDto">
 			<select id="row">
 				select 
