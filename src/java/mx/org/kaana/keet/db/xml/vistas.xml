@@ -4317,6 +4317,28 @@
 			</select>						
 		</unit>
 		<unit id="VistaEntregaMaterialesDto">						
+			<select id="resumen">
+				select
+					tc_keet_vales_detalles.id_vale_detalle AS id_key,
+					tc_keet_vales_detalles.id_vale, 					
+					tc_keet_vales_detalles.id_articulo,
+					tc_keet_vales_detalles.codigo,
+					tc_keet_vales_detalles.nombre,
+					tc_keet_vales_detalles.cantidad,
+					tc_keet_vales_detalles.surtido,					
+					tc_keet_vales_detalles.registro,
+					tc_keet_vales_detalles.entregado,
+					tc_keet_tipos_entregas.nombre tipo_entrega,
+					if(tc_keet_vales_detalles.entregado is null, 'PENDIENTE', 'ENTREGADO') estatus
+				from 
+					tc_keet_vales_detalles				
+				inner join
+					tc_keet_tipos_entregas ON tc_keet_vales_detalles.id_tipo_entrega = tc_keet_tipos_entregas.id_tipo_entrega
+				where
+					tc_keet_vales_detalles.id_vale= {idVale}
+				order by
+					surtido desc
+			</select>
 			<select id="evidencia">
 				select
 					tc_keet_vales_detalles.id_articulo AS id_key,
