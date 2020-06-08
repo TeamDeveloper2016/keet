@@ -97,12 +97,14 @@ public class Resumen extends IBaseFilter implements Serializable {
     List<Columna> campos     = null;						
     try {    			
 			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
+			campos.add(new Columna("tipoEntrega", EFormatoDinamicos.MAYUSCULAS));			
+			campos.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));			
+			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
+			campos.add(new Columna("entregado", EFormatoDinamicos.FECHA_HORA_CORTA));			
 			params= new HashMap<>();
-			params.put("idVale", ((Entity)this.attrs.get("seleccionadoPivote")).getKey());
-			params.put("clave", this.attrs.get("claveGenerada"));
-			this.lazyModel= new FormatLazyModel("VistaEntregaMaterialesDto", "evidencia", params, campos);
+			params.put("idVale", ((Entity)this.attrs.get("seleccionadoPivote")).getKey());			
+			this.lazyModel= new FormatLazyModel("VistaEntregaMaterialesDto", "resumen", params, campos);
 			UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {

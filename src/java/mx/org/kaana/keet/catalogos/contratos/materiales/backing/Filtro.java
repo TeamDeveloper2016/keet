@@ -276,7 +276,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina
+  } // doEntrega
+	
+	public String doConsultar() {
+    String regresar= null;    				
+    try {			
+			doEntrega();
+			regresar= "resumen".concat(Constantes.REDIRECIONAR);										
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doConsultar
 	
 	public String doCancelar() {
     String regresar          = null;    
