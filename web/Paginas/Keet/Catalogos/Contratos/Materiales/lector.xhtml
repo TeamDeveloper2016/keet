@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Lector de vales" />
+  <ui:define name="librerias">
+		<h:outputScript library="janal" name="core/jquery.qr-0.0.1.js"/>
+		<script type="text/javascript">
+			var codeQr = '';      
+      window.addEventListener("DOMContentLoaded", function() {
+        var video = document.createElement("video");
+        var canvasElement = document.getElementById("canvas");
+        var canvas = canvasElement.getContext("2d");
+        var loadingMessage = document.getElementById("loadingMessage");
+        var inputData = $("#inputFolio");
+        var audio = document.getElementById("audio");
+
+        function drawLine(begin, end, color) {
+          canvas.beginPath();
+          canvas.moveTo(begin.x, begin.y);
+          canvas.lineTo(end.x, end.y);
+          canvas.lineWidth = 4;
+          canvas.strokeStyle = color;
+          canvas.stroke();
+        }
+
+        // Use facingMode: environment to attemt to get the front camera on phones
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function(stream) {
+          video.srcObject = stream;
+          video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+          video.play();
+          //setTimeout(function() {
+            requestAnimationFrame(tick);
+          //}, 500);
+        });
+
+        function tick() {
+          loadingMessage.innerText = "Loading video...";
+          if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            loadingMessage.hidden = true;
+            canvasElement.hidden = false;
+
+            canvasElement.height = "120";
+            canvasElement.width = "225";
+            canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+            var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+            var code = jsQR(imageData.data, imageData.width, imageData.height, {
+              inversionAttempts: "dontInvert"
+            });
+            if (code) {
+              drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
+              drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
+              drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
+              drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
+              if(code.data!== codeQr){
+                inputData.val(code.data);
+                codeQr = code.data;
+                $("#eventoQr").val(codeQr);
+                document.getElementById("eventoQr").click();
+                audio.play();
+              } // if
+            } // if
+          } // if
+          //setTimeout(function() {
+            requestAnimationFrame(tick);
+          //}, 500);
+        }
+      }, false);
+      
+      function resetQr(){
+        codeQr= '';
+        $("#inputFolio").val("");
+      }
+		</script>
+		<style type="text/css">
+			.camera-fixed{
+        position: fixed;
+        top:175px;
+      }
+		</style>
+	</ui:define> 
+  <ui:define name="contenido">    		
+		<p:inputText type="hidden" id="eventoQr" value="#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}">    
+      <p:ajax event="click" listener="#{keetCatalogosContratosMaterialesLector.doLoad}" onstart="return jsIktan.bloquear();" update="confirmacion"/>
+    </p:inputText>
+		
+		<h:panelGrid columns="1" id="camara" class="camera-fixed"> 
+			<div id="loadingMessage">Unable to access video stream (please make sure you have a webcam enabled)</div>
+			<canvas id="canvas" hidden="true"></canvas>
+			<h:panelGrid columns="2" style="float: right;">
+				<p:outputLabel value="Folio: "/>
+				<p:inputText id="inputFolio" value="#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}" maxlength="8" styleClass="iktan-width-100" style="text-transform: uppercase;">
+					<p:ajax event="blur" listener="#{keetCatalogosContratosMaterialesLector.doLoad}" onstart="return jsIktan.partial('folioQr');" oncomplete="resetQr();"/>
+				</p:inputText>
+			</h:panelGrid>
+		</h:panelGrid>
+		
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="tabla" activeIndex="1" multiple="true">
+						
+					</p:accordionPanel>															
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosMaterialesLector.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosMaterialesLector.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>	
+</ui:composition>
