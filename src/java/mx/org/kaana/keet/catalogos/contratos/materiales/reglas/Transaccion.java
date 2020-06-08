@@ -8,7 +8,9 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.keet.catalogos.contratos.materiales.beans.ArchivoEvidenciaVale;
 import mx.org.kaana.keet.catalogos.contratos.vales.beans.DetalleVale;
+import mx.org.kaana.keet.db.dto.TcKeetValesArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesDetallesEntregaDto;
 import mx.org.kaana.keet.db.dto.TcKeetValesDto;
@@ -27,6 +29,7 @@ public class Transaccion extends IBaseTnx{
 	private List<Long>idsGenerados;
 	private String clave;
 	private Double cantidadVariable;
+	private List<ArchivoEvidenciaVale>documentos;	
 
 	public Transaccion(Long idVale, List<DetalleVale> materiales) {
 		this.idVale    = idVale;
@@ -40,6 +43,10 @@ public class Transaccion extends IBaseTnx{
 		this.clave       = clave;
 	} // Transaccion
 
+	public Transaccion(List<ArchivoEvidenciaVale> documentos) {
+		this.documentos= documentos;
+	} // Transaccion
+	
 	public List<Long> getIds() {
 		return ids;
 	}	// getIds
@@ -63,11 +70,12 @@ public class Transaccion extends IBaseTnx{
 					this.idsGenerados= new ArrayList<>();
 					if(procesarEntrega(sesion))
 						regresar= actualizaEstatusVale(sesion);
-					break;		
-				case MODIFICAR:					
-					break;
+					break;						
 				case DEPURAR:				
 					regresar= depurarEntrega(sesion);
+					break;
+				case COMPLEMENTAR:					
+					regresar= registrarEvidencia(sesion);
 					break;
 			} // switch
 		} // try
@@ -275,4 +283,18 @@ public class Transaccion extends IBaseTnx{
 		} // catch
 		return regresar;
 	} // depurarEntrega
+	
+	private boolean registrarEvidencia(Session sesion) throws Exception{
+		boolean regresar= true;
+		try {
+			for(ArchivoEvidenciaVale archivo: this.documentos){
+				if(DaoFactory.getInstance().insert(sesion, (TcKeetValesArchivosDto)archivo)>= 1L)
+					toSaveFile(archivo.getIdArchivo());
+			} // for					
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarEvidencia
 }
