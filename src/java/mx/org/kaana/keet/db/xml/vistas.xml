@@ -163,7 +163,8 @@
 					tc_keet_vales_detalles.nombre,
 					sum(tc_keet_vales_detalles.precio) precio,
 					sum(tc_keet_vales_detalles.cantidad) cantidad,
-					sum(tc_keet_vales_detalles.costo) costo 
+					sum(tc_keet_vales_detalles.costo) costo,
+					sum(tc_keet_vales_detalles.surtido) surtido      
 				from
 					tc_keet_vales_detalles
 				inner join 
