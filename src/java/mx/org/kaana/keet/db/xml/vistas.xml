@@ -152,38 +152,7 @@
 				order by
 					tc_mantic_proveedores.rfc, tc_mantic_articulos_codigos.codigo				
 			</select>
-		</unit>
-		<unit id="VistaEntregaMaterialesDto">
-			<select id="evidencia">
-				select
-					tc_keet_vales_detalles.id_articulo AS id_key,
-					tc_keet_vales_detalles.id_vale, 					
-					tc_keet_vales_detalles.id_articulo,
-					tc_keet_vales_detalles.codigo,
-					tc_keet_vales_detalles.nombre,
-					sum(tc_keet_vales_detalles.precio) precio,
-					sum(tc_keet_vales_detalles.cantidad) cantidad,
-					sum(tc_keet_vales_detalles.costo) costo,
-					sum(tc_keet_vales_detalles.surtido) surtido      
-				from
-					tc_keet_vales_detalles
-				inner join 
-					tc_keet_vales_detalles_entrega on tc_keet_vales_detalles.id_vale_detalle = tc_keet_vales_detalles_entrega.id_vale_detalle
-				where
-					tc_keet_vales_detalles.id_vale= {idVale}
-				and
-				  tc_keet_vales_detalles.entregado is not null 
-				and 
-				  tc_keet_vales_detalles.id_tipo_entrega != 4
-				and 
-					tc_keet_vales_detalles_entrega.clave= '{clave}'
-				group by					
-					tc_keet_vales_detalles.id_vale, 					
-					tc_keet_vales_detalles.id_articulo,
-					tc_keet_vales_detalles.codigo,
-					tc_keet_vales_detalles.nombre
-			</select>
-		</unit>			
+		</unit>		
 		<unit id="VistaValesEspecialesDto">
 			<select id="detalle">
 				select
@@ -4348,6 +4317,35 @@
 			</select>						
 		</unit>
 		<unit id="VistaEntregaMaterialesDto">						
+			<select id="evidencia">
+				select
+					tc_keet_vales_detalles.id_articulo AS id_key,
+					tc_keet_vales_detalles.id_vale, 					
+					tc_keet_vales_detalles.id_articulo,
+					tc_keet_vales_detalles.codigo,
+					tc_keet_vales_detalles.nombre,
+					sum(tc_keet_vales_detalles.precio) precio,
+					sum(tc_keet_vales_detalles.cantidad) cantidad,
+					sum(tc_keet_vales_detalles.costo) costo,
+					sum(tc_keet_vales_detalles.surtido) surtido      
+				from
+					tc_keet_vales_detalles
+				inner join 
+					tc_keet_vales_detalles_entrega on tc_keet_vales_detalles.id_vale_detalle = tc_keet_vales_detalles_entrega.id_vale_detalle
+				where
+					tc_keet_vales_detalles.id_vale= {idVale}
+				and
+				  tc_keet_vales_detalles.entregado is not null 
+				and 
+				  tc_keet_vales_detalles.id_tipo_entrega != 4
+				and 
+					tc_keet_vales_detalles_entrega.clave= '{clave}'
+				group by					
+					tc_keet_vales_detalles.id_vale, 					
+					tc_keet_vales_detalles.id_articulo,
+					tc_keet_vales_detalles.codigo,
+					tc_keet_vales_detalles.nombre
+			</select>
 			<select id="especialidades">
 				select 
 					principal.*
