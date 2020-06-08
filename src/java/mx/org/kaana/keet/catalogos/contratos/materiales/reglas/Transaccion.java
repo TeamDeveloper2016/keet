@@ -155,7 +155,7 @@ public class Transaccion extends IBaseTnx{
 						detalleDto.setIdTipoEntrega(ETiposEntregas.COMPLETO.getKey());
 					} // if
 					else{
-						registrarDiferencias(sesion, detalleDto, this.cantidadVariable);
+						registrarDiferencias(sesion, detalleDto, this.cantidadVariable, ETiposEntregas.MAS);
 						detalleDto.setDiferencia(cantidadPivote - detalleDto.getCantidad());
 					} // else					
 					break;
@@ -174,6 +174,10 @@ public class Transaccion extends IBaseTnx{
 	} // procesaDetalle
 	
 	private void registrarDiferencias(Session sesion, TcKeetValesDetallesDto detalle, Double cantidad) throws Exception{
+		registrarDiferencias(sesion, detalle, cantidad, ETiposEntregas.NINGUNO);
+	} // registrarDiferencias
+	
+	private void registrarDiferencias(Session sesion, TcKeetValesDetallesDto detalle, Double cantidad, ETiposEntregas tipoEntrega) throws Exception{
 		TcKeetValesDetallesDto dtoClon= null;
 		Long idGenerado               = -1L;       
 		try {
@@ -184,7 +188,7 @@ public class Transaccion extends IBaseTnx{
 			dtoClon.setSurtido(null);
 			dtoClon.setEntregado(null);
 			dtoClon.setDiferencia(null);
-			dtoClon.setIdTipoEntrega(ETiposEntregas.NINGUNO.getKey());
+			dtoClon.setIdTipoEntrega(tipoEntrega.getKey());
 			dtoClon.setRegistro(LocalDateTime.now());
 			idGenerado= DaoFactory.getInstance().insert(sesion, dtoClon);			
 			this.idsGenerados.add(idGenerado);
