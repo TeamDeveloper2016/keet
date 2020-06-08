@@ -206,11 +206,13 @@ public class Importar extends IBaseImportar implements Serializable {
 					transaccion= new Transaccion(this.masivo, this.categoria, idSelect.getKey(), this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
 					break;
 				case PRECIOS:
+					transaccion= new Transaccion(this.masivo, this.categoria, ((UISelectEntity)this.attrs.get("idProveedor")).getKey(), -1L, -1L);
 					break;
 				case PRECIOS_CONVENIO:
+					transaccion= new Transaccion(this.masivo, this.categoria, ((UISelectEntity)this.attrs.get("idProveedor")).getKey(), -1L, ((UISelectEntity)this.attrs.get("idCliente")).getKey());
 					break;
 			} // swtich
-      if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
+      if(tuplas> 0L && transaccion!= null && transaccion.ejecutar(EAccion.PROCESAR)) {
 
       } // if
       else

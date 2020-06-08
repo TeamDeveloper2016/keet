@@ -419,56 +419,56 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8).replaceAll(Constantes.CLEAN_ART, "").trim();
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(!Cadena.isVacio(codigo) && codigo.length()> 0) {
-									if(costo> 0 && cantidad> 0) {
-										if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
-											throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
-										if(!Objects.equals(lote, "*") && !Objects.equals(contrato.toString("lote"), lote))
-											throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
-										Entity item= this.toRubro(sesion, codigo);
-										if(item!= null && !item.isEmpty()) {
-											if(count== 0 && item.toLong("nivel")!= 5L)
-												throw new RuntimeException("El archivo no comienza con una estación correcta");
-											// EL NIVEL 5 ES UNA ESTACION POR LO TANTO EL COSTO SE INICIA EN CERO
-											if(item.toLong("nivel")== 5L) {
-												if(!Objects.equals(codigoPartida, codigo)) {
-													codigoPartida= codigo;
-													codigoRubro  = "";
-													rubro        = 0;
-													costo        = 0D;
-													partida++;
-													// ESTO ACTUALIZA EL COSTO TOTAL DE LOS CONCEPTOS
-													if(parcial!= null) {
-														Methods.setValueSubClass(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
-														DaoFactory.getInstance().update(sesion, parcial);
-													} // if
+									if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
+										throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
+									if(!Objects.equals(lote, "*") && !Objects.equals(contrato.toString("lote"), lote))
+										throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
+									Entity item= this.toRubro(sesion, codigo);
+									if(item!= null && !item.isEmpty()) {
+										if(count== 0 && item.toLong("nivel")!= 5L)
+											throw new RuntimeException("El archivo no comienza con una estación correcta");
+										// EL NIVEL 5 ES UNA ESTACION POR LO TANTO EL COSTO SE INICIA EN CERO
+										if(item.toLong("nivel")== 5L) {
+											if(!Objects.equals(codigoPartida, codigo)) {
+												codigoPartida= codigo;
+												codigoRubro  = "";
+												rubro        = 0;
+												costo        = 0D;
+												partida++;
+												// ESTO ACTUALIZA EL COSTO TOTAL DE LOS CONCEPTOS
+												if(parcial!= null) {
+													Methods.setValueSubClass(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
+													DaoFactory.getInstance().update(sesion, parcial);
 												} // if
-												else 
-													throw new RuntimeException("El archivo tiene una estacion duplicada ["+ codigo+ "] {"+ nombre+ "}");
 											} // if
-											else {
-												if(!Objects.equals(codigoRubro, codigo)) {
-													codigoRubro= codigo;
-													rubro++;
-												} // if
-												else 
-													throw new RuntimeException("El archivo tiene un concepto duplicado ["+ codigo+ "] {"+ nombre+ "}");
-											} // else
+											else 
+												throw new RuntimeException("El archivo tiene una estacion duplicada ["+ codigo+ "] {"+ nombre+ "}");
+										} // if
+										else {
+											if(!Objects.equals(codigoRubro, codigo)) {
+												codigoRubro= codigo;
+												rubro++;
+											} // if
+											else 
+												throw new RuntimeException("El archivo tiene un concepto duplicado ["+ codigo+ "] {"+ nombre+ "}");
 										} // else
-										else 
-											throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "] {"+ nombre+ "}");
-										// SE SUMA EL COSTO POR CADA CONCEPTO EXCEPTO LA QUE SON ESTACIONES PORQUE SE LIMPIO SU VALOR
-										concepto.setCosto(concepto.getCosto()+ costo);
-										estaciones.setKeyLevel(String.valueOf(partida), 4); // consecutivo de la estacion
-										estaciones.setKeyLevel(String.valueOf(rubro), 5); // consecutivo del concepto
-										estacion= concepto.clone();
-										// SI EL RUBRO ES CERO SIGNIFICA QUE INICIO LA NUEVA ESTACION POR LO TANTO SE COMIENZA CON LA SUMA EN CEROS
-										if(rubro== 0L) {
-											parcial= estacion;
-											parcial.setCosto(0D);
-										}
-										else
-											if(parcial!= null)
-												parcial.setCosto(parcial.getCosto()+ costo);
+									} // else
+									else 
+										throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "] {"+ nombre+ "}");
+									// SE SUMA EL COSTO POR CADA CONCEPTO EXCEPTO LA QUE SON ESTACIONES PORQUE SE LIMPIO SU VALOR
+									concepto.setCosto(concepto.getCosto()+ costo);
+									estaciones.setKeyLevel(String.valueOf(partida), 4); // consecutivo de la estacion
+									estaciones.setKeyLevel(String.valueOf(rubro), 5); // consecutivo del concepto
+									estacion= concepto.clone();
+									// SI EL RUBRO ES CERO SIGNIFICA QUE INICIO LA NUEVA ESTACION POR LO TANTO SE COMIENZA CON LA SUMA EN CEROS
+									if(rubro== 0L) {
+										parcial= estacion;
+										parcial.setCosto(0D);
+									}
+									else
+										if(parcial!= null)
+											parcial.setCosto(parcial.getCosto()+ costo);
+									if(item.toLong("nivel")== 5L || (item.toLong("nivel")== 6L && costo> 0 && cantidad> 0)) {
 										estacion.setNivel(item.toLong("nivel"));
 										estacion.setUltimo(item.toLong("ultimo"));
 										estacion.setClave(estaciones.toCode());
@@ -488,7 +488,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										else
 											estacion.setTermino(Fecha.toLocalDate(termino));
 										estacion.setIdUsuario(JsfBase.getIdUsuario());
-										DaoFactory.getInstance().insert(sesion, estacion);
+  									DaoFactory.getInstance().insert(sesion, estacion);
 									} // if	
 									LOG.warn(count+ ".-  <"+ estacion.getNivel()+ "> ["+ estacion.getClave()+ "] ("+ estacion.getCodigo()+ ") {"+ estacion.getCosto()+ "} "+ estacion.getDescripcion());
 									monitoreo.incrementar();
@@ -1624,9 +1624,13 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							double lista   = Numero.getDouble(sheet.getCell(6, fila).getContents()!= null? sheet.getCell(6, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
 							double especial= Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
 							if(!Cadena.isVacio(rfc) && !Cadena.isVacio(clave)) {
-								TcManticProveedoresDto proveedor= this.toFindProveedor(sesion, rfc);
+								TcManticProveedoresDto proveedor= null;
+								if(Objects.equals(rfc, "*"))
+									proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.idContatoLote);
+								else
+									proveedor= this.toFindProveedor(sesion, rfc);
 								TcManticArticulosDto articulo   = this.toFindArticulo(sesion, clave, auxiliar, 1L);
-								if(proveedor!= null && articulo!= null) {
+								if(proveedor!= null && articulo!= null && Objects.equals(proveedor.getIdProveedor(), this.idContatoLote)) {
 									params.put("idProveedor", proveedor.getIdProveedor());
 									params.put("idArticulo", articulo.getIdArticulo());
 									TcKeetArticulosProveedoresDto precios= (TcKeetArticulosProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcKeetArticulosProveedoresDto.class, "TcKeetArticulosProveedoresDto", "identically", params);
@@ -1727,10 +1731,18 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							String auxiliar= sheet.getCell(4, fila).getContents()!= null? new String(sheet.getCell(4, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
 							double precio  = Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
 							if(!Cadena.isVacio(rfcProveedor) && !Cadena.isVacio(rfcCliente) && !Cadena.isVacio(clave)) {
-								TcManticProveedoresDto proveedor= this.toFindProveedor(sesion, rfcProveedor);
-								TcManticClientesDto cliente     = this.toFindCliente(sesion, rfcCliente);
+								TcManticProveedoresDto proveedor= null;
+								if(Objects.equals(rfcProveedor, "*"))
+									proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.idContatoLote);
+								else
+									proveedor= this.toFindProveedor(sesion, rfcProveedor);
+								TcManticClientesDto cliente= null;
+								if(Objects.equals(rfcCliente, "*"))
+									cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, this.idPrototipo);
+								else
+									cliente= this.toFindCliente(sesion, rfcCliente);
 								TcManticArticulosDto articulo   = this.toFindArticulo(sesion, clave, auxiliar, 1L);
-								if(proveedor!= null && cliente!= null && articulo!= null) {
+								if(proveedor!= null && cliente!= null && articulo!= null && Objects.equals(proveedor.getIdProveedor(), this.idContatoLote) && Objects.equals(cliente.getIdCliente(), this.idPrototipo)) {
 									params.put("idProveedor", proveedor.getIdProveedor());
 									params.put("idCliente", cliente.getIdCliente());
 									params.put("idArticulo", articulo.getIdArticulo());
