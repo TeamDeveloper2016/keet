@@ -170,6 +170,12 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							else
 							  this.toUpdateMateriales(sesion, file);
 							break;
+						case PRECIOS:
+							this.toPreciosProveedor(sesion, file);
+						  break;
+						case PRECIOS_CONVENIO:
+							this.toPreciosClientes(sesion, file);
+						  break;
 					} // swtich
 				} // try
 				finally {
