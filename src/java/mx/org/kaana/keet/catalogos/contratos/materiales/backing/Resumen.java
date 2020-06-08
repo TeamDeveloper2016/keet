@@ -16,6 +16,8 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -54,8 +56,10 @@ public class Resumen extends IBaseFilter implements Serializable {
 			this.attrs.put("idDepartamento", idDepartamento);      			
 			this.attrs.put("nombreConcepto", "");    
 			this.attrs.put("totalMateriales", 0L);
+			if(Cadena.isVacio(this.attrs.get("qr")))
+				toQr();
 			loadCatalogos();						
-			doLoad();			
+			doLoad();					
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -90,6 +94,26 @@ public class Resumen extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	} // loadCatalogos			
+	
+	private void toQr(){
+		StringBuilder cadenaQr= null;
+		Entity figura         = null;
+		Entity seleccionado   = null;
+		try {			
+			figura= (Entity) this.attrs.get("figura");
+			seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
+			cadenaQr= new StringBuilder();
+			cadenaQr.append(seleccionado.toString("idEmpresa")).append("-");
+			cadenaQr.append(seleccionado.toString("consecutivo")).append("-");
+			cadenaQr.append(figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor")).append("-");
+			cadenaQr.append(figura.toString("nombreCompleto")).append("-");
+			cadenaQr.append(Fecha.formatear(Fecha.FECHA_HORA_LARGA, seleccionado.toTimestamp("registro")));
+			this.attrs.put("qr", cadenaQr.toString());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toQr	
 	
   @Override
   public void doLoad() {
