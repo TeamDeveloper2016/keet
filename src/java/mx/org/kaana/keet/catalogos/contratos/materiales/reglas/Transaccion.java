@@ -276,6 +276,7 @@ public class Transaccion extends IBaseTnx{
 				detallePivote.setDiferencia(null);
 				detallePivote.setIdTipoEntrega(ETiposEntregas.NINGUNO.getKey());
 				DaoFactory.getInstance().update(sesion, detallePivote);
+				DaoFactory.getInstance().delete(sesion, entrega);
 			} // for
 		} // try
 		catch (Exception e) {			
