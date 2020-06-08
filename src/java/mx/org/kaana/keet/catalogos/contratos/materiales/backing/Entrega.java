@@ -1,7 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.materiales.backing;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +10,8 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
@@ -103,12 +100,8 @@ public class Entrega extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params= null;
-    List<Columna> campos     = null;						
-    try {    			
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+		Map<String, Object>params= null;    
+    try {    						
 			params= new HashMap<>();
 			params.put("idVale", ((Entity)this.attrs.get("seleccionadoPivote")).getKey());
 			this.materiales= DaoFactory.getInstance().toEntitySet(DetalleVale.class, "TcKeetValesDetallesDto", "entrega", params);			
@@ -118,8 +111,7 @@ public class Entrega extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    finally {      
-      Methods.clean(campos);
+    finally {            
       Methods.clean(params);
     } // finally		
   } // doLoad	  					
@@ -151,8 +143,12 @@ public class Entrega extends IBaseFilter implements Serializable {
 			if(validarSeleccion()){
 				transaccion= new Transaccion(((Entity)this.attrs.get("seleccionadoPivote")).getKey(), this.materiales);
 				if(transaccion.ejecutar(EAccion.AGREGAR)){
+					JsfBase.setFlashAttribute("claveGenerada", transaccion.getClave());
+					JsfBase.setFlashAttribute("idsGenerados", transaccion.getIdsGenerados());
+					JsfBase.setFlashAttribute("idsProcesados", transaccion.getIds());
+					JsfBase.setFlashAttribute("qr", this.attrs.get("qr"));
 					toSetFlash();
-					regresar= "filtro".concat(Constantes.REDIRECIONAR);						
+					regresar= "evidencia".concat(Constantes.REDIRECIONAR);						
 				} // if
 				else
 					JsfBase.addMessage("Entrega de material", "Ocurrió un error al procesar la entrega de material.", ETipoMensaje.ERROR);
