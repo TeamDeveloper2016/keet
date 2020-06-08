@@ -419,75 +419,77 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8).replaceAll(Constantes.CLEAN_ART, "").trim();
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(!Cadena.isVacio(codigo) && codigo.length()> 0) {
-									if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
-										throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
-									if(!Objects.equals(lote, "*") && !Objects.equals(contrato.toString("lote"), lote))
-										throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
-									Entity item= this.toRubro(sesion, codigo);
-									if(item!= null && !item.isEmpty()) {
-										if(count== 0 && item.toLong("nivel")!= 5L)
-											throw new RuntimeException("El archivo no comienza con una estación correcta");
-										// EL NIVEL 5 ES UNA ESTACION POR LO TANTO EL COSTO SE INICIA EN CERO
-										if(item.toLong("nivel")== 5L) {
-											if(!Objects.equals(codigoPartida, codigo)) {
-												codigoPartida= codigo;
-												codigoRubro  = "";
-												rubro        = 0;
-												costo        = 0D;
-												partida++;
-												// ESTO ACTUALIZA EL COSTO TOTAL DE LOS CONCEPTOS
-												if(parcial!= null) {
-													Methods.setValueSubClass(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
-													DaoFactory.getInstance().update(sesion, parcial);
+									if(costo> 0 && cantidad> 0) {
+										if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
+											throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
+										if(!Objects.equals(lote, "*") && !Objects.equals(contrato.toString("lote"), lote))
+											throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
+										Entity item= this.toRubro(sesion, codigo);
+										if(item!= null && !item.isEmpty()) {
+											if(count== 0 && item.toLong("nivel")!= 5L)
+												throw new RuntimeException("El archivo no comienza con una estación correcta");
+											// EL NIVEL 5 ES UNA ESTACION POR LO TANTO EL COSTO SE INICIA EN CERO
+											if(item.toLong("nivel")== 5L) {
+												if(!Objects.equals(codigoPartida, codigo)) {
+													codigoPartida= codigo;
+													codigoRubro  = "";
+													rubro        = 0;
+													costo        = 0D;
+													partida++;
+													// ESTO ACTUALIZA EL COSTO TOTAL DE LOS CONCEPTOS
+													if(parcial!= null) {
+														Methods.setValueSubClass(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
+														DaoFactory.getInstance().update(sesion, parcial);
+													} // if
 												} // if
+												else 
+													throw new RuntimeException("El archivo tiene una estacion duplicada ["+ codigo+ "] {"+ nombre+ "}");
 											} // if
-											else 
-												throw new RuntimeException("El archivo tiene una estacion duplicada ["+ codigo+ "] {"+ nombre+ "}");
-										} // if
-										else {
-											if(!Objects.equals(codigoRubro, codigo)) {
-												codigoRubro= codigo;
-												rubro++;
-											} // if
-											else 
-												throw new RuntimeException("El archivo tiene un concepto duplicado ["+ codigo+ "] {"+ nombre+ "}");
+											else {
+												if(!Objects.equals(codigoRubro, codigo)) {
+													codigoRubro= codigo;
+													rubro++;
+												} // if
+												else 
+													throw new RuntimeException("El archivo tiene un concepto duplicado ["+ codigo+ "] {"+ nombre+ "}");
+											} // else
 										} // else
-									} // else
-									else 
-										throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "] {"+ nombre+ "}");
-									// SE SUMA EL COSTO POR CADA CONCEPTO EXCEPTO LA QUE SON ESTACIONES PORQUE SE LIMPIO SU VALOR
-									concepto.setCosto(concepto.getCosto()+ costo);
-									estaciones.setKeyLevel(String.valueOf(partida), 4); // consecutivo de la estacion
-									estaciones.setKeyLevel(String.valueOf(rubro), 5); // consecutivo del concepto
- 									estacion= concepto.clone();
-									// SI EL RUBRO ES CERO SIGNIFICA QUE INICIO LA NUEVA ESTACION POR LO TANTO SE COMIENZA CON LA SUMA EN CEROS
-									if(rubro== 0L) {
-										parcial= estacion;
-										parcial.setCosto(0D);
-									}
-									else
-										if(parcial!= null)
-										  parcial.setCosto(parcial.getCosto()+ costo);
-									estacion.setNivel(item.toLong("nivel"));
-									estacion.setUltimo(item.toLong("ultimo"));
-									estacion.setClave(estaciones.toCode());
-									estacion.setCodigo(codigo);
-									estacion.setNombre(nombre);
-									estacion.setDescripcion(nombre);
-									estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
-									estacion.setCantidad(cantidad);
-									estacion.setCosto(costo);
-									Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
-									if(Cadena.isVacio(inicio))
-										estacion.setInicio(contrato.toDate("inicio"));
-									else
-										estacion.setInicio(Fecha.toLocalDate(inicio));
-									if(Cadena.isVacio(termino))
-										estacion.setTermino(contrato.toDate("termino"));
-									else
-										estacion.setTermino(Fecha.toLocalDate(termino));
-									estacion.setIdUsuario(JsfBase.getIdUsuario());
-									DaoFactory.getInstance().insert(sesion, estacion);
+										else 
+											throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "] {"+ nombre+ "}");
+										// SE SUMA EL COSTO POR CADA CONCEPTO EXCEPTO LA QUE SON ESTACIONES PORQUE SE LIMPIO SU VALOR
+										concepto.setCosto(concepto.getCosto()+ costo);
+										estaciones.setKeyLevel(String.valueOf(partida), 4); // consecutivo de la estacion
+										estaciones.setKeyLevel(String.valueOf(rubro), 5); // consecutivo del concepto
+										estacion= concepto.clone();
+										// SI EL RUBRO ES CERO SIGNIFICA QUE INICIO LA NUEVA ESTACION POR LO TANTO SE COMIENZA CON LA SUMA EN CEROS
+										if(rubro== 0L) {
+											parcial= estacion;
+											parcial.setCosto(0D);
+										}
+										else
+											if(parcial!= null)
+												parcial.setCosto(parcial.getCosto()+ costo);
+										estacion.setNivel(item.toLong("nivel"));
+										estacion.setUltimo(item.toLong("ultimo"));
+										estacion.setClave(estaciones.toCode());
+										estacion.setCodigo(codigo);
+										estacion.setNombre(nombre);
+										estacion.setDescripcion(nombre);
+										estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
+										estacion.setCantidad(cantidad);
+										estacion.setCosto(costo);
+										Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
+										if(Cadena.isVacio(inicio))
+											estacion.setInicio(contrato.toDate("inicio"));
+										else
+											estacion.setInicio(Fecha.toLocalDate(inicio));
+										if(Cadena.isVacio(termino))
+											estacion.setTermino(contrato.toDate("termino"));
+										else
+											estacion.setTermino(Fecha.toLocalDate(termino));
+										estacion.setIdUsuario(JsfBase.getIdUsuario());
+										DaoFactory.getInstance().insert(sesion, estacion);
+									} // if	
 									LOG.warn(count+ ".-  <"+ estacion.getNivel()+ "> ["+ estacion.getClave()+ "] ("+ estacion.getCodigo()+ ") {"+ estacion.getCosto()+ "} "+ estacion.getDescripcion());
 									monitoreo.incrementar();
 								} // if
@@ -601,7 +603,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									Entity item= this.toRubro(sesion, codigo);
 									if(item!= null && !item.isEmpty() && item.toLong("nivel")== 6L) {
 										concepto= this.toConcepto(sesion, estaciones.toKey(4), codigo);
-										if(concepto!= null && concepto.isValid()) {
+										if(costo> 0 && cantidad> 0 && concepto!= null && concepto.isValid()) {
 											double diferencia= costo- concepto.getCosto();
 											concepto.setNombre(nombre);
 											concepto.setDescripcion(nombre);
