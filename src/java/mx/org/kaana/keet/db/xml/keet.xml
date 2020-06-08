@@ -151,7 +151,7 @@
         from      
           tc_keet_vales_detalles_entrega
         where      
-          id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle}
+          id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle} and clave='{clave}'
       </select>			
 			<delete id="rows">
 				delete from tc_keet_vales_detalles_entrega where id_vale= {idVale} and clave='{clave}'
