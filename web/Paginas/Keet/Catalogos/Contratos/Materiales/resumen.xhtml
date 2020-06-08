@@ -83,8 +83,38 @@
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
               </f:facet>
-              <h:outputText value="#{row.surtido}"/>
+              <h:outputText value="#{row.cantidad}"/>
             </p:column>							
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Surtido"/>
+              </f:facet>
+              <h:outputText value="#{row.surtido}"/>
+            </p:column>
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row.estatus}"/>
+            </p:column>		                        
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Tipo"/>
+              </f:facet>
+              <h:outputText value="#{row.tipoEntrega}"/>
+            </p:column>		                        
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Entregado"/>
+              </f:facet>
+              <h:outputText value="#{row.entregado}"/>
+            </p:column>		                        
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Registro"/>
+              </f:facet>
+              <h:outputText value="#{row.registro}"/>
+            </p:column>		                        
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosMaterialesResumen.lazyModel== null? 0: keetCatalogosContratosMaterialesResumen.lazyModel.rowCount}] registros"/>
             </f:facet>          
