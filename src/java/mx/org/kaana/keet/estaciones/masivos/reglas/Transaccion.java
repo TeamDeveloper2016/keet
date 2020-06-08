@@ -603,7 +603,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									Entity item= this.toRubro(sesion, codigo);
 									if(item!= null && !item.isEmpty() && item.toLong("nivel")== 6L) {
 										concepto= this.toConcepto(sesion, estaciones.toKey(4), codigo);
-										if(costo> 0 && cantidad> 0 && concepto!= null && concepto.isValid()) {
+										if(concepto!= null && concepto.isValid()) {
 											double diferencia= costo- concepto.getCosto();
 											concepto.setNombre(nombre);
 											concepto.setDescripcion(nombre);
