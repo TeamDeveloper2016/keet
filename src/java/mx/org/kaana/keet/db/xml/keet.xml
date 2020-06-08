@@ -54,7 +54,7 @@
         from      
           tc_keet_vales_detalles
         where      
-          date_format(entregrado, '%Y%m%d%H%i%S') = '{entregrado}' and id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle}
+          id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle}
       </select>
 			<select id="resumen">
 				select
@@ -151,7 +151,7 @@
         from      
           tc_keet_vales_detalles_entrega
         where      
-          date_format(entregrado, '%Y%m%d%H%i%S') = '{entregrado}' and id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle}
+          id_vale = {idVale} and id_articulo = {idArticulo} and id_vale_detalle = {idValeDetalle}
       </select>			
 			<delete id="rows">
 				delete from tc_keet_vales_detalles_entrega where id_vale= {idVale} and clave='{clave}'
