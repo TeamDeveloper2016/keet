@@ -149,8 +149,10 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		BuildMateriales buildMaterial= null;
 		List<MaterialVale>partidas   = null;
 		List<MaterialVale>conceptos  = null;		
+		List<TreeNode>removes        = null;		
 		TreeNode partida             = null;
 		TreeNode concepto            = null;
+		int total                    = 0;
     try {    			
 			buildMaterial= new BuildMateriales(toClaveEstacion(), Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			partidas= buildMaterial.toPartidas();			
@@ -162,7 +164,15 @@ public class Conceptos extends IBaseFilter implements Serializable {
 					concepto.setExpanded(false);
 					concepto.setSelectable(!recordConcepto.isRegistrado());										
 				} // for				
-			} // for			
+			} // for		
+			total= this.treeConceptos.getChildCount();
+			removes= new ArrayList<>();
+			for(int count=0; count<total; count++){
+				if(this.treeConceptos.getChildren().get(count).getChildCount() == 0)
+					removes.add(this.treeConceptos.getChildren().get(count));					
+			} // for
+			for(TreeNode node: removes)
+				this.treeConceptos.getChildren().remove(node);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
