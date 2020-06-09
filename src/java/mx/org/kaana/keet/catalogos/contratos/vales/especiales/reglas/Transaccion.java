@@ -91,7 +91,7 @@ public class Transaccion extends IBaseTnx {
 			valeDto= loadVale(sesion, siguiente);			
 			this.idVale= DaoFactory.getInstance().insert(sesion, valeDto);
 			if(this.idVale>= 1L){
-				if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
+				if(registrarBitacora(sesion, EEstatusVales.PENDIENTE.getKey())){
 					regresar= registrarDetalle(sesion);				
 					generateQr(siguiente, valeDto.getRegistro());					
 				} // if
@@ -124,7 +124,7 @@ public class Transaccion extends IBaseTnx {
 			else
 				regresar.setIdContratoLoteProveedor(this.vale.getIdFigura());
 			regresar.setJustificacion(this.vale.getJustificacion());			
-			regresar.setIdValeEstatus(EEstatusVales.DISPONIBLE.getKey());
+			regresar.setIdValeEstatus(EEstatusVales.PENDIENTE.getKey());
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -230,7 +230,7 @@ public class Transaccion extends IBaseTnx {
 				valeDto.setCantidad(toCantidad());
 				valeDto.setCosto(toCosto());
 				if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L){					
-					if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
+					if(registrarBitacora(sesion, EEstatusVales.PENDIENTE.getKey())){
 						regresar= registrarDetalle(sesion);											
 					} // if
 				} // if				
