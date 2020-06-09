@@ -15,6 +15,9 @@ public final class TextStyle implements Serializable {
 	private static final long serialVersionUID=-6049969544415495534L;
 	
 	private String color;
+	private String fontStyle;
+	private String fontWeight;
+	private String fontFamily;
 	private Integer fontSize;
 
 	public TextStyle() {
@@ -22,11 +25,23 @@ public final class TextStyle implements Serializable {
 	}
 
 	public TextStyle(Integer fontSize) {
-		this.fontSize=fontSize;
+		this(Axis.COLOR_BLACK, "normal", "normal", "Roboto, sans-serif", fontSize);
 	}
 	
 	public TextStyle(String color) {
+		this(color, "normal", "normal", "Roboto, sans-serif", 18);
+	}
+
+	public TextStyle(String color, Integer fontSize) {
+		this(color, "normal", "normal", "Roboto, sans-serif", fontSize);
+	}
+	
+	public TextStyle(String color, String fontStyle, String fontWeight, String fontFamily, Integer fontSize) {
 		this.color=color;
+		this.fontStyle=fontStyle;
+		this.fontWeight=fontWeight;
+		this.fontFamily=fontFamily;
+		this.fontSize=fontSize;
 	}
 
 	public String getColor() {
@@ -45,9 +60,33 @@ public final class TextStyle implements Serializable {
 		this.fontSize=fontSize;
 	}
 
+	public String getFontStyle() {
+		return fontStyle;
+	}
+
+	public void setFontStyle(String fontStyle) {
+		this.fontStyle=fontStyle;
+	}
+
+	public String getFontWeight() {
+		return fontWeight;
+	}
+
+	public void setFontWeight(String fontWeight) {
+		this.fontWeight=fontWeight;
+	}
+
+	public String getFontFamily() {
+		return fontFamily;
+	}
+
+	public void setFontFamily(String fontFamily) {
+		this.fontFamily=fontFamily;
+	}
+
 	@Override
 	public String toString() {
-		return "TextStyle{"+"color="+color+", fontSize="+fontSize+'}';
+		return "TextStyle{"+"color="+color+", fontStyle="+fontStyle+", fontWeight="+fontWeight+", fontFamily="+fontFamily+", fontSize="+fontSize+'}';
 	}
 	
 }

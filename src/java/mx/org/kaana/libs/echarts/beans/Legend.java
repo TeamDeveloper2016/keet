@@ -24,6 +24,7 @@ public final class Legend implements Serializable {
 	private String left;
 	private List<String> data;
 	private String formatter;
+	private TextStyle textStyle;
 
 	public Legend() {
 		this("scroll", "center", "bottom", new ArrayList<>());
@@ -37,6 +38,7 @@ public final class Legend implements Serializable {
 		this("scroll", "center", "bottom", new ArrayList(Arrays.asList(data)));
 		this.orient=orient;
 		this.left=left;
+		this.textStyle= new TextStyle(Axis.COLOR_GRAY, 20);
 	}
 
 	public Legend(String type, String x, String y, List<String> data) {
@@ -96,6 +98,14 @@ public final class Legend implements Serializable {
 		this.formatter=formatter;
 	}
 
+	public TextStyle getTextStyle() {
+		return textStyle;
+	}
+
+	public void setTextStyle(TextStyle textStyle) {
+		this.textStyle=textStyle;
+	}
+
 	public List<String> getData() {
 		return data;
 	}
@@ -106,7 +116,7 @@ public final class Legend implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Legend{"+"type="+type+", orient="+orient+", x="+x+", y="+y+", left="+left+", data="+data+", formatter="+formatter+'}';
+		return "Legend{"+"type="+type+", orient="+orient+", x="+x+", y="+y+", left="+left+", data="+data+", formatter="+formatter+", textStyle="+textStyle+'}';
 	}
-
+	
 }
