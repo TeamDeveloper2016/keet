@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
@@ -16,6 +17,7 @@ import mx.org.kaana.keet.db.dto.TcKeetValesDto;
 import mx.org.kaana.keet.enums.ETiposEntregas;
 import mx.org.kaana.keet.enums.EEstatusVales;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -86,7 +88,7 @@ public class Transaccion extends IBaseTnx {
 		Siguiente siguiente    = null;
 		try {
 			siguiente= toSiguiente(sesion);			
-			valeDto= loadVale(siguiente);			
+			valeDto= loadVale(sesion, siguiente);			
 			this.idVale= DaoFactory.getInstance().insert(sesion, valeDto);
 			if(this.idVale>= 1L){
 				if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
@@ -101,7 +103,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // procesarVale
 	
-	private TcKeetValesDto loadVale(Siguiente siguiente) throws Exception{
+	private TcKeetValesDto loadVale(Session sesion, Siguiente siguiente) throws Exception{
 		TcKeetValesDto regresar= null;		
 		Semanas semana         = null;
 		try {
@@ -111,7 +113,7 @@ public class Transaccion extends IBaseTnx {
 			regresar.setConsecutivo(siguiente.getConsecutivo());
 			regresar.setOrden(siguiente.getOrden());
 			regresar.setSemana(semana.getSemanaEnCurso());			
-			regresar.setIdAlmacen(this.vale.getIdAlmacen());			
+			regresar.setIdAlmacen(toIdAlmacen(sesion));			
 			regresar.setCantidad(toCantidad());
 			regresar.setCosto(toCosto());
 			regresar.setIdTipoVale(this.vale.getIdTipoVale());
@@ -287,4 +289,20 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // depurarVale
+	
+		private Long toIdAlmacen(Session sesion) throws Exception{
+		Long regresar            = null;
+		Entity almacen           = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_desarrollo=" + this.vale.getIdDesarrollo());
+			almacen= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticAlmacenesDto", "row", params);
+			regresar= almacen.toLong("idAlmacen");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toIdAlmacen
 }
