@@ -84,6 +84,12 @@
                 <h:outputText value="Cantidad"/>
               </f:facet>
               <p:inputNumber value="#{row.cantidad}" minValue="1" emptyValue="1" inputStyleClass="janal-column-right"/>
+            </p:column>			
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Unidad medida"/>
+              </f:facet>
+              <h:outputText value="#{row.unidadMedida}"/>
             </p:column>							
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-60">
               <f:facet name="header">

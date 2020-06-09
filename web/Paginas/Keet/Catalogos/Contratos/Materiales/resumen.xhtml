@@ -78,7 +78,7 @@
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
-            </p:column>		   
+            </p:column>		   						
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-150">
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
@@ -91,6 +91,12 @@
               </f:facet>
               <h:outputText value="#{row.surtido}"/>
             </p:column>
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Unidad medida"/>
+              </f:facet>
+              <h:outputText value="#{row.unidadMedida}"/>
+            </p:column>							
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-150">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
