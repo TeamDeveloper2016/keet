@@ -12,7 +12,7 @@ public enum EEstatusVales {
 	CANCELADO  ("CANCELADO" , "circulo-rojo"    , "red"),
 	INCOMPLETO ("INCOMPLETO", "circulo-amarillo", "yellow"),
 	TERMINADO  ("TERMINADO" , "circulo-verde"   , "green"),
-	PENDIENTE  ("TERMINADO" , "circulo-rojo"    , "red");	
+	PENDIENTE  ("PENDIENTE" , "circulo-rojo"    , "red");	
 	
 	private static final Map<Long, EEstatusVales> lookup= new HashMap<>();		
 	private String nombre;	
