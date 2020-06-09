@@ -258,6 +258,7 @@ public class Evidencia extends IBaseImportar implements Serializable {
 		JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));											
 		JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
+		JsfBase.setFlashAttribute("nombreAccionOk", "Aceptar");							
 	} // toSetFlash
 	
 	public String doCancelar() {

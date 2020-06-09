@@ -267,6 +267,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     String regresar= null;    				
     try {			
 			doEntrega();
+			JsfBase.setFlashAttribute("nombreAccionOk", "Regresar");							
 			regresar= "resumen".concat(Constantes.REDIRECIONAR);										
 		} // try
 		catch (Exception e) {
