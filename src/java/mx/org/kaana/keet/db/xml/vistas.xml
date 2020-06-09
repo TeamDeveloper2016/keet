@@ -63,7 +63,7 @@
 					tc_mantic_articulos.id_articulo,
 					tc_mantic_articulos_codigos.codigo,
 					tc_mantic_articulos.nombre as material,
-					sum(tc_keet_vales_detalles.cantidad),
+					sum(tc_keet_vales_detalles.cantidad) as cantidad,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) almacenista,
 					tc_keet_contratos.clave as contrato,
 					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
