@@ -103,7 +103,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			params= new HashMap<>();
 			params.put("idVale", this.attrs.get("idVale"));
-			this.lazyModel= new FormatLazyModel("TcKeetValesDetallesDto", "resumen", params, campos);
+			this.lazyModel= new FormatLazyModel("VistaValesDetallesDto", "resumen", params, campos);
 			UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
