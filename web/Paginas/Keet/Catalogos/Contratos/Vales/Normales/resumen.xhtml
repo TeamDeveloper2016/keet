@@ -84,6 +84,12 @@
                 <h:outputText value="Cantidad"/>
               </f:facet>
               <h:outputText value="#{row.cantidad}"/>
+            </p:column>						
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Unidad medida"/>
+              </f:facet>
+              <h:outputText value="#{row.unidadMedida}"/>
             </p:column>							
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosValesNormalesResumen.lazyModel== null? 0: keetCatalogosContratosValesNormalesResumen.lazyModel.rowCount}] registros"/>
