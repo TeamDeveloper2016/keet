@@ -3998,9 +3998,9 @@
 						tc_keet_vales
 					inner join 
 						tc_keet_vales_materiales on tc_keet_vales.id_vale = tc_keet_vales_materiales.id_vale
-   				where 
+					where 
 						tc_keet_vales_materiales.id_material= principal.id_material and tc_keet_vales.id_tipo_vale=1) total_detalle
-				from ( 
+				from ( 																				
 					select
 						tc_keet_materiales.id_material as id_key,
 						tc_keet_materiales.id_material,
@@ -4011,8 +4011,44 @@
 						tc_keet_materiales.costo,
 						tc_keet_materiales.codigo,
 						tc_keet_materiales.nombre					
-					from
-						tc_keet_materiales
+					from(
+						select
+							tc_keet_puntos_paquetes.id_punto_grupo,  
+							tc_keet_puntos_grupos.id_departamento,
+							tc_keet_departamentos.nombre departamento,
+							tc_keet_puntos_grupos.grupo,
+							tc_keet_puntos_grupos.descripcion,
+							tc_keet_rubros_grupos.id_rubro_grupo,
+							tc_keet_rubros_grupos.id_rubro,
+							tc_keet_rubros.codigo,
+							tc_keet_rubros.nombre,
+							tc_keet_rubros.orden
+						from
+							tc_keet_puntos_paquetes
+						inner join
+							tc_keet_puntos_grupos ON tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+						inner join
+							tc_keet_rubros_grupos ON tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+						inner join
+							tc_keet_rubros ON tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+						inner join
+							tc_keet_departamentos ON tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
+						where
+							tc_keet_puntos_grupos.id_departamento= {idDepartamento}
+						group by
+							tc_keet_puntos_paquetes.id_punto_grupo,   
+							tc_keet_puntos_grupos.id_departamento,
+							tc_keet_departamentos.nombre,
+							tc_keet_puntos_grupos.grupo,
+							tc_keet_puntos_grupos.descripcion,
+							tc_keet_rubros_grupos.id_rubro_grupo,
+							tc_keet_rubros_grupos.id_rubro,
+							tc_keet_rubros.codigo,
+							tc_keet_rubros.nombre,
+							tc_keet_rubros.orden
+					) rubros
+					inner join	
+						tc_keet_materiales on rubros.codigo = tc_keet_materiales.codigo
 					where
 						tc_keet_materiales.clave like '{clave}%'
 					and
@@ -4021,7 +4057,7 @@
 						tc_keet_materiales.nivel=6
 				) principal
 				order by 
-				  principal.clave
+					principal.clave				
 			</select>			
 			<select id="conceptosRegistrados">
 				select 
@@ -4061,11 +4097,18 @@
 					tc_keet_materiales.nombre,
 					tc_keet_materiales.cantidad,
 					tc_mantic_articulos.id_articulo,
-					tc_mantic_articulos.precio
+					tc_mantic_articulos.precio,
+					tc_mantic_unidades_medidas.nombre unidad_medida
 				from
 					tc_keet_materiales
 				inner join 
 					tc_mantic_articulos on tc_keet_materiales.codigo = tc_mantic_articulos.codigo
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 				where
 					tc_keet_materiales.clave like '{clave}%'				
 				and 
@@ -4088,11 +4131,18 @@
 					tc_keet_materiales.nombre,
 					tc_keet_materiales.cantidad,
 					tc_mantic_articulos.id_articulo,
-					tc_mantic_articulos.precio
+					tc_mantic_articulos.precio,
+					tc_mantic_unidades_medidas.nombre unidad_medida
 				from
 					tc_keet_materiales
 				inner join 
 					tc_mantic_articulos on tc_keet_materiales.codigo = tc_mantic_articulos.codigo
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 				where
 					tc_keet_materiales.clave like '{clave}%'				
 				and 
