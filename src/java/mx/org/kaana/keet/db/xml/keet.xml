@@ -7,7 +7,115 @@
   </model>
 
   <dml>
-    <unit id="TcKeetArticulosProveedoresDto">
+    <unit id="TcKeetCajasChicasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_cajas_chicas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_cajas_chicas
+        where      
+          id_desarrollo = {idDesarrollo}
+      </select>
+    </unit>
+		<unit id="TcKeetCajasChicasCierresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_cajas_chicas_cierres
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_cajas_chicas_cierres
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+    </unit>		
+    <unit id="TcKeetCajasChicasCierresBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_cajas_chicas_cierres_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_cajas_chicas_cierres_bitacora
+        where      
+          id_caja_chica_cierre_bitacora = {idCajaChicaCierreBitacora}
+      </select>
+    </unit>		
+    <unit id="TcKeetGastosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_gastos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_gastos
+        where      
+          consecutivo = '{consecutivo}' and id_empresa = {idEmpresa}
+      </select>
+    </unit>
+    <unit id="TcKeetGastosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_gastos_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_gastos_detalles
+        where      
+          id_gasto = {idGasto} and codigo = '{codigo}' and id_articulo = {idArticulo}
+      </select>
+    </unit>
+    <unit id="TcKeetGastosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_gastos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_gastos_archivos
+        where      
+          archivo = '{archivo}'
+      </select>
+    </unit>
+		<unit id="TcKeetArticulosProveedoresDto">
       <select id="row">
         select      
           *
@@ -102,7 +210,7 @@
       </select>
 			<select id="resumen">
 				select
-					id_articulo AS id_key,
+					id_articulo as id_key,
 					id_vale, 					
 					id_articulo,
 					codigo,
@@ -122,7 +230,7 @@
 			</select>
 			<select id="entrega">
 				select
-					id_articulo AS id_key,
+					id_articulo as id_key,
 					id_vale, 					
 					id_articulo,
 					codigo,
@@ -158,7 +266,7 @@
       </select>
 			<select id="evidencia">
 				select
-					id_articulo AS id_key,
+					id_articulo as id_key,
 					id_vale, 					
 					id_articulo,
 					codigo,
