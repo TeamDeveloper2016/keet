@@ -124,6 +124,7 @@ public class Transaccion extends IBaseTnx {
 			else
 				regresar.setIdContratoLoteProveedor(this.vale.getIdFigura());
 			regresar.setJustificacion(this.vale.getJustificacion());			
+			regresar.setIdValeEstatus(EEstatusVales.DISPONIBLE.getKey());
 		} // try
 		catch (Exception e) {			
 			throw e;
