@@ -295,10 +295,10 @@ public class Conceptos extends Accion implements Serializable {
 	public void doSearchArticulo(Long idArticulo, Integer index) {}
 	
 	@Override
-	public void doUpdateArticulos() {
+	public void doUpdateArticulosPrecioCliente() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
-		int buscarCodigoPor       = 1;
+		int buscarCodigoPor       = 2;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
@@ -306,27 +306,28 @@ public class Conceptos extends Accion implements Serializable {
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			String search= (String)this.attrs.get("codigo"); 
+  		params.put("precioCliente", ETipoVenta.fromNombreCampo(getPrecio()).name().toLowerCase());
+			String search= (String) this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
 				if((boolean)this.attrs.get("buscaPorCodigo"))
-			    buscarCodigoPor= 1;
+			    buscarCodigoPor= 0;
 				if(search.startsWith("."))
 					buscarCodigoPor= 2;
 				else 
 					if(search.startsWith(":"))
-						buscarCodigoPor= 0;
+						buscarCodigoPor= 1;
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
 				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 			} // if	
 			else
 				search= "WXYZ";
-  		params.put("codigo", search);						
+  		params.put("codigo", search);	
 			switch(buscarCodigoPor) {      
-				case 0: 
+				case 0: 					
 				case 1: 
 					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
-					break;									
+					break;
 				case 2:
           this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
           break;
@@ -339,6 +340,6 @@ public class Conceptos extends Accion implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    } // finally
-	} // doUpdateArticulos	
+    }// finally
+	} // doUpdateArticulosPrecioCliente	
 }
