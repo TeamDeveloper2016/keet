@@ -153,6 +153,68 @@
 					tc_mantic_proveedores.rfc, tc_mantic_articulos_codigos.codigo				
 			</select>
 		</unit>		
+		<unit id="VistaValesDetallesDto">
+			<select id="resumen">				
+				select
+					tc_keet_vales_detalles.id_articulo AS id_key,
+					tc_keet_vales_detalles.id_vale, 					
+					tc_keet_vales_detalles.id_articulo,
+					tc_keet_vales_detalles.codigo,
+					tc_keet_vales_detalles.nombre,
+					tc_mantic_unidades_medidas.nombre unidad_medida,
+					sum(tc_keet_vales_detalles.precio) precio,
+					sum(tc_keet_vales_detalles.cantidad) cantidad,
+					sum(tc_keet_vales_detalles.costo) costo 
+				from
+					tc_keet_vales_detalles
+				inner join
+					tc_mantic_articulos on tc_keet_vales_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				where
+					id_vale= {idVale}
+				group by					
+					tc_keet_vales_detalles.id_vale, 					
+					tc_keet_vales_detalles.id_articulo,
+					tc_keet_vales_detalles.codigo,
+					tc_keet_vales_detalles.nombre,
+					tc_mantic_unidades_medidas.nombre
+			</select>
+			<select id="entrega">
+				select
+					tc_keet_vales_detalles.id_articulo AS id_key,
+					tc_keet_vales_detalles.id_vale, 					
+					tc_keet_vales_detalles.id_articulo,
+					tc_keet_vales_detalles.codigo,
+					tc_keet_vales_detalles.nombre,
+					tc_mantic_unidades_medidas.nombre unidad_medida,
+					sum(tc_keet_vales_detalles.precio) precio,
+					sum(tc_keet_vales_detalles.cantidad) cantidad,
+					sum(tc_keet_vales_detalles.costo) costo 				
+				from
+					tc_keet_vales_detalles
+				inner join
+					tc_mantic_articulos on tc_keet_vales_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				where
+					tc_keet_vales_detalles.id_vale= {idVale} and entregado is null and id_tipo_entrega=4
+				group by					
+					tc_keet_vales_detalles.id_vale, 					
+					tc_keet_vales_detalles.id_articulo,
+					tc_keet_vales_detalles.codigo,
+					tc_keet_vales_detalles.nombre,
+					tc_mantic_unidades_medidas.nombre
+			</select>
+		</unit>
 		<unit id="VistaValesEspecialesDto">
 			<select id="detalle">
 				select
@@ -4379,11 +4441,20 @@
 					tc_keet_vales_detalles.registro,
 					tc_keet_vales_detalles.entregado,
 					tc_keet_tipos_entregas.nombre tipo_entrega,
-					if(tc_keet_vales_detalles.entregado is null, 'PENDIENTE', 'ENTREGADO') estatus
+					if(tc_keet_vales_detalles.entregado is null, 'PENDIENTE', 'ENTREGADO') estatus,
+					tc_mantic_unidades_medidas.nombre unidad_medida
 				from 
 					tc_keet_vales_detalles				
 				inner join
 					tc_keet_tipos_entregas ON tc_keet_vales_detalles.id_tipo_entrega = tc_keet_tipos_entregas.id_tipo_entrega
+				inner join
+					tc_mantic_articulos on tc_keet_vales_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 				where
 					tc_keet_vales_detalles.id_vale= {idVale}
 				order by
@@ -4396,6 +4467,7 @@
 					tc_keet_vales_detalles.id_articulo,
 					tc_keet_vales_detalles.codigo,
 					tc_keet_vales_detalles.nombre,
+					tc_mantic_unidades_medidas.nombre unidad_medida,
 					sum(tc_keet_vales_detalles.precio) precio,
 					sum(tc_keet_vales_detalles.cantidad) cantidad,
 					sum(tc_keet_vales_detalles.costo) costo,
@@ -4404,6 +4476,14 @@
 					tc_keet_vales_detalles
 				inner join 
 					tc_keet_vales_detalles_entrega on tc_keet_vales_detalles.id_vale_detalle = tc_keet_vales_detalles_entrega.id_vale_detalle
+				inner join
+					tc_mantic_articulos on tc_keet_vales_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 				where
 					tc_keet_vales_detalles.id_vale= {idVale}
 				and
@@ -4416,7 +4496,8 @@
 					tc_keet_vales_detalles.id_vale, 					
 					tc_keet_vales_detalles.id_articulo,
 					tc_keet_vales_detalles.codigo,
-					tc_keet_vales_detalles.nombre
+					tc_keet_vales_detalles.nombre,
+					tc_mantic_unidades_medidas.nombre
 			</select>
 			<select id="especialidades">
 				select 
