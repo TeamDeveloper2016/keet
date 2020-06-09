@@ -56,6 +56,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
   		BarModel modelSimple  = new BarModel(new Title(), simple, EBarOritentation.HORIZONTAL);
 			modelSimple.addLine(new CustomLine("2019", 50000D, Colors.COLOR_RED));
 			modelSimple.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
+			modelSimple.getxAxis().getAxisLabel().setFontSize(18);
   		this.attrs.put("simple", modelSimple.toJson());
 			
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));

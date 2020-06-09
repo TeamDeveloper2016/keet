@@ -17,6 +17,10 @@ public final class AxisLabel implements Serializable {
 	private Boolean inside; 
 	private TextStyle textStyle;
 	private String formatter;
+	private String color;
+	private Integer fontSize;
+	private String fontWeight;
+	private String fontFamily;
 	private Integer margin;
 
 	public AxisLabel() {
@@ -36,9 +40,17 @@ public final class AxisLabel implements Serializable {
 	}
 
 	public AxisLabel(Boolean inside, TextStyle textStyle, String formatter, Integer margin) {
+		this(inside, textStyle, formatter, "#0000FF", 18, "normal", "Roboto, sans-serif", margin);
+	}
+
+	public AxisLabel(Boolean inside, TextStyle textStyle, String formatter, String color, Integer fontSize, String fontWeight, String fontFamily, Integer margin) {
 		this.inside=inside;
 		this.textStyle=textStyle;
 		this.formatter=formatter;
+		this.color=color;
+		this.fontSize=fontSize;
+		this.fontWeight=fontWeight;
+		this.fontFamily=fontFamily;
 		this.margin=margin;
 	}
 	
@@ -74,9 +86,41 @@ public final class AxisLabel implements Serializable {
 		return margin;
 	}
 
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color=color;
+	}
+
+	public Integer getFontSize() {
+		return fontSize;
+	}
+
+	public void setFontSize(Integer fontSize) {
+		this.fontSize=fontSize;
+	}
+
+	public String getFontWeight() {
+		return fontWeight;
+	}
+
+	public void setFontWeight(String fontWeight) {
+		this.fontWeight=fontWeight;
+	}
+
+	public String getFontFamily() {
+		return fontFamily;
+	}
+
+	public void setFontFamily(String fontFamily) {
+		this.fontFamily=fontFamily;
+	}
+
 	@Override
 	public String toString() {
-		return "AxisLabel{"+"inside="+inside+", textStyle="+textStyle+", formatter="+formatter+", margin="+margin+'}';
+		return "AxisLabel{"+"inside="+inside+", textStyle="+textStyle+", formatter="+formatter+", color="+color+", fontSize="+fontSize+", fontWeight="+fontWeight+", fontFamily="+fontFamily+", margin="+margin+'}';
 	}
 	
 }

@@ -138,12 +138,12 @@ public class StackModel extends BaseBarModel implements Serializable {
         Serie serie = this.series.get(this.series.size() - 1).clone();
         int count = 0;
         serie.setName("Total");
-        serie.setData(new ArrayList<Value>());
+        serie.setData(new ArrayList<>());
         for (Value item: this.series.get(this.series.size() - 1).getData()) {
           serie.getData().add(new Value("CGOR:" + this.calculate(count), 0.01D));
           count++;
         } // for
-        serie.getLabel().getNormal().setPosition(this.getOrientation().equals(EBarOritentation.VERTICAL)?"top":"right");
+        serie.getLabel().getNormal().setPosition(this.getOrientation().equals(EBarOritentation.VERTICAL)? "top": "right");
         this.series.add(serie);
       } // try
       catch (Exception e) {
