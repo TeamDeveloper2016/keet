@@ -45,7 +45,7 @@ public class Normal implements Serializable, Cloneable {
 		this.position=position;
 		this.formatter=formatter;
 		this.fontFamily="Roboto, sans-serif";
-    this.fontSize=19;
+    this.fontSize=18;
 		this.show=true;
 	}
 
