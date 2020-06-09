@@ -19,12 +19,13 @@ public class MaterialVale implements Serializable{
 	private Long idArticulo;
 	private Double cantidad;
 	private Double precio;
+	private String unidadMedida;
 
 	public MaterialVale() {
-		this(-1L, -1L, -1L, null, -1L, -1L, 0D, null, null, -1L, -1L, 0D, 0D);
+		this(-1L, -1L, -1L, null, -1L, -1L, 0D, null, null, -1L, -1L, 0D, 0D, null);
 	}
 
-	public MaterialVale(Long idKey, Long idMaterial, Long nivel, String clave, Long idEmpaqueUnidadMedida, Long idEstacionEstatus, Double costo, String codigo, String nombre, Long totalDetalle, Long idArticulo, Double cantidad, Double precio) {
+	public MaterialVale(Long idKey, Long idMaterial, Long nivel, String clave, Long idEmpaqueUnidadMedida, Long idEstacionEstatus, Double costo, String codigo, String nombre, Long totalDetalle, Long idArticulo, Double cantidad, Double precio, String unidadMedida) {
 		this.idKey                = idKey;
 		this.idMaterial           = idMaterial;
 		this.nivel                = nivel;
@@ -151,6 +152,14 @@ public class MaterialVale implements Serializable{
 	public String getCostoDecimales() {
 		return Numero.formatear(Numero.NUMERO_SAT_DECIMALES, this.costo);
 	}
+
+	public String getUnidadMedida() {
+		return unidadMedida;
+	}
+
+	public void setUnidadMedida(String unidadMedida) {
+		this.unidadMedida = unidadMedida;
+	}	
 	
 	@Override
   public boolean equals(Object obj) {
