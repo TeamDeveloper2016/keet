@@ -99,6 +99,13 @@
 					and tc_keet_vales_detalles.entregado is null
 					and tc_keet_vales.id_vale_estatus= 1
 					and tc_mantic_articulos.id_articulo= {idArticulo}
+				group by
+					tc_mantic_empresas.nombre,
+					tc_keet_desarrollos.nombres,
+					tc_keet_vales.consecutivo,
+					tc_mantic_articulos.id_articulo,
+					tc_keet_contratos.clave,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote)
 				{sortOrder}
 			</select>
 			<select id="precios">
