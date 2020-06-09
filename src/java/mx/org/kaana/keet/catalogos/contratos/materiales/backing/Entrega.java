@@ -104,7 +104,7 @@ public class Entrega extends IBaseFilter implements Serializable {
     try {    						
 			params= new HashMap<>();
 			params.put("idVale", ((Entity)this.attrs.get("seleccionadoPivote")).getKey());
-			this.materiales= DaoFactory.getInstance().toEntitySet(DetalleVale.class, "TcKeetValesDetallesDto", "entrega", params);			
+			this.materiales= DaoFactory.getInstance().toEntitySet(DetalleVale.class, "VistaValesDetallesDto", "entrega", params);			
 			this.attrs.put("totalRegistros", this.materiales.size());			
     } // try
     catch (Exception e) {
