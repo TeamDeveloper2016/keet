@@ -134,11 +134,11 @@
   </ui:define>
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="#{keetCatalogosContratosMaterialesResumen.attrs.nombreAccionOk}" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosMaterialesResumen.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="#{keetCatalogosContratosMaterialesResumen.attrs.nombreAccionOk}" icon="fa #{keetCatalogosContratosMaterialesResumen.attrs.nombreAccionOk eq 'Aceptar' ? 'fa-check' : 'fa-rotate-left'}" accesskey="a"  process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosMaterialesResumen.doAceptar}" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" rendered="false"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosMaterialesResumen.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa #{keetCatalogosContratosMaterialesResumen.attrs.nombreAccionOk eq 'Aceptar' ? 'fa-check' : 'fa-rotate-left'}" process="@form" onstart="return validateCriterios();" action="#{keetCatalogosContratosMaterialesResumen.doAceptar}" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" rendered="false"/>
 		</div>		
 	</ui:define>
