@@ -23,7 +23,6 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
@@ -56,8 +55,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {		
     EOpcionesResidente opcion= null;
-		Long idDesarrollo        = null;
-		Long idDepartamento      = null;
+		Long idDesarrollo        = null;		
 		UISelectEntity figura    = null;
     try {			
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
@@ -70,14 +68,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("persona", false);				
       this.attrs.put("proveedor", false);							
 			this.loadCatalogos();			
-			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null){
-				idDepartamento= (Long) JsfBase.getFlashAttribute("idDepartamento");
-				figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");
-				this.attrs.put("especialidad", idDepartamento);
+			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null){				
+				figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");				
 				this.doLoadFiguras();				
-				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));
-				doLoadLotes();
+				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));				
 			} // if
+			doLoad();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -86,12 +82,20 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // init
 
 	private void loadCatalogos() throws Exception {
-		Map<String, Object>params= null;
+		Map<String, Object>params = null;
+		List<UISelectItem> estatus= null;
 		try {
 			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
-			this.attrs.put("domicilio", toDomicilio());			
-			this.loadEspecialidades();			
+			this.attrs.put("domicilio", toDomicilio());						
+			estatus= new ArrayList<>();
+			for(EEstatusVales eestatus: EEstatusVales.values()){
+				if(eestatus.equals(EEstatusVales.DISPONIBLE) || eestatus.equals(EEstatusVales.INCOMPLETO) || eestatus.equals(EEstatusVales.ENTREGADO))
+					estatus.add(new UISelectItem(eestatus.getKey(), eestatus.name()));
+			} // for
+			estatus.add(0, new UISelectItem(-1L, "SELECCIONE"));
+			this.attrs.put("listEstatus", estatus);
+			this.attrs.put("estatus", UIBackingUtilities.toFirstKeySelectItem(estatus));
 			this.doLoadFiguras();      
 		} // try
     finally {
@@ -99,29 +103,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // loadCatalogos	
 	
-	private void loadEspecialidades() {
-		List<UISelectItem>especialidades= null;
-		Map<String, Object>params       = null;
-		try {
-			params= new HashMap<>();
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			especialidades= UISelect.seleccione("VistaEntregaMaterialesDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
-			this.attrs.put("especialidades", especialidades);
-			this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
-		} // try
-		finally {
-			Methods.clean(params);
-		} // finally
-	} // loadEspecialidades
-	
 	public void doLoadFiguras(){
 		List<UISelectEntity> figuras= null;
 		Map<String, Object>params   = null;
 		List<Columna> campos        = null;
 		try {
 			params= new HashMap<>();
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			params.put("idDepartamento", this.attrs.get("especialidad"));
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));			
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
@@ -160,44 +148,15 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar.toString();
 	} // toDomicilio
 	
-	public void doLoadLotes(){
-		Map<String, Object>params         = null;
-		List<UISelectEntity> lotesCriterio= null;
-		UISelectEntity loteCriterio       = null;
-		String idXml                      = null;
-		List<UISelectEntity> figuras      = null;		
-		UISelectEntity figura             = null;		
-		try {
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
-			params= new HashMap<>();
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			params.put("idFigura", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());			
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
-			idXml= figura.toLong("tipo").equals(1L) ? "lotesContratistas" : "lotesSubContratistas";			
-			lotesCriterio= UIEntity.seleccione("VistaEntregaMaterialesDto", idXml, params, "descripcionLote");
-			loteCriterio= UIBackingUtilities.toFirstKeySelectEntity(figuras);
-			this.attrs.put("lotesCriterio", lotesCriterio);
-			this.attrs.put("loteCriterio", loteCriterio);			
-			doLoad();			
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // doLoadLotes
-	
   @Override
   public void doLoad() {
 		Map<String, Object>params         = null;
 		List<UISelectEntity> valesCriterio= null;
-		UISelectEntity valeCriterio       = null;
-		String idXml                      = null;
+		UISelectEntity valeCriterio       = null;		
     try {   						      		
-			params= toPrepare();				
-			idXml= toIdXml();
-			this.vales= DaoFactory.getInstance().toEntitySet("VistaEntregaMaterialesDto", idXml, params);	
-			valesCriterio= UIEntity.seleccione("VistaEntregaMaterialesDto", idXml, params, "consecutivo");
+			params= toPrepare();										
+			this.vales= DaoFactory.getInstance().toEntitySet("VistaEntregaMaterialesDto", "vales", params);	
+			valesCriterio= UIEntity.seleccione("VistaEntregaMaterialesDto", "vales", params, "consecutivo");
 			valeCriterio= UIBackingUtilities.toFirstKeySelectEntity(valesCriterio);
 			this.attrs.put("totalRegistros", this.vales.size());
 			this.attrs.put("valesCriterios", valesCriterio);
@@ -224,12 +183,23 @@ public class Filtro extends IBaseFilter implements Serializable {
 			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			params.put("idFigura", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
-			condicion= new StringBuilder();			
-			if(this.attrs.get("loteCriterio")!= null && ((UISelectEntity)this.attrs.get("loteCriterio")).getKey()>= 1L)
-				condicion.append("tc_keet_contratos_lotes.id_contrato_lote=").append(((UISelectEntity)this.attrs.get("loteCriterio")).getKey()).append(" and ");			
+			params.put("condicionContratista", Constantes.SQL_VERDADERO);
+			params.put("condicionSubcontratista", Constantes.SQL_VERDADERO);			
+			if(figura.getKey()>= 1L){
+				if(figura.toLong("tipo").equals(1L)){
+					params.put("condicionContratista", "tc_keet_contratos_lotes_contratistas.id_empresa_persona=".concat(figura.getKey().toString().substring(4)));
+					params.put("condicionSubcontratista", "tc_keet_contratos_lotes_proveedores.id_proveedor=-1");
+				} // if
+				else{
+					params.put("condicionSubcontratista", "tc_keet_contratos_lotes_proveedores.id_proveedor=".concat(figura.getKey().toString().substring(4)));
+					params.put("condicionContratista", "tc_keet_contratos_lotes_contratistas.id_empresa_persona=-1");
+				} // else
+			} // if			
+			condicion= new StringBuilder();						
 			if(this.attrs.get("valeCriterio")!= null && ((UISelectEntity)this.attrs.get("valeCriterio")).getKey()>= 1L)
 				condicion.append("tc_keet_vales.id_vale=").append(((UISelectEntity)this.attrs.get("valeCriterio")).getKey()).append(" and ");			
+			if(this.attrs.get("estatus")!= null && Long.valueOf(this.attrs.get("estatus").toString())>= 1L)
+				condicion.append("tc_keet_vales.id_vale_estatus=").append(this.attrs.get("estatus")).append(" and ");			
 			params.put(Constantes.SQL_CONDICION, Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4));
 			this.attrs.put("persona", figura.toLong("tipo").equals(1L));
 			this.attrs.put("proveedor", figura.toLong("tipo").equals(2L));
@@ -240,11 +210,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			throw e;
 		} // catch
 		return params;
-	} // toPrepare
-	
-	private String toIdXml(){
-		return ((List<UISelectEntity>) this.attrs.get("figuras")).get(((List<UISelectEntity>) this.attrs.get("figuras")).indexOf((UISelectEntity) this.attrs.get("figura"))).toLong("tipo").equals(1L) ? "valesContratistas" : "valesSubContratistas";
-	} // toIdXml
+	} // toPrepare	
 	
 	private void toEstatusVale() throws Exception {		
 		for(Entity vale: this.vales){															
@@ -253,20 +219,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // toEstatusManzanaLote	
 	
 	public String doEntrega() {
-    String regresar             = null;    		
-		Entity seleccionado         = null;
-		List<UISelectEntity> figuras= null;
-		UISelectEntity figura       = null;
-    try {			
-			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
+    String regresar      = null;    		
+		Entity seleccionado  = null;		
+		UISelectEntity figura= null;
+    try {						
+			figura= toFigura();
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
 			if(this.attrs.get("opcionAdicional")!= null)
 				JsfBase.setFlashAttribute("opcionAdicional", (EOpcionesResidente)this.attrs.get("opcionAdicional"));												
 			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
 			JsfBase.setFlashAttribute("figura", figura);									
-			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
+			JsfBase.setFlashAttribute("idDepartamento", figura.toLong("idDepartamento"));									
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));							
 			JsfBase.setFlashAttribute("flujo", "filtro");										
 			regresar= "entrega".concat(Constantes.REDIRECIONAR);										
@@ -277,6 +241,27 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doEntrega
+	
+	private UISelectEntity toFigura() throws Exception{		
+		UISelectEntity regresar  = null;
+		Entity figura            = null;
+		Entity seleccionado      = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			params.put("id", seleccionado.toLong("idFigura"));
+			figura= (Entity) DaoFactory.getInstance().toEntity("VistaEntregaMaterialesDto", seleccionado.toLong("figura").equals(1L) ? "contratista" : "subcontratista", params);
+			regresar= new UISelectEntity(figura);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFigura
 	
 	public String doConsultar() {
     String regresar= null;    				
