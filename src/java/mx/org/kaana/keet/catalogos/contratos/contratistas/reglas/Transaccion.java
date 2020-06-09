@@ -98,7 +98,7 @@ public class Transaccion extends IBaseTnx {
 			else{
 				regresar.setIdContratoLote(key);
 				regresar.setIdEmpresaPersona(this.idEmpresaPersona);				
-				regresar.setObservaciones("ASIGNACION DEL CONTRATISTA AL LOTE");
+				regresar.setObservaciones("ASIGNACION DEL EMPLEADO AL LOTE");
 			} // else
 			regresar.setIdUsuario(idUsuario);
 			regresar.setIdTrabajo(2L);						
@@ -119,10 +119,10 @@ public class Transaccion extends IBaseTnx {
 				regresar.setIdContratoLote(this.idContratoLote);				
 				regresar.setObservaciones("ASIGNACION DEL CONTRATISTA AL LOTE [ContratoLote [" + this.idContratoLote + "]]");
 			} // if
-			else{
+			else {
 				regresar.setIdProveedor(this.idEmpresaPersona);
 				regresar.setIdContratoLote(key);				
-				regresar.setObservaciones("ASIGNACION DEL CONTRATISTA AL LOTE");
+				regresar.setObservaciones("ASIGNACION DEL EMPLEADO AL LOTE");
 			} // else
 			regresar.setIdUsuario(idUsuario);
 			regresar.setIdTrabajo(2L);									
