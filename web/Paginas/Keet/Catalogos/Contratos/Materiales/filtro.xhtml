@@ -35,15 +35,10 @@
 							</p:panelGrid>										
 						</p:tab>					
 						<p:tab title="Busqueda">
-							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																							
-								<p:outputLabel for="departamento" value="Departamento:"/>
-								<p:selectOneMenu id="departamento" value="#{keetCatalogosContratosMaterialesFiltro.attrs.especialidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoadFiguras}" update="contratista tabla" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.especialidades}"/>
-								</p:selectOneMenu>																
+							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																															
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
 								<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosMaterialesFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoadLotes}" update="tabla lotes" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoad}" update="tabla vales" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>									
 									<p:column headerText="Puesto">
 										<h:outputText value="#{item.puesto}"/>
@@ -51,14 +46,11 @@
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombreCompleto}"/>
 									</p:column>   
-								</p:selectOneMenu>									
-								<p:outputLabel for="lotes" value="Lotes:"/>
-								<p:selectOneMenu id="lotes" value="#{keetCatalogosContratosMaterialesFiltro.attrs.loteCriterio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoad}" update="tabla vales" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.lotesCriterio}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
-									<p:column headerText="Lote">
-										<h:outputText value="#{item.descripcionLote}"/>
-									</p:column>   
+								</p:selectOneMenu>																	
+								<p:outputLabel for="estatus" value="Estatus:"/>
+								<p:selectOneMenu id="estatus" value="#{keetCatalogosContratosMaterialesFiltro.attrs.estatus}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoad}" update=" vales tabla" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.listEstatus}"/>																											
 								</p:selectOneMenu>
 								<p:outputLabel for="vales" value="Vale:"/>
 								<p:selectOneMenu id="vales" value="#{keetCatalogosContratosMaterialesFiltro.attrs.valeCriterio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
@@ -84,9 +76,11 @@
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosMaterialesFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">									
+									<h:outputText value="&lt;b&gt;Contratista:&lt;/b&gt;" escape="false" rendered="#{row.figura eq '1'}"/>
+									<h:outputText value="&lt;b&gt;Subcontratista:&lt;/b&gt;" escape="false" rendered="#{row.figura eq '2'}"/>
+									<h:outputText value="#{row.nombreCompleto}" escape="false"/>
 									<h:outputText value="&lt;b&gt;Semana:&lt;/b&gt; #{row.semana}" escape="false"/>
-									<h:outputText value="&lt;b&gt;Ejercicio:&lt;/b&gt; #{row.ejercicio}" escape="false"/>
-									<h:outputText value="&lt;b&gt;Cantidad:&lt;/b&gt; #{row.cantidad}" escape="false"/>
+									<h:outputText value="&lt;b&gt;Ejercicio:&lt;/b&gt; #{row.ejercicio}" escape="false"/>									
 								</p:panelGrid>								
 							</h:panelGrid>
 							<f:facet name="footer">
