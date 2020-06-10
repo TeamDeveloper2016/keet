@@ -304,6 +304,9 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	} // toIdAlmacen
 }

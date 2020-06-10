@@ -12,7 +12,7 @@ public class DetalleVale extends MaterialVale implements Serializable{
 	} // DetalleVale
 	
 	public DetalleVale(MaterialVale materialVale) {
-		super(materialVale.getIdMaterial(), materialVale.getIdMaterial(), materialVale.getNivel(), materialVale.getClave(), materialVale.getIdEmpaqueUnidadMedida(), materialVale.getIdEstacionEstatus(), materialVale.getCosto(), materialVale.getCodigo(), materialVale.getNombre(), materialVale.getTotalDetalle(), materialVale.getIdArticulo(), materialVale.getCantidad(), materialVale.getPrecio(), materialVale.getUnidadMedida());
+		super(materialVale.getIdMaterial(), materialVale.getIdMaterial(), materialVale.getNivel(), materialVale.getClave(), materialVale.getIdEmpaqueUnidadMedida(), materialVale.getIdEstacionEstatus(), materialVale.getCosto(), materialVale.getCodigo(), materialVale.getNombre(), materialVale.getTotalDetalle(), materialVale.getIdArticulo(), materialVale.getCantidad(), materialVale.getPrecio(), materialVale.getUnidadMedida(), materialVale.getStock());
 		this.check= false;
 	} // DetalleVale
 

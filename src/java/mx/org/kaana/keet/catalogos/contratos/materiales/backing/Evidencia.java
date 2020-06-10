@@ -229,8 +229,8 @@ public class Evidencia extends IBaseImportar implements Serializable {
     String regresar        = null;
 		Transaccion transaccion= null;
     try {									
-			if(!this.documentos.isEmpty()){
-				transaccion= new Transaccion(this.documentos);
+			if(!this.documentos.isEmpty()){				
+				transaccion= new Transaccion(this.documentos, ((Entity)this.attrs.get("seleccionadoPivote")).getKey(), this.attrs.get("claveGenerada").toString(), (Long) this.attrs.get("idDesarrollo"));
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR)){
 					toSetFlash();
 					regresar= "resumen".concat(Constantes.REDIRECIONAR);						

@@ -20,12 +20,13 @@ public class MaterialVale implements Serializable{
 	private Double cantidad;
 	private Double precio;
 	private String unidadMedida;
+	private Double stock;
 
 	public MaterialVale() {
-		this(-1L, -1L, -1L, null, -1L, -1L, 0D, null, null, -1L, -1L, 0D, 0D, null);
+		this(-1L, -1L, -1L, null, -1L, -1L, 0D, null, null, -1L, -1L, 0D, 0D, null, 0D);
 	}
 
-	public MaterialVale(Long idKey, Long idMaterial, Long nivel, String clave, Long idEmpaqueUnidadMedida, Long idEstacionEstatus, Double costo, String codigo, String nombre, Long totalDetalle, Long idArticulo, Double cantidad, Double precio, String unidadMedida) {
+	public MaterialVale(Long idKey, Long idMaterial, Long nivel, String clave, Long idEmpaqueUnidadMedida, Long idEstacionEstatus, Double costo, String codigo, String nombre, Long totalDetalle, Long idArticulo, Double cantidad, Double precio, String unidadMedida, Double stock) {
 		this.idKey                = idKey;
 		this.idMaterial           = idMaterial;
 		this.nivel                = nivel;
@@ -39,6 +40,7 @@ public class MaterialVale implements Serializable{
 		this.idArticulo           = idArticulo;
 		this.cantidad             = cantidad;
 		this.precio               = precio;
+		this.stock                = stock;
 	}
 
 	public Long getIdKey() {
@@ -160,6 +162,14 @@ public class MaterialVale implements Serializable{
 	public void setUnidadMedida(String unidadMedida) {
 		this.unidadMedida = unidadMedida;
 	}	
+
+	public Double getStock() {
+		return stock;
+	}
+
+	public void setStock(Double stock) {
+		this.stock = stock;
+	}
 	
 	@Override
   public boolean equals(Object obj) {
