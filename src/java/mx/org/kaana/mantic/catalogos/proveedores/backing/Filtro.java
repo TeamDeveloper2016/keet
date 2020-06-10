@@ -216,4 +216,15 @@ public class Filtro extends IBaseFilter implements Serializable {
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
 
+	public String doUploadProveedor() {
+		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PRECIOS.getId());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Proveedores/filtro");
+		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
+	}
+	
+	public String doUploadCliente() {
+		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PRECIOS_CONVENIO.getId());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Proveedores/filtro");
+		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
+	}
 }
