@@ -13,7 +13,7 @@ import java.util.List;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class MarkLine implements  Serializable {
+public class MarkLine implements Serializable {
 
 	private static final long serialVersionUID=912847999224677836L;
 

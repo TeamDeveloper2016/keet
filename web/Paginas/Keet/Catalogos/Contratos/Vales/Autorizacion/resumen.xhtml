@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="Resumen de materiales de vale" />
+  <ui:param name="titulo" value="Autorización del vale de materiales"/>
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        				
@@ -15,7 +15,7 @@
 				'cargo'        : {validaciones: 'requerido', mascara: 'libre'}				
       };							
 			
-			function validateCriterios(){
+			function validateCriterios() {
 				var ok= janal.execute();
 				if(ok)
 					janal.bloquear();

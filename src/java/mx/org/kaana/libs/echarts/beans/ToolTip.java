@@ -17,6 +17,7 @@ public final class ToolTip implements Serializable {
 	private String trigger;
 	private AxisPointer axisPointer;
 	private String formatter;
+	private TextStyle textStyle;
 
 	public ToolTip() {
 		this("axis", new AxisPointer(), "{a} <br/>{b}: {c} ({d}%)");
@@ -26,6 +27,7 @@ public final class ToolTip implements Serializable {
 		this.trigger=trigger;
 		this.axisPointer=axisPointer;
 		this.formatter=formatter;
+		this.textStyle= new TextStyle(Axis.COLOR_BLACK, 20);
 	}
 
 	public String getTrigger() {
@@ -52,9 +54,17 @@ public final class ToolTip implements Serializable {
 		this.formatter=formatter;
 	}
 
+	public TextStyle getTextStyle() {
+		return textStyle;
+	}
+
+	public void setTextStyle(TextStyle textStyle) {
+		this.textStyle=textStyle;
+	}
+
 	@Override
 	public String toString() {
-		return "ToolTip{"+"trigger="+trigger+", axisPointer="+axisPointer+", formatter="+formatter+'}';
+		return "ToolTip{"+"trigger="+trigger+", axisPointer="+axisPointer+", formatter="+formatter+", textStyle="+textStyle+'}';
 	}
 
 }

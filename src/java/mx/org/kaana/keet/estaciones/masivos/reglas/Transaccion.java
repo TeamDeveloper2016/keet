@@ -1630,7 +1630,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 								else
 									proveedor= this.toFindProveedor(sesion, rfc);
 								TcManticArticulosDto articulo   = this.toFindArticulo(sesion, clave, auxiliar, 1L);
-								if(proveedor!= null && articulo!= null && Objects.equals(proveedor.getIdProveedor(), this.idContatoLote)) {
+								if(proveedor!= null && articulo!= null) {
 									params.put("idProveedor", proveedor.getIdProveedor());
 									params.put("idArticulo", articulo.getIdArticulo());
 									TcKeetArticulosProveedoresDto precios= (TcKeetArticulosProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcKeetArticulosProveedoresDto.class, "TcKeetArticulosProveedoresDto", "identically", params);
@@ -1742,7 +1742,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 								else
 									cliente= this.toFindCliente(sesion, rfcCliente);
 								TcManticArticulosDto articulo   = this.toFindArticulo(sesion, clave, auxiliar, 1L);
-								if(proveedor!= null && cliente!= null && articulo!= null && Objects.equals(proveedor.getIdProveedor(), this.idContatoLote) && Objects.equals(cliente.getIdCliente(), this.idPrototipo)) {
+								if(proveedor!= null && cliente!= null && articulo!= null) {
 									params.put("idProveedor", proveedor.getIdProveedor());
 									params.put("idCliente", cliente.getIdCliente());
 									params.put("idArticulo", articulo.getIdArticulo());
