@@ -192,6 +192,10 @@
 					tc_mantic_unidades_medidas.nombre
 			</select>
 			<select id="entrega">
+				select 
+					principal.*,
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_desarrollo= {idDesarrollo})) stock
+				from(
 				select
 					tc_keet_vales_detalles.id_articulo AS id_key,
 					tc_keet_vales_detalles.id_vale, 					
@@ -220,6 +224,7 @@
 					tc_keet_vales_detalles.codigo,
 					tc_keet_vales_detalles.nombre,
 					tc_mantic_unidades_medidas.nombre
+				) principal
 			</select>
 		</unit>
 		<unit id="VistaValesEspecialesDto">
