@@ -82,11 +82,25 @@
 								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-proveedores.xls" title="Plantilla de proveedores XLS">
 									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 								</h:outputLink>
+							</div>
+							<div class="janal-icons-header">
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-precios-proveedores.xls" title="Plantilla de precios por proveedor">
+									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+								</h:outputLink>
+							</div>
+							<div class="janal-icons-header">
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-precios-clientes.xls" title="Plantilla de precios por proveedor y cliente">
+									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+								</h:outputLink>
 							</div>	
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem  value="Agregar" action="#{manticCatalogosProveedoresFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 								<p:separator/>
 								<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticCatalogosProveedoresFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+								<p:separator/>
+								<p:menuitem icon="fa fa-cloud-upload" value="Importar precios por proveedor" action="#{manticCatalogosProveedoresFiltro.doUploadProveedor()}" title="Importar precios" onstart="return janal.bloquear()"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-cloud-upload" value="Importar" action="#{manticCatalogosProveedoresFiltro.doUploadCliente()}" title="Importar precios" onstart="return janal.bloquear()"/>
 								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
