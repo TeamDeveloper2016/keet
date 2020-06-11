@@ -27,18 +27,18 @@
   <ui:define name="contenido">
 		<p:remoteCommand name="asignarIcono" actionListener="#{kajoolMantenimientoMenusAgregar.doAsignarIcono}" update="textoIcono,labelIcono,tamanio" onstart="PF('dialogoIconos').hide();" oncomplete="janal.desbloquear();"/>
     <p:fieldset legend="Menú" toggleable="true" collapsed="false" styleClass="Responsive100">
-			<p:panelGrid id="definicion" columns="2"  layout="grid" columnClasses="janal-wid-10, janal-wid-100" styleClass="janal-wid-100">
+			<p:panelGrid id="definicion" columns="2"  layout="grid" columnClasses="janal-wid-col-100, janal-wid-90" styleClass="janal-wid-100">
 				<p:outputLabel for="descripcion">Descripción:</p:outputLabel>
-				<p:inputText id="descripcion" styleClass="Wid98" value="#{kajoolMantenimientoMenusAgregar.current.descripcion}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{kajoolMantenimientoMenusAgregar.current.descripcion}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
 				<p:outputLabel for="ayuda">Ayuda:</p:outputLabel>
-				<p:inputText id="ayuda" styleClass="Wid98" value="#{kajoolMantenimientoMenusAgregar.current.ayuda}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:inputText id="ayuda" styleClass="janal-wid-100-txt" value="#{kajoolMantenimientoMenusAgregar.current.ayuda}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
 				<p:outputLabel for="url">URL:</p:outputLabel>
-				<p:inputText id="url" styleClass="Wid98" value="#{kajoolMantenimientoMenusAgregar.current.ruta}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:inputText id="url" styleClass="janal-wid-100-txt" value="#{kajoolMantenimientoMenusAgregar.current.ruta}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
 				<p:outputLabel for="codigo">Código:</p:outputLabel>
-				<p:inputText id="codigo" styleClass="Wid98" value="#{kajoolMantenimientoMenusAgregar.current.codigo}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:inputText id="codigo" styleClass="janal-wid-100-txt" value="#{kajoolMantenimientoMenusAgregar.current.codigo}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
 				<p:outputLabel value="Icono:"/>
-				<p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-3" styleClass="janal-wid-100">
-					<p:inputText id="textoIcono" styleClass="Wid90" value="#{kajoolMantenimientoMenusAgregar.current.icono}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}">
+				<p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-8, ui-grid-col-2 janal-column-center, ui-grid-col-2 janal-column-center" styleClass="janal-wid-100-txt">
+					<p:inputText id="textoIcono" styleClass="janal-wid-100-txt" value="#{kajoolMantenimientoMenusAgregar.current.icono}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}">
 						<p:ajax event="blur" update="labelIcono"/>
 					</p:inputText>
 					<p:commandButton id="muestraIconos" icon="fa fa-search" onstart="janal.bloquear(); PF('dialogoIconos').show()" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
@@ -48,7 +48,7 @@
 					</p:outputLabel>
 				</p:panelGrid>
 				<label for="tamanio">Tamaño:</label>
-				<p:selectOneMenu id="tamanio" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}" value="#{kajoolMantenimientoMenusAgregar.tamanio}">
+				<p:selectOneMenu id="tamanio" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}" value="#{kajoolMantenimientoMenusAgregar.tamanio}" styleClass="janal-wid-100-txt">
 					<p:ajax event="change" listener="#{kajoolMantenimientoMenusAgregar.doAsignarTamanio}" process="@this" update="labelIcono" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 					<f:selectItem itemValue="fa-1x" itemLabel="1x"/>
 					<f:selectItem itemValue="fa-2x" itemLabel="2x"/>
@@ -57,7 +57,7 @@
 					<f:selectItem itemValue="fa-5x" itemLabel="5x"/>
 				</p:selectOneMenu>
 				<label for="publicar">Publicar:</label>
-				<p:selectOneMenu id="publicar" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}" value="#{kajoolMantenimientoMenusAgregar.current.publicar}" >
+				<p:selectOneMenu id="publicar" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}" value="#{kajoolMantenimientoMenusAgregar.current.publicar}"  styleClass="janal-wid-100-txt">
 					<f:selectItem itemValue="1" itemLabel="Sí"/>
 					<f:selectItem itemValue="0" itemLabel="No"/>
 					<f:selectItem itemValue="3" itemLabel="En construcción"/>

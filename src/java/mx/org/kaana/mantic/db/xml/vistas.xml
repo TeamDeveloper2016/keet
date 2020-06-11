@@ -4241,6 +4241,7 @@
 			<select id="almacenesEmpresa">
 				select 
 				  tc_mantic_almacenes.id_almacen as id_key,
+				  tc_mantic_almacenes.id_empresa,
 				  tc_mantic_almacenes.clave,
 				  tc_mantic_almacenes.nombre,
 				  tc_mantic_almacenes.descripcion,

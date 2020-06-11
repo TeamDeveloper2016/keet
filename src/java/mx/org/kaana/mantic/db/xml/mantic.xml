@@ -1108,8 +1108,11 @@
 				  tc_mantic_garantias.id_garantia as id_key
         from      
           tc_mantic_garantias
+				inner join
+				  tc_mantic_ventas on tc_mantic_garantias.id_venta= tc_mantic_ventas.id_venta
         where      
-          consecutivo = '{consecutivo}'
+				  tc_mantic_ventas.id_empresa= {idEmpresa}
+          and tc_mantic_garantias.consecutivo = '{consecutivo}'
       </select>
       <select id="venta">
         select      
@@ -2095,7 +2098,8 @@
         from      
           tc_mantic_devoluciones
         where      
-          consecutivo = '{consecutivo}'
+				  id_empresa= {idEmpresa}
+          and consecutivo = '{consecutivo}'
       </select>
       <select id="nota">
         select      
@@ -4575,7 +4579,8 @@
         from      
           tc_mantic_ventas
         where      
-          ticket = '{consecutivo}'
+				  id_empresa= {idEmpresa}
+				  and ticket = '{consecutivo}'
       </select>
       <select id="cliente">
         select      
@@ -4767,7 +4772,8 @@
         from      
           tc_mantic_notas_entradas
         where      
-          consecutivo = '{consecutivo}'
+				  id_empresa= {idEmpresa}
+          and consecutivo = '{consecutivo}'
       </select>
       <select id="orden">
         select      
@@ -5373,7 +5379,8 @@
         from      
           tc_mantic_transferencias
         where      
-          consecutivo = '{consecutivo}'
+				  id_empresa= {idEmpresa}
+          and consecutivo = '{consecutivo}'
       </select>
     </unit>
     <unit id="TcManticTransferenciasBitacoraDto">

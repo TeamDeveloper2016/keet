@@ -13,6 +13,7 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -21,6 +22,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -34,6 +36,7 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
 
 
@@ -121,6 +124,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.toLoadAlmacenArticulo();
 			this.toSearchUltimo();
 			this.toLoadUbicaciones();
+			this.toLoadMovimientos();
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -166,13 +170,16 @@ public class Conteos extends IBaseFilter implements Serializable {
 		} // if
 	}
 	
-	private void toLoadAlmacenes() {
+	private void toLoadAlmacenes() throws Exception {
 		List<UISelectEntity> almacenes= null;
 		Map<String, Object> params    = null;
 		List<Columna> columns         = null;
 		try {
 			params= new HashMap<>();
-			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			if(JsfBase.isCajero())
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			else
+				params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			columns= new ArrayList<>();
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));							
@@ -247,6 +254,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 				this.attrs.put("articulo", null);
 			} // else	
 			this.doLoad();
+			this.toLoadMovimientos();
 		} // try
 		finally {
       Methods.clean(columns);
@@ -437,7 +445,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 				if(list!= null) {
 					List<IBaseDto> items= (List<IBaseDto>)list.getWrappedData();
 					if(items.size()> 0)
-						this.updateArticulo(new UISelectEntity((Entity)items.get(0)));
+					  this.updateArticulo(new UISelectEntity((Entity)items.get(0)));
 				} // if
 			} // else
 			else
@@ -520,8 +528,159 @@ public class Conteos extends IBaseFilter implements Serializable {
   } // doCancelar
 
   public void doChangeUbicacion() {
-		if(this.articulo!= null && this.attrs.get("idAlmacenUbicacion")!= null && ((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey()> 0L)
+		if(this.articulo!= null && this.attrs.get("idAlmacenUbicacion")!= null && ((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey()> 0L) 
 			this.articulo.setIdAlmacenUbicacion(((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey());
 	} 
+
+	public void doTabChange(TabChangeEvent event) {
+		if(event.getTab().getTitle().equals("Movimientos (60 días)") && this.attrs.get("idArticulo")!= null) 
+			this.toLoadMovimientos();
+	}
+	
+	private void toLoadMovimientos() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("calculo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+			Periodo periodo= new Periodo();
+			periodo.addMeses(-2);
+			this.attrs.put("registro", periodo.toString());
+			this.attrs.put("periodo", Fecha.formatear(Fecha.FECHA_NOMBRE_DIA, periodo.toString()));
+      this.attrs.put("movimientos", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "movimientos", this.attrs, columns));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+    }// finally
+	}	
+
+	private void toLoadItemAlmacen() {
+		List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+		if(this.attrs.get("almacen")== null) {
+			this.attrs.put("almacen", almacenes.get(0));
+		} // if
+		else {
+			int index= almacenes.indexOf((UISelectEntity)this.attrs.get("almacen"));
+			if(index>= 0) 
+  			this.attrs.put("almacen", almacenes.get(index));
+			else
+				this.attrs.put("almacen", almacenes.get(0));
+		} // if
+	}
+		
+	private Long toFindIdKey(String consecutivo, String proceso, String idXml) {
+		Long regresar             = -1L;
+		Map<String, Object> params= null;
+		try {
+			this.toLoadItemAlmacen();
+			params=new HashMap<>();
+			params.put("consecutivo", consecutivo);
+			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("almacen")).toLong("idEmpresa"));
+			Entity entity= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+			if(entity!= null && !entity.isEmpty())
+				regresar= entity.getKey();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	public String doMoveSection() {
+		UISelectEntity consecutivo    = (UISelectEntity)this.attrs.get("consecutivo");
+		List<Columna> columns         = null;
+    Map<String, Object> params    = new HashMap<>();
+		List<UISelectEntity> documento= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA));
+			switch(consecutivo.toLong("idTipoMovimiento").intValue()) {
+				case 1: // ENTRADAS
+					Long idNotaEntrada= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticNotasEntradasDto", "consecutivo");
+      		params.put("idNotaEntrada", idNotaEntrada);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "notaEntrada", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+          this.attrs.put("tipoDocumento", "de la nota de entrada");
+					break;
+				case 2: // VENTAS
+					Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "ticket");
+      		params.put("idVenta", idVenta);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+          this.attrs.put("tipoDocumento", "de la venta");
+					break;
+				case 3: // DEVOLUCIONES
+					Long idDevolucion= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticDevolucionesDto", "consecutivo");
+      		params.put("idDevolucion", idDevolucion);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "devolucion", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+          this.attrs.put("tipoDocumento", "de la devolución");
+					break;
+				case 4: // TRASPASOS
+          columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+          columns.add(new Columna("origen", EFormatoDinamicos.MAYUSCULAS));
+          columns.add(new Columna("destino", EFormatoDinamicos.MAYUSCULAS));
+					Long idTransferencia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticTransferenciasDto", "consecutivo");
+      		params.put("idTransferencia", idTransferencia);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "traspaso", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+          this.attrs.put("tipoDocumento", "del traspaso");
+					break;
+				case 5: // GARANTIAS
+					Long idGarantia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticGarantiasDto", "consecutivo");
+      		params.put("idGarantia", idGarantia);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "garantia", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+          this.attrs.put("tipoDocumento", "de la garantía");
+					break;
+				case 6: // CONTEOS
+          columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+          columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+          columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+          columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+					Long idArticulo= consecutivo.toLong("idArticulo");
+      		params.put("idArticulo", idArticulo);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "conteo", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+          this.attrs.put("tipoDocumento", "del conteo");
+					break;
+			} // switch
+			if(documento!= null && !documento.isEmpty()) {
+				documento.get(0).put("articulos", new Value("articulos", documento.size()));
+        this.attrs.put("documento", documento.get(0));
+			} // if	
+      this.attrs.put("idTipoDocumento", consecutivo.toLong("idTipoMovimiento").intValue());
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return null;
+	}
 	
 }
