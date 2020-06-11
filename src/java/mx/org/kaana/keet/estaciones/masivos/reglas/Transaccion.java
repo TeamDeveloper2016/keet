@@ -21,7 +21,7 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
-import mx.org.kaana.keet.db.dto.TrKeetArticuloPreveedorClienteDto;
+import mx.org.kaana.keet.db.dto.TrKeetArticuloProveedorClienteDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.estaciones.masivos.beans.Estacion;
 import mx.org.kaana.keet.estaciones.masivos.beans.Material;
@@ -1746,9 +1746,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									params.put("idProveedor", proveedor.getIdProveedor());
 									params.put("idCliente", cliente.getIdCliente());
 									params.put("idArticulo", articulo.getIdArticulo());
-									TrKeetArticuloPreveedorClienteDto precios= (TrKeetArticuloPreveedorClienteDto)DaoFactory.getInstance().toEntity(sesion, TrKeetArticuloPreveedorClienteDto.class, "TrKeetArticuloPreveedorClienteDto", "igual", params);
+									TrKeetArticuloProveedorClienteDto precios= (TrKeetArticuloProveedorClienteDto)DaoFactory.getInstance().toEntity(sesion, TrKeetArticuloProveedorClienteDto.class, "TrKeetArticuloProveedorClienteDto", "igual", params);
 									if(precios== null) {
-										precios= new TrKeetArticuloPreveedorClienteDto(
+										precios= new TrKeetArticuloProveedorClienteDto(
 											precio, // Double precioConvenio, 
 											proveedor.getIdProveedor(), // Long idProveedor, 
 											cliente.getIdCliente(), // Long idCliente, 
