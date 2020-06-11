@@ -23,8 +23,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tr_keet_articulo_preveedor_cliente")
-public class TrKeetArticuloPreveedorClienteDto implements IBaseDto, Serializable {
+@Table(name="tr_keet_articulo_proveedor_cliente")
+public class TrKeetArticuloProveedorClienteDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="precio_convenio")
@@ -48,16 +48,16 @@ public class TrKeetArticuloPreveedorClienteDto implements IBaseDto, Serializable
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TrKeetArticuloPreveedorClienteDto() {
+  public TrKeetArticuloProveedorClienteDto() {
     this(new Long(-1L));
   }
 
-  public TrKeetArticuloPreveedorClienteDto(Long key) {
+  public TrKeetArticuloProveedorClienteDto(Long key) {
     this(null, null, null, null, new Long(-1L), null, null, LocalDateTime.now());
     setKey(key);
   }
 
-  public TrKeetArticuloPreveedorClienteDto(Double precioConvenio, Long idProveedor, Long idCliente, Long idUsuario, Long idArticuloProveedorCliente, Double precioAnterior, Long idArticulo, LocalDateTime actualizado) {
+  public TrKeetArticuloProveedorClienteDto(Double precioConvenio, Long idProveedor, Long idCliente, Long idUsuario, Long idArticuloProveedorCliente, Double precioAnterior, Long idArticulo, LocalDateTime actualizado) {
     setPrecioConvenio(precioConvenio);
     setIdProveedor(idProveedor);
     setIdCliente(idCliente);
@@ -224,7 +224,7 @@ public class TrKeetArticuloPreveedorClienteDto implements IBaseDto, Serializable
 
   @Override
   public Class toHbmClass() {
-    return TrKeetArticuloPreveedorClienteDto.class;
+    return TrKeetArticuloProveedorClienteDto.class;
   }
 
   @Override
@@ -240,7 +240,7 @@ public class TrKeetArticuloPreveedorClienteDto implements IBaseDto, Serializable
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TrKeetArticuloPreveedorClienteDto other = (TrKeetArticuloPreveedorClienteDto) obj;
+    final TrKeetArticuloProveedorClienteDto other = (TrKeetArticuloProveedorClienteDto) obj;
     if (getIdArticuloProveedorCliente() != other.idArticuloProveedorCliente && (getIdArticuloProveedorCliente() == null || !getIdArticuloProveedorCliente().equals(other.idArticuloProveedorCliente))) {
       return false;
     }
