@@ -182,7 +182,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_empresa_persona=" + idEmpresaPersona);
-			regresar= (TcKeetDeudoresDto) DaoFactory.getInstance().findFirst(TcKeetDeudoresDto.class, "row", params);						
+			regresar= (TcKeetDeudoresDto) DaoFactory.getInstance().findFirst(TcKeetDeudoresDto.class, "row", params);	
+			if(regresar== null)
+				regresar= new TcKeetDeudoresDto();
 		} // try
 		catch (Exception e) {			
 			throw e;
