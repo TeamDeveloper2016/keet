@@ -45,7 +45,7 @@
                   </p:column>                
                 </p:selectOneMenu>
                 <p:outputLabel for="tipoPerfil" value="Perfil:"/>
-                <p:selectOneMenu id="tipoPerfil" value="#{kajoolUsuariosAccion.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="tipoPerfil" value="#{kajoolUsuariosAccion.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt information" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{kajoolUsuariosAccion.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
                   <p:column>
                     <h:outputText value="#{item.descripcion}"/>
