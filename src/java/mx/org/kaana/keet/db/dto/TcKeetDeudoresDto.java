@@ -51,7 +51,7 @@ public class TcKeetDeudoresDto implements IBaseDto, Serializable {
   }
 
   public TcKeetDeudoresDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null);
+    this(null, new Long(-1L), null, null, null, 0D, null);
     setKey(key);
   }
 
