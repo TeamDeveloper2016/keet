@@ -320,4 +320,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 		return regresar;
 	} // doCompleteVale
+	
+	public String doLector() {
+    String regresar= null;    				
+    try {									
+			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));															
+			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));										
+			regresar= "lector".concat(Constantes.REDIRECIONAR);										
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doEntrega
 }
