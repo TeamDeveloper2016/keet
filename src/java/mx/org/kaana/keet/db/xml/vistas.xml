@@ -4736,6 +4736,63 @@
 				and 
 					{condicionSubcontratista} and {condicion}
 			</select>						
+			<select id="valesConsecutivo">
+				select 
+					tc_keet_vales.id_vale as id_key,
+					tc_keet_vales.*,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					tc_keet_contratos.id_contrato,
+					tc_keet_contratos_lotes.id_contrato_lote,
+					tc_keet_contratos.id_empresa,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ', tc_mantic_personas.materno) nombre_completo,
+					1 figura,
+					tr_mantic_empresa_personal.id_empresa_persona id_figura
+				from 
+					tc_keet_proyectos
+				inner join 
+					tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+				inner join 
+					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_contratistas.id_contrato_lote
+				inner join 
+					tc_keet_vales on tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista = tc_keet_vales.id_contrato_lote_contratista
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona=tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				where 
+					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
+				and 
+					tc_keet_vales.consecutivo like '{consecutivo}%' and {condicion}
+			union
+				select 
+					tc_keet_vales.id_vale as id_key,
+					tc_keet_vales.*,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					tc_keet_contratos.id_contrato,
+					tc_keet_contratos_lotes.id_contrato_lote,
+					tc_keet_contratos.id_empresa,
+					tc_mantic_proveedores.razon_social nombre_completo,
+					2 figura,
+					tc_mantic_proveedores.id_proveedor id_figura
+				from 
+					tc_keet_proyectos
+				inner join 
+					tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+				inner join 
+					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_proveedores.id_contrato_lote
+				inner join 
+					tc_keet_vales on tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor = tc_keet_vales.id_contrato_lote_proveedor
+				inner join 
+					tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor
+				where 
+					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
+				and 
+					tc_keet_vales.consecutivo like '{consecutivo}%' and {condicion}
+			</select>						
 		</unit>
 	</dml>    
 </process>
