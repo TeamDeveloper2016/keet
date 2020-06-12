@@ -25,7 +25,7 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
-					<p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
+					<p:accordionPanel id="apanelBusqueda" activeIndex="1" multiple="true">
 						<p:tab title="Desarrollo [ #{keetCatalogosContratosMaterialesFiltro.registroDesarrollo.desarrollo.clave} ] #{keetCatalogosContratosMaterialesFiltro.registroDesarrollo.desarrollo.nombres}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Descripcion:"/>
@@ -38,7 +38,7 @@
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																															
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
 								<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosMaterialesFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoad}" update="tabla vales" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this apanelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoadIndividual}" update="tabla apanelBusqueda" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>									
 									<p:column headerText="Puesto">
 										<h:outputText value="#{item.puesto}"/>
@@ -49,17 +49,22 @@
 								</p:selectOneMenu>																	
 								<p:outputLabel for="estatus" value="Estatus:"/>
 								<p:selectOneMenu id="estatus" value="#{keetCatalogosContratosMaterialesFiltro.attrs.estatus}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoad}" update=" vales tabla" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this apanelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoadIndividual}" update="apanelBusqueda tabla" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.listEstatus}"/>																											
 								</p:selectOneMenu>
-								<p:outputLabel for="vales" value="Vale:"/>
-								<p:selectOneMenu id="vales" value="#{keetCatalogosContratosMaterialesFiltro.attrs.valeCriterio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosMaterialesFiltro.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.valesCriterios}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo}"/>																		
-									<p:column headerText="Consecutivo">
-										<h:outputText value="#{item.consecutivo}"/>
-									</p:column>   
-								</p:selectOneMenu>
+								<p:outputLabel for="vales" value="Vale:"/>								
+								<p:autoComplete id="vales" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosMaterialesFiltro.attrs.valeCriterio}" completeMethod="#{keetCatalogosContratosMaterialesFiltro.doCompleteVale}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+									<p:ajax event="itemSelect" oncomplete="$('#apanelBusqueda\\:replace').click();"/>
+									<f:facet name="itemtip">
+										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
+											<h:outputText value="Consecutivo:" />
+											<h:outputText value="#{custom.consecutivo}" />											
+											<h:outputText value="Contratista/Subcontratista:" />
+											<h:outputText value="#{custom.nombreCompleto}" />											
+										</h:panelGrid>
+									</f:facet>
+								</p:autoComplete>	
+								<p:commandButton id="replace" actionListener="#{keetCatalogosContratosMaterialesFiltro.doLoad}" process="@this apanelBusqueda" update="tabla apanelBusqueda:contratista apanelBusqueda:estatus" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
               </p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>						
