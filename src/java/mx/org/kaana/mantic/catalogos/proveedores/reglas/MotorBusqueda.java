@@ -9,8 +9,11 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorArticulo;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorArticuloCliente;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorBanca;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorCondicionPago;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorContactoAgente;
@@ -219,4 +222,58 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toProveedorbanca
+	
+	public List<ProveedorArticulo> toArticulos() throws Exception{
+		List<ProveedorArticulo> regresar= null;
+		Map<String, Object>params       = null;
+		UISelectEntity pivote           = null;
+		try {
+			params= new HashMap<>();
+			params.put("idProveedor", this.idProveedor);			
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorArticulo.class, "VistaProveedoresArticulosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			if(!regresar.isEmpty()){
+				for(ProveedorArticulo proveedorArticulo: regresar){
+					pivote= new UISelectEntity(proveedorArticulo.getIdArticulo());
+					pivote.put("nombre", new Value("nombre", proveedorArticulo.getNombre()));
+					proveedorArticulo.setUiArticulo(pivote);
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedorbanca		
+	
+	public List<ProveedorArticuloCliente> toArticulosCliente() throws Exception{
+		List<ProveedorArticuloCliente> regresar= null;
+		Map<String, Object>params              = null;
+		UISelectEntity pivote                  = null;
+		UISelectEntity pivoteCliente           = null;
+		try {
+			params= new HashMap<>();
+			params.put("idProveedor", this.idProveedor);			
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorArticuloCliente.class, "VistaProveedorArticuloCliente", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			if(!regresar.isEmpty()){
+				for(ProveedorArticuloCliente proveedorArticulo: regresar){
+					pivote= new UISelectEntity(proveedorArticulo.getIdArticulo());
+					pivote.put("nombre", new Value("nombre", proveedorArticulo.getNombre()));
+					proveedorArticulo.setUiArticulo(pivote);
+					pivoteCliente= new UISelectEntity(proveedorArticulo.getIdCliente());
+					pivoteCliente.put("cliente", new Value("cliente", proveedorArticulo.getCliente()));
+					proveedorArticulo.setUiCliente(pivoteCliente);
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedorbanca		
 }
