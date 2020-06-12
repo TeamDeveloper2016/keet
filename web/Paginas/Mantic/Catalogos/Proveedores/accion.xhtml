@@ -46,11 +46,21 @@
 				'plazo': {multiple: '$', validaciones: 'requerido|porcentaje', mascara: 'libre', grupo: 'general'},
 				'llave': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'otro' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'articulo' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'cliente' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'agentevalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del agente'},
 				'bancaconvenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del convenio'},
 				'bancavalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de la referencia'},
 				'convenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del convenio'},
-				'referencia': {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de la referencia'}
+				'referencia': {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de la referencia'},
+				'precioBase' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'precioLista' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'precioEspecial' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'articuloo' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'articuloCliente' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'clientee' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'precioConvenio' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'precioAnterior' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'}
       };      
 			
 			fieldsDialog= {
@@ -422,6 +432,81 @@
 								</p:dataTable>	
 							</p:panelGrid>								
 						</p:tab>
+						<p:tab id="tabArticulos" title="Articulos">
+              <p:panelGrid id="panelArticulos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+                <p:dataTable id="tablaArticulos" rowIndexVar="index" var="articulo" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorArticulos}" rows="6" paginator="false" reflow="true" rowKey="#{articulo.key}" emptyMessage=" " styleClass="paginated">
+                  <p:column headerText="Articulo" styleClass="articuloo">										
+                    <p:autoComplete id="articuloo" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{articulo.uiArticulo}" completeMethod="#{manticCatalogosProveedoresAccion.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-100-txt" disabled="#{!articulo.nuevo}">											
+											<f:facet name="itemtip">
+												<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">													
+													<h:outputText value="Propio:" />
+													<h:outputText value="#{custom.propio}" />
+													<h:outputText value="Nombre:" />
+													<h:outputText value="#{custom.nombre}" />																				
+												</h:panelGrid>
+											</f:facet>
+										</p:autoComplete>		
+                  </p:column>	
+                  <p:column headerText="Precio base" styleClass="precioBase">		                    
+										<p:inputNumber id="precioBase" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articulo.precioBase}" disabled="#{!articulo.nuevo}" onblur="simpleProcess();"/>
+                  </p:column>                  
+                  <p:column headerText="Precio lista" styleClass="precioLista">		                    
+										<p:inputNumber id="precioLista" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articulo.precioLista}" disabled="#{!articulo.nuevo}" onblur="simpleProcess();"/>
+                  </p:column>                  
+                  <p:column headerText="Precio especial" styleClass="precioEspecial">		                    
+										<p:inputNumber id="precioEspecial" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articulo.precioEspecial}" disabled="#{!articulo.nuevo}" onblur="simpleProcess();"/>
+                  </p:column>                  
+                  <p:column style="width:32px;text-align: center">
+                    <p:commandButton update="tablaArticulos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorArticulo}" oncomplete="janal.refresh();">
+                      <f:setPropertyActionListener value="#{articulo}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorArticuloSeleccion}" />
+                    </p:commandButton>
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorArticulo}" process="@this tablaArticulos" update="tablaArticulos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+                  </f:facet>
+                </p:dataTable>	
+              </p:panelGrid>	
+            </p:tab>
+						<p:tab id="tabArticulosCliente" title="Articulos cliente">
+              <p:panelGrid id="panelArticulosCliente" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+                <p:dataTable id="tablaArticulosCliente" rowIndexVar="index" var="articuloCliente" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorArticulosCliente}" rows="6" paginator="false" reflow="true" rowKey="#{articuloCliente.key}" emptyMessage=" " styleClass="paginated">																					
+                  <p:column headerText="Articulo" styleClass="articuloCliente">										
+                    <p:autoComplete id="articuloCliente" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{articuloCliente.uiArticulo}" completeMethod="#{manticCatalogosProveedoresAccion.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-100-txt" disabled="#{!articuloCliente.nuevo}">											
+											<f:facet name="itemtip">
+												<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">													
+													<h:outputText value="Propio:" />
+													<h:outputText value="#{custom.propio}" />
+													<h:outputText value="Nombre:" />
+													<h:outputText value="#{custom.nombre}" />																				
+												</h:panelGrid>
+											</f:facet>
+										</p:autoComplete>		
+                  </p:column>	
+									<p:column headerText="Cliente" styleClass="clientee">										
+                    <p:selectOneMenu id="clientee" value="#{articuloCliente.uiCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!articuloCliente.nuevo}" onblur="simpleProcess();">
+                      <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.cliente}"/>
+											<p:column headerText="Nombre">
+												<h:outputText value="#{item.cliente}"/>
+											</p:column>   
+                    </p:selectOneMenu> 																					
+                  </p:column>	                  
+									<p:column headerText="Precio convenio" styleClass="precioConvenio">
+										<p:inputNumber id="precioConvenio" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articuloCliente.precioConvenio}" disabled="#{!articuloCliente.nuevo}" onblur="simpleProcess();"/>
+                  </p:column>                  
+                  <p:column headerText="Precio anterior">		                    
+										<p:inputNumber id="precioAnterior" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articuloCliente.precioAnterior}" disabled="true" onblur="simpleProcess();"/>
+                  </p:column>                  
+                  <p:column style="width:32px;text-align: center">
+                    <p:commandButton update="tablaArticulosCliente" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorArticuloCliente}" oncomplete="janal.refresh();">
+                      <f:setPropertyActionListener value="#{articuloCliente}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorArticuloClienteSeleccion}" />
+                    </p:commandButton>
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorArticuloCliente}" process="@this tablaArticulosCliente" update="tablaArticulosCliente" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+                  </f:facet>
+                </p:dataTable>	
+              </p:panelGrid>	
+            </p:tab>
             <p:tab title="Observaciones">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.observaciones}"/>  
