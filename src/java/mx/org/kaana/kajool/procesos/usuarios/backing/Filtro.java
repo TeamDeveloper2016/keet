@@ -65,6 +65,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       carga.init();
 			this.toLoadCatalog();
       this.attrs.put("isPermisoDelega", JsfBase.isAdmin());
+			if(JsfBase.getFlashAttribute("idPersonaProcess")!= null){
+				this.attrs.put("idPersonaProcess", JsfBase.getFlashAttribute("idPersonaProcess"));
+				doBuscar();
+				this.attrs.put("idPersonaProcess", null);
+			} // if
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -125,6 +130,8 @@ public class Filtro extends IBaseFilter implements Serializable {
         case SIN_CONDICION:
           break;
       } // switch
+			if(!Cadena.isVacio(this.attrs.get("idPersonaProcess")))
+				sb.append("tc_mantic_personas.id_persona=").append(this.attrs.get("idPersonaProcess")).append(" and ");
 			if(!Cadena.isVacio(this.attrs.get("cuenta")))
 				sb.append("(upper(tc_mantic_personas.cuenta) like '%").append(this.attrs.get("cuenta")).append("%') and ");
 			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
