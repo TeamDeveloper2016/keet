@@ -44,7 +44,7 @@
 				  tc_mantic_empresas.id_empresa in ({idEmpresa})
 					and tc_keet_vales_detalles.id_tipo_entrega in (2, 4)
 					and tc_keet_vales_detalles.entregado is null
-					and tc_keet_vales.id_vale_estatus= 1
+					and tc_keet_vales.id_vale_estatus= 5
 				  and {condicion}
 				group by
 					tc_mantic_empresas.nombre,
@@ -97,7 +97,7 @@
 				where
 					tc_keet_vales_detalles.id_tipo_entrega in (2, 4)
 					and tc_keet_vales_detalles.entregado is null
-					and tc_keet_vales.id_vale_estatus= 1
+					and tc_keet_vales.id_vale_estatus= 5
 					and tc_mantic_articulos.id_articulo= {idArticulo}
 				group by
 					tc_mantic_empresas.nombre,

@@ -73,7 +73,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.doLoadFiguras();				
 				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));				
 			} // if
-			doLoad();
+			this.doLoad();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -90,7 +90,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("domicilio", toDomicilio());						
 			estatus= new ArrayList<>();
 			for(EEstatusVales eestatus: EEstatusVales.values()){
-				if(eestatus.equals(EEstatusVales.DISPONIBLE) || eestatus.equals(EEstatusVales.INCOMPLETO) || eestatus.equals(EEstatusVales.ENTREGADO))
+				if(eestatus.equals(EEstatusVales.DISPONIBLE) || eestatus.equals(EEstatusVales.INCOMPLETO))
 					estatus.add(new UISelectItem(eestatus.getKey(), eestatus.name()));
 			} // for
 			estatus.add(0, new UISelectItem(-1L, "SELECCIONE"));
@@ -154,7 +154,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		List<UISelectEntity> valesCriterio= null;
 		UISelectEntity valeCriterio       = null;		
     try {   						      		
-			params= toPrepare();										
+			params= this.toPrepare();										
 			this.vales= DaoFactory.getInstance().toEntitySet("VistaEntregaMaterialesDto", "vales", params);	
 			valesCriterio= UIEntity.seleccione("VistaEntregaMaterialesDto", "vales", params, "consecutivo");
 			valeCriterio= UIBackingUtilities.toFirstKeySelectEntity(valesCriterio);
@@ -186,7 +186,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("condicionContratista", Constantes.SQL_VERDADERO);
 			params.put("condicionSubcontratista", Constantes.SQL_VERDADERO);			
 			if(figura.getKey()>= 1L){
-				if(figura.toLong("tipo").equals(1L)){
+				if(figura.toLong("tipo").equals(1L)) {
 					params.put("condicionContratista", "tc_keet_contratos_lotes_contratistas.id_empresa_persona=".concat(figura.getKey().toString().substring(4)));
 					params.put("condicionSubcontratista", "tc_keet_contratos_lotes_proveedores.id_proveedor=-1");
 				} // if
@@ -199,7 +199,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			if(this.attrs.get("valeCriterio")!= null && ((UISelectEntity)this.attrs.get("valeCriterio")).getKey()>= 1L)
 				condicion.append("tc_keet_vales.id_vale=").append(((UISelectEntity)this.attrs.get("valeCriterio")).getKey()).append(" and ");			
 			if(this.attrs.get("estatus")!= null && Long.valueOf(this.attrs.get("estatus").toString())>= 1L)
-				condicion.append("tc_keet_vales.id_vale_estatus=").append(this.attrs.get("estatus")).append(" and ");			
+				condicion.append("tc_keet_vales.id_vale_estatus=").append(this.attrs.get("estatus")).append(" and ");	
+			else
+				condicion.append("tc_keet_vales.id_vale_estatus in (1, 5) and ");	
 			params.put(Constantes.SQL_CONDICION, Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4));
 			this.attrs.put("persona", figura.toLong("tipo").equals(1L));
 			this.attrs.put("proveedor", figura.toLong("tipo").equals(2L));
