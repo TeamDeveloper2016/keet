@@ -18,7 +18,7 @@
         var canvas = canvasElement.getContext("2d");
         var loadingMessage = document.getElementById("loadingMessage");
         var inputData = $("#inputFolio");
-        var audio = document.getElementById("audio");
+        //var audio = document.getElementById("audio");
 
         function drawLine(begin, end, color) {
           canvas.beginPath();
@@ -45,8 +45,8 @@
             loadingMessage.hidden = true;
             canvasElement.hidden = false;
 
-            canvasElement.height = "120";
-            canvasElement.width = "225";
+            canvasElement.height = "300";
+            canvasElement.width = "450";
             canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
             var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
             var code = jsQR(imageData.data, imageData.width, imageData.height, {
@@ -62,7 +62,7 @@
                 codeQr = code.data;
                 $("#eventoQr").val(codeQr);
                 document.getElementById("eventoQr").click();
-                audio.play();
+                //audio.play();
               } // if
             } // if
           } // if
@@ -78,45 +78,54 @@
       }
 		</script>
 		<style type="text/css">
-			.camera-fixed{
-        position: fixed;
-        top:175px;
+			.camera-fixed{        
+        top:50px;
       }
+			.camera-panel{
+				width: 350px;
+			}
 		</style>
 	</ui:define> 
   <ui:define name="contenido">    		
+		<p:inputText type="hidden" id="tabla"/>    
 		<p:inputText type="hidden" id="eventoQr" value="#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}">    
-      <p:ajax event="click" listener="#{keetCatalogosContratosMaterialesLector.doLoad}" onstart="return jsIktan.bloquear();" update="confirmacion"/>
-    </p:inputText>
-		
-		<h:panelGrid columns="1" id="camara" class="camera-fixed"> 
-			<div id="loadingMessage">Unable to access video stream (please make sure you have a webcam enabled)</div>
-			<canvas id="canvas" hidden="true"></canvas>
-			<h:panelGrid columns="2" style="float: right;">
-				<p:outputLabel value="Folio: "/>
-				<p:inputText id="inputFolio" value="#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}" maxlength="8" styleClass="iktan-width-100" style="text-transform: uppercase;">
-					<p:ajax event="blur" listener="#{keetCatalogosContratosMaterialesLector.doLoad}" onstart="return jsIktan.partial('folioQr');" oncomplete="resetQr();"/>
-				</p:inputText>
-			</h:panelGrid>
-		</h:panelGrid>
-		
+      <p:ajax event="click" process="@this eventoQr" listener="#{keetCatalogosContratosMaterialesLector.doLoad}" onstart="return janal.bloquear();" update="vale aceptar rechazar aceptarIcon rechazarIcon" oncomplete="janal.desbloquear();resetQr();"/>
+    </p:inputText>						
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
-					<p:accordionPanel id="tabla" activeIndex="1" multiple="true">
-						
-					</p:accordionPanel>															
+					<div id="loadingMessage">Unable to access video stream (please make sure you have a webcam enabled)</div>					
+					<h:panelGrid columns="2" id="camara" class="camera-fixed" columnClasses="camera-panel, janal-column-left" style="width: 100% !important">
+						<p:inputText id="inputFolio" value="#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}" maxlength="8" styleClass="iktan-width-100" style="text-transform: uppercase;display: none;"/>							
+						<p:spacer/>	
+						<canvas id="canvas" hidden="true"/>												
+						<h:panelGrid id="vale" columns="1" style="width: 100%">	
+							<p:outputLabel for="ml" value="ML:"/>
+							<p:inputText id="ml" value="#{keetCatalogosContratosMaterialesLector.attrs.manzanaLote}" styleClass="janal-wid-100-txt" readonly="true"/>
+							<p:outputLabel for="consecutivo" value="Vale:"/>
+							<p:inputText id="consecutivo" value="#{keetCatalogosContratosMaterialesLector.attrs.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>
+							<p:outputLabel for="empleado" value="Empleado:"/>
+							<p:inputText id="empleado" value="#{keetCatalogosContratosMaterialesLector.attrs.empleado}" styleClass="janal-wid-100-txt" readonly="true"/>							
+							<p:outputLabel for="puesto" value="Perfil:"/>
+							<p:inputText id="puesto" value="#{keetCatalogosContratosMaterialesLector.attrs.perfil}" styleClass="janal-wid-100-txt" readonly="true"/>														
+							<p:outputLabel for="estatus" value="Estatus:"/>
+							<p:inputText id="estatus" value="#{keetCatalogosContratosMaterialesLector.attrs.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>														
+							<p:spacer/><p:spacer/>
+						</h:panelGrid>												
+					</h:panelGrid>					
         </div>
       </div>
     </div>		           				
   </ui:define>      
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="aceptar" value="Entrega" icon="fa fa-check" accesskey="a"  process="@form" onstart="return janal.bloquear();" action="#{keetCatalogosContratosMaterialesLector.doEntrega}" oncomplete="janal.desbloquear()" disabled="#{!keetCatalogosContratosMaterialesLector.attrs.mostrarEntrega}"/>
+			<p:commandButton id="rechazar" value="Consultar" icon="fa fa-search" accesskey="a"  process="@form" onstart="return janal.bloquear();" action="#{keetCatalogosContratosMaterialesLector.doConsultar}" oncomplete="janal.desbloquear()" disabled="#{!keetCatalogosContratosMaterialesLector.attrs.mostrarConsulta}"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosMaterialesLector.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="aceptarIcon" title="Entrega" icon="fa fa-check" process="@form" onstart="return janal.bloquear();" action="#{keetCatalogosContratosMaterialesLector.doEntrega}" oncomplete="janal.desbloquear()" disabled="#{!keetCatalogosContratosMaterialesLector.attrs.mostrarEntrega}"/>
+			<p:commandButton id="rechazarIcon" title="Consultar" icon="fa fa-search" process="@form" onstart="return janal.bloquear();" action="#{keetCatalogosContratosMaterialesLector.doConsultar}" oncomplete="janal.desbloquear()" disabled="#{!keetCatalogosContratosMaterialesLector.attrs.mostrarConsulta}"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosMaterialesLector.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>	
