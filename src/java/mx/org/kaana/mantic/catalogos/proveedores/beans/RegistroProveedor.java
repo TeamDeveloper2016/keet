@@ -2,14 +2,21 @@ package mx.org.kaana.mantic.catalogos.proveedores.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
@@ -46,10 +53,14 @@ public class RegistroProveedor implements Serializable{
 	private List<ProveedorCondicionPago> proveedoresCondicionPago;
 	private ProveedorCondicionPago proveedorCondicionPagoSeleccion;
 	private List<ProveedorMaterial> proveedoresMateriales;
-	private ProveedorMaterial proveedorMaterialSeleccion;
+	private ProveedorMaterial proveedorMaterialSeleccion;	
+	private List<ProveedorArticulo> proveedorArticulos;
+	private ProveedorArticulo proveedorArticuloSeleccion;
+	private List<ProveedorArticuloCliente> proveedorArticulosCliente;
+	private ProveedorArticuloCliente proveedorArticuloClienteSeleccion;
 	
 	public RegistroProveedor() {
-		this(-1L, new TcManticProveedoresDto(), new ProveedorDomicilio(), new ArrayList<ProveedorTipoContacto>(), new Domicilio(), new Domicilio(), new ArrayList<ProveedorContactoAgente>(), new ProveedorContactoAgente(), new ProveedorContactoAgente(), new ArrayList<ProveedorCondicionPago>(), new ArrayList<ProveedorDomicilio>(), new TcManticProveedoresPortalesDto(), new ArrayList<ProveedorBanca>(), new ArrayList<ProveedorBanca>(), new ArrayList<ProveedorMaterial>(), new ProveedorMaterial(), new ArrayList<ProveedorDepartamento>());
+		this(-1L, new TcManticProveedoresDto(), new ProveedorDomicilio(), new ArrayList<ProveedorTipoContacto>(), new Domicilio(), new Domicilio(), new ArrayList<ProveedorContactoAgente>(), new ProveedorContactoAgente(), new ProveedorContactoAgente(), new ArrayList<ProveedorCondicionPago>(), new ArrayList<ProveedorDomicilio>(), new TcManticProveedoresPortalesDto(), new ArrayList<ProveedorBanca>(), new ArrayList<ProveedorBanca>(), new ArrayList<ProveedorMaterial>(), new ProveedorMaterial(), new ArrayList<ProveedorDepartamento>(), new ArrayList<ProveedorArticulo>(), new ProveedorArticulo(), new ArrayList<ProveedorArticuloCliente>(), new ProveedorArticuloCliente());
 	} // RegistroProveedor
 
 	public RegistroProveedor(Long idProveedor) {
@@ -64,27 +75,31 @@ public class RegistroProveedor implements Serializable{
 		init();
 	} // RegistroProveedor
 
-	public RegistroProveedor(Long idProveedor, TcManticProveedoresDto proveedor, ProveedorDomicilio proveedorDomicilioSeleccion, List<ProveedorTipoContacto> proveedoresTipoContacto, Domicilio domicilio, Domicilio domicilioPivote, List<ProveedorContactoAgente> personasTiposContacto, ProveedorContactoAgente personaTipoContactoPivote, ProveedorContactoAgente personaTipoContacto, List<ProveedorCondicionPago> proveedoresCondicionPago, List<ProveedorDomicilio> proveedoresDomicilio, TcManticProveedoresPortalesDto portal, List<ProveedorBanca> proveedoresServicio, List<ProveedorBanca> proveedoresTransferencia, List<ProveedorMaterial> proveedoresMateriales, ProveedorMaterial proveedorMaterialSeleccion, List<ProveedorDepartamento> proveedoresDepartamentos) {
-		this.idProveedor                = idProveedor;
-		this.proveedor                  = proveedor;
-		this.proveedorDomicilioSeleccion= proveedorDomicilioSeleccion;
-		this.proveedoresTipoContacto    = proveedoresTipoContacto;
-		this.deleteList                 = new ArrayList<>();
-		this.contadores                 = new ContadoresListas(); 
-		this.countIndice                = 0L;
-		this.domicilio                  = domicilio;
-		this.domicilioPivote            = domicilioPivote;
-		this.personasTiposContacto      = personasTiposContacto;
-		this.personaTipoContactoPivote  = personaTipoContactoPivote;
-		this.personaTipoContacto        = personaTipoContacto;
-		this.proveedoresCondicionPago   = proveedoresCondicionPago;
-		this.proveedoresDomicilio       = proveedoresDomicilio;
-		this.portal                     = portal;
-		this.proveedoresServicio        = proveedoresServicio;
-		this.proveedoresTransferencia   = proveedoresTransferencia;
-		this.proveedoresMateriales      = proveedoresMateriales;
-		this.proveedorMaterialSeleccion = proveedorMaterialSeleccion;
-		this.proveedoresDepartamentos   = proveedoresDepartamentos;
+	public RegistroProveedor(Long idProveedor, TcManticProveedoresDto proveedor, ProveedorDomicilio proveedorDomicilioSeleccion, List<ProveedorTipoContacto> proveedoresTipoContacto, Domicilio domicilio, Domicilio domicilioPivote, List<ProveedorContactoAgente> personasTiposContacto, ProveedorContactoAgente personaTipoContactoPivote, ProveedorContactoAgente personaTipoContacto, List<ProveedorCondicionPago> proveedoresCondicionPago, List<ProveedorDomicilio> proveedoresDomicilio, TcManticProveedoresPortalesDto portal, List<ProveedorBanca> proveedoresServicio, List<ProveedorBanca> proveedoresTransferencia, List<ProveedorMaterial> proveedoresMateriales, ProveedorMaterial proveedorMaterialSeleccion, List<ProveedorDepartamento> proveedoresDepartamentos, List<ProveedorArticulo> proveedorArticulos, ProveedorArticulo proveedorArticuloSeleccion, List<ProveedorArticuloCliente> proveedorArticulosCliente, ProveedorArticuloCliente proveedorArticuloClienteSeleccion) {
+		this.idProveedor                      = idProveedor;
+		this.proveedor                        = proveedor;
+		this.proveedorDomicilioSeleccion      = proveedorDomicilioSeleccion;
+		this.proveedoresTipoContacto          = proveedoresTipoContacto;
+		this.deleteList                       = new ArrayList<>();
+		this.contadores                       = new ContadoresListas(); 
+		this.countIndice                      = 0L;
+		this.domicilio                        = domicilio;
+		this.domicilioPivote                  = domicilioPivote;
+		this.personasTiposContacto            = personasTiposContacto;
+		this.personaTipoContactoPivote        = personaTipoContactoPivote;
+		this.personaTipoContacto              = personaTipoContacto;
+		this.proveedoresCondicionPago         = proveedoresCondicionPago;
+		this.proveedoresDomicilio             = proveedoresDomicilio;
+		this.portal                           = portal;
+		this.proveedoresServicio              = proveedoresServicio;
+		this.proveedoresTransferencia         = proveedoresTransferencia;
+		this.proveedoresMateriales            = proveedoresMateriales;
+		this.proveedorMaterialSeleccion       = proveedorMaterialSeleccion;
+		this.proveedoresDepartamentos         = proveedoresDepartamentos;
+		this.proveedorArticulos               = proveedorArticulos;
+		this.proveedorArticuloSeleccion       = proveedorArticuloSeleccion;
+		this.proveedorArticulosCliente        = proveedorArticulosCliente;
+		this.proveedorArticuloClienteSeleccion= proveedorArticuloClienteSeleccion;
 	} // RegistroProveedor	
 
 	public Long getIdProveedor() {
@@ -278,6 +293,38 @@ public class RegistroProveedor implements Serializable{
 	public void setProveedorDepartamentoSeleccion(ProveedorDepartamento proveedorDepartamentoSeleccion) {
 		this.proveedorDepartamentoSeleccion = proveedorDepartamentoSeleccion;
 	}	
+
+	public List<ProveedorArticulo> getProveedorArticulos() {
+		return proveedorArticulos;
+	}
+
+	public void setProveedorArticulos(List<ProveedorArticulo> proveedorArticulos) {
+		this.proveedorArticulos = proveedorArticulos;
+	}
+
+	public ProveedorArticulo getProveedorArticuloSeleccion() {
+		return proveedorArticuloSeleccion;
+	}
+
+	public void setProveedorArticuloSeleccion(ProveedorArticulo proveedorArticuloSeleccion) {
+		this.proveedorArticuloSeleccion = proveedorArticuloSeleccion;
+	}
+
+	public List<ProveedorArticuloCliente> getProveedorArticulosCliente() {
+		return proveedorArticulosCliente;
+	}
+
+	public void setProveedorArticulosCliente(List<ProveedorArticuloCliente> proveedorArticulosCliente) {
+		this.proveedorArticulosCliente = proveedorArticulosCliente;
+	}
+
+	public ProveedorArticuloCliente getProveedorArticuloClienteSeleccion() {
+		return proveedorArticuloClienteSeleccion;
+	}
+
+	public void setProveedorArticuloClienteSeleccion(ProveedorArticuloCliente proveedorArticuloClienteSeleccion) {
+		this.proveedorArticuloClienteSeleccion = proveedorArticuloClienteSeleccion;
+	}	
 	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
@@ -308,6 +355,8 @@ public class RegistroProveedor implements Serializable{
 			this.proveedoresServicio= motor.toServicios();
 			this.proveedoresTransferencia= motor.toTransferencias();
 			this.proveedoresMateriales= motor.toMateriales();
+			this.proveedorArticulos= motor.toArticulos();
+			this.proveedorArticulosCliente= motor.toArticulosCliente();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
@@ -748,4 +797,102 @@ public class RegistroProveedor implements Serializable{
 			JsfBase.addMessageError(e);			
 		} // catch			
 	} // doEliminarProveedorMaterial
+	
+	public void doAgregarProveedorArticulo(){
+		ProveedorArticulo proveedorArticulo= null;
+		UISelectEntity pivote             = null;
+		Map<String, Object> params        = null;
+		try {					
+			for(ProveedorArticulo record: this.proveedorArticulos){
+				if(record.getSqlAccion().equals(ESql.UPDATE)){
+					pivote= new UISelectEntity(record.getIdArticulo());
+					pivote.put("nombre", new Value("nombre", record.getNombre()));
+					record.setUiArticulo(pivote);
+				} // if
+				else{					
+					params= new HashMap<>();
+					params.put("idArticulo", record.getIdArticulo());
+					pivote= new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "articuloEspecifico", params));
+					record.setNombre(pivote.toString("nombre"));								
+					record.setUiArticulo(pivote);					
+				} // if
+			} // for
+			proveedorArticulo= new ProveedorArticulo(this.contadores.getTotalProveedoresArticulos()+ this.countIndice, ESql.INSERT, true);
+			this.proveedorArticulos.add(proveedorArticulo);					
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarProveedorArticulo
+	
+	public void doEliminarProveedorArticulo(){
+		try {			
+			if(this.proveedorArticulos.remove(this.proveedorArticuloSeleccion)){
+				if(!this.proveedorArticuloSeleccion.getNuevo())
+					addDeleteList(this.proveedorArticuloSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el articulo", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar el articulo", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarProveedorArticulo
+	
+	public void doAgregarProveedorArticuloCliente(){
+		ProveedorArticuloCliente proveedorArticuloCliente= null;
+		UISelectEntity pivote                            = null;
+		UISelectEntity pivoteCliente                     = null;
+		Map<String, Object> params                       = null;
+		try {					
+			for(ProveedorArticuloCliente proveedorArticulo: this.proveedorArticulosCliente){
+				if(proveedorArticulo.getSqlAccion().equals(ESql.UPDATE)){
+					pivote= new UISelectEntity(proveedorArticulo.getIdArticulo());
+					pivote.put("nombre", new Value("nombre", proveedorArticulo.getNombre()));
+					proveedorArticulo.setUiArticulo(pivote);
+					pivoteCliente= new UISelectEntity(proveedorArticulo.getIdCliente());
+					pivoteCliente.put("cliente", new Value("cliente", proveedorArticulo.getCliente()));
+					proveedorArticulo.setUiCliente(pivoteCliente);
+				} // if
+				else{					
+					params= new HashMap<>();
+					params.put("idArticulo", proveedorArticulo.getIdArticulo());
+					pivote= new UISelectEntity((Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "articuloEspecifico", params));
+					proveedorArticulo.setNombre(pivote.toString("nombre"));								
+					proveedorArticulo.setUiArticulo(pivote);					
+				} // else
+			} // for
+			proveedorArticuloCliente= new ProveedorArticuloCliente(this.contadores.getTotalProveedoresArticuloCliente()+ this.countIndice, ESql.INSERT, true);
+			this.proveedorArticulosCliente.add(proveedorArticuloCliente);					
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarProveedorArticulo
+	
+	public void doEliminarProveedorArticuloCliente(){
+		try {			
+			if(this.proveedorArticulosCliente.remove(this.proveedorArticuloClienteSeleccion)){
+				if(!this.proveedorArticuloClienteSeleccion.getNuevo())
+					addDeleteList(this.proveedorArticuloClienteSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el articulo del cliente", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar el articulo del cliente", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarProveedorArticulo
 }
