@@ -63,9 +63,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
-      this.attrs.put("destajos", false);				
-      this.attrs.put("persona", false);				
-      this.attrs.put("proveedor", false);							
+      this.attrs.put("destajos", false);				      
 			this.loadCatalogos();			
 			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null){				
 				figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");				
@@ -106,9 +104,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			figuras= UIEntity.seleccione("VistaEntregaMaterialesDto", "empleadosAsociados", params, campos, "puesto");
 			this.attrs.put("figuras", figuras);
 			this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
-			this.attrs.put("destajos", false);
-			this.attrs.put("persona", false);
-			this.attrs.put("proveedor", false);
+			this.attrs.put("destajos", false);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -140,17 +136,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-		Map<String, Object>params         = null;
-		List<UISelectEntity> valesCriterio= null;
-		UISelectEntity valeCriterio       = null;		
+		Map<String, Object>params= null;		
     try {   						      		
-			params= toPrepare();										
-			this.vales= DaoFactory.getInstance().toEntitySet("VistaEntregaMaterialesDto", "vales", params);	
-			valesCriterio= UIEntity.seleccione("VistaEntregaMaterialesDto", "vales", params, "consecutivo");
-			valeCriterio= UIBackingUtilities.toFirstKeySelectEntity(valesCriterio);
-			this.attrs.put("totalRegistros", this.vales.size());
-			this.attrs.put("valesCriterios", valesCriterio);
-			this.attrs.put("valeCriterio", valeCriterio);
+			params= this.toPrepare();										
+			this.vales= DaoFactory.getInstance().toEntitySet("VistaEntregaMaterialesDto", "vales", params);				
+			this.attrs.put("totalRegistros", this.vales.size());			
 			if(!this.vales.isEmpty()) 
 				this.toEstatusVale();
     } // try
@@ -189,9 +179,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			if(this.attrs.get("valeCriterio")!= null && ((UISelectEntity)this.attrs.get("valeCriterio")).getKey()>= 1L)
 				condicion.append("tc_keet_vales.id_vale=").append(((UISelectEntity)this.attrs.get("valeCriterio")).getKey()).append(" and ");						
 			condicion.append("tc_keet_vales.id_vale_estatus=").append(EEstatusVales.PENDIENTE.getKey()).append(" and ");			
-			params.put(Constantes.SQL_CONDICION, Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4));
-			this.attrs.put("persona", figura.toLong("tipo").equals(1L));
-			this.attrs.put("proveedor", figura.toLong("tipo").equals(2L));
+			params.put(Constantes.SQL_CONDICION, Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4));			
 			this.attrs.put("destajos", false);
 			this.attrs.put("figura", figura);
 		} // try
@@ -269,4 +257,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+	
+	public List<UISelectEntity> doCompleteVale(String vale){
+		List<UISelectEntity> regresar= null;		
+		Map<String, Object> params   = null;
+		List<Columna> campos         = null;		
+		try {			
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("descripcionLote", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
+			params.put("consecutivo", vale);
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			params.put(Constantes.SQL_CONDICION, "tc_keet_vales.id_vale_estatus in (" + EEstatusVales.PENDIENTE.getKey() + ")");				
+			regresar= UIEntity.seleccione("VistaEntregaMaterialesDto", "valesConsecutivo", params, campos, 30L, "consecutivo");						
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // doCompleteVale
 }

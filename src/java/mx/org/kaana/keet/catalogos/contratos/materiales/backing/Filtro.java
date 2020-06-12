@@ -64,16 +64,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
-      this.attrs.put("destajos", false);				
-      this.attrs.put("persona", false);				
-      this.attrs.put("proveedor", false);							
+      this.attrs.put("destajos", false);				      
 			this.loadCatalogos();			
 			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null){				
 				figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");				
 				this.doLoadFiguras();				
 				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));				
 			} // if
-			this.doLoad();
+			this.doLoadIndividual();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -116,9 +114,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			figuras= UIEntity.seleccione("VistaEntregaMaterialesDto", "empleadosAsociados", params, campos, "puesto");
 			this.attrs.put("figuras", figuras);
 			this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
-			this.attrs.put("destajos", false);
-			this.attrs.put("persona", false);
-			this.attrs.put("proveedor", false);
+			this.attrs.put("destajos", false);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -148,19 +144,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar.toString();
 	} // toDomicilio
 	
+	public void doLoadIndividual(){
+		this.attrs.put("valeCriterio", new UISelectEntity(-1L));
+		doLoad();
+	} // doLoadIndividual
+	
   @Override
   public void doLoad() {
-		Map<String, Object>params         = null;
-		List<UISelectEntity> valesCriterio= null;
-		UISelectEntity valeCriterio       = null;		
+		Map<String, Object>params= null;		
     try {   						      		
 			params= this.toPrepare();										
-			this.vales= DaoFactory.getInstance().toEntitySet("VistaEntregaMaterialesDto", "vales", params);	
-			valesCriterio= UIEntity.seleccione("VistaEntregaMaterialesDto", "vales", params, "consecutivo");
-			valeCriterio= UIBackingUtilities.toFirstKeySelectEntity(valesCriterio);
-			this.attrs.put("totalRegistros", this.vales.size());
-			this.attrs.put("valesCriterios", valesCriterio);
-			this.attrs.put("valeCriterio", valeCriterio);
+			this.vales= DaoFactory.getInstance().toEntitySet("VistaEntregaMaterialesDto", "vales", params);				
+			this.attrs.put("totalRegistros", this.vales.size());			
 			if(!this.vales.isEmpty()) 
 				this.toEstatusVale();
     } // try
@@ -174,44 +169,49 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad			
 	
 	private Map<String, Object> toPrepare(){
-		Map<String, Object>params   = null;
+		Map<String, Object>regresar = null;
 		List<UISelectEntity> figuras= null;		
-		UISelectEntity figura       = null;
+		UISelectEntity figura       = null;		
 		StringBuilder condicion     = null;
 		try {
-			params= new HashMap<>();
+			condicion= new StringBuilder();													
+			regresar= new HashMap<>();
+			regresar.put("idDesarrollo", this.attrs.get("idDesarrollo"));			
+			regresar.put("condicionContratista", Constantes.SQL_VERDADERO);
+			regresar.put("condicionSubcontratista", Constantes.SQL_VERDADERO);						
 			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			params.put("condicionContratista", Constantes.SQL_VERDADERO);
-			params.put("condicionSubcontratista", Constantes.SQL_VERDADERO);			
-			if(figura.getKey()>= 1L){
-				if(figura.toLong("tipo").equals(1L)) {
-					params.put("condicionContratista", "tc_keet_contratos_lotes_contratistas.id_empresa_persona=".concat(figura.getKey().toString().substring(4)));
-					params.put("condicionSubcontratista", "tc_keet_contratos_lotes_proveedores.id_proveedor=-1");
-				} // if
-				else{
-					params.put("condicionSubcontratista", "tc_keet_contratos_lotes_proveedores.id_proveedor=".concat(figura.getKey().toString().substring(4)));
-					params.put("condicionContratista", "tc_keet_contratos_lotes_contratistas.id_empresa_persona=-1");
-				} // else
-			} // if			
-			condicion= new StringBuilder();						
-			if(this.attrs.get("valeCriterio")!= null && ((UISelectEntity)this.attrs.get("valeCriterio")).getKey()>= 1L)
-				condicion.append("tc_keet_vales.id_vale=").append(((UISelectEntity)this.attrs.get("valeCriterio")).getKey()).append(" and ");			
-			if(this.attrs.get("estatus")!= null && Long.valueOf(this.attrs.get("estatus").toString())>= 1L)
-				condicion.append("tc_keet_vales.id_vale_estatus=").append(this.attrs.get("estatus")).append(" and ");	
-			else
-				condicion.append("tc_keet_vales.id_vale_estatus in (1, 5) and ");	
-			params.put(Constantes.SQL_CONDICION, Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4));
-			this.attrs.put("persona", figura.toLong("tipo").equals(1L));
-			this.attrs.put("proveedor", figura.toLong("tipo").equals(2L));
-			this.attrs.put("destajos", false);
-			this.attrs.put("figura", figura);
+			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));				
+			if(this.attrs.get("valeCriterio")!= null && ((UISelectEntity)this.attrs.get("valeCriterio")).getKey()>= 1L){
+				condicion.append("tc_keet_vales.id_vale=").append(((UISelectEntity)this.attrs.get("valeCriterio")).getKey()).append(" and ");		
+				if(figura.getKey()>= 1L)
+					this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
+				if(Long.valueOf(this.attrs.get("estatus").toString())>= 1L)
+					this.attrs.put("estatus", UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>) this.attrs.get("listEstatus")));				
+			} // if
+			else{				
+				if(figura.getKey()>= 1L){
+					if(figura.toLong("tipo").equals(1L)) {
+						regresar.put("condicionContratista", "tc_keet_contratos_lotes_contratistas.id_empresa_persona=".concat(figura.getKey().toString().substring(4)));
+						regresar.put("condicionSubcontratista", "tc_keet_contratos_lotes_proveedores.id_proveedor=-1");
+					} // if
+					else{
+						regresar.put("condicionSubcontratista", "tc_keet_contratos_lotes_proveedores.id_proveedor=".concat(figura.getKey().toString().substring(4)));
+						regresar.put("condicionContratista", "tc_keet_contratos_lotes_contratistas.id_empresa_persona=-1");
+					} // else
+				} // if						
+				if(this.attrs.get("estatus")!= null && Long.valueOf(this.attrs.get("estatus").toString())>= 1L)
+					condicion.append("tc_keet_vales.id_vale_estatus=").append(this.attrs.get("estatus")).append(" and ");	
+				else
+					condicion.append("tc_keet_vales.id_vale_estatus in (1,5) and ");				
+				this.attrs.put("figura", figura);
+			} // else
+			regresar.put(Constantes.SQL_CONDICION, Cadena.isVacio(condicion) ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()-4));			
+			this.attrs.put("destajos", false);			
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch
-		return params;
+		return regresar;
 	} // toPrepare	
 	
 	private void toEstatusVale() throws Exception {		
@@ -296,4 +296,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+	
+	public List<UISelectEntity> doCompleteVale(String vale){
+		List<UISelectEntity> regresar= null;		
+		Map<String, Object> params   = null;
+		List<Columna> campos         = null;		
+		try {			
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("descripcionLote", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
+			params.put("consecutivo", vale);
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			params.put(Constantes.SQL_CONDICION, "tc_keet_vales.id_vale_estatus not in (" + EEstatusVales.PENDIENTE.getKey() + ")");				
+			regresar= UIEntity.build("VistaEntregaMaterialesDto", "valesConsecutivo", params, campos, 30L);						
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // doCompleteVale
 }
