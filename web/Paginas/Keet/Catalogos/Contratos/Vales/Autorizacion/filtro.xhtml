@@ -38,7 +38,7 @@
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																															
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
 								<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosValesAutorizacionFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosValesAutorizacionFiltro.doLoad}" update="tabla vales" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosValesAutorizacionFiltro.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetCatalogosContratosValesAutorizacionFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>									
 									<p:column headerText="Puesto">
 										<h:outputText value="#{item.puesto}"/>
@@ -47,14 +47,19 @@
 										<h:outputText value="#{item.nombreCompleto}"/>
 									</p:column>   
 								</p:selectOneMenu>																									
-								<p:outputLabel for="vales" value="Vale:"/>
-								<p:selectOneMenu id="vales" value="#{keetCatalogosContratosValesAutorizacionFiltro.attrs.valeCriterio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosValesAutorizacionFiltro.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetCatalogosContratosValesAutorizacionFiltro.attrs.valesCriterios}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo}"/>																		
-									<p:column headerText="Consecutivo">
-										<h:outputText value="#{item.consecutivo}"/>
-									</p:column>   
-								</p:selectOneMenu>
+								<p:outputLabel for="vales" value="Vale:"/>								
+								<p:autoComplete id="vales" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosValesAutorizacionFiltro.attrs.valeCriterio}" completeMethod="#{keetCatalogosContratosValesAutorizacionFiltro.doCompleteVale}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+									<p:ajax event="itemSelect" oncomplete="$('#panelBusqueda\\:replace').click();"/>
+									<f:facet name="itemtip">
+										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
+											<h:outputText value="Consecutivo:" />
+											<h:outputText value="#{custom.consecutivo}" />											
+											<h:outputText value="Contratista/Subcontratista:" />
+											<h:outputText value="#{custom.nombreCompleto}" />											
+										</h:panelGrid>
+									</f:facet>
+								</p:autoComplete>	
+								<p:commandButton id="replace" actionListener="#{keetCatalogosContratosValesAutorizacionFiltro.doLoad}" process="@this panelBusqueda" update="tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
               </p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>						
