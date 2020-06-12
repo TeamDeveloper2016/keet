@@ -362,7 +362,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     List<Columna> columns       = null;
 		Map<String, Object>params   = new HashMap<>();
     try {
-      UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");						
+      UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");	
+			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
+			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
 		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
@@ -398,7 +400,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     boolean isCompleto           = false;
     try {
       isCompleto = tipo.equals("COMPLETO");
+			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
       UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");			
+      figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
       params= new HashMap<>();  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
