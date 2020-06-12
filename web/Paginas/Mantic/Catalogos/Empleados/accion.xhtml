@@ -48,8 +48,9 @@
         'contenedorGrupos\\:asentamiento' : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:entreCalle'   : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:ycalle'       : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-				'valor'                           : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
-				'cuenta'                          : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'valor'                           : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'cuenta'                          : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'clabe'                           : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
 				'contenedorGrupos\\:nombreB'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:paternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:maternoB'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'beneficiario', formatos: 'cambiar-mayusculas', individual: true},				
@@ -356,10 +357,10 @@
                       <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.bancos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
-                  <p:column headerText="Cuenta" styleClass="valor">		
+                  <p:column headerText="Cuenta" styleClass="cuenta">		
                     <p:inputText id="cuenta#{banco.key}" styleClass="janal-wid-100-txt" value="#{banco.cuenta}" disabled="#{!banco.nuevo}" onblur="simpleProcess();"/>
                   </p:column>
-                  <p:column headerText="Clabe" styleClass="valor">		
+                  <p:column headerText="Clabe" styleClass="clabe">		
                     <p:inputText id="clabe#{banco.key}" styleClass="janal-wid-100-txt" value="#{banco.clabe}" disabled="#{!banco.nuevo}" onblur="simpleProcess();"/>
                   </p:column>
 									<p:column headerText="Principal" styleClass="janal-wid-5" style="text-align: center">
