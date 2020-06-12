@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFacade;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
@@ -88,7 +89,25 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadEntidades();		
 		loadMunicipios();		
 		loadLocalidades();		
+		loadClientes();
 	} // loadCollections
+	
+	private void loadClientes(){
+		List<UISelectEntity> clientes= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			clientes= UIEntity.seleccione("TcManticClientesDto", "proveedores", params, "cliente");
+			this.attrs.put("clientes", clientes);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadClientes
 	
   public void doLoad() {
     EAccion eaccion = null;
