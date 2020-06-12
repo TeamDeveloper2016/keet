@@ -132,6 +132,15 @@
         where      
           id_proveedor = {idProveedor} and id_articulo = {idArticulo}
       </select>
+			<select id="maximo">
+				select      
+          max(id_articulo_proveedor) maximo
+        from      
+          tc_keet_articulos_proveedores
+			</select>
+			<delete id="rows">
+        delete from tc_keet_articulos_proveedores where id_proveedor={idProveedor}
+      </delete>
     </unit>		
     <unit id="TrKeetArticuloProveedorClienteDto">
       <select id="row">
@@ -158,6 +167,15 @@
         where      
           id_proveedor = {idProveedor} and id_cliente = {idCliente} and id_articulo = {idArticulo}
       </select>
+			<select id="maximo">
+				select      
+          max(id_articulo_proveedor_cliente) maximo
+        from      
+          tr_keet_articulo_proveedor_cliente
+			</select>
+			<delete id="rows">
+        delete from tr_keet_articulo_proveedor_cliente where id_proveedor={idProveedor}
+      </delete>
     </unit>		
 		<unit id="TcKeetTiposValesDto">
 			<select id="row">
