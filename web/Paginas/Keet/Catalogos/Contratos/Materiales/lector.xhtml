@@ -78,7 +78,7 @@
       }
 		</script>
 		<style type="text/css">
-			.camera-fixed{        
+			.camera-fixed {       
         top:50px;
       }
 			.camera-panel{
@@ -95,10 +95,10 @@
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
 					<div id="loadingMessage">Unable to access video stream (please make sure you have a webcam enabled)</div>					
-					<p:panelGrid columns="2" id="camara" styleClass="camera-fixed " columnClasses="camera-panel, janal-column-left" style="width: 100% !important">
+					<p:panelGrid columns="2" id="camara" styleClass="camera-fixed" columnClasses="camera-panel, janal-column-left" style="width: 100% !important">
 						<p:inputText id="inputFolio" value="#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}" maxlength="8" styleClass="iktan-width-100" style="text-transform: uppercase;display: none;"/>							
 						<p:spacer/>	
-						<canvas id="canvas" hidden="true"/>												
+						<canvas id="canvas" hidden="true" style="padding:16px;"/>												
 						<p:panelGrid id="vale" columns="1" styleClass="janal-wid-100">	
 							<p:outputLabel for="ml" value="Manzana,Lote:"/>
 							<p:inputText id="ml" value="#{keetCatalogosContratosMaterialesLector.attrs.manzanaLote}" styleClass="janal-wid-100-txt" readonly="true"/>
