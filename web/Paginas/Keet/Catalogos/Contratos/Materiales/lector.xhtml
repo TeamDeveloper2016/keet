@@ -89,7 +89,7 @@
   <ui:define name="contenido">    		
 		<p:inputText type="hidden" id="tabla"/>    
 		<p:inputText type="hidden" id="eventoQr" value="#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}">    
-      <p:ajax event="click" process="@this eventoQr" listener="#{keetCatalogosContratosMaterialesLector.doLoad}" onstart="return janal.bloquear();" update="vale aceptar rechazar aceptarIcon rechazarIcon" oncomplete="janal.desbloquear();resetQr();"/>
+      <p:ajax event="click" process="@this eventoQr" listener="#{keetCatalogosContratosMaterialesLector.doLoad}" onstart="return janal.bloquear();" update="vale aceptar rechazar aceptarIcon rechazarIcon encontrado @(.encontrado)" oncomplete="janal.desbloquear(); resetQr();"/>
     </p:inputText>						
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
@@ -99,20 +99,22 @@
 						<p:inputText id="inputFolio" value="#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}" maxlength="8" styleClass="iktan-width-100" style="text-transform: uppercase;display: none;"/>							
 						<p:spacer/>	
 						<canvas id="canvas" hidden="true"/>												
-						<h:panelGrid id="vale" columns="1" style="width: 100%">	
-							<p:outputLabel for="ml" value="ML:"/>
+						<p:panelGrid id="vale" columns="1" styleClass="janal-wid-100">	
+							<p:outputLabel for="ml" value="Manzana,Lote:"/>
 							<p:inputText id="ml" value="#{keetCatalogosContratosMaterialesLector.attrs.manzanaLote}" styleClass="janal-wid-100-txt" readonly="true"/>
-							<p:outputLabel for="consecutivo" value="Vale:"/>
+							<p:outputLabel for="consecutivo" value="Folio del vale:"/>
 							<p:inputText id="consecutivo" value="#{keetCatalogosContratosMaterialesLector.attrs.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>
 							<p:outputLabel for="empleado" value="Empleado:"/>
 							<p:inputText id="empleado" value="#{keetCatalogosContratosMaterialesLector.attrs.empleado}" styleClass="janal-wid-100-txt" readonly="true"/>							
 							<p:outputLabel for="puesto" value="Perfil:"/>
 							<p:inputText id="puesto" value="#{keetCatalogosContratosMaterialesLector.attrs.perfil}" styleClass="janal-wid-100-txt" readonly="true"/>														
 							<p:outputLabel for="estatus" value="Estatus:"/>
-							<p:inputText id="estatus" value="#{keetCatalogosContratosMaterialesLector.attrs.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>														
-							<p:spacer/><p:spacer/>
-						</h:panelGrid>												
-					</h:panelGrid>					
+							<p:inputText id="estatus" value="#{keetCatalogosContratosMaterialesLector.attrs.estatus} #{keetCatalogosContratosMaterialesLector.attrs.existe}" styleClass="janal-wid-100-txt" readonly="true"/>														
+							<p:panelGrid columns="1" styleClass="janal-column-center janal-wid-100">	
+							  <p:outputLabel id="encontrado" value="EL FOLIO DEL VALE NO EXISTE [#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}]" styleClass="encontrado janal-wid-100 janal-color-blue" style="display:#{keetCatalogosContratosMaterialesLector.attrs.existe? '': 'none'}"/>
+							</p:panelGrid>
+						</p:panelGrid>												
+					</p:panelGrid>					
         </div>
       </div>
     </div>		           				

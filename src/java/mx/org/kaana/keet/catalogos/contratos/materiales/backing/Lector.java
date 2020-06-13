@@ -39,6 +39,7 @@ public class Lector extends IBaseFilter implements Serializable {
 			this.attrs.put("codigoQr", "");    						
 			this.attrs.put("mostrarEntrega", false);
 			this.attrs.put("mostrarConsulta", false);
+			this.attrs.put("existe", Boolean.FALSE);
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -51,27 +52,33 @@ public class Lector extends IBaseFilter implements Serializable {
 		String[] codigo           = null;
 		Entity seleccionado       = null;
 		Map<String, Object> params= null;
-		Entity figura            = null;
+		Entity figura             = null;
     try {   						      		
 			codigo= this.attrs.get("codigoQr").toString().split("-");
-			this.attrs.put("consecutivo", codigo[1]);
-			this.attrs.put("empleado", codigo[3]);			
-			params= new HashMap<>();
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			params.put("condicionContratista", Constantes.SQL_VERDADERO);
-			params.put("condicionSubcontratista", Constantes.SQL_VERDADERO);
-			params.put(Constantes.SQL_CONDICION, "tc_keet_vales.consecutivo='".concat(this.attrs.get("consecutivo").toString()).concat("'"));
-			seleccionado= (Entity) DaoFactory.getInstance().toEntity("VistaEntregaMaterialesDto", "vales", params);
-			this.attrs.put("perfil", seleccionado.toLong("figura").equals(1L) ? "Contratista" : "Subcontratista");			
-			this.attrs.put("manzanaLote", seleccionado.toString("descripcionLote"));			
-			this.attrs.put("seleccionado", seleccionado);
-			params.clear();
-			params.put("id", seleccionado.toLong("idFigura"));
-			figura= (Entity) DaoFactory.getInstance().toEntity("VistaEntregaMaterialesDto", seleccionado.toLong("figura").equals(1L) ? "contratista" : "subcontratista", params);
-			this.attrs.put("figura", new UISelectEntity(figura));
-			this.attrs.put("estatus", EEstatusVales.fromId(seleccionado.toLong("idValeEstatus")).name());			
-			this.attrs.put("mostrarEntrega", seleccionado.toLong("idValeEstatus").equals(EEstatusVales.DISPONIBLE.getKey()) || seleccionado.toLong("idValeEstatus").equals(EEstatusVales.INCOMPLETO.getKey()));
-			this.attrs.put("mostrarConsulta", seleccionado.toLong("idValeEstatus").equals(EEstatusVales.ENTREGADO.getKey()) || seleccionado.toLong("idValeEstatus").equals(EEstatusVales.DISPONIBLE.getKey()) || seleccionado.toLong("idValeEstatus").equals(EEstatusVales.INCOMPLETO.getKey()));
+		  this.attrs.put("existe", codigo== null || codigo.length< 3);
+			if(codigo!= null && codigo.length> 2) {
+				this.attrs.put("consecutivo", codigo[1]);
+				this.attrs.put("empleado", codigo[3]);			
+				params= new HashMap<>();
+				params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+				params.put("condicionContratista", Constantes.SQL_VERDADERO);
+				params.put("condicionSubcontratista", Constantes.SQL_VERDADERO);
+				params.put(Constantes.SQL_CONDICION, "tc_keet_vales.consecutivo='".concat(this.attrs.get("consecutivo").toString()).concat("'"));
+				seleccionado= (Entity) DaoFactory.getInstance().toEntity("VistaEntregaMaterialesDto", "vales", params);
+				this.attrs.put("existe", seleccionado== null);
+				if(seleccionado!= null) {
+					this.attrs.put("perfil", seleccionado.toLong("figura").equals(1L) ? "Contratista" : "Subcontratista");			
+					this.attrs.put("manzanaLote", seleccionado.toString("descripcionLote"));			
+					this.attrs.put("seleccionado", seleccionado);
+					params.clear();
+					params.put("id", seleccionado.toLong("idFigura"));
+					figura= (Entity) DaoFactory.getInstance().toEntity("VistaEntregaMaterialesDto", seleccionado.toLong("figura").equals(1L) ? "contratista" : "subcontratista", params);
+					this.attrs.put("figura", new UISelectEntity(figura));
+					this.attrs.put("estatus", EEstatusVales.fromId(seleccionado.toLong("idValeEstatus")).name());			
+					this.attrs.put("mostrarEntrega", seleccionado.toLong("idValeEstatus").equals(EEstatusVales.DISPONIBLE.getKey()) || seleccionado.toLong("idValeEstatus").equals(EEstatusVales.INCOMPLETO.getKey()));
+					this.attrs.put("mostrarConsulta", seleccionado.toLong("idValeEstatus").equals(EEstatusVales.ENTREGADO.getKey()) || seleccionado.toLong("idValeEstatus").equals(EEstatusVales.DISPONIBLE.getKey()) || seleccionado.toLong("idValeEstatus").equals(EEstatusVales.INCOMPLETO.getKey()));
+				} // if
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);

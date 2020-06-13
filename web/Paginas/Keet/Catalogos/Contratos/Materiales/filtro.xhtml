@@ -53,8 +53,8 @@
 									<f:selectItems value="#{keetCatalogosContratosMaterialesFiltro.attrs.listEstatus}"/>																											
 								</p:selectOneMenu>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-96, janal-wid-col-30 janal-column-center">
-									<p:outputLabel for="vales" value="Vale:"/><p.spacer/>
-									<p:autoComplete id="vales" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosMaterialesFiltro.attrs.valeCriterio}" completeMethod="#{keetCatalogosContratosMaterialesFiltro.doCompleteVale}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+									<p:outputLabel for="vales" value="Folio del vale:"/><p.spacer/>
+									<p:autoComplete id="vales" var="custom" placeholder="ejemplo: 2020000123" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosMaterialesFiltro.attrs.valeCriterio}" completeMethod="#{keetCatalogosContratosMaterialesFiltro.doCompleteVale}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 										<p:ajax event="itemSelect" oncomplete="$('#apanelBusqueda\\:replace').click();"/>
 										<f:facet name="itemtip">
 											<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
