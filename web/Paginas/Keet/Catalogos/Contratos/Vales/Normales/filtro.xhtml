@@ -16,8 +16,9 @@
 				margin-right: 5px;
 			}
 			.manzana-lote-font {
-				font-size: 3.2vw !important;
+				font-size: 3.4vw !important;
 				font-weight: bold !important;
+				color: blue;
 			}
 		</style>
 	</ui:define> 
@@ -72,7 +73,7 @@
 						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{row.clave}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="destajo" title="Ver detalle del articulo" action="#{keetCatalogosContratosValesNormalesFiltro.doConceptos}">
-									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" class="manzana-lote-font" style="cursor: pointer;"/>
+									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}, Click para generar vale de materiales" class="manzana-lote-font" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosValesNormalesFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
@@ -166,29 +167,5 @@
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosValesNormalesFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
-	</ui:define>
-	<ui:define name="dialogos">
-		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar correo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
-			<h:form id="formDialogoCorreos" prependId="false">
-				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">													
-					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{keetCatalogosContratosValesNormalesFiltro.correos}" selection="#{keetCatalogosContratosValesNormalesFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
-						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
-						<p:column headerText="Correos disponibles del empleado">
-							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
-						</p:column>
-						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{keetCatalogosContratosValesNormalesFiltro.doAgregarCorreo}">
-								<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosValesNormalesFiltro.correo}" />
-							</p:commandButton>
-						</p:column>
-					</p:dataTable>		
-				</p:panelGrid>
-				<hr class="ui-widget-content"/>
-				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{keetCatalogosContratosValesNormalesFiltro.doSendMail('DESARROLLO')}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
-				</div>
-			</h:form>
-		</p:dialog>
 	</ui:define>
 </ui:composition>
