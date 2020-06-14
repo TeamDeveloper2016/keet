@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetGastosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_gastos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_gastos_bitacora
+        where      
+          id_gasto = {idGasto} and id_gasto_estatus = {idGastoEstatus}
+      </select>
+    </unit>		
     <unit id="TcKeetCajasChicasDto">
       <select id="row">
         select      
