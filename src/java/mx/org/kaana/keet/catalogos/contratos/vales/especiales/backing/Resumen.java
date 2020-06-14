@@ -100,7 +100,8 @@ public class Resumen extends IBaseFilter implements Serializable {
     try {    			
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			campos.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
 			params= new HashMap<>();
 			params.put("idVale", this.attrs.get("idVale"));
 			this.lazyModel= new FormatLazyModel("VistaValesDetallesDto", "resumen", params, campos);
