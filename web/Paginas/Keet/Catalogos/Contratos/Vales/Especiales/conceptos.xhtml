@@ -110,7 +110,7 @@
 								<div class="ui-grid-col-12">
 									<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 									<p:inputText id="locks" value="0" style="display:none"/>
-									<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.articulo}" completeMethod="#{keetCatalogosContratosValesEspecialesConceptos.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="ej. CT123">
+									<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{custom}" value="#{keetCatalogosContratosValesEspecialesConceptos.attrs.articulo}" completeMethod="#{keetCatalogosContratosValesEspecialesConceptos.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="ej. CT123" class="janal-wid-100-txt">
 										<p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
 										<p:ajax event="focus" process="@this" listener="#{keetCatalogosContratosValesEspecialesConceptos.doActualizaImage(row['idArticulo'], row['nombre'])}" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
 										<f:facet name="itemtip">
@@ -140,7 +140,7 @@
 							<f:facet name="header">
 								<h:outputText value="Cantidad"/>
 							</f:facet>
-							<p:outputLabel value="#{row['cantidad']}"/>
+							<p:outputLabel value="#{row['cantidadDecimales']}"/>
 							<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 						</p:column>		
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-60">
