@@ -24,6 +24,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 
@@ -91,6 +92,9 @@ public class Resumen extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, "tc_keet_vales.id_vale=".concat(((Entity)this.attrs.get("seleccionadoPivote")).getKey().toString()));
 			vale= (Entity) DaoFactory.getInstance().toEntity("TcKeetValesDto", "row", params);
 			this.attrs.put("vale", vale);	
+			loadTiposVales();
+			this.attrs.put("tipoVale", vale.toLong("idTipoVale"));
+			this.attrs.put("observaciones", vale.toString("justificacion"));
 			cargos= new ArrayList<>();
 			cargos.add(new UISelectItem(-1L, "SELECCIONE"));
 			cargos.add(new UISelectItem(1L, "SI"));
@@ -126,6 +130,23 @@ public class Resumen extends IBaseFilter implements Serializable {
 			throw e;
 		} // catch		
 	} // toQr	
+	
+	private void loadTiposVales(){
+		List<UISelectItem> tiposVales= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_tipo_vale != 1");
+			tiposVales= UISelect.seleccione("TcKeetTiposValesDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			this.attrs.put("tiposVales", tiposVales);			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadTiposvales
 	
   @Override
   public void doLoad() {
