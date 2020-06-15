@@ -79,6 +79,7 @@ public class Conceptos extends Accion implements Serializable {
 				this.attrs.put("qr", JsfBase.getFlashAttribute("qr"));
 				doLoad();
 			} // else			
+			this.attrs.put("buscaPorCodigo", false);
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);

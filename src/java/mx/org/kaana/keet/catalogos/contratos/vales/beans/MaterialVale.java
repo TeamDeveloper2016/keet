@@ -138,6 +138,10 @@ public class MaterialVale implements Serializable{
 	public Double getCantidad() {
 		return cantidad;
 	}
+	
+	public String getCantidadDecimales() {
+		return Numero.formatear(Numero.NUMERO_CON_DECIMALES, this.cantidad);
+	}
 
 	public void setCantidad(Double cantidad) {
 		this.cantidad = cantidad;
