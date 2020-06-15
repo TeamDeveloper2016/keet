@@ -79,7 +79,7 @@
           id_caja_chica_cierre_bitacora = {idCajaChicaCierreBitacora}
       </select>
     </unit>		
-    <unit id="TcKeetGastosDto">
+     <unit id="TcKeetGastosDto">
       <select id="row">
         select      
           *
@@ -94,7 +94,7 @@
         from      
           tc_keet_gastos
         where      
-          consecutivo = '{consecutivo}' and id_empresa = {idEmpresa}
+          consecutivo = '{consecutivo}' and id_gasto = {idGasto} and id_empresa = {idEmpresa}
       </select>
     </unit>
     <unit id="TcKeetGastosDetallesDto">
