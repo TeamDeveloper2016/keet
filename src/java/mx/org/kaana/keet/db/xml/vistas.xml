@@ -4764,7 +4764,7 @@
 				where 
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
 				and 
-					tc_keet_vales.consecutivo like '{consecutivo}%' and {condicion}
+					tc_keet_vales.consecutivo like '%{consecutivo}' and {condicion}
 			union
 				select 
 					tc_keet_vales.id_vale as id_key,
@@ -4791,8 +4791,31 @@
 				where 
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
 				and 
-					tc_keet_vales.consecutivo like '{consecutivo}%' and {condicion}
+					tc_keet_vales.consecutivo like '%{consecutivo}' and {condicion}
 			</select>						
+		</unit>
+		<unit id="VistaCajaChicaDto">
+			<select id="findDesarrollo">
+				select
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre AS id_key,
+					tc_keet_cajas_chicas_cierres.id_caja_chica,
+					tc_keet_cajas_chicas_cierres.consecutivo,
+					tc_keet_cajas_chicas_cierres.ejercicio,
+					tc_keet_cajas_chicas_cierres.orden,
+					tc_keet_cajas_chicas_cierres.disponible,
+					tc_keet_cajas_chicas_cierres.acumulado,
+					tc_keet_cajas_chicas_cierres.saldo,
+					tc_keet_cajas_chicas_cierres.registro,
+					tc_keet_cajas_chicas_cierres.termino
+				from
+					tc_keet_cajas_chicas
+				inner join
+					tc_keet_cajas_chicas_cierres on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+				where 
+					tc_keet_cajas_chicas.id_desarrollo= {idDesarrollo}
+				and 
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus in (1,2)
+			</select>			
 		</unit>
 	</dml>    
 </process>
