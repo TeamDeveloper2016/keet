@@ -22,7 +22,6 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -342,6 +341,7 @@ public class Transaccion extends IBaseTnx{
 			params= new HashMap<>();
 			params.put("idVale", this.idVale);
 			params.put("clave", this.clave);
+			params.put("idDesarrollo", this.idDesarrollo);
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaEntregaMaterialesDto", "evidencia", params);
 	} // try
 		catch (Exception e) {			
