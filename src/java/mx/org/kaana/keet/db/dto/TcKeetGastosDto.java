@@ -33,6 +33,8 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
   private Long idGasto;
   @Column (name="consecutivo")
   private String consecutivo;
+  @Column (name="articulos")
+  private Long articulos;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_empresa_persona")
@@ -57,13 +59,14 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetGastosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetGastosDto(Long idGasto, String consecutivo, Long idUsuario, Long idEmpresaPersona, Long idAbono, Long idEmpresa, Long orden, Long idCajaChicaCierre, Double importe, Long ejercicio) {
+  public TcKeetGastosDto(Long idGasto, String consecutivo, Long articulos, Long idUsuario, Long idEmpresaPersona, Long idAbono, Long idEmpresa, Long orden, Long idCajaChicaCierre, Double importe, Long ejercicio) {
     setIdGasto(idGasto);
     setConsecutivo(consecutivo);
+    setArticulos(articulos);
     setIdUsuario(idUsuario);
     setIdEmpresaPersona(idEmpresaPersona);
     setIdAbono(idAbono);
@@ -89,6 +92,14 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
 
   public String getConsecutivo() {
     return consecutivo;
+  }
+
+  public void setArticulos(Long articulos) {
+    this.articulos = articulos;
+  }
+
+  public Long getArticulos() {
+    return articulos;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -182,6 +193,8 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getArticulos());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresaPersona());
@@ -208,6 +221,7 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idGasto", getIdGasto());
 		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("articulos", getArticulos());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
 		regresar.put("idAbono", getIdAbono());
@@ -223,7 +237,7 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdGasto(), getConsecutivo(), getIdUsuario(), getIdEmpresaPersona(), getIdAbono(), getIdEmpresa(), getOrden(), getIdCajaChicaCierre(), getImporte(), getEjercicio(), getRegistro()
+			getIdGasto(), getConsecutivo(), getArticulos(), getIdUsuario(), getIdEmpresaPersona(), getIdAbono(), getIdEmpresa(), getOrden(), getIdCajaChicaCierre(), getImporte(), getEjercicio(), getRegistro()
     };
     return regresar;
   }
@@ -281,7 +295,4 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdGasto() != null ? getIdGasto().hashCode() : 0);
     return hash;
   }
-
 }
-
-
