@@ -56,6 +56,12 @@
 									<p:inputText value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
 									<p:outputLabel value="Consecutivo:"/>
 									<p:inputText value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.vale.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>																	
+									<p:outputLabel for="tipoVale" value="Tipo de vale:"/>
+									<p:selectOneMenu id="tipoVale" value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.tipoVale}" styleClass="janal-wid-100-txt" disabled="true">															
+										<f:selectItems value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.tiposVales}"/>
+									</p:selectOneMenu>																
+									<p:outputLabel value="Justificación:"/>
+									<p:inputTextarea id="justificacion" value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.observaciones}" styleClass="janal-wid-100-txt" readonly="true"/>														
 								</p:panelGrid>											
 								<p:barcode value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.qr}" type="qr" style="width: 100%"/>								
 							</p:panelGrid>										
