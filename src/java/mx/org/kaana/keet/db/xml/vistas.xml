@@ -4442,6 +4442,10 @@
 		</unit>
 		<unit id="VistaEntregaMaterialesDto">						
 			<select id="resumen">
+				select 
+					principal.*,
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_desarrollo= {idDesarrollo})) stock
+				from(
 				select
 					tc_keet_vales_detalles.id_vale_detalle AS id_key,
 					tc_keet_vales_detalles.id_vale, 					
@@ -4468,11 +4472,15 @@
 				inner join 
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 				where
-					tc_keet_vales_detalles.id_vale= {idVale}
+					tc_keet_vales_detalles.id_vale= {idVale}) principal
 				order by
 					surtido desc
 			</select>
 			<select id="evidencia">
+				select 
+				  principal.*,					
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_desarrollo= {idDesarrollo})) stock
+				from(
 				select
 					tc_keet_vales_detalles.id_articulo AS id_key,
 					tc_keet_vales_detalles.id_vale, 					
@@ -4509,7 +4517,7 @@
 					tc_keet_vales_detalles.id_articulo,
 					tc_keet_vales_detalles.codigo,
 					tc_keet_vales_detalles.nombre,
-					tc_mantic_unidades_medidas.nombre
+					tc_mantic_unidades_medidas.nombre) principal
 			</select>
 			<select id="especialidades">
 				select 
