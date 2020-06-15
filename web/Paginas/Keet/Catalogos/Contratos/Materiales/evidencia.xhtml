@@ -93,6 +93,12 @@
             </p:column>		   
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-150">
               <f:facet name="header">
+                <h:outputText value="Stock"/>
+              </f:facet>              
+							<h:outputText value="#{row.stock}" styleClass="janal-column-right" />
+            </p:column>			
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
                 <h:outputText value="Cantidad"/>
               </f:facet>
               <h:outputText value="#{row.surtido}"/>

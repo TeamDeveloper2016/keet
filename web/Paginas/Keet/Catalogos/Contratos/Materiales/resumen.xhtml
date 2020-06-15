@@ -78,7 +78,13 @@
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
-            </p:column>		   						
+            </p:column>		   	
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-150">
+              <f:facet name="header">
+                <h:outputText value="Stock"/>
+              </f:facet>              
+							<h:outputText value="#{row.stock}" styleClass="janal-column-right" />
+            </p:column>			
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-90">
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
