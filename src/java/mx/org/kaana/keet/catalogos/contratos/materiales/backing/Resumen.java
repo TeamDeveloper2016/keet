@@ -129,6 +129,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			campos.add(new Columna("entregado", EFormatoDinamicos.FECHA_HORA_CORTA));			
 			params= new HashMap<>();
 			params.put("idVale", ((Entity)this.attrs.get("seleccionadoPivote")).getKey());			
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));			
 			this.lazyModel= new FormatLazyModel("VistaEntregaMaterialesDto", "resumen", params, campos);
 			UIBackingUtilities.resetDataTable();
     } // try

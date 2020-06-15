@@ -126,6 +126,7 @@ public class Evidencia extends IBaseImportar implements Serializable {
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			params= new HashMap<>();
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put("idVale", ((Entity)this.attrs.get("seleccionadoPivote")).getKey());
 			params.put("clave", this.attrs.get("claveGenerada"));
 			this.lazyModel= new FormatLazyModel("VistaEntregaMaterialesDto", "evidencia", params, campos);			
