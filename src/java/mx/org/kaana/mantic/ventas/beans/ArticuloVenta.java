@@ -19,7 +19,7 @@ public class ArticuloVenta extends Articulo {
 	private String descripcionPrecio;
 	private Double menudeo;
 	private boolean descuentoActivo;
-	private boolean descuentoAsignado;
+	private boolean descuentoAsignado;	
 	
 	public ArticuloVenta() {
 		this(-1L);
@@ -225,4 +225,8 @@ public class ArticuloVenta extends Articulo {
 	public void setDescuentoAsignado(boolean descuentoAsignado) {
 		this.descuentoAsignado = descuentoAsignado;
 	}		
+	
+	public String getCantidadDecimales(){
+		return Numero.formatear(Numero.NUMERO_CON_DECIMALES, getCantidad());
+	}
 }
