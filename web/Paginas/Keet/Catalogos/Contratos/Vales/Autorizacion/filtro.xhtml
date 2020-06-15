@@ -48,7 +48,7 @@
 									</p:column>   
 								</p:selectOneMenu>																									
 								<p:outputLabel for="vales" value="Vale:"/>								
-								<p:autoComplete id="vales" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosValesAutorizacionFiltro.attrs.valeCriterio}" completeMethod="#{keetCatalogosContratosValesAutorizacionFiltro.doCompleteVale}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<p:autoComplete id="vales" var="custom" placeholder="ejemplo: 2020000123" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosValesAutorizacionFiltro.attrs.valeCriterio}" completeMethod="#{keetCatalogosContratosValesAutorizacionFiltro.doCompleteVale}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 									<p:ajax event="itemSelect" oncomplete="$('#panelBusqueda\\:replace').click();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
