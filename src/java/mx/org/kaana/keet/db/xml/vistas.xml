@@ -5,6 +5,36 @@
 <process>
 	<dml> 
 		<unit id="VistaComprasAlmacenDto">
+			<select id="compras">
+				select
+					tc_keet_gastos_detalles.id_articulo as id_key,
+					tc_mantic_empresas.nombre as empresa,
+					replace(tc_keet_gastos_detalles.nombre, '"', '\\"') as category,
+          tc_keet_desarrollos.nombres as serie,
+					sum(tc_keet_gastos_detalles.{columna}) as value,
+				  sum(tc_keet_temporal.{columna}) as {columna}
+				from
+					tc_keet_gastos
+				inner join
+					tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
+				inner join
+					tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
+				inner join
+					tc_keet_cajas_chicas on tc_keet_cajas_chicas_cierres.id_caja_chica= tc_keet_cajas_chicas.id_caja_chica
+				inner join
+					tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join
+					tc_mantic_empresas on tc_keet_gastos.id_empresa= tc_mantic_empresas.id_empresa
+				where
+					tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+				  and {condicion}
+				group by
+					tc_mantic_empresas.nombre,
+          tc_keet_desarrollos.nombres,
+					tc_keet_gastos_detalles.nombre
+				order by
+					tc_keet_gastos_detalles.cantidad desc
+			</select>			
 			<select id="analisis">
 				select
 					tc_keet_temporal.id_material as id_key,

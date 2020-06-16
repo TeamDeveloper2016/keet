@@ -125,7 +125,7 @@ public class Analisis extends IBaseFilter implements Serializable {
 				model.setBackgroundColor("#FBFCFD");
 				model.setColor(Arrays.asList("#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF"));
 				model.toCustomColorSerie("#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF");
-				sb.append(id).append(": {group: '").append(group).append("', json:").append(model.toJson()).append(", title: '").append("Compras de materiales ").append(id.toUpperCase()).append("'}");
+				sb.append(id).append(": {group: '").append(group).append("', json:").append(model.toJson()).append(", title: '").append("Materiales ").append(id.toUpperCase()).append("'}");
 			} // if
 			else 
 				sb.append(id).append(": {group: '").append(group).append("', json:").append("{}").append(", title: '").append("Materiales ").append(id.toUpperCase()).append("'}");
@@ -163,9 +163,9 @@ public class Analisis extends IBaseFilter implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb            = new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
-			sb.append("(tc_keet_contratos.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
+			sb.append("(tc_keet_gastos.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
-			sb.append("(tc_keet_contratos.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+			sb.append("(tc_keet_gastos.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
   	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   	regresar.put("idTipoVale", 2L);
   	regresar.put("idDesarrollo", this.attrs.get("idDesarrollo"));
@@ -174,13 +174,13 @@ public class Analisis extends IBaseFilter implements Serializable {
   	this.attrs.put("campo", this.attrs.get("columna"));
   	regresar.put("cuantos", this.attrs.get("cuantos"));
 		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && ((UISelectEntity)this.attrs.get("ejercicio")).getKey()>= 1L)	{			
-			sb.append("date_format(tc_keet_vales.registro, '%Y')= '").append(this.attrs.get("ejercicio")).append("' and ");
+			sb.append("date_format(tc_keet_gastos.registro, '%Y')= '").append(this.attrs.get("ejercicio")).append("' and ");
 		} // if	
 		else {
 			if(!Cadena.isVacio(this.inicio))
-				sb.append("date_format(tc_keet_vales.registro, '%Y%m%d')>= '").append(this.inicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+				sb.append("date_format(tc_keet_gastos.registro, '%Y%m%d')>= '").append(this.inicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
 			if(!Cadena.isVacio(this.termino))
-				sb.append("date_format(tc_keet_vales.registro, '%Y%m%d')<= '").append(this.termino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+				sb.append("date_format(tc_keet_gastos.registro, '%Y%m%d')<= '").append(this.termino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
 		} // if
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);

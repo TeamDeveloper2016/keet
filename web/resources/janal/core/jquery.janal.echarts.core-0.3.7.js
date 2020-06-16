@@ -237,8 +237,18 @@
 			else
 				console.info('El marco ['+ id+ '] de la grafica no existe !');
 		},
-		label: function (value) {
-			value= this.capital(value);
+		label: function (value, letter) {
+			switch(letter) {
+				case 'capital':
+					value= this.capital(value);
+					break;
+				case 'minusculas':
+					value= value.toLowerCase();
+					break;
+				case 'mayusculas':
+					value= value.toUpperCase();
+					break;
+			} // switch
 			return value.length> 12? value.replace(/\s/g, '\n'): value;
 		},
 		capital: function(text) {
@@ -290,7 +300,9 @@
 			} // switch
 			return all? text: '';
 		},
-		tooltip: function(params, format) {
+		tooltip: function(params, format, letter) {
+			if(typeof(letter)=== 'undefined')
+				letter= 'capital';
 		  var msg  = '<div style="text-align: left;">';
 		  var label= '';
 			if(typeof(format)=== 'undefined')
@@ -299,16 +311,28 @@
 				if(index=== 0)
 		      label= items['name'];
 		    if(items['value']!== '-' && items['value']> 0)
-		      msg= msg+ items['marker']+ '  '+ $echarts.legend(items['seriesName'])+ ': '+ $echarts.format(items, format)+ '<br/>';
+		      msg= msg+ items['marker']+ '  '+ $echarts.legend(items['seriesName'], letter)+ ': '+ $echarts.format(items, format)+ '<br/>';
 		  });
-		  msg= $echarts.label(label)+ '<br/>'+ msg+ '</div>';
+		  msg= $echarts.label(label, letter)+ '<br/>'+ msg+ '</div>';
       return msg;
 		},
-		legend: function(params) {
+		legend: function(params, letter) {
+			if(typeof(letter)=== 'undefined')
+				letter= 'capital';
 			if(typeof(params)=== 'string') {
 				if(params.length> 7) {
-  				params= params.toLowerCase();
-	  			params= params.charAt(0).toUpperCase()+ params.slice(1);
+					switch(letter) {
+						case 'capital':
+							params= params.toLowerCase();
+							params= params.charAt(0).toUpperCase()+ params.slice(1);
+							break;
+						case 'minusculas':
+							params= params.toLowerCase();
+							break;
+						case 'mayusculas':
+							params= params.toUpperCase();
+							break;
+					} // switch
 				} // if	
 				if(params.length> 75)
 					params= params.substring(0, 75)+ '...';
