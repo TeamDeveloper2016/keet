@@ -66,8 +66,8 @@ public class Analisis extends IBaseFilter implements Serializable {
 			this.attrs.put("idAcumula", "cantidad");
 			this.attrs.put("cuantos", 5L);
     	this.attrs.put("titulo", "Costo");
-    	this.attrs.put("campo", "costo");
-    	this.attrs.put("columna", "costo");
+    	this.attrs.put("campo", "importe");
+    	this.attrs.put("columna", "importe");
 			this.attrs.put("indicador", "{}");
 			this.loadCatalogs();
     } // try

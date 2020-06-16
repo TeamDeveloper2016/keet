@@ -12,7 +12,7 @@
 					replace(tc_keet_gastos_detalles.nombre, '"', '\\"') as category,
           tc_keet_desarrollos.nombres as serie,
 					sum(tc_keet_gastos_detalles.{columna}) as value,
-				  sum(tc_keet_temporal.{columna}) as {columna}
+				  sum(tc_keet_gastos_detalles.{columna}) as {columna}
 				from
 					tc_keet_gastos
 				inner join
@@ -33,7 +33,7 @@
           tc_keet_desarrollos.nombres,
 					tc_keet_gastos_detalles.nombre
 				order by
-					tc_keet_gastos_detalles.cantidad desc
+					tc_keet_gastos_detalles.{columna} desc
 			</select>			
 			<select id="analisis">
 				select
