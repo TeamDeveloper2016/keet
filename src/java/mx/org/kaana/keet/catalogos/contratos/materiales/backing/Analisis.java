@@ -112,8 +112,15 @@ public class Analisis extends IBaseFilter implements Serializable {
 				model.getxAxis().getAxisLabel().setFontSize(14);
 				model.getyAxis().getAxisLabel().setFontSize(14);
 				model.toCustomFontSize(14);
-				model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
-				model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'money');}");
+				model.getTooltip().getTextStyle().setColor("#FFFFFF");
+				if("costo".equals((String)this.attrs.get("campo"))) {
+  				model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'money');}");
+				  model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'money');}");
+				} // if	
+				else {
+  				model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
+					model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'double');}");
+				} // else	
 				model.getLegend().setFormatter("function (params) {return jsEcharts.legend(params);}");
 				model.setBackgroundColor("#FBFCFD");
 				model.setColor(Arrays.asList("#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF"));
