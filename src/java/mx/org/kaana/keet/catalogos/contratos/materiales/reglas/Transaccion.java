@@ -112,7 +112,7 @@ public class Transaccion extends IBaseTnx{
 		Double cantidadPivote                = 0D;
 		int count                            = 0;
 		try {
-			this.clave= Fecha.formatear(Fecha.FECHA_HORA_LARGA, LocalDate.now());
+			this.clave= Fecha.formatear(Fecha.FECHA_HORA_LARGA, LocalDateTime.now());
 			for(DetalleVale detalle: this.materiales){
 				if(detalle.isCheck() && detalle.getCantidad()>0){
 					cantidadPivote= detalle.getCantidad();					
