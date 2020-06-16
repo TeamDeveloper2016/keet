@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.materiales.reglas;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,6 +112,7 @@ public class Transaccion extends IBaseTnx{
 		Double cantidadPivote                = 0D;
 		int count                            = 0;
 		try {
+			this.clave= Fecha.formatear(Fecha.FECHA_HORA_LARGA, LocalDate.now());
 			for(DetalleVale detalle: this.materiales){
 				if(detalle.isCheck() && detalle.getCantidad()>0){
 					cantidadPivote= detalle.getCantidad();					
@@ -119,7 +121,7 @@ public class Transaccion extends IBaseTnx{
 					params.put("idArticulo", detalle.getIdArticulo());
 					detalles= DaoFactory.getInstance().toEntitySet(sesion, TcKeetValesDetallesDto.class, "TcKeetValesDetallesDto", "pendienteEntrega", params, Constantes.SQL_TODOS_REGISTROS);
 					if(!detalles.isEmpty()){
-						countConfirmados= countConfirmados + detalles.size();						
+						countConfirmados= countConfirmados + detalles.size();								
 						if(detalles.size()== 1){							
 							countProcesados++;
 							registrarEntrega(sesion, detalles.get(0));
@@ -266,8 +268,7 @@ public class Transaccion extends IBaseTnx{
 			entrega.setIdValeDetalle(detalleDto.getIdValeDetalle());
 			entrega.setNombre(detalleDto.getNombre());
 			entrega.setPrecio(detalleDto.getPrecio());
-			entrega.setRegistro(LocalDateTime.now());
-			this.clave= Fecha.formatear(Fecha.FECHA_HORA_LARGA, entrega.getRegistro());
+			entrega.setRegistro(LocalDateTime.now());			
 			entrega.setClave(this.clave);
 			DaoFactory.getInstance().insert(sesion, entrega);
 		} // try
