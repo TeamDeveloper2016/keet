@@ -108,7 +108,7 @@ public class Analisis extends IBaseFilter implements Serializable {
 				BarModel model= new BarModel(new Title(), simple, EBarOritentation.VERTICAL);
 				model.removeMarks();
 				model.removeLines();
-				model.getGrid().setTop("3%");
+				model.getGrid().setTop("6%");
 				model.getxAxis().getAxisLabel().setFontSize(14);
 				model.getyAxis().getAxisLabel().setFontSize(14);
 				model.toCustomFontSize(14);
