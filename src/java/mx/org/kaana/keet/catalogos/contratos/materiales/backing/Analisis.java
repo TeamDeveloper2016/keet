@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 import mx.org.kaana.libs.echarts.kind.BarModel;
-import mx.org.kaana.libs.echarts.model.Simple;
+import mx.org.kaana.libs.echarts.model.Multiple;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -63,9 +64,10 @@ public class Analisis extends IBaseFilter implements Serializable {
     try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idAcumula", "cantidad");
-			this.attrs.put("cuantos", 10L);
-    	this.attrs.put("titulo", "Cantidad");
-    	this.attrs.put("campo", "cantidad");
+			this.attrs.put("cuantos", 5L);
+    	this.attrs.put("titulo", "Costo");
+    	this.attrs.put("campo", "costo");
+    	this.attrs.put("columna", "costo");
 			this.attrs.put("indicador", "{}");
 			this.loadCatalogs();
     } // try
@@ -85,7 +87,7 @@ public class Analisis extends IBaseFilter implements Serializable {
 			columns.add(new Columna((String)this.attrs.get("columna"), EFormatoDinamicos.MILES_CON_DECIMALES));
       this.lazy= DaoFactory.getInstance().toEntitySet("VistaComprasAlmacenDto", "analisis", params, (Long)this.attrs.get("cuantos"));
 			UIBackingUtilities.toFormatEntitySet(this.lazy, columns);
-			UIBackingUtilities.execute("refreshEChartSingle('indicador', 'keet');");
+			this.doRefreshEChartSingle("indicador", "keet");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -98,19 +100,28 @@ public class Analisis extends IBaseFilter implements Serializable {
   } // doLoad
 	
 	public void doRefreshEChartSingle(String id, String group) {
-		Map<String, Object>params= null;
 		try {
-      params= this.toPrepare();	
-  		Simple simple = new Simple("", this.lazy);
-      BarModel model= new BarModel(new Title(), simple, EBarOritentation.HORIZONTAL);
-			//model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
-			model.removeMarks();
-			model.getxAxis().getAxisLabel().setFontSize(14);
-			model.toCustomFontSize(14);
-			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
+  		Multiple simple = new Multiple(this.lazy);
 			StringBuilder sb= new StringBuilder();
 			sb.append("jsEcharts.add({");
-			sb.append(id).append(": {group: '").append(group).append("', json:").append(model.toJson()).append(", title: '").append("Compras de materiales ").append(id.toUpperCase()).append("'}");
+			if(this.lazy!= null && !this.lazy.isEmpty()) {
+				BarModel model= new BarModel(new Title(), simple, EBarOritentation.VERTICAL);
+				model.removeMarks();
+				model.removeLines();
+				model.getGrid().setTop("3%");
+				model.getxAxis().getAxisLabel().setFontSize(14);
+				model.getyAxis().getAxisLabel().setFontSize(14);
+				model.toCustomFontSize(14);
+				model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
+				model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'money');}");
+				model.getLegend().setFormatter("function (params) {return jsEcharts.legend(params);}");
+				model.setBackgroundColor("#FBFCFD");
+				model.setColor(Arrays.asList("#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF"));
+				model.toCustomColorSerie("#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF", "#FFFF00", "#00FF00", "#FF33CC", "#00CCFF", "#FF6600", "#6666FF", "#CCFF33", "#FF3399", "#00FF99", "#0099FF", "#FF9933", "#99FF33", "#9966FF", "#00FFCC", "#FF0066", "#0066FF", "#CC66FF", "#66FF33", "#FFCC00", "#33CC33", "#FF00FF", "#33CCCC", "#FF5050", "#3366FF");
+				sb.append(id).append(": {group: '").append(group).append("', json:").append(model.toJson()).append(", title: '").append("Compras de materiales ").append(id.toUpperCase()).append("'}");
+			} // if
+			else 
+				sb.append(id).append(": {group: '").append(group).append("', json:").append("{}").append(", title: '").append("Materiales ").append(id.toUpperCase()).append("'}");
 			sb.append("});");
 			UIBackingUtilities.execute(sb.toString());
 		} // try
@@ -156,7 +167,7 @@ public class Analisis extends IBaseFilter implements Serializable {
   	this.attrs.put("campo", this.attrs.get("columna"));
   	regresar.put("cuantos", this.attrs.get("cuantos"));
 		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && ((UISelectEntity)this.attrs.get("ejercicio")).getKey()>= 1L)	{			
-			sb.append("date_format(tc_keet_vales.registro, '%Y')= '").append(this.inicio.format(DateTimeFormatter.ofPattern("yyyy"))).append("' and ");
+			sb.append("date_format(tc_keet_vales.registro, '%Y')= '").append(this.attrs.get("ejercicio")).append("' and ");
 		} // if	
 		else {
 			if(!Cadena.isVacio(this.inicio))

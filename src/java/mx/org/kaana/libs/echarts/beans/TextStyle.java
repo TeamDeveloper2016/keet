@@ -29,7 +29,7 @@ public final class TextStyle implements Serializable {
 	}
 	
 	public TextStyle(String color) {
-		this(color, "normal", "normal", "Roboto, sans-serif", 18);
+		this(color, "normal", "normal", "Roboto, sans-serif", 14);
 	}
 
 	public TextStyle(String color, Integer fontSize) {

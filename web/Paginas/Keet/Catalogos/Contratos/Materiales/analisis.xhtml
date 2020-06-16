@@ -34,7 +34,7 @@
 		<style type="text/css">
 			.janal-chart-panel {
 				width:100%; 
-				height:520px; 
+				height:420px; 
 				display:block;
 			}
 		</style>
@@ -82,8 +82,8 @@
               </p:selectOneMenu>	
 							<p:outputLabel for="columna" value="Analisis por:"/>
 							<p:selectOneMenu id="columna" value="#{keetCatalogosContratosMaterialesAnalisis.attrs.columna}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="CANTIDAD" itemValue="cantidad"/>
 								<f:selectItem itemLabel="COSTO" itemValue="costo"/>								
+								<f:selectItem itemLabel="CANTIDAD" itemValue="cantidad"/>
 							</p:selectOneMenu>
 							<p:outputLabel for="cuantos" value="Cuantos:"/>
 							<p:selectOneMenu id="cuantos" value="#{keetCatalogosContratosMaterialesAnalisis.attrs.cuantos}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
@@ -123,13 +123,13 @@
               <f:facet name="header">
                 <h:outputText value="Desarrollo"/>
               </f:facet>
-              <h:outputText value="#{row['desarrollo']}"/>
+              <h:outputText value="#{row['serie']}"/>
             </p:column>														
             <p:column class="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Material"/>
               </f:facet>
-              <h:outputText value="#{row['serie']}"/>
+              <h:outputText value="#{row['category']}"/>
             </p:column>														
             <p:column class="MarAuto Responsive janal-wid-13 janal-column-right">
               <f:facet name="header">
@@ -141,7 +141,6 @@
               <p:outputLabel value="Total [#{keetCatalogosContratosMaterialesAnalisis.lazy== null? 0: keetCatalogosContratosMaterialesAnalisis.lazy.size()}] registros"/>
             </f:facet>
           </p:dataTable>
-					<br/>
 					<pe:remoteCommand name="refreshEChartSingle" process="@this" actionListener="#{keetCatalogosContratosMaterialesAnalisis.doRefreshEChartSingle}" oncomplete="janal.desbloquear();">  
 						<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
 						<pe:methodParam name="id"/>  

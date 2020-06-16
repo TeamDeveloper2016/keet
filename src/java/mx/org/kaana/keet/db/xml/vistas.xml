@@ -9,8 +9,8 @@
 				select
 					tc_keet_temporal.id_material as id_key,
 					tc_keet_temporal.empresa,
-          tc_keet_temporal.desarrollo,
-					replace(tc_keet_temporal.serie, '"', '\\"') as serie,
+					replace(tc_keet_temporal.serie, '"', '\\"') as category,
+          tc_keet_temporal.desarrollo as serie,
 					sum(tc_keet_temporal.value) as value,
 					sum(tc_keet_temporal.{columna}) as {columna}
 				from (  
