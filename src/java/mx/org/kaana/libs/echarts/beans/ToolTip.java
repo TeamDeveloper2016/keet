@@ -27,7 +27,7 @@ public final class ToolTip implements Serializable {
 		this.trigger=trigger;
 		this.axisPointer=axisPointer;
 		this.formatter=formatter;
-		this.textStyle= new TextStyle(Axis.COLOR_BLACK, 20);
+		this.textStyle= new TextStyle(Axis.COLOR_BLACK, 14);
 	}
 
 	public String getTrigger() {

@@ -105,8 +105,8 @@ public class Analisis extends IBaseFilter implements Serializable {
       BarModel model= new BarModel(new Title(), simple, EBarOritentation.HORIZONTAL);
 			//model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
 			model.removeMarks();
-			model.getxAxis().getAxisLabel().setFontSize(12);
-			model.toCustomFontSize(12);
+			model.getxAxis().getAxisLabel().setFontSize(14);
+			model.toCustomFontSize(14);
 			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
 			StringBuilder sb= new StringBuilder();
 			sb.append("jsEcharts.add({");

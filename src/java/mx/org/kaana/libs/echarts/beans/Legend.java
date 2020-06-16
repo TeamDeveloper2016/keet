@@ -38,7 +38,7 @@ public final class Legend implements Serializable {
 		this("scroll", "center", "bottom", new ArrayList(Arrays.asList(data)));
 		this.orient=orient;
 		this.left=left;
-		this.textStyle= new TextStyle(Axis.COLOR_GRAY, 20);
+		this.textStyle= new TextStyle(Axis.COLOR_GRAY, 14);
 	}
 
 	public Legend(String type, String x, String y, List<String> data) {
