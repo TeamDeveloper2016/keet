@@ -167,7 +167,7 @@ public class Analisis extends IBaseFilter implements Serializable {
 		else
 			sb.append("(tc_keet_contratos.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
   	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-  	regresar.put("idTipoVale", 1L);
+  	regresar.put("idTipoVale", 2L);
   	regresar.put("idDesarrollo", this.attrs.get("idDesarrollo"));
   	regresar.put("columna", this.attrs.get("columna"));
   	this.attrs.put("titulo", Cadena.letraCapital((String)this.attrs.get("columna")));
