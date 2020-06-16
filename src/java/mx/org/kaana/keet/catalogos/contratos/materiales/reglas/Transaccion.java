@@ -248,7 +248,7 @@ public class Transaccion extends IBaseTnx{
 			params= new HashMap<>();
 			params.put("idVale", this.idVale);
 			total= DaoFactory.getInstance().toField(sesion, "TcKeetValesDetallesDto", "pendienteEntregaTotal", params, "total").toLong();
-			regresar= total.equals(0) ? EEstatusVales.ENTREGADO.getKey() : EEstatusVales.INCOMPLETO.getKey();
+			regresar= total.equals(0L) ? EEstatusVales.ENTREGADO.getKey() : EEstatusVales.INCOMPLETO.getKey();
 		} // try
 		catch (Exception e) {			
 			throw e; 
