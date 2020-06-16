@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.catalogos.contratos.materiales.backing;
+package mx.org.kaana.keet.cajachica.backing;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -29,7 +29,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
-@Named(value = "keetCatalogosContratosMaterialesAnalisis")
+@Named(value = "keetCajaChicaAnalisis")
 @ViewScoped
 public class Analisis extends IBaseFilter implements Serializable {
 
@@ -85,7 +85,7 @@ public class Analisis extends IBaseFilter implements Serializable {
       params= this.toPrepare();	
 			columns= new ArrayList<>();
 			columns.add(new Columna((String)this.attrs.get("columna"), EFormatoDinamicos.MILES_CON_DECIMALES));
-      this.lazy= DaoFactory.getInstance().toEntitySet("VistaComprasAlmacenDto", "analisis", params, (Long)this.attrs.get("cuantos"));
+      this.lazy= DaoFactory.getInstance().toEntitySet("VistaComprasAlmacenDto", "compras", params, (Long)this.attrs.get("cuantos"));
 			UIBackingUtilities.toFormatEntitySet(this.lazy, columns);
 			this.doRefreshEChartSingle("indicador", "keet");
     } // try
@@ -115,7 +115,7 @@ public class Analisis extends IBaseFilter implements Serializable {
 				model.getTooltip().getTextStyle().setColor("#FFFFFF");
 				if("costo".equals((String)this.attrs.get("campo"))) {
   				model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'money');}");
-				  model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'money');}");
+				  model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'money', 'mayusculas');}");
 				} // if	
 				else {
   				model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
