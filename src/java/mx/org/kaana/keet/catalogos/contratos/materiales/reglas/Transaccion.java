@@ -244,6 +244,7 @@ public class Transaccion extends IBaseTnx{
 		Long total               = null;
 		Map<String, Object>params= null;
 		try {
+			sesion.flush();
 			params= new HashMap<>();
 			params.put("idVale", this.idVale);
 			total= DaoFactory.getInstance().toField(sesion, "TcKeetValesDetallesDto", "pendienteEntregaTotal", params, "total").toLong();
