@@ -5,6 +5,80 @@
 <process>
 	<dml> 
 		<unit id="VistaComprasAlmacenDto">
+			<select id="analisis">
+				select
+					tc_keet_temporal.id_material as id_key,
+					tc_keet_temporal.empresa,
+          tc_keet_temporal.desarrollo,
+					tc_keet_temporal.serie,
+					sum(tc_keet_temporal.value) as value,
+					sum(tc_keet_temporal.{columna}) as {columna}
+				from (  
+				select
+					tc_keet_vales_detalles.id_material,
+					tc_mantic_empresas.nombre as empresa,
+          tc_keet_desarrollos.nombres as desarrollo,
+					tc_keet_vales_detalles.nombre as serie,
+					tc_keet_vales_detalles.{columna} as value,
+					tc_keet_vales_detalles.{columna}
+				from
+					tc_keet_vales
+				inner join
+					tc_keet_vales_detalles on tc_keet_vales.id_vale= tc_keet_vales_detalles.id_vale
+				inner join
+					tc_keet_contratos_lotes_contratistas on tc_keet_vales.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+				inner join
+					tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+				inner join
+					tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+				inner join
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join
+					tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+				where
+					tc_keet_vales.id_tipo_vale= {idTipoVale}
+					and tc_keet_vales.id_vale_contratista= 1
+					and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
+				  and {condicion}
+				union all
+				select
+					tc_keet_vales_detalles.id_material,
+					tc_mantic_empresas.nombre as empresa,
+          tc_keet_desarrollos.nombres as desarrollo,
+					tc_keet_vales_detalles.nombre as serie,
+					tc_keet_vales_detalles.{columna} as value,
+					tc_keet_vales_detalles.{columna}
+				from
+					tc_keet_vales
+				inner join
+					tc_keet_vales_detalles on tc_keet_vales.id_vale= tc_keet_vales_detalles.id_vale
+				inner join
+					tc_keet_contratos_lotes_proveedores on tc_keet_vales.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
+				inner join
+					tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+				inner join
+					tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+				inner join
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join
+					tc_mantic_empresas on tc_keet_contratos.id_empresa= tc_mantic_empresas.id_empresa
+				where
+					tc_keet_vales.id_tipo_vale= {idTipoVale}
+					and tc_keet_vales.id_vale_contratista= 2
+					and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
+				  and {condicion}
+				) as tc_keet_temporal  
+				group by
+					tc_keet_temporal.empresa,
+          tc_keet_temporal.desarrollo,
+					tc_keet_temporal.serie
+				order by
+					tc_keet_temporal.value desc
+			</select>
 			<select id="lazy">
 				select
 				  tc_keet_vales_detalles.id_vale_detalle as id_key,
