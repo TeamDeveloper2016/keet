@@ -84,7 +84,8 @@ public class Analisis extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
 			columns.add(new Columna((String)this.attrs.get("columna"), EFormatoDinamicos.MILES_CON_DECIMALES));
       this.lazy= DaoFactory.getInstance().toEntitySet("VistaComprasAlmacenDto", "analisis", params, (Long)this.attrs.get("cuantos"));
-			UIBackingUtilities.execute("refreshEChartSingle('janal', 'keet');");
+			UIBackingUtilities.toFormatEntitySet(this.lazy, columns);
+			UIBackingUtilities.execute("refreshEChartSingle('indicador', 'keet');");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -100,11 +101,12 @@ public class Analisis extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
 		try {
       params= this.toPrepare();	
-  		Simple simple = new Simple("Compras de materiales", this.lazy);
+  		Simple simple = new Simple("", this.lazy);
       BarModel model= new BarModel(new Title(), simple, EBarOritentation.HORIZONTAL);
 			//model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
-			model.getxAxis().getAxisLabel().setFontSize(14);
-			model.toCustomFontSize(14);
+			model.removeMarks();
+			model.getxAxis().getAxisLabel().setFontSize(12);
+			model.toCustomFontSize(12);
 			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
 			StringBuilder sb= new StringBuilder();
 			sb.append("jsEcharts.add({");
