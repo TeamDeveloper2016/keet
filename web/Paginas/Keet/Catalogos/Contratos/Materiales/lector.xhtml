@@ -109,7 +109,7 @@
 							<p:outputLabel for="puesto" value="Perfil:"/>
 							<p:inputText id="puesto" value="#{keetCatalogosContratosMaterialesLector.attrs.perfil}" styleClass="janal-wid-100-txt" readonly="true"/>														
 							<p:outputLabel for="estatus" value="Estatus:"/>
-							<p:inputText id="estatus" value="#{keetCatalogosContratosMaterialesLector.attrs.estatus} #{keetCatalogosContratosMaterialesLector.attrs.existe}" styleClass="janal-wid-100-txt" readonly="true"/>														
+							<p:inputText id="estatus" value="#{keetCatalogosContratosMaterialesLector.attrs.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>														
 							<p:panelGrid columns="1" styleClass="janal-column-center janal-wid-100">	
 							  <p:outputLabel id="encontrado" value="EL FOLIO DEL VALE NO EXISTE [#{keetCatalogosContratosMaterialesLector.attrs.codigoQr}]" styleClass="encontrado janal-wid-100 janal-color-blue" style="display:#{keetCatalogosContratosMaterialesLector.attrs.existe? '': 'none'}"/>
 							</p:panelGrid>
