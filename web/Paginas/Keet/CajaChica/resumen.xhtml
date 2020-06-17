@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Resumen del gasto a aplicar"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {        				
+				'justificacion': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de una justificación.'},
+				'cargo'        : {validaciones: 'requerido', mascara: 'libre'}				
+      };							
+			
+			function validateCriterios() {
+				var ok= janal.execute();
+				if(ok)
+					janal.bloquear();
+				return ok;
+			} // validateCriterios		 						
+    </script>
+		<style type="text/css">
+			.ui-widget-header a {
+				color: #0f6ebb !important;
+			}
+		</style>
+  </ui:define>
+  <ui:define name="contenido">				
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:accordionPanel id="criterios" activeIndex="1" multiple="true">																			
+						<p:tab title="Desarrollo [#{keetCajaChicaAccion.attrs.desarrollo.clave}] #{keetCajaChicaAccion.attrs.desarrollo.nombres}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Razon social:"/>
+								<p:inputText value="#{keetCajaChicaAccion.attrs.desarrollo.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCajaChicaAccion.attrs.desarrollo.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>			
+						<p:tab title="Detalle del gasto">
+							<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-10 lg-pantalla">
+								<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+									<p:outputLabel value="Consecutivo:"/>
+									<p:inputText value="#{keetCajaChicaResumen.attrs.gasto.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>								
+									<p:outputLabel value="Articulos:"/>
+									<p:inputText value="#{keetCajaChicaResumen.attrs.gasto.articulos}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+									<p:outputLabel value="Importe:"/>
+									<p:inputText value="$#{keetCajaChicaResumen.attrs.gasto.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>																										
+								</p:panelGrid>																			
+							</p:panelGrid>										
+						</p:tab>																																							
+					</p:accordionPanel>						
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCajaChicaResumen.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaResumen.attrs.seleccionado}" paginator="#{keetCajaChicaResumen.lazyModel.rowCount gt keetCajaChicaResumen.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+						<p:column class="janal-wid-col-30 janal-column-center">              
+              <f:facet name="header">
+                <h:outputText value="No"/>
+              </f:facet>
+              <h:outputText value="#{index+1}.-"/>
+            </p:column>		            
+            <p:column class="janal-column-left MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
+            </p:column>		   						
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-60">
+              <f:facet name="header">
+                <h:outputText value="Unidad medida"/>
+              </f:facet>
+              <h:outputText value="#{row.unidadMedida}"/>
+            </p:column>																									
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-60">
+              <f:facet name="header">
+                <h:outputText value="Cantidad"/>
+              </f:facet>
+              <h:outputText value="#{row.cantidad}"/>
+            </p:column>																			
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-60">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row.importe}"/>
+            </p:column>																			
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetCajaChicaResumen.lazyModel== null? 0: keetCajaChicaResumen.lazyModel.rowCount}] registros"/>
+            </f:facet>          
+          </p:dataTable> 					
+				</div>						        
+      </div>
+    </div>		           							
+  </ui:define>
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" action="#{keetCajaChicaResumen.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="rechazar" value="Rechazar" icon="fa fa-close" accesskey="a"  process="@form" onstart="return validateCriterios();" action="#{keetCajaChicaResumen.doRechazar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-rotate-left" accesskey="r" process="@this" ajax="false" onstart="janal.bloquear()" action="#{keetCajaChicaResumen.doCancelar}" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" action="#{keetCajaChicaResumen.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="rechazarIcon" title="Rechazar" icon="fa fa-close" process="@form" onstart="return validateCriterios();" action="#{keetCajaChicaResumen.doRechazar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-rotate-left" process="@this" ajax="false" onstart="janal.bloquear()" action="#{keetCajaChicaResumen.doCancelar}" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Captura del detalle del gasto"/>	
+	<ui:define name="librerias">
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
+		<script type="text/javascript">			
+			Janal.Control.fields = {				 				
+				'articulos' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica'},			
+				'total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica'},							
+				'nombres'   : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
+				'cantidades': {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'},
+				'precios'   : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'}
+			};				
+			
+    	$(document).ready(function() {
+        jsArticulos= new Janal.Control.Articulos.Core(#{keetCajaChicaAccion.adminOrden.articulos.size()}, 'tabla\\:', true, true);
+				janal.readingMode('#{keetCajaChicaAccion.attrs.nombreAccion}');
+				$(".janal-icon-click").click(function() {
+					if($(this).attr('id')=== 'janal-icon-minus') 
+						$('#janal-icon-plus').show();
+					else 
+						$('#janal-icon-minus').show();
+          $("#janal-contenedor-datos").fadeToggle(1100, "linear");
+					$(this).hide();
+				});
+      });										
+			
+      function execute() {				
+				var ok= janal.execute();
+				if(ok) 
+					janal.bloquear();				
+				return ok;
+			}	// execute		
+		</script>   
+		<style type="text/css">
+			.janal-total-compra {
+				font-size: 30px !important;
+				font-weight: bold !important;
+				font-style: italic;	
+			}			
+		</style>
+	</ui:define>
+	<ui:define name="contenido">		
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{keetCajaChicaAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
+			<pe:methodParam name="codigo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{keetCajaChicaAccion.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{keetCajaChicaAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="autorized" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{keetCajaChicaAccion.doAplicarDescuento}" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="search" process="@this" update="@(.informacion)" actionListener="#{keetCajaChicaAccion.doSearchArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
+			<pe:methodParam name="idArticulo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>				
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{keetCajaChicaAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();janal.refresh();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>						
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:accordionPanel id="criterios" activeIndex="1" multiple="true">																			
+						<p:tab title="Desarrollo [#{keetCajaChicaAccion.attrs.desarrollo.clave}] #{keetCajaChicaAccion.attrs.desarrollo.nombres}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Razon social:"/>
+								<p:inputText value="#{keetCajaChicaAccion.attrs.desarrollo.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCajaChicaAccion.attrs.desarrollo.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>			
+						<p:tab title="Saldo disponible de la caja chica">
+							<p:panelGrid columns="3" styleClass="janal-wid-100">
+								<p:outputLabel value="Saldo inicial:"/>
+								<p:outputLabel value="Gastado:"/>
+								<p:outputLabel value="Saldo disponible:"/>
+								<p:inputText value="#{keetCajaChicaAccion.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
+								<p:inputText value="#{keetCajaChicaAccion.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+								<p:inputText value="#{keetCajaChicaAccion.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>																	
+					</p:accordionPanel>																																		
+					<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCajaChicaAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
+						<p:column class="MarAuto Responsive janal-wid-3">
+							<f:facet name="header">
+								<h:outputText value="No."/>
+							</f:facet>
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>		
+						<p:column  class="MarAuto Responsive janal-wid-13">
+							<f:facet name="header">								
+								<h:outputText value="Código"/>								
+							</f:facet>							
+							<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+							<p:inputText id="locks" value="0" style="display:none"/>
+							<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{custom}" value="#{keetCajaChicaAccion.attrs.articulo}" completeMethod="#{keetCajaChicaAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="3" maxResults="10" style="width: 60% !important">
+								<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
+								<p:ajax event="focus" process="@this" listener="#{keetCajaChicaAccion.doActualizaImage(row['idArticulo'], row['nombre'])}" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Código:" />
+										<h:outputText value="#{custom.propio}" />
+										<h:outputText value="Precio:" />
+										<p:outputLabel value="$ #{custom.menudeo}" styleClass="janal-color-blue janal-font-bold"/>
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />										
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>																				
+						</p:column>
+						<p:column  class="MarAuto Responsive nombres">
+							<f:facet name="header">
+								<h:outputText value="Articulo"/>
+							</f:facet>
+							<p:inputText id="nombres" value="#{row['nombre']}" styleClass="key-event-sat filas" style="width: 60% !important"/>
+						</p:column>																				
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+							<f:facet name="header">
+								<h:outputText value="Cantidad"/>
+							</f:facet>
+							<p:outputLabel value="#{row['cantidad']}"/>
+							<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
+						</p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+							<f:facet name="header">
+								<h:outputText value="Unidad"/>
+							</f:facet>
+							<p:outputLabel value="#{row['unidadMedida']}"/>
+						</p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+							<f:facet name="header">
+								<h:outputText value="Precio"/>
+							</f:facet>
+							<p:outputLabel value="#{row['costo']}"/>
+							<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
+							<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
+						</p:column>																						
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+							<f:facet name="header">
+								<h:outputText value="Importe"/>
+							</f:facet>
+							<p:outputLabel value="#{row['importe$']}"/>
+						</p:column>		
+					</p:dataTable>										
+					<p:inputText id="articulos" value="#{keetCajaChicaAccion.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
+          <p:inputText id="total" value="#{keetCajaChicaAccion.adminOrden.totales.totalDosDecimales}" styleClass="recalculo" style="display:none"/>
+				</div>
+			</div>
+		</div>							
+		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
+	</ui:define>    
+	<ui:define name="acciones">		
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCajaChicaAccion.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-check-square-o" accesskey="p"  process="@form" action="#{keetCajaChicaAccion.doAplicar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCajaChicaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCajaChicaAccion.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-check-square-o" process="@form" action="#{keetCajaChicaAccion.doAplicar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCajaChicaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>						
+	</ui:define>		
+</ui:composition>
