@@ -112,7 +112,7 @@
         from      
           tc_keet_gastos_detalles
         where      
-          id_gasto = {idGasto} and codigo = '{codigo}' and id_articulo = {idArticulo}
+          id_gasto = {idGasto} and codigo = '{codigo}' and id_articulo = {idArticulo} and id_gasto_detalle = {idGastoDetalle}
       </select>
     </unit>
     <unit id="TcKeetGastosArchivosDto">
