@@ -198,7 +198,7 @@ public class Resumen extends IBaseFilter implements Serializable {
     String regresar= null;    				
     Transaccion transaccion= null;
     try {					
-			transaccion= new Transaccion(((Entity)this.attrs.get("seleccionadoPivote")).getKey(), true, this.attrs.get("justificacion").toString(), Long.valueOf(this.attrs.get("cargo").toString()));
+			transaccion= new Transaccion(((Entity)this.attrs.get("seleccionadoPivote")).getKey(), false, this.attrs.get("justificacion").toString(), Long.valueOf(this.attrs.get("cargo").toString()));
 			if(transaccion.ejecutar(EAccion.PROCESAR)){			
 				JsfBase.addMessage("Rechazar vale", "El vale fue rechazado correctamente.", ETipoMensaje.INFORMACION);
 				regresar= doCancelar();
