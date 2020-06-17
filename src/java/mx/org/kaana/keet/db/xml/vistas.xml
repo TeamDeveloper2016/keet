@@ -4929,5 +4929,43 @@
 					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus in (1,2)
 			</select>			
 		</unit>
+		<unit id="VistaGastosDto">
+			<select id="gastos">
+				select 
+					tc_keet_gastos.id_gasto as id_key,
+					tc_keet_gastos.id_empresa,
+					tc_keet_gastos.id_caja_chica_cierre,
+					tc_keet_gastos.id_empresa_persona,
+					tc_keet_gastos.consecutivo,
+					tc_keet_gastos.ejercicio,
+					tc_keet_gastos.orden,
+					tc_keet_gastos.articulos,
+					tc_keet_gastos.importe,
+					tc_keet_gastos.id_abono,
+					tc_keet_gastos.id_gasto_estatus,
+					tc_keet_gastos.registro
+				from
+					tc_keet_gastos
+				inner join
+					tc_keet_gastos_detalles ON tc_keet_gastos.id_gasto = tc_keet_gastos_detalles.id_gasto
+				where 
+					tc_keet_gastos.id_caja_chica_cierre= {idCajaChica}
+				and 
+					{condicion}
+				group by 
+					tc_keet_gastos.id_gasto,
+					tc_keet_gastos.id_empresa,
+					tc_keet_gastos.id_caja_chica_cierre,
+					tc_keet_gastos.id_empresa_persona,
+					tc_keet_gastos.consecutivo,
+					tc_keet_gastos.ejercicio,
+					tc_keet_gastos.orden,
+					tc_keet_gastos.articulos,
+					tc_keet_gastos.importe,
+					tc_keet_gastos.id_abono,
+					tc_keet_gastos.id_gasto_estatus,
+					tc_keet_gastos.registro
+			</select>
+		</unit>
 	</dml>    
 </process>
