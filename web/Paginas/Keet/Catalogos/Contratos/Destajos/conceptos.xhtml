@@ -105,7 +105,7 @@
               </f:facet>
               <h:outputText value="#{index+1}.-"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-150" sortBy="#{row.codigo}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-60" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
@@ -120,7 +120,7 @@
 						<p:column class="janal-wid-col-30 janal-column-center">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
-						<p:column class="janal-wid-col-120 janal-column-center">
+						<p:column class="janal-wid-col-115 janal-column-center">
 							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión." disabled="#{row.idEstacionEstatus eq '3'}"/>																						
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazar(row)}" title="Rechazar puntos de revisión" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}" disabled="#{row.idEstacionEstatus eq '1'}"/>															
@@ -142,7 +142,7 @@
               </f:facet>
               <h:outputText value="#{index+1}.-"/>
             </p:column>		
-            <p:column class="janal-wid-col-150 janal-column-left MarAuto Responsive" sortBy="#{row.codigo}">
+            <p:column class="janal-wid-col-60 janal-column-left MarAuto Responsive" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
@@ -157,7 +157,7 @@
 						<p:column class="janal-wid-col-30 janal-column-center">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
-						<p:column class="janal-wid-col-120 janal-column-center">							
+						<p:column class="janal-wid-col-85 janal-column-center">							
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 						</p:column>
