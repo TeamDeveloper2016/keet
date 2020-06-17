@@ -2459,7 +2459,7 @@
           tc_keet_desarrollos.registro,
           tc_keet_desarrollos.descripcion,
           tc_mantic_clientes.razon_social,
-          concat(tc_mantic_domicilios.calle, ", ",tc_mantic_domicilios.numero_exterior) domicilio
+          concat(tc_mantic_domicilios.calle, ', ', tc_mantic_domicilios.numero_exterior, if(tc_mantic_domicilios.numero_interior is NULL, '', concat(',', tc_mantic_domicilios.numero_interior)), if(tc_mantic_domicilios.codigo_postal is NULL, '', concat(', C.P.', tc_mantic_domicilios.codigo_postal))) domicilio
         from
           tc_keet_desarrollos
         inner join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_desarrollos.id_cliente
