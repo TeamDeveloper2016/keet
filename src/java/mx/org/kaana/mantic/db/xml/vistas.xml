@@ -7748,6 +7748,10 @@
 					and tc_mantic_articulos_codigos.id_principal= 1
 					and tc_mantic_articulos.id_descontinuado= 2
 					and (tc_mantic_articulos.nombre regexp '.*{codigoFaltante}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigoFaltante}.*')
+				group by
+					tc_mantic_almacenes.id_empresa,
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_almacenes.id_almacen
 				order by
 					tc_mantic_articulos.nombre
 			</select>		
