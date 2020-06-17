@@ -61,17 +61,17 @@
 										<f:selectItems value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.tiposVales}"/>
 									</p:selectOneMenu>																
 									<p:outputLabel value="Justificación:"/>
-									<p:inputTextarea id="justificacion" value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.observaciones}" styleClass="janal-wid-100-txt" readonly="true"/>														
+									<p:inputTextarea value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.observaciones}" styleClass="janal-wid-100-txt" readonly="true"/>														
 								</p:panelGrid>											
 								<p:barcode value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.qr}" type="qr" style="width: 100%"/>								
 							</p:panelGrid>										
 						</p:tab>																																							
 					</p:accordionPanel>	
-					<p:outputLabel for="cargo" value="Cargo al empleado:"/>
+					<p:outputLabel for="cargo" value="Con cargo al empleado:"/>
 					<p:selectOneMenu id="cargo" value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.cargo}" styleClass="janal-wid-100-txt">															
 						<f:selectItems value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.cargos}"/>																											
 					</p:selectOneMenu>
-					<p:outputLabel value="Justificación:" styleClass="janal-wid-100-txt"/><br/>
+					<p:outputLabel for="justificacion" value="Observación:" styleClass="janal-wid-100-txt"/><br/>
 					<p:inputTextarea id="justificacion" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosValesAutorizacionResumen.attrs.justificacion}" onblur="processDataFile();"/>
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosValesAutorizacionResumen.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosValesAutorizacionResumen.attrs.seleccionado}" paginator="#{keetCatalogosContratosValesAutorizacionResumen.lazyModel.rowCount gt keetCatalogosContratosValesAutorizacionResumen.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
 						<p:column class="janal-wid-col-30 janal-column-center">              
@@ -80,7 +80,7 @@
               </f:facet>
               <h:outputText value="#{index+1}.-"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-120">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-120" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
@@ -92,13 +92,13 @@
               </f:facet>
               <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
             </p:column>		   						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-100">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-col-60">
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
               </f:facet>
               <h:outputText value="#{row.cantidad}"/>
             </p:column>													
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-130">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-col-60">
               <f:facet name="header">
                 <h:outputText value="Unidad medida"/>
               </f:facet>
