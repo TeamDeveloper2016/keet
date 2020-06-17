@@ -14,7 +14,7 @@ public enum EOpcionesResidente {
 	VALES           ("Generación de vales", "708f919397a7", "/Paginas/Keet/Catalogos/Contratos/Vales/Normales/filtro.jsf"),
 	VALES_ESPECIALES("Generación de vales especiales", "051212101a203635c9285d90ec7d808499", "/Paginas/Keet/Catalogos/Contratos/Vales/Especiales/filtro.jsf"),
 	REGISTRO_GASTO  ("Registrar un gasto de caja chica", "223dc345c158e57684d1295a98bf46", "/Paginas/Keet/CajaChica/accion.jsf"),
-	CONSULTA_GASTO  ("Consultar gastos generados", "b0ba4bd764f408121243bacb2a2d35", "/Paginas/Keet/CajaChica/filtro.jsf"),
+	CONSULTA_GASTO  ("Consultar gastos generados", "b0ba4bd764f408121243bacb2a2d35", "/Paginas/Keet/CajaChica/consulta.jsf"),
 	//ALMACENISTA	
 	MATERIALES      ("Entrega de materiales", "c95ede7d8d92929da8df03", "/Paginas/Keet/Catalogos/Contratos/Materiales/filtro.jsf"),
 	AUTORIZACION    ("Autorización de vales especiales", "e661f7021e3dcf64e41a5392d5", "/Paginas/Keet/Catalogos/Contratos/Vales/Autorizacion/filtro.jsf");
