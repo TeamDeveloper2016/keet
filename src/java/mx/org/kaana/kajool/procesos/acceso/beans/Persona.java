@@ -33,12 +33,13 @@ public class Persona implements Serializable, IBaseDto {
   private Long idGrupo;
   private String claveGrupo;
   private LocalDateTime ultimoAcceso;
+	private Long idEmpresaPersona;
 
   public Persona() {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
   }
 
-  public Persona(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idPersona, String nombres, String primerApellido, String segundoApellido, Long idTipoSexo, Long idGrupo, LocalDateTime ultimoAcceso) {
+  public Persona(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idPersona, String nombres, String primerApellido, String segundoApellido, Long idTipoSexo, Long idGrupo, LocalDateTime ultimoAcceso, Long idEmpresaPersona) {
     this.idUsuario = idUsuario;
     this.cuenta = cuenta;
     this.contrasenia = contrasenia;
@@ -192,7 +193,13 @@ public class Persona implements Serializable, IBaseDto {
     this.idGrupo = idGrupo;
   }
 
- 
+	public Long getIdEmpresaPersona() {
+		return idEmpresaPersona;
+	}
+
+	public void setIdEmpresaPersona(Long idEmpresaPersona) {
+		this.idEmpresaPersona = idEmpresaPersona;
+	}	
 
   @Override
   public Long getKey() {
