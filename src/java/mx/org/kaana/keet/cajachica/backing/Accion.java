@@ -143,6 +143,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))){
 					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);					
 					JsfBase.setFlashAttribute("idGasto", transaccion.getIdGasto());
+					JsfBase.setFlashAttribute("retorno", "accion");										
 					toSetFlash();
 					regresar= "resumen".concat(Constantes.REDIRECIONAR);
 				} // if

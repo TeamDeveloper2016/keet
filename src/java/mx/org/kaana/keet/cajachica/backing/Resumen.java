@@ -17,6 +17,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
+import mx.org.kaana.keet.enums.EEstatusGastos;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -41,8 +42,10 @@ public class Resumen extends IBaseFilter implements Serializable {
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");						
 			this.attrs.put("idGasto", JsfBase.getFlashAttribute("idGasto"));			
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));			
 			this.attrs.put("opcionResidente", opcion);			
 			this.attrs.put("idDesarrollo", idDesarrollo);      									
+			this.attrs.put("acciones", false);      									
 			loadCatalogos();						
 			doLoad();					
     } // try // try
@@ -65,6 +68,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, "tc_keet_gastos.id_gasto=".concat(this.attrs.get("idGasto").toString()));
 			gasto= (Entity) DaoFactory.getInstance().toEntity("TcKeetGastosDto", "row", params);
 			this.attrs.put("gasto", gasto);			
+			this.attrs.put("acciones", !gasto.toLong("idGastoEstatus").equals(EEstatusGastos.DISPONIBLE.getKey()));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -141,7 +145,7 @@ public class Resumen extends IBaseFilter implements Serializable {
     String regresar= null;    				
     try {																
 			toSetFlash();
-			regresar= "accion".concat(Constantes.REDIRECIONAR);						
+			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);						
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
