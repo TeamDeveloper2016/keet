@@ -82,7 +82,8 @@
      <unit id="TcKeetGastosDto">
       <select id="row">
         select      
-          *
+          tc_keet_gastos.id_gasto as id_key,
+					tc_keet_gastos.*
         from      
           tc_keet_gastos
         where 
@@ -96,11 +97,20 @@
         where      
           consecutivo = '{consecutivo}' and id_gasto = {idGasto} and id_empresa = {idEmpresa}
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_gastos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>
     </unit>
     <unit id="TcKeetGastosDetallesDto">
       <select id="row">
         select      
-          *
+          tc_keet_gastos_detalles.id_gasto_detalle as id_key,
+					tc_keet_gastos_detalles.*
         from      
           tc_keet_gastos_detalles
         where 
