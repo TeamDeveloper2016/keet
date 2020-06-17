@@ -27,53 +27,60 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcKeetGastosDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="id_gasto")
-  private Long idGasto;
   @Column (name="codigo")
   private String codigo;
+  @Column (name="unidad_medida")
+  private String unidadMedida;
   @Column (name="costo")
   private Double costo;
+  @Column (name="nombre")
+  private String nombre;
+  @Column (name="importe")
+  private Double importe;
+  @Column (name="registro")
+  private LocalDateTime registro;
+  @Column (name="id_gasto")
+  private Long idGasto;
+  @Column (name="iva")
+  private Double iva;
+  @Column (name="impuestos")
+  private Double impuestos;
+  @Column (name="sub_total")
+  private Double subTotal;
   @Column (name="cantidad")
   private Double cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
-  @Column (name="nombre")
-  private String nombre;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_gasto_detalle")
   private Long idGastoDetalle;
-  @Column (name="registro")
-  private LocalDateTime registro;
 
   public TcKeetGastosDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetGastosDetallesDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L));
+    this(null, null, null, null, null, null, null, null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcKeetGastosDetallesDto(Long idGasto, String codigo, Double costo, Double cantidad, Long idArticulo, String nombre, Long idGastoDetalle) {
-    setIdGasto(idGasto);
+  public TcKeetGastosDetallesDto(String codigo, String unidadMedida, Double costo, String nombre, Double importe, Long idGasto, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idGastoDetalle) {
     setCodigo(codigo);
+    setUnidadMedida(unidadMedida);
     setCosto(costo);
+    setNombre(nombre);
+    setImporte(importe);
+    setRegistro(LocalDateTime.now());
+    setIdGasto(idGasto);
+    setIva(iva);
+    setImpuestos(impuestos);
+    setSubTotal(subTotal);
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
-    setNombre(nombre);
     setIdGastoDetalle(idGastoDetalle);
-    setRegistro(LocalDateTime.now());
   }
 	
-  public void setIdGasto(Long idGasto) {
-    this.idGasto = idGasto;
-  }
-
-  public Long getIdGasto() {
-    return idGasto;
-  }
-
   public void setCodigo(String codigo) {
     this.codigo = codigo;
   }
@@ -82,12 +89,76 @@ public class TcKeetGastosDetallesDto implements IBaseDto, Serializable {
     return codigo;
   }
 
+  public void setUnidadMedida(String unidadMedida) {
+    this.unidadMedida = unidadMedida;
+  }
+
+  public String getUnidadMedida() {
+    return unidadMedida;
+  }
+
   public void setCosto(Double costo) {
     this.costo = costo;
   }
 
   public Double getCosto() {
     return costo;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setImporte(Double importe) {
+    this.importe = importe;
+  }
+
+  public Double getImporte() {
+    return importe;
+  }
+
+  public void setRegistro(LocalDateTime registro) {
+    this.registro = registro;
+  }
+
+  public LocalDateTime getRegistro() {
+    return registro;
+  }
+
+  public void setIdGasto(Long idGasto) {
+    this.idGasto = idGasto;
+  }
+
+  public Long getIdGasto() {
+    return idGasto;
+  }
+
+  public void setIva(Double iva) {
+    this.iva = iva;
+  }
+
+  public Double getIva() {
+    return iva;
+  }
+
+  public void setImpuestos(Double impuestos) {
+    this.impuestos = impuestos;
+  }
+
+  public Double getImpuestos() {
+    return impuestos;
+  }
+
+  public void setSubTotal(Double subTotal) {
+    this.subTotal = subTotal;
+  }
+
+  public Double getSubTotal() {
+    return subTotal;
   }
 
   public void setCantidad(Double cantidad) {
@@ -106,28 +177,12 @@ public class TcKeetGastosDetallesDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setNombre(String nombre) {
-    this.nombre = nombre;
-  }
-
-  public String getNombre() {
-    return nombre;
-  }
-
   public void setIdGastoDetalle(Long idGastoDetalle) {
     this.idGastoDetalle = idGastoDetalle;
   }
 
   public Long getIdGastoDetalle() {
     return idGastoDetalle;
-  }
-
-  public void setRegistro(LocalDateTime registro) {
-    this.registro = registro;
-  }
-
-  public LocalDateTime getRegistro() {
-    return registro;
   }
 
   @Transient
@@ -145,21 +200,31 @@ public class TcKeetGastosDetallesDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdGasto());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCodigo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getUnidadMedida());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCosto());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImporte());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdGasto());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIva());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImpuestos());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSubTotal());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getNombre());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdGastoDetalle());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -167,21 +232,26 @@ public class TcKeetGastosDetallesDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idGasto", getIdGasto());
 		regresar.put("codigo", getCodigo());
+		regresar.put("unidadMedida", getUnidadMedida());
 		regresar.put("costo", getCosto());
+		regresar.put("nombre", getNombre());
+		regresar.put("importe", getImporte());
+		regresar.put("registro", getRegistro());
+		regresar.put("idGasto", getIdGasto());
+		regresar.put("iva", getIva());
+		regresar.put("impuestos", getImpuestos());
+		regresar.put("subTotal", getSubTotal());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
-		regresar.put("nombre", getNombre());
 		regresar.put("idGastoDetalle", getIdGastoDetalle());
-		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdGasto(), getCodigo(), getCosto(), getCantidad(), getIdArticulo(), getNombre(), getIdGastoDetalle(), getRegistro()
+			getCodigo(), getUnidadMedida(), getCosto(), getNombre(), getImporte(), getRegistro(), getIdGasto(), getIva(), getImpuestos(), getSubTotal(), getCantidad(), getIdArticulo(), getIdGastoDetalle()
     };
     return regresar;
   }
@@ -239,7 +309,4 @@ public class TcKeetGastosDetallesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdGastoDetalle() != null ? getIdGastoDetalle().hashCode() : 0);
     return hash;
   }
-
 }
-
-
