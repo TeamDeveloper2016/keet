@@ -83,9 +83,9 @@
 								<f:selectItem itemLabel="NO" itemValue="2"/>
 							</p:selectOneMenu>								
 							<p:outputLabel for="fechaInicio" value="Fecha de actualización inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticConsultasArticulos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />              
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-86" styleClass="janal-wid-100" value="#{manticConsultasArticulos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />              
 							<p:outputLabel for="fechaTermino" value="Fecha de actualización termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticConsultasArticulos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />							
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-86" styleClass="janal-wid-100" value="#{manticConsultasArticulos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />							
 							<p:outputLabel for="montoInicio" value="Costo inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticConsultasArticulos.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticConsultasArticulos.doMontoUpdate}" process="@this" update="montoTermino"/>

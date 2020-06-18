@@ -12,7 +12,6 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -52,7 +51,7 @@ public class UtilAplicacion {
   private static final String STYLE_SHEET = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{0}/javax.faces.resource/css/{1}.jsf?ln={2}\">";
 
   private static final String LESS  = "janal.mantic.less.min-2.5.0.js";
-  private static final String CSS   = "janal.mantic.core-0.7.7.css";
+  private static final String CSS   = "janal.mantic.core-0.7.8.css";
   private static final String CORE  = "jquery.janal.core-3.5.0.js";
   private static final String VENTAS= "jquery.janal.ventas.core-1.0.7.js";
   private static final String VALES = "jquery.janal.vales.core-0.0.1.js";

@@ -55,7 +55,7 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="fecha" value="Fecha:"/>
-							<p:calendar id="fecha" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-80"	value="#{keetNominasFiltro.fecha}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+							<p:calendar id="fecha" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-86"	value="#{keetNominasFiltro.fecha}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
 							<p:outputLabel for="ejercicio" value="Ejercicio:"/>
 							<p:selectOneMenu id="ejercicio" value="#{keetNominasFiltro.attrs.ejercicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetNominasFiltro.attrs.ejercicios}" var="element" itemValue="#{element}" itemLabel="#{element.ejercicio}"/>
