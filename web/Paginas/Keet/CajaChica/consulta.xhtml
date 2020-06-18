@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Vales generados" />
+  <ui:define name="librerias">
+		<style type="text/css">
+			.ui-commandlink {
+				color: transparent !important;
+				text-decoration: underline;
+				margin-right: 5px;
+			}
+			.manzana-lote-font {
+				font-size: 3.0vw !important;
+				font-weight: bold !important;
+				color: blue;
+			}
+		</style>
+	</ui:define> 
+  <ui:define name="contenido">    		
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="apanelBusqueda" activeIndex="1" multiple="true">
+						<p:tab title="Desarrollo [#{keetCajaChicaConsulta.attrs.desarrollo.clave}] #{keetCajaChicaConsulta.attrs.desarrollo.nombres}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Razon social:"/>
+								<p:inputText value="#{keetCajaChicaConsulta.attrs.desarrollo.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCajaChicaConsulta.attrs.desarrollo.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>			
+						<p:tab title="Busqueda">
+							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																															
+								<p:outputLabel for="cortes" value="Corte de caja:"/>
+								<p:selectOneMenu id="cortes" value="#{keetCajaChicaConsulta.attrs.corte}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this apanelBusqueda" listener="#{keetCajaChicaConsulta.doLoadCorte}" update="tabla apanelBusqueda" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetCajaChicaConsulta.attrs.cortes}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo}"/>									
+									<p:column headerText="Consecutivo">
+										<h:outputText value="#{item.consecutivo}"/>
+									</p:column> 									
+								</p:selectOneMenu>																									
+								<p:outputLabel for="concepto" value="Nombre del concepto:"/>
+								<p:autoComplete id="concepto" var="custom" placeholder="ejemplo: Articulo..." itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCajaChicaConsulta.attrs.conceptoCriterio}" completeMethod="#{keetCajaChicaConsulta.doCompleteConcepto}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+									<p:ajax event="itemSelect" oncomplete="$('#apanelBusqueda\\:replace').click();"/>
+									<f:facet name="itemtip">
+										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
+											<h:outputText value="Codigo:" />
+											<h:outputText value="#{custom.codigo}" />											
+											<h:outputText value="Nombre:" />
+											<h:outputText value="#{custom.nombre}" />											
+										</h:panelGrid>
+									</f:facet>
+								</p:autoComplete>																	
+								<p:outputLabel for="gastos" value="Folio del gasto:"/>
+								<p:autoComplete id="gastos" var="custom" placeholder="ejemplo: 2020000123" itemLabel="#{custom.consecutivo}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCajaChicaConsulta.attrs.gastoCriterio}" completeMethod="#{keetCajaChicaConsulta.doCompleteGasto}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+									<p:ajax event="itemSelect" oncomplete="$('#apanelBusqueda\\:replaceg').click();"/>
+									<f:facet name="itemtip">
+										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">											
+											<h:outputText value="Consecutivo:" />
+											<h:outputText value="#{custom.consecutivo}" />											
+											<h:outputText value="Importe:" />
+											<h:outputText value="$#{custom.importe}" />											
+											<h:outputText value="Registro:" />
+											<h:outputText value="#{custom.registro}" />											
+										</h:panelGrid>
+									</f:facet>
+								</p:autoComplete>									
+								<p:panelGrid columns="3" styleClass="janal-wid-100">
+									<p:outputLabel value="Saldo inicial:"/>
+									<p:outputLabel value="Gastado:"/>
+									<p:outputLabel value="Saldo disponible:"/>
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+								</p:panelGrid>																	
+								<p:commandButton id="replace" actionListener="#{keetCajaChicaConsulta.doLoadConcepto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:gastos apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
+								<p:commandButton id="replaceg" actionListener="#{keetCajaChicaConsulta.doLoadGasto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:concepto apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
+              </p:panelGrid>										
+						</p:tab>
+					</p:accordionPanel>						
+					<p:spacer height="3px"/>
+					<p:dataGrid id="tabla" var="row" value="#{keetCajaChicaConsulta.gastos}" columns="4" layout="grid" rowIndexVar="index"
+											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCajaChicaConsulta.attrs.totalRegistros gt Constantes.REGISTROS_POR_PAGINA}"
+											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
+											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
+											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+						<p:panel header="#{row.consecutivo}" style="text-align:center; border: 0px;">							
+							<h:panelGrid columns="1" style="width:100%">
+								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCajaChicaConsulta.doResumen}">
+									<p:outputLabel value="$#{row.importe}" class="manzana-lote-font" style="cursor: pointer;"/>
+									<f:setPropertyActionListener value="#{row}" target="#{keetCajaChicaConsulta.attrs.seleccionado}"/>
+								</p:commandLink>																	
+								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">																		
+									<h:outputText value="&lt;b&gt;Articulos:&lt;/b&gt; #{row.articulos}" escape="false"/>
+									<h:outputText value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.registro}" escape="false"/>									
+								</p:panelGrid>								
+							</h:panelGrid>
+							<f:facet name="footer">
+								<div class="janal-column-right janal-wid-100-txt">
+									<p:commandButton iconPos="left" title="Consultar" styleClass="janal-text-white" accesskey="z" icon="fa fa-search" action="#{keetCajaChicaConsulta.doConsultar}" style="float:left;margin-top: -8px;">
+										<f:setPropertyActionListener value="#{row}" target="#{keetCajaChicaConsulta.attrs.seleccionado}"  />
+									</p:commandButton>								
+									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}"/>									
+								</div>	
+							</f:facet>
+						</p:panel>						
+					</p:dataGrid>	 											
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCajaChicaConsulta.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCajaChicaConsulta.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>	
+</ui:composition>
