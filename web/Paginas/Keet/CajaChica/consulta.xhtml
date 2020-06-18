@@ -103,7 +103,7 @@
 							</h:panelGrid>
 							<f:facet name="footer">
 								<div class="janal-column-right janal-wid-100-txt">
-									<p:commandButton iconPos="left" title="Consultar" styleClass="janal-text-white" accesskey="z" icon="fa fa-search" action="#{keetCajaChicaConsulta.doConsultar}" style="float:left;margin-top: -8px;">
+									<p:commandButton iconPos="left" title="Importar" styleClass="janal-text-white" accesskey="z" icon="fa fa-paperclip" action="#{keetCajaChicaConsulta.doConsultar}" style="float:left;margin-top: -8px;">
 										<f:setPropertyActionListener value="#{row}" target="#{keetCajaChicaConsulta.attrs.seleccionado}"  />
 									</p:commandButton>								
 									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}"/>									
