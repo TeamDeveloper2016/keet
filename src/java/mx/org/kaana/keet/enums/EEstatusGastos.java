@@ -6,10 +6,10 @@ import java.util.Map;
 
 public enum EEstatusGastos {
 	
-	DISPONIBLE ("DISPONIBLE", "circulo-azul"    , "blue"),
+	DISPONIBLE ("DISPONIBLE", "circulo-verde"   , "green"),
 	ACEPTADO   ("ACEPTADO"  , "circulo-amarillo", "yellow"),	
 	CANCELADO  ("CANCELADO" , "circulo-rojo"    , "red"),
-	APLICADO   ("APLICADO"  , "circulo-verde"   , "green");	
+	APLICADO   ("APLICADO"  , "circulo-azul"    , "blue");	
 	
 	private static final Map<Long, EEstatusGastos> lookup= new HashMap<>();		
 	private String nombre;	
