@@ -4930,6 +4930,30 @@
 			</select>			
 		</unit>
 		<unit id="VistaGastosDto">
+			<select id="importados">
+				select
+					tc_keet_gastos_archivos.id_gasto_archivo id_key,
+					tc_keet_gastos_archivos.nombre,
+					tc_keet_gastos_archivos.archivo,
+					tc_keet_gastos_archivos.ruta,
+					tc_keet_gastos_archivos.alias,
+					tc_keet_gastos_archivos.registro,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) usuario,
+					tc_keet_gastos_archivos.id_tipo_archivo,
+					tc_keet_gastos.consecutivo,
+					tc_keet_gastos.importe,
+					tc_keet_gastos.articulos
+				from
+					tc_keet_gastos_archivos
+				inner join 
+					tc_janal_usuarios on tc_keet_gastos_archivos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				inner join
+					tc_keet_gastos on tc_keet_gastos_archivos.id_gasto = tc_keet_gastos.id_gasto
+				where
+				  tc_keet_gastos_archivos.id_gasto= {idGasto}
+			</select>
 			<select id="gastos">
 				select 
 					tc_keet_gastos.id_gasto as id_key,
