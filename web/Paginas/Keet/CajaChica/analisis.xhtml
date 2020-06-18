@@ -67,9 +67,9 @@
                 </p:column>   
               </p:selectOneMenu>	
               <p:outputLabel for="inicio" value="Fecha inicio:"/>
-							<p:calendar id="inicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-80"	value="#{keetCajaChicaAnalisis.inicio}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+							<p:calendar id="inicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-86"	value="#{keetCajaChicaAnalisis.inicio}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
               <p:outputLabel for="termino" value="Fecha termino:"/>
-							<p:calendar id="termino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-80"	value="#{keetCajaChicaAnalisis.termino}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
+							<p:calendar id="termino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-86"	value="#{keetCajaChicaAnalisis.termino}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
 							<p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
 							<p:selectOneMenu id="idDesarrollo" value="#{keetCajaChicaAnalisis.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetCajaChicaAnalisis.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
