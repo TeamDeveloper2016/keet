@@ -4966,6 +4966,80 @@
 					tc_keet_gastos.id_gasto_estatus,
 					tc_keet_gastos.registro
 			</select>
+			<select id="gastosConsecutivo">
+				select 
+					tc_keet_gastos.id_gasto as id_key,
+					tc_keet_gastos.id_empresa,
+					tc_keet_gastos.id_caja_chica_cierre,
+					tc_keet_gastos.id_empresa_persona,
+					tc_keet_gastos.consecutivo,
+					tc_keet_gastos.ejercicio,
+					tc_keet_gastos.orden,
+					tc_keet_gastos.articulos,
+					tc_keet_gastos.importe,
+					tc_keet_gastos.id_abono,
+					tc_keet_gastos.id_gasto_estatus,
+					tc_keet_gastos.registro
+				from 
+					tc_keet_gastos				
+				where 
+					tc_keet_gastos.id_caja_chica_cierre= {idCajaChica}
+				and 
+					tc_keet_gastos.consecutivo like '%{consecutivo}'				
+			</select>
+			<select id="conceptos">
+				select 
+					tc_keet_gastos_detalles.id_gasto_detalle as id_key,
+					tc_keet_gastos_detalles.nombre,
+					tc_keet_gastos_detalles.codigo,
+					tc_keet_gastos_detalles.unidad_medida
+				from 
+					tc_keet_gastos_detalles				
+				where 					
+					upper(tc_keet_gastos_detalles.nombre) like upper('%{nombre}%')
+			</select>
+			<select id="cortes">
+				select
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre AS id_key,
+					tc_keet_cajas_chicas_cierres.id_caja_chica,
+					tc_keet_cajas_chicas_cierres.consecutivo,
+					tc_keet_cajas_chicas_cierres.ejercicio,
+					tc_keet_cajas_chicas_cierres.orden,
+					tc_keet_cajas_chicas_cierres.disponible,
+					tc_keet_cajas_chicas_cierres.acumulado,
+					tc_keet_cajas_chicas_cierres.saldo,
+					tc_keet_cajas_chicas_cierres.registro,
+					tc_keet_cajas_chicas_cierres.termino
+				from
+					tc_keet_cajas_chicas
+				inner join
+					tc_keet_cajas_chicas_cierres on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+				where 
+					tc_keet_cajas_chicas.id_desarrollo= {idDesarrollo}
+				order by 
+					tc_keet_cajas_chicas_cierres.consecutivo desc
+			</select>			
+			<select id="findDesarrolloCajaChica">
+				select
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre AS id_key,
+					tc_keet_cajas_chicas_cierres.id_caja_chica,
+					tc_keet_cajas_chicas_cierres.consecutivo,
+					tc_keet_cajas_chicas_cierres.ejercicio,
+					tc_keet_cajas_chicas_cierres.orden,
+					tc_keet_cajas_chicas_cierres.disponible,
+					tc_keet_cajas_chicas_cierres.acumulado,
+					tc_keet_cajas_chicas_cierres.saldo,
+					tc_keet_cajas_chicas_cierres.registro,
+					tc_keet_cajas_chicas_cierres.termino
+				from
+					tc_keet_cajas_chicas
+				inner join
+					tc_keet_cajas_chicas_cierres on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+				where 
+					tc_keet_cajas_chicas.id_desarrollo= {idDesarrollo}
+				and 
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= {idCajaChica}
+			</select>	
 		</unit>
 	</dml>    
 </process>
