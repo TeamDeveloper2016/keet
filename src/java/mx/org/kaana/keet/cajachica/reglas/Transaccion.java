@@ -8,10 +8,12 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.cajachica.beans.Gasto;
+import mx.org.kaana.keet.db.dto.TcKeetCajasChicasCierresBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetCajasChicasCierresDto;
 import mx.org.kaana.keet.db.dto.TcKeetGastosBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetGastosDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetGastosDto;
+import mx.org.kaana.keet.enums.EEstatusCajasChicas;
 import mx.org.kaana.keet.enums.EEstatusGastos;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -226,11 +228,30 @@ public class Transaccion extends IBaseTnx {
 			caja= (TcKeetCajasChicasCierresDto) DaoFactory.getInstance().findById(sesion, TcKeetCajasChicasCierresDto.class, idCaja);
 			caja.setAcumulado(caja.getAcumulado() + importe);
 			caja.setDisponible(caja.getDisponible() - importe);
-			regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
+			caja.setIdCajaChicaCierreEstatus(EEstatusCajasChicas.PARCIALIZADO.getKey());
+			if(DaoFactory.getInstance().update(sesion, caja)>= 1L)
+				regresar= registrarBitacoraCaja(sesion, idCaja, EEstatusCajasChicas.PARCIALIZADO.getKey());
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
 	} //afectarCaja
+	
+	private boolean registrarBitacoraCaja(Session sesion, Long idCajaCierre, Long idEstatus) throws Exception{
+		boolean regresar= false;
+		TcKeetCajasChicasCierresBitacoraDto bitacora= null;
+		try {
+			bitacora= new TcKeetCajasChicasCierresBitacoraDto();
+			bitacora.setIdCajaChicaCierre(idCajaCierre);
+			bitacora.setIdCajaChicaCierreEstatus(idEstatus);
+			bitacora.setIdUsuario(JsfBase.getIdUsuario());
+			bitacora.setJustificacion("Registro de gasto");
+			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarBitacoraCaja
 }
