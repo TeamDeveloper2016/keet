@@ -232,7 +232,8 @@ public class Consulta extends IBaseFilter implements Serializable {
   } // doEntrega		
 	
 	public String doConsultar() {    
-    return doResumen();
+    doResumen();
+    return "importar".concat(Constantes.REDIRECIONAR);
   } // doConsultar
 	
 	public String doCancelar() {

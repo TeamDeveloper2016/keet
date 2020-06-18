@@ -1,13 +1,16 @@
 package mx.org.kaana.keet.cajachica.reglas;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.cajachica.beans.ArchivoGasto;
 import mx.org.kaana.keet.cajachica.beans.Gasto;
+import mx.org.kaana.keet.catalogos.contratos.personal.beans.DocumentoIncidencia;
 import mx.org.kaana.keet.db.dto.TcKeetCajasChicasCierresBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetCajasChicasCierresDto;
 import mx.org.kaana.keet.db.dto.TcKeetGastosBitacoraDto;
@@ -26,6 +29,7 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);	
+	private List<ArchivoGasto> documentos;
 	private Long idGasto;
 	private Gasto gasto;
 	private boolean ok;
@@ -52,6 +56,10 @@ public class Transaccion extends IBaseTnx {
 	public Long getIdGasto() {
 		return idGasto;
 	}	
+
+	public Transaccion(List<ArchivoGasto> documentos) {
+		this.documentos = documentos;
+	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
@@ -65,6 +73,12 @@ public class Transaccion extends IBaseTnx {
 				case MODIFICAR:
 					regresar= confirmarGasto(sesion);		
 					break;								
+				case SUBIR:
+					for(ArchivoGasto archivogasto: this.documentos){
+						if(DaoFactory.getInstance().insert(sesion, archivogasto)>=1L)
+							toSaveFile(archivogasto.getIdArchivo());
+					} // for
+					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
