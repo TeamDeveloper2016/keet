@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Captura del detalle del gasto"/>	
 	<ui:define name="librerias">
-		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryValesJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'articulos' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica'},			
