@@ -5070,6 +5070,7 @@
 				select
 					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre AS id_key,
 					tc_mantic_empresas.nombre sucursal,
+					tc_keet_desarrollos.id_desarrollo,
 					tc_keet_desarrollos.clave,
 					tc_keet_desarrollos.nombres,
 					tc_keet_cajas_chicas_cierres.ejercicio,
