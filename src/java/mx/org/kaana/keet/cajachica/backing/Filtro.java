@@ -1,7 +1,7 @@
 package mx.org.kaana.keet.cajachica.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,6 +16,9 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.enums.EEstatusCajasChicas;
+import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -33,12 +36,41 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;	
+	private FormatLazyModel lazyModelGastos;
+	private FormatLazyModel lazyModelMateriales;
+	private LocalDate fechaInicio;
+	private LocalDate fechaFin;
+
+	public FormatLazyModel getLazyModelGastos() {
+		return lazyModelGastos;
+	}	
+
+	public FormatLazyModel getLazyModelMateriales() {
+		return lazyModelMateriales;
+	}
 	
+	public LocalDate getFechaInicio() {
+		return fechaInicio;
+	}
+
+	public void setFechaInicio(LocalDate fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
+
+	public LocalDate getFechaFin() {
+		return fechaFin;
+	}
+
+	public void setFechaFin(LocalDate fechaFin) {
+		this.fechaFin = fechaFin;
+	}
 	
   @PostConstruct
   @Override
   protected void init() {
     try {
+			this.fechaInicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
+			this.fechaFin= LocalDate.of(Fecha.getAnioActual(), Fecha.getMesActual()+1, 15);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());            
 			this.loadCatalog();      
@@ -153,21 +185,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> campos      = null;
 		Map<String, Object> params= null;
     try {			
-      columns = new ArrayList<>();
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("gastado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));            
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      campos = new ArrayList<>();
+      campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("inicial", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      campos.add(new Columna("gastado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));            
+      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      campos.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			params= this.toPrepare();
       params.put("sortOrder", "");
-      this.lazyModel = new FormatCustomLazy("VistaCierresCajasChicasDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaCierresCajasChicasDto", params, campos);
+			this.lazyModelGastos= null;
+			this.lazyModelMateriales= null;
       UIBackingUtilities.resetDataTable();			
+      UIBackingUtilities.resetDataTable("tablaGastos");			
+      UIBackingUtilities.resetDataTable("tablaMateriales");			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -175,17 +211,15 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(columns);
+      Methods.clean(campos);
     } // finally		
   } // doLoad
 	
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();		
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_keet_cajas_chicas_cierres.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_keet_cajas_chicas_cierres.termino, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");			
+		StringBuilder sb= new StringBuilder();						
+		sb.append("(date_format(tc_keet_cajas_chicas_cierres.registro, '%Y%m%d')>= date_format('").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaInicio)).append("', '%Y%m%d')) and ");			
+		sb.append("(date_format(tc_keet_cajas_chicas_cierres.termino, '%Y%m%d')<= date_format('").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaFin)).append("', '%Y%m%d')) and ");			
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && !this.attrs.get("estatus").toString().equals("-1"))
   		sb.append("(tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus= ").append(this.attrs.get("estatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !((UISelectEntity)this.attrs.get("idEmpresa")).getKey().equals(-1L))
@@ -203,7 +237,57 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;		
 	} // toPrepare
 
-  public String doAperturarCaja() {
+  public void doGastos(Entity seleccionado) {
+		Map<String, Object>params= null;
+		List<Columna>campos       = null;
+		try {
+			campos = new ArrayList<>();
+      campos.add(new Columna("residente", EFormatoDinamicos.MAYUSCULAS));      
+      campos.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
+      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
+			params= new HashMap<>();
+			params.put("idCajaChicaCierre", seleccionado.getKey());
+			this.lazyModelGastos= new FormatCustomLazy("VistaCierresCajasChicasDto", "gastos", params, campos);
+			this.lazyModelMateriales= null;
+			UIBackingUtilities.resetDataTable("tablaGastos");			
+      UIBackingUtilities.resetDataTable("tablaMateriales");			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(campos);
+		} // finally
+	} // doGastos
+  
+	public void doMateriales(Entity seleccionado) {
+		Map<String, Object>params= null;
+		List<Columna>campos       = null;
+		try {			
+			campos = new ArrayList<>();
+      campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));      
+      campos.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));      
+      campos.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      campos.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
+      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "tc_keet_gastos_detalles.id_gasto=" + seleccionado.getKey());
+			this.lazyModelMateriales= new FormatCustomLazy("TcKeetGastosDetallesDto", "row", params, campos);
+      UIBackingUtilities.resetDataTable("tablaMateriales");			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(campos);
+		} // finally
+	} // doGastos
+	
+  public String doAperturarCaja(Entity seleccionado) {
 		try {
 			JsfBase.setFlashAttribute("abonar", EAccion.REGISTRAR);
 	  } // try
@@ -212,8 +296,34 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch
 		return "abonar".concat(Constantes.REDIRECIONAR);
 	} // doAperturarCaja
+  
+	public String doRechazarGasto(Entity seleccionado) {
+		try {
+			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONSULTA_GASTO);
+			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
+			JsfBase.setFlashAttribute("idGasto", seleccionado.getKey());
+			JsfBase.setFlashAttribute("retorno", "filtro");
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
+		return "resumen".concat(Constantes.REDIRECIONAR);
+	} // doRechazarGasto
+	
+	public String doImportar(Entity seleccionado) {
+		try {
+			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONSULTA_GASTO);
+			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
+			JsfBase.setFlashAttribute("idGasto", seleccionado.getKey());
+			JsfBase.setFlashAttribute("retorno", "filtro");
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
+		return "importar".concat(Constantes.REDIRECIONAR);
+	} // doRechazarGasto
 	
 	public String toColor(Entity row) {
-		return row.toDouble("efectivo")> row.toDouble("limite")? "janal-tr-orange": "";
-	} 
+		return EEstatusCajasChicas.fromId(row.toLong("idCajaChicaCierreEstatus")).getSemaforo();
+	} // toColor
 }
