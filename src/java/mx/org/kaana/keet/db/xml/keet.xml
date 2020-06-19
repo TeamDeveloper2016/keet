@@ -79,6 +79,18 @@
           id_caja_chica_cierre_bitacora = {idCajaChicaCierreBitacora}
       </select>
     </unit>		
+		<unit id="TcKeetCajasChicasCierresEstatusDto">
+			<select id="estatus">
+				select 
+				  id_caja_chica_cierre_estatus as id_key,
+					nombre,
+					estatus_asociados
+				from 
+				  tc_keet_cajas_chicas_cierres_estatus
+				where 
+					{condicion}
+			</select>
+		</unit>
      <unit id="TcKeetGastosDto">
       <select id="row">
         select      
@@ -104,6 +116,14 @@
 					tc_keet_gastos
 				where				  
 				  ejercicio = {ejercicio}			
+			</select>
+			<select id="ejercicios">
+				select 
+				  ejercicio as id_key, ejercicio 
+				from 
+				  tc_keet_gastos 
+				group by 
+				  ejercicio
 			</select>
     </unit>
     <unit id="TcKeetGastosDetallesDto">
