@@ -6,9 +6,9 @@ import java.util.Map;
 
 public enum EEstatusCajasChicas {
 	
-	INICIADO    ("INICIADO"     , "circulo-azul"    , "blue"),
+	INICIADO    ("INICIADO"     , "circulo-verde"   , "green"),
 	PARCIALIZADO("PARCIALIZADO" , "circulo-amarillo", "yellow"),
-	TERMINADO   ("TERMINADO"    , "circulo-verde"   , "green"),
+	TERMINADO   ("TERMINADO"    , "circulo-azul"    , "blue"),
 	CANCELADO   ("CANCELADO"    , "circulo-rojo"    , "red");	
 	
 	private static final Map<Long, EEstatusCajasChicas> lookup= new HashMap<>();		
