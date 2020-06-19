@@ -41,12 +41,12 @@ public class Tickets extends IBaseFilter implements Serializable {
   private static final long serialVersionUID= 8743667741599428332L;
 	private static final Log LOG              = LogFactory.getLog(Tickets.class);	
 	private double importe;
-	private Entity pivote;
+	protected Entity pivote;
 	private List<Entity> acumulado;
-	private List<String> folios;
+	protected List<String> folios;
 	private FormatCustomLazy lazyTicket;
-	private List<Long> ventaPublico;
-	private StringBuilder idClientes;
+	protected List<Long> ventaPublico;
+	protected StringBuilder idClientes;
 
 	public double getImporte() {
 		return importe;
@@ -103,6 +103,10 @@ public class Tickets extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
+		this.doLoadComun("3, 6, 4");
+	}
+	
+  protected void doLoadComun(String estatusTickets) {
     List<Columna> columns     = null;
 		Map<String, Object> params= this.toPrepare();
     try {
@@ -112,6 +116,7 @@ public class Tickets extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
+			params.put("estatusTickets", estatusTickets);
       this.lazyModel = new FormatTicket("VistaVentasDto", "tickets", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -181,7 +186,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
 			this.ventaPublico= new ArrayList<>();
 			this.idClientes  = new StringBuilder();
@@ -229,8 +234,11 @@ public class Tickets extends IBaseFilter implements Serializable {
 			params = new HashMap<>();
 			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));			
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+//			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+//				params.put("idEmpresa", this.attrs.get("idEmpresa"));
+//			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			String search= (String)this.attrs.get("codigoCliente"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
   		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
@@ -524,7 +532,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 			}); // for
 			JsfBase.setFlashAttribute("cliente", this.pivote);
 			JsfBase.setFlashAttribute("tickets", this.acumulado);
-			JsfBase.setFlashAttribute("idCliente", this.pivote.toLong("idCliente"));
+		  JsfBase.setFlashAttribute("idCliente", this.pivote!= null ? this.pivote.toLong("idCliente"): -1L);
 			JsfBase.setFlashAttribute("observaciones", sb.substring(0, sb.length()- 2));
 			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/tickets");
@@ -549,4 +557,5 @@ public class Tickets extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doActivarBusquedaCliente
+	
 }

@@ -106,9 +106,9 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-86" styleClass="janal-wid-100" value="#{manticCotizacionesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />              
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCotizacionesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-86" styleClass="janal-wid-100" value="#{manticCotizacionesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />							
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCotizacionesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />							
 							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticCotizacionesFiltro.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticCotizacionesFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>
