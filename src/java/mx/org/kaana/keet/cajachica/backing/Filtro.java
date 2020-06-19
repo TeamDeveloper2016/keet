@@ -204,6 +204,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       UIBackingUtilities.resetDataTable();			
       UIBackingUtilities.resetDataTable("tablaGastos");			
       UIBackingUtilities.resetDataTable("tablaMateriales");			
+			this.attrs.put("seleccionadoCaja", null);
+			this.attrs.put("seleccionadoGasto", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -251,6 +253,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.lazyModelMateriales= null;
 			UIBackingUtilities.resetDataTable("tablaGastos");			
       UIBackingUtilities.resetDataTable("tablaMateriales");			
+			this.attrs.put("seleccionadoCaja", seleccionado);
+			this.attrs.put("seleccionadoGasto", null);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -276,6 +280,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, "tc_keet_gastos_detalles.id_gasto=" + seleccionado.getKey());
 			this.lazyModelMateriales= new FormatCustomLazy("TcKeetGastosDetallesDto", "row", params, campos);
       UIBackingUtilities.resetDataTable("tablaMateriales");			
+			this.attrs.put("seleccionadoGasto", seleccionado);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -287,9 +292,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // doGastos
 	
-  public String doAperturarCaja(Entity seleccionado) {
+  public String doCierre(Entity seleccionado) {
 		try {
-			JsfBase.setFlashAttribute("abonar", EAccion.REGISTRAR);
+			JsfBase.setFlashAttribute("idCajaChicaCierre", seleccionado.getKey());
+			JsfBase.setFlashAttribute("retorno", "filtro");
+			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONSULTA_GASTO);
+			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
+		return "cierre".concat(Constantes.REDIRECIONAR);
+	} // doAperturarCaja
+  
+	public String doAbono(Entity seleccionado) {
+		try {
+			JsfBase.setFlashAttribute("idCajaChicaCierre", seleccionado.getKey());
+			JsfBase.setFlashAttribute("retorno", "filtro");
+			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONSULTA_GASTO);
+			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
 	  } // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
