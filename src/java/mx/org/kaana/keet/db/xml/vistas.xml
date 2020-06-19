@@ -5109,7 +5109,8 @@
 					concat(tc_mantic_personas.nombres, ' ',if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) residente,
 					tc_keet_gastos_estatus.nombre estatus,
 					tc_keet_gastos_estatus.id_gasto_estatus,
-					if(tc_keet_gastos.id_abono= 1, 'SI', 'NO') abono
+					if(tc_keet_gastos.id_abono= 1, 'SI', 'NO') abono,
+					tc_keet_cajas_chicas.id_desarrollo
 				from 
 					tc_keet_gastos
 				inner join 
@@ -5117,7 +5118,11 @@
 				inner join 
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
 				inner join 
-					tc_keet_gastos_estatus on tc_keet_gastos.id_gasto_estatus = tc_keet_gastos_estatus.id_gasto_estatus  
+					tc_keet_gastos_estatus on tc_keet_gastos.id_gasto_estatus = tc_keet_gastos_estatus.id_gasto_estatus
+				inner join 
+				  tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre = tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
+				inner join
+					tc_keet_cajas_chicas ON tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
 				where 
 					tc_keet_gastos.id_caja_chica_cierre= {idCajaChicaCierre}
 			</select>			
