@@ -5065,5 +5065,35 @@
 					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= {idCajaChica}
 			</select>	
 		</unit>
+		<unit id="VistaCierresCajasChicasDto">
+			<select id="lazy">
+				select
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre AS id_key,
+					tc_keet_desarrollos.clave,
+					tc_keet_desarrollos.nombres,
+					tc_keet_cajas_chicas_cierres.ejercicio,
+					tc_keet_nominas_periodos.orden semana,
+					tc_keet_cajas_chicas_cierres.termino,
+					tc_keet_cajas_chicas_cierres.registro,
+					tc_keet_cajas_chicas_cierres.saldo inicial,
+					tc_keet_cajas_chicas_cierres.acumulado gastado,
+					tc_keet_cajas_chicas_cierres.saldo disponible,
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus,
+					tc_keet_cajas_chicas_cierres_estatus.nombre estatus
+				from
+					tc_keet_cajas_chicas_cierres
+				inner join
+					tc_keet_cajas_chicas ON tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+				inner join
+					tc_keet_nominas_periodos ON tc_keet_cajas_chicas_cierres.id_nomina_periodo = tc_keet_nominas_periodos.id_nomina_periodo
+				inner join
+					tc_keet_desarrollos ON tc_keet_cajas_chicas.id_desarrollo = tc_keet_desarrollos.id_desarrollo;
+				inner join
+					tc_keet_cajas_chicas_cierres_estatus ON tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus = tc_keet_cajas_chicas_cierres_estatus.id_caja_chica_cierre_estatus
+				where
+					{condicion}
+				{sortOrder}
+			</select>
+		</unit>
 	</dml>    
 </process>
