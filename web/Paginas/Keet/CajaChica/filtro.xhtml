@@ -165,6 +165,9 @@
 					
 					<p:dataTable  lazy="true" id="tablaGastos" widgetVar="kajoolTableGastos" var="row" value="#{keetCajaChicaFiltro.lazyModelGastos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaFiltro.attrs.seleccionadoGasto}" selectionMode="single" paginator="#{keetCajaChicaFiltro.lazyModelGastos.rowCount gt keetCajaChicaFiltro.lazyModelGastos.pageSize}" rowIndexVar="index" reflow="true">            
             <f:facet name="header">
+							<div style="position: absolute;">
+								<p:outputLabel value="[#{keetCajaChicaFiltro.attrs.seleccionadoCaja.nombres} #{keetCajaChicaFiltro.attrs.seleccionadoCaja.ejercicio}-#{keetCajaChicaFiltro.attrs.seleccionadoCaja.semana}] Desglose de abonos y gastos de la caja chica." styleClass="janal-text-white janal-wid-100-txt janal-column-left"/>
+							</div>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tablaGastos')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tablaGastos')" oncomplete="janal.desbloquear()"/>								
@@ -234,6 +237,9 @@
 					
 					<p:dataTable  lazy="true" id="tablaMateriales" widgetVar="kajoolTableMateriales" var="row" value="#{keetCajaChicaFiltro.lazyModelMateriales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCajaChicaFiltro.lazyModelMateriales.rowCount gt keetCajaChicaFiltro.lazyModelMateriales.pageSize}" rowIndexVar="index" reflow="true">            
             <f:facet name="header">
+							<div style="position: absolute;">
+								<p:outputLabel value="[#{keetCajaChicaFiltro.attrs.seleccionadoGasto.consecutivo}] Listado de materiales del gasto seleccionado." styleClass="janal-text-white janal-wid-100-txt janal-column-left"/>
+							</div>							
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tablaMateriales')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tablaMateriales')" oncomplete="janal.desbloquear()"/>								
