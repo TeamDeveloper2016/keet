@@ -4928,6 +4928,25 @@
 				and 
 					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus in (1,2)
 			</select>			
+			<select id="findCajaChicaCierre">
+				select
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre AS id_key,
+					tc_keet_cajas_chicas_cierres.id_caja_chica,
+					tc_keet_cajas_chicas_cierres.consecutivo,
+					tc_keet_cajas_chicas_cierres.ejercicio,
+					tc_keet_cajas_chicas_cierres.orden,
+					tc_keet_cajas_chicas_cierres.disponible,
+					tc_keet_cajas_chicas_cierres.acumulado,
+					tc_keet_cajas_chicas_cierres.saldo,
+					tc_keet_cajas_chicas_cierres.registro,
+					tc_keet_cajas_chicas_cierres.termino
+				from
+					tc_keet_cajas_chicas
+				inner join
+					tc_keet_cajas_chicas_cierres on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+				where 
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= {idCajaChicaCierre}				
+			</select>			
 		</unit>
 		<unit id="VistaGastosDto">
 			<select id="importados">

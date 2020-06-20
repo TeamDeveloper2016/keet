@@ -60,6 +60,14 @@
         where      
           consecutivo = '{consecutivo}'
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_cajas_chicas_cierres
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>			
     </unit>		
     <unit id="TcKeetCajasChicasCierresBitacoraDto">
       <select id="row">
@@ -125,6 +133,9 @@
 				group by 
 				  ejercicio
 			</select>
+			<update id="disponibles">
+				update tc_keet_gastos set id_caja_chica_cierre={idCajaNuevo} where id_caja_chica_cierre={idCajaAnterior} and id_gasto_estatus=1
+			</update>
     </unit>
     <unit id="TcKeetGastosDetallesDto">
       <select id="row">
