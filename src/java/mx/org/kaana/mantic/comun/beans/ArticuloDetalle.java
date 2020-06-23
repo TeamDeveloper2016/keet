@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.comun.beans;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   private String descuentoDescripcion;
   private String extras;
   private Double importe;
-  private Timestamp registro;
+  private LocalDateTime registro;
   private String propio;
   private Double iva;
   private Double impuestos;
@@ -64,22 +65,22 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
   public ArticuloDetalle(Long key) {
-		this(key, "", 0D, "", "", 0D, new Timestamp(Calendar.getInstance().getTimeInMillis()), "", 16D, 0D, 0D, 1D, 0D, "", "", "", 0D, 2L, "");
+		this(key, "", 0D, "", "", 0D, LocalDateTime.now(), "", 16D, 0D, 0D, 1D, 0D, "", "", "", 0D, 2L, "");
   }
 
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Double excedentes, Long idAplicar, String origen) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Double excedentes, Long idAplicar, String origen) {
 		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0D, 1L, -1L, excedentes, idAplicar, origen);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, String origen) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, String origen) {
 		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, idOrdenDetalle, solicitados, idRedondear, idComodin, excedentes, idAplicar, 0D, 0D, origen);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad, String origen) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad, String origen) {
 		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, idOrdenDetalle, solicitados, idRedondear, idComodin, excedentes, idAplicar, precio, utilidad, null, origen);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad, String descuentoDescripcion, String origen) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad, String descuentoDescripcion, String origen) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -158,11 +159,11 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
     return Numero.toRedondearSat(importe);
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 
