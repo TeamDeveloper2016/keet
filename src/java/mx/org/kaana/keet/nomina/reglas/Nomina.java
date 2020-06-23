@@ -261,6 +261,8 @@ public class Nomina implements Serializable {
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.EXEDENTE);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.PRESTAMO);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.ABONO);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.APERTURACH);
+				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.SALDOCH);
 				int count= 0;
 				// REMOVER TODOS LOS INCIDENTES QUE SE ALCANZARON A APLICAR EN LA NOMINA
 				while(count< incidentes.size()) {
