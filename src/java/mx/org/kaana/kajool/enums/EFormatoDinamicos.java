@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
@@ -63,6 +64,8 @@ public enum EFormatoDinamicos implements IFormatosKajool {
   public String execute(Object value) {
     String regresar = "";
     if (value != null) {
+			if(value instanceof Value && (((Value)value).getData() instanceof LocalDateTime || ((Value)value).getData() instanceof LocalDate || ((Value)value).getData() instanceof LocalTime))
+				value= ((Value)value).getData();
 			if(value instanceof LocalDateTime) {
 				DateTimeFormatter pattern= DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
 				regresar= pattern.format((LocalDateTime)value);
