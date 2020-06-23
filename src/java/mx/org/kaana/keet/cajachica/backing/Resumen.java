@@ -43,6 +43,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");						
 			this.attrs.put("idGasto", JsfBase.getFlashAttribute("idGasto"));			
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));			
+			this.attrs.put("retornoInicial", JsfBase.getFlashAttribute("retornoInicial"));			
 			this.attrs.put("opcionResidente", opcion);			
 			this.attrs.put("idDesarrollo", idDesarrollo);      									
 			this.attrs.put("acciones", false);      									
@@ -155,6 +156,8 @@ public class Resumen extends IBaseFilter implements Serializable {
   } // doCancelar	  
 	
 	private void toSetFlash(){		
+		JsfBase.setFlashAttribute("idGasto", this.attrs.get("idGasto"));			
+		JsfBase.setFlashAttribute("retornoInicial", this.attrs.get("retornoInicial"));											
 		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));											
 		JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));											
 	} // toSetFlash		
