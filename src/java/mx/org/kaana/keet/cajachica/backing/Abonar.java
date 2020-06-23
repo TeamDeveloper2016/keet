@@ -85,7 +85,7 @@ public class Abonar extends IBaseAttribute implements Serializable {
     String regresar        = null;    		
 		Transaccion transaccion= null;				
     try {												
-			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString());
+			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString(), (Long) this.attrs.get("idDesarrollo"));
 			if(transaccion.ejecutar(EAccion.ASIGNAR)){
 				JsfBase.addMessage("Abonar a caja chica", "Se realizó el abono de forma correcta.", ETipoMensaje.INFORMACION);									
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);

@@ -44,6 +44,7 @@ public class Cierre extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("opcionResidente", opcion);						
 			this.attrs.put("idDesarrollo", idDesarrollo);      						
+			this.attrs.put("idAfectaNomina", 1L);
 			doLoad();											
     } // try // try
     catch (Exception e) {
@@ -85,7 +86,7 @@ public class Cierre extends IBaseAttribute implements Serializable {
     String regresar        = null;    		
 		Transaccion transaccion= null;				
     try {														
-			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString());
+			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString(), Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), (Long)this.attrs.get("idDesarrollo"));
 			if(transaccion.ejecutar(EAccion.ACTIVAR)){
 				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta.", ETipoMensaje.INFORMACION);									
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);
