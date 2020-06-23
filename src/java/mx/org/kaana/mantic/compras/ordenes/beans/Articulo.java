@@ -1,8 +1,7 @@
 package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -87,7 +86,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public Articulo(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida, Long idAplicar, String origen) {
-		super(idArticulo, codigo, costo, descuento, extras, importe, new Timestamp(Calendar.getInstance().getTimeInMillis()), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, sat, unidadMedida, excedentes, idAplicar, origen);
+		super(idArticulo, codigo, costo, descuento, extras, importe, LocalDateTime.now(), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, sat, unidadMedida, excedentes, idAplicar, origen);
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
 		this.idProveedor = idProveedor;
 		this.sinIva      = sinIva;
