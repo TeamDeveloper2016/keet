@@ -171,7 +171,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 			params.put("idCajaChica", ((Entity)this.attrs.get("cajaChica")).getKey());
 			this.gastos= DaoFactory.getInstance().toEntitySet("VistaGastosDto", "gastos", params);				
 			this.attrs.put("totalRegistros", this.gastos.size());			
-			if(!this.gastos.isEmpty()){ 
+			if(!this.gastos.isEmpty()) {
 				UIBackingUtilities.toFormatEntitySet(this.gastos, campos);
 				this.toEstatusVale();
 			} // if

@@ -22,8 +22,8 @@ public enum ECodigosIncidentes {
   DESTAJO(-1L, "L1", Boolean.TRUE, -1),
   COMPLEMENTO(-1L, "N1", Boolean.TRUE, -1),
   PERIODO(-1L, "G1", Boolean.TRUE, -1),
-  APERTURACH(-1L, "AN1", Boolean.TRUE, -1),
-  SALDOCH(-1L, "AO1", Boolean.TRUE, -1);
+  APERTURACH(20L, "AN1", Boolean.TRUE, 3),
+  SALDOCH(21L, "AO1", Boolean.TRUE, 3);
 	
 	private Long idTipoIncidente;
 	private String codigos;
