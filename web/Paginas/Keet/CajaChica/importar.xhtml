@@ -72,14 +72,16 @@
 								<p:outputLabel value="Importe:"/>
 								<p:inputText value="$#{keetCajaChicaImportar.attrs.gasto.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>																										
 							</p:panelGrid>																										
-							<p:panelGrid columns="3" styleClass="janal-wid-100">
-								<p:outputLabel value="Saldo inicial:"/>
+							<p:panelGrid columns="4" styleClass="janal-wid-98" columnClasses="janal-wid-25, janal-wid-25,janal-wid-25, janal-wid-25">
+								<p:outputLabel value="Inicial:"/>
 								<p:outputLabel value="Gastado:"/>
-								<p:outputLabel value="Saldo disponible:"/>
+								<p:outputLabel value="Disponible:"/>
+								<p:outputLabel value="Pendiente:"/>								
 								<p:inputText value="#{keetCajaChicaImportar.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
 								<p:inputText value="#{keetCajaChicaImportar.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
 								<p:inputText value="#{keetCajaChicaImportar.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
-							</p:panelGrid>
+								<p:inputText value="#{keetCajaChicaImportar.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>																
+							</p:panelGrid>		
 						</p:tab>									
 						<p:tab title="Archivos">
 							<p:dataTable id="importados" var="row" value="#{keetCajaChicaImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
