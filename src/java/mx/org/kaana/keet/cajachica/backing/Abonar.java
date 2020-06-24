@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -39,11 +40,12 @@ public class Abonar extends IBaseAttribute implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");												
-			this.attrs.put("idCajaChicaCierre", JsfBase.getFlashAttribute("idCajaChicaCierre"));						
-			this.attrs.put("semana", JsfBase.getFlashAttribute("semana"));						
+			this.attrs.put("idCajaChicaCierre", JsfBase.getFlashAttribute("idCajaChicaCierre"));									
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));						
 			this.attrs.put("opcionResidente", opcion);						
-			this.attrs.put("idDesarrollo", idDesarrollo);      						
+			this.attrs.put("idDesarrollo", idDesarrollo);      			
+			if(Cadena.isVacio(this.attrs.get("idCajaChicaCierre")))
+				loadCajaChicaCierre();
 			doLoad();											
     } // try // try
     catch (Exception e) {
@@ -51,7 +53,24 @@ public class Abonar extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init	
-	  
+	
+	private void loadCajaChicaCierre() throws Exception{
+		Map<String, Object>params= null;
+		Entity cajaChica         = null;		
+		try {
+			params= new HashMap<>();
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo").toString());
+			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaCajaChicaDto", "findDesarrollo", params);			
+			this.attrs.put("idCajaChicaCierre", cajaChica.getKey());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // loadCajaChicaCierre
+	
   public void doLoad() {			
 		Entity desarrollo        = null;		
 		Entity cajaChica         = null;		
@@ -62,6 +81,7 @@ public class Abonar extends IBaseAttribute implements Serializable {
 			campos.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 			campos.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 			campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);
@@ -88,7 +108,7 @@ public class Abonar extends IBaseAttribute implements Serializable {
 			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString(), (Long) this.attrs.get("idDesarrollo"));
 			if(transaccion.ejecutar(EAccion.ASIGNAR)){
 				JsfBase.addMessage("Abonar a caja chica", "Se realizó el abono de forma correcta.", ETipoMensaje.INFORMACION);									
-				regresar= "filtro".concat(Constantes.REDIRECIONAR);
+				regresar= doCancelar();
 			} // if
 			else
 				JsfBase.addMessage("Abonar a caja chica", "Ocurrió un error al realizar el abono.", ETipoMensaje.ERROR);						
@@ -102,8 +122,14 @@ public class Abonar extends IBaseAttribute implements Serializable {
 		
 	public String doCancelar() {
     String regresar          = null;    		
-    try {												
-			regresar= "filtro".concat(Constantes.REDIRECIONAR);						
+		EOpcionesResidente opcion= null;						
+    try {									
+			if(!Cadena.isVacio(this.attrs.get("retorno")))			
+				regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);						
+			else{
+				opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
+				regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);
+			} // else
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

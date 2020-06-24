@@ -53,6 +53,8 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
   private Long ejercicio;
   @Column (name="id_gasto_estatus")
   private Long idGastoEstatus;
+  @Column (name="revisado")
+  private Long revisado;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -61,11 +63,11 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetGastosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, 2L);
     setKey(key);
   }
 
-  public TcKeetGastosDto(Long idGasto, String consecutivo, Long articulos, Long idUsuario, Long idEmpresaPersona, Long idAbono, Long idEmpresa, Long orden, Long idCajaChicaCierre, Double importe, Long ejercicio, Long idGastoEstatus) {
+  public TcKeetGastosDto(Long idGasto, String consecutivo, Long articulos, Long idUsuario, Long idEmpresaPersona, Long idAbono, Long idEmpresa, Long orden, Long idCajaChicaCierre, Double importe, Long ejercicio, Long idGastoEstatus, Long revisado) {
     setIdGasto(idGasto);
     setConsecutivo(consecutivo);
     setArticulos(articulos);
@@ -79,6 +81,7 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
 		setIdGastoEstatus(idGastoEstatus);
+		setRevisado(revisado);
   }
 	
   public void setIdGasto(Long idGasto) {
@@ -184,6 +187,14 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
 	public void setIdGastoEstatus(Long idGastoEstatus) {
 		this.idGastoEstatus = idGastoEstatus;
 	}	
+
+	public Long getRevisado() {
+		return revisado;
+	}
+
+	public void setRevisado(Long revisado) {
+		this.revisado = revisado;
+	}	
 	
   @Transient
   @Override
@@ -225,6 +236,8 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdGastoEstatus());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRevisado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -245,13 +258,14 @@ public class TcKeetGastosDto implements IBaseDto, Serializable {
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("idGastoEstatus", getIdGastoEstatus());
+		regresar.put("revisado", getRevisado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getIdGasto(), getConsecutivo(), getArticulos(), getIdUsuario(), getIdEmpresaPersona(), getIdAbono(), getIdEmpresa(), getOrden(), getIdCajaChicaCierre(), getImporte(), getEjercicio(), getRegistro(), getIdGastoEstatus()
+			getIdGasto(), getConsecutivo(), getArticulos(), getIdUsuario(), getIdEmpresaPersona(), getIdAbono(), getIdEmpresa(), getOrden(), getIdCajaChicaCierre(), getImporte(), getEjercicio(), getRegistro(), getIdGastoEstatus(), getRevisado()
     };
     return regresar;
   }

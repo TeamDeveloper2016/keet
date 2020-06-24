@@ -4918,7 +4918,8 @@
 					tc_keet_cajas_chicas_cierres.acumulado,
 					tc_keet_cajas_chicas_cierres.saldo,
 					tc_keet_cajas_chicas_cierres.registro,
-					tc_keet_cajas_chicas_cierres.termino
+					tc_keet_cajas_chicas_cierres.termino,
+					(select sum(importe) from tc_keet_gastos where tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre and id_gasto_estatus=1) pendiente
 				from
 					tc_keet_cajas_chicas
 				inner join
@@ -4939,7 +4940,8 @@
 					tc_keet_cajas_chicas_cierres.acumulado,
 					tc_keet_cajas_chicas_cierres.saldo,
 					tc_keet_cajas_chicas_cierres.registro,
-					tc_keet_cajas_chicas_cierres.termino
+					tc_keet_cajas_chicas_cierres.termino,
+					(select sum(importe) from tc_keet_gastos where tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre and id_gasto_estatus=1) pendiente
 				from
 					tc_keet_cajas_chicas
 				inner join
@@ -5008,6 +5010,8 @@
 					tc_keet_gastos.id_abono,
 					tc_keet_gastos.id_gasto_estatus,
 					tc_keet_gastos.registro
+				order by 
+				  tc_keet_gastos.consecutivo desc
 			</select>
 			<select id="gastosConsecutivo">
 				select 
@@ -5073,7 +5077,8 @@
 					tc_keet_cajas_chicas_cierres.acumulado,
 					tc_keet_cajas_chicas_cierres.saldo,
 					tc_keet_cajas_chicas_cierres.registro,
-					tc_keet_cajas_chicas_cierres.termino
+					tc_keet_cajas_chicas_cierres.termino,
+					(select sum(importe) from tc_keet_gastos where tc_keet_gastos.id_caja_chica_cierre= tc_keet_cajas_chicas_cierres.id_caja_chica_cierre and id_gasto_estatus=1) pendiente
 				from
 					tc_keet_cajas_chicas
 				inner join
@@ -5146,6 +5151,32 @@
 				where 
 					tc_keet_gastos.id_caja_chica_cierre= {idCajaChicaCierre}
 			</select>			
+		</unit>
+		<unit id="VistaGastosDetallesDto">
+			<select id="detalle">
+				select
+					tc_keet_gastos_detalles.id_gasto_detalle as id_key,
+					tc_keet_gastos_detalles.id_gasto_detalle as id_comodin,
+          tc_keet_gastos_detalles.*,
+          tc_keet_gastos_detalles.cantidad as cuantos,
+          tc_keet_gastos_detalles.cantidad as inicial,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_articulos.menudeo
+				from 
+					tc_keet_gastos_detalles
+				inner join
+					tc_mantic_articulos on tc_keet_gastos_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				where  
+					tc_keet_gastos_detalles.id_gasto= {idGasto}
+				order by
+					tc_keet_gastos_detalles.registro
+			</select>
 		</unit>
 	</dml>    
 </process>

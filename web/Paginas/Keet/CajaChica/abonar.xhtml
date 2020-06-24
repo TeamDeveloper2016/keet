@@ -42,16 +42,37 @@
 								<p:inputText value="#{keetCajaChicaAbonar.attrs.desarrollo.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>			
-						<p:tab title="Saldo disponible de la caja chica">
-							<p:panelGrid columns="3" styleClass="janal-wid-100">
-								<p:outputLabel value="Saldo inicial:"/>
-								<p:outputLabel value="Gastado:"/>
-								<p:outputLabel value="Saldo disponible:"/>
-								<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
-								<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
-								<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
-							</p:panelGrid>										
-						</p:tab>																	
+						<p:tab title="Saldo de caja chica">
+							<div class="lg-pantalla">
+								<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-24, janal-wid-24, janal-wid-24, janal-wid-24, janal-wid-col-30 janal-column-center">
+									<p:outputLabel value="Inicial:"/>
+									<p:outputLabel value="Gastado:"/>
+									<p:outputLabel value="Disponible:"/>
+									<p:outputLabel value="Pendiente:"/>
+									<p:spacer/>
+									<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
+									<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+									<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+									<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+									<p:commandButton id="pendiente" icon="fa fa-check" title="Consultar gastos pendientes" action="#{keetCajaChicaAbonar.doPendientes}" process="@this criterios" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								</p:panelGrid>										
+							</div>
+							<div class="xs-pantalla">
+								<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+									<p:outputLabel value="Inicial:"/>
+									<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
+									<p:outputLabel value="Gastado:"/>
+									<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+									<p:outputLabel value="Disponible:"/>
+									<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+									<p:outputLabel value="Pendiente:"/>
+									<p:panelGrid columns="2" styleClass="janal-wid-96" columnClasses="janal-wid-100-txt, janal-wid-col-30 janal-column-center">
+										<p:inputText value="#{keetCajaChicaAbonar.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>																																								
+										<p:commandButton icon="fa fa-check" action="#{keetCajaChicaAbonar.doPendientes}" process="@this criterios" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									</p:panelGrid>										
+								</p:panelGrid>										
+							</div>
+						</p:tab>																							
 					</p:accordionPanel>
 					<p:outputLabel value="Importe:"/>
 					<p:inputNumber id="importe" value="#{keetCajaChicaAbonar.attrs.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt"/>

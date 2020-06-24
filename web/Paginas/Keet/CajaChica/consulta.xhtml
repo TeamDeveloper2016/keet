@@ -70,18 +70,34 @@
 											<h:outputText value="#{custom.registro}" />											
 										</h:panelGrid>
 									</f:facet>
-								</p:autoComplete>									
-								<p:panelGrid columns="3" styleClass="janal-wid-100">
-									<p:outputLabel value="Saldo inicial:"/>
-									<p:outputLabel value="Gastado:"/>
-									<p:outputLabel value="Saldo disponible:"/>
-									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
-									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
-									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
-								</p:panelGrid>																	
+								</p:autoComplete>																																		
 								<p:commandButton id="replace" actionListener="#{keetCajaChicaConsulta.doLoadConcepto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:gastos apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
 								<p:commandButton id="replaceg" actionListener="#{keetCajaChicaConsulta.doLoadGasto}" process="@this apanelBusqueda" update="tabla apanelBusqueda:concepto apanelBusqueda:cortes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
               </p:panelGrid>										
+							<div class="lg-pantalla">
+								<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-25, janal-wid-25, janal-wid-25, janal-wid-25">
+									<p:outputLabel value="Inicial:"/>
+									<p:outputLabel value="Gastado:"/>
+									<p:outputLabel value="Disponible:"/>
+									<p:outputLabel value="Pendiente:"/>										
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>																		
+								</p:panelGrid>										
+							</div>
+							<div class="xs-pantalla">
+								<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+									<p:outputLabel value="Inicial:"/>
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
+									<p:outputLabel value="Gastado:"/>
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+									<p:outputLabel value="Disponible:"/>
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+									<p:outputLabel value="Pendiente:"/>										
+									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>																																																			
+								</p:panelGrid>										
+							</div>
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>

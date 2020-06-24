@@ -103,11 +103,18 @@ public class Consulta extends IBaseFilter implements Serializable {
 	private void loadCajaChica() throws Exception{
 		Map<String, Object>params= null;
 		Entity cajaChica         = null;		
-		try {
+		List<Columna>campos      = null;
+    try {    			
+			campos= new ArrayList<>();
+			campos.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
 			params= new HashMap<>();
 			params.put("idCajaChica", ((Entity)this.attrs.get("corte")).getKey());
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo").toString());
 			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaGastosDto", "findDesarrolloCajaChica", params);
+			UIBackingUtilities.toFormatEntity(cajaChica, campos);
 			this.attrs.put("cajaChica", cajaChica);		
 		} // try
 		catch (Exception e) {			
@@ -121,10 +128,17 @@ public class Consulta extends IBaseFilter implements Serializable {
 	private void loadCajaChicaDefault() throws Exception{
 		Map<String, Object>params= null;
 		Entity cajaChica         = null;		
-		try {
+		List<Columna>campos      = null;
+    try {    			
+			campos= new ArrayList<>();
+			campos.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo").toString());
 			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaCajaChicaDto", "findDesarrollo", params);
+			UIBackingUtilities.toFormatEntity(cajaChica, campos);
 			this.attrs.put("cajaChica", cajaChica);		
 		} // try
 		catch (Exception e) {			
@@ -171,7 +185,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 			params.put("idCajaChica", ((Entity)this.attrs.get("cajaChica")).getKey());
 			this.gastos= DaoFactory.getInstance().toEntitySet("VistaGastosDto", "gastos", params);				
 			this.attrs.put("totalRegistros", this.gastos.size());			
-			if(!this.gastos.isEmpty()) {
+			if(!this.gastos.isEmpty()){ 
 				UIBackingUtilities.toFormatEntitySet(this.gastos, campos);
 				this.toEstatusVale();
 			} // if
@@ -216,13 +230,18 @@ public class Consulta extends IBaseFilter implements Serializable {
 	} // toEstatusManzanaLote	
 	
 	public String doResumen() {
-    String regresar= null;    				
+    String regresar    = null;    			
+		Entity seleccionado= null;
     try {												
+			seleccionado= ((Entity)this.attrs.get("seleccionado"));
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));																		
-			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));										
-			JsfBase.setFlashAttribute("idGasto", ((Entity)this.attrs.get("seleccionado")).getKey());										
-			JsfBase.setFlashAttribute("retorno", "consulta");										
-			regresar= "resumen".concat(Constantes.REDIRECIONAR);										
+			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));													
+			JsfBase.setFlashAttribute("idGasto", seleccionado.getKey());										
+			JsfBase.setFlashAttribute("retorno", "consulta");				
+			if(seleccionado.toLong("idGastoEstatus").equals(EEstatusGastos.DISPONIBLE.getKey()))
+				regresar= "accion".concat(Constantes.REDIRECIONAR);
+			else
+				regresar= "resumen".concat(Constantes.REDIRECIONAR);										
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

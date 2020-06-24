@@ -21,10 +21,12 @@ import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.ETipoVenta;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 
 @Named(value = "keetCajaChicaAccion")
 @ViewScoped
@@ -42,12 +44,21 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");												
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));						
+			this.attrs.put("retornoInicial", JsfBase.getFlashAttribute("retornoInicial"));						
+			this.attrs.put("idGasto", JsfBase.getFlashAttribute("idGasto"));						
 			this.attrs.put("opcionResidente", opcion);						
 			this.attrs.put("idDesarrollo", idDesarrollo);      						
 			doLoad();								
 			initPadre();			
 			this.attrs.put("accion", EAccion.AGREGAR);										
 			this.attrs.put("buscaPorCodigo", false);
+			if(!Cadena.isVacio(this.attrs.get("retornoInicial")))
+				this.attrs.put("retorno", this.attrs.get("retornoInicial"));
+			else
+				this.attrs.put("retornoInicial", this.attrs.get("retorno"));
+			if(!Cadena.isVacio(this.attrs.get("idGasto")))
+				loadExistente();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -89,7 +100,13 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 		Entity desarrollo        = null;		
 		Entity cajaChica         = null;		
 		Map<String, Object>params= null;
+		List<Columna>campos      = null;
     try {    			
+			campos= new ArrayList<>();
+			campos.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);
@@ -97,6 +114,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 			params.clear();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo").toString());
 			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaCajaChicaDto", "findDesarrollo", params);
+			UIBackingUtilities.toFormatEntity(cajaChica, campos);
 			this.attrs.put("cajaChica", cajaChica);
     } // try
     catch (Exception e) {
@@ -108,6 +126,24 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 		} // finally	
   } // doLoad	  	
 	
+	private void loadExistente() throws Exception{
+		List<ArticuloVenta> material= null;
+		Map<String, Object>params   = null;
+		try {
+			params= new HashMap<>();
+			params.put("idGasto", this.attrs.get("idGasto"));
+			material=(List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaGastosDetallesDto", "detalle", params);
+			material.add(new ArticuloVenta(-1L));
+			this.getAdminOrden().setArticulos(material);			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadExistente
+	
 	@Override
 	public String doAceptar() {
     String regresar        = null;    		
@@ -116,9 +152,8 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()){				
 				transaccion= new Transaccion(loadGasto());
 				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))){
-					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);					
-					toSetFlash();
-					regresar= "accion".concat(Constantes.REDIRECIONAR);
+					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);										
+					regresar= doCancelar();
 				} // if
 				else
 					JsfBase.addMessage("Captura de materiales", "Ocurrió un error al realizar la captura de material.", ETipoMensaje.ERROR);			
@@ -143,6 +178,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);					
 					JsfBase.setFlashAttribute("idGasto", transaccion.getIdGasto());
 					JsfBase.setFlashAttribute("retorno", "accion");										
+					JsfBase.setFlashAttribute("retornoInicial", this.attrs.get("retornoInicial"));										
 					toSetFlash();
 					regresar= "resumen".concat(Constantes.REDIRECIONAR);
 				} // if
@@ -184,8 +220,12 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
     try {						
 			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
-			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));				
-			regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);						
+			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));	
+			JsfBase.setFlashAttribute("opcionResidente", opcion);								
+			if(Cadena.isVacio(this.attrs.get("retorno")))
+				regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);						
+			else
+				regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
