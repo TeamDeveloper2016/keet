@@ -96,7 +96,7 @@
 									<p:inputText value="#{keetCajaChicaAccion.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
 									<p:inputText value="#{keetCajaChicaAccion.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
 									<p:inputText value="#{keetCajaChicaAccion.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
-									<p:commandButton id="pendiente" icon="fa fa-check" title="Consultar gastos pendientes" action="#{keetCajaChicaAccion.doPendientes}" process="@this criterios" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:commandButton id="pendiente" icon="fa fa-spell-check" title="Consultar gastos pendientes" action="#{keetCajaChicaAccion.doPendientes}" process="@this criterios" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:panelGrid>										
 							</div>
 							<div class="xs-pantalla">
@@ -129,7 +129,7 @@
 							</f:facet>							
 							<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 							<p:inputText id="locks" value="0" style="display:none"/>
-							<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{custom}" value="#{keetCajaChicaAccion.attrs.articulo}" completeMethod="#{keetCajaChicaAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="3" maxResults="10" style="width: 60% !important">
+							<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{custom}" value="#{keetCajaChicaAccion.attrs.articulo}" completeMethod="#{keetCajaChicaAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="3" maxResults="10">
 								<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 								<p:ajax event="focus" process="@this" listener="#{keetCajaChicaAccion.doActualizaImage(row['idArticulo'], row['nombre'])}" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
 								<f:facet name="itemtip">
@@ -151,7 +151,7 @@
 							<f:facet name="header">
 								<h:outputText value="Articulo"/>
 							</f:facet>
-							<p:inputText id="nombres" value="#{row['nombre']}" styleClass="key-event-sat filas" style="width: 60% !important"/>
+							<p:inputText id="nombres" value="#{row['nombre']}" styleClass="key-event-sat janal-wid-100-txt filas"/>
 						</p:column>																				
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
