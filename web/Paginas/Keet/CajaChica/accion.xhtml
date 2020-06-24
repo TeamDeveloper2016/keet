@@ -180,7 +180,13 @@
 							</f:facet>
 							<p:outputLabel value="#{row['importe$']}"/>
 						</p:column>		
-					</p:dataTable>										
+						<f:facet name="footer">
+							<p:panelGrid columns="2" columnClasses="janal-column-left, janal-column-right">
+								<p:outputLabel value="Articulos: #{keetCajaChicaAccion.adminOrden.totales.reales}"/>
+								<p:outputLabel value="Importe total: #{keetCajaChicaAccion.adminOrden.totales.totalDosDecimales}"/>
+							</p:panelGrid>              
+            </f:facet>
+					</p:dataTable>															
 					<p:inputText id="articulos" value="#{keetCajaChicaAccion.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
           <p:inputText id="total" value="#{keetCajaChicaAccion.adminOrden.totales.totalDosDecimales}" styleClass="recalculo" style="display:none"/>
 				</div>
