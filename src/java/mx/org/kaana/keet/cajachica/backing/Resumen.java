@@ -112,6 +112,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			if(transaccion.ejecutar(EAccion.MODIFICAR)){			
 				JsfBase.addMessage("Aceptar gasto", "El gasto fue aceptado correctamente.", ETipoMensaje.INFORMACION);
 				regresar= doCancelar();
+				JsfBase.setFlashAttribute("idGasto", null);			
 			} // if
 			else
 				JsfBase.addMessage("Aceptar gasto", "Ocurrió un error al aceptar el gasto.", ETipoMensaje.INFORMACION);
@@ -131,6 +132,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			if(transaccion.ejecutar(EAccion.MODIFICAR)){			
 				JsfBase.addMessage("Rechazar gasto", "El gasto fue rechazado correctamente.", ETipoMensaje.INFORMACION);
 				regresar= doCancelar();
+				JsfBase.setFlashAttribute("idGasto", null);			
 			} // if
 			else
 				JsfBase.addMessage("Rechazar gasto", "Ocurrió un error al rechazar el gasto.", ETipoMensaje.INFORMACION);

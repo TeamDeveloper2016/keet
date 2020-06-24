@@ -47,9 +47,11 @@ public class Consulta extends IBaseFilter implements Serializable {
 		Long idDesarrollo        = null;				
     try {			
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
+			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");						
 			this.attrs.put("opcionResidente", opcion);			
 			this.attrs.put("idDesarrollo", idDesarrollo);
+			this.attrs.put("disponibles", JsfBase.getFlashAttribute("disponibles"));			
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));			
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				      
 			this.loadCatalogos();
 			this.doLoad();
@@ -207,7 +209,11 @@ public class Consulta extends IBaseFilter implements Serializable {
 		StringBuilder condicion       = null;
 		try {
 			regresar= new HashMap<>();			
-			condicion= new StringBuilder();																
+			condicion= new StringBuilder();	
+			if(!Cadena.isVacio(this.attrs.get("disponibles")) && Boolean.valueOf(this.attrs.get("disponibles").toString())){
+				condicion.append("tc_keet_gastos.id_gasto_estatus=").append(EEstatusGastos.DISPONIBLE.getKey()).append(" and ");
+				this.attrs.put("disponibles", false);
+			} // if
 			if(((UISelectEntity)this.attrs.get("gastoCriterio"))!= null && ((UISelectEntity)this.attrs.get("gastoCriterio")).getKey()>= 1L)
 				condicion.append("tc_keet_gastos.id_gasto=").append(((UISelectEntity)this.attrs.get("gastoCriterio")).getKey()).append(" and ");
 			if(((UISelectEntity)this.attrs.get("conceptoCriterio"))!= null && ((UISelectEntity)this.attrs.get("conceptoCriterio")).getKey()>= 1L){
@@ -263,8 +269,11 @@ public class Consulta extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("opcion", opcion);						
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));			
-			JsfBase.setFlashAttribute("opcionResidente", opcion);									
-			regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);			
+			JsfBase.setFlashAttribute("opcionResidente", opcion);							
+			if(Cadena.isVacio(this.attrs.get("retorno")))
+				regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);			
+			else
+				regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
