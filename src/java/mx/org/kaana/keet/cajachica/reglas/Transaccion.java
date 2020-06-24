@@ -112,6 +112,9 @@ public class Transaccion extends IBaseTnx {
 				case ASIGNAR:
 					regresar= abonarCaja(sesion);
 					break;
+				case REGISTRAR:
+					regresar= revisarGasto(sesion);
+					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
@@ -570,4 +573,18 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // registrarBitacora
+	
+	private boolean revisarGasto(Session sesion) throws Exception{
+		boolean regresar        = false;
+		TcKeetGastosDto gastoDto= null;
+		try {
+			gastoDto= (TcKeetGastosDto) DaoFactory.getInstance().findById(sesion, TcKeetGastosDto.class, this.idGasto);
+			gastoDto.setRevisado(1L);
+			regresar= DaoFactory.getInstance().update(sesion, gastoDto)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // revisarGasto
 }
