@@ -10,12 +10,23 @@
   <ui:define name="librerias">    
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'idCaja'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'idCierreEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        
+        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}        
       };						
+			
+			function reload() {
+				$('.janal-control-imagen').each(function(index, item) {
+					var name= $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
+					janal.console('Reload image: '+ name);
+					$(this).attr('href', $('#'+ name).attr('src'));
+ 			  });
+			};
+			
+			Janal.Control.Validations.prototype.onLoadCallBack= function() {
+				$janal.console('janal.onLoadCallBack.reload()');
+				setTimeout('reload();', 1000);
+			};
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -84,7 +95,9 @@
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCajaChicaFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCajaChicaFiltro.lazyModel.rowCount gt keetCajaChicaFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">            
-            <f:facet name="header">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>								
@@ -110,7 +123,7 @@
               </f:facet>
               <h:outputText value="#{row['nombres']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8 janal-column-center">
+            <p:column class="MarAuto Responsive janal-wid-5 janal-column-center">
               <f:facet name="header">
                 <h:outputText value="Semana"/>
               </f:facet>
@@ -128,43 +141,46 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.inicial}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.inicial}">
               <f:facet name="header">
                 <h:outputText value="Inicial"/>
               </f:facet>
               <h:outputText value="$#{row['inicial']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.gastado}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.gastado}">
               <f:facet name="header">
                 <h:outputText value="Gastado"/>
               </f:facet>
               <h:outputText value="$#{row['gastado']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.disponible}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.disponible}">
               <f:facet name="header">
                 <h:outputText value="Saldo"/>
               </f:facet>
               <h:outputText value="$#{row['disponible']}"/>
             </p:column>		       
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+						<p:column class="MarAuto Responsive janal-column-icon">
 							<f:facet name="header">
 								<h:outputText value=""/>
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{keetCajaChicaFiltro.toColor(row)}.png" title="#{row.estatus}"/>								
 						</p:column>						
-            <p:column styleClass="janal-wid-col-110 janal-column-center">              							
-							<p:commandButton icon="fa fa-lock" ajax="false" action="#{keetCajaChicaFiltro.doCierre(row)}" title="Cierre de caja" disabled="#{row.idCajaChicaCierreEstatus ne '1' and row.idCajaChicaCierreEstatus ne '2'}"/>															
-							<p:commandButton icon="fa fa-dollar" ajax="false" action="#{keetCajaChicaFiltro.doAbono(row)}" title="Abono a caja" disabled="#{row.idCajaChicaCierreEstatus ne '1' and row.idCajaChicaCierreEstatus ne '2'}"/>															
+            <p:column class="MarAuto Responsive janal-column-icon">              														
 							<p:commandButton icon="fa fa-search" actionListener="#{keetCajaChicaFiltro.doGastos(row)}" title="Consultar gastos" update="tablaGastos tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>	
             </p:column>
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetCajaChicaFiltro.lazyModel== null ? 0: keetCajaChicaFiltro.lazyModel.rowCount}] registros"/>
 						</f:facet>
           </p:dataTable>    
+					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem icon="fa fa-lock" process="@this tabla" ajax="false" action="#{keetCajaChicaFiltro.doCierre}" value="Cierre de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetCajaChicaFiltro.attrs.seleccionado.idCajaChicaCierreEstatus eq '1' or keetCajaChicaFiltro.attrs.seleccionado.idCajaChicaCierreEstatus eq '2'}"/>					
+						<p:menuitem icon="fa fa-dollar" process="@this tabla" ajax="false" action="#{keetCajaChicaFiltro.doAbono}" value="Abono a caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetCajaChicaFiltro.attrs.seleccionado.idCajaChicaCierreEstatus eq '1' or keetCajaChicaFiltro.attrs.seleccionado.idCajaChicaCierreEstatus eq '2'}"/>					
+          </p:contextMenu>
 					
-					
-					<p:dataTable  lazy="true" id="tablaGastos" widgetVar="kajoolTableGastos" var="row" value="#{keetCajaChicaFiltro.lazyModelGastos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaFiltro.attrs.seleccionadoGasto}" selectionMode="single" paginator="#{keetCajaChicaFiltro.lazyModelGastos.rowCount gt keetCajaChicaFiltro.lazyModelGastos.pageSize}" rowIndexVar="index" reflow="true">            
-            <f:facet name="header">
+					<p:dataTable  lazy="true" id="tablaGastos" widgetVar="kajoolTableGastos" var="row" value="#{keetCajaChicaFiltro.lazyModelGastos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaFiltro.attrs.seleccionadoGasto}" selectionMode="single" paginator="#{keetCajaChicaFiltro.lazyModelGastos.rowCount gt keetCajaChicaFiltro.lazyModelGastos.pageSize}" rowIndexVar="index" reflow="true">                        
+						<p:ajax event="rowSelect" update="kajoolContextMenuGasto" oncomplete="PF('kajoolTableGastos').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenuGasto" oncomplete="PF('kajoolTableGastos').writeSelections();PF('kajoolContextMenuGasto').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header">
 							<div style="position: absolute;">
 								<p:outputLabel value="[#{keetCajaChicaFiltro.attrs.seleccionadoCaja.nombres} #{keetCajaChicaFiltro.attrs.seleccionadoCaja.ejercicio}-#{keetCajaChicaFiltro.attrs.seleccionadoCaja.semana}] Desglose de abonos y gastos de la caja chica." styleClass="janal-text-white janal-wid-100-txt janal-column-left"/>
 							</div>
@@ -193,7 +209,7 @@
               </f:facet>
               <h:outputText value="#{row['residente']}"/>
             </p:column>		                                                
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.articulos}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.articulos}">
               <f:facet name="header">
                 <h:outputText value="Articulos"/>
               </f:facet>
@@ -211,7 +227,7 @@
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.gasto}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-4" sortBy="#{row.gasto}">
               <f:facet name="header">
                 <h:outputText value="Abono"/>
               </f:facet>
@@ -223,20 +239,35 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column styleClass="janal-wid-col-110 janal-column-center">              
-							<p:commandButton icon="fa fa-close" action="#{keetCajaChicaFiltro.doRechazarGasto(row)}" title="Rechazar gasto"/>															
-							<p:commandButton icon="fa fa-paperclip" ajax="false" action="#{keetCajaChicaFiltro.doImportar(row)}" title="Importar evidencia"/>															
+						<p:column class="MarAuto Responsive janal-column-icon">
+							<f:facet name="header">
+                <h:outputText value="Imagen"/>
+              </f:facet>
+							<a id="tablaGastos:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.ruta.toString}" data-group="icon-image" href="" title="Click para ver más grande la imagen" style="display: #{row.ruta.toString eq '' ? 'none': ''}">
+								<p:graphicImage id="icon-image" cache="false" url="#{row.imagen}" width="26" height="22" stream="false" style="cursor:zoom-in;"/>
+							</a>	
+						</p:column> 
+						<p:column class="MarAuto Responsive janal-column-icon">
+							<f:facet name="header">
+								<h:outputText value="Revisado"/>
+							</f:facet>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.revisado eq '1' ? 'circulo-verde' : 'circulo-rojo'}.png" title="#{row.revisado eq '1' ? 'Revisado' : 'Sin revisar'}"/>								
+						</p:column>						
+            <p:column class="MarAuto Responsive janal-column-icon">              							
 							<p:commandButton icon="fa fa-search" actionListener="#{keetCajaChicaFiltro.doMateriales(row)}" title="Consultar materiales" update="tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>																						
             </p:column>
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetCajaChicaFiltro.lazyModelGastos== null ? 0: keetCajaChicaFiltro.lazyModelGastos.rowCount}] registros"/>
 						</f:facet>
           </p:dataTable>    
+					<p:contextMenu id="kajoolContextMenuGasto" widgetVar="kajoolContextMenuGasto" for="tablaGastos">
+						<p:menuitem icon="fa fa-close" process="@this tablaGastos" ajax="false" action="#{keetCajaChicaFiltro.doRechazarGasto}" value="Rechazar gasto" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+						<p:menuitem icon="fa fa-paperclip" process="@this tablaGastos" ajax="false" action="#{keetCajaChicaFiltro.doImportar}" value="Importar evidencia" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+						<p:menuitem icon="fa fa-check" process="@this tablaGastos" actionListener="#{keetCajaChicaFiltro.doRevisar}" update="tablaGastos" value="Revisar gasto" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetCajaChicaFiltro.attrs.seleccionadoGasto.revisado eq '2'}"/>					
+          </p:contextMenu>					
 					
-					
-					
-					<p:dataTable  lazy="true" id="tablaMateriales" widgetVar="kajoolTableMateriales" var="row" value="#{keetCajaChicaFiltro.lazyModelMateriales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCajaChicaFiltro.lazyModelMateriales.rowCount gt keetCajaChicaFiltro.lazyModelMateriales.pageSize}" rowIndexVar="index" reflow="true">            
-            <f:facet name="header">
+					<p:dataTable  lazy="true" id="tablaMateriales" widgetVar="kajoolTableMateriales" var="row" value="#{keetCajaChicaFiltro.lazyModelMateriales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaFiltro.attrs.seleccionadoMaterial}" selectionMode="single" paginator="#{keetCajaChicaFiltro.lazyModelMateriales.rowCount gt keetCajaChicaFiltro.lazyModelMateriales.pageSize}" rowIndexVar="index" reflow="true">                        
+						<f:facet name="header">
 							<div style="position: absolute;">
 								<p:outputLabel value="[#{keetCajaChicaFiltro.attrs.seleccionadoGasto.consecutivo}] Listado de materiales del gasto seleccionado." styleClass="janal-text-white janal-wid-100-txt janal-column-left"/>
 							</div>							
@@ -298,7 +329,7 @@
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetCajaChicaFiltro.lazyModelMateriales== null ? 0: keetCajaChicaFiltro.lazyModelMateriales.rowCount}] registros"/>
 						</f:facet>
-          </p:dataTable>    
+          </p:dataTable>    															
         </div>
       </div>
     </div>	    
