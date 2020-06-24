@@ -10,6 +10,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Error;
@@ -327,10 +328,10 @@ public class Conceptos extends Accion implements Serializable {
 			switch(buscarCodigoPor) {      
 				case 0: 					
 				case 1: 
-					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaGastosDetallesDto", "porCodigo", params, columns, 20L));
 					break;
 				case 2:
-          this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
+          this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaGastosDetallesDto", "porNombre", params, columns, 20L));
           break;
 			} // switch
 		} // try
@@ -343,4 +344,63 @@ public class Conceptos extends Accion implements Serializable {
       Methods.clean(params);
     }// finally
 	} // doUpdateArticulosPrecioCliente	
+	
+	@Override
+	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+		ArticuloVenta temporal= (ArticuloVenta) getAdminOrden().getArticulos().get(index);
+		Map<String, Object> params= new HashMap<>();
+		try {
+			if(articulo.size()> 1) {
+				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idProveedor", getAdminOrden().getIdProveedor());
+				params.put("idAlmacen", getAdminOrden().getIdAlmacen());
+				temporal.setKey(articulo.toLong("idArticulo"));
+				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdComodin(articulo.toLong("idArticulo"));
+				temporal.setIdProveedor(getAdminOrden().getIdProveedor());
+				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+				temporal.setCodigo(codigo== null? "": codigo.toString());
+				temporal.setPropio(articulo.toString("propio"));
+				temporal.setNombre(articulo.toString("nombre"));
+				temporal.setValor(articulo.toDouble(getPrecio()));
+				temporal.setCosto(articulo.toDouble(getPrecio()));
+				temporal.setIva(articulo.toDouble("iva"));				
+				temporal.setSat(articulo.get("sat").getData()!= null ? articulo.toString("sat") : "");				
+				temporal.setDescuento(getAdminOrden().getDescuento());
+				temporal.setExtras(getAdminOrden().getExtras());				
+				// SON ARTICULOS QUE ESTAN EN LA FACTURA MAS NO EN LA ORDEN DE COMPRA
+				if(articulo.containsKey("descuento")) 
+				  temporal.setDescuento(articulo.toString("descuento"));
+				if(articulo.containsKey("cantidad")) {
+				  temporal.setCantidad(articulo.toDouble("cantidad"));
+				  temporal.setSolicitados(articulo.toDouble("cantidad"));
+				} // if	
+				if(temporal.getCantidad()<= 0D)					
+					temporal.setCantidad(1D);
+				temporal.setDescripcionPrecio(getPrecio());
+				temporal.setMenudeo(articulo.toDouble("menudeo"));				
+ 				temporal.setDescuentoActivo((Boolean)this.attrs.get("decuentoAutorizadoActivo"));
+				temporal.setUltimo(this.attrs.get("ultimo")!= null);
+				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
+				temporal.setPrecio(articulo.toDouble("precio"));				
+				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				temporal.setStock(stock== null? 0D: stock.toDouble());
+				if(index== getAdminOrden().getArticulos().size()- 1) {
+					this.getAdminOrden().getArticulos().add(new ArticuloVenta(-1L, isCostoLibre()));
+					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
+					UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
+				} // if	
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
+				getAdminOrden().toCalculate();
+			} // if	
+			else
+				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+		} // try
+		finally {
+			Methods.clean(params);
+		}
+	}
 }
