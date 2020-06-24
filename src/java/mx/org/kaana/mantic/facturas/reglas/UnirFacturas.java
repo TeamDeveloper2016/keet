@@ -10,7 +10,7 @@ import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
-import mx.org.kaana.kajool.db.dto.TcManticFacturasGruposDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasGruposDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;

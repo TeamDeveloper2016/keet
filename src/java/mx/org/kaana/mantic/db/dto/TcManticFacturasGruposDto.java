@@ -1,8 +1,7 @@
-package mx.org.kaana.kajool.db.dto;
+package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -43,7 +42,7 @@ public class TcManticFacturasGruposDto implements IBaseDto, Serializable {
   @Column (name="id_venta_estatus")
   private Long idVentaEstatus;
   @Column (name="registro")
-  private Timestamp registro;
+  private LocalDateTime registro;
 
   public TcManticFacturasGruposDto() {
     this(new Long(-1L));
@@ -61,7 +60,7 @@ public class TcManticFacturasGruposDto implements IBaseDto, Serializable {
     setIdAplicado(idAplicado);
     setIdVenta(idVenta);
     setIdVentaEstatus(idVentaEstatus);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setRegistro(LocalDateTime.now());
   }
 	
   public void setIdFactura(Long idFactura) {
@@ -112,11 +111,11 @@ public class TcManticFacturasGruposDto implements IBaseDto, Serializable {
     return idVentaEstatus;
   }
 
-  public void setRegistro(Timestamp registro) {
+  public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
 
-  public Timestamp getRegistro() {
+  public LocalDateTime getRegistro() {
     return registro;
   }
 

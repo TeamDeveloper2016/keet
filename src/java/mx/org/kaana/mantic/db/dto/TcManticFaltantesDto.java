@@ -2,7 +2,6 @@ package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Códigos de las teclas en un celular" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {				
+				tecla: {validaciones: 'requerido', mascara: 'libre'}
+			};		
+      $(document).on('keydown', '.teclado', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown [key-down-event]: '+ $(this).attr('id')+ ' key: '+ key);
+				$('#codigo').val(key + ' '+ e);
+			});
+    </script>    
+  </ui:define>
+  <ui:define name="contenido">		
+    <p:fieldset legend="Códigos del teclado"> 
+      <p:panelGrid columns="1" layout="grid">
+        <p:outputLabel for="tecla" value="Tecla: "/>
+        <p:inputText id="tecla" styleClass="teclado janal-wid-100-txt"/>  
+        <p:outputLabel for="codigo" value="Código: "/>
+        <p:inputText id="codigo" styleClass="janal-font-bold janal-wid-100-txt" readonly="true"/>  
+      </p:panelGrid>
+    </p:fieldset>  
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tecla"/>
+</ui:composition>
