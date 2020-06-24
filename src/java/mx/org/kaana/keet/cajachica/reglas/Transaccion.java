@@ -492,7 +492,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setConsecutivo(consecutivo.getConsecutivo());			
 			dto.setOrden(consecutivo.getOrden());			
 			dto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));						
-			dto.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());						
+			dto.setIdIncidenteEstatus(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());						
 			dto.setIdDesarrollo(this.idDesarrollo);
 			dto.setIdEmpresaPersona(JsfBase.getAutentifica().getPersona().getIdEmpresaPersona());			
 			dto.setCosto(this.cantidad);
@@ -503,7 +503,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setTermino(LocalDate.now());		
 			key= DaoFactory.getInstance().insert(sesion, dto);
 			if(key>= 1L)
-				registrarBitacoraIncidente(sesion, key, EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
+				registrarBitacoraIncidente(sesion, key, EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -520,7 +520,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setConsecutivo(consecutivo.getConsecutivo());			
 			dto.setOrden(consecutivo.getOrden());			
 			dto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));						
-			dto.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());						
+			dto.setIdIncidenteEstatus(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());						
 			dto.setIdDesarrollo(this.idDesarrollo);
 			dto.setIdEmpresaPersona(JsfBase.getAutentifica().getPersona().getIdEmpresaPersona());			
 			dto.setCosto(costo*-1L);
@@ -531,7 +531,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setTermino(LocalDate.now());		
 			key= DaoFactory.getInstance().insert(sesion, dto);
 			if(key>= 1L)
-				registrarBitacoraIncidente(sesion, key, EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());			
+				registrarBitacoraIncidente(sesion, key, EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());			
 		} // try
 		catch (Exception e) {			
 			throw e;
