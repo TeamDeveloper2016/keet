@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.cajachica.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,8 +12,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -28,7 +31,9 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.keet.cajachica.reglas.Transaccion;
 
 @Named(value = "keetCajaChicaFiltro")
 @ViewScoped
@@ -71,7 +76,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.fechaInicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
 			this.fechaFin= LocalDate.of(Fecha.getAnioActual(), Fecha.getMesActual()+1, 15);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());            
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());   
+			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/").concat("gastos").concat("/"));						
 			this.loadCatalog();      
     } // try
     catch (Exception e) {
@@ -240,14 +246,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public void doGastos(Entity seleccionado) {
 		Map<String, Object>params= null;
-		List<Columna>campos       = null;
+		List<Columna>campos      = null;
+		String dns               = null;
+		String url               = null;
 		try {
+			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
+			url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
 			campos = new ArrayList<>();
       campos.add(new Columna("residente", EFormatoDinamicos.MAYUSCULAS));      
       campos.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			params= new HashMap<>();
 			params.put("idCajaChicaCierre", seleccionado.getKey());
+			params.put("pathImage", url);
 			this.lazyModelGastos= new FormatCustomLazy("VistaCierresCajasChicasDto", "gastos", params, campos);
 			this.lazyModelMateriales= null;
 			UIBackingUtilities.resetDataTable("tablaGastos");			
@@ -291,8 +302,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // doGastos
 	
-  public String doCierre(Entity seleccionado) {
+  public String doCierre() {
+		Entity seleccionado= null;
 		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
 			JsfBase.setFlashAttribute("idCajaChicaCierre", seleccionado.getKey());
 			JsfBase.setFlashAttribute("retorno", "filtro");
 			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONSULTA_GASTO);
@@ -304,8 +317,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "cierre".concat(Constantes.REDIRECIONAR);
 	} // doAperturarCaja
   
-	public String doAbono(Entity seleccionado) {
+	public String doAbono() {
+		Entity seleccionado= null;
 		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
 			JsfBase.setFlashAttribute("idCajaChicaCierre", seleccionado.getKey());
 			JsfBase.setFlashAttribute("retorno", "filtro");
 			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONSULTA_GASTO);
@@ -317,8 +332,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "abonar".concat(Constantes.REDIRECIONAR);
 	} // doAperturarCaja
   
-	public String doRechazarGasto(Entity seleccionado) {
+	public String doRechazarGasto() {
+		Entity seleccionado= null;
 		try {
+			seleccionado= (Entity) this.attrs.get("seleccionadoGasto");
 			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONSULTA_GASTO);
 			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
 			JsfBase.setFlashAttribute("idGasto", seleccionado.getKey());
@@ -330,8 +347,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "resumen".concat(Constantes.REDIRECIONAR);
 	} // doRechazarGasto
 	
-	public String doImportar(Entity seleccionado) {
+	public String doImportar() {
+		Entity seleccionado= null;
 		try {
+			seleccionado= (Entity) this.attrs.get("seleccionadoGasto");
 			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONSULTA_GASTO);
 			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
 			JsfBase.setFlashAttribute("idGasto", seleccionado.getKey());
@@ -346,4 +365,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public String toColor(Entity row) {
 		return EEstatusCajasChicas.fromId(row.toLong("idCajaChicaCierreEstatus")).getSemaforo();
 	} // toColor
+	
+	public void doRevisar(){
+		Entity seleccionado    = null;
+		Transaccion transaccion= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionadoGasto");
+			transaccion= new Transaccion(seleccionado.getKey(), true);
+			if(transaccion.ejecutar(EAccion.REGISTRAR))
+				JsfBase.addMessage("Revisar gasto", "Se reviso el gasto de forma correcta.", ETipoMensaje.INFORMACION);			
+			else
+				JsfBase.addMessage("Revisar gasto", "Ocurrió un error al revisar el gasto.", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doRevisar
 }
