@@ -23,6 +23,7 @@ import mx.org.kaana.keet.enums.EEstatusGastos;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -127,9 +128,18 @@ public class Transaccion extends IBaseTnx {
 		TcKeetGastosDto gastoDto= null;		
 		Siguiente siguiente     = null;		
 		try {
-			siguiente= toSiguiente(sesion);			
-			gastoDto= loadGasto(siguiente);			
-			this.idGasto= DaoFactory.getInstance().insert(sesion, gastoDto);
+			if(this.gasto.getIdGasto() <= 0L){
+				siguiente= toSiguiente(sesion);			
+				gastoDto= loadGasto(siguiente);		
+				this.idGasto= DaoFactory.getInstance().insert(sesion, gastoDto);
+			} // if
+			else{
+				gastoDto= (TcKeetGastosDto) DaoFactory.getInstance().findById(sesion, TcKeetGastosDto.class, this.gasto.getIdGasto());
+				gastoDto.setArticulos(this.gasto.getTotalArticulos()-1L);
+				gastoDto.setImporte(toImporte());
+				DaoFactory.getInstance().update(sesion, gastoDto);
+				this.idGasto= this.gasto.getIdGasto();
+			} // else							
 			if(this.idGasto>= 1L){
 				if(registrarBitacora(sesion, EEstatusGastos.DISPONIBLE.getKey()))
 					regresar= registrarDetalle(sesion);													
@@ -240,6 +250,8 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar               = true;
 		TcKeetGastosDetallesDto detalle= null;
 		try {
+			if(this.gasto.getIdGasto() >= 1L)
+				DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetGastosDetallesDto", "rows", Variables.toMap("idGasto~".concat(this.idGasto.toString())));			
 			for(Articulo recordDetalle: this.gasto.getArticulos()){
 				if(recordDetalle.isValid()){
 					detalle= new TcKeetGastosDetallesDto();										

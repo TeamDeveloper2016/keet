@@ -22,7 +22,7 @@
         from      
           tc_keet_gastos_bitacora
         where      
-          id_gasto = {idGasto} and id_gasto_estatus = {idGastoEstatus}
+          id_gasto = {idGasto} and id_gasto_estatus = {idGastoEstatus} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
       </select>
     </unit>		
     <unit id="TcKeetCajasChicasDto">
@@ -155,6 +155,9 @@
         where      
           id_gasto = {idGasto} and codigo = '{codigo}' and id_articulo = {idArticulo} and id_gasto_detalle = {idGastoDetalle}
       </select>
+			<delete id="rows">
+        delete from tc_keet_gastos_detalles where id_gasto = {idGasto}
+      </delete>
     </unit>
     <unit id="TcKeetGastosArchivosDto">
       <select id="row">
