@@ -1218,7 +1218,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.5.0';
+      return '0.3.5.1';
     }, // version
     align: function(pixels) {
       try {
@@ -1522,6 +1522,45 @@
 		},
 		html: function(id) {
 			$(id).html(this.escape($(id).html()));
+		},
+		toAndroidKeyCode= function (item) {
+			var key= item.value.charCodeAt(item.value.length- 1);
+			//#=35 $=36 %=37 &amp;=38 *= 42 +=43 -=45 /=47 &lt;=60 ==61 gt;=62 _=95 x=215 
+			switch(key) {
+				case 42: //[*] VK_ASTERISK
+					key= 106;
+					break;
+				case 43: //[+] VK_PLUS
+					key= 107;
+					break;
+				case 44: //[-] VK_COMA
+					key= 191;
+					break;
+				case 45: //[-] VK_MINUS
+					key= 109;
+					break;
+				case 47: //[/] VK_DIV
+					key= 111;
+					break;
+				case 60: //[&lt;] VK_MENOR
+					key= 206;
+					break;
+				case 61: //[=] VK_EQUALS
+					key= 48;
+					break;
+				case 62: //[&gt;] VK_MAYOR
+					key= 206;
+					break;
+				case 95: //[_] VK_MINUS
+					key= 109;
+					break;
+				case 124: //[_] VK_PIPE
+					key= 220;
+					break;
+			} // switch
+			if([48, 106, 107, 109, 111, 191, 206, 209, 220].indexOf(key)>= 0)
+				item.value= item.value.substring(0, item.value.length- 1);
+			return key;			
 		}
   });
   window.Janal= Janal;
