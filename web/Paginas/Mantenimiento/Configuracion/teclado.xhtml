@@ -10,11 +10,55 @@
     <script type="text/javascript">
 			Janal.Control.fields = {				
 				tecla: {validaciones: 'requerido', mascara: 'libre'}
-			};		
-      $(document).on('keydown', '.teclado', function(e) {
-				var key   = e.keyCode ? e.keyCode : e.which;
+			};
+			
+			var toAndroidKeyCode= function (str) {
+				var key= str.charCodeAt(str.length- 1);
+				//#=35 $=36 %=37 &amp;=38 *= 42 +=43 -=45 /=47 &lt;=60 ==61 gt;=62 _=95 x=215 
+				switch(key) {
+					case 42: //[*] VK_ASTERISK
+						key= 106;
+						break;
+					case 43: //[+] VK_PLUS
+						key= 107;
+						break;
+					case 44: //[-] VK_COMA
+						key= 191;
+						break;
+					case 45: //[-] VK_MINUS
+						key= 109;
+						break;
+					case 47: //[/] VK_DIV
+						key= 111;
+						break;
+					case 60: //[&lt;] VK_MENOR
+						key= 206;
+						break;
+					case 61: //[=] VK_EQUALS
+						key= 48;
+						break;
+					case 62: //[&gt;] VK_MAYOR
+						key= 206;
+						break;
+					case 95: //[_] VK_MINUS
+						key= 109;
+						break;
+					case 124: //[_] VK_PIPE
+						key= 220;
+						break;
+				} // switch
+				if([48, 106, 107, 109, 111, 191, 209, 220].indexOf(key)>= 0)
+ 					this.value= this.value.substring(0, this.value.length- 1);
+        return key;
+      };
+			
+      $(document).on('keyup', '.teclado', function(e) {
+				// var key= e.keyCode ? e.keyCode : e.which;
+        var key= toAndroidKeyCode(this.value);
+        // if (key=== 0 || key=== 229) { //for android chrome keycode fix
+  				$('#codigo').val(key+ ' -> '+ String.fromCharCode(key));
+        // } // if
 				janal.console('jsArticulos.keydown [key-down-event]: '+ $(this).attr('id')+ ' key: '+ key);
-				$('#codigo').val(key + ' '+ e);
 			});
     </script>    
   </ui:define>
