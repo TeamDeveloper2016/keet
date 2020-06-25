@@ -12,8 +12,8 @@
 				tecla: {validaciones: 'requerido', mascara: 'libre'}
 			};
 			
-			var toAndroidKeyCode= function (str) {
-				var key= str.charCodeAt(str.length- 1);
+			var toAndroidKeyCode= function (item) {
+				var key= item.value.charCodeAt(item.value.length- 1);
 				//#=35 $=36 %=37 &amp;=38 *= 42 +=43 -=45 /=47 &lt;=60 ==61 gt;=62 _=95 x=215 
 				switch(key) {
 					case 42: //[*] VK_ASTERISK
@@ -48,13 +48,13 @@
 						break;
 				} // switch
 				if([48, 106, 107, 109, 111, 191, 209, 220].indexOf(key)>= 0)
- 					this.value= this.value.substring(0, this.value.length- 1);
+ 					item.value= item.value.substring(0, item.value.length- 1);
         return key;
       };
 			
       $(document).on('keyup', '.teclado', function(e) {
 				// var key= e.keyCode ? e.keyCode : e.which;
-        var key= toAndroidKeyCode(this.value);
+        var key= toAndroidKeyCode(this);
         // if (key=== 0 || key=== 229) { //for android chrome keycode fix
   				$('#codigo').val(key+ ' -> '+ String.fromCharCode(key));
         // } // if
