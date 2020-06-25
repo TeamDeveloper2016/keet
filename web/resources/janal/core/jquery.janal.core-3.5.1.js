@@ -1523,7 +1523,7 @@
 		html: function(id) {
 			$(id).html(this.escape($(id).html()));
 		},
-		toAndroidKeyCode= function (item) {
+		toAndroidKeyCode: function (item) {
 			var key= item.value.charCodeAt(item.value.length- 1);
 			//#=35 $=36 %=37 &amp;=38 *= 42 +=43 -=45 /=47 &lt;=60 ==61 gt;=62 _=95 x=215 
 			switch(key) {
