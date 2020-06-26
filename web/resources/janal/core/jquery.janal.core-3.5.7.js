@@ -1525,6 +1525,7 @@
 		},
 		toAndroidKeyCode: function (item) {
 			var key= item.value.charCodeAt(item.value.length- 1);
+			var press= item.value.substring(item.value.length- 1, item.value.length);
 			//#=35 $=36 %=37 &amp;=38 *= 42 +=43 -=45 /=47 &lt;=60 ==61 gt;=62 _=95 x=215 
 			switch(key) {
 				case 42: //[*] VK_ASTERISK
@@ -1537,7 +1538,7 @@
 					key= 191;
 					break;
 				case 45: //[-] VK_MINUS
-					key= 109;
+					key= 189;
 					break;
 				case 47: //[/] VK_DIV
 					key= 111;
@@ -1552,13 +1553,13 @@
 					key= 206;
 					break;
 				case 95: //[_] VK_MINUS
-					key= 109;
+					key= 189;
 					break;
 				case 124: //[_] VK_PIPE
 					key= 220;
 					break;
 			} // switch
-			if([48, 106, 107, 109, 111, 191, 206, 209, 220].indexOf(key)>= 0)
+			if([106, 107, 189, 111, 191, 206, 209, 220].indexOf(key)>= 0 && ['j','k','o'].indexOf(press) < 0)
 				item.value= item.value.substring(0, item.value.length- 1);
 			return key;			
 		}

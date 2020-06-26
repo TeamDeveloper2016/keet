@@ -80,10 +80,12 @@
 			this.lastCursorAt();
 		}, // init
 		events: function() {
-			$(document).on('keydown', '.event-keydown-enter', function(e) {
+			$(document).on('keyup', '.event-keydown-enter', function(e) {
 				//var key   = e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
-				janal.console('jsArticulos.keydown [event-keydown-enter]: '+  key);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keyup [event-keydown-enter]: '+  key);
 				switch(key) {
 					case $articulos.VK_TAB: 
 					case $articulos.VK_ENTER: 
@@ -116,8 +118,10 @@
 				$articulos.current= $(this).val().trim();
 				janal.lastNameFocus= this;
 			});  
-      $(document).on('keyup', this.filter, function(e) {
-				var key= e.keyCode ? e.keyCode : e.which;
+      $(document).on('keyup', this.filter, function(e) {				
+				var key= janal.toAndroidKeyCode(this);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsVales.keyup: '+ $(this).attr('id')+ ' current: ['+ $articulos.current+ '] value: ['+ $(this).val().trim()+ ']');
 				if($articulos.current!== $(this).val().trim()) {
 					$articulos.current= $(this).val().trim();
@@ -131,10 +135,12 @@
 				else
 				  return 'Es probable que los cambios no se hayan guardado\n\u00BF Aun asi deseas salir de esta opción ?';
 			});			
-      $(document).on('keydown', '.key-buscados-event', function(e) {
+      $(document).on('keyup', '.key-buscados-event', function(e) {
 				// var key   = e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
-				janal.console('jsVales.keydown [key-buscados-event]: '+ key);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVales.keyup [key-buscados-event]: '+ key);
 				switch(key) {
 					case $articulos.VK_UP:	
 					case $articulos.VK_DOWN:	
@@ -164,10 +170,12 @@
 						break;
 				} // swtich
 			});  
-	    $(document).on('keydown', '.janal-buscados-articulos', function(e) {
+	    $(document).on('keyup', '.janal-buscados-articulos', function(e) {
 				// var key   = e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
-				janal.console('jsVales.keydown [janal-buscados-articulos]: '+ $(this).attr('id')+ ' key: '+ key);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVales.keyup [janal-buscados-articulos]: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_ESC:
             PF('dialogo').hide();
@@ -218,10 +226,12 @@
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
-      $(document).on('keydown', this.averages, function(e) {
+      $(document).on('keyup', this.averages, function(e) {
 				// var key= e.keyCode ? e.keyCode : e.which;
 			  var key= janal.toAndroidKeyCode(this);
-				janal.console('jsVales.keydown [key-press-enter]: '+  key);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVales.keyup [key-press-enter]: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) 
 					$articulos.leavePage= false;
 				switch(key) {
@@ -231,10 +241,12 @@
 						break;
 				} // switch
 			});	
-      $(document).on('keydown', '.janal-key-search', function(e) {
+      $(document).on('keyup', '.janal-key-search', function(e) {
 				// var key= e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
-				janal.console('jsVales.keydown [janal-key-search]: '+  key);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVales.keyup [janal-key-search]: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) 
 					$articulos.leavePage= false;
 				switch(key) {
@@ -244,10 +256,12 @@
 						break;
 				} // switch
 			});	
-			$(document).on('keydown', '.key-event-sat', function(e) {
+			$(document).on('keyup', '.key-event-sat', function(e) {
 				// var key= e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
-				janal.console('jsVales.keydown [key-event-sat]: '+  key);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVales.keyup [key-event-sat]: '+  key);
 				switch(key) {
 					case $articulos.VK_UP:
 						return $articulos.moveup('\\'+ $(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
@@ -258,10 +272,12 @@
 						break;
 				} // switch
 			});	
-      $(document).on('keydown', '.key-focus-event', function(e) {
+      $(document).on('keyup', '.key-focus-event', function(e) {
 				// var key= e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
-				janal.console('jsVales.keydown: '+  key);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVales.keyup: '+  key);
 				if(($articulos.change.indexOf(key)>= 0))
 					$articulos.leavePage= false;
 				switch(key) {
@@ -279,10 +295,12 @@
 						break;
 				} // switch
 			});	
-      $(document).on('keydown', this.selector, function(e) {
+      $(document).on('keyup', this.selector, function(e) {
 				// var key= e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
-				janal.console('jsVales.keydown: '+  key);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVales.keyup: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) {
 					$articulos.leavePage= false;
 				  setTimeout("$('div[id$='+ jsArticulos.panels+ ']').hide();$('div[id$='+ jsArticulos.itemtips+ ']').hide();", 500);
@@ -371,9 +389,11 @@
 						break;
 				} // switch
       });
-      $(document).on('keydown', '.key-down-clientes', function(e) {
+      $(document).on('keyup', '.key-down-clientes', function(e) {
 				// var key   = e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsVales.keyup: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_MAYOR:
@@ -382,17 +402,22 @@
 				} // switch
 			});  
       $(document).on('keyup', '.key-up-clientes', function(e) {
-				var key   = e.keyCode ? e.keyCode : e.which;
+				// var key   = e.keyCode ? e.keyCode : e.which;
+				var key= janal.toAndroidKeyCode(this);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsVales.keyup: '+ $(this).attr('id')+ ' key: '+ key);
 				clearTimeout($articulos.typingTimer);
 				if ($(this).val() && $(this).val().trim().length> 0 && $articulos.control.indexOf(key)< 0) 
 					$articulos.typingTimer= setTimeout($articulos.clientes($(this)), $articulos.doneInterval);
 				return false;
 			});  						
-	    $(document).on('keydown', '.janal-key-clientes', function(e) {
+	    $(document).on('keyup', '.janal-key-clientes', function(e) {
 				// var key   = e.keyCode ? e.keyCode : e.which;
-				var key= janal.toAndroidKeyCode(this);
-				janal.console('jsVales.keydown: '+ key);
+				var key= janal.toAndroidKeyCode(this);				
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVales.keyup: '+ key);
 				switch(key) {
 					case $articulos.VK_UP:	
 					case $articulos.VK_DOWN:	
@@ -422,10 +447,12 @@
 						break;
 				} // swtich
 			});
-	    $(document).on('keydown', '.janal-row-clientes', function(e) {
+	    $(document).on('keyup', '.janal-row-clientes', function(e) {
 				// var key   = e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
-				janal.console('jsVales.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVales.keyup: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_TAB:
 					  $('#rfcClientes').focus();
@@ -460,9 +487,11 @@
 						break;
 				} // swtich
 			});																		
-			$(document).on('keydown', '.janal-select-type', function(e) {
+			$(document).on('keyup', '.janal-select-type', function(e) {
 				// var key= e.keyCode ? e.keyCode : e.which;
 				var key= janal.toAndroidKeyCode(this);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
 				switch(key) {					
 					case $articulos.VK_ENTER:
 					case $articulos.VK_TAB:
@@ -474,8 +503,11 @@
 						break;
 				} // switch																
 			});
-			$(document).on('blur, keydown', '.janal-select-referencia', function(e) {
-				var key= e.keyCode ? e.keyCode : e.which;
+			$(document).on('blur, keyup', '.janal-select-referencia', function(e) {
+				// var key= e.keyCode ? e.keyCode : e.which;
+				var key= janal.toAndroidKeyCode(this);
+				if(isNaN(key))
+					key= e.keyCode ? e.keyCode : e.which;
 				switch(key) {					
 					case $articulos.VK_ENTER:
 					case $articulos.VK_TAB:
