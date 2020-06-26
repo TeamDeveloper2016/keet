@@ -513,8 +513,8 @@ div.ui-panelgrid-content {
 	.janal-wid-col-850 {width: 99% !important;}
 	.janal-wid-col-900 {width: 99% !important;}
 	.janal-top-menus {top: 6px;}
-	.janal-wid-codigo{width: 65% !important;}
-	.janal-wid-articulo {width: 61% !important;}
+	.janal-wid-codigo{width: 63% !important;}
+	.janal-wid-articulo {width: 59% !important;}
 }
 /* long-Smartphones (portrait) ----------- */
 @media  (min-width : 481px) and (max-width : 767px) {
@@ -635,8 +635,8 @@ div.ui-panelgrid-content {
 	.janal-wid-col-850 {width: 99% !important;}
 	.janal-wid-col-900 {width: 99% !important;}
   .janal-top-menus {top: 87px;}
-	.janal-wid-codigo{width: 65% !important;}
-	.janal-wid-articulo {width: 61% !important;}
+	.janal-wid-codigo{width: 63% !important;}
+	.janal-wid-articulo {width: 59% !important;}
 }
 
 /* tablets (portrait) ----------- */
@@ -730,8 +730,8 @@ div.ui-panelgrid-content {
 	.janal-wid-col-750 {width: 99% !important;}
 	.janal-wid-col-850 {width: 99% !important;}
 	.janal-wid-col-900 {width: 99% !important;}	 
-	.janal-wid-codigo {width: 65% !important;}
-	.janal-wid-articulo {width: 61% !important;}
+	.janal-wid-codigo {width: 63% !important;}
+	.janal-wid-articulo {width: 59% !important;}
 }
 .janal-mapa {
   height: 50vh;
