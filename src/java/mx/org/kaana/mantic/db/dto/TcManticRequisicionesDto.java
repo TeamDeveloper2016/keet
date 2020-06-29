@@ -1,21 +1,15 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -34,22 +28,16 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticRequisicionesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="consecutivo")
-  private String consecutivo;
-  @Column (name="fecha_pedido")
-  private LocalDate fechaPedido;
-  @Column (name="id_usuario")
-  private Long idUsuario;
-  @Column (name="observaciones")
-  private String observaciones;
-  @Column (name="id_empresa")
-  private Long idEmpresa;
+  @Column (name="descuentos")
+  private Double descuentos;
+  @Column (name="id_proveedor")
+  private Long idProveedor;
+  @Column (name="id_desarrollo")
+  private Long idDesarrollo;
+  @Column (name="descuento")
+  private String descuento;
   @Column (name="id_requisicion_estatus")
   private Long idRequisicionEstatus;
-  @Column (name="fecha_entregada")
-  private LocalDate fechaEntregada;
-  @Column (name="orden")
-  private Long orden;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_requisicion")
@@ -60,69 +48,88 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
   private Long ejercicio;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="consecutivo")
+  private String consecutivo;
+  @Column (name="fecha_pedido")
+  private LocalDate fechaPedido;
+  @Column (name="total")
+  private Double total;
+  @Column (name="id_usuario")
+  private Long idUsuario;
+  @Column (name="impuestos")
+  private Double impuestos;
+  @Column (name="sub_total")
+  private Double subTotal;
+  @Column (name="observaciones")
+  private String observaciones;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
+  @Column (name="fecha_entregada")
+  private LocalDate fechaEntregada;
+  @Column (name="orden")
+  private Long orden;
 
   public TcManticRequisicionesDto() {
     this(new Long(-1L));
   }
 
   public TcManticRequisicionesDto(Long key) {
-    this(null, LocalDate.now(), null, null, null, null, LocalDate.now(), null, new Long(-1L), null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, LocalDate.now(), null, null, null, null, null, null, LocalDate.now(), null);
     setKey(key);
   }
 
-  public TcManticRequisicionesDto(String consecutivo, LocalDate fechaPedido, Long idUsuario, String observaciones, Long idEmpresa, Long idRequisicionEstatus, LocalDate fechaEntregada, Long orden, Long idRequisicion, Long idSolicita, Long ejercicio) {
-    setConsecutivo(consecutivo);
-    setFechaPedido(fechaPedido);
-    setIdUsuario(idUsuario);
-    setObservaciones(observaciones);
-    setIdEmpresa(idEmpresa);
+  public TcManticRequisicionesDto(Double descuentos, Long idProveedor, Long idDesarrollo, String descuento, Long idRequisicionEstatus, Long idRequisicion, Long idSolicita, Long ejercicio, String consecutivo, LocalDate fechaPedido, Double total, Long idUsuario, Double impuestos, Double subTotal, String observaciones, Long idEmpresa, LocalDate fechaEntregada, Long orden) {
+    setDescuentos(descuentos);
+    setIdProveedor(idProveedor);
+    setIdDesarrollo(idDesarrollo);
+    setDescuento(descuento);
     setIdRequisicionEstatus(idRequisicionEstatus);
-    setFechaEntregada(fechaEntregada);
-    setOrden(orden);
     setIdRequisicion(idRequisicion);
     setIdSolicita(idSolicita);
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
+    setConsecutivo(consecutivo);
+    setFechaPedido(fechaPedido);
+    setTotal(total);
+    setIdUsuario(idUsuario);
+    setImpuestos(impuestos);
+    setSubTotal(subTotal);
+    setObservaciones(observaciones);
+    setIdEmpresa(idEmpresa);
+    setFechaEntregada(fechaEntregada);
+    setOrden(orden);
   }
 	
-  public void setConsecutivo(String consecutivo) {
-    this.consecutivo = consecutivo;
+  public void setDescuentos(Double descuentos) {
+    this.descuentos = descuentos;
   }
 
-  public String getConsecutivo() {
-    return consecutivo;
+  public Double getDescuentos() {
+    return descuentos;
   }
 
-  public void setFechaPedido(LocalDate fechaPedido) {
-    this.fechaPedido = fechaPedido;
+  public void setIdProveedor(Long idProveedor) {
+    this.idProveedor = idProveedor;
   }
 
-  public LocalDate getFechaPedido() {
-    return fechaPedido;
+  public Long getIdProveedor() {
+    return idProveedor;
   }
 
-  public void setIdUsuario(Long idUsuario) {
-    this.idUsuario = idUsuario;
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
   }
 
-  public Long getIdUsuario() {
-    return idUsuario;
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
   }
 
-  public void setObservaciones(String observaciones) {
-    this.observaciones = observaciones;
+  public void setDescuento(String descuento) {
+    this.descuento = descuento;
   }
 
-  public String getObservaciones() {
-    return observaciones;
-  }
-
-  public void setIdEmpresa(Long idEmpresa) {
-    this.idEmpresa = idEmpresa;
-  }
-
-  public Long getIdEmpresa() {
-    return idEmpresa;
+  public String getDescuento() {
+    return descuento;
   }
 
   public void setIdRequisicionEstatus(Long idRequisicionEstatus) {
@@ -131,22 +138,6 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
 
   public Long getIdRequisicionEstatus() {
     return idRequisicionEstatus;
-  }
-
-  public void setFechaEntregada(LocalDate fechaEntregada) {
-    this.fechaEntregada = fechaEntregada;
-  }
-
-  public LocalDate getFechaEntregada() {
-    return fechaEntregada;
-  }
-
-  public void setOrden(Long orden) {
-    this.orden = orden;
-  }
-
-  public Long getOrden() {
-    return orden;
   }
 
   public void setIdRequisicion(Long idRequisicion) {
@@ -181,6 +172,86 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public void setConsecutivo(String consecutivo) {
+    this.consecutivo = consecutivo;
+  }
+
+  public String getConsecutivo() {
+    return consecutivo;
+  }
+
+  public void setFechaPedido(LocalDate fechaPedido) {
+    this.fechaPedido = fechaPedido;
+  }
+
+  public LocalDate getFechaPedido() {
+    return fechaPedido;
+  }
+
+  public void setTotal(Double total) {
+    this.total = total;
+  }
+
+  public Double getTotal() {
+    return total;
+  }
+
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
+  public Long getIdUsuario() {
+    return idUsuario;
+  }
+
+  public void setImpuestos(Double impuestos) {
+    this.impuestos = impuestos;
+  }
+
+  public Double getImpuestos() {
+    return impuestos;
+  }
+
+  public void setSubTotal(Double subTotal) {
+    this.subTotal = subTotal;
+  }
+
+  public Double getSubTotal() {
+    return subTotal;
+  }
+
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
+  }
+
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setFechaEntregada(LocalDate fechaEntregada) {
+    this.fechaEntregada = fechaEntregada;
+  }
+
+  public LocalDate getFechaEntregada() {
+    return fechaEntregada;
+  }
+
+  public void setOrden(Long orden) {
+    this.orden = orden;
+  }
+
+  public Long getOrden() {
+    return orden;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -196,21 +267,15 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getConsecutivo());
+		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaPedido());
+		regresar.append(getIdProveedor());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdUsuario());
+		regresar.append(getIdDesarrollo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservaciones());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdEmpresa());
+		regresar.append(getDescuento());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRequisicionEstatus());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaEntregada());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRequisicion());
 		regresar.append(Constantes.SEPARADOR);
@@ -219,6 +284,26 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getConsecutivo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaPedido());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTotal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImpuestos());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSubTotal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getObservaciones());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaEntregada());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getOrden());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -226,25 +311,32 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("consecutivo", getConsecutivo());
-		regresar.put("fechaPedido", getFechaPedido());
-		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("observaciones", getObservaciones());
-		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("descuentos", getDescuentos());
+		regresar.put("idProveedor", getIdProveedor());
+		regresar.put("idDesarrollo", getIdDesarrollo());
+		regresar.put("descuento", getDescuento());
 		regresar.put("idRequisicionEstatus", getIdRequisicionEstatus());
-		regresar.put("fechaEntregada", getFechaEntregada());
-		regresar.put("orden", getOrden());
 		regresar.put("idRequisicion", getIdRequisicion());
 		regresar.put("idSolicita", getIdSolicita());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
+		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("fechaPedido", getFechaPedido());
+		regresar.put("total", getTotal());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("impuestos", getImpuestos());
+		regresar.put("subTotal", getSubTotal());
+		regresar.put("observaciones", getObservaciones());
+		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("fechaEntregada", getFechaEntregada());
+		regresar.put("orden", getOrden());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getFechaPedido(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getIdRequisicionEstatus(), getFechaEntregada(), getOrden(), getIdRequisicion(), getIdSolicita(), getEjercicio(), getRegistro()
+			getDescuentos(), getIdProveedor(), getIdDesarrollo(), getDescuento(), getIdRequisicionEstatus(), getIdRequisicion(), getIdSolicita(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaPedido(), getTotal(), getIdUsuario(), getImpuestos(), getSubTotal(), getObservaciones(), getIdEmpresa(), getFechaEntregada(), getOrden()
     };
     return regresar;
   }
