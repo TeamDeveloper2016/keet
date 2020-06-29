@@ -1586,7 +1586,7 @@
           tc_mantic_requisiciones_proveedores
       </select>
     </unit>
-		<unit id="TcManticRequisicionesDetallesDto">
+		<unit id="TcManticRequisicionesDetallesDto">       
       <select id="row">
         select      
           *
@@ -1601,7 +1601,7 @@
         from      
           tc_mantic_requisiciones_detalles
         where      
-          id_articulo = {idArticulo} and id_requisicion = {idRequisicion}
+          id_requisicion_detalle = {idRequisicionDetalle} and id_articulo = {idArticulo} and id_requisicion = {idRequisicion}
       </select>
 			<select id="detalle">
         select      
@@ -1630,8 +1630,8 @@
         from      
           tc_mantic_requisiciones
         where      
-          id_empresa = {idEmpresa} and orden = {orden} and ejercicio = {ejercicio}
-      </select>
+          consecutivo = '{consecutivo}' and id_requisicion = {idRequisicion}
+      </select>    
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
