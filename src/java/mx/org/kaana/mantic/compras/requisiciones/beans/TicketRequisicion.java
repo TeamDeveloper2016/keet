@@ -25,7 +25,7 @@ public class TicketRequisicion extends TcManticRequisicionesDto implements Seria
 	}
 	
 	public TicketRequisicion(Long idUsuario, String observaciones, Long idEmpresa, Long idRequisicionEstatus, Long orden, Long ejercicio) {
-		super("", LocalDate.now(), idUsuario, observaciones, idEmpresa, idRequisicionEstatus, LocalDate.now(), orden, -1L, -1L, ejercicio);
+		super(0D, -1L, -1L, "", idRequisicionEstatus, -1L, -1L, ejercicio, "", LocalDate.now(), 0D,  idUsuario, 0D, 0D, observaciones, idEmpresa, LocalDate.now(), orden);
 	}
 
 	@Override
