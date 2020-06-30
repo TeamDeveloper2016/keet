@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Captura del detalle del gasto"/>	
+	<ui:param name="titulo" value="Captura del detalle del gasto #{keetCajaChicaAccion.attrs.consecutivoP}"/>	
 	<ui:define name="librerias">
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryValesJs}"/>
 		<script type="text/javascript">			
@@ -84,11 +84,11 @@
 								<p:inputText value="#{keetCajaChicaAccion.attrs.desarrollo.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>			
-						<p:tab title="Saldos de caja chica">
+						<p:tab title="Saldos de caja chica">							
 							<div class="lg-pantalla">
 								<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-24, janal-wid-24, janal-wid-24, janal-wid-24, janal-wid-col-30 janal-column-center">
 									<p:outputLabel value="Inicial:"/>
-									<p:outputLabel value="Gastado:"/>
+									<p:outputLabel value="Por reponer:"/>
 									<p:outputLabel value="Disponible:"/>
 									<p:outputLabel value="Pendiente:"/>
 									<p:spacer/>
@@ -103,7 +103,7 @@
 								<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
 									<p:outputLabel value="Inicial:"/>
 									<p:inputText value="#{keetCajaChicaAccion.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
-									<p:outputLabel value="Gastado:"/>
+									<p:outputLabel value="Por reponer:"/>
 									<p:inputText value="#{keetCajaChicaAccion.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
 									<p:outputLabel value="Disponible:"/>
 									<p:inputText value="#{keetCajaChicaAccion.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
