@@ -243,6 +243,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));																		
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));													
 			JsfBase.setFlashAttribute("idGasto", seleccionado.getKey());										
+			JsfBase.setFlashAttribute("consecutivo", seleccionado.toString("consecutivo"));										
 			JsfBase.setFlashAttribute("retorno", "consulta");				
 			if(seleccionado.toLong("idGastoEstatus").equals(EEstatusGastos.DISPONIBLE.getKey()))
 				regresar= "accion".concat(Constantes.REDIRECIONAR);

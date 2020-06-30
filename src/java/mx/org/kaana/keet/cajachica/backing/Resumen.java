@@ -44,6 +44,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			this.attrs.put("idGasto", JsfBase.getFlashAttribute("idGasto"));			
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));			
 			this.attrs.put("retornoInicial", JsfBase.getFlashAttribute("retornoInicial"));			
+			this.attrs.put("consecutivo", JsfBase.getFlashAttribute("consecutivo"));      						
 			this.attrs.put("opcionResidente", opcion);			
 			this.attrs.put("idDesarrollo", idDesarrollo);      									
 			this.attrs.put("acciones", false);      									

@@ -48,6 +48,7 @@ public class Transaccion extends IBaseTnx {
 	private String observaciones;
 	private Long idAfectaNomina;
 	private Long idDesarrollo;
+	private Long idEmpresaPersona;
 
 	public Transaccion(Long idGasto, boolean ok) {
 		this(idGasto, null, ok);
@@ -69,15 +70,16 @@ public class Transaccion extends IBaseTnx {
 	}	
 
 	public Transaccion(Long idCajaChicaCierre, Double cantidad, String observaciones, Long idDesarrollo) {
-		this(idCajaChicaCierre, cantidad, observaciones, 2L, idDesarrollo);
+		this(idCajaChicaCierre, cantidad, observaciones, 2L, idDesarrollo, -1L);
 	}
 	
-	public Transaccion(Long idCajaChicaCierre, Double cantidad, String observaciones, Long idAfectaNomina, Long idDesarrollo) {
+	public Transaccion(Long idCajaChicaCierre, Double cantidad, String observaciones, Long idAfectaNomina, Long idDesarrollo, Long idEmpresaPersona) {
 		this.idCajaChicaCierre= idCajaChicaCierre;
 		this.cantidad         = cantidad;
 		this.observaciones    = observaciones;
 		this.idAfectaNomina   = idAfectaNomina;
 		this.idDesarrollo     = idDesarrollo;
+		this.idEmpresaPersona = idEmpresaPersona;
 	}
 	
 	public Long getIdGasto() {
@@ -344,7 +346,7 @@ public class Transaccion extends IBaseTnx {
 		Siguiente siguiente               = null;
 		try {
 			cierre= (TcKeetCajasChicasCierresDto) DaoFactory.getInstance().findById(sesion, TcKeetCajasChicasCierresDto.class, this.idCajaChicaCierre);
-			cierre.setDisponible(cierre.getDisponible() + this.cantidad);			
+			cierre.setAcumulado(cierre.getAcumulado() - this.cantidad);			
 			if(DaoFactory.getInstance().update(sesion, cierre)>= 1L){
 				if(registrarBitacoraCaja(sesion, this.idCajaChicaCierre, EEstatusCajasChicas.PARCIALIZADO.getKey())){
 					siguiente= toSiguiente(sesion);
@@ -422,9 +424,9 @@ public class Transaccion extends IBaseTnx {
 					if(this.idAfectaNomina.equals(1L)){
 						registrarInicidenciaNomina(sesion);
 					} // if
-					if(cierre.getDisponible()<0)
-						registrarInicidenciaGasto(sesion, cierre.getDisponible());					
-					nuevo= loadCierre(sesion, cierre.getIdCajaChica());
+					//if(cierre.getDisponible()<0)
+						//registrarInicidenciaGasto(sesion, cierre.getDisponible());					
+					nuevo= loadCierre(sesion, cierre.getIdCajaChica(), cierre.getDisponible());
 					if(DaoFactory.getInstance().insert(sesion, nuevo)>= 1L){
 						if(registrarBitacoraCaja(sesion, nuevo.getIdCajaChicaCierre(), EEstatusCajasChicas.INICIADO.getKey())){
 							regresar= actualizarGastos(sesion, cierre.getIdCajaChicaCierre(), nuevo.getIdCajaChicaCierre());
@@ -439,7 +441,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // realizarCierre
 	
-	private TcKeetCajasChicasCierresDto loadCierre(Session sesion, Long idCajaChica) throws Exception{
+	private TcKeetCajasChicasCierresDto loadCierre(Session sesion, Long idCajaChica, Double disponible) throws Exception{
 		TcKeetCajasChicasCierresDto regresar= null;
 		Siguiente siguiente                 = null;
 		Semanas semana                      = null;
@@ -454,10 +456,12 @@ public class Transaccion extends IBaseTnx {
 			regresar.setTermino(LocalDateTime.now());
 			regresar.setObservaciones(this.observaciones);
 			regresar.setAcumulado(0D);
-			regresar.setDisponible(this.cantidad);
-			regresar.setSaldo(this.cantidad);
+			regresar.setDisponible(this.cantidad + disponible);
+			regresar.setSaldo(this.cantidad + disponible);
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
 			regresar.setIdAfectaNomina(this.idAfectaNomina);
+			regresar.setNomina(this.cantidad);
+			regresar.setIdEmpresaPersona(this.idEmpresaPersona);
 			semana= new Semanas();
 			regresar.setIdNominaPeriodo(semana.getSemanaEnCursoDto().getIdNominaPeriodo());
 		} // try

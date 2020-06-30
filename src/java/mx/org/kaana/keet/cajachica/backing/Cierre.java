@@ -21,6 +21,8 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
 @Named(value = "keetCajaChicaCierre")
@@ -45,6 +47,7 @@ public class Cierre extends IBaseAttribute implements Serializable {
 			this.attrs.put("opcionResidente", opcion);						
 			this.attrs.put("idDesarrollo", idDesarrollo);      						
 			this.attrs.put("idAfectaNomina", 1L);
+			loadResidentes();
 			doLoad();											
     } // try // try
     catch (Exception e) {
@@ -53,6 +56,26 @@ public class Cierre extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
   
+	private void loadResidentes(){
+		List<UISelectEntity> residentes= null;
+		List<Columna> campos           = null;
+		Map<String, Object> params     = null;
+		try {
+			params= new HashMap<>();
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			campos= new ArrayList<>();		
+			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
+			residentes= UIEntity.seleccione("VistaGeoreferenciaLotesDto", "residentes", params, campos, Constantes.SQL_TODOS_REGISTROS, "departamento");
+			this.attrs.put("residentes", residentes);
+			this.attrs.put("residente", UIBackingUtilities.toFirstKeySelectEntity(residentes));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadResidentes
+	
   public void doLoad() {			
 		Entity desarrollo        = null;		
 		Entity cajaChica         = null;		
@@ -84,10 +107,16 @@ public class Cierre extends IBaseAttribute implements Serializable {
   } // doLoad	  	
 	
 	public String doAceptar() {
-    String regresar        = null;    		
-		Transaccion transaccion= null;				
-    try {														
-			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString(), Long.valueOf(this.attrs.get("idAfectaNomina").toString()), (Long)this.attrs.get("idDesarrollo"));
+    String regresar                = null;    		
+		Transaccion transaccion        = null;	
+		UISelectEntity residente       = null;
+		UISelectEntity seleccionado    = null;
+		List<UISelectEntity> residentes= null;
+    try {									
+			seleccionado= (UISelectEntity) this.attrs.get("residente");
+			residentes= (List<UISelectEntity>) this.attrs.get("residentes");
+			residente= residentes.get(residentes.indexOf(seleccionado));
+			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString(), Long.valueOf(this.attrs.get("idAfectaNomina").toString()), (Long)this.attrs.get("idDesarrollo"), residente.toLong("idEmpresaPersona"));
 			if(transaccion.ejecutar(EAccion.ACTIVAR)){
 				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta.", ETipoMensaje.INFORMACION);									
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);

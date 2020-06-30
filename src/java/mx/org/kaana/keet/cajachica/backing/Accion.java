@@ -50,6 +50,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 			this.attrs.put("idGasto", JsfBase.getFlashAttribute("idGasto"));						
 			this.attrs.put("opcionResidente", opcion);						
 			this.attrs.put("idDesarrollo", idDesarrollo);      						
+			this.attrs.put("consecutivoP", JsfBase.getFlashAttribute("consecutivo"));      						
 			doLoad();								
 			initPadre();			
 			this.attrs.put("accion", EAccion.AGREGAR);										
