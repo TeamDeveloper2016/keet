@@ -347,6 +347,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			cierre= (TcKeetCajasChicasCierresDto) DaoFactory.getInstance().findById(sesion, TcKeetCajasChicasCierresDto.class, this.idCajaChicaCierre);
 			cierre.setAcumulado(cierre.getAcumulado() - this.cantidad);			
+			cierre.setDisponible(cierre.getDisponible() - this.cantidad);			
 			if(DaoFactory.getInstance().update(sesion, cierre)>= 1L){
 				if(registrarBitacoraCaja(sesion, this.idCajaChicaCierre, EEstatusCajasChicas.PARCIALIZADO.getKey())){
 					siguiente= toSiguiente(sesion);

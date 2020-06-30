@@ -94,7 +94,8 @@ public class Cierre extends IBaseAttribute implements Serializable {
 			params.clear();
 			params.put("idCajaChicaCierre", this.attrs.get("idCajaChicaCierre").toString());
 			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaCajaChicaDto", "findCajaChicaCierre", params);
-			UIBackingUtilities.toFormatEntity(cajaChica, campos);
+			this.attrs.put("importe", cajaChica.toDouble("acumulado"));
+			UIBackingUtilities.toFormatEntity(cajaChica, campos);			
 			this.attrs.put("cajaChica", cajaChica);
     } // try
     catch (Exception e) {
