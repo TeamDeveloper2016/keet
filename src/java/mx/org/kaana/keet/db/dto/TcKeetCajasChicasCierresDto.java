@@ -59,17 +59,21 @@ public class TcKeetCajasChicasCierresDto implements IBaseDto, Serializable {
   private Double disponible;
 	@Column (name="id_afecta_nomina")
   private Long idAfectaNomina;
+	@Column (name="id_empresa_persona")
+  private Long idEmpresaPersona;
+	@Column (name="nomina")
+  private Double nomina;
 
   public TcKeetCajasChicasCierresDto() {
     this(new Long(-1L));
   }
 
   public TcKeetCajasChicasCierresDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDateTime.now(), null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDateTime.now(), null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetCajasChicasCierresDto(Double acumulado, Long idCajaChicaCierreEstatus, Long ejercicio, Double saldo, Long idCajaChicaCierre, String consecutivo, Long idCajaChica, Long idNominaPeriodo, Long idUsuario, String observaciones, Long orden, LocalDateTime termino, Double disponible, Long idAfectaNomina) {
+  public TcKeetCajasChicasCierresDto(Double acumulado, Long idCajaChicaCierreEstatus, Long ejercicio, Double saldo, Long idCajaChicaCierre, String consecutivo, Long idCajaChica, Long idNominaPeriodo, Long idUsuario, String observaciones, Long orden, LocalDateTime termino, Double disponible, Long idAfectaNomina, Long idEmpresaPersona, Double nomina) {
     setAcumulado(acumulado);
     setIdCajaChicaCierreEstatus(idCajaChicaCierreEstatus);
     setEjercicio(ejercicio);
@@ -85,6 +89,8 @@ public class TcKeetCajasChicasCierresDto implements IBaseDto, Serializable {
     setTermino(termino);
     setDisponible(disponible);
 		setIdAfectaNomina(idAfectaNomina);
+		setIdEmpresaPersona(idEmpresaPersona);
+		setNomina(nomina);
   }
 	
   public void setAcumulado(Double acumulado) {
@@ -206,6 +212,22 @@ public class TcKeetCajasChicasCierresDto implements IBaseDto, Serializable {
 	public void setIdAfectaNomina(Long idAfectaNomina) {
 		this.idAfectaNomina = idAfectaNomina;
 	}	
+
+	public Long getIdEmpresaPersona() {
+		return idEmpresaPersona;
+	}
+
+	public void setIdEmpresaPersona(Long idEmpresaPersona) {
+		this.idEmpresaPersona = idEmpresaPersona;
+	}
+
+	public Double getNomina() {
+		return nomina;
+	}
+
+	public void setNomina(Double nomina) {
+		this.nomina = nomina;
+	}	
 	
   @Transient
   @Override
@@ -249,6 +271,10 @@ public class TcKeetCajasChicasCierresDto implements IBaseDto, Serializable {
 		regresar.append(getTermino());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDisponible());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresaPersona());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNomina());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -271,13 +297,15 @@ public class TcKeetCajasChicasCierresDto implements IBaseDto, Serializable {
 		regresar.put("termino", getTermino());
 		regresar.put("disponible", getDisponible());
 		regresar.put("idAfectaNomina", getIdAfectaNomina());
+		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
+		regresar.put("nomina", getNomina());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getAcumulado(), getIdCajaChicaCierreEstatus(), getEjercicio(), getSaldo(), getIdCajaChicaCierre(), getRegistro(), getConsecutivo(), getIdCajaChica(), getIdNominaPeriodo(), getIdUsuario(), getObservaciones(), getOrden(), getTermino(), getDisponible(), getIdAfectaNomina()
+			getAcumulado(), getIdCajaChicaCierreEstatus(), getEjercicio(), getSaldo(), getIdCajaChicaCierre(), getRegistro(), getConsecutivo(), getIdCajaChica(), getIdNominaPeriodo(), getIdUsuario(), getObservaciones(), getOrden(), getTermino(), getDisponible(), getIdAfectaNomina(), getIdEmpresaPersona(), getNomina()
     };
     return regresar;
   }
