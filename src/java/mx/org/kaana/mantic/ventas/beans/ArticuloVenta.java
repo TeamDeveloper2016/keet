@@ -1,6 +1,8 @@
 package mx.org.kaana.mantic.ventas.beans;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -8,6 +10,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -20,6 +23,9 @@ public class ArticuloVenta extends Articulo {
 	private Double menudeo;
 	private boolean descuentoActivo;
 	private boolean descuentoAsignado;	
+	private List<UISelectEntity> listaPrecios;
+	private UISelectEntity precioLista;
+	private boolean aplicaCosto;
 	
 	public ArticuloVenta() {
 		this(-1L);
@@ -33,6 +39,9 @@ public class ArticuloVenta extends Articulo {
 		super(key, costoLibre);
 		this.descuentoActivo  = false;
 		this.descuentoAsignado= false;
+		this.listaPrecios     = new ArrayList<>();
+		this.precioLista      = new UISelectEntity(-1L);
+		this.aplicaCosto      = true;
 	}
 
 	@Override
@@ -229,4 +238,31 @@ public class ArticuloVenta extends Articulo {
 	public String getCantidadDecimales(){
 		return Numero.formatear(Numero.NUMERO_CON_DECIMALES, getCantidad());
 	}
+
+	public List<UISelectEntity> getListaPrecios() {
+		return listaPrecios;
+	}
+
+	public void setListaPrecios(List<UISelectEntity> listaPrecios) {
+		this.listaPrecios = listaPrecios;
+	}	
+
+	public UISelectEntity getPrecioLista() {
+		return precioLista;
+	}
+
+	public void setPrecioLista(UISelectEntity precioLista) {
+		this.precioLista = precioLista;
+		if(this.precioLista!= null && this.precioLista.getKey()>= 1L && this.aplicaCosto){
+			setCosto(new Double(this.listaPrecios.get(this.listaPrecios.indexOf(this.precioLista)).toString("costo")));
+		} // if
+	}
+
+	public boolean isAplicaCosto() {
+		return aplicaCosto;
+	}
+
+	public void setAplicaCosto(boolean aplicaCosto) {
+		this.aplicaCosto = aplicaCosto;
+	}	
 }
