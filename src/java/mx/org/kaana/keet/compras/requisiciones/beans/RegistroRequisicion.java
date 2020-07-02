@@ -19,6 +19,10 @@ public class RegistroRequisicion implements Serializable {
 		this(new Requisicion(), new UISelectEntity(-1L));
 	}
 	
+	public RegistroRequisicion(Requisicion requisicion) {
+		this(requisicion, new UISelectEntity(-1L));
+	}
+	
 	public RegistroRequisicion(Requisicion requisicion, UISelectEntity proveedor) {
 		this.idRequisicion= requisicion.getIdRequisicion();
 		this.requisicion  = requisicion;
