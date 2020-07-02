@@ -1,7 +1,6 @@
 package mx.org.kaana.keet.compras.requisiciones.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +17,8 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.compras.requisiciones.beans.RegistroRequisicion;
+import mx.org.kaana.keet.compras.requisiciones.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -29,9 +30,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.requisiciones.beans.RegistroRequisicion;
 import mx.org.kaana.mantic.compras.requisiciones.beans.Requisicion;
-import mx.org.kaana.mantic.compras.requisiciones.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesBitacoraDto;
 
 @Named(value= "keetComprasRequisicionesFiltro")
@@ -69,6 +68,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion"));
       this.attrs.put("sortOrder", "order by tc_mantic_requisiciones.id_empresa, tc_mantic_requisiciones.ejercicio, tc_mantic_requisiciones.orden");
 			loadCatalog();      
+			if(!Cadena.isVacio(this.attrs.get("idRequisicion")))
+				doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -265,7 +266,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		sb.append("(date_format(tc_mantic_requisiciones.fecha_entregada, '%Y%m%d')<= date_format('").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaFin)).append("', '%Y%m%d')) and ");							
 		if(!Cadena.isVacio(this.attrs.get("idRequisicion")) && !this.attrs.get("idRequisicion").toString().equals("-1")){
   		sb.append("(tc_mantic_requisiciones.id_requisicion=").append(this.attrs.get("idRequisicion")).append(") and ");
-			this.attrs.put("toLoadCatalog", null);
+			this.attrs.put("idRequisicion", null);
 		} // if
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_requisiciones.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");		
@@ -338,7 +339,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		RegistroRequisicion requisicion= null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			requisicion= new RegistroRequisicion(new Requisicion(seleccionado.getKey()), new ArrayList<>());
+			requisicion= new RegistroRequisicion(new Requisicion(seleccionado.getKey()));
 			transaccion= new Transaccion(requisicion, this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La requisición de compra se ha eliminado correctamente.", ETipoMensaje.ERROR);
