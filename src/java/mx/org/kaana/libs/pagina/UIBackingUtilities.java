@@ -76,6 +76,13 @@ public class UIBackingUtilities {
 		}); // for
 		return items;
 	} 	
+  
+	public static List<UISelectEntity> toFormatUIEntitySet(List<UISelectEntity> items, List<Columna> columns) {
+		for(UISelectEntity item: items){
+			toFormatEntity(item, columns);
+		} // for		
+		return items;
+	} // toFormatUIEntitySet 	
 
   public static Entity toFormatEntity(Entity entity, List<Columna> columns) {
 		if(entity!= null)
