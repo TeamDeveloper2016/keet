@@ -30,18 +30,27 @@ public class MotorBusqueda implements Serializable{
 		try {
 			dto= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(TcManticRequisicionesDto.class, this.idRequisicion);
 			regresar= new Requisicion();
-			regresar.setConsecutivo(dto.getConsecutivo());
-			regresar.setEjercicio(dto.getEjercicio());
-			regresar.setEntrega(dto.getFechaEntregada());
-			regresar.setPedido(dto.getFechaPedido());
-			regresar.setIdEmpresa(dto.getIdEmpresa());
-			regresar.setIdRequisicion(dto.getIdRequisicion());
+			regresar.setDescuentos(dto.getDescuentos());
+			regresar.setIdProveedor(dto.getIdProveedor());
+			regresar.setIdDesarrollo(dto.getIdDesarrollo());
+			regresar.setDescuento(dto.getDescuento());
 			regresar.setIdRequisicionEstatus(dto.getIdRequisicionEstatus());
+			regresar.setIdRequisicion(this.idRequisicion);
 			regresar.setIdSolicita(dto.getIdSolicita());
-			regresar.setIdUsuario(dto.getIdUsuario());
-			regresar.setObservaciones(dto.getObservaciones());
-			regresar.setOrden(dto.getOrden());
+			regresar.setEjercicio(dto.getEjercicio());
 			regresar.setRegistro(dto.getRegistro());
+			regresar.setConsecutivo(dto.getConsecutivo());
+			regresar.setFechaPedido(dto.getFechaPedido());
+			regresar.setTotal(dto.getTotal());
+			regresar.setIdUsuario(dto.getIdUsuario());
+			regresar.setImpuestos(dto.getImpuestos());
+			regresar.setSubTotal(dto.getSubTotal());
+			regresar.setObservaciones(dto.getObservaciones());
+			regresar.setIdEmpresa(dto.getIdEmpresa());
+			regresar.setFechaEntregada(dto.getFechaEntregada());
+			regresar.setOrden(dto.getOrden());
+			regresar.setEntrega(dto.getFechaEntregada());
+			regresar.setPedido(dto.getFechaPedido());			
 		} // try
 		catch (Exception e) {			
 			throw e;
