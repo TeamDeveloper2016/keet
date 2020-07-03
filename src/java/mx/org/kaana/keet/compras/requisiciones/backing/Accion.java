@@ -331,12 +331,15 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 	public void doCalculate(Integer index) {				
 		super.doCalculate(index);
 		List<UISelectEntity> precios= ((ArticuloVenta)this.getAdminOrden().getArticulos().get(index)).getListaPrecios();
-		for(UISelectEntity precio: precios){
-			if(precio.getKey().equals(ETiposPrecios.LIBRE.getKey())){
-				((ArticuloVenta)this.getAdminOrden().getArticulos().get(index)).setAplicaCosto(false);
-				((ArticuloVenta)this.getAdminOrden().getArticulos().get(index)).setPrecioLista(precio);
-			} // if
-		} // for
+		UISelectEntity precioActual= precios.get(precios.indexOf(((ArticuloVenta)this.getAdminOrden().getArticulos().get(index)).getPrecioLista()));
+		if(!Double.valueOf(precioActual.toString("costo")).equals(((ArticuloVenta)this.getAdminOrden().getArticulos().get(index)).getCosto())){
+			for(UISelectEntity precio: precios){
+				if(precio.getKey().equals(ETiposPrecios.LIBRE.getKey())){
+					((ArticuloVenta)this.getAdminOrden().getArticulos().get(index)).setAplicaCosto(false);
+					((ArticuloVenta)this.getAdminOrden().getArticulos().get(index)).setPrecioLista(precio);
+				} // if
+			} // for
+		} // if
 		((ArticuloVenta)this.getAdminOrden().getArticulos().get(index)).setAplicaCosto(true);		
 	}	// doCalculate
 } 
