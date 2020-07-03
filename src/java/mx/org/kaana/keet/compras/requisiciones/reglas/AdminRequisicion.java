@@ -48,6 +48,7 @@ public final class AdminRequisicion extends IAdminArticulos implements Serializa
 		if(this.orden.isValid()) {
   	  this.setArticulos((List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "TcManticRequisicionesDetallesDto", "detalle", orden.toMap()));      
 			loadListaPrecios();
+			asignaPrecioSeleccionado();
 		}	// if
 		else	{
 		  this.setArticulos(new ArrayList<>());
@@ -56,7 +57,7 @@ public final class AdminRequisicion extends IAdminArticulos implements Serializa
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 		} // else	
 		if(loadDefault)
-			this.getArticulos().add(new ArticuloVenta(-1L));
+			this.getArticulos().add(new ArticuloVenta(-1L));		
 		this.toCalculate();
 		cleanPrecioDescuentoArticulo();
 	} // AdminRequisicion
@@ -129,6 +130,17 @@ public final class AdminRequisicion extends IAdminArticulos implements Serializa
 		} // catch		
 		return regresar;
 	} // toItemArticulo
+	
+	private void asignaPrecioSeleccionado(){
+		ArticuloVenta articuloVenta= null;
+		for(Articulo articulo: this.getArticulos()){
+			articuloVenta= (ArticuloVenta) articulo;
+			articuloVenta.setPrecioLista(new UISelectEntity(articuloVenta.getIdTipoPrecio()));
+			if(!articuloVenta.getIdTipoPrecio().equals(ETiposPrecios.LIBRE.getKey()))
+				articuloVenta.setCosto(Double.valueOf(articuloVenta.getListaPrecios().get(articuloVenta.getListaPrecios().indexOf(articuloVenta.getPrecioLista())).toString("costo")));
+			articuloVenta.setDescuentoActivo(true);
+		} // for
+	} // asignaPrecioSeleccionado
 	
 	@Override
 	public Long getIdAlmacen() {
