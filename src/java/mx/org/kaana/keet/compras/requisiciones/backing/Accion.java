@@ -67,10 +67,10 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 			this.attrs.put("nombreEmpresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			this.attrs.put("solicita", JsfBase.getAutentifica().getPersona().getNombreCompleto());
 			this.attrs.put("decuentoAutorizadoActivo", false);
-			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
-			this.doLoad();
+			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);			
 			this.loadDesarrollos();
 			this.loadProveedores();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -138,6 +138,8 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
         case CONSULTAR:	
 					this.registroRequisicion= new RegistroRequisicion(Long.valueOf(this.attrs.get("idRequisicion").toString()));					
           this.setAdminOrden(new AdminRequisicion((TicketRequisicion)DaoFactory.getInstance().toEntity(TicketRequisicion.class, "TcManticRequisicionesDto", "detalle", this.attrs)));				
+					this.attrs.put("desarrollo", new UISelectEntity(this.registroRequisicion.getRequisicion().getIdDesarrollo()));
+					this.attrs.put("proveedor", new UISelectEntity(this.registroRequisicion.getRequisicion().getIdProveedor()));
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
