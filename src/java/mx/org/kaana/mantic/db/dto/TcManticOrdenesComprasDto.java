@@ -84,17 +84,19 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   private Long idEmpresa;
   @Column (name="orden")
   private Long orden;
+  @Column (name="id_desarrollo")
+  private Long idDesarrollo;
 
   public TcManticOrdenesComprasDto() {
     this(new Long(-1L));
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
+  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idDesarrollo) {
     setIdProveedorPago(idProveedorPago);
     setDescuentos(descuentos);
     setExcedentes(excedentes);
@@ -119,6 +121,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setOrden(orden);
+		setIdDesarrollo(idDesarrollo);
   }
 	
   public void setIdProveedorPago(Long idProveedorPago) {
@@ -313,6 +316,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     return orden;
   }
 
+	public Long getIdDesarrollo() {
+		return idDesarrollo;
+	}
+
+	public void setIdDesarrollo(Long idDesarrollo) {
+		this.idDesarrollo = idDesarrollo;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -375,6 +386,8 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDesarrollo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -406,13 +419,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
+		regresar.put("idDesarrollo", getIdDesarrollo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes()
+			getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getIdDesarrollo()
     };
     return regresar;
   }
@@ -470,7 +484,4 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdOrdenCompra() != null ? getIdOrdenCompra().hashCode() : 0);
     return hash;
   }
-
 }
-
-
