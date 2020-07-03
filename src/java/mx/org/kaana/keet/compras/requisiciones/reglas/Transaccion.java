@@ -330,6 +330,7 @@ public class Transaccion extends IBaseTnx {
 			regresar.setIdSinIva(1L);
 			regresar.setObservaciones(req.getObservaciones());
 			regresar.setIdEmpresa(req.getIdEmpresa());			
+			regresar.setIdDesarrollo(req.getIdDesarrollo());
 		} // try
 		catch (Exception e) {
 			throw e;
