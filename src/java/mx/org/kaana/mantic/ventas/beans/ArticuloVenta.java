@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.keet.enums.ETiposPrecios;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
@@ -26,6 +27,7 @@ public class ArticuloVenta extends Articulo {
 	private List<UISelectEntity> listaPrecios;
 	private UISelectEntity precioLista;
 	private boolean aplicaCosto;
+	private Long idTipoPrecio;
 	
 	public ArticuloVenta() {
 		this(-1L);
@@ -42,6 +44,7 @@ public class ArticuloVenta extends Articulo {
 		this.listaPrecios     = new ArrayList<>();
 		this.precioLista      = new UISelectEntity(-1L);
 		this.aplicaCosto      = true;
+		this.idTipoPrecio     = ETiposPrecios.LIBRE.getKey();
 	}
 
 	@Override
@@ -264,5 +267,13 @@ public class ArticuloVenta extends Articulo {
 
 	public void setAplicaCosto(boolean aplicaCosto) {
 		this.aplicaCosto = aplicaCosto;
+	}	
+
+	public Long getIdTipoPrecio() {
+		return idTipoPrecio;
+	}
+
+	public void setIdTipoPrecio(Long idTipoPrecio) {
+		this.idTipoPrecio = idTipoPrecio;
 	}	
 }
