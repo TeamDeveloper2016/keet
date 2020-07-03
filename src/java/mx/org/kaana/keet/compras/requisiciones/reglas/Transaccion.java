@@ -1,22 +1,31 @@
 package mx.org.kaana.keet.compras.requisiciones.reglas;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.compras.requisiciones.beans.RegistroRequisicion;
+import mx.org.kaana.keet.db.dto.TcKeetDesarrollosDto;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDto;
@@ -97,6 +106,8 @@ public class Transaccion extends IBaseTnx {
 						bitRequisicion= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(sesion, TcManticRequisicionesDto.class, this.bitacora.getIdRequisicion());
 						bitRequisicion.setIdRequisicionEstatus(this.bitacora.getIdRequisicionEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, bitRequisicion)>= 1L;
+						if(this.bitacora.getIdRequisicionEstatus().equals(EEstatusRequisiciones.COTIZADA.getIdEstatusRequisicion()))
+							procesarOrdenCompra(sesion, this.bitacora.getIdRequisicion());
 					} // if
 					break;												
 				case REPROCESAR:
@@ -231,4 +242,142 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // registraRequisicionProveedor
+	
+	private void procesarOrdenCompra(Session sesion, Long idRequisicion) throws Exception{
+		TcManticRequisicionesDto req                      = null;
+		List<TcManticRequisicionesDetallesDto> reqDetalles= null;
+		Map<String, Object>params                         = null;
+		TcManticOrdenesComprasDto ordenCompra             = null;		
+		Siguiente siguiente                               = null;
+		TcManticOrdenesBitacoraDto bitOrdenCompra         = null;
+		try {
+			req= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(sesion, TcManticRequisicionesDto.class, idRequisicion);
+			params= new HashMap<>();
+			params.put("idRequisicion", idRequisicion);
+			reqDetalles= DaoFactory.getInstance().toEntitySet(sesion, TcManticRequisicionesDetallesDto.class, "TcManticRequisicionesDetallesDto", "detalle", params);
+			siguiente= this.toSiguienteOrden(sesion, req.getIdEmpresa());
+			ordenCompra= loadOrdenCompra(sesion, siguiente, req);
+			if(DaoFactory.getInstance().insert(sesion, ordenCompra)>= 1){
+				if(procesarDetalleOrden(sesion, ordenCompra.getIdOrdenCompra(), reqDetalles)){
+					bitOrdenCompra= new TcManticOrdenesBitacoraDto(ordenCompra.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), ordenCompra.getIdOrdenCompra(), -1L, ordenCompra.getConsecutivo(), ordenCompra.getTotal());
+					DaoFactory.getInstance().insert(sesion, bitOrdenCompra);
+				} // if
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+	} // procesarOrdenCompra
+	
+	private Siguiente toSiguienteOrden(Session sesion, Long idEmpresa) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", this.getCurrentYear());
+			params.put("idEmpresa", idEmpresa);
+		  params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticOrdenesComprasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguienteOrden
+	
+	private TcManticOrdenesComprasDto loadOrdenCompra(Session sesion, Siguiente siguiente, TcManticRequisicionesDto req) throws Exception{
+		TcManticOrdenesComprasDto regresar= null;
+		TcKeetDesarrollosDto desarrollo   = null;
+		TcManticAlmacenesDto almacen      = null;
+		Map<String, Object>params         = null;
+		Entity proveedorPago              = null;
+		try {
+			desarrollo= (TcKeetDesarrollosDto) DaoFactory.getInstance().findById(sesion, TcKeetDesarrollosDto.class, req.getIdDesarrollo());
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_desarrollo=".concat(req.getIdDesarrollo().toString()));
+			almacen= (TcManticAlmacenesDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesDto.class, "TcManticAlmacenesDto", "row", params);
+			params.clear();
+			params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(req.getIdProveedor().toString()));
+			proveedorPago= (Entity) DaoFactory.getInstance().toEntity(sesion, "TrManticProveedorPagoDto", "row", params);
+			regresar= new TcManticOrdenesComprasDto();
+			regresar.setConsecutivo(siguiente.getConsecutivo());
+			regresar.setOrden(siguiente.getOrden());			
+			regresar.setIdProveedorPago(proveedorPago.toLong("idProveedorPago"));			
+			regresar.setDescuentos(req.getDescuentos());
+			regresar.setExcedentes(0D);
+			regresar.setIdProveedor(req.getIdProveedor());
+			regresar.setIdCliente(desarrollo.getIdCliente());
+			regresar.setDescuento(req.getDescuento());			
+			regresar.setExtras("");
+			regresar.setEjercicio(req.getEjercicio());
+			regresar.setRegistro(LocalDateTime.now());			
+			regresar.setIdGasto(1L);
+			regresar.setTotal(req.getTotal());
+			regresar.setIdOrdenEstatus(1L);
+			regresar.setEntregaEstimada(req.getFechaEntregada());
+			regresar.setIdUsuario(JsfBase.getIdUsuario());
+			regresar.setIdAlmacen(almacen.getIdAlmacen());
+			regresar.setImpuestos(req.getImpuestos());
+			regresar.setSubTotal(req.getSubTotal());
+			regresar.setTipoDeCambio(1D);
+			regresar.setIdSinIva(1L);
+			regresar.setObservaciones(req.getObservaciones());
+			regresar.setIdEmpresa(req.getIdEmpresa());			
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadOrdenCompra
+	
+	private boolean procesarDetalleOrden(Session sesion, Long idOrdenCompra, List<TcManticRequisicionesDetallesDto> reqDetalles) throws Exception{
+		boolean regresar= true;
+		try {
+			for(TcManticRequisicionesDetallesDto detalle: reqDetalles)
+				DaoFactory.getInstance().insert(sesion, loadOrdenDetalle(idOrdenCompra, detalle));
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+		return regresar;
+	} // procesarDetalleOrden
+	
+	private TcManticOrdenesDetallesDto loadOrdenDetalle(Long idOrdenCompra, TcManticRequisicionesDetallesDto reqDetalle){
+		TcManticOrdenesDetallesDto regresar= null;
+		try {
+			regresar= new TcManticOrdenesDetallesDto();			
+			regresar.setDescuentos(reqDetalle.getDescuentos());			
+			regresar.setCodigo(reqDetalle.getCodigo());
+			regresar.setCosto(reqDetalle.getCosto());
+			regresar.setDescuento(reqDetalle.getDescuento());
+			regresar.setIdOrdenCompra(idOrdenCompra);			
+			regresar.setNombre(reqDetalle.getNombre());
+			regresar.setImporte(reqDetalle.getImporte());			
+			regresar.setRegistro(LocalDateTime.now());
+			regresar.setPropio(reqDetalle.getPropio());			
+			regresar.setIva(reqDetalle.getIva());
+			regresar.setImpuestos(reqDetalle.getImpuestos());
+			regresar.setSubTotal(reqDetalle.getSubTotal());
+			regresar.setCantidad(reqDetalle.getCantidad());
+			regresar.setIdArticulo(reqDetalle.getIdArticulo());
+			regresar.setExtras("0");
+			regresar.setImportes(0D);
+			regresar.setExcedentes(0D);
+			regresar.setPrecios(0D);
+			regresar.setCantidades(0D);
+			regresar.setCostoReal(0D);
+			regresar.setCostoCalculado(0D);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadOrdenDetalle
 } 
