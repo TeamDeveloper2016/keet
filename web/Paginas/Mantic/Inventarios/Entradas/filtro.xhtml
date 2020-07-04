@@ -56,14 +56,25 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticInventariosEntradasFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticInventariosEntradasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticInventariosEntradasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticInventariosEntradasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">               
+								<p:ajax event="change" listener="#{manticInventariosEntradasFiltro.doLoadDesarrollos}" process="@this" update="desarrollo"/>
+								<f:selectItems value="#{manticInventariosEntradasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="desarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="desarrollo" value="#{manticInventariosEntradasFiltro.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticInventariosEntradasFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column>                   
               </p:selectOneMenu>
               <p:outputLabel for="ordenCompra" value="No. orden compra:"/>
               <p:inputText id="ordenCompra" value="#{manticInventariosEntradasFiltro.attrs.ordenCompra}" styleClass="janal-wid-100-txt"/> 
