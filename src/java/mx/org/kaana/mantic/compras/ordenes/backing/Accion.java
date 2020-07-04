@@ -119,6 +119,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setIdDesarrollo(((UISelectEntity)this.attrs.get("desarrollo")).getKey());
 			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
@@ -191,6 +192,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(proveedores.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
 				this.toLoadCondiciones(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor());
 			} // if	
+			doLoadDesarrollos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -202,6 +204,33 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // finally
 	}
 
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;		
+    try {
+			params= new HashMap<>();			
+			if(this.accion.equals(EAccion.AGREGAR))
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			        
+			else
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
+			if(this.accion.equals(EAccion.AGREGAR))
+				this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+			else
+				this.attrs.put("desarrollo", new UISelectEntity(((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo()));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadDesarrollos
+	
 	private LocalDate toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
 		fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);
 		if(tipoDia== 2) {
@@ -450,6 +479,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
 			  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+			doLoadDesarrollos();
    } // try
     catch (Exception e) {
       Error.mensaje(e);
