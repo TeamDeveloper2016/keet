@@ -50,6 +50,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
@@ -148,12 +149,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
 	@Override
   public void doLoad() {
+		TcManticOrdenesComprasDto ordenCompra= null;
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
-          TcManticOrdenesComprasDto ordenCompra= this.attrs.get("idOrdenCompra").equals(-1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
+          ordenCompra= this.attrs.get("idOrdenCompra").equals(-1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
 					if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
@@ -169,6 +171,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         case MODIFICAR:					
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
+					ordenCompra= (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, notaEntrada.getIdOrdenCompra());
 					this.tipoOrden         = notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
           this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
@@ -178,6 +181,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 					this.toPrepareDisponibles(false);
           break;
       } // switch
+			this.attrs.put("ordenCompra", ordenCompra);
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			//this.doResetDataTable();
 			this.toLoadCatalog();
@@ -303,6 +307,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			  if(!ordenes.isEmpty()) 
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkOrdenCompra(ordenes.get(0));
 			} // if	
+			doLoadDesarrollos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -314,6 +319,33 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // finally
 	}
 
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();			
+			if(this.accion.equals(EAccion.AGREGAR))
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((NotaEntrada)this.getAdminOrden().getOrden()).getIdEmpresa());
+			else
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
+			if(this.accion.equals(EAccion.AGREGAR))
+				this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+			else
+				this.attrs.put("desarrollo", new UISelectEntity((((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo())));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadDesarrollos
+	
 	public void doUpdateProveedor() {
 		try {
 			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
