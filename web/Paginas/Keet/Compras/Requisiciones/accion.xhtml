@@ -77,7 +77,8 @@
 								<p:spacer  style="display: #{keetComprasRequisicionesAccion.attrs.nombreAccion ne 'Agregar'? '': 'none'}"/><p:separator style="display: #{keetComprasRequisicionesAccion.attrs.nombreAccion ne 'Agregar'? '': 'none'}"/>
 								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
 								<p:selectOneMenu id="desarrollo" value="#{keetComprasRequisicionesAccion.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetComprasRequisicionesAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+									<p:ajax event="change" onstart="return janal.bloquear()" process="@this" listener="#{keetComprasRequisicionesAccion.doUpdateCliente}" update="cliente" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetComprasRequisicionesAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombres}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -85,6 +86,8 @@
 										<h:outputText value="#{item.nombres}"/>
 									</p:column>                   
 								</p:selectOneMenu>
+								<p:outputLabel for="cliente" value="Cliente:"/>												
+								<p:inputText id="cliente" value="#{keetComprasRequisicionesAccion.attrs.cliente}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel for="proveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="proveedor" value="#{keetComprasRequisicionesAccion.attrs.proveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{keetComprasRequisicionesAccion.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
@@ -192,6 +195,10 @@
 								</p:column>		
 								<f:facet name="footer">
 									<p:panelGrid columns="2" columnClasses="janal-column-left, janal-column-right">
+										<p:spacer/>
+										<p:outputLabel value="Iva: #{keetComprasRequisicionesAccion.adminOrden.totales.ivaDosDecimales}" styleClass="janal-font-bold"/>
+										<p:spacer/>
+										<p:outputLabel value="Subtotal: #{keetComprasRequisicionesAccion.adminOrden.totales.subTotalDosDecimales}" styleClass="janal-font-bold"/>
 										<p:outputLabel value="Articulos: #{keetComprasRequisicionesAccion.adminOrden.totales.reales}" styleClass="janal-font-bold"/>
 										<p:outputLabel value="Total: #{keetComprasRequisicionesAccion.adminOrden.totales.totalDosDecimales}" styleClass="janal-font-bold"/>
 									</p:panelGrid>              
