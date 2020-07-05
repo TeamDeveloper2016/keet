@@ -79,16 +79,21 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
   } // init
 
 	public void loadDesarrollos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;		
+		List<Columna> columns           = null;
+    Map<String, Object> params      = null;	
+		List<UISelectEntity> desarrollos= null;
+		UISelectEntity desarrollo       = null;
     try {
 			params= new HashMap<>();						        
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
-			this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
+      this.attrs.put("desarrollos", desarrollos);			
+			desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));
+			this.attrs.put("desarrollo", desarrollo);
+			this.attrs.put("cliente", desarrollo.toString("razonSocial"));
     } // try
     catch (Exception e) {
       throw e;
@@ -140,6 +145,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
           this.setAdminOrden(new AdminRequisicion((TicketRequisicion)DaoFactory.getInstance().toEntity(TicketRequisicion.class, "TcManticRequisicionesDto", "detalle", this.attrs)));				
 					this.attrs.put("desarrollo", new UISelectEntity(this.registroRequisicion.getRequisicion().getIdDesarrollo()));
 					this.attrs.put("proveedor", new UISelectEntity(this.registroRequisicion.getRequisicion().getIdProveedor()));
+					doUpdateCliente();
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
@@ -344,4 +350,18 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 		} // if
 		((ArticuloVenta)this.getAdminOrden().getArticulos().get(index)).setAplicaCosto(true);		
 	}	// doCalculate
+	
+	public void doUpdateCliente(){
+		List<UISelectEntity> desarrollos= null;
+		UISelectEntity desarrollo       = null;
+		try {
+			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollos");
+			desarrollo= (UISelectEntity) this.attrs.get("desarrollo");
+			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doUpdateCliente
 } 
