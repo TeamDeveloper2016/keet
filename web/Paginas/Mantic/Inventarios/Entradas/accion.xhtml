@@ -186,8 +186,8 @@
 								<p:outputLabel for="consecutivo" value="No. nota:" style="display: #{manticInventariosEntradasAccion.agregar}"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticInventariosEntradasAccion.agregar}"/>
 								<p:spacer width="1px" style="display: #{manticInventariosEntradasAccion.agregar}"/><p:separator style="display: #{manticInventariosEntradasAccion.agregar}"/>
-								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
-								<p:selectOneMenu id="desarrollo" value="#{manticInventariosEntradasAccion.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
+								<p:outputLabel for="desarrollo" value="Desarrollo:" style="display: #{manticInventariosEntradasAccion.agregar}"/>
+								<p:selectOneMenu id="desarrollo" value="#{manticInventariosEntradasAccion.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true" style="display: #{manticInventariosEntradasAccion.agregar}">
 									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -196,6 +196,8 @@
 										<h:outputText value="#{item.nombres}"/>
 									</p:column>                   
 								</p:selectOneMenu>
+								<p:outputLabel for="cliente" value="Cliente:" style="display: #{manticInventariosEntradasAccion.agregar}"/>												
+								<p:inputText id="cliente" value="#{manticInventariosEntradasAccion.attrs.cliente}" styleClass="janal-wid-100-txt" readonly="true" style="display: #{manticInventariosEntradasAccion.agregar}"/>
 								<p:outputLabel for="idOrdenCompra" value="No. orden:" style="display:#{empty manticInventariosEntradasAccion.titulo? '': 'none'}"/>
 								<p:selectOneMenu id="idOrdenCompra" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikOrdenCompra}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{empty manticInventariosEntradasAccion.titulo? '': 'none'}">
 									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.ordenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
