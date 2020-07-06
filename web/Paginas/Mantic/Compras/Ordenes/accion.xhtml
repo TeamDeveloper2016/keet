@@ -124,7 +124,8 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
-								<p:selectOneMenu id="desarrollo" value="#{manticComprasOrdendesAccion.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="desarrollo" value="#{manticComprasOrdendesAccion.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" onstart="return janal.bloquear()" process="@this" listener="#{manticComprasOrdendesAccion.doUpdateCliente}" update="cliente" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombres}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -133,6 +134,8 @@
 										<h:outputText value="#{item.nombres}"/>
 									</p:column>                   
 								</p:selectOneMenu>
+								<p:outputLabel for="cliente" value="Cliente:"/>												
+								<p:inputText id="cliente" value="#{manticComprasOrdendesAccion.attrs.cliente}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel for="consecutivo" value="No. orden:" style="display: #{manticComprasOrdendesAccion.agregar}" styleClass="recalculo"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticComprasOrdendesAccion.agregar}"/>
 								<p:spacer width="1px" style="display: #{manticComprasOrdendesAccion.agregar}"/><p:separator style="display: #{manticComprasOrdendesAccion.agregar}"/>

@@ -145,7 +145,13 @@
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{row['empresa']}" title="Cliente: #{row.cliente}"/>
-            </p:column>		
+            </p:column>
+						<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombreDesarrollo}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreDesarrollo']}"/>
+            </p:column>	
             <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.almacen}">
               <f:facet name="header">
                 <h:outputText value="Almacen"/>
