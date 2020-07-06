@@ -320,8 +320,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	public void doLoadDesarrollos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns           = null;
+    Map<String, Object> params      = null;
+		List<UISelectEntity> desarrollos= null;
+		UISelectEntity desarrollo       = null;
     try {
 			params= new HashMap<>();			
 			if(this.accion.equals(EAccion.AGREGAR))
@@ -331,11 +333,14 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
+			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
+      this.attrs.put("desarrollos", desarrollos);			
 			if(this.accion.equals(EAccion.AGREGAR))
-				this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+				desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));				
 			else
-				this.attrs.put("desarrollo", new UISelectEntity((((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo())));			
+				desarrollo= new UISelectEntity((((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo()));			
+			this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));			
+			this.attrs.put("cliente", desarrollo.toString("razonSocial"));
     } // try
     catch (Exception e) {
       throw e;
