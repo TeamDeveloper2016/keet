@@ -5060,7 +5060,9 @@
 					tc_mantic_notas_estatus.estatus_asociados,
 					tc_mantic_notas_entradas.registro,
 					count(*) as articulos,
-					sum(if(tc_mantic_articulos.id_imagen is null, 1, 0)) as imagenes
+					sum(if(tc_mantic_articulos.id_imagen is null, 1, 0)) as imagenes,
+					tc_keet_desarrollos.nombres AS nombre_desarrollo,
+					tc_keet_desarrollos.clave AS clave_desarrollo  
         from
           tc_mantic_notas_entradas         
         inner join
@@ -5073,6 +5075,8 @@
           tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus      
         left join
           tc_mantic_ordenes_compras on tc_mantic_notas_entradas.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra     
+				left join
+					tc_keet_desarrollos ON tc_mantic_ordenes_compras.id_desarrollo = tc_keet_desarrollos.id_desarrollo 
         left join
           tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
         inner join
@@ -5095,7 +5099,9 @@
 					tc_mantic_notas_estatus.id_nota_estatus,
 					tc_mantic_notas_estatus.nombre,
 					tc_mantic_notas_estatus.estatus_asociados,
-					tc_mantic_notas_entradas.registro
+					tc_mantic_notas_entradas.registro,
+					tc_keet_desarrollos.nombres,
+					tc_keet_desarrollos.clave
 				{sortOrder}
 			</select>
       <select id="incompleto">
