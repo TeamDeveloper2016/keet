@@ -205,8 +205,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	public void doLoadDesarrollos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;		
+		List<Columna> columns           = null;
+    Map<String, Object> params      = null;		
+		List<UISelectEntity> desarrollos= null;
+		UISelectEntity desarrollo       = null;
     try {
 			params= new HashMap<>();			
 			if(this.accion.equals(EAccion.AGREGAR))
@@ -216,11 +218,14 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
+			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
+      this.attrs.put("desarrollos", desarrollos);			
 			if(this.accion.equals(EAccion.AGREGAR))
-				this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+				desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));				
 			else
-				this.attrs.put("desarrollo", new UISelectEntity(((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo()));			
+				desarrollo= new UISelectEntity(((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());				
+			this.attrs.put("desarrollo", desarrollo);
+			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
     } // try
     catch (Exception e) {
       throw e;
@@ -537,4 +542,17 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		this.doLoadPerdidas();
 	} 
 
+	public void doUpdateCliente(){
+		List<UISelectEntity> desarrollos= null;
+		UISelectEntity desarrollo       = null;
+		try {
+			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollos");
+			desarrollo= (UISelectEntity) this.attrs.get("desarrollo");
+			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doUpdateCliente
 }
