@@ -232,6 +232,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 	private void toEstatusVale() throws Exception {		
 		for(Entity gasto: this.gastos){
 			gasto.put("iconEstatus", new Value("iconEstatus", EEstatusGastos.fromId(gasto.toLong("idGastoEstatus")).getSemaforo()));				
+			gasto.put("iconEstatusDes", new Value("iconEstatus", EEstatusGastos.fromId(gasto.toLong("idGastoEstatus")).getNombre()));				
 		} // for		
 	} // toEstatusManzanaLote	
 	
