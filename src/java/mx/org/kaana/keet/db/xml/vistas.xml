@@ -5367,5 +5367,19 @@
 					tc_mantic_articulos.id_articulo = {idArticulo}
 			</select>
 		</unit>
+		<unit id="VistaTcKeetGastosDto">
+			<select id="row">
+				select      
+          tc_keet_gastos.id_gasto as id_key,
+					tc_keet_gastos.*,
+					tc_keet_cajas_chicas_cierres.id_caja_chica
+        from      
+          tc_keet_gastos
+				inner join 
+					tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre = tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
+        where 
+          {condicion} 
+			</select>
+		</unit>
 	</dml>    
 </process>
