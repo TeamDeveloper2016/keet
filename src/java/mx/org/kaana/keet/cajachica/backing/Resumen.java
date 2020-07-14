@@ -49,6 +49,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			this.attrs.put("idDesarrollo", idDesarrollo);      									
 			this.attrs.put("acciones", false);      									
 			loadCatalogos();						
+			loadCajaChica();
 			doLoad();					
     } // try // try
     catch (Exception e) {
@@ -68,8 +69,9 @@ public class Resumen extends IBaseFilter implements Serializable {
 			this.attrs.put("desarrollo", desarrollo);
 			params.clear();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_gastos.id_gasto=".concat(this.attrs.get("idGasto").toString()));
-			gasto= (Entity) DaoFactory.getInstance().toEntity("TcKeetGastosDto", "row", params);
+			gasto= (Entity) DaoFactory.getInstance().toEntity("VistaTcKeetGastosDto", "row", params);
 			this.attrs.put("gasto", gasto);			
+			this.attrs.put("idCajaChicaCierre", gasto.toString("idCajaChicaCierre"));
 			this.attrs.put("acciones", !gasto.toLong("idGastoEstatus").equals(EEstatusGastos.DISPONIBLE.getKey()));
 		} // try
 		catch (Exception e) {
@@ -80,6 +82,30 @@ public class Resumen extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	} // loadCatalogos				
+	
+	private void loadCajaChica() throws Exception{
+		Map<String, Object>params= null;
+		Entity cajaChica         = null;		
+		List<Columna>campos      = null;
+    try {    			
+			campos= new ArrayList<>();
+			campos.add(new Columna("saldo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("acumulado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			campos.add(new Columna("pendiente", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
+			params= new HashMap<>();
+			params.put("idCajaChicaCierre", this.attrs.get("idCajaChicaCierre"));			
+			cajaChica= (Entity) DaoFactory.getInstance().toEntity("VistaCajaChicaDto", "findCajaChicaCierre", params);
+			UIBackingUtilities.toFormatEntity(cajaChica, campos);
+			this.attrs.put("cajaChica", cajaChica);		
+		} // try
+		catch (Exception e) {			
+			throw e;  
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // loadCajaChica
 	
   @Override
   public void doLoad() {
