@@ -51,7 +51,31 @@
 									<p:outputLabel value="Importe:"/>
 									<p:inputText value="$#{keetCajaChicaResumen.attrs.gasto.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>																										
 								</p:panelGrid>																			
-							</p:panelGrid>										
+							</p:panelGrid>	
+							<div class="lg-pantalla">
+								<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-25, janal-wid-25, janal-wid-25, janal-wid-25">
+									<p:outputLabel value="Inicial:"/>
+									<p:outputLabel value="Por reponer:"/>
+									<p:outputLabel value="Disponible:"/>
+									<p:outputLabel value="Pendiente:"/>										
+									<p:inputText value="#{keetCajaChicaResumen.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
+									<p:inputText value="#{keetCajaChicaResumen.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+									<p:inputText value="#{keetCajaChicaResumen.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+									<p:inputText value="#{keetCajaChicaResumen.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>																		
+								</p:panelGrid>										
+							</div>
+							<div class="xs-pantalla">
+								<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+									<p:outputLabel value="Inicial:"/>
+									<p:inputText value="#{keetCajaChicaResumen.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
+									<p:outputLabel value="Por reponer:"/>
+									<p:inputText value="#{keetCajaChicaResumen.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+									<p:outputLabel value="Disponible:"/>
+									<p:inputText value="#{keetCajaChicaResumen.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+									<p:outputLabel value="Pendiente:"/>										
+									<p:inputText value="#{keetCajaChicaResumen.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>																																																			
+								</p:panelGrid>										
+							</div>
 						</p:tab>																																							
 					</p:accordionPanel>						
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCajaChicaResumen.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaResumen.attrs.seleccionado}" paginator="#{keetCajaChicaResumen.lazyModel.rowCount gt keetCajaChicaResumen.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
