@@ -20,6 +20,11 @@
 				font-weight: bold !important;
 				color: blue;
 			}
+			.manzana-lote-font-orange {
+				font-size: 3.4vw !important;
+				font-weight: bold !important;
+				color: orange;
+			}
 		</style>
 	</ui:define> 
   <ui:define name="contenido">    		
@@ -78,10 +83,10 @@
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
 											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
 											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
-						<p:panel header="#{row.descripcionLote}" style="text-align:center; border: 0px;">							
+						<p:panel header="#{row.descripcionLote} #{row.idTipoVale eq '1' ? '' : '[ESPECIAL]'}" style="text-align:center; border: 0px;">							
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosMaterialesFiltro.doEntrega}">
-									<p:outputLabel value="#{row.consecutivo}" class="manzana-lote-font" style="cursor: pointer;"/>
+									<p:outputLabel value="#{row.consecutivo}" class="#{row.idTipoVale eq '1' ? 'manzana-lote-font' : 'manzana-lote-font-orange'}" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosMaterialesFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">									
@@ -97,7 +102,7 @@
 									<p:commandButton iconPos="left" title="Consultar" styleClass="janal-text-white" accesskey="z" icon="fa fa-search" action="#{keetCatalogosContratosMaterialesFiltro.doConsultar}" style="float:left;margin-top: -8px;">
 										<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosMaterialesFiltro.attrs.seleccionado}"  />
 									</p:commandButton>								
-									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}"/>									
+									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}" title="#{row.iconEstatusDes}"/>									
 								</div>	
 							</f:facet>
 						</p:panel>						
