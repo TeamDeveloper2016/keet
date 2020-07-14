@@ -88,7 +88,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("domicilio", toDomicilio());						
 			estatus= new ArrayList<>();
 			for(EEstatusVales eestatus: EEstatusVales.values()){
-				if(eestatus.equals(EEstatusVales.DISPONIBLE) || eestatus.equals(EEstatusVales.INCOMPLETO))
+				//if(eestatus.equals(EEstatusVales.DISPONIBLE) || eestatus.equals(EEstatusVales.INCOMPLETO))
 					estatus.add(new UISelectItem(eestatus.getKey(), eestatus.name()));
 			} // for
 			estatus.add(0, new UISelectItem(-1L, "SELECCIONE"));
@@ -217,6 +217,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private void toEstatusVale() throws Exception {		
 		for(Entity vale: this.vales){															
 			vale.put("iconEstatus", new Value("iconEstatus", EEstatusVales.fromId(vale.toLong("idValeEstatus")).getSemaforo()));				
+			vale.put("iconEstatusDes", new Value("iconEstatusDes", EEstatusVales.fromId(vale.toLong("idValeEstatus")).getNombre()));				
 		} // for		
 	} // toEstatusManzanaLote	
 	
