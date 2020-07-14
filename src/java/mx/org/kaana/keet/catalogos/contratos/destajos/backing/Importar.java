@@ -271,6 +271,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idEstacion", this.attrs.get("idEstacion"));			
+			params.put("idEstacionEstatus", 4L);			
 			if(((Entity) this.attrs.get("figura")).toLong("tipo").equals(1L)){
 				idXml= "TcKeetContratosDestajosContratistasDto";
 				params.put("idContratoLoteContratista", this.attrs.get("idContratoLoteContratista"));			
