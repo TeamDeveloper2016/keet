@@ -6,8 +6,8 @@ import java.util.Map;
 
 public enum EEstatusGastos {
 	
-	DISPONIBLE ("DISPONIBLE", "circulo-verde"   , "green"),
-	ACEPTADO   ("ACEPTADO"  , "circulo-amarillo", "yellow"),	
+	DISPONIBLE ("DISPONIBLE", "circulo-amarillo", "yellow"),
+	ACEPTADO   ("ACEPTADO"  , "circulo-verde"   , "green"),	
 	CANCELADO  ("CANCELADO" , "circulo-rojo"    , "red"),
 	APLICADO   ("APLICADO"  , "circulo-azul"    , "blue");	
 	
