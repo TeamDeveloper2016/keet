@@ -62,9 +62,7 @@
 										</p:inputText>
                   </p:column>	                  
                   <p:column style="width:35px;text-align: center">
-                    <p:commandButton rendered="#{row.visible}" update="tabla" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosPuntosControlAccion.punto.doEliminarPuntoControl}">
-                      <f:setPropertyActionListener value="#{row}" target="#{keetCatalogosPuntosControlAccion.punto.rowSeleccion}" />
-                    </p:commandButton>
+                    <p:commandButton rendered="#{row.visible}" update="tabla" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosPuntosControlAccion.punto.doEliminarPuntoControl(row)}"/>                                          
                   </p:column>
 									<f:facet name="footer">
                     <p:commandButton actionListener="#{keetCatalogosPuntosControlAccion.punto.doAgregarPuntoControl}" process="@this tabla" update="tabla" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
