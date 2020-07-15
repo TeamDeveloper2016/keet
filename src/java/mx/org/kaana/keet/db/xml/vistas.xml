@@ -264,6 +264,32 @@
 					tc_mantic_proveedores.rfc, tc_mantic_articulos_codigos.codigo				
 			</select>
 		</unit>		
+		<unit id="VistaValesArchivosDto">
+			<select id="importados">
+				select 
+					tc_keet_vales_archivos.id_vale_archivo as id_key,
+					tc_keet_vales_archivos.id_vale,
+					tc_keet_vales_archivos.id_tipo_archivo,
+					tc_keet_vales_archivos.nombre,
+					tc_keet_vales_archivos.archivo,
+					tc_keet_vales_archivos.ruta,
+					tc_keet_vales_archivos.alias,
+					tc_keet_vales_archivos.tamanio,
+					tc_keet_vales_archivos.observaciones,
+					tc_keet_vales_archivos.id_usuario,
+					tc_keet_vales_archivos.registro,
+					tc_keet_vales_archivos.eliminado,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_usuario
+				from 
+					tc_keet_vales_archivos
+				inner join
+					tc_janal_usuarios on tc_keet_vales_archivos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where 
+					tc_keet_vales_archivos.id_vale= {idVale}
+			</select>
+		</unit>
 		<unit id="VistaValesDetallesDto">
 			<select id="resumen">				
 				select
@@ -1534,7 +1560,7 @@
 			</select>
 		</unit>
 		<unit id="VistaIncidenciasDto">
-			<select id="movimientos">
+			<select id="movimientos">				
 				select
 					tc_mantic_incidentes_bitacora.id_incidente_bitacora as id_key,
 					tc_mantic_incidentes.consecutivo,
