@@ -280,6 +280,19 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
   } // doConsultar
 	
+	public String doGaleria() {
+    String regresar= null;    				
+    try {			
+			doEntrega();			
+			regresar= "galeria".concat(Constantes.REDIRECIONAR);										
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+  } // doConsultar
+	
 	public String doCancelar() {
     String regresar          = null;    
 		EOpcionesResidente opcion= null;		
