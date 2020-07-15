@@ -101,7 +101,10 @@
 								<div class="janal-column-right janal-wid-100-txt">
 									<p:commandButton iconPos="left" title="Consultar" styleClass="janal-text-white" accesskey="z" icon="fa fa-search" action="#{keetCatalogosContratosMaterialesFiltro.doConsultar}" style="float:left;margin-top: -8px;">
 										<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosMaterialesFiltro.attrs.seleccionado}"  />
-									</p:commandButton>								
+									</p:commandButton>
+									<p:commandButton iconPos="left" title="Importar" styleClass="janal-text-white" accesskey="z" icon="fa fa-image" action="#{keetCatalogosContratosMaterialesFiltro.doGaleria}" style="float:left;margin-top: -8px;">
+										<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosMaterialesFiltro.attrs.seleccionado}"  />
+									</p:commandButton>
 									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}" title="#{row.iconEstatusDes}"/>									
 								</div>	
 							</f:facet>
