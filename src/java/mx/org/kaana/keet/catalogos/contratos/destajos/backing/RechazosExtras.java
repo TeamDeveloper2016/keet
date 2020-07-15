@@ -10,6 +10,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.libs.pagina.JsfBase;
 
 @Named(value = "keetCatalogosContratosDestajosRechazosExtras")
@@ -29,7 +30,7 @@ public class RechazosExtras extends Rechazos implements Serializable {
 			for(int count=0; count<puntos.size(); count++)
 				this.selecteds[count]= puntos.get(count);
 			if(this.selecteds.length>=1){				
-				transaccion= new Transaccion(loadRevision());
+				transaccion= new Transaccion(loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.ELIMINAR)){
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();

@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Revision;
 import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilterMultiple;
@@ -123,7 +124,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 		Transaccion transaccion= null;		
     try {						
 			if(this.selecteds.length>=1){				
-				transaccion= new Transaccion(loadRevision());
+				transaccion= new Transaccion(loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.REPROCESAR)){
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();

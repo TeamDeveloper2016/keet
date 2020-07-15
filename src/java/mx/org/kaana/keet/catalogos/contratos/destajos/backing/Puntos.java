@@ -20,6 +20,7 @@ import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Revision;
 import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
 import mx.org.kaana.keet.comun.gps.Distance;
 import mx.org.kaana.keet.comun.gps.Point;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Numero;
@@ -106,7 +107,8 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("factor", EFormatoDinamicos.NUMERO_SIN_DECIMALES));                        
-	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRevision", params, columns);			
+	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRevision", params, columns);		
+			this.attrs.put("totalRegistros", DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "puntosRevision", params).size());
 			UIBackingUtilities.resetDataTable();
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));                  
 	    this.lazyModelRechazos= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRevisionRechazos", params, columns);			
@@ -154,7 +156,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 		Transaccion transaccion= null;		
     try {						
 			if(this.selecteds.length>= 1) {				
-				transaccion= new Transaccion(loadRevision());
+				transaccion= new Transaccion(loadRevision(), this.selecteds.length== Integer.valueOf(this.attrs.get("totalRegistros").toString()) ? EEstacionesEstatus.TERMINADO.getKey() : EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.PROCESAR)){
 					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();
