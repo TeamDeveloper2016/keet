@@ -21,15 +21,12 @@ public class Transaccion extends IBaseTnx {
 
 	public Transaccion(RegistroPunto registroPunto) {
 		this.registroPunto = registroPunto;
-	}
-		
+	}		
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar   = false;
-		Siguiente siguiente= null;
+		boolean regresar= true;	
 		try {
-
 			switch(accion){
 				case AGREGAR:			
 					this.registroPunto.getPuntoGrupo().setIdUsuario(JsfBase.getIdUsuario());
@@ -49,8 +46,7 @@ public class Transaccion extends IBaseTnx {
 					} // for
 				  DaoFactory.getInstance().delete(sesion, this.registroPunto.getPuntoGrupo());
 					break;
-			} // switch
-			regresar= true;
+			} // switch			
 		} // try
 		catch (Exception e) {			
 			throw new Exception(e);
@@ -58,11 +54,10 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 
-
 	private void actualizarPuntoControl(Session sesion, PuntoControl item) throws Exception {
 		Value orden                       = null;
 		TcKeetPuntosPaquetesDto paqueteDto= null;
-		Map<String, Object>params         = null;
+		Map<String, Object>params         = null;		
 		try {
 			params= new HashMap<>();
 			switch(item.getAccion()){
@@ -82,7 +77,7 @@ public class Transaccion extends IBaseTnx {
 					params.put("idPuntoControl", item.getKey());
 					paqueteDto= (TcKeetPuntosPaquetesDto)DaoFactory.getInstance().toEntity(TcKeetPuntosPaquetesDto.class,"TcKeetPuntosPaquetesDto","find", params);
 					DaoFactory.getInstance().delete(sesion, paqueteDto);
-					DaoFactory.getInstance().delete(sesion, item);
+					//DaoFactory.getInstance().delete(sesion, item);
 					break;
 			} // switch
 		} // try
@@ -92,6 +87,5 @@ public class Transaccion extends IBaseTnx {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // actualizarConstructivo
-	
+	} // actualizarConstructivo	
 }
