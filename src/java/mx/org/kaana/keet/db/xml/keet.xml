@@ -7,6 +7,25 @@
   </model>
 
   <dml>
+		<unit id="TcKeetProveedoresFamiliasDto">
+      <select id="row">
+        select      
+					tc_keet_proveedores_familias.id_proveedor_familia as id_key,
+          tc_keet_proveedores_familias.*
+        from      
+          tc_keet_proveedores_familias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_proveedores_familias
+        where      
+          id_proveedor = {idProveedor} and id_familia = {idFamilia} and id_proveedor_familia = {idProveedorFamilia}
+      </select>
+    </unit>
     <unit id="TcKeetGastosBitacoraDto">
       <select id="row">
         select      
