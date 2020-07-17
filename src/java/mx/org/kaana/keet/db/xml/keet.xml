@@ -25,6 +25,15 @@
         where      
           id_proveedor = {idProveedor} and id_familia = {idFamilia} and id_proveedor_familia = {idProveedorFamilia}
       </select>
+			<select id="maximo">
+				select      
+          max(id_proveedor_familia) maximo
+        from      
+          tc_keet_proveedores_familias
+			</select>
+			<delete id="rows">
+        delete from tc_keet_proveedores_familias where id_proveedor = {idProveedor}
+      </delete>
     </unit>
     <unit id="TcKeetGastosBitacoraDto">
       <select id="row">
