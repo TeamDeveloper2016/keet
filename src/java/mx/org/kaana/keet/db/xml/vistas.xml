@@ -2286,6 +2286,26 @@
 				where
 				  id_prototipo= {idPrototipo}
 			</select>		
+			<select id="findContrato">
+				select 
+					tc_keet_prototipos.id_prototipo as id_key,
+					tc_keet_prototipos.clave,
+					tc_keet_prototipos.nombre,
+					tc_keet_prototipos.metros2,
+					tc_keet_prototipos.dias_construccion
+				from 
+					tc_keet_prototipos
+				inner join 
+					tc_keet_contratos_lotes on tc_keet_prototipos.id_prototipo = tc_keet_contratos_lotes.id_prototipo
+				where
+					tc_keet_contratos_lotes.id_contrato= {idContrato}
+				group by 
+					tc_keet_prototipos.id_prototipo,
+					tc_keet_prototipos.clave,
+					tc_keet_prototipos.nombre,
+					tc_keet_prototipos.metros2,
+					tc_keet_prototipos.dias_construccion
+			</select>
 		</unit>
     <unit id="VistaProyectoDto">
 			<select id="lazy">
@@ -5406,6 +5426,19 @@
         where 
           {condicion} 
 			</select>
+		</unit>
+		<unit id="VistaFamiliasProveedoresDto">
+			<select id="row">
+        select      
+          tc_keet_familias.id_familia as id_key,
+					tc_keet_familias.*
+        from  
+					tc_keet_proveedores_familias
+				inner join
+          tc_keet_familias on tc_keet_proveedores_familias.id_familia = tc_keet_familias.id_familia
+        where 
+          tc_keet_proveedores_familias.id_proveedor= {idProveedor}
+      </select>
 		</unit>
 	</dml>    
 </process>
