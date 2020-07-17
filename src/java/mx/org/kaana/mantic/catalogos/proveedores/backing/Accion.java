@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFacade;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
@@ -79,6 +78,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   
 	private void loadCollections(){
 		loadEmpresas();
+		loadFamilias();
 		loadDepartamentos();
 		loadBancos();
 		loadTiposProveedores();
@@ -187,6 +187,20 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch				
 	} // loadEmpresas
+	
+	private void loadFamilias(){
+		List<UISelectItem> familias= null;
+		Map<String, Object>params  = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			familias= UISelect.build("TcKeetFamiliasDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("familias", familias);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadFamilias
 	
 	private void loadDepartamentos() {
 		List<UISelectItem> departamentos= null;

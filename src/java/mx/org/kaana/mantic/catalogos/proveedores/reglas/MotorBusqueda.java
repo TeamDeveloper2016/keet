@@ -19,6 +19,7 @@ import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorCondicionPago;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorContactoAgente;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDepartamento;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDomicilio;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorFamilia;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorMaterial;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
@@ -213,6 +214,23 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());  		
 			params.put("codigo", "");
 			regresar= DaoFactory.getInstance().toEntitySet(ProveedorMaterial.class, "VistaProveedoresBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedorbanca
+	
+	public List<ProveedorFamilia> toFamilias() throws Exception{
+		List<ProveedorFamilia> regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_proveedor=" + this.idProveedor);			
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorFamilia.class, "TcKeetProveedoresFamiliasDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
 			throw e;

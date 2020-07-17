@@ -19,12 +19,13 @@ public class ContadoresListas {
 	private Long totalProveedoresDepartamentos;	
 	private Long totalProveedoresArticulos;	
 	private Long totalProveedoresArticuloCliente;	
+	private Long totalProveedoresFamilia;	
 	
 	public ContadoresListas() {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalProveedoresDomicilios, Long totalProveedoresAgentes, Long totalProveedoresTipoContacto, Long totalPersonasTipoContacto, Long totalProveedoresPago, Long totalProveedoresServicio, Long totalProveedoresTransferencia, Long totalProveedoresMateriales, Long totalProveedoresDepartamentos, Long totalProveedoresArticulos, Long totalProveedoresArticuloCliente) {
+	public ContadoresListas(Long totalProveedoresDomicilios, Long totalProveedoresAgentes, Long totalProveedoresTipoContacto, Long totalPersonasTipoContacto, Long totalProveedoresPago, Long totalProveedoresServicio, Long totalProveedoresTransferencia, Long totalProveedoresMateriales, Long totalProveedoresDepartamentos, Long totalProveedoresArticulos, Long totalProveedoresArticuloCliente, Long totalProveedoresFamilia) {
 		this.totalProveedoresDomicilios     = totalProveedoresDomicilios;
 		this.totalProveedoresAgentes        = totalProveedoresAgentes;
 		this.totalProveedoresTipoContacto   = totalProveedoresTipoContacto;
@@ -36,6 +37,7 @@ public class ContadoresListas {
 		this.totalProveedoresDepartamentos  = totalProveedoresDepartamentos;
 		this.totalProveedoresArticulos      = totalProveedoresArticulos;
 		this.totalProveedoresArticuloCliente= totalProveedoresArticuloCliente;
+		this.totalProveedoresFamilia        = totalProveedoresFamilia;
 	} // ContadoresListas
 
 	public Long getTotalProveedoresDomicilios() {
@@ -125,6 +127,14 @@ public class ContadoresListas {
 	public void setTotalProveedoresArticuloCliente(Long totalProveedoresArticuloCliente) {
 		this.totalProveedoresArticuloCliente = totalProveedoresArticuloCliente;
 	}	
+
+	public Long getTotalProveedoresFamilia() {
+		return totalProveedoresFamilia;
+	}
+
+	public void setTotalProveedoresFamilia(Long totalProveedoresFamilia) {
+		this.totalProveedoresFamilia = totalProveedoresFamilia;
+	}	
 	
 	private void init(){
 		try {
@@ -139,6 +149,7 @@ public class ContadoresListas {
 			this.totalProveedoresDepartamentos  = toMaxProveedorDepartamento();
 			this.totalProveedoresArticulos      = toMaxProveedorArticulos();
 			this.totalProveedoresArticuloCliente= toMaxProveedorArticuloCliente();
+			this.totalProveedoresFamilia        = toMaxProveedorFamilia();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);						
@@ -183,6 +194,10 @@ public class ContadoresListas {
 	
 	private Long toMaxProveedorArticuloCliente() throws Exception{		
 		return toMax("TrKeetArticuloProveedorClienteDto");
+	} // toMaxProveedorMaterial	
+	
+	private Long toMaxProveedorFamilia() throws Exception{		
+		return toMax("TcKeetProveedoresFamiliasDto");
 	} // toMaxProveedorMaterial	
 	
 	private Long toMax(String vista) throws Exception{

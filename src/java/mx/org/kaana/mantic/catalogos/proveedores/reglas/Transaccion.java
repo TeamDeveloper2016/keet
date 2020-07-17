@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetProveedoresDepartamentosDto;
+import mx.org.kaana.keet.db.dto.TcKeetProveedoresFamiliasDto;
 import mx.org.kaana.keet.db.dto.TcKeetProveedoresMaterialesDto;
 import mx.org.kaana.keet.db.dto.TrKeetArticuloProveedorClienteDto;
 import mx.org.kaana.libs.formato.Cadena;
@@ -30,6 +31,7 @@ import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorCondicionPago;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorContactoAgente;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDepartamento;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDomicilio;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorFamilia;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorMaterial;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.RegistroProveedor;
@@ -109,12 +111,14 @@ public class Transaccion extends IBaseTnx {
 										if(registraProveedoresDepartamentos(sesion, idProveedor)){
 											if(registraProveedoresServicios(sesion, idProveedor)){
 												if(registraProveedoresTransferencia(sesion, idProveedor)){
-													if(registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
-														this.registroProveedor.getPortal().setIdProveedor(idProveedor);
-														if(this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina()) && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia()))
-															regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;					
-														else
-															regresar= true;
+													if(registraProveedoresFamilias(sesion, idProveedor)){
+														if(registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
+															this.registroProveedor.getPortal().setIdProveedor(idProveedor);
+															if(this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina()) && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia()))
+																regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;					
+															else
+																regresar= true;
+														} // if
 													} // if
 												} // if
 											} // if
@@ -148,18 +152,20 @@ public class Transaccion extends IBaseTnx {
 										if(registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
 											if(registraProveedoresServicios(sesion, idProveedor)){
 												if(registraProveedoresTransferencia(sesion, idProveedor)){
-													if(this.registroProveedor.getPortal().isValid()){
-														if(DaoFactory.getInstance().update(sesion, this.registroProveedor.getPortal())>= 0L){
+													if(registraProveedoresFamilias(sesion, idProveedor)){
+														if(this.registroProveedor.getPortal().isValid()){
+															if(DaoFactory.getInstance().update(sesion, this.registroProveedor.getPortal())>= 0L){
+																regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
+															} // if
+														} // if
+														else{										
 															regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
-														} // if
+															if(regresar && this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina())  && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia())){
+																this.registroProveedor.getPortal().setIdProveedor(idProveedor);
+																regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;
+															} // if
+														} // else
 													} // if
-													else{										
-														regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
-														if(regresar && this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina())  && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia())){
-															this.registroProveedor.getPortal().setIdProveedor(idProveedor);
-															regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;
-														} // if
-													} // else
 												} // if
 											} // if
 										} // if
@@ -189,8 +195,10 @@ public class Transaccion extends IBaseTnx {
 						if (DaoFactory.getInstance().deleteAll(sesion, TrKeetArticuloProveedorClienteDto.class, params) > -1L) {
 							if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorAgenteDto.class, params) > -1L) {
 								if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorTipoContactoDto.class, params) > -1L) {
-									if(DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorPagoDto.class, params)> -1L)
-										regresar = DaoFactory.getInstance().delete(sesion, TcManticProveedoresDto.class, this.registroProveedor.getIdProveedor()) >= 1L;
+									if(DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorPagoDto.class, params)> -1L){
+										if(DaoFactory.getInstance().deleteAll(sesion, TcKeetProveedoresFamiliasDto.class, params)> -1L)
+											regresar = DaoFactory.getInstance().delete(sesion, TcManticProveedoresDto.class, this.registroProveedor.getIdProveedor()) >= 1L;
+									} // if
 								} // if
 							} // if
 						} // if
@@ -761,4 +769,39 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toDomicilio
+	
+	private boolean registraProveedoresFamilias(Session sesion, Long idProveedor) throws Exception {
+    TcKeetProveedoresFamiliasDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (ProveedorFamilia proveedorFamilia : this.registroProveedor.getProveedoresFamilias()) {				
+				proveedorFamilia.setIdProveedor(idProveedor);
+				proveedorFamilia.setIdUsuario(JsfBase.getIdUsuario());
+				dto = (TcKeetProveedoresFamiliasDto) proveedorFamilia;
+				sqlAccion = proveedorFamilia.getSqlAccion();
+				switch (sqlAccion) {
+					case INSERT:
+						dto.setIdProveedorFamilia(-1L);
+						validate = registrar(sesion, dto);
+						break;
+					case UPDATE:
+						validate = actualizar(sesion, dto);
+						break;
+				} // switch								
+        if (validate) 
+          count++;        
+      } // for		
+      regresar = count == this.registroProveedor.getProveedoresFamilias().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar la familia de articulos, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresFamilias
 }
