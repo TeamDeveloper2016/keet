@@ -59,6 +59,7 @@
 				'articuloo' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
 				'articuloCliente' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
 				'clientee' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'familia' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general'},
 				'precioConvenio' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
 				'precioAnterior' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'}
       };      
@@ -397,7 +398,7 @@
 								</p:panelGrid>	
 							</p:fieldset>
 						</p:tab>
-						<p:tab title="Materiales" >	
+						<p:tab title="Materiales" rendered="false">	
 							<p:commandButton id="replace" actionListener="#{manticCatalogosProveedoresAccion.doAgregarProveedorMaterial}" process="@this" update="panelTablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();clearMateriales();" style="display:none"/>
 							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosProveedoresAccion.attrs.custom}" completeMethod="#{manticCatalogosProveedoresAccion.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<p:ajax event="itemSelect" oncomplete="$('#contenedorGrupos\\:replace').click();"/>
@@ -503,6 +504,25 @@
                   </p:column>
                   <f:facet name="footer">
                     <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorArticuloCliente}" process="@this tablaArticulosCliente" update="tablaArticulosCliente" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+                  </f:facet>
+                </p:dataTable>	
+              </p:panelGrid>	
+            </p:tab>
+						<p:tab id="tabFamilias" title="Familias">
+              <p:panelGrid id="panelFamilias" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+                <p:dataTable id="tablaFamilias" rowIndexVar="index" var="familia" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresFamilias}" rows="6" paginator="false" reflow="true" rowKey="#{familia.key}" emptyMessage=" " styleClass="paginated">																					                  
+									<p:column headerText="Familia" styleClass="familia">										
+                    <p:selectOneMenu id="familia" value="#{familia.idFamilia}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!familia.nuevo}" onblur="simpleProcess();">
+                      <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.familias}"/>											
+                    </p:selectOneMenu> 																					
+                  </p:column>	                  									
+                  <p:column style="width:32px;text-align: center">
+                    <p:commandButton update="tablaFamilias" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarFamilia}" oncomplete="janal.refresh();">
+                      <f:setPropertyActionListener value="#{familia}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorFamilia}" />
+                    </p:commandButton>
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarFamilia}" process="@this tablaFamilias" update="tablaFamilias" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
                   </f:facet>
                 </p:dataTable>	
               </p:panelGrid>	
