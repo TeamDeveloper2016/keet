@@ -3,6 +3,7 @@ package mx.org.kaana.keet.compras.requisiciones.backing;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +24,13 @@ import mx.org.kaana.keet.compras.requisiciones.reglas.Transaccion;
 import mx.org.kaana.keet.enums.ETiposPrecios;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.requisiciones.beans.TicketRequisicion;
 import mx.org.kaana.mantic.enums.ETipoVenta;
@@ -67,7 +71,8 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 			this.attrs.put("nombreEmpresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			this.attrs.put("solicita", JsfBase.getAutentifica().getPersona().getNombreCompleto());
 			this.attrs.put("decuentoAutorizadoActivo", false);
-			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);			
+			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
+			this.attrs.put("familiasSeleccion", new String[]{});
 			this.loadDesarrollos();
 			this.loadProveedores();
 			this.doLoad();
@@ -126,6 +131,26 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
     } // finally
   } // loadProveedores
 	
+	public void doLoadFamilias(){
+		UISelectEntity proveedor   = null;
+		List<UISelectItem> familias= null;
+		Map<String, Object>params  = null;
+		try {
+			proveedor= (UISelectEntity) this.attrs.get("proveedor");
+			params= new HashMap<>();
+			params.put("idProveedor", proveedor.getKey());
+			familias= UISelect.build("VistaFamiliasProveedoresDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("familias", familias);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadFamilias
+	
 	@Override
   public void doLoad() {
     EAccion eaccion= null;
@@ -143,9 +168,13 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
         case CONSULTAR:	
 					this.registroRequisicion= new RegistroRequisicion(Long.valueOf(this.attrs.get("idRequisicion").toString()));					
           this.setAdminOrden(new AdminRequisicion((TicketRequisicion)DaoFactory.getInstance().toEntity(TicketRequisicion.class, "TcManticRequisicionesDto", "detalle", this.attrs)));				
-					this.attrs.put("desarrollo", new UISelectEntity(this.registroRequisicion.getRequisicion().getIdDesarrollo()));
+					this.attrs.put("desarrollo", new UISelectEntity(this.registroRequisicion.getRequisicion().getIdDesarrollo()));										
 					this.attrs.put("proveedor", new UISelectEntity(this.registroRequisicion.getRequisicion().getIdProveedor()));
+					doLoadFamilias();					
 					doUpdateCliente();
+					this.attrs.put("contrato", new UISelectEntity(this.registroRequisicion.getRequisicion().getIdContrato()));
+					doLoadPrototipos();
+					this.attrs.put("prototipo", new UISelectEntity(this.registroRequisicion.getRequisicion().getIdPrototipo()));					
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
@@ -175,6 +204,8 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 			this.registroRequisicion.getRequisicion().setIdDesarrollo(desarrollo.getKey());			
 			this.registroRequisicion.getRequisicion().setIdEmpresa(desarrollo.toLong("idEmpresa"));
 			this.registroRequisicion.getRequisicion().setIdProveedor(((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			this.registroRequisicion.getRequisicion().setIdContrato(((UISelectEntity)this.attrs.get("contrato")).getKey());
+			this.registroRequisicion.getRequisicion().setIdPrototipo(((UISelectEntity)this.attrs.get("prototipo")).getKey());
 			transaccion = new Transaccion(this.registroRequisicion, this.getAdminOrden().getArticulos());
 			toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
@@ -271,6 +302,10 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 	
 	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+		toMoveData(articulo, index, toClaveMateriales());
+	} // toModeveData
+		
+	protected void toMoveData(UISelectEntity articulo, Integer index, String claveMaterial) throws Exception {
 		ArticuloVenta temporal= (ArticuloVenta) getAdminOrden().getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();
 		try {
@@ -320,7 +355,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 					UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
 				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
-				((AdminRequisicion)getAdminOrden()).loadListaPrecios();
+				((AdminRequisicion)getAdminOrden()).loadListaPrecios(claveMaterial);
 				getAdminOrden().toCalculate();
 			} // if	
 			else
@@ -355,6 +390,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 		List<UISelectEntity> desarrollos= null;
 		UISelectEntity desarrollo       = null;
 		try {
+			loadContratos();
 			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollos");
 			desarrollo= (UISelectEntity) this.attrs.get("desarrollo");
 			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
@@ -364,4 +400,140 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 			Error.mensaje(e);			
 		} // catch		
 	} // doUpdateCliente
+	
+	private void loadContratos(){
+		List<UISelectEntity> contratos= null;
+		Map<String, Object> params    = null;
+		try {
+			params= new HashMap<>();
+			params.put("idDesarrollo", ((UISelectEntity) this.attrs.get("desarrollo")).getKey());
+			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "etapa");
+			this.attrs.put("contratos", contratos);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // loadContratos
+	
+	public void doLoadPrototipos(){
+		List<UISelectEntity>prototipos= null;
+		Map<String, Object>params     = null;
+		UISelectEntity contrato       = null;
+		try {
+			contrato= (UISelectEntity) this.attrs.get("contrato");
+			params= new HashMap<>();
+			params.put("idContrato", contrato.getKey());
+			prototipos= UIEntity.seleccione("VistaPrototiposDto", "findContrato", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "nombre");
+			this.attrs.put("prototipos", prototipos);
+			this.attrs.put("prototipo", UIBackingUtilities.toFirstKeySelectEntity(prototipos));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doLoadPrototipos
+	
+	public void doLoadArticulos(){
+		UISelectEntity prototipo = null;		
+		UISelectEntity proveedor = null;		
+		String clave             = null;
+		List<Entity>articulos    = null;
+		Map<String, Object>params= null;
+		String[] arrayFamilias   = null;
+		String familias          = "";
+		int count                = 0;
+		try {
+			prototipo= (UISelectEntity) this.attrs.get("prototipo");			
+			proveedor= (UISelectEntity) this.attrs.get("proveedor");			
+			arrayFamilias= (String[]) this.attrs.get("familiasSeleccion");
+			if(prototipo.getKey()>= 1){
+				if(proveedor.getKey()>= 1){
+					if(arrayFamilias.length>= 1){
+						clave= toClaveMateriales();
+						params= new HashMap<>();
+						params.put("clave", clave);						
+						for(String recordFamilia: arrayFamilias)
+							familias= familias.concat(recordFamilia).concat(",");
+						params.put("familias", familias.substring(0, familias.length()-1));				
+						params.put("idProveedor", proveedor.getKey());				
+						articulos= DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", "materialesClave", params, Constantes.SQL_TODOS_REGISTROS);
+						if(!articulos.isEmpty()){
+							cleanArticulos();
+							for(Entity art: articulos){
+								toMoveData(new UISelectEntity(art), count, clave);
+								count++;
+							} // for
+						} // if
+						else
+							cleanArticulos();
+					} // if
+					else
+						cleanArticulos();											
+				} // if
+				else{
+					cleanArticulos();
+					JsfBase.addMessage("Es necesario seleccionar un proveedor.");
+				} // else
+			} // if
+			else{
+				cleanArticulos();
+				JsfBase.addMessage("Es necesario seleccionar un prototipo.");				
+			} // else
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		finally {			
+			Methods.clean(params);
+		} // finally
+	} // doLoadArticulos	
+	
+	private void cleanArticulos() throws Exception{
+		this.getAdminOrden().setArticulos(new ArrayList<>());
+		this.getAdminOrden().getArticulos().add(new ArticuloVenta(-1L));		
+		this.getAdminOrden().toCalculate();
+		this.getAdminOrden().cleanPrecioDescuentoArticulo(); 
+	} // cleanArticulos
+	
+	private String toClaveMateriales() throws Exception{
+		StringBuilder regresar        = null;
+		UISelectEntity contrato       = null;
+		List<UISelectEntity> contratos= null;
+		try {
+			contratos= (List<UISelectEntity>) this.attrs.get("contratos");
+			contrato= (UISelectEntity) this.attrs.get("contrato");
+			regresar= new StringBuilder();
+			regresar.append(Cadena.rellenar(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), 3, '0', true));
+			regresar.append(Fecha.getAnioActual());
+			regresar.append(Cadena.rellenar(contratos.get(contratos.indexOf(contrato)).toString("orden"), 3, '0', true));
+			regresar.append(toOrdenContratoLote(contrato.getKey()));
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch
+		return regresar.toString();
+	} // toClaveMateriales
+	
+	private String toOrdenContratoLote(Long idContrato) throws Exception{
+		String regresar           = null;
+		Map<String, Object> params= null;
+		Entity contratoLote       = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_contrato=" + idContrato + " and id_prototipo=" + ((UISelectEntity) this.attrs.get("prototipo")).getKey());
+			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
+			regresar= Cadena.rellenar(contratoLote.toString("orden"), 3, '0', true);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toOrdenContratoLote
 } 

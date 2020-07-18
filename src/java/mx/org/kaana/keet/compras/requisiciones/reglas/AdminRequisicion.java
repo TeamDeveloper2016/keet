@@ -11,8 +11,12 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDto;
 import mx.org.kaana.keet.enums.ETiposPrecios;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -47,7 +51,7 @@ public final class AdminRequisicion extends IAdminArticulos implements Serializa
 		this.orden  = orden;
 		if(this.orden.isValid()) {
   	  this.setArticulos((List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "TcManticRequisicionesDetallesDto", "detalle", orden.toMap()));      
-			loadListaPrecios();
+			loadListaPrecios(toClaveMateriales());
 			asignaPrecioSeleccionado();
 		}	// if
 		else	{
@@ -62,13 +66,46 @@ public final class AdminRequisicion extends IAdminArticulos implements Serializa
 		cleanPrecioDescuentoArticulo();
 	} // AdminRequisicion
 
-	public void loadListaPrecios(){
+	private String toClaveMateriales() throws Exception{
+		StringBuilder regresar     = null;
+		TcKeetContratosDto contrato= null;
+		try {			
+			contrato= (TcKeetContratosDto) DaoFactory.getInstance().findById(TcKeetContratosDto.class, this.orden.getIdContrato());
+			regresar= new StringBuilder();
+			regresar.append(Cadena.rellenar(this.orden.getIdEmpresa().toString(), 3, '0', true));
+			regresar.append(Fecha.getAnioActual());
+			regresar.append(Cadena.rellenar(contrato.getOrden().toString(), 3, '0', true));
+			regresar.append(toOrdenContratoLote());
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch
+		return regresar.toString();
+	} // toClaveMateriales
+	
+	private String toOrdenContratoLote() throws Exception{
+		String regresar           = null;
+		Map<String, Object> params= null;
+		Entity contratoLote       = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_contrato=" + this.orden.getIdContrato() + " and id_prototipo=" + this.orden.getIdPrototipo());
+			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
+			regresar= Cadena.rellenar(contratoLote.toString("orden"), 3, '0', true);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toOrdenContratoLote
+	
+	public void loadListaPrecios(String clave){
 		ArticuloVenta articuloVenta= null;
 		try {
 			for(Articulo articulo: this.getArticulos()){
 				if(articulo.isValid()){
 					articuloVenta= (ArticuloVenta) articulo;
-					articuloVenta.setListaPrecios(preciosArticulo(articuloVenta.getIdArticulo()));
+					articuloVenta.setListaPrecios(preciosArticulo(articuloVenta.getIdArticulo(), clave));
 					articuloVenta.setPrecioLista(UIBackingUtilities.toFirstKeySelectEntity(articuloVenta.getListaPrecios()));
 				} // if
 			} // for
@@ -78,7 +115,7 @@ public final class AdminRequisicion extends IAdminArticulos implements Serializa
 		} // catch		
 	} // loadListaPrecios
 	
-	private List<UISelectEntity> preciosArticulo(Long idArticulo){
+	private List<UISelectEntity> preciosArticulo(Long idArticulo, String clave){
 		List<UISelectEntity> regresar= null;
 		List<Columna> campos         = null;
 		Entity articulo              = null;
@@ -87,20 +124,23 @@ public final class AdminRequisicion extends IAdminArticulos implements Serializa
 			params= new HashMap<>();
 			params.put("idArticulo", idArticulo);
 			params.put("idProveedor", this.orden.getIdProveedor());
+			params.put("clave", clave);
 			articulo= (Entity) DaoFactory.getInstance().toEntity("VistaRequisicionesDesarrolloDto", "preciosArticulo", params);
 			regresar= new ArrayList<>();
 			if(articulo!= null){
-				if(articulo.toDouble("precioCompra")> 0D)
-					regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.COMPRA.getKey(), "Ultima compra", articulo.toDouble("precioCompra"))));				
-				regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.LIBRE.getKey(), "Libre", 0D)));
 				if(articulo.toDouble("precioConvenio")> 0D)
 					regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.CONVENIO.getKey(), "Convenio", articulo.toDouble("precioConvenio"))));
+				if(articulo.toDouble("precioPresupuesto")> 0D)
+					regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.PRESUPUESTO.getKey(), "Presupuesto", articulo.toDouble("precioPresupuesto"))));
+				if(articulo.toDouble("precioCompra")> 0D)
+					regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.COMPRA.getKey(), "Ultima compra", articulo.toDouble("precioCompra"))));								
 				if(articulo.toDouble("precioBase")> 0D)
 					regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.BASE.getKey(), "Base", articulo.toDouble("precioBase"))));
 				if(articulo.toDouble("precioLista")> 0D)
 					regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.LISTA.getKey(), "Lista", articulo.toDouble("precioLista"))));
 				if(articulo.toDouble("precioEspecial")> 0D)
 					regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.ESPECIAL.getKey(), "Especial", articulo.toDouble("precioEspecial"))));
+				regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.LIBRE.getKey(), "Libre", 0D)));				
 			} // if
 			else
 				regresar.add(new UISelectEntity(toItemArticulo(ETiposPrecios.LIBRE.getKey(), "Libre", 0D)));			

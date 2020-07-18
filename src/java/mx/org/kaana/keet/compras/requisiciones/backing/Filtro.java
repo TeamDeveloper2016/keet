@@ -66,7 +66,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion"));
-      this.attrs.put("sortOrder", "order by tc_mantic_requisiciones.id_empresa, tc_mantic_requisiciones.ejercicio, tc_mantic_requisiciones.orden");
+      this.attrs.put("sortOrder", "order by tc_mantic_requisiciones.consecutivo desc");
 			loadCatalog();      
 			if(!Cadena.isVacio(this.attrs.get("idRequisicion")))
 				doLoad();
