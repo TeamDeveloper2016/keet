@@ -6,12 +6,13 @@ import java.util.Map;
 
 public enum ETiposPrecios {
 	
-	CONVENIO ("CONVENIO"),
-	BASE     ("BASE"),
-	LISTA    ("LISTA"),
-	ESPECIAL ("ESPECIAL"),
-	COMPRA   ("COMPRA"),
-	LIBRE    ("LIBRE");
+	CONVENIO    ("CONVENIO"),	
+	BASE        ("BASE"),
+	LISTA       ("LISTA"),
+	ESPECIAL    ("ESPECIAL"),
+	COMPRA      ("COMPRA"),
+	LIBRE       ("LIBRE"),
+	PRESUPUESTO ("PRESUPUESTO");
 	
 	private static final Map<Long, ETiposPrecios> lookup= new HashMap<>();		
 	private String nombre;	
