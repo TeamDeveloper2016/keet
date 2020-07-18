@@ -51,6 +51,8 @@ public class MotorBusqueda implements Serializable{
 			regresar.setOrden(dto.getOrden());
 			regresar.setEntrega(dto.getFechaEntregada());
 			regresar.setPedido(dto.getFechaPedido());			
+			regresar.setIdContrato(dto.getIdContrato());			
+			regresar.setIdPrototipo(dto.getIdPrototipo());			
 		} // try
 		catch (Exception e) {			
 			throw e;
