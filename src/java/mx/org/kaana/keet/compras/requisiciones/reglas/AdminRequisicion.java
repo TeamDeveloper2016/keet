@@ -218,7 +218,7 @@ public final class AdminRequisicion extends IAdminArticulos implements Serializa
 	
 	@Override
 	public Long getIdSinIva() {
-		return 1L;
+		return 2L;
 	}
 	
 	@Override
