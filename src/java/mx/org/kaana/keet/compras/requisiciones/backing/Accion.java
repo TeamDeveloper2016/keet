@@ -302,7 +302,24 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 	
 	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
-		toMoveData(articulo, index, toClaveMateriales());
+		if(this.attrs.get("prototipo")!= null){
+			if(this.attrs.get("proveedor")!= null){
+				UISelectEntity prototipo= (UISelectEntity) this.attrs.get("prototipo");			
+				UISelectEntity	proveedor= (UISelectEntity) this.attrs.get("proveedor");							
+				if(prototipo.getKey()>= 1){
+					if(proveedor.getKey()>= 1)
+						toMoveData(articulo, index, toClaveMateriales());																			
+					else				
+						JsfBase.addMessage("Es necesario seleccionar un proveedor.");			
+				} // if
+				else			
+					JsfBase.addMessage("Es necesario seleccionar un prototipo.");					
+			} // if
+			else			
+				JsfBase.addMessage("Es necesario seleccionar un proveedor.");					
+		} // if
+		else			
+			JsfBase.addMessage("Es necesario seleccionar un prototipo.");					
 	} // toModeveData
 		
 	protected void toMoveData(UISelectEntity articulo, Integer index, String claveMaterial) throws Exception {
