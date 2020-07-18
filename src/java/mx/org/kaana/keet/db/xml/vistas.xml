@@ -4310,6 +4310,71 @@
 				order by 
 				  principal.clave
 			</select>			
+			<select id="materialesClave">
+				select 
+					principal.*,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo and tc_mantic_articulos_codigos.id_principal= {idProveedor}) AS propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor}) AS codigo				  
+				from(
+					select
+						tc_mantic_articulos.id_articulo AS id_key,        
+						tc_mantic_articulos.id_articulo,
+						tc_keet_materiales.nivel,        
+						tc_keet_materiales.id_empaque_unidad_medida,        						
+						tc_keet_materiales.nombre,
+						1 cantidad,        
+						tc_mantic_articulos.precio,
+						tc_mantic_unidades_medidas.nombre unidad_medida,
+						'   ' AS origen,
+						tc_mantic_articulos.descripcion,				  
+						tc_mantic_articulos.precio AS original,
+						tc_mantic_articulos.menudeo,
+						tc_mantic_articulos.medio_mayoreo,
+						tc_mantic_articulos.mayoreo,
+						tc_mantic_articulos.sat,
+						tc_mantic_articulos.limite_medio_mayoreo,
+						tc_mantic_articulos.limite_mayoreo,
+						tc_mantic_articulos.iva,
+						tc_mantic_articulos.id_redondear,
+						CONCAT(IFNULL(tc_mantic_articulos.descuento, '0'), ',', IFNULL(tc_mantic_articulos.extra, '0')) AS porcentajes
+					from
+						tc_keet_materiales
+					inner join 
+						tc_mantic_articulos on tc_keet_materiales.codigo = tc_mantic_articulos.codigo
+					inner join
+						tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+					inner join 
+						tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+					inner join 
+						tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+					where
+						tc_keet_materiales.clave like '{clave}%'				
+					and 
+						tc_keet_materiales.nivel=7
+					and 
+						tc_mantic_articulos.id_familia in ({familias})				
+					group by 
+						tc_mantic_articulos.id_articulo,
+						tc_keet_materiales.nivel,        
+						tc_keet_materiales.id_empaque_unidad_medida,        						
+						tc_keet_materiales.nombre,					
+						tc_mantic_articulos.precio,
+						tc_mantic_unidades_medidas.nombre,					
+						tc_mantic_articulos.descripcion,
+						tc_mantic_articulos.precio,				  
+						tc_mantic_articulos.menudeo,
+						tc_mantic_articulos.medio_mayoreo,
+						tc_mantic_articulos.mayoreo,
+						tc_mantic_articulos.sat,
+						tc_mantic_articulos.limite_medio_mayoreo,
+						tc_mantic_articulos.limite_mayoreo,
+						tc_mantic_articulos.iva,
+						tc_mantic_articulos.id_redondear,
+						concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0'))
+				) principal
+				order by 
+				  nombre
+			</select>			
 			<select id="materiales">
 				select
 					tc_mantic_articulos.id_articulo as id_key,
@@ -5402,9 +5467,33 @@
 					ifnull(tr_keet_articulo_proveedor_cliente.precio_convenio, 0) precio_convenio,
 					ifnull(tc_keet_articulos_proveedores.precio_base, 0) precio_base,
 					ifnull(tc_keet_articulos_proveedores.precio_lista, 0) precio_lista,
-					ifnull(tc_keet_articulos_proveedores.precio_especial, 0) precio_especial
+					ifnull(tc_keet_articulos_proveedores.precio_especial, 0) precio_especial,
+					ifnull(presupuesto.presupuesto, 0) precio_presupuesto
 				from
 					tc_mantic_articulos
+				left join 
+				  (								
+						select						        						
+							tc_keet_materiales.codigo,
+							(tc_keet_materiales.costo / tc_keet_materiales.cantidad) presupuesto						
+						from
+							tc_keet_materiales
+						inner join 
+							tc_mantic_articulos on tc_keet_materiales.codigo = tc_mantic_articulos.codigo
+						inner join
+							tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+						inner join 
+							tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+						inner join 
+							tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+						where
+							tc_keet_materiales.clave like '{clave}%'				
+						and 
+							tc_keet_materiales.nivel=7					
+						group by 
+							tc_keet_materiales.codigo,
+							(tc_keet_materiales.costo / tc_keet_materiales.cantidad) 
+					) presupuesto on presupuesto.codigo = tc_mantic_articulos.codigo
 				left join
 					tr_keet_articulo_proveedor_cliente on tc_mantic_articulos.id_articulo = tr_keet_articulo_proveedor_cliente.id_articulo and tr_keet_articulo_proveedor_cliente.id_proveedor= {idProveedor}
 				left join
