@@ -65,8 +65,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.fechaFin= LocalDate.of(Fecha.getAnioActual(), Fecha.getMesActual()+1, 15);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion"));
-      this.attrs.put("sortOrder", "order by tc_mantic_requisiciones.consecutivo desc");
+      this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion"));      
 			loadCatalog();      
 			if(!Cadena.isVacio(this.attrs.get("idRequisicion")))
 				doLoad();
@@ -261,6 +260,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
+		regresar.put("sortOrder", "order by tc_mantic_requisiciones.consecutivo desc");
 		StringBuilder sb= new StringBuilder();
 		sb.append("(date_format(tc_mantic_requisiciones.fecha_pedido, '%Y%m%d')>= date_format('").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaInicio)).append("', '%Y%m%d')) and ");					
 		sb.append("(date_format(tc_mantic_requisiciones.fecha_entregada, '%Y%m%d')<= date_format('").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaFin)).append("', '%Y%m%d')) and ");							
