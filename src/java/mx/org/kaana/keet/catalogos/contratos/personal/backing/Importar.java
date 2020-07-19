@@ -191,11 +191,11 @@ public class Importar extends IBaseImportar implements Serializable {
 	
 	private DocumentoIncidencia toIncidenciaArchivo(Long idArchivo){		
 		UISelectEntity incidencia= (UISelectEntity)this.attrs.get("incidencia");
-		List<UISelectEntity> especialidades= (List<UISelectEntity>)this.attrs.get("incidencias");
-		if(incidencia!= null && especialidades.indexOf(incidencia)>= 0)
-			incidencia= especialidades.get(especialidades.indexOf(incidencia));
+		List<UISelectEntity> incidencias= (List<UISelectEntity>)this.attrs.get("incidencias");
+		if(incidencia!= null && incidencias.indexOf(incidencia)>= 0)
+			incidencia= incidencias.get(incidencias.indexOf(incidencia));
 		else
-			incidencia= especialidades.get(0);
+			incidencia= incidencias.get(0);
 		DocumentoIncidencia regresar= null;		
 		regresar= new DocumentoIncidencia(
 			idArchivo, // idAchivo
@@ -209,8 +209,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			Configuracion.getInstance().getPropiedadSistemaServidor("incidencias").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // alias
 			-1L, // idIncidenteArchivo 
 			this.getFile().getOriginal(), // nombre
-			incidencia.toDate("vigenciaInicio"), // fechaInicio
-			incidencia.toDate("vigenciaFin"), // fechaFin	
+			incidencia.toDate("inicio"), // fechaInicio
+			incidencia.toDate("termino"), // fechaFin	
 			incidencia.toLong("ejercicio"), // ejercicio
 			incidencia.toString("consecutivo"), // consecutivo
 			incidencia.toString("estatus"), // estatus
