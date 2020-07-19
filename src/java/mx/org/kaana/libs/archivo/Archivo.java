@@ -8,6 +8,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Blob;
 import java.util.Calendar;
+import java.util.Iterator;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -195,19 +201,36 @@ public final class Archivo {
     return regresar.toString();    
   }
 
-	public static void toWriteFile(File result, InputStream inputStream) throws Exception {
-		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
-		int bulk;
-		while(true) {
-			bulk= inputStream.read(buffer);
-			if (bulk < 0) 
-				break;        
-			fileOutputStream.write(buffer, 0, bulk);
-			fileOutputStream.flush();
-		} // while
-		fileOutputStream.close();
-		inputStream.close();
-	} // toWriteFile
-	
+	public static void toWriteFile(File result, InputStream is) throws Exception {
+		String format= (result.getAbsolutePath().substring(result.getAbsolutePath().indexOf(".")+1, result.getAbsolutePath().length())).toLowerCase();
+		boolean isImage= Constantes.PATRON_IMAGE_COMPRESS.contains(format);
+		if(isImage){
+			OutputStream os = new FileOutputStream(result);
+			Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(format);
+			ImageWriter writer = (ImageWriter) writers.next();
+			ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+			writer.setOutput(ios);
+			ImageWriteParam param = writer.getDefaultWriteParam();
+			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			param.setCompressionQuality(0.05f);
+			writer.write(null, new IIOImage(ImageIO.read(is), null, null), param);
+			os.close();
+			ios.close();
+			writer.dispose();
+		} // if
+		else{
+			FileOutputStream fos= new FileOutputStream(result);
+			byte[] buffer       = new byte[Constantes.BUFFER_SIZE];
+			int bulk;
+			while(true) {
+				bulk= is.read(buffer);
+				if (bulk < 0) 
+					break;        
+				fos.write(buffer, 0, bulk);
+				fos.flush();
+			} // while
+			fos.close();
+			is.close();
+		} // else
+	} // toWriteFile	
 }
