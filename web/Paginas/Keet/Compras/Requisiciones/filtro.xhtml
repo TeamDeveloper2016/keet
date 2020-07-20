@@ -191,8 +191,9 @@
               </f:facet>
               <h:outputText value="#{filtro['fechaEntregada']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-38">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
 							<p:commandButton process="@this tabla" icon="fa fa-file-excel-o" title="Exportar requsición" style="float:left;" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-not-lock">
+								<f:setPropertyActionListener value="#{filtro}" target="#{keetComprasRequisicionesFiltro.attrs.seleccionado}" />
 								<p:fileDownload value="#{keetComprasRequisicionesFiltro.archivo}" />
 							</p:commandButton>
             </p:column>		
