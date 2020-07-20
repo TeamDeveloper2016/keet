@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.compras.requisiciones.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,18 +9,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.compras.requisiciones.beans.RegistroRequisicion;
 import mx.org.kaana.keet.compras.requisiciones.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -32,6 +39,8 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.requisiciones.beans.Requisicion;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesBitacoraDto;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value= "keetComprasRequisicionesFiltro")
 @ViewScoped
@@ -57,6 +66,35 @@ public class Filtro extends IBaseFilter implements Serializable {
 		this.fechaFin = fechaFin;
 	}
 		
+  public StreamedContent getArchivo() {
+		StreamedContent regresar= null;
+		Xls xls                 = null;
+		String template         = "REQUISICION";
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+		  this.attrs.put("idRequisicion", seleccionado.getKey());	
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(this.attrs, "VistaRequisicionesDesarrolloDto", "exportar", template), "CONSECUTIVO,PROVEEDOR,CODIGO PROVEEDOR,CODIGO,NOMBRE,CANTIDAD,PRECIO");	
+			if(xls.procesar()) {
+//				Zip zip       = new Zip();
+//				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());
+//				zip.setEliminar(true);
+//				zip.compactar(JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()).concat(zipName), JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()), "*".concat(template.concat(".").concat(EFormatos.XLS.name().toLowerCase())));
+//		    String contentType= EFormatos.ZIP.getContent();
+//        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(zipName));  
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+    return regresar;
+  }	
+	
   @PostConstruct
   @Override
   protected void init() {
@@ -66,9 +104,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion"));      
-			loadCatalog();      
+			this.loadCatalog();      
 			if(!Cadena.isVacio(this.attrs.get("idRequisicion")))
-				doLoad();
+				this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -373,4 +411,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus
+	
 }

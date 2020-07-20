@@ -30,6 +30,16 @@
 				} // if
 				return ok;
 			}			
+			
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -181,6 +191,11 @@
               </f:facet>
               <h:outputText value="#{filtro['fechaEntregada']}"/>
             </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-38">
+							<p:commandButton process="@this tabla" icon="fa fa-file-excel-o" title="Exportar requsición" style="float:left;" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-not-lock">
+								<p:fileDownload value="#{keetComprasRequisicionesFiltro.archivo}" />
+							</p:commandButton>
+            </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetComprasRequisicionesFiltro.lazyModel==null?0:keetComprasRequisicionesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
@@ -201,8 +216,9 @@
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la requisicion de compra ?" />
   <ui:param name="accionConfirmacion" value="#{keetComprasRequisicionesFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="eventoConfirmacion" value="doEliminar"/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:param name="lineaSeparacion" value="false"/>	
   <ui:define name="detalleConfirmacion">
     <p:panelGrid layout="grid" columns="2">
       <p:outputLabel value="No. requisición:"/>
