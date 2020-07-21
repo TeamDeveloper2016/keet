@@ -4313,8 +4313,8 @@
 			<select id="materialesClave">
 				select 
 					principal.*,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo and tc_mantic_articulos_codigos.id_principal= {idProveedor}) AS propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor}) AS codigo				  
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo) AS propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo) AS codigo				  
 				from(
 					select
 						tc_mantic_articulos.id_articulo AS id_key,        
@@ -5497,6 +5497,7 @@
         select
 					tc_mantic_requisiciones.id_requisicion as id_key,
 					tc_mantic_requisiciones.id_empresa,  
+					tc_mantic_requisiciones.id_enviar,  
 				  tc_mantic_empresas.clave as empresa,  
 				  tc_mantic_empresas.nombre as nombre_empresa,  
 					tc_mantic_requisiciones.consecutivo,  															
@@ -5510,7 +5511,8 @@
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 					tc_keet_desarrollos.clave clave_desarrollo,
-					tc_keet_desarrollos.nombres nombre_desarrollo
+					tc_keet_desarrollos.nombres nombre_desarrollo,
+					tc_mantic_proveedores.razon_social proveedor
 				from 
 					tc_mantic_requisiciones				
 				inner join 
@@ -5530,6 +5532,7 @@
 				group by 
 				  tc_mantic_requisiciones.id_requisicion,
 					tc_mantic_requisiciones.id_empresa,  
+					tc_mantic_requisiciones.id_enviar,  
 				  tc_mantic_empresas.clave,  
 				  tc_mantic_empresas.nombre,  
 					tc_mantic_requisiciones.consecutivo,  															
@@ -5543,7 +5546,8 @@
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
 					tc_keet_desarrollos.clave,
-					tc_keet_desarrollos.nombres
+					tc_keet_desarrollos.nombres,
+					tc_mantic_proveedores.razon_social
 				{sortOrder}
 			</select>
 			<select id="preciosArticulo">
