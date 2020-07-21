@@ -86,8 +86,7 @@ public class Transaccion extends IBaseTnx {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la requisición.");
 			switch(accion) {
 				case AGREGAR:
-				case REGISTRAR:			
-					idRequisicionEstatus= accion.equals(EAccion.AGREGAR) ? EEstatusRequisiciones.SOLICITADA.getIdEstatusRequisicion() : idRequisicionEstatus;
+				case REGISTRAR:								
 					regresar= this.requisicion.getRequisicion().getIdRequisicion()!= null && !this.requisicion.getRequisicion().getIdRequisicion().equals(-1L) ? actualizarRequisicion(sesion, idRequisicionEstatus) : registrarRequisicion(sesion, idRequisicionEstatus);					
 					break;
 				case MODIFICAR:
@@ -105,8 +104,8 @@ public class Transaccion extends IBaseTnx {
 						bitRequisicion= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(sesion, TcManticRequisicionesDto.class, this.bitacora.getIdRequisicion());
 						bitRequisicion.setIdRequisicionEstatus(this.bitacora.getIdRequisicionEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, bitRequisicion)>= 1L;
-						if(this.bitacora.getIdRequisicionEstatus().equals(EEstatusRequisiciones.COTIZADA.getIdEstatusRequisicion()))
-							procesarOrdenCompra(sesion, this.bitacora.getIdRequisicion());
+						//if(this.bitacora.getIdRequisicionEstatus().equals(EEstatusRequisiciones.COTIZADA.getIdEstatusRequisicion()))
+							//procesarOrdenCompra(sesion, this.bitacora.getIdRequisicion());
 					} // if
 					break;												
 				case REPROCESAR:

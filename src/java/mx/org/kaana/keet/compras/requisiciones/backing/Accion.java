@@ -308,7 +308,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 				UISelectEntity	proveedor= (UISelectEntity) this.attrs.get("proveedor");							
 				if(prototipo.getKey()>= 1){
 					if(proveedor.getKey()>= 1)
-						toMoveData(articulo, index, toClaveMateriales());																			
+						toMoveData(articulo, index, toClaveMateriales(), true);																			
 					else				
 						JsfBase.addMessage("Es necesario seleccionar un proveedor.");			
 				} // if
@@ -322,7 +322,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 			JsfBase.addMessage("Es necesario seleccionar un prototipo.");					
 	} // toModeveData
 		
-	protected void toMoveData(UISelectEntity articulo, Integer index, String claveMaterial) throws Exception {
+	protected void toMoveData(UISelectEntity articulo, Integer index, String claveMaterial, boolean calculate) throws Exception {
 		ArticuloVenta temporal= (ArticuloVenta) getAdminOrden().getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();
 		try {
@@ -339,7 +339,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 				temporal.setIdProveedor(getAdminOrden().getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
-				temporal.setCodigo(codigo== null? "": codigo.toString());
+				temporal.setCodigo(codigo== null ? (articulo.toString("codigo")!= null ? articulo.toString("codigo") : "") : codigo.toString());
 				temporal.setPropio(articulo.toString("propio"));
 				temporal.setNombre(articulo.toString("nombre"));
 				temporal.setValor(articulo.toDouble(getPrecio()));
@@ -372,8 +372,11 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 					UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
 				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
-				((AdminRequisicion)getAdminOrden()).loadListaPrecios(claveMaterial);
-				getAdminOrden().toCalculate();
+				//((AdminRequisicion)getAdminOrden()).loadListaPrecios(claveMaterial);
+				temporal.setListaPrecios(((AdminRequisicion)getAdminOrden()).preciosArticulo(articulo.toLong("idArticulo"), claveMaterial));
+				temporal.setPrecioLista(UIBackingUtilities.toFirstKeySelectEntity(temporal.getListaPrecios()));
+				if(calculate)
+					getAdminOrden().toCalculate();
 			} // if	
 			else
 				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
@@ -483,9 +486,10 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implemen
 						if(!articulos.isEmpty()){
 							cleanArticulos();
 							for(Entity art: articulos){
-								toMoveData(new UISelectEntity(art), count, clave);
+								toMoveData(new UISelectEntity(art), count, clave, false);
 								count++;
 							} // for
+							getAdminOrden().toCalculate();
 						} // if
 						else
 							cleanArticulos();

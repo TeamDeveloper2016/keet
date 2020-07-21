@@ -115,7 +115,7 @@ public final class AdminRequisicion extends IAdminArticulos implements Serializa
 		} // catch		
 	} // loadListaPrecios
 	
-	private List<UISelectEntity> preciosArticulo(Long idArticulo, String clave){
+	public List<UISelectEntity> preciosArticulo(Long idArticulo, String clave){
 		List<UISelectEntity> regresar= null;
 		List<Columna> campos         = null;
 		Entity articulo              = null;
