@@ -203,13 +203,14 @@
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{keetComprasRequisicionesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>						
-            <p:menuitem id="modificar" action="#{keetComprasRequisicionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '2')}"/>
+            <p:menuitem id="modificar" action="#{keetComprasRequisicionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '1')}"/>
             <p:separator rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '3')}"/>
 						<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '3' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
             <p:separator rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '4' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '4' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="janal.restore();janal.refresh();PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '4' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
             <p:separator rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '4' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
             <p:menuitem id="comparativo" action="#{keetComprasRequisicionesFiltro.doDiferencias()}" icon="fa fa-stack-overflow" ajax="false" process="@this tabla" value="Comparativo" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '4' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
+						<p:menuitem id="correo" actionListener="#{keetComprasRequisicionesFiltro.doLoadMails()}" icon="fa fa-envelope-o" value="Enviar por correo" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();" process="@this tabla" update="dialogoCorreos" rendered="#{(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus ne '1' and keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus ne '3' and keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus ne '4')}"/>
           </p:contextMenu>
         </div>
       </div>
@@ -244,7 +245,29 @@
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
 					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{keetComprasRequisicionesFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.restore();janal.refresh();janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar orden de compra" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">								
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">										
+					<p:dataTable id="tablaCorreos" var="row" value="#{keetComprasRequisicionesFiltro.correos}" selection="#{keetComprasRequisicionesFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreos_selection">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreos" icon="fa fa-check" title="Agregar" action="#{keetComprasRequisicionesFiltro.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{keetComprasRequisicionesFiltro.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{keetComprasRequisicionesFiltro.doEnviarCorreo}" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();" update="tabla"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>
