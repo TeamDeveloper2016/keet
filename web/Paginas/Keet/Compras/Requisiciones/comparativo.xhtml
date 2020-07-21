@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Comparativo de precios de la requsición" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-12">
+					<p:panel header="Requsición: [#{keetComprasRequisicionesComparativo.attrs.entity.consecutivo}]" collapsed="false" toggleTitle="true">
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+							<p:outputLabel value="Desarrollo:"/>
+							<p:inputText value="#{keetComprasRequisicionesComparativo.attrs.entity.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+							<p:outputLabel value="Cliente:"/>
+							<p:inputText value="#{keetComprasRequisicionesComparativo.attrs.entity.cliente}" styleClass="janal-wid-100-txt" readonly="true"/>
+							<p:outputLabel value="Contrato:"/>
+							<p:inputText value="#{keetComprasRequisicionesComparativo.attrs.entity.contrato}" styleClass="janal-wid-100-txt" readonly="true"/>
+							<p:outputLabel value="Prototipo:"/>
+							<p:inputText value="#{keetComprasRequisicionesComparativo.attrs.entity.prototipo}" styleClass="janal-wid-100-txt" readonly="true"/>
+							<p:outputLabel value="Proveedor:"/>
+							<p:inputText value="#{keetComprasRequisicionesComparativo.attrs.entity.proveedor}" styleClass="janal-wid-100-txt" readonly="true"/>
+							<p:outputLabel value="Fecha generación:"/>
+							<p:inputText value="#{keetComprasRequisicionesComparativo.attrs.entity.registro}" styleClass="janal-wid-100-txt" readonly="true"/>
+						</p:panelGrid>	
+					</p:panel>	
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetComprasRequisicionesComparativo.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetComprasRequisicionesComparativo.attrs.seleccionado}" selectionMode="single" paginator="#{keetComprasRequisicionesComparativo.lazyModel.rowCount gt keetComprasRequisicionesComparativo.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <f:facet name="header">
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>								
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>							
+            </f:facet>	            
+            <p:column class="MarAuto Responsive janal-wid-3">
+              <f:facet name="header">
+                <h:outputText value="No"/>
+              </f:facet>
+              <h:outputText value="#{index+ 1}.-"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.codigo}">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row['codigo']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.propio}">
+              <f:facet name="header">
+                <h:outputText value="Propio"/>
+              </f:facet>
+              <h:outputText value="#{row['propio']}"/>
+            </p:column>		
+						<p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>	
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
+              <f:facet name="header">
+                <h:outputText value="Cantidad"/>
+              </f:facet>
+              <h:outputText value="#{row['cantidad']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
+              <f:facet name="header">
+                <h:outputText value="Precio"/>
+              </f:facet>
+              <h:outputText value="#{row['costo']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.precioBase}">
+              <f:facet name="header">
+                <h:outputText value="Precio base"/>
+              </f:facet>
+              <h:outputText value="#{row['precioBase']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.porcentaje}">
+              <f:facet name="header">
+                <h:outputText value="Diferencia"/>
+              </f:facet>
+              <h:outputText value="#{row['porcentaje']} %"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="registro"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>		
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetComprasRequisicionesComparativo.lazyModel== null? 0: keetComprasRequisicionesComparativo.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+        </div>
+      </div>
+    </div>		    
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>
