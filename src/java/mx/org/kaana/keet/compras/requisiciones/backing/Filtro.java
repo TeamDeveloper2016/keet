@@ -36,9 +36,17 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
+import mx.org.kaana.mantic.catalogos.proveedores.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.requisiciones.beans.Requisicion;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesBitacoraDto;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -46,10 +54,36 @@ import org.primefaces.model.StreamedContent;
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {  
 
-	private static final long serialVersionUID = 2808389228136682363L;
+	private static final long serialVersionUID= 2808389228136682363L;
+	private static final String EMAILS_ADMINS = "correo.admin.system";
+	private static final String DATA_FILE     = "CONSECUTIVO,PROVEEDOR,CODIGO PROVEEDOR,CODIGO,NOMBRE,CANTIDAD,PRECIO";
+	private static final String DATA_MAIL     = "CONSECUTIVO,PROVEEDOR,CODIGO PROVEEDOR,CODIGO,NOMBRE,CANTIDAD";
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
+	private List<Correo> correos;
+	private List<Correo> selectedCorreos;	
+	private Correo correo;
 
+	public List<Correo> getCorreos() {
+		return correos;
+	}
+
+	public List<Correo> getSelectedCorreos() {
+		return selectedCorreos;
+	}
+
+	public void setSelectedCorreos(List<Correo> selectedCorreos) {
+		this.selectedCorreos = selectedCorreos;
+	}	
+
+	public Correo getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(Correo correo) {
+		this.correo = correo;
+	}	
+	
 	public LocalDate getFechaInicio() {
 		return fechaInicio;
 	}
@@ -75,7 +109,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  this.attrs.put("idRequisicion", seleccionado.getKey());	
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-      xls= new Xls(fileName, new Modelo(this.attrs, "VistaRequisicionesDesarrolloDto", "exportar", template), "CONSECUTIVO,PROVEEDOR,CODIGO PROVEEDOR,CODIGO,NOMBRE,CANTIDAD,PRECIO");	
+      xls= new Xls(fileName, new Modelo(this.attrs, "VistaRequisicionesDesarrolloDto", "exportar", template), DATA_FILE);	
 			if(xls.procesar()) {
 //				Zip zip       = new Zip();
 //				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());
@@ -417,5 +451,120 @@ public class Filtro extends IBaseFilter implements Serializable {
   	JsfBase.setFlashAttribute("idRequisicion", ((Entity)this.attrs.get("seleccionado")).getKey());
 		return "comparativo".concat(Constantes.REDIRECIONAR);
 	}
+
+	public void doLoadMails() {
+		Entity seleccionado                 = null;
+		MotorBusqueda motor                 = null; 
+		List<ProveedorTipoContacto>contactos= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");			
+			motor= new MotorBusqueda(seleccionado.toLong("idProveedor"));
+			contactos= motor.toProveedoresTipoContacto();
+			this.correos= new ArrayList<>();
+			for(ProveedorTipoContacto contacto: contactos){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
+					this.correos.add(new Correo(contacto.getIdProveedorTipoContacto(), contacto.getValor()));				
+			} // for
+			this.correos.add(new Correo(-1L, ""));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} // doLoadEstatus
 	
+	public void doAgregarCorreo() {
+		Entity seleccionado    = null;
+		mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.correo.getDescripcion())){
+				seleccionado= (Entity)this.attrs.get("seleccionado");
+				transaccion= new mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion(this.correo, seleccionado.toLong("idProveedor"));
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un correo electronico !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCorreo
+	
+	public void doEnviarCorreo(){		 						
+		Map<String, Object> params= null;
+		String[] emails           = null;
+		List<Attachment> files    = null;
+		Entity seleccionado       = null;
+		StringBuilder sb          = null;
+		String emailsAdmin        = null;
+		Xls xls                   = null;
+		String template           = "REQUISICION";
+		String salida             = null;
+		String fileName           = null;
+		Transaccion transaccion   = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		fileName= JsfBase.getRealPath("").concat(salida);
+			params= new HashMap<>();		
+			params.put("idRequisicion", seleccionado.getKey());
+      xls= new Xls(fileName, new Modelo(params, "VistaRequisicionesDesarrolloDto", "exportar", template), DATA_MAIL);	
+			if(xls.procesar()) {
+				sb= new StringBuilder("");
+				if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
+					for(Correo mail: this.selectedCorreos) {
+						if(!Cadena.isVacio(mail.getDescripcion()))
+							sb.append(mail.getDescripcion()).append(", ");
+					} // for
+				} // if
+				params= new HashMap<>();						
+				files= new ArrayList<>(); 
+				emailsAdmin= TcConfiguraciones.getInstance().getPropiedad(EMAILS_ADMINS);
+				emails= new String[]{(sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+				params.put("header", "...");
+				params.put("footer", "...");
+				params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+				params.put("tipo", "Requisición de compra");			
+				params.put("razonSocial", seleccionado.toString("proveedor"));
+				params.put("correo", ECorreos.COMPRAS.getEmail());			
+				//this.doReporte("ORDEN_DETALLE", true);
+				//Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+				Attachment attachments= new Attachment(fileName, Boolean.FALSE);
+				files.add(attachments);
+				files.add(new Attachment("logo", ECorreos.COMPRAS.getImages().concat("logo.png"), Boolean.TRUE));
+				params.put("attach", attachments.getId());
+				for (String item: emails) {
+					try {
+						if(!Cadena.isVacio(item)) {
+							IBaseAttachment notificar= new IBaseAttachment(ECorreos.COMPRAS, ECorreos.COMPRAS.getEmail(), item, emailsAdmin, "CAFU - Requisición de compra", params, files);							
+							notificar.send();
+						} // if	
+					} // try
+					catch(Exception e) {
+						Error.mensaje(e);
+					} // catch
+				} // for				
+				if(sb.length()> 0){
+					transaccion= new Transaccion(new RegistroRequisicion(new Requisicion(seleccionado.getKey())), "");
+					if(transaccion.ejecutar(EAccion.DESACTIVAR))
+						JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+				} // if
+				else
+					JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+			} // if
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+			Methods.clean(this.correos);
+			Methods.clean(this.selectedCorreos);
+		} // finally
+	} // doEnviarCorreo						
 }

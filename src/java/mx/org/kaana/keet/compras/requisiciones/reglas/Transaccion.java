@@ -78,6 +78,7 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params             = null;
 		Long idRequisicionEstatus              = null;
 		TcManticRequisicionesDto bitRequisicion= null;
+		TcManticRequisicionesDto dto           = null;
 		try {
 			idRequisicionEstatus= EEstatusRequisiciones.ELABORADA.getIdEstatusRequisicion();
 			params= new HashMap<>();
@@ -111,7 +112,12 @@ public class Transaccion extends IBaseTnx {
 				case REPROCESAR:
 				case COPIAR:
 					regresar= actualizarRequisicion(sesion, EEstatusRequisiciones.COTIZADA.getIdEstatusRequisicion());				
-					break;				
+					break;			
+				case DESACTIVAR: 
+					dto= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(sesion, TcManticRequisicionesDto.class, this.requisicion.getRequisicion().getKey());
+					dto.setIdEnviar(1L);
+					regresar= DaoFactory.getInstance().update(sesion, dto)>= 1L;
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
