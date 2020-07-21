@@ -208,6 +208,8 @@
 						<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '3' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
             <p:separator rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '4' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '4' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
+            <p:separator rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '4' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
+            <p:menuitem id="comparativo" action="#{keetComprasRequisicionesFiltro.doDiferencias()}" icon="fa fa-stack-overflow" ajax="false" process="@this tabla" value="Comparativo" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '4' or keetComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '5')}"/>
           </p:contextMenu>
         </div>
       </div>

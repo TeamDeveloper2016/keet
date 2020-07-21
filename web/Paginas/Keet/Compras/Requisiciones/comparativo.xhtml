@@ -4,7 +4,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
-                template="/WEB-INF/plantillas/reporte.xhtml">
+                template="/WEB-INF/plantillas/accion.xhtml">
   <ui:param name="titulo" value="Comparativo de precios de la requsición" />
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -105,5 +105,12 @@
       </div>
     </div>		    
   </ui:define>   
-  <ui:param name="componenteBloqueo" value="tabla"/>
+	<ui:define name="acciones">		
+		<div class="lg-pantalla">
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetComprasRequisicionesComparativo.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetComprasRequisicionesComparativo.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>						
+	</ui:define>		
 </ui:composition>

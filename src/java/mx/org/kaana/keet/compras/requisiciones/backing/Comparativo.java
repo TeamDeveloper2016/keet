@@ -14,6 +14,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -32,8 +33,9 @@ public class Comparativo extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      // this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion"));      
-      this.attrs.put("idRequisicion", 2L);      
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));			
+      this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion"));      
+      // this.attrs.put("idRequisicion", 2L);      
 			if(!Cadena.isVacio(this.attrs.get("idRequisicion")))
 				this.doLoad();
     } // try
@@ -82,5 +84,9 @@ public class Comparativo extends IBaseFilter implements Serializable {
       Methods.clean(columns);
     } // finally		
   } // doLoad
+
+	public String doCancelar() {
+    return Cadena.isVacio(this.attrs.get("retorno"))? "filtro": ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } // doCancelar		
 	
 }

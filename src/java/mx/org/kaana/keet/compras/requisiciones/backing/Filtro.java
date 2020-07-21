@@ -411,5 +411,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus
+
+  public String doDiferencias() {
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Compras/Requisiciones/filtro");		
+  	JsfBase.setFlashAttribute("idRequisicion", ((Entity)this.attrs.get("seleccionado")).getKey());
+		return "comparativo".concat(Constantes.REDIRECIONAR);
+	}
 	
 }
