@@ -72,17 +72,19 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
   private Long idContrato;
   @Column (name="id_prototipo")
   private Long idPrototipo;
+  @Column (name="id_enviar")
+  private Long idEnviar;
 
   public TcManticRequisicionesDto() {
     this(new Long(-1L));
   }
 
   public TcManticRequisicionesDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, LocalDate.now(), null, null, null, null, null, null, LocalDate.now(), null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, LocalDate.now(), null, null, null, null, null, null, LocalDate.now(), null, null, null, 2L);
     setKey(key);
   }
 
-  public TcManticRequisicionesDto(Double descuentos, Long idProveedor, Long idDesarrollo, String descuento, Long idRequisicionEstatus, Long idRequisicion, Long idSolicita, Long ejercicio, String consecutivo, LocalDate fechaPedido, Double total, Long idUsuario, Double impuestos, Double subTotal, String observaciones, Long idEmpresa, LocalDate fechaEntregada, Long orden, Long idContrato, Long idPrototipo) {
+  public TcManticRequisicionesDto(Double descuentos, Long idProveedor, Long idDesarrollo, String descuento, Long idRequisicionEstatus, Long idRequisicion, Long idSolicita, Long ejercicio, String consecutivo, LocalDate fechaPedido, Double total, Long idUsuario, Double impuestos, Double subTotal, String observaciones, Long idEmpresa, LocalDate fechaEntregada, Long orden, Long idContrato, Long idPrototipo, Long idEnviar) {
     setDescuentos(descuentos);
     setIdProveedor(idProveedor);
     setIdDesarrollo(idDesarrollo);
@@ -104,6 +106,7 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
     setOrden(orden);
 		setIdContrato(idContrato);
 		setIdPrototipo(idPrototipo);
+		setIdEnviar(idEnviar);
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -273,6 +276,14 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
 	public void setIdPrototipo(Long idPrototipo) {
 		this.idPrototipo = idPrototipo;
 	}	
+
+	public Long getIdEnviar() {
+		return idEnviar;
+	}
+
+	public void setIdEnviar(Long idEnviar) {
+		this.idEnviar = idEnviar;
+	}	
 	
   @Transient
   @Override
@@ -326,6 +337,8 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
 		regresar.append(getFechaEntregada());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEnviar());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -354,13 +367,14 @@ public class TcManticRequisicionesDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("idContrato", getIdContrato());
 		regresar.put("idPrototipo", getIdPrototipo());
+		regresar.put("idEnviar", getIdEnviar());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getDescuentos(), getIdProveedor(), getIdDesarrollo(), getDescuento(), getIdRequisicionEstatus(), getIdRequisicion(), getIdSolicita(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaPedido(), getTotal(), getIdUsuario(), getImpuestos(), getSubTotal(), getObservaciones(), getIdEmpresa(), getFechaEntregada(), getOrden(), getIdContrato(), getIdPrototipo()
+			getDescuentos(), getIdProveedor(), getIdDesarrollo(), getDescuento(), getIdRequisicionEstatus(), getIdRequisicion(), getIdSolicita(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaPedido(), getTotal(), getIdUsuario(), getImpuestos(), getSubTotal(), getObservaciones(), getIdEmpresa(), getFechaEntregada(), getOrden(), getIdContrato(), getIdPrototipo(), getIdEnviar()
     };
     return regresar;
   }
