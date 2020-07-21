@@ -86,7 +86,7 @@
 								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
 								<p:selectOneMenu id="desarrollo" value="#{keetComprasRequisicionesAccion.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" onstart="return janal.bloquear()" process="@this" listener="#{keetComprasRequisicionesAccion.doUpdateCliente}" update="cliente contrato" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetComprasRequisicionesAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombres}"/>
+									<f:selectItems value="#{keetComprasRequisicionesAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.nombres}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>
@@ -99,7 +99,7 @@
 								<p:outputLabel for="contrato" value="Contrato:"/>
 								<p:selectOneMenu id="contrato" value="#{keetComprasRequisicionesAccion.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" onstart="return janal.bloquear()" process="@this" listener="#{keetComprasRequisicionesAccion.doLoadPrototipos}" update="prototipo" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetComprasRequisicionesAccion.attrs.contratos}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.etapa}"/>
+									<f:selectItems value="#{keetComprasRequisicionesAccion.attrs.contratos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.etapa}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>
@@ -109,7 +109,7 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="prototipo" value="Prototipo:"/>
 								<p:selectOneMenu id="prototipo" value="#{keetComprasRequisicionesAccion.attrs.prototipo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetComprasRequisicionesAccion.attrs.prototipos}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombre}"/>
+									<f:selectItems value="#{keetComprasRequisicionesAccion.attrs.prototipos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>
@@ -209,7 +209,7 @@
 										</f:facet>
 										<p:selectOneMenu value="#{row.precioLista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90 filas"  effect="fade">
 											<p:ajax event="change" onstart="janal.bloquear();" process="@this" update="@(.filas) @(.recalculo)" oncomplete="refreshCosto();"/>
-											<f:selectItems value="#{row.listaPrecios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion} [ $ #{element.costo} ]"/>										
+											<f:selectItems value="#{row.listaPrecios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion} - $ #{element.costo}"/>										
 											<p:column headerText="Tipo">
 												<h:outputText value="#{item.descripcion}" />
 											</p:column>   

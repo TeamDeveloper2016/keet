@@ -179,18 +179,18 @@
               </f:facet>
               <h:outputText value="#{filtro['registro']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fechaPedido}">
+            <p:column class="MarAuto Responsive" sortBy="#{filtro.proveedor}">
               <f:facet name="header">
-                <h:outputText value="Pedido"/>
+                <h:outputText value="Proveedor"/>
               </f:facet>
-              <h:outputText value="#{filtro['fechaPedido']}"/>
-            </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fechaEntregada}">
-              <f:facet name="header">
-                <h:outputText value="Entrega"/>
-              </f:facet>
-              <h:outputText value="#{filtro['fechaEntregada']}"/>
-            </p:column>		
+              <h:outputText value="#{filtro['proveedor']}"/>
+            </p:column>		   
+						<p:column class="MarAuto Responsive janal-column-icon">
+							<f:facet name="header">
+                <h:outputText value="Correo"/>
+              </f:facet>							
+							<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idEnviar eq '2'? 'circulo-rojo': 'circulo-verde'}.png" title="#{filtro.idEnviar eq '1'? 'Correo enviado': 'Correo no enviado'}"/>
+						</p:column>
             <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
 							<p:commandButton process="@this tabla" icon="fa fa-file-excel-o" title="Exportar requsición" style="float:left;" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-not-lock">
 								<f:setPropertyActionListener value="#{filtro}" target="#{keetComprasRequisicionesFiltro.attrs.seleccionado}" />
