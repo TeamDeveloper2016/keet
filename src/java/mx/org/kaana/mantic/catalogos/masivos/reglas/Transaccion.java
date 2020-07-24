@@ -542,18 +542,19 @@ public class Transaccion extends IBaseTnx {
 					try {
 						if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 							String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-							// 0           1          2        3          4          5          6           7        8        9            10            11          12      13
-							//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT
-							double costo   = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							double menudeo = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							double medio   = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							double mayoreo = Numero.getDouble(sheet.getCell(6, fila).getContents()!= null? sheet.getCell(6, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							double iva     = Numero.getDouble(sheet.getCell(8, fila).getContents()!= null? sheet.getCell(8, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);
-							double lmenudeo= Numero.getDouble(sheet.getCell(9, fila).getContents()!= null? sheet.getCell(9, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							double lmayoreo= Numero.getDouble(sheet.getCell(10, fila).getContents()!= null? sheet.getCell(10, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							double minimo  = Numero.getDouble(sheet.getCell(11, fila).getContents()!= null? sheet.getCell(11, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							double maximo  = Numero.getDouble(sheet.getCell(12, fila).getContents()!= null? sheet.getCell(12, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-							String sat     = new String(sheet.getCell(13, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							// 0           1          2        3        4          5          6           7          8        9            10            11          12        13       14
+							//CODIGO|CODIGOAUXILIAR|NOMBRE|FAMILIA|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT
+							long familia   = Numero.getLong(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents() : "0", 0L);
+							double costo   = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double menudeo = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double medio   = Numero.getDouble(sheet.getCell(6, fila).getContents()!= null? sheet.getCell(6, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double mayoreo = Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double iva     = Numero.getDouble(sheet.getCell(9, fila).getContents()!= null? sheet.getCell(9, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);
+							double lmenudeo= Numero.getDouble(sheet.getCell(10, fila).getContents()!= null? sheet.getCell(10, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double lmayoreo= Numero.getDouble(sheet.getCell(11, fila).getContents()!= null? sheet.getCell(11, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double minimo  = Numero.getDouble(sheet.getCell(12, fila).getContents()!= null? sheet.getCell(12, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double maximo  = Numero.getDouble(sheet.getCell(13, fila).getContents()!= null? sheet.getCell(13, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							String sat     = new String(sheet.getCell(14, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							String nombre  = new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(costo> 0 && menudeo> 0 && medio> 0 && mayoreo> 0) {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
@@ -565,6 +566,7 @@ public class Transaccion extends IBaseTnx {
 										//articulo.setIdCategoria(null);
 										//articulo.setIdImagen(null);
 										articulo.setPrecio(costo);
+										articulo.setIdFamilia(familia);
 										articulo.setMenudeo(Numero.toAjustarDecimales(menudeo, articulo.getIdRedondear().equals(1L)));
 										articulo.setMedioMayoreo(Numero.toAjustarDecimales(medio, articulo.getIdRedondear().equals(1L)));
 										articulo.setMayoreo(Numero.toAjustarDecimales(mayoreo, articulo.getIdRedondear().equals(1L)));
@@ -604,7 +606,7 @@ public class Transaccion extends IBaseTnx {
 											0D, // Double stock, 
 											Numero.toAjustarDecimales(medio, costo<= 10), // Double medioMayoreo, 
 											0D, // Double pesoEstimado, 
-											this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()), // Long idEmpaqueUnidadMedida, 
+											this.toFindUnidadMedida(sesion, sheet.getCell(8, fila).getContents()), // Long idEmpaqueUnidadMedida, 
 											costo<= 10? 1L: 2L, // Long idRedondear, 
 											Numero.toAjustarDecimales(menudeo, costo<= 10), // Double menudeo, 
 											null, // String metaTagTeclado, 
@@ -621,7 +623,9 @@ public class Transaccion extends IBaseTnx {
 											2L, // Long idBarras, 
 											"0", // String descuento, 
 											"0", // String extra, 
-											null // String idFacturama
+											null, // String idFacturama
+											familia, // idFamilia
+											2L // descontinuado
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
 										if(identico== null)
