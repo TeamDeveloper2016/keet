@@ -2781,8 +2781,7 @@
           tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
           tc_mantic_articulos_codigos.codigo,
           if(tc_mantic_articulos_codigos.id_principal= 1, 'SI', if(tc_mantic_articulos_codigos.id_proveedor is null, 'AUXILIAR', 'NO')) as principal,
-          tc_mantic_proveedores.clave,
-          tc_mantic_proveedores.prefijo,
+          tc_mantic_proveedores.clave,          
           tc_mantic_proveedores.razon_social,
           tc_mantic_articulos_codigos.orden,
 				  tc_mantic_articulos_codigos.registro
@@ -5435,8 +5434,7 @@
           tc_mantic_ordenes_detalles.costo/tc_mantic_ordenes_compras.tipo_de_cambio as costo,
 				  tc_mantic_ordenes_detalles.descuento,
 				  tc_mantic_ordenes_detalles.extras,
-          tc_mantic_proveedores.rfc,
-          tc_mantic_proveedores.prefijo,
+          tc_mantic_proveedores.rfc,          
           tc_mantic_proveedores.razon_social,
           tc_mantic_tipos_monedas.nombre as moneda,
           tc_mantic_ordenes_detalles.registro
