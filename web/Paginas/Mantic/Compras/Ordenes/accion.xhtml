@@ -184,7 +184,7 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-90">								
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateProveedor}" update="idProveedorPago entregaEstimada datosProveedor datosArticulos tabla @(.devoluciones) @(.recalculo)" process="@this contenedorGrupos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateProveedor}" update="familia idProveedorPago entregaEstimada datosProveedor datosArticulos tabla @(.devoluciones) @(.recalculo)" process="@this contenedorGrupos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
