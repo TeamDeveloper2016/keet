@@ -3641,7 +3641,8 @@
 		<unit id="TcManticAlmacenesDto">
       <select id="row">
         select      
-          *
+          tc_mantic_almacenes.id_almacen as id_key,
+					tc_mantic_almacenes.*
         from      
           tc_mantic_almacenes
         where 
