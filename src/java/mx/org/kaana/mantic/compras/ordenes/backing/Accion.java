@@ -247,6 +247,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			params.put("idContrato", contrato.getKey());
 			lotes= UISelect.build("TcKeetContratosLotesDto", "byContratoContratistas", params, "descripcionLote", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("lotes", lotes);						
+			this.attrs.put("lotesSeleccion", new String[]{});
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -339,6 +340,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			params.put("idProveedor", proveedor.getKey());
 			familias= UISelect.build("VistaFamiliasProveedoresDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("familias", familias);			
+			this.attrs.put("familiasSeleccion", new String[]{});
 		} // try
 		catch (Exception e) {		
 			throw e;
