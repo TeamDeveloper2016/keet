@@ -361,47 +361,65 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Articulos")) {
-			if(this.attrs.get("proveedores")== null) 
-  	  	JsfBase.addMessage("No se selecciono ningun proveedor !", ETipoMensaje.INFORMACION);
-			if(this.attrs.get("articulos")== null) {
-				switch(this.tipoOrden) {
-					case NORMAL:
-						break;
-					case ALMACEN: 
-						this.toLoadArticulos("almacen");
-						break;
-					case PROVEEDOR:
-						this.toLoadArticulos("proveedor");
-						break;
-				} // switch
+			String[]familias= (String[]) this.attrs.get("familiasSeleccion");
+			String[]lotes= (String[]) this.attrs.get("lotesSeleccion");			
+			if(familias.length>= 1 && lotes.length>= 1){
+				this.toLoadArticulos();
+				UIBackingUtilities.update("contenedorGrupos:sinIva");
+				UIBackingUtilities.update("contenedorGrupos:paginator");
 			} // if
-			UIBackingUtilities.update("contenedorGrupos:sinIva");
-			UIBackingUtilities.update("contenedorGrupos:paginator");
+			else{
+				getAdminOrden().getArticulos().clear();
+				JsfBase.addMessage("Es necesario seleccionar los lotes y las familias de articulos para la carga de articulos !", ETipoMensaje.INFORMACION);
+			} // else			
 		} // if	
-		else 
-			if(event.getTab().getTitle().equals("Faltantes")) 
-        this.doLoadFaltantes();
-			else 
-			  if(event.getTab().getTitle().equals("Ventas perdidas")) 
-           this.doLoadPerdidas();
+		else if(event.getTab().getTitle().equals("Faltantes")) 
+      this.doLoadFaltantes();
+		else if(event.getTab().getTitle().equals("Ventas perdidas")) 
+      this.doLoadPerdidas();
 	} // doTabChange
   
-	public void toLoadArticulos(String idXml) {
-		List<Articulo> articulos  = null;
-    Map<String, Object> params= new HashMap<>();
+	public void toLoadArticulos() {
+		List<Entity> articulos  = null;
+    Map<String, Object> params= null;
+		UISelectEntity proveedor  = null;
+		String[] familiasSeleccion= null;
+		String[] lotesSeleccion   = null;
+		String[] claves           = null;
+		String familias           = "";
+		String clave              = "";
+		int countArticulos        = 0;
 		try {
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.putAll(((OrdenCompra)this.getAdminOrden().getOrden()).toMap());
-			articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", idXml, params);
-      if(articulos!= null && this.getAdminOrden().getArticulos().isEmpty())
-				for (Articulo articulo : articulos) {
-					articulo.toPrepare(
+			proveedor= (UISelectEntity) this.attrs.get("proveedor");
+			familiasSeleccion= (String[]) this.attrs.get("familiasSeleccion");
+			lotesSeleccion= (String[]) this.attrs.get("lotesSeleccion");
+			claves= new String[lotesSeleccion.length];
+			for(int count=0; count < lotesSeleccion.length; count++){
+				clave= toClaveMateriales(Long.valueOf(lotesSeleccion[count]));
+				claves[count]= clave;
+			} // for			
+			params= new HashMap<>();
+			params.put("condicionClave", toCondicionClave(claves));									
+			for(String recordFamilia: familiasSeleccion)
+				familias= familias.concat(recordFamilia).concat(",");
+			params.put("familias", familias.substring(0, familias.length()-1));				
+			params.put("idProveedor", proveedor.getKey());				
+			articulos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", "materialesVariasClave", params);
+      if(articulos!= null && !articulos.isEmpty()){
+				this.getAdminOrden().getArticulos().clear();
+				for (Entity articulo : articulos) {
+					this.getAdminOrden().getArticulos().add(countArticulos, new Articulo(articulo.getKey()));
+					toMoveDataArticulo(new UISelectEntity(articulo), countArticulos);
+					countArticulos++;
+					/*articulo.toPrepare(
 						(Boolean)this.attrs.get("sinIva"), 
 						((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
 						((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
 					);
-					this.getAdminOrden().add(articulo);
+					this.getAdminOrden().add(articulo);*/					
 				} // for
+				this.getAdminOrden().toCalculate();
+			} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -412,6 +430,147 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // finally
 	} // toLoadArticulos
 
+	protected void toMoveDataArticulo(UISelectEntity articulo, Integer index) throws Exception {
+		Articulo temporal= this.getAdminOrden().getArticulos().get(index);
+		Map<String, Object> params= new HashMap<>();
+		try {
+			if(articulo.size()> 1) {
+				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+				temporal.setKey(articulo.toLong("idArticulo"));
+				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdProveedor(this.getAdminOrden().getIdProveedor());
+				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+				// verificar el codigo principal del articulo y recuperar el valor del multiplo paras las ordenes de compra
+				Entity codigo= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosCodigosDto", "codigo", params);
+				if(codigo== null || codigo.isEmpty()) {
+  				temporal.setCodigo(articulo.containsKey("codigo")? articulo.toString("codigo"): "");
+					temporal.setMultiplo(1L);
+				} // if
+				else {
+				  temporal.setCodigo(codigo.toString("codigo"));
+				  temporal.setMultiplo(codigo.toLong("multiplo"));
+					temporal.setCantidad(Double.valueOf(temporal.getMultiplo()));
+				}	// else
+				if(Cadena.isVacio(articulo.toString("propio")))
+					LOG.warn("El articulo ["+ articulo.toLong("idArticulo")+" ] no tiene codigo asignado '"+ articulo.toString("nombre")+ "'");
+				temporal.setPropio(articulo.toString("propio"));
+				temporal.setNombre(articulo.toString("nombre"));
+				temporal.setOrigen(articulo.toString("origen"));
+				temporal.setValor(articulo.toDouble(this.getPrecio()));
+				// SI VIENE EN LA CONSULTA EL CAMPO DE PORCENTAJE ES LA SUMA DE LA COLUMNA DE DESCUENTO Y EXTRA SEPARADA POR COMA
+				// ASIGNARLA PARA CALCULAR EL COSTO REAL DEL ARTICULO
+				if(articulo.containsKey("porcentajes")) {
+					//temporal.setMorado(articulo.toString("morado"));
+					temporal.setPorcentajes(articulo.toString("porcentajes"));
+				} // if	
+				// SI VIENE DE IMPORTAR EL ARTICULO DE UN XML ENTONCES CONSIDERAR EL COSTO DE LA FACTURA CON RESPECTO AL DEL CATALOGOD E ARTICULOS
+				if(articulo.containsKey("costo")) 
+  				temporal.setCosto(articulo.toDouble("costo"));
+			  else
+				  temporal.setCosto(articulo.toDouble(this.getPrecio()));
+				temporal.setIva(articulo.toDouble("iva"));				
+				temporal.setSat(articulo.get("sat").getData()!= null ? articulo.toString("sat") : "");				
+				temporal.setDescuento(this.getAdminOrden().getDescuento());
+				temporal.setExtras(this.getAdminOrden().getExtras());				
+				// SON ARTICULOS QUE ESTAN EN LA FACTURA MAS NO EN LA ORDEN DE COMPRA
+				if(articulo.containsKey("descuento")) 
+				  temporal.setDescuento(articulo.toString("descuento"));
+				if(articulo.containsKey("cantidad")) {
+				  temporal.setCantidad(articulo.toDouble("cantidad"));
+				  temporal.setSolicitados(articulo.toDouble("cantidad"));
+				} // if	
+				if(temporal.getCantidad()< 1D)					
+					temporal.setCantidad(1D);
+				temporal.setCuantos(0D);
+				temporal.setUltimo(this.attrs.get("ultimo")!= null);
+				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
+				temporal.setPrecio(articulo.toDouble("precio"));				
+				
+				// RECUPERA EL STOCK DEL ALMACEN MAS SABER SI YA FUE HUBO UN CONTEO O NO
+				Entity inventario= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "stock", params);
+				if(inventario!= null && inventario.size()> 0) {
+				  temporal.setStock(inventario.toDouble("stock"));
+				  //temporal.setIdAutomatico(inventario.toLong("idAutomatico"));
+				} // if
+				// Esto es para cuando se agregan articulos de forma directa del archivo XML
+				if(articulo.containsKey("disponible")) 
+  				temporal.setDisponible(articulo.toBoolean("disponible"));
+				if(index== this.getAdminOrden().getArticulos().size()- 1) {
+					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+  				this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
+					UIBackingUtilities.execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
+				} // if	
+				if(articulo.containsKey("facturado")) 
+					temporal.setFacturado(true);
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
+				this.getAdminOrden().toCalculate(index);
+				if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
+				  this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+				//if(this instanceof IBaseStorage)
+ 				//	((IBaseStorage)this).toSaveRecord();
+			} // if	
+			else
+				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+		} // try
+		finally {
+			Methods.clean(params);
+		}
+	}
+	
+	private String toCondicionClave(String[] claves){
+		String regresar        = null;
+		StringBuilder condicion= null;
+		try {
+			condicion= new StringBuilder("(");
+			for(int count= 0; count < claves.length; count++)
+				condicion.append("tc_keet_materiales.clave like '").append(claves[count]).append("%' or ");
+			regresar= condicion.substring(0, condicion.length()-4).concat(")");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toCondicionClave
+	
+	private String toClaveMateriales(Long idContratoLote) throws Exception{
+		StringBuilder regresar        = null;
+		UISelectEntity contrato       = null;
+		List<UISelectEntity> contratos= null;
+		try {
+			contratos= (List<UISelectEntity>) this.attrs.get("contratos");
+			contrato= (UISelectEntity) this.attrs.get("contrato");
+			regresar= new StringBuilder();
+			regresar.append(Cadena.rellenar(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), 3, '0', true));
+			regresar.append(Fecha.getAnioActual());
+			regresar.append(Cadena.rellenar(contratos.get(contratos.indexOf(contrato)).toString("orden"), 3, '0', true));
+			regresar.append(toOrdenContratoLote(idContratoLote));
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch
+		return regresar.toString();
+	} // toClaveMateriales
+	
+	private String toOrdenContratoLote(Long idContratoLote) throws Exception{
+		String regresar           = null;
+		Map<String, Object> params= null;
+		Entity contratoLote       = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_contrato_lote=" + idContratoLote );
+			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
+			regresar= Cadena.rellenar(contratoLote.toString("orden"), 3, '0', true);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toOrdenContratoLote
+	
 	private void checkDevolucionesPendientes(Long idProveedor) {
 		Map<String, Object> params= null;
 		List<Entity> pendientes   = null;
