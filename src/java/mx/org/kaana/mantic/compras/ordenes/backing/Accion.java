@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,9 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
@@ -75,6 +78,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("isPesos", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
+			this.attrs.put("familiasSeleccion", new String[]{});
+			this.attrs.put("lotesSeleccion", new String[]{});
 			doLoad();
     } // try
     catch (Exception e) {
@@ -107,46 +112,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doLoad
-
-  public String doAceptar() {  
-    Transaccion transaccion= null;
-    String regresar        = null;
-    try {			
-			 // this.getAdminOrden().toCheckTotales();
-			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setIdDesarrollo(((UISelectEntity)this.attrs.get("desarrollo")).getKey());
-			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
-			this.getAdminOrden().toAdjustArticulos();
-			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR)) {
- 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-				} // if	
-				else
-					this.getAdminOrden().toStartCalculate();
- 				if(!this.accion.equals(EAccion.CONSULTAR)) 
-    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la orden de compra.", ETipoMensaje.ALERTA);      			
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    return regresar;
-  } // doAccion
-
-  public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-    return (String)this.attrs.get("retorno");
-  } // doCancelar
+  } // doLoad  
 
 	private void toLoadCatalog() {
 		List<Columna> columns     = null;
@@ -191,6 +157,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				else
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(proveedores.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
 				this.toLoadCondiciones(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor());
+				toUpdateFamilias();
 			} // if	
 			doLoadDesarrollos();
     } // try
@@ -202,7 +169,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}
+	} // toLoadCatalog
 
 	public void doLoadDesarrollos() {
 		List<Columna> columns           = null;
@@ -229,7 +196,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "row", params, columns));
 				List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 				if(!almacenes.isEmpty()) 
-					((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+					((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));				
 			} // if
 			else{
 				this.attrs.put("desarrollos", new ArrayList<>());
@@ -238,6 +205,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.attrs.put("almacenes", new ArrayList<>());
 				((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(-1L));
 			} // else
+			doLoadContratos();
     } // try
     catch (Exception e) {
       throw e;
@@ -248,6 +216,47 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     }// finally
 	} // doLoadDesarrollos
 	
+	private void doLoadContratos(){
+		List<UISelectEntity> contratos= null;
+		UISelectEntity desarrollo     = null;
+		Map<String, Object>params     = null;
+		try {
+			desarrollo= (UISelectEntity) this.attrs.get("desarrollo");
+			params= new HashMap<>();
+			params.put("idDesarrollo", desarrollo.getKey());
+			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+			this.attrs.put("contratos", contratos);
+			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+			doLoadLotes();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadContratos
+	
+	public void doLoadLotes(){
+		UISelectEntity contrato  = null;
+		List<UISelectItem> lotes = null;
+		Map<String, Object>params= null;
+		try {
+			contrato= (UISelectEntity) this.attrs.get("contrato");
+			params= new HashMap<>();
+			params.put("idContrato", contrato.getKey());
+			lotes= UISelect.build("TcKeetContratosLotesDto", "byContratoContratistas", params, "descripcionLote", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("lotes", lotes);						
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadLotes
+	
 	private LocalDate toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
 		fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);
 		if(tipoDia== 2) {
@@ -256,8 +265,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			dias= dia== Calendar.SUNDAY? 1: dia== Calendar.SATURDAY? 2: 0;
 			fechaEstimada.add(Calendar.DATE, dias);
 		} // if
+		//return LocalDate.of(fechaEstimada.get(Calendar.YEAR), fechaEstimada.get(Calendar.MONTH), fechaEstimada.get(Calendar.DAY_OF_MONTH));
 		return LocalDateTime.ofInstant(fechaEstimada.toInstant(), ZoneId.systemDefault()).toLocalDate();
-	}
+	} // toCalculateFechaEstimada
 	
 	private void toLoadCondiciones(UISelectEntity proveedor) {
 		List<Columna> columns     = null;
@@ -297,8 +307,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
-	}
+    } // finally
+	} // toLoadCondiciones
 	
 	public void doUpdateProveedor() {
 		try {
@@ -311,12 +321,32 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.toSearchCodigos();
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
-		}	
+			toUpdateFamilias();
+		}	// try
 	  catch (Exception e) {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-	} 
+	} // doUpdateProveedor
+	
+	private void toUpdateFamilias(){
+		UISelectEntity proveedor   = null;
+		List<UISelectItem> familias= null;
+		Map<String, Object>params  = null;
+		try {
+			proveedor= (UISelectEntity) this.attrs.get("proveedor");
+			params= new HashMap<>();
+			params.put("idProveedor", proveedor.getKey());
+			familias= UISelect.build("VistaFamiliasProveedoresDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("familias", familias);			
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // toUpdateFamilias
 	
 	public void doUpdateAlmacen() {
 		this.attrs.put("idAlmacen", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
@@ -325,7 +355,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 			this.getAdminOrden().toCalculate();
 		} // if	
-	}
+	} // doUpdateAlmacen
 
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Articulos")) {
@@ -352,7 +382,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			else 
 			  if(event.getTab().getTitle().equals("Ventas perdidas")) 
            this.doLoadPerdidas();
-	}
+	} // doTabChange
   
 	public void toLoadArticulos(String idXml) {
 		List<Articulo> articulos  = null;
@@ -378,7 +408,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     finally {
       Methods.clean(params);
     } // finally
-	}
+	} // toLoadArticulos
 
 	private void checkDevolucionesPendientes(Long idProveedor) {
 		Map<String, Object> params= null;
@@ -411,7 +441,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			Methods.clean(params);
 			Methods.clean(pendientes);
 		} // finally
-	}
+	} // checkDevolucionesPendientes
 
   public void doUpdatePlazo() {
 		if(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedorPago()!= null) {
@@ -420,7 +450,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       ((OrdenCompra)this.getAdminOrden().getOrden()).setDescuento(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
       this.doUpdatePorcentaje();
 		} // if
-	}	
+	}	// doUpdatePlazo
 
 	public void doEliminarPerdido() {
 		Transaccion transaccion= null;
@@ -437,7 +467,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-	}	
+	}	// doEliminarPerdido
 	
 	@Override
   public void doFindArticulo(Integer index) {
@@ -448,11 +478,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		  if(position>= 0)
         this.attrs.put("seleccionado", articulos.get(position));
 		} // if	
-	}
+	} // doFindArticulo
 
 	public void doAutoSaveOrden() {
 	  this.toSaveRecord();	
-	}
+	} // doAutoSaveOrden
 	
 	@Override
 	public void toSaveRecord() {
@@ -476,38 +506,14 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-	}
+	} // toSaveRecord
 
 	public void doGlobalEvent(Boolean isViewException) {
 		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA");
 		if(isViewException && this.getAdminOrden().getArticulos().size()> 0)
 		  this.toSaveRecord();
     //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
-	}
-	
-	public void doLoadAlmacenes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-    try {
-			columns= new ArrayList<>();
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
-      this.attrs.put("almacenes", UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
- 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
-			if(!almacenes.isEmpty()) 
-			  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-			doLoadDesarrollos();
-   } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    } // finally
-	}
+	} // doGlobalEvent
 
   public void toSearchCodigos() {
 		Map<String, Object> params= null;
@@ -528,31 +534,31 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		finally {
 			Methods.clean(params);
 		} // finally
-	}	
+	}	// toSearchCodigos
 
 	@Override
 	public void doSearchArticulo(Long idArticulo, Integer index) {
 		this.attrs.put("idAlmacen", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
 		super.doSearchArticulo(idArticulo, index);
-	}
+	} // doSearchArticulo
 	
 	public void doCleanLookForFaltantes() {
 		this.attrs.put("lookForFaltantes", "");
 		this.doLoadFaltantes();
-	} 
+	} // doCleanLookForFaltantes
 	
 	public void doLookForFaltantes() {
 		this.doLoadFaltantes();
-	} 
+	} // doLookForFaltantes
 	
   public void doCleanLookForPerdidos() {
 		this.attrs.put("lookForPerdidos", "");
 		this.doLoadPerdidas();
-	} 
+	} // doCleanLookForPerdidos
 
   public void doLookForPerdidos() {
 		this.doLoadPerdidas();
-	} 
+	} // doLookForPerdidos
 
 	public void doUpdateCliente(){
 		List<UISelectEntity> desarrollos= null;
@@ -572,10 +578,50 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
 			  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+			doLoadContratos();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
 	} // doUpdateCliente
+	
+	public String doAceptar() {  
+    Transaccion transaccion= null;
+    String regresar        = null;
+    try {			
+			 // this.getAdminOrden().toCheckTotales();
+			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setIdDesarrollo(((UISelectEntity)this.attrs.get("desarrollo")).getKey());
+			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+			this.getAdminOrden().toAdjustArticulos();
+			if (transaccion.ejecutar(this.accion)) {
+				if(this.accion.equals(EAccion.AGREGAR)) {
+ 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+				} // if	
+				else
+					this.getAdminOrden().toStartCalculate();
+ 				if(!this.accion.equals(EAccion.CONSULTAR)) 
+    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
+  			JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+			} // if
+			else 
+				JsfBase.addMessage("Ocurrió un error al registrar la orden de compra.", ETipoMensaje.ALERTA);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  } // doAccion
+
+  public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+    return (String)this.attrs.get("retorno");
+  } // doCancelar
 }
