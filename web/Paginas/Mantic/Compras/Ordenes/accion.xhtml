@@ -117,7 +117,7 @@
 						<p:outputLabel value="LA ORDEN DE COMPRA [#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}] SE (AUTO)GUARDO EL DIA #{manticComprasOrdendesAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticComprasOrdendesAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor" update="faltantes perdidos sinIva" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
+            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor lote familia" update="@(.recalculo) faltantes perdidos sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-90">		
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
@@ -173,11 +173,12 @@
 									</p:column>   
 								</p:selectOneMenu>																						
 								<p:outputLabel for="lote" value="Lotes:"/>							
-								<p:selectCheckboxMenu id="lote" value="#{manticComprasOrdendesAccion.attrs.lote}" label="ej. M001L1" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-98" multiple="true">																		
+								<p:selectCheckboxMenu id="lote" value="#{manticComprasOrdendesAccion.attrs.lotesSeleccion}" label="ej. M001L1" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-98" multiple="true" onchange="loadArtsLotes();">
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.lotes}" />
 								</p:selectCheckboxMenu>
 								<p:spacer width="1px"/>
 								<p:outputLabel value="#{manticComprasOrdendesAccion.attrs.pendientes}" escape="false" styleClass="devoluciones"/>																	
+								<p:remoteCommand name="loadArtsLotes" onstart="janal.bloquear();" process="@this lote contenedorGrupos" oncomplete="janal.desbloquear();"/>
               </p:panelGrid>														
 						</p:tab>
 						<p:tab title="Proveedor">
@@ -222,9 +223,10 @@
                   <f:selectItem itemLabel="NO" itemValue="2" />								
   							</p:selectOneMenu>								
 								<p:outputLabel for="familia" value="Familia de materiales:"/>							
-								<p:selectCheckboxMenu id="familia" value="#{manticComprasOrdendesAccion.attrs.familiasSeleccion}" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-98" multiple="true">																		
+								<p:selectCheckboxMenu id="familia" value="#{manticComprasOrdendesAccion.attrs.familiasSeleccion}" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-98" multiple="true" onchange="loadArts();">
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.familias}" />
-								</p:selectCheckboxMenu>																								
+								</p:selectCheckboxMenu>		
+								<p:remoteCommand name="loadArts" onstart="janal.bloquear();" process="@this familia contenedorGrupos" oncomplete="janal.desbloquear();"/>
 							</p:panelGrid>							
 							<p:separator/>
 							<p:panelGrid id="datosProveedor" columns="6" layout="grid" styleClass="janal-wid-100">		
@@ -413,7 +415,7 @@
 												</p:column>		
 											</p:dataTable>
 										</p:panelGrid>	
-										<p:spacer width="5"/>
+										<p:spacer width="5"/>										
 										<div class="ui-grid-row janal-grid-row">
 											<div class="ui-grid-col-2 janal-column-center">
 												<p:outputLabel for="articulos" value="Articulos:"/><br/>
@@ -421,29 +423,29 @@
 												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.totales.reales}"/>
 												<!--p:outputLabel styleClass="janal-wid-100-txt recalculo" value="(#{manticComprasOrdendesAccion.adminOrden.totales.articulos})"/-->
 												<!--p:outputLabel styleClass="janal-wid-100-txt recalculo" value="[#{manticComprasOrdendesAccion.adminOrden.totales.cantidad}]"/-->
-									    </div>	
+											</div>	
 											<div class="ui-grid-col-2 janal-column-center">
-  											<p:outputLabel value="IVA:"/><br/>
+												<p:outputLabel value="IVA:"/><br/>
 												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.totales.iva$}"/>
-									    </div>	
+											</div>	
 											<div class="ui-grid-col-2 janal-column-center">
-											  <p:outputLabel value="Descuento:"/><br/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.totales.descuento$}"/>
-									    </div>	
+												<p:outputLabel value="Descuento:"/><br/>
+												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.totales.descuento$}"/>
+											</div>	
 											<div class="ui-grid-col-2 janal-column-center">
-											  <p:outputLabel value="Extra:"/><br/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.totales.extra$}"/>
-									    </div>	
+												<p:outputLabel value="Extra:"/><br/>
+												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.totales.extra$}"/>
+											</div>	
 											<div class="ui-grid-col-2 janal-column-center">
-											  <p:outputLabel value="Subtotal:"/><br/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.totales.subTotal$}"/>
-									    </div>	
+												<p:outputLabel value="Subtotal:"/><br/>
+												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.totales.subTotal$}"/>
+											</div>	
 											<div class="ui-grid-col-2 janal-column-center ">
-  											<p:outputLabel for="total" value="Total:"/><br/>
+												<p:outputLabel for="total" value="Total:"/><br/>
 												<p:inputText id="total" value="#{manticComprasOrdendesAccion.adminOrden.totales.total}" styleClass="recalculo" style="display:none"/>
 												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.total$}"/>
-									    </div>	
-										</div>	
+											</div>	
+										</div>											
 									</div>									
 								</div>
 							</div>
