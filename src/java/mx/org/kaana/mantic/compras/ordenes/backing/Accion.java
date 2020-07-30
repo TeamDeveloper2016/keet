@@ -210,22 +210,34 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		List<UISelectEntity> desarrollos= null;
 		UISelectEntity desarrollo       = null;
     try {
-			params= new HashMap<>();			
-			if(this.accion.equals(EAccion.AGREGAR))
-				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			        
-			else
-				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
+			params= new HashMap<>();						
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
-      this.attrs.put("desarrollos", desarrollos);			
-			if(this.accion.equals(EAccion.AGREGAR))
-				desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));				
-			else
-				desarrollo= new UISelectEntity(((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());				
-			this.attrs.put("desarrollo", desarrollo);
-			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
+			if(!desarrollos.isEmpty()){
+				this.attrs.put("desarrollos", desarrollos);			
+				if(this.accion.equals(EAccion.AGREGAR))
+					desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));				
+				else
+					desarrollo= new UISelectEntity(((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());				
+				this.attrs.put("desarrollo", desarrollo);
+				this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
+				params= new HashMap<>();
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_almacenes.id_desarrollo=" + desarrollo.getKey());
+				this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "row", params, columns));
+				List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+				if(!almacenes.isEmpty()) 
+					((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+			} // if
+			else{
+				this.attrs.put("desarrollos", new ArrayList<>());
+				this.attrs.put("desarrollo", new UISelectEntity(-1L));
+				this.attrs.put("cliente", "");
+				this.attrs.put("almacenes", new ArrayList<>());
+				((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(-1L));
+			} // else
     } // try
     catch (Exception e) {
       throw e;
@@ -545,10 +557,21 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public void doUpdateCliente(){
 		List<UISelectEntity> desarrollos= null;
 		UISelectEntity desarrollo       = null;
+		List<Columna> columns           = null;
+		Map<String, Object>params       = null;
 		try {
 			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollos");
 			desarrollo= (UISelectEntity) this.attrs.get("desarrollo");
-			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
+			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));			
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_almacenes.id_desarrollo=" + desarrollo.getKey());
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "row", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty()) 
+			  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
