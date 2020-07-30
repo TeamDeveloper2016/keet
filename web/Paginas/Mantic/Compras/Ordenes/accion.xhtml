@@ -53,6 +53,14 @@
 				return ok;
 			} // execute			
 		</script>   
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>			
 	</ui:define>
 	<ui:define name="contenido">
 		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticComprasOrdendesAccion.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgArtExpress').show();">  
@@ -125,7 +133,7 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
 								<p:selectOneMenu id="desarrollo" value="#{manticComprasOrdendesAccion.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" onstart="return janal.bloquear()" process="@this desarrollo" listener="#{manticComprasOrdendesAccion.doUpdateCliente}" update="idCliente idAlmacen" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear()" process="@this desarrollo" listener="#{manticComprasOrdendesAccion.doUpdateCliente}" update="idCliente idAlmacen idContrato lote" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombres}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -149,11 +157,34 @@
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
-								</p:selectOneMenu>                
-								<p:spacer width="1px"/><p:outputLabel value="#{manticComprasOrdendesAccion.attrs.pendientes}" escape="false" styleClass="devoluciones"/>								
+								</p:selectOneMenu>         
+								<p:outputLabel for="idContrato" value="Contrato:"/>
+								<p:selectOneMenu id="idContrato" value="#{manticComprasOrdendesAccion.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadLotes}" update="lote" process="@this idContrato" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.contratos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.etapa}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Etapa">
+										<h:outputText value="#{item.etapa}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-right" headerText="No. viviendas">
+										<h:outputText value="#{item.noViviendas}"/>
+									</p:column>   
+								</p:selectOneMenu>																						
+								<p:outputLabel for="lote" value="Lotes:"/>							
+								<p:selectCheckboxMenu id="lote" value="#{manticComprasOrdendesAccion.attrs.lote}" label="ej. M001L1" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-98" multiple="true">																		
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.lotes}" />
+								</p:selectCheckboxMenu>
+								<p:spacer width="1px"/>
+								<p:outputLabel value="#{manticComprasOrdendesAccion.attrs.pendientes}" escape="false" styleClass="devoluciones"/>																	
+              </p:panelGrid>														
+						</p:tab>
+						<p:tab title="Proveedor">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-90">								
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateProveedor}" update="idProveedorPago entregaEstimada datosProveedor datosArticulos tabla @(.devoluciones) @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateProveedor}" update="idProveedorPago entregaEstimada datosProveedor datosArticulos tabla @(.devoluciones) @(.recalculo)" process="@this contenedorGrupos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -183,14 +214,18 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="entregaEstimada" value="Entrega estimada:"/>
-								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idGasto" value="Es un gasto:"/>
 								<p:selectOneMenu id="idGasto" value="#{manticComprasOrdendesAccion.adminOrden.orden.idGasto}" styleClass="janal-wid-99">  
 		  						<f:selectItem itemLabel="SI" itemValue="1" />
                   <f:selectItem itemLabel="NO" itemValue="2" />								
-  							</p:selectOneMenu>	
-              </p:panelGrid>
+  							</p:selectOneMenu>								
+								<p:outputLabel for="familia" value="Familia de materiales:"/>							
+								<p:selectCheckboxMenu id="familia" value="#{manticComprasOrdendesAccion.attrs.familiasSeleccion}" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-98" multiple="true">																		
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.familias}" />
+								</p:selectCheckboxMenu>																								
+							</p:panelGrid>							
 							<p:separator/>
 							<p:panelGrid id="datosProveedor" columns="6" layout="grid" styleClass="janal-wid-100">		
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
@@ -217,12 +252,7 @@
 									<p:outputLabel for="plazo" value="Dias plazo para pagar: "/>
 									<p:inputText id="plazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedorPago.plazo}" readonly="true"/>
 								</p:panelGrid>
-							</p:panelGrid>	
-						</p:tab>
-						<p:tab title="Lotes">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-90">
-								
-							</p:panelGrid>
+							</p:panelGrid>															
 						</p:tab>							
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
