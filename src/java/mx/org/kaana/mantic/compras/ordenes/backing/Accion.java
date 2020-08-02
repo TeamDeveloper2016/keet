@@ -37,12 +37,14 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.compras.ordenes.reglas.AdminOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 import org.primefaces.event.TabChangeEvent;
 
 
@@ -390,36 +392,38 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		String clave              = "";
 		int countArticulos        = 0;
 		try {
-			proveedor= (UISelectEntity) this.attrs.get("proveedor");
-			familiasSeleccion= (String[]) this.attrs.get("familiasSeleccion");
-			lotesSeleccion= (String[]) this.attrs.get("lotesSeleccion");
-			claves= new String[lotesSeleccion.length];
-			for(int count=0; count < lotesSeleccion.length; count++){
-				clave= toClaveMateriales(Long.valueOf(lotesSeleccion[count]));
-				claves[count]= clave;
-			} // for			
-			params= new HashMap<>();
-			params.put("condicionClave", toCondicionClave(claves));									
-			for(String recordFamilia: familiasSeleccion)
-				familias= familias.concat(recordFamilia).concat(",");
-			params.put("familias", familias.substring(0, familias.length()-1));				
-			params.put("idProveedor", proveedor.getKey());				
-			articulos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", "materialesVariasClave", params);
-      if(articulos!= null && !articulos.isEmpty()){
-				this.getAdminOrden().getArticulos().clear();
-				for (Entity articulo : articulos) {
-					this.getAdminOrden().getArticulos().add(countArticulos, new Articulo(articulo.getKey()));
-					toMoveDataArticulo(new UISelectEntity(articulo), countArticulos);
-					countArticulos++;
-					/*articulo.toPrepare(
-						(Boolean)this.attrs.get("sinIva"), 
-						((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
-						((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
-					);
-					this.getAdminOrden().add(articulo);*/					
-				} // for
-				this.getAdminOrden().toCalculate();
-			} // if
+			if(getAdminOrden().getArticulos().isEmpty() || getAdminOrden().getArticulos().size()== 1){
+				proveedor= (UISelectEntity) this.attrs.get("proveedor");
+				familiasSeleccion= (String[]) this.attrs.get("familiasSeleccion");
+				lotesSeleccion= (String[]) this.attrs.get("lotesSeleccion");
+				claves= new String[lotesSeleccion.length];
+				for(int count=0; count < lotesSeleccion.length; count++){
+					clave= toClaveMateriales(Long.valueOf(lotesSeleccion[count]));
+					claves[count]= clave;
+				} // for			
+				params= new HashMap<>();
+				params.put("condicionClave", toCondicionClave(claves));									
+				for(String recordFamilia: familiasSeleccion)
+					familias= familias.concat(recordFamilia).concat(",");
+				params.put("familias", familias.substring(0, familias.length()-1));				
+				params.put("idProveedor", proveedor.getKey());				
+				articulos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", "materialesVariasClave", params);
+				if(articulos!= null && !articulos.isEmpty()){
+					this.getAdminOrden().getArticulos().clear();
+					for (Entity articulo : articulos) {
+						this.getAdminOrden().getArticulos().add(countArticulos, new Articulo(articulo.getKey()));
+						toMoveDataArticulo(new UISelectEntity(articulo), countArticulos);
+						countArticulos++;
+						/*articulo.toPrepare(
+							(Boolean)this.attrs.get("sinIva"), 
+							((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
+							((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
+						);
+						this.getAdminOrden().add(articulo);*/					
+					} // for
+					this.getAdminOrden().toCalculate();
+				} // if
+			} // if			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -748,8 +752,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // doUpdateCliente
 	
 	public String doAceptar() {  
-    Transaccion transaccion= null;
-    String regresar        = null;
+    Transaccion transaccion = null;
+    String regresar         = null;
+		OrdenCompraProcess orden= null;
     try {			
 			 // this.getAdminOrden().toCheckTotales();
 			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
@@ -758,7 +763,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setIdDesarrollo(((UISelectEntity)this.attrs.get("desarrollo")).getKey());
-			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+			orden= new OrdenCompraProcess();
+			orden.setOrdenCompra((OrdenCompra)this.getAdminOrden().getOrden());
+			orden.setArticulos(this.getAdminOrden().getArticulos());
+			orden.setFamilias(Arrays.asList((String[]) this.attrs.get("familiasSeleccion")));
+			orden.setLotes(Arrays.asList((String[]) this.attrs.get("lotesSeleccion")));
+			transaccion = new Transaccion(orden);
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {

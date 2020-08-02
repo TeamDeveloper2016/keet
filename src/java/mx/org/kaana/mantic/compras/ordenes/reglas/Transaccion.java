@@ -11,6 +11,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.db.dto.TcKeetOrdenesContratosLotesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -20,6 +21,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
@@ -48,6 +50,8 @@ public class Transaccion extends Inventarios implements Serializable {
 	private TcManticOrdenesBitacoraDto bitacora;
 	private Long idFaltante;
 	private Correo correo;	
+	private List<String> lotes;
+	private List<String> familias;
 
 	public Transaccion(Correo correo, Long idProveedor) {
 		super(-1L, idProveedor);
@@ -63,6 +67,12 @@ public class Transaccion extends Inventarios implements Serializable {
 		this(orden, new ArrayList<Articulo>());
 	} // Transaccion
 
+	public Transaccion(OrdenCompraProcess ordenProcess) {
+		this(ordenProcess.getOrdenCompra(), ordenProcess.getArticulos());
+		this.familias= ordenProcess.getFamilias();
+		this.lotes   = ordenProcess.getLotes();
+	} // Transaccion
+	
 	public Transaccion(TcManticOrdenesComprasDto orden, List<Articulo> articulos) {
 		super(orden.getIdAlmacen(), orden.getIdProveedor());
 		this.orden    = orden;		
@@ -113,10 +123,12 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					this.toFillArticulos(sesion);
-					bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+					if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L){
+						this.toFillArticulos(sesion);
+						bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
+						if(DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L)
+							regresar= registrarFamiliasLotes(sesion);
+					} // if
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -172,15 +184,17 @@ public class Transaccion extends Inventarios implements Serializable {
 			if(this.articulos.indexOf(item)< 0)
 				DaoFactory.getInstance().delete(sesion, item.toOrdenDetalle());
 		for (Articulo articulo: this.articulos) {
-			TcManticOrdenesDetallesDto item= articulo.toOrdenDetalle();
-			item.setIdOrdenCompra(this.orden.getIdOrdenCompra());
-			if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, item.toMap())== null) 
-		    DaoFactory.getInstance().insert(sesion, item);
-			else
-				if(articulo.isModificado())
-		      DaoFactory.getInstance().update(sesion, item);
-			articulo.setObservacion("ARTICULO SOLICITADO EN LA ORDEN DE COMPRA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
-			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
+			if(articulo.isValid()){
+				TcManticOrdenesDetallesDto item= articulo.toOrdenDetalle();
+				item.setIdOrdenCompra(this.orden.getIdOrdenCompra());
+				if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, item.toMap())== null) 
+					DaoFactory.getInstance().insert(sesion, item);
+				else
+					if(articulo.isModificado())
+						DaoFactory.getInstance().update(sesion, item);
+				articulo.setObservacion("ARTICULO SOLICITADO EN LA ORDEN DE COMPRA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
+				DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
+			} // if
 		} // for
 	}
 	
@@ -263,4 +277,24 @@ public class Transaccion extends Inventarios implements Serializable {
 		return regresar;
 	} // toClientesTipoContacto
 	
+	private boolean registrarFamiliasLotes(Session sesion) throws Exception{
+		boolean regresar                           = true;
+		TcKeetOrdenesContratosLotesDto contratoLote= null;
+		try {
+			for(String lote: this.lotes){
+				for(String familia: this.familias){
+					contratoLote= new TcKeetOrdenesContratosLotesDto();
+					contratoLote.setIdContratoLote(Long.valueOf(lote));
+					contratoLote.setIdFamilia(Long.valueOf(familia));
+					contratoLote.setIdOrdenCompra(this.orden.getIdOrdenCompra());
+					contratoLote.setIdUsuario(JsfBase.getIdUsuario());
+					DaoFactory.getInstance().insert(sesion, contratoLote);
+				} // for
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return regresar;
+	} // registrarFamiliasLotes
 } 
