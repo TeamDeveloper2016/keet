@@ -28,8 +28,10 @@
 				'contenedorGrupos\\:descuento'      : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
 				'contenedorGrupos\\:extra'          : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'precios'                           : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true},				
-				'cantidades'                        : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true}				
+				//'precios'                           : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true},				
+				//'cantidades'                        : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true}				
+				'precios'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general', individual: true},				
+				'cantidades'                        : {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general', individual: true}				
 			};	
 			
     	$(document).ready(function() {
