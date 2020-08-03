@@ -3312,7 +3312,6 @@
         where 
           id_empresa in ({sucursales})
           and upper(clave) regexp '.*{codigo}.*'
-					and tc_mantic_proveedores.id_subcontratista=2
 				order by
 				  clave
 			</select>
@@ -3329,7 +3328,6 @@
 				    or
 				    upper(rfc) regexp '.*{codigo}.*'
 				  )
-					and tc_mantic_proveedores.id_subcontratista=2
 				order by
 				  razon_social
 			</select>
@@ -3352,7 +3350,7 @@
         from      
           tc_mantic_proveedores
         where      
-          rfc = '{rfc}' and id_proveedor!= {idProveedor} and tc_mantic_proveedores.id_subcontratista=2
+          rfc = '{rfc}' and id_proveedor!= {idProveedor}
       </select>
       <select id="proveedor">
         select      
