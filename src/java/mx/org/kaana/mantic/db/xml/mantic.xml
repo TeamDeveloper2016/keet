@@ -3340,9 +3340,7 @@
         from      
           tc_mantic_proveedores
         where 
-          tc_mantic_proveedores.id_empresa in ({sucursales})
-				and 
-					tc_mantic_proveedores.id_subcontratista=2
+          tc_mantic_proveedores.id_empresa in ({sucursales})				
 				order by
 				  tc_mantic_proveedores.clave
       </select>      
