@@ -121,7 +121,7 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor lote familia" update="@(.recalculo) faltantes perdidos sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-85">		
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-90">		
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadDesarrollos}" process="@this idSucursal desarrollo" update="idAlmacen desarrollo idCliente"/>
@@ -182,7 +182,7 @@
               </p:panelGrid>														
 						</p:tab>
 						<p:tab title="Proveedor">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-85">								
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-90">
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateProveedor}" update="familia idProveedorPago entregaEstimada datosProveedor datosArticulos tabla @(.devoluciones) @(.recalculo)" process="@this contenedorGrupos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -229,8 +229,8 @@
 								</p:selectCheckboxMenu>		
 								<p:remoteCommand name="loadArts" onstart="janal.bloquear();" process="@this familia contenedorGrupos" oncomplete="janal.desbloquear();"/>
 							</p:panelGrid>							
-							<p:separator/>
-							<p:panelGrid id="datosProveedor" columns="6" layout="grid" styleClass="janal-wid-100">		
+							<p:separator style="display:none"/>
+							<p:panelGrid id="datosProveedor" columns="6" layout="grid" styleClass="janal-wid-100" style="display:none">		
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
 									<p:outputLabel for="moneda" value="Tipo de moneda:"/>
 									<p:inputText id="moneda" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.proveedor.moneda}" readonly="true"/>

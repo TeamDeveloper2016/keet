@@ -6190,8 +6190,6 @@
           tc_mantic_tipos_dias on tc_mantic_proveedores.id_tipo_dia= tc_mantic_tipos_dias.id_tipo_dia
         where 
           tc_mantic_proveedores.id_empresa in ({sucursales})
-				and 
-				  tc_mantic_proveedores.id_subcontratista=2
 				order by
 				  tc_mantic_proveedores.clave
 			</select>
