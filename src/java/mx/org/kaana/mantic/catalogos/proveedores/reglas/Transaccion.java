@@ -107,7 +107,7 @@ public class Transaccion extends IBaseTnx {
 											if(registraProveedoresServicios(sesion, idProveedor)){
 												if(registraProveedoresTransferencia(sesion, idProveedor)){
 													if(registraProveedoresFamilias(sesion, idProveedor)){
-														if(registraProveedoresFormaPago(sesion, idProveedor, true)){
+														if(registraProveedoresFormaPago(sesion, idProveedor)){
 															this.registroProveedor.getPortal().setIdProveedor(idProveedor);
 															if(this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina()) && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia()))
 																regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;					
@@ -144,7 +144,7 @@ public class Transaccion extends IBaseTnx {
 							if (registraProveedoresArticulosClientes(sesion, idProveedor)) {
 								if (registraProveedoresTipoContacto(sesion, idProveedor)) {
 									if (registraProveedoresDepartamentos(sesion, idProveedor)) {
-										if(registraProveedoresFormaPago(sesion, idProveedor, false)){
+										if(registraProveedoresFormaPago(sesion, idProveedor)){
 											if(registraProveedoresServicios(sesion, idProveedor)){
 												if(registraProveedoresTransferencia(sesion, idProveedor)){
 													if(registraProveedoresFamilias(sesion, idProveedor)){
@@ -630,7 +630,7 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // registraProveedoresTransferencia
 	
-  private boolean registraProveedoresFormaPago(Session sesion, Long idProveedor, boolean nuevo) throws Exception {
+  private boolean registraProveedoresFormaPago(Session sesion, Long idProveedor) throws Exception {
     TrManticProveedorPagoDto dto= null;
     ESql sqlAccion              = null;
     int count                   = 0;
@@ -664,7 +664,7 @@ public class Transaccion extends IBaseTnx {
 				} // for		
 				regresar = count == this.registroProveedor.getProveedoresCondicionPago().size();
 			} // if
-			else if (nuevo){
+			else {
 				dto= new TrManticProveedorPagoDto();
 				dto.setIdProveedor(idProveedor);
 				dto.setIdTipoPago(ETipoPago.EFECTIVO.getIdTipoPago());
