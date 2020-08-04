@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.org.kaana.mantic.catalogos.proveedores.reglas;
 
 import java.time.LocalDateTime;
@@ -112,7 +107,7 @@ public class Transaccion extends IBaseTnx {
 											if(registraProveedoresServicios(sesion, idProveedor)){
 												if(registraProveedoresTransferencia(sesion, idProveedor)){
 													if(registraProveedoresFamilias(sesion, idProveedor)){
-														if(registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
+														if(registraProveedoresFormaPago(sesion, idProveedor, true)){
 															this.registroProveedor.getPortal().setIdProveedor(idProveedor);
 															if(this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina()) && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia()))
 																regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;					
@@ -149,7 +144,7 @@ public class Transaccion extends IBaseTnx {
 							if (registraProveedoresArticulosClientes(sesion, idProveedor)) {
 								if (registraProveedoresTipoContacto(sesion, idProveedor)) {
 									if (registraProveedoresDepartamentos(sesion, idProveedor)) {
-										if(registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
+										if(registraProveedoresFormaPago(sesion, idProveedor, false)){
 											if(registraProveedoresServicios(sesion, idProveedor)){
 												if(registraProveedoresTransferencia(sesion, idProveedor)){
 													if(registraProveedoresFamilias(sesion, idProveedor)){
@@ -635,38 +630,51 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // registraProveedoresTransferencia
 	
-  private boolean registraProveedoresFormaPago(Session sesion, Long idProveedor, String claveProveedor) throws Exception {
-    TrManticProveedorPagoDto dto = null;
-    ESql sqlAccion = null;
-    int count = 0;
-    boolean validate = false;
-    boolean regresar = false;
+  private boolean registraProveedoresFormaPago(Session sesion, Long idProveedor, boolean nuevo) throws Exception {
+    TrManticProveedorPagoDto dto= null;
+    ESql sqlAccion              = null;
+    int count                   = 0;
+    boolean validate            = false;
+    boolean regresar            = true;
     try {
-      for (ProveedorCondicionPago proveedorCondicionPago : this.registroProveedor.getProveedoresCondicionPago()) {
-				if(proveedorCondicionPago.getDescuento()!= null && !Cadena.isVacio(proveedorCondicionPago.getDescuento())){
-					proveedorCondicionPago.setIdProveedor(idProveedor);
-					proveedorCondicionPago.setIdUsuario(JsfBase.getIdUsuario());
-					if(proveedorCondicionPago.getClave()== null || Cadena.isVacio(proveedorCondicionPago.getClave()))
-						proveedorCondicionPago.setClave(ETipoPago.fromIdTipoPago(proveedorCondicionPago.getIdTipoPago()).name().concat("-")+ proveedorCondicionPago.getPlazo());
-					dto = (TrManticProveedorPagoDto) proveedorCondicionPago;
-					sqlAccion = proveedorCondicionPago.getSqlAccion();
-					switch (sqlAccion) {
-						case INSERT:
-							dto.setIdProveedorPago(-1L);
-							validate = registrar(sesion, dto);
-							break;
-						case UPDATE:
-							validate = actualizar(sesion, dto);
-							break;
-					} // switch
-				} // if
-				else
-					validate= true;
-        if (validate) {
-          count++;
-        }
-      } // for		
-      regresar = count == this.registroProveedor.getProveedoresCondicionPago().size();
+			if(!this.registroProveedor.getProveedoresCondicionPago().isEmpty()){
+				for (ProveedorCondicionPago proveedorCondicionPago : this.registroProveedor.getProveedoresCondicionPago()) {
+					if(proveedorCondicionPago.getDescuento()!= null && !Cadena.isVacio(proveedorCondicionPago.getDescuento())){
+						proveedorCondicionPago.setIdProveedor(idProveedor);
+						proveedorCondicionPago.setIdUsuario(JsfBase.getIdUsuario());
+						if(proveedorCondicionPago.getClave()== null || Cadena.isVacio(proveedorCondicionPago.getClave()))
+							proveedorCondicionPago.setClave(ETipoPago.fromIdTipoPago(proveedorCondicionPago.getIdTipoPago()).name().concat("-")+ proveedorCondicionPago.getPlazo());
+						dto = (TrManticProveedorPagoDto) proveedorCondicionPago;
+						sqlAccion = proveedorCondicionPago.getSqlAccion();
+						switch (sqlAccion) {
+							case INSERT:
+								dto.setIdProveedorPago(-1L);
+								validate = registrar(sesion, dto);
+								break;
+							case UPDATE:
+								validate = actualizar(sesion, dto);
+								break;
+						} // switch
+					} // if
+					else
+						validate= true;
+					if (validate) {
+						count++;
+					}
+				} // for		
+				regresar = count == this.registroProveedor.getProveedoresCondicionPago().size();
+			} // if
+			else if (nuevo){
+				dto= new TrManticProveedorPagoDto();
+				dto.setIdProveedor(idProveedor);
+				dto.setIdTipoPago(ETipoPago.EFECTIVO.getIdTipoPago());
+				dto.setClave(ETipoPago.EFECTIVO.name());
+				dto.setDescuento("0.00");
+				dto.setPlazo(1L);
+				dto.setObservaciones("Registro tipo de pago default.");
+				dto.setIdUsuario(JsfBase.getIdUsuario());
+				regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;
+			} // else
     } // try
     catch (Exception e) {
       throw e;
