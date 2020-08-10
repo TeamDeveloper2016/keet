@@ -323,7 +323,8 @@ public class CFDIFactory implements Serializable {
 			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= this.facturama.Clients().Update(pivote, pivote.getId());
 		} // try
-		catch (Exception e) {			
+		catch (Exception e) {
+      LOG.error("Cliente: "+ detalleCliente);
 			throw e;
 		} // catch	
 		return regresar;
