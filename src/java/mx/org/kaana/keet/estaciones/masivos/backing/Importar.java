@@ -208,6 +208,8 @@ public class Importar extends IBaseImportar implements Serializable {
 						JsfBase.addMessage("Error:", "Ocurrio un error en la cargar masiva del archivo !", ETipoMensaje.ERROR);		
 					count++;
 				} // for
+				this.attrs.put("seleccionados", "0 de 0");
+				this.attrs.put("lote", "");
 			} // if
 			else {
 				switch (this.categoria) {

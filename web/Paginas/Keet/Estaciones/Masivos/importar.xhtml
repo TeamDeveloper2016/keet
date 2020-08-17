@@ -55,6 +55,11 @@
 			$(document).ready(function() {
 			  
 			});
+			
+			function reloadProgress() {
+				if(PF('progressBar').top=== PF('progressBar').value)
+					PF('progressBar').setValue(0);
+			}
 		</script>
 		<style>
 			.janal-upload-frame {
@@ -65,7 +70,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<p:poll widgetVar="etiqueta" interval="10" update="contenedorGrupos:procesoGlobal" autoStart="false" async="true"/>
+		<p:poll widgetVar="etiqueta" interval="5" update="contenedorGrupos:procesoGlobal" autoStart="false" async="true" oncomplete="reloadProgress();"/>
 		<p:commandButton id="progreso" action="progreso?faces-redirect=true" process="@this" style="display: none;" immediate="true" ajax="false"/>
 		<p:remoteCommand name="viewFile" actionListener="#{keetEstacionesMasivosImportar.doViewFile}" process="@this" update="@(.viewXLS)" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -110,7 +115,7 @@
 								<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" styleClass="involucrados"/>
 								<p:outputLabel for="idLimpiar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" styleClass="involucrados"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30 janal-column-center">
-									<p:selectCheckboxMenu id="idContratoLote" multiple="true" value="#{keetEstacionesMasivosImportar.attrs.izContratoLote}" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}">
+									<p:selectCheckboxMenu id="idContratoLote" multiple="true" filterPlaceholder="SELECCIONE EL LOTE" emptyLabel="NO HAY LOTES DISPONIBLES" value="#{keetEstacionesMasivosImportar.attrs.izContratoLote}" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}">
 										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.codigo or element.codigo eq ''? '': '-'} #{element.codigo}"/>
 										<p:column headerText="Ejercicio">
 											<h:outputText value="#{item.ejercicio}"/>
