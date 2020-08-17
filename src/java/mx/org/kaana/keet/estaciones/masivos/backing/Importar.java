@@ -192,31 +192,41 @@ public class Importar extends IBaseImportar implements Serializable {
 		try {
 			this.masivo.setArchivo(this.getXls().getOriginal());
 		  this.masivo.setObservaciones((String)this.attrs.get("observaciones"));
-			switch (this.categoria) {
-				case ESTACIONES:
-					idSelect= ((UISelectEntity)this.attrs.get("idContratoLote"));
+			if(ECargaMasiva.ESTACIONES.equals(this.categoria) || ECargaMasiva.MATERIALES.equals(this.categoria)) {
+				LOG.error(this.attrs.get("izContratoLote"));
+				List<UISelectEntity> lotes= (List<UISelectEntity>)this.attrs.get("lotes");
+				Object[] items= (Object[])this.attrs.get("izContratoLote");
+				int count= 1;
+				for (Object item : items) {
+					idSelect= lotes.get(lotes.indexOf(item));
+					this.attrs.put("seleccionados", count+ " de "+ items.length);
+					this.attrs.put("lote", idSelect.toString("clave")+ "-"+ idSelect.toString("codigo"));
 					transaccion= new Transaccion(this.masivo, this.categoria, idSelect.getKey(), this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
-					break;
-				case PLANTILLAS:
-					idSelect= ((UISelectEntity)this.attrs.get("idPlantilla"));
-					transaccion= new Transaccion(this.masivo, idSelect.getKey(), this.categoria, this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
-					break;
-				case MATERIALES:
-					idSelect= ((UISelectEntity)this.attrs.get("idContratoLote"));
-					transaccion= new Transaccion(this.masivo, this.categoria, idSelect.getKey(), this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
-					break;
-				case PRECIOS:
-					transaccion= new Transaccion(this.masivo, this.categoria, ((UISelectEntity)this.attrs.get("idProveedor")).getKey(), -1L, -1L);
-					break;
-				case PRECIOS_CONVENIO:
-					transaccion= new Transaccion(this.masivo, this.categoria, ((UISelectEntity)this.attrs.get("idProveedor")).getKey(), -1L, ((UISelectEntity)this.attrs.get("idCliente")).getKey());
-					break;
-			} // swtich
-      if(tuplas> 0L && transaccion!= null && transaccion.ejecutar(EAccion.PROCESAR)) {
-
-      } // if
-      else
-    		JsfBase.addMessage("Error:", "Ocurrio un error en la cargar masiva del archivo !", ETipoMensaje.ERROR);		
+					if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
+					} // if
+					else
+						JsfBase.addMessage("Error:", "Ocurrio un error en la cargar masiva del archivo !", ETipoMensaje.ERROR);		
+					count++;
+				} // for
+			} // if
+			else {
+				switch (this.categoria) {
+					case PLANTILLAS:
+						idSelect= ((UISelectEntity)this.attrs.get("idPlantilla"));
+						transaccion= new Transaccion(this.masivo, idSelect.getKey(), this.categoria, this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
+						break;
+					case PRECIOS:
+						transaccion= new Transaccion(this.masivo, this.categoria, ((UISelectEntity)this.attrs.get("idProveedor")).getKey(), -1L, -1L);
+						break;
+					case PRECIOS_CONVENIO:
+						transaccion= new Transaccion(this.masivo, this.categoria, ((UISelectEntity)this.attrs.get("idProveedor")).getKey(), -1L, ((UISelectEntity)this.attrs.get("idCliente")).getKey());
+						break;
+				} // swtich
+				if(tuplas> 0L && transaccion!= null && transaccion.ejecutar(EAccion.PROCESAR)) {
+				} // if
+				else
+					JsfBase.addMessage("Error:", "Ocurrio un error en la cargar masiva del archivo !", ETipoMensaje.ERROR);		
+			} // if	
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -346,13 +356,13 @@ public class Importar extends IBaseImportar implements Serializable {
 			if(this.attrs.get("ikContratoLote")!= null) {
 				int index= lotes.indexOf(new UISelectEntity((Long)this.attrs.get("ikContratoLote")));
 				if(index>= 0)
-					this.attrs.put("idContratoLote", lotes.get(index));
+					this.attrs.put("izContratoLote", new Object[] {lotes.get(index)});
 				else
-					this.attrs.put("idContratoLote", lotes.get(0));
+					this.attrs.put("izContratoLote", new Object[] {lotes.get(0)});
 			  this.attrs.put("ikContratoLote", null);
 			} // if
 			else
-  		  this.attrs.put("idContratoLote", lotes.get(0));
+  		  this.attrs.put("izContratoLote", new Object[] {lotes.get(0)});
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -431,15 +441,17 @@ public class Importar extends IBaseImportar implements Serializable {
 		List<UISelectEntity> lotes     = null;
 		UISelectEntity idContratoLote  = null;
 		UISelectEntity prototipo       = null;
+		Object[] items                 = null; 
 		try {
-			params=new HashMap<>();
-			estaciones=new Estaciones();
+			params    = new HashMap<>();
+			estaciones= new Estaciones();
 			switch (this.categoria) {
 				case ESTACIONES:
-					idContratoLote= (UISelectEntity)this.attrs.get("idContratoLote");
+					lotes= (List<UISelectEntity>)this.attrs.get("lotes");
+				  items= (Object[])this.attrs.get("izContratoLote");
+          if(lotes!= null && !lotes.isEmpty() && items!= null) 
+					  idContratoLote= lotes.get(lotes.indexOf(items[0]));
 					if(idContratoLote!= null) {
-						lotes= (List<UISelectEntity>)this.attrs.get("lotes");
-						idContratoLote= lotes.get(lotes.indexOf(idContratoLote));
 						estaciones.setKeyLevel(idContratoLote.toString("idEmpresa"), 0); // idEmpresa
 						estaciones.setKeyLevel(idContratoLote.toString("ejercicio"), 1); // ejercicio
 						estaciones.setKeyLevel(idContratoLote.toString("contrato"), 2); // orden del contrato
@@ -468,10 +480,11 @@ public class Importar extends IBaseImportar implements Serializable {
 						JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 					break;
 				case MATERIALES:
-					idContratoLote= (UISelectEntity)this.attrs.get("idContratoLote");
+					lotes= (List<UISelectEntity>)this.attrs.get("lotes");
+				  items= (Object[])this.attrs.get("izContratoLote");
+          if(lotes!= null && !lotes.isEmpty() && items!= null) 
+					  idContratoLote= lotes.get(lotes.indexOf(items[0]));
 					if(idContratoLote!= null) {
-						lotes= (List<UISelectEntity>)this.attrs.get("lotes");
-						idContratoLote= lotes.get(lotes.indexOf(idContratoLote));
 						estaciones.setKeyLevel(idContratoLote.toString("idEmpresa"), 0); // idEmpresa
 						estaciones.setKeyLevel(idContratoLote.toString("ejercicio"), 1); // ejercicio
 						estaciones.setKeyLevel(idContratoLote.toString("contrato"), 2); // orden del contrato

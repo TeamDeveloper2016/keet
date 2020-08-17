@@ -51,7 +51,7 @@ public class Monitoreo implements Serializable {
 	}
 
 	public Integer getPorcentaje() {
-		return new Integer((int)(this.getTotal()<= 0? 0: this.getProgreso()* 100/ this.getTotal()));
+		return (int)(this.getTotal()<= 0? 0: this.getProgreso()* 100/ this.getTotal());
 	}
 
 	public void setProgreso(Long progreso) {

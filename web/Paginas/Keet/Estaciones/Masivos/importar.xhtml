@@ -29,12 +29,15 @@
 			
       function cancel() {
 				janal.console('cancel: Se termino de procesar el archivo');
+				PF('etiqueta').stop();
         PF('progressBar').cancel();
         PF('progressBar').setValue(0);
         clearInterval(window['progress']);
       }
       
       function startTask() {
+				janal.console('start: Se inició con el proceso del archivo');
+				PF('etiqueta').start();
         PF('progressBar').cancel();
         PF('progressBar').setValue(0);
         PF('progressBar').start(parseInt($('#contenedorGrupos\\:registros').html(), 10));
@@ -50,7 +53,7 @@
 			}
 			
 			$(document).ready(function() {
-			  PF('progressBar').setValue(0);
+			  
 			});
 		</script>
 		<style>
@@ -62,6 +65,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<p:poll widgetVar="etiqueta" interval="10" update="contenedorGrupos:procesoGlobal" autoStart="false" async="true"/>
 		<p:commandButton id="progreso" action="progreso?faces-redirect=true" process="@this" style="display: none;" immediate="true" ajax="false"/>
 		<p:remoteCommand name="viewFile" actionListener="#{keetEstacionesMasivosImportar.doViewFile}" process="@this" update="@(.viewXLS)" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -106,8 +110,8 @@
 								<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" styleClass="involucrados"/>
 								<p:outputLabel for="idLimpiar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" styleClass="involucrados"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30 janal-column-center">
-									<p:selectOneMenu id="idContratoLote" value="#{keetEstacionesMasivosImportar.attrs.idContratoLote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}">
-										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.codigo or element.codigo eq ''? '': '-'} #{element.codigo}"/>
+									<p:selectCheckboxMenu id="idContratoLote" multiple="true" value="#{keetEstacionesMasivosImportar.attrs.izContratoLote}" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}">
+										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.codigo or element.codigo eq ''? '': '-'} #{element.codigo}"/>
 										<p:column headerText="Ejercicio">
 											<h:outputText value="#{item.ejercicio}"/>
 										</p:column>   
@@ -120,7 +124,7 @@
 										<p:column headerText="Etapa">
 											<h:outputText value="#{item.etapa}"/>
 										</p:column>   
-									</p:selectOneMenu>
+									</p:selectCheckboxMenu>
 									<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetEstacionesMasivosImportar.doExportar}" process="@this idContratoLote" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" />
 								</p:panelGrid>
 								<p:selectOneMenu id="idLimpiar" value="#{keetEstacionesMasivosImportar.attrs.idLimpiar}" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" converter="javax.faces.Long" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
@@ -188,9 +192,10 @@
 							<p:inputText value="#{keetEstacionesMasivosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="XLS importado: #{keetEstacionesMasivosImportar.xls.ruta}#{keetEstacionesMasivosImportar.xls.name}" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" style="#{(empty keetEstacionesMasivosImportar.xls)? 'display: none': ''}"/>
               <p:outputLabel id="tuplas" value="#{keetEstacionesMasivosImportar.masivo.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente" style="display: none"/>
-              <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt">
-                <p:outputLabel value="Total de registros a importar: #{keetEstacionesMasivosImportar.attrs.tuplas}" styleClass="importado janal-color-blue janal-font-bold"/>
-                <p:outputLabel value="Total de registros procesados: #{keetEstacionesMasivosImportar.attrs.procesados}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
+              <p:panelGrid layout="grid" columns="3" styleClass="janal-wid-100-txt" columnClasses="janal-column-left, janal-column-center, janal-column-right">
+                <p:outputLabel value="Registros a importar: #{keetEstacionesMasivosImportar.attrs.tuplas}" styleClass="importado janal-color-blue janal-font-bold"/>
+                <p:outputLabel id="procesoGlobal" value="Lotes a procesar [#{keetEstacionesMasivosImportar.attrs.seleccionados}] actual (#{keetEstacionesMasivosImportar.attrs.lote})" styleClass="importado janal-color-blue janal-font-bold"/>
+                <p:outputLabel value="Registros procesados: #{keetEstacionesMasivosImportar.attrs.procesados}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
 							</p:panelGrid>
               <p:panel styleClass="tabla-filtro" id="barra" >
                 Proceso:
