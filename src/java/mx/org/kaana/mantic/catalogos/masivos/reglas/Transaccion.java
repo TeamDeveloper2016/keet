@@ -162,6 +162,9 @@ public class Transaccion extends IBaseTnx {
 					case CODIGOS:
 						this.toCodigos(sesion, file);
 						break;
+					case MATERIAL:
+						this.toMateriales(sesion, file);
+						break;
 				} // swtich
 			} // try
 			finally {
@@ -346,6 +349,25 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toFindProveedor
 
+	private Long toFindFamilia(Session sesion, String familia) {
+		Long regresar= 1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("nombre", familia);
+			Value value= DaoFactory.getInstance().toField(sesion, "TcKeetFamiliasDto", "identically", params, "idFamilia");
+			if(value!= null && value.getData()!= null)
+				regresar= value.toLong();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindFamilia
+	
 	private Long toFindUnidadMedida(Session sesion, String codigo) {
 		Long regresar= 1L;
 		Map<String, Object> params=null;
@@ -544,7 +566,6 @@ public class Transaccion extends IBaseTnx {
 							String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							// 0           1          2        3        4          5          6           7          8        9            10            11          12        13       14
 							//CODIGO|CODIGOAUXILIAR|NOMBRE|FAMILIA|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT
-							long familia   = Numero.getLong(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents() : "0", 0L);
 							double costo   = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double menudeo = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double medio   = Numero.getDouble(sheet.getCell(6, fila).getContents()!= null? sheet.getCell(6, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
@@ -566,7 +587,6 @@ public class Transaccion extends IBaseTnx {
 										//articulo.setIdCategoria(null);
 										//articulo.setIdImagen(null);
 										articulo.setPrecio(costo);
-										articulo.setIdFamilia(familia);
 										articulo.setMenudeo(Numero.toAjustarDecimales(menudeo, articulo.getIdRedondear().equals(1L)));
 										articulo.setMedioMayoreo(Numero.toAjustarDecimales(medio, articulo.getIdRedondear().equals(1L)));
 										articulo.setMayoreo(Numero.toAjustarDecimales(mayoreo, articulo.getIdRedondear().equals(1L)));
@@ -581,8 +601,10 @@ public class Transaccion extends IBaseTnx {
 											articulo.setMaximo(maximo);
 										if(iva!= 0D)
 											articulo.setIva(iva< 1? iva* 100: iva);
-	//									if(!Cadena.isVacio(sheet.getCell(7, fila).getContents()))
-	//										articulo.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()));
+										if(!Cadena.isVacio(sheet.getCell(3, fila).getContents()))
+									  	articulo.setIdFamilia(this.toFindFamilia(sesion, sheet.getCell(3, fila).getContents()));
+										if(!Cadena.isVacio(sheet.getCell(7, fila).getContents()))
+											articulo.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()));
 										if(!Cadena.isVacio(sat))
 											articulo.setSat(sat);
 										DaoFactory.getInstance().update(sesion, articulo);
@@ -624,7 +646,7 @@ public class Transaccion extends IBaseTnx {
 											"0", // String descuento, 
 											"0", // String extra, 
 											null, // String idFacturama
-											familia, // idFamilia
+											this.toFindFamilia(sesion, sheet.getCell(3, fila).getContents()), // idFamilia
 											2L // descontinuado
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
@@ -748,6 +770,223 @@ public class Transaccion extends IBaseTnx {
     } // finally
 		return regresar;
 	} // toArticulos		
+
+  private Boolean toMateriales(Session sesion, File archivo) throws Exception {
+		Boolean regresar	      = false;
+		Workbook workbook	      = null;
+		Sheet sheet             = null;
+		TcManticArticulosCodigosDto codigos= null;
+		TcManticMasivasBitacoraDto bitacora= null;
+		try {
+      WorkbookSettings workbookSettings = new WorkbookSettings();
+      workbookSettings.setEncoding("Cp1252");	
+			workbookSettings.setExcelDisplayLanguage("MX");
+      workbookSettings.setExcelRegionalSettings("MX");
+      workbookSettings.setLocale(new Locale("es", "MX"));
+			workbook= Workbook.getWorkbook(archivo, workbookSettings);
+			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
+				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+				LOG.info("Filas del documento: "+ sheet.getRows());
+				this.errores= 0;
+				int count   = 0; 
+				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
+					try {
+						if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
+							String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							// 0           1          2        3        4          5        6       7          8      
+							//CODIGO|CODIGOAUXILIAR|NOMBRE|FAMILIA|COSTOS/IVA|UNIDADMEDIDA|IVA|STOCKMINIMO|STOCKMAXIMO
+							String familia = new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							double costo   = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double iva     = Numero.getDouble(sheet.getCell(6, fila).getContents()!= null? sheet.getCell(6, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);
+							double minimo  = Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double maximo  = Numero.getDouble(sheet.getCell(8, fila).getContents()!= null? sheet.getCell(8, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							String nombre  = new String(contenido.getBytes(ISO_8859_1), UTF_8);
+							if(costo> 0) {
+								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
+								String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
+								if(codigo.length()> 0) {
+									TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo, 1L);
+									if(articulo!= null) {
+										//articulo.setIdCategoria(null);
+										//articulo.setIdImagen(null);
+										articulo.setPrecio(costo);
+										// si trae nulo, blanco o cero se respeta el valor que tiene el campo
+										if(minimo!= 0D)
+											articulo.setMinimo(minimo);
+										if(maximo!= 0D)
+											articulo.setMaximo(maximo);
+										if(iva!= 0D)
+											articulo.setIva(iva< 1? iva* 100: iva);
+										if(!Cadena.isVacio(familia))
+  										articulo.setIdFamilia(this.toFindFamilia(sesion, familia));
+										if(!Cadena.isVacio(sheet.getCell(5, fila).getContents()))
+											articulo.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(5, fila).getContents()));
+										DaoFactory.getInstance().update(sesion, articulo);
+									} // if
+									else {
+										articulo= new TcManticArticulosDto(
+											nombre, // String descripcion, 
+											"0", // String descuentos, 
+											null, // Long idImagen, 
+											null, // Long idCategoria, 
+											"0", // String extras, 
+											null, // String metaTag, 
+											nombre, // String nombre, 
+											costo, // Double precio, 
+											iva, // Double iva, 
+											costo, // Double mayoreo, 
+											2D, // Double desperdicio, 
+											null, // String metaTagDescipcion, 
+											1L, // Long idVigente, 
+											-1L, // Long idArticulo, 
+											0D, // Double stock, 
+											costo, // Double medioMayoreo, 
+											0D, // Double pesoEstimado, 
+											this.toFindUnidadMedida(sesion, sheet.getCell(8, fila).getContents()), // Long idEmpaqueUnidadMedida, 
+											costo<= 10? 1L: 2L, // Long idRedondear, 
+											costo, // Double menudeo, 
+											null, // String metaTagTeclado, 
+											LocalDateTime.now(), // Timestamp fecha, 
+											JsfBase.getIdUsuario(), //  Long idUsuario, 
+											JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
+											0D, // Double cantidad, 
+											minimo== 0D? 10D: minimo, // Double minimo, 
+											maximo== 0D? 20D: maximo, // Double maximo, 
+											5D, // Double limiteMedioMayoreo, 
+											10D, // Double limiteMayoreo, 
+											"", // String sat, 
+											1L, // Long idArticuloTipo, 
+											2L, // Long idBarras, 
+											"0", // String descuento, 
+											"0", // String extra, 
+											null, // String idFacturama
+											this.toFindFamilia(sesion, familia), // idFamilia
+											2L // descontinuado
+										);
+										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
+										if(identico== null)
+											DaoFactory.getInstance().insert(sesion, articulo);
+										else {
+											identico.setMinimo(minimo== 0D? 10D: minimo);
+											identico.setMaximo(maximo== 0D? 20D: maximo);
+											identico.setLimiteMedioMayoreo(5D);
+											identico.setLimiteMayoreo(10D);
+											identico.setMenudeo(costo);
+											identico.setMedioMayoreo(costo);
+											identico.setMayoreo(costo);
+											identico.setIva(iva);
+											identico.setPrecio(costo);
+											DaoFactory.getInstance().update(sesion, identico);
+											articulo.setIdArticulo(identico.getIdArticulo());
+										} // if
+										Long idPrincipal= 1L;
+										if(this.toFindPrincipal(sesion, articulo.getIdArticulo(), articulo.getIdArticuloTipo()))
+											idPrincipal= 2L;
+										// insertar el codigo principal del articulo
+										codigos= new TcManticArticulosCodigosDto(
+											codigo, // String codigo, 
+											null, // Long idProveedor, 
+											JsfBase.getIdUsuario(), // Long idUsuario, 
+											idPrincipal, // Long idPrincipal, 
+											null, // String observaciones, 
+											-1L, // Long idArticuloCodigo, 
+											1L, // Long orden, 
+											articulo.getIdArticulo() // Long idArticulo
+										);
+										DaoFactory.getInstance().insert(sesion, codigos);
+										TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+											sheet.getCell(0, fila).getContents(), // String codigo, 
+											-1L, // Long idMasivaDetalle, 
+											this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+											"ESTE ARTICULO FUE AGREGADO ["+ sheet.getCell(2, fila).getContents()+ "]" // String observaciones
+										);
+										DaoFactory.getInstance().insert(sesion, detalle);
+										// aqui va el codigo para que se registre en facturama el articulo
+										// **
+										// **
+									} // if
+									// buscar si el codigo auxiliar existe para este articulo, en caso de que no insertarlo
+									codigo= new String(sheet.getCell(1, fila).getContents().getBytes(UTF_8), ISO_8859_1);
+									codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
+									Long auxiliar= this.toFindCodigoAuxiliar(sesion, codigo);
+									if(auxiliar< 0 && codigo.length()> 0) {
+										codigos= new TcManticArticulosCodigosDto(
+											codigo, // String codigo, 
+											null, // Long idProveedor, 
+											JsfBase.getIdUsuario(), // Long idUsuario, 
+											2L, // Long idPrincipal, 
+											null, // String observaciones, 
+											-1L, // Long idArticuloCodigo, 
+											this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden, 
+											articulo.getIdArticulo() // Long idArticulo
+										);
+										DaoFactory.getInstance().insert(sesion, codigos);
+									} // if
+								} // if codigo
+								monitoreo.incrementar();
+								if(fila% this.categoria.getTuplas()== 0) {
+									if(bitacora== null) {
+										bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
+										DaoFactory.getInstance().insert(sesion, bitacora);
+									} // if
+									else {
+										bitacora.setProcesados(new Long(fila));
+										bitacora.setRegistro(LocalDateTime.now());
+										DaoFactory.getInstance().update(sesion, bitacora);
+									} // else
+									this.commit();
+									this.procesados= fila;
+									LOG.warn("Realizando proceso de commit en la fila "+ this.procesados);
+								} // if
+							} // if
+							else {
+								this.errores++;
+								LOG.warn(fila+ ": ["+ nombre+ "] costo: ["+ costo+ "]");
+								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+									sheet.getCell(0, fila).getContents(), // String codigo, 
+									-1L, // Long idMasivaDetalle, 
+									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+									"EL COSTO["+ costo+ "], ESTA EN CEROS" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, detalle);
+							} // else	
+							count++;
+						} // if	
+	//					if(fila> 500)
+	//						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
+					} // try
+					catch(Exception e) {
+            LOG.error("[--->>> ["+ fila+ "] {"+ sheet.getCell(0, fila).getContents().toUpperCase()+ "} {"+ sheet.getCell(2, fila).getContents().toUpperCase()+ "} <<<---]");
+						Error.mensaje(e);
+					} // catch
+					this.procesados= count;
+					LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+				} // for
+				if(bitacora== null) {
+					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
+  				DaoFactory.getInstance().insert(sesion, bitacora);
+				} // if
+			  else {
+					bitacora.setProcesados(this.masivo.getTuplas());
+					bitacora.setRegistro(LocalDateTime.now());
+					DaoFactory.getInstance().update(sesion, bitacora);
+				} // if
+				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= count;
+				regresar= true;
+			} // if
+		} // try
+    finally {
+      if(workbook!= null) {
+        workbook.close();
+        workbook = null;
+      } // if
+    } // finally
+		return regresar;
+	} // toMateriales
 
 	private Long toNextOrden(Session sesion, Long idArticulo) throws Exception {
 		Long regresar             = 1L;

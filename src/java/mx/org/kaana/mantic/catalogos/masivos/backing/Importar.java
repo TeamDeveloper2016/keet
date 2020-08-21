@@ -241,6 +241,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 8: this.categoria= ECargaMasiva.CODIGOS;
 			  this.toLoadProveedores();
 				break;
+			case 15: this.categoria= ECargaMasiva.MATERIAL;
+				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
 			this.attrs.put("procesados", 0);
