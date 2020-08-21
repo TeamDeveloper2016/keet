@@ -857,7 +857,7 @@ public class Transaccion extends IBaseTnx {
 											maximo== 0D? 20D: maximo, // Double maximo, 
 											5D, // Double limiteMedioMayoreo, 
 											10D, // Double limiteMayoreo, 
-											"", // String sat, 
+											"40141700", // String sat, 
 											1L, // Long idArticuloTipo, 
 											2L, // Long idBarras, 
 											"0", // String descuento, 
