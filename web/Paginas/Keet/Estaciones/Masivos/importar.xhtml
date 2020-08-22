@@ -52,8 +52,12 @@
 				} // if
 			}
 			
+			function check(value) {
+				$('input[name|=\"contenedorGrupos\\:tipo\"][value|=\"'+ value+ '\"]').click();
+			}
+			
 			$(document).ready(function() {
-			  
+			  setTimeout('check(#{keetEstacionesMasivosImportar.attrs.idTipoMasivo})', 2000);
 			});
 			
 			function reloadProgress() {
@@ -157,7 +161,7 @@
 									<f:selectItem itemLabel="NO" itemValue="2"/>								
 								</p:selectOneMenu>
 							</p:panelGrid>	
-							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados" columnClasses="janal-wid-10, janal-wid-90">	
+							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados" columnClasses="janal-wid-5, janal-wid-95">	
 								<p:outputLabel for="idProveedor" value="Proveedores:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 13 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 14? '': 'none'}" styleClass="involucrados"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30 janal-column-right">
 									<p:selectOneMenu id="idProveedor" value="#{keetEstacionesMasivosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 13 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 14? '': 'none'}">

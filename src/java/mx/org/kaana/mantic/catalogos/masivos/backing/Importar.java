@@ -66,36 +66,41 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_MASIVO);
 			this.attrs.put("procesados", 0L);
-			if(JsfBase.getFlashAttribute("idTipoMasivo")!= null)
-				switch(((Long)JsfBase.getFlashAttribute("idTipoMasivo")).intValue()) {
-					case 1:
-						this.categoria= ECargaMasiva.ARTICULOS;
-						break;
-					case 2:
-						this.categoria= ECargaMasiva.CLIENTES;
-						break;
-					case 3:
-						this.categoria= ECargaMasiva.PROVEEDORES;
-						break;
-					case 4:
-						this.categoria= ECargaMasiva.REFACCIONES;
-						break;
-					case 5:
-						this.categoria= ECargaMasiva.SERVICIOS;
-						break;
-					case 6:
-						this.categoria= ECargaMasiva.EGRESOS;
-						break;
-					case 7:
-						this.categoria= ECargaMasiva.CONTEOS;
-						break;
-					case 8:
-						this.categoria= ECargaMasiva.CODIGOS;
-						this.toLoadProveedores();
-						break;
-				} // switch
+			this.attrs.put("idTipoMasivo", JsfBase.getFlashAttribute("idTipoMasivo")!= null? JsfBase.getFlashAttribute("idTipoMasivo"): ECargaMasiva.ESTACIONES.getId());
+			if(ECargaMasiva.MATERIAL.getId().equals((Long)this.attrs.get("idTipoMasivo")))
+				this.categoria= ECargaMasiva.CODIGOS;
 			else
-				this.categoria= ECargaMasiva.ARTICULOS;
+				this.categoria= ECargaMasiva.MATERIAL;
+//			if(JsfBase.getFlashAttribute("idTipoMasivo")!= null)
+//				switch(((Long)JsfBase.getFlashAttribute("idTipoMasivo")).intValue()) {
+//					case 15:
+//						this.categoria= ECargaMasiva.MATERIAL;
+//						break;
+//					case 2:
+//						this.categoria= ECargaMasiva.CLIENTES;
+//						break;
+//					case 3:
+//						this.categoria= ECargaMasiva.PROVEEDORES;
+//						break;
+//					case 4:
+//						this.categoria= ECargaMasiva.REFACCIONES;
+//						break;
+//					case 5:
+//						this.categoria= ECargaMasiva.SERVICIOS;
+//						break;
+//					case 6:
+//						this.categoria= ECargaMasiva.EGRESOS;
+//						break;
+//					case 7:
+//						this.categoria= ECargaMasiva.CONTEOS;
+//						break;
+//					case 8:
+//						this.categoria= ECargaMasiva.CODIGOS;
+//						this.toLoadProveedores();
+//						break;
+//				} // switch
+//			else
+//				this.categoria= ECargaMasiva.ARTICULOS;
 			this.attrs.put("xls", ""); 
 			this.attrs.put("tuplas", 0L);
 			this.masivo = new TcManticMasivasArchivosDto(
@@ -123,7 +128,6 @@ public class Importar extends IBaseImportar implements Serializable {
   } // init
   
 	public void doTabChange(TabChangeEvent event) {
-		this.attrs.put("idTipoMasivo", this.masivo.getIdTipoMasivo());
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoadArhivos("VistaCargasMasivasDto", "importados", this.attrs);
 	} // doTabChange		

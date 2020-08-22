@@ -354,13 +354,13 @@ public class Filtro extends Comun implements Serializable {
 	
   public String doMasivo() {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Articulos/filtro");
-    JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.ARTICULOS.getId());
+    JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.MATERIAL.getId());
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	} // doMasivo	
 	
   public String doPrecios() {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Articulos/filtro");
-    JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PROVEEDORES.getId());
+    JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PRECIOS.getId());
     return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	} // doPrecios	
 	
