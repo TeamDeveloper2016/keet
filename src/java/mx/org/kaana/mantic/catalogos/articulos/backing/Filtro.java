@@ -501,7 +501,7 @@ public class Filtro extends Comun implements Serializable {
 		Map<String, Object>params= null;
 		try {									   
 			params= this.toPrepare();
-			params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
+			params.put("sortOrder", "order by tc_mantic_articulos_codigos.codigo");
 			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ARTICULOS.getProceso(), EExportacionXls.ARTICULOS.getIdXml(), EExportacionXls.ARTICULOS.getNombreArchivo()), EExportacionXls.ARTICULOS, "CODIGO,CODIGO AUXILIAR,NOMBRE,FAMILIA,COSTO S/IVA,UNIDAD MEDIDA,IVA,STOCK MINIMO,STOCK MAXIMO"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);

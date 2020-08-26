@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticCatalogosArticulosAccion.attrs.nombreAccion} al catálogo de artículo" />
+	<ui:param name="titulo" value="#{manticCatalogosArticulosAccion.attrs.nombreAccion} al catálogo de materiales" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 
@@ -24,6 +24,7 @@
 				'contenedorGrupos\\:iva'            : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:pesoEstimado'   : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:desperidicio'   : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:idFamilia'      : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idTipoArticulo' : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:meta'           : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:metaDescripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -110,11 +111,15 @@
 								<p:outputLabel for="desperdicio" value="Desperdicio:" style="display:none"/>
 								<p:inputNumber id="desperdicio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}" style="display:none"/>                    																	
 								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
-								<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo}" styleClass="janal-wid-100-txt">
+								<p:outputLabel for="idFamilia" value="Familia:"/>
+								<p:selectOneMenu id="idFamilia" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idFamilia}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" panelStyle="height:200px">
+									<p:ajax event="change" onstart="janal.bloquear()" process="@this contenedorGrupos" update="contenedorGrupos" oncomplete="janal.desbloquear();janal.refresh();"/>
+                  <f:selectItems value="#{manticCatalogosArticulosAccion.attrs.familias}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+								</p:selectOneMenu>								
+								<p:outputLabel for="idTipoArticulo" value="Tipo material:"/>
+								<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" onstart="janal.bloquear()" process="@this contenedorGrupos" update="contenedorGrupos" oncomplete="janal.desbloquear();janal.refresh();"/>
 									<f:selectItem itemLabel="MATERIAL" itemValue="1"/>
-									<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
 									<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
 								</p:selectOneMenu>								
 								<p:outputLabel for="idBarras" value="Código de barras:"/>
@@ -136,9 +141,8 @@
 							<p:panelGrid id="panelTablaCodigos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="15" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
-										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt proveedores-codigo" value="#{codigo.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
+										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt proveedores-codigo" value="#{codigo.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();" panelStyle="height:200px" style="width:93%">
 											<p:ajax update="tablaCodigos @(.multiplo)" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.refresh(); janal.desbloquear();"/>
-											<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>				
@@ -254,7 +258,7 @@
 								</p:dataTable>	
 							</p:panelGrid>								
 						</p:tab>
-						<p:tab title="Categoría" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
+						<p:tab title="Categoría" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1' and false}">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
 								<p:outputLabel for="categoria" value="Categoría:"/>
 								<p:selectOneMenu id="categoria" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idCategoria}" styleClass="janal-wid-100-txt">									
@@ -290,7 +294,7 @@
 								</p:dataTable>	
 							</p:panelGrid>		
 						</p:tab>
-						<p:tab title="Proveedores" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
+						<p:tab title="Proveedores" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1' and false}">
 							<p:panelGrid id="panelTablaArticulosProveedores" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaArticulosProveedores" var="articuloProveedor" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosProveedores}" rows="6" paginator="false" reflow="true" rowKey="#{articuloProveedor.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										

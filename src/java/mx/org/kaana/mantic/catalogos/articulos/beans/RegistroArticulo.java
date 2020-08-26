@@ -29,6 +29,7 @@ public class RegistroArticulo implements Serializable {
 	
 	private Long idArticulo;
 	private Long idEmpaque;
+	private Long idFamilia;
 	private String observaciones;
 	private TcManticArticulosDto articulo;
 	private List<ArticuloCodigo> articulosCodigos;
@@ -102,6 +103,7 @@ public class RegistroArticulo implements Serializable {
 		this.idBarras            = idBarras;
 		this.imagen              = imagen;
 		this.idVigente           = idVigente;
+		this.idFamilia           = 1L;
 	}
 
 	public Long getIdArticulo() {
@@ -150,6 +152,14 @@ public class RegistroArticulo implements Serializable {
 
 	public void setIdEmpaque(Long idEmpaque) {
 		this.idEmpaque = idEmpaque;
+	}
+
+	public Long getIdFamilia() {
+		return idFamilia;
+	}
+
+	public void setIdFamilia(Long idFamilia) {
+		this.idFamilia=idFamilia;
 	}
 
 	public String getObservaciones() {
@@ -294,6 +304,7 @@ public class RegistroArticulo implements Serializable {
 				this.idBarras = this.articulo.getIdBarras().equals(1L);
 			  this.redondear= this.articulo.getIdRedondear()== 1L;
 			  this.idVigente= this.articulo.getIdVigente()== 1L;
+  			this.idFamilia= this.articulo.getIdFamilia();
 			} // if	
 			unidadMedida= motorBusqueda.toEmpaqueUnidadMedida(this.articulo.getIdEmpaqueUnidadMedida());
 			this.idEmpaque= unidadMedida.getIdEmpaque();
