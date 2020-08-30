@@ -98,7 +98,7 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="idFamilia" value="Familia:"/>
- 							<p:selectOneMenu id="idFamilia" value="#{manticCatalogosArticulosFiltro.attrs.idFamilia}" var="option" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" panelStyle="height:200px">
+ 							<p:selectOneMenu id="idFamilia" value="#{manticCatalogosArticulosFiltro.attrs.idFamilia}" var="option" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticCatalogosArticulosFiltro.attrs.familias}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{option.nombre}"/>

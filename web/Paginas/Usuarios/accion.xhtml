@@ -42,7 +42,11 @@
                   </p:column>                
                   <p:column>
                     <h:outputText value="#{item.materno}"/>
-                  </p:column>                
+                  </p:column>     
+									<f:facet name="footer">
+                    <p:separator />
+                    <h:outputText value="#{kajoolUsuariosAccion.criteriosBusqueda.listaPersonas.size()} persona(s)" style="font-weight:bold;"/>
+                  </f:facet>
                 </p:selectOneMenu>
                 <p:outputLabel for="tipoPerfil" value="Perfil:"/>
                 <p:selectOneMenu id="tipoPerfil" value="#{kajoolUsuariosAccion.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt information" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
