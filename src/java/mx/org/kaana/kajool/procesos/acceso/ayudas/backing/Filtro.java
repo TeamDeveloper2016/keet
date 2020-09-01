@@ -24,7 +24,9 @@ import org.apache.commons.logging.LogFactory;
 @Named(value="kajoolAccesoAyudasFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter {
+  
   private static final Log LOG = LogFactory.getLog(Filtro.class);	
+  private static final long serialVersionUID = -259513356936339049L;
 
   @Override
   public void doLoad() {

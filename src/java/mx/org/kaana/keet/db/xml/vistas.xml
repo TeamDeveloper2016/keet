@@ -1432,7 +1432,7 @@
 					tc_keet_estaciones.nombre,
 					tc_keet_estaciones.cantidad,
 					tc_keet_estaciones.costo as "costo s/iva",
-					tc_mantic_unidades_medidas.clave as "unidad medida",
+					tc_mantic_unidades_medidas.nombre as "unidad medida",
 				  date_format(tc_keet_estaciones.inicio, '%d/%m/%Y') as inicio,
 				  date_format(tc_keet_estaciones.termino, '%d/%m/%Y') as termino
 				from 
@@ -4313,8 +4313,8 @@
 			<select id="materialesClave">
 				select 
 					principal.*,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo) AS propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo) AS codigo				  
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo and tc_mantic_articulos_codigos.orden= 2 limit 1, 1) as codigo				  
 				from(
 					select
 						tc_mantic_articulos.id_articulo AS id_key,        
@@ -4378,8 +4378,8 @@
 			<select id="materialesVariasClave">
 				select 
 					principal.*,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo) AS propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo) AS codigo				  
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= principal.id_articulo and tc_mantic_articulos_codigos.orden= 2 limit 1, 1) as codigo				  
 				from(
 					select
 						tc_mantic_articulos.id_articulo AS id_key,        

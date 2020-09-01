@@ -207,7 +207,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.attrs.put("almacenes", new ArrayList<>());
 				((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(-1L));
 			} // else
-			doLoadContratos();
+			this.doLoadContratos();
     } // try
     catch (Exception e) {
       throw e;
@@ -218,7 +218,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     }// finally
 	} // doLoadDesarrollos
 	
-	private void doLoadContratos(){
+	private void doLoadContratos() {
 		List<UISelectEntity> contratos= null;
 		UISelectEntity desarrollo     = null;
 		Map<String, Object>params     = null;
@@ -229,17 +229,17 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
 			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
-			doLoadLotes();
+			this.doLoadLotes();
 		} // try
 		catch (Exception e) {			
-			throw e;
+			JsfBase.addMessageError(e);
 		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally
 	} // doLoadContratos
 	
-	public void doLoadLotes(){
+	public void doLoadLotes() {
 		UISelectEntity contrato  = null;
 		List<UISelectItem> lotes = null;
 		Map<String, Object>params= null;
@@ -725,7 +725,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		this.doLoadPerdidas();
 	} // doLookForPerdidos
 
-	public void doUpdateCliente(){
+	public void doUpdateCliente() {
 		List<UISelectEntity> desarrollos= null;
 		UISelectEntity desarrollo       = null;
 		List<Columna> columns           = null;
@@ -743,12 +743,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
 			  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-			doLoadContratos();
+			this.doLoadContratos();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
 	} // doUpdateCliente
 	
 	public String doAceptar() {  
