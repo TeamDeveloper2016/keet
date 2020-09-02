@@ -804,3 +804,5 @@ strong { font-weight: bolder; }
 .ui-fileupload-buttonbar { background: linear-gradient(to bottom, #1578c9 0%, #0b66b1 100%); }
 .ui-selectcheckboxmenu-multiple .ui-selectcheckboxmenu-trigger .ui-icon { top: 0% !important;	}
 div.ui-selectonemenu-panel { height: 350px; overflow-y: auto;}
+.ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container .ui-inputfield {width: 95%; padding-left: 50px !important;}
+.ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container {width: 98%;}

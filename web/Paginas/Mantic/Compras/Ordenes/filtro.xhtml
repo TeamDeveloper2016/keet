@@ -36,9 +36,7 @@
 			} // validaJustificacion
     </script>		
 		<style>
-			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
-				width:225% !important;
-			}
+      .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container .ui-inputfield {width: 95%; padding-left: 50px !important;}
 	  </style>		
   </ui:define>
   <ui:define name="contenido">
@@ -63,7 +61,7 @@
                 </p:column>   
               </p:selectOneMenu>
 							<p:outputLabel for="desarrollo" value="Desarrollo:"/>
-              <p:selectOneMenu id="desarrollo" value="#{manticComprasOrdenesFiltro.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="desarrollo" value="#{manticComprasOrdenesFiltro.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '- '} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
