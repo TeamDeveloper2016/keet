@@ -82,7 +82,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("seleccionado", null);
 			this.attrs.put("familiasSeleccion", new String[]{});
 			this.attrs.put("lotesSeleccion", new String[]{});
-			doLoad();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -161,7 +161,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.toLoadCondiciones(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor());
 				toUpdateFamilias();
 			} // if	
-			doLoadDesarrollos();
+			this.doLoadDesarrollos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -218,7 +218,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     }// finally
 	} // doLoadDesarrollos
 	
-	private void doLoadContratos() {
+	public void doLoadContratos() {
 		List<UISelectEntity> contratos= null;
 		UISelectEntity desarrollo     = null;
 		Map<String, Object>params     = null;

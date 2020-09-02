@@ -251,4 +251,8 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
 		return regresar;
 	}	
 
+  public void add(String key, Object value) {
+    this.put(key, new Value(key, value, key));
+  }
+  
 }

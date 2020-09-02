@@ -123,9 +123,11 @@
             <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor lote familia" update="@(.recalculo) faltantes perdidos sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-95">		
+								<p:outputLabel for="consecutivo" value="No. orden:" style="display: #{manticComprasOrdendesAccion.agregar}" styleClass="recalculo"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticComprasOrdendesAccion.agregar}"/>
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadDesarrollos}" process="@this idSucursal desarrollo" update="idAlmacen desarrollo idCliente"/>
+                  <p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) desarrollo idAlmacen idCliente idContrato lote" oncomplete="reloadDesarrollo();"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -136,7 +138,7 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
 								<p:selectOneMenu id="desarrollo" value="#{manticComprasOrdendesAccion.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" onstart="return janal.bloquear()" process="@this desarrollo" listener="#{manticComprasOrdendesAccion.doUpdateCliente}" update="@(.todos) idContrato lote idAlmacen idCliente" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticComprasOrdendesAccion.doUpdateCliente}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '- '} #{element.nombres}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -147,8 +149,6 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="idCliente" value="Cliente:"/>												
 								<p:inputText id="idCliente" value="#{manticComprasOrdendesAccion.attrs.cliente}" styleClass="todos janal-wid-100-txt" readonly="true"/>
-								<p:outputLabel for="consecutivo" value="No. orden:" style="display: #{manticComprasOrdendesAccion.agregar}" styleClass="recalculo"/>
-								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticComprasOrdendesAccion.agregar}"/>
 								<p:spacer width="1px" style="display: #{manticComprasOrdendesAccion.agregar}"/><p:separator style="display: #{manticComprasOrdendesAccion.agregar}"/>
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="todos janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
@@ -162,25 +162,27 @@
 									</p:column>   
 								</p:selectOneMenu>         
                 <p:outputLabel for="idContrato" value="Contrato:"/>
-								<p:selectOneMenu id="idContrato" value="#{manticComprasOrdendesAccion.attrs.contrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idContrato" value="#{manticComprasOrdendesAccion.attrs.contrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-99" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadLotes}" update="lote" process="@this idContrato" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '- '} #{one.etapa}"/>
 									<p:column headerText="Clave">
-										<h:outputText value="#{list.clave}"/>
+										<p:outputLabel value="#{list.clave}"/>
 									</p:column>   
 									<p:column headerText="Etapa">
-										<h:outputText value="#{list.etapa}"/>
+										<p:outputLabel value="#{list.etapa}"/>
 									</p:column>   
 									<p:column styleClass="janal-column-right" headerText="No. viviendas">
-										<h:outputText value="#{list.noViviendas}"/>
+										<p:outputLabel value="#{list.noViviendas}"/>
 									</p:column>   
 								</p:selectOneMenu>																						
 								<p:outputLabel for="lote" value="Lotes:"/>							
-								<p:selectCheckboxMenu id="lote" value="#{manticComprasOrdendesAccion.attrs.lotesSeleccion}" label="ej. M001L1" filter="true" filterMatchMode="startsWith" styleClass="todos janal-wid-99" multiple="true" onchange="loadArtsLotes();">
+                <p:selectCheckboxMenu id="lote" value="#{manticComprasOrdendesAccion.attrs.lotesSeleccion}" label="ej. M001L1" filter="true" filterMatchMode="startsWith" styleClass="todos janal-wid-99" multiple="true" onchange="loadArtsLotes();" panelStyleClass="janal-wid-90">
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.lotes}" />
 								</p:selectCheckboxMenu>
 								<p:remoteCommand name="loadArtsLotes" onstart="janal.bloquear();" process="@this lote contenedorGrupos" oncomplete="janal.desbloquear();"/>
-              </p:panelGrid>														
+              </p:panelGrid>	
+              <p:remoteCommand name="reloadContrato" onstart="janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadDesarrollo" onstart="janal.bloquear();" process="@this" update="desarrollo" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 						<p:tab title="Proveedor">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-90">

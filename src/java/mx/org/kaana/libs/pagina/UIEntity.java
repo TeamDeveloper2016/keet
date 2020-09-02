@@ -218,6 +218,7 @@ public final class UIEntity {
     } // if
     return regresar;        
   } 
+  
   public static List<UISelectEntity> seleccione(List<? extends IBaseDto> dtos, List<Columna> formato, String name) {
 		List<UISelectEntity> regresar= new ArrayList<>();
 		Entity todos = new Entity();
@@ -317,7 +318,7 @@ public final class UIEntity {
     List<IBaseDto> dtos          = null;
     try {
       dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);   
-      regresar= seleccione(dtos, formato,name);
+      regresar= seleccione(dtos, formato, name);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
