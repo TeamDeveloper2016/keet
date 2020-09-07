@@ -599,11 +599,17 @@
 									</f:facet>
 									<h:outputText value="#{row['etapa']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
-										<h:outputText value="No Viviendas"/>
+										<h:outputText value="Orden compra"/>
 									</f:facet>
-									<h:outputText value="#{row['noViviendas']}"/>	
+									<h:outputText value="#{row['consecutivo']}"/>	
+								</p:column>		
+								<p:column class="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Proveedor"/>
+									</f:facet>
+									<h:outputText value="#{row['proveedor']}"/>	
 								</p:column>		
 								<p:column class="janal-column-center MarAuto Responsive janal-wid-8">
 									<f:facet name="header">

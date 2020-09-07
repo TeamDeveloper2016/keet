@@ -5669,6 +5669,9 @@
 			<select id="lazy">
         select      
           tc_keet_ordenes_contratos_lotes.id_orden_contrato_lote as id_key,
+          tc_mantic_ordenes_compras.consecutivo,
+          tc_mantic_ordenes_compras.total,
+          tc_mantic_proveedores.razon_social as proveedor,
           tc_keet_contratos.clave as contrato,
           tc_keet_contratos.etapa,
           tc_keet_contratos.no_viviendas,
@@ -5680,6 +5683,10 @@
         from      
           tc_keet_ordenes_contratos_lotes
         inner join
+          tc_mantic_ordenes_compras on tc_keet_ordenes_contratos_lotes.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+        inner join
+          tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor
+        inner join
           tc_keet_contratos_lotes on tc_keet_ordenes_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote
         inner join
           tc_keet_contratos on tc_keet_contratos_lotes.id_contrato = tc_keet_contratos.id_contrato
@@ -5690,7 +5697,7 @@
         inner join
           tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
         where      
-          id_orden_compra = {idOrdenCompra}
+          tc_keet_contratos.id_contrato = {idContrato}
         order by
            lote, tc_keet_familias.nombre 
       </select>  

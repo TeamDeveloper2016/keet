@@ -414,7 +414,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
-      params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+      params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
       columns= new ArrayList<>();
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
