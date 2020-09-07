@@ -227,7 +227,7 @@
                   <f:selectItem itemLabel="NO" itemValue="2" />								
   							</p:selectOneMenu>								
 								<p:outputLabel for="familia" value="Familia de materiales:"/>							
-								<p:selectCheckboxMenu id="familia" value="#{manticComprasOrdendesAccion.attrs.familiasSeleccion}" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-99" multiple="true" onchange="loadArts();">
+								<p:selectCheckboxMenu id="familia" value="#{manticComprasOrdendesAccion.attrs.familiasSeleccion}" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-99" multiple="true" onchange="loadArts();" panelStyle="janal-wid-99">
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.familias}" />
 								</p:selectCheckboxMenu>		
 								<p:remoteCommand name="loadArts" onstart="janal.bloquear();" process="@this familia contenedorGrupos" oncomplete="janal.desbloquear();"/>

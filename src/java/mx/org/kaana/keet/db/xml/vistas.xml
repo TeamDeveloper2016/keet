@@ -5686,6 +5686,32 @@
         where 
           tc_keet_proveedores_familias.id_proveedor= {idProveedor}
       </select>
+			<select id="disponibles">
+        select      
+          tc_keet_familias.id_familia as id_key,
+					tc_keet_familias.*
+        from  
+					tc_keet_proveedores_familias
+				inner join
+          tc_keet_familias on tc_keet_proveedores_familias.id_familia = tc_keet_familias.id_familia
+        where 
+          tc_keet_proveedores_familias.id_proveedor= {idProveedor}
+				and 
+					tc_keet_familias.id_familia not in (select id_familia from tc_keet_ordenes_contratos_lotes where id_contrato_lote in ({contratosLotes}))
+      </select>
+			<select id="byOrdenCompra">
+        select      
+          tc_keet_familias.id_familia as id_key,
+					tc_keet_familias.*
+        from  
+					tc_keet_proveedores_familias
+				inner join
+          tc_keet_familias on tc_keet_proveedores_familias.id_familia = tc_keet_familias.id_familia
+        where 
+          tc_keet_proveedores_familias.id_proveedor= {idProveedor}
+				and 
+					tc_keet_familias.id_familia in (select id_familia from tc_keet_ordenes_contratos_lotes where id_orden_compra = {idOrdenCompra})
+      </select>
 		</unit>
 	</dml>    
 </process>
