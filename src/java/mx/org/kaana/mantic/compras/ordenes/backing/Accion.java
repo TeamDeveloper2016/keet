@@ -22,7 +22,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.db.dto.TcKeetOrdenesContratosLotesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
@@ -31,9 +30,7 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
@@ -81,8 +78,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("isPesos", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
-			this.attrs.put("familiasSeleccion", new String[]{});
-			this.attrs.put("lotesSeleccion", new String[]{});
+			// this.attrs.put("familiasSeleccion", new String[]{});
+			// this.attrs.put("lotesSeleccion", new String[]{});
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -247,28 +244,27 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // doLoadContratos
 	
 	public void doLoadLotes() {
-		List<UISelectItem> lotes = null;
+		List<UISelectEntity> lotes = null;
 		Map<String, Object>params= null;
+    List<UISelectEntity> list= new ArrayList<>();
 		try {
-			params= new HashMap<>();
+			params = new HashMap<>();
 			params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
-			lotes= UISelect.build("TcKeetContratosLotesDto", "byContratoContratistas", params, "descripcionLote", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			lotes= UIEntity.build("TcKeetContratosLotesDto", "byContratoContratistas", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("lotes", lotes);						
       if(!lotes.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR))
-          this.attrs.put("lotesSeleccion", new String[]{});
-        else { 
+        if(!this.accion.equals(EAccion.AGREGAR)) { 
     			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
           List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
           if(!items.isEmpty()) {
-            String[] list= new String[items.size()];
-            int count= 0;
             for (Entity entity : items) {
-              list[count++]= entity.toString("idContratoLote");
+              int index= lotes.indexOf(new UISelectEntity(entity.toLong("idContratoLote")));
+              if(index>= 0)
+                list.add(lotes.get(index));
             } // for
-            this.attrs.put("lotesSeleccion", list);
           } // if  
         } // if  
+         this.attrs.put("lotesSeleccion", list);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -352,30 +348,29 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // doUpdateProveedor
 	
 	private void toUpdateFamilias() throws Exception {
-		UISelectEntity proveedor   = null;
-		List<UISelectItem> familias= null;
-		Map<String, Object>params  = null;
+		UISelectEntity proveedor     = null;
+		List<UISelectEntity> familias= null;
+		Map<String, Object>params    = null;
+    List<UISelectEntity> list    = new ArrayList<>();
 		try {
 			proveedor= (UISelectEntity) this.attrs.get("proveedor");
 			params= new HashMap<>();
 			params.put("idProveedor", proveedor.getKey());
-			familias= UISelect.build("VistaFamiliasProveedoresDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			familias= UIEntity.build("VistaFamiliasProveedoresDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("familias", familias);			
       if(!familias.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR))
-          this.attrs.put("familiasSeleccion", new String[]{});
-        else { 
+        if(!this.accion.equals(EAccion.AGREGAR)) {
     			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
           List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
           if(!items.isEmpty()) {
-            String[] list= new String[items.size()];
-            int count= 0;
             for (Entity entity: items) {
-              list[count++]= entity.toString("idFamilia");
+              int index= familias.indexOf(new UISelectEntity(entity.toLong("idFamilia")));
+              if(index>= 0)
+                list.add(familias.get(index));
             } // for
-            this.attrs.put("familiasSeleccion", list);
           } // if  
-        } // else  
+        } // if  
+      this.attrs.put("familiasSeleccion", list);
 		} // try
 		catch (Exception e) {		
 			throw e;
@@ -831,4 +826,5 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   	JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
     return (String)this.attrs.get("retorno");
   } // doCancelar
+  
 }
