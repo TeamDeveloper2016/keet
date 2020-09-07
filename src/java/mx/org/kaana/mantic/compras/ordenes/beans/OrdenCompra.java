@@ -21,6 +21,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikAlmacen;
 	private UISelectEntity ikCliente;
+	private UISelectEntity ikContrato;
 	private UISelectEntity ikProveedor;
 	private UISelectEntity ikProveedorPago;
 
@@ -33,7 +34,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	}
 
 	public OrdenCompra(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
-		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idOrdenEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subTotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, -1L);
+		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idOrdenEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subTotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, -1L, -1L);
 	}
 
 	public UISelectEntity getIkEmpresa() {
@@ -85,6 +86,14 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 		if(this.ikProveedorPago!= null)
 		  this.setIdProveedorPago(this.ikProveedorPago.getKey());
 	}
+
+  public UISelectEntity getIkContrato() {
+    return ikContrato;
+  }
+
+  public void setIkContrato(UISelectEntity ikContrato) {
+    this.ikContrato = ikContrato;
+  }
 	
 	@Override
 	public Class toHbmClass() {

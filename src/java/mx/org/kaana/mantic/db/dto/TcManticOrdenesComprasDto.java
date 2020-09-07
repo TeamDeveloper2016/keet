@@ -80,17 +80,19 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="id_desarrollo")
   private Long idDesarrollo;
+  @Column (name="id_contrato")
+  private Long idContrato;
 
   public TcManticOrdenesComprasDto() {
     this(new Long(-1L));
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idDesarrollo) {
+  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idDesarrollo, Long idContrato) {
     setIdProveedorPago(idProveedorPago);
     setDescuentos(descuentos);
     setExcedentes(excedentes);
@@ -116,6 +118,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setOrden(orden);
 		setIdDesarrollo(idDesarrollo);
+		setIdContrato(idContrato);
   }
 	
   public void setIdProveedorPago(Long idProveedorPago) {
@@ -317,6 +320,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 	public void setIdDesarrollo(Long idDesarrollo) {
 		this.idDesarrollo = idDesarrollo;
 	}	
+
+  public Long getIdContrato() {
+    return idContrato;
+  }
+
+  public void setIdContrato(Long idContrato) {
+    this.idContrato = idContrato;
+  }
 	
   @Transient
   @Override
@@ -382,6 +393,8 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdDesarrollo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdContrato());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -414,13 +427,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("idDesarrollo", getIdDesarrollo());
+		regresar.put("idContrato", getIdContrato());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getIdDesarrollo()
+			getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getIdDesarrollo(), getIdContrato()
     };
     return regresar;
   }

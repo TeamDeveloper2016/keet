@@ -651,7 +651,7 @@
 				inner join  
 					 tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
 				where  
-					 upper(tc_mantic_unidades_medidas.clave)= upper('{codigo}')	or upper(tc_mantic_unidades_medidas.nombre)= upper('{codigo}')
+					 upper(tc_mantic_unidades_medidas.clave)= upper('{codigo}')	or upper(tc_mantic_unidades_medidas.nombre) like upper('{codigo}%')
 			</select>
 			<select id="importados">
         select

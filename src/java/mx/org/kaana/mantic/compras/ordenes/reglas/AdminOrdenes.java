@@ -38,6 +38,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
       this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
       this.orden.setIkProveedorPago(new UISelectEntity(new Entity(this.orden.getIdProveedorPago())));
+      this.orden.setIkContrato(new UISelectEntity(new Entity(this.orden.getIdContrato())));
 		}	// if
 		else {
 		  this.setArticulos(new ArrayList<>());
@@ -45,6 +46,10 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
+      this.orden.setIkAlmacen(new UISelectEntity(-1L));
+      this.orden.setIkCliente(new UISelectEntity(-1L));
+      this.orden.setIkProveedor(new UISelectEntity(-1L));
+      this.orden.setIkContrato(new UISelectEntity(-1L));
 		} // else	
 		this.toStartCalculate();
 	}
@@ -96,6 +101,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
 
 	@Override
 	public void setDescuento(String descuento) {
-		this.orden.setDescuento(descuento);;
+		this.orden.setDescuento(descuento);
 	}	
+  
 }

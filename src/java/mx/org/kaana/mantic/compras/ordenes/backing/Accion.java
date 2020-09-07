@@ -22,6 +22,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.db.dto.TcKeetOrdenesContratosLotesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
@@ -159,7 +160,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				else
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(proveedores.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
 				this.toLoadCondiciones(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor());
-				toUpdateFamilias();
+				this.toUpdateFamilias();
 			} // if	
 			this.doLoadDesarrollos();
     } // try
@@ -187,20 +188,26 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
 			if(!desarrollos.isEmpty()){
 				this.attrs.put("desarrollos", desarrollos);			
-				if(this.accion.equals(EAccion.AGREGAR))
-					desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));				
-				else
+				if(this.accion.equals(EAccion.AGREGAR)) {
+ 					desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));				
+  				this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
+        } // if  
+        else {
 					desarrollo= new UISelectEntity(((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());				
+  				this.attrs.put("cliente", "");
+        } // else  
 				this.attrs.put("desarrollo", desarrollo);
-				this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
 				params= new HashMap<>();
 				params.put(Constantes.SQL_CONDICION, "tc_mantic_almacenes.id_desarrollo=" + desarrollo.getKey());
 				this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "row", params, columns));
 				List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 				if(!almacenes.isEmpty()) 
-					((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));				
+   				if(this.accion.equals(EAccion.AGREGAR))
+            ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedor(almacenes.get(0));
+          else  
+  				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacen())));
 			} // if
-			else{
+      else {
 				this.attrs.put("desarrollos", new ArrayList<>());
 				this.attrs.put("desarrollo", new UISelectEntity(-1L));
 				this.attrs.put("cliente", "");
@@ -229,6 +236,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
 			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+      if(!contratos.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(0));
+        else  
+          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(contratos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkContrato())));
 			this.doLoadLotes();
 		} // try
 		catch (Exception e) {			
@@ -249,7 +261,21 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			params.put("idContrato", contrato.getKey());
 			lotes= UISelect.build("TcKeetContratosLotesDto", "byContratoContratistas", params, "descripcionLote", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("lotes", lotes);						
-			this.attrs.put("lotesSeleccion", new String[]{});
+      if(!lotes.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          this.attrs.put("lotesSeleccion", new String[]{});
+        else { 
+    			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(TcKeetOrdenesContratosLotesDto.class, "lotes", params);
+          if(!items.isEmpty()) {
+            String[] list= new String[items.size()];
+            int count= 0;
+            for (Entity entity : items) {
+              list[count++]= entity.toString("idContratoLote");
+            } // for
+            this.attrs.put("lotesSeleccion", list);
+          } // if  
+        } // if  
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -324,7 +350,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.toSearchCodigos();
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
-			toUpdateFamilias();
+			this.toUpdateFamilias();
 		}	// try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -332,7 +358,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // catch   
 	} // doUpdateProveedor
 	
-	private void toUpdateFamilias(){
+	private void toUpdateFamilias() throws Exception {
 		UISelectEntity proveedor   = null;
 		List<UISelectItem> familias= null;
 		Map<String, Object>params  = null;
@@ -342,7 +368,21 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			params.put("idProveedor", proveedor.getKey());
 			familias= UISelect.build("VistaFamiliasProveedoresDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("familias", familias);			
-			this.attrs.put("familiasSeleccion", new String[]{});
+      if(!familias.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          this.attrs.put("familiasSeleccion", new String[]{});
+        else { 
+    			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(TcKeetOrdenesContratosLotesDto.class, "lotes", params);
+          if(!items.isEmpty()) {
+            String[] list= new String[items.size()];
+            int count= 0;
+            for (Entity entity: items) {
+              list[count++]= entity.toString("idFamilia");
+            } // for
+            this.attrs.put("familiasSeleccion", list);
+          } // if  
+        } // else  
 		} // try
 		catch (Exception e) {		
 			throw e;
@@ -382,7 +422,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // doTabChange
   
 	public void toLoadArticulos() {
-		List<Entity> articulos  = null;
+		List<Entity> articulos    = null;
     Map<String, Object> params= null;
 		UISelectEntity proveedor  = null;
 		String[] familiasSeleccion= null;
