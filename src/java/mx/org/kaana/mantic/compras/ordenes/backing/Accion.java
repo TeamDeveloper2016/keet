@@ -178,7 +178,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		List<Columna> columns           = null;
     Map<String, Object> params      = null;		
 		List<UISelectEntity> desarrollos= null;
-		UISelectEntity desarrollo       = null;
     try {
 			params= new HashMap<>();						
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
@@ -186,19 +185,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
-			if(!desarrollos.isEmpty()){
+			if(!desarrollos.isEmpty()) {
 				this.attrs.put("desarrollos", desarrollos);			
-				if(this.accion.equals(EAccion.AGREGAR)) {
- 					desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));				
-  				this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));
-        } // if  
-        else {
-					desarrollo= new UISelectEntity(((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());				
-  				this.attrs.put("cliente", "");
-        } // else  
-				this.attrs.put("desarrollo", desarrollo);
-				params= new HashMap<>();
-				params.put(Constantes.SQL_CONDICION, "tc_mantic_almacenes.id_desarrollo=" + desarrollo.getKey());
+				if(this.accion.equals(EAccion.AGREGAR)) 
+          ((OrdenCompra)this.getAdminOrden().getOrden()).setIkDesarrollo(desarrollos.get(0));
+        else
+				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkDesarrollo(desarrollos.get(desarrollos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkDesarrollo())));
+			  this.attrs.put("cliente", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkDesarrollo().toString("razonSocial"));
+        columns.clear();
+        columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				params.clear();
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_almacenes.id_desarrollo=" + ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
 				this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "row", params, columns));
 				List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 				if(!almacenes.isEmpty()) 
@@ -209,7 +207,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			} // if
       else {
 				this.attrs.put("desarrollos", new ArrayList<>());
-				this.attrs.put("desarrollo", new UISelectEntity(-1L));
+				((OrdenCompra)this.getAdminOrden().getOrden()).setIkDesarrollo(new UISelectEntity(-1L));
 				this.attrs.put("cliente", "");
 				this.attrs.put("almacenes", new ArrayList<>());
 				((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(-1L));
@@ -227,15 +225,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	public void doLoadContratos() {
 		List<UISelectEntity> contratos= null;
-		UISelectEntity desarrollo     = null;
 		Map<String, Object>params     = null;
 		try {
-			desarrollo= (UISelectEntity) this.attrs.get("desarrollo");
 			params= new HashMap<>();
-			params.put("idDesarrollo", desarrollo.getKey());
+			params.put("idDesarrollo", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdDesarrollo());
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
-			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
       if(!contratos.isEmpty()) 
         if(this.accion.equals(EAccion.AGREGAR))
           ((OrdenCompra)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(0));
@@ -252,13 +247,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // doLoadContratos
 	
 	public void doLoadLotes() {
-		UISelectEntity contrato  = null;
 		List<UISelectItem> lotes = null;
 		Map<String, Object>params= null;
 		try {
-			contrato= (UISelectEntity) this.attrs.get("contrato");
 			params= new HashMap<>();
-			params.put("idContrato", contrato.getKey());
+			params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
 			lotes= UISelect.build("TcKeetContratosLotesDto", "byContratoContratistas", params, "descripcionLote", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("lotes", lotes);						
       if(!lotes.isEmpty()) 
@@ -266,7 +259,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           this.attrs.put("lotesSeleccion", new String[]{});
         else { 
     			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(TcKeetOrdenesContratosLotesDto.class, "lotes", params);
+          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
           if(!items.isEmpty()) {
             String[] list= new String[items.size()];
             int count= 0;
@@ -373,7 +366,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           this.attrs.put("familiasSeleccion", new String[]{});
         else { 
     			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(TcKeetOrdenesContratosLotesDto.class, "lotes", params);
+          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
           if(!items.isEmpty()) {
             String[] list= new String[items.size()];
             int count= 0;
@@ -586,8 +579,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		List<UISelectEntity> contratos= null;
 		try {
 			contratos= (List<UISelectEntity>) this.attrs.get("contratos");
-			contrato= (UISelectEntity) this.attrs.get("contrato");
-			regresar= new StringBuilder();
+			contrato = ((OrdenCompra)this.getAdminOrden().getOrden()).getIkDesarrollo();
+			regresar = new StringBuilder();
 			regresar.append(Cadena.rellenar(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), 3, '0', true));
 			regresar.append(Fecha.getAnioActual());
 			regresar.append(Cadena.rellenar(contratos.get(contratos.indexOf(contrato)).toString("orden"), 3, '0', true));
@@ -772,7 +765,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		Map<String, Object>params       = null;
 		try {
 			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollos");
-			desarrollo= (UISelectEntity) this.attrs.get("desarrollo");
+			desarrollo = ((OrdenCompra)this.getAdminOrden().getOrden()).getIkDesarrollo();
 			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));			
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -806,7 +799,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setIdDesarrollo(((UISelectEntity)this.attrs.get("desarrollo")).getKey());
 			orden= new OrdenCompraProcess();
 			orden.setOrdenCompra((OrdenCompra)this.getAdminOrden().getOrden());
 			orden.setArticulos(this.getAdminOrden().getArticulos());

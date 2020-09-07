@@ -20,6 +20,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	
 	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikAlmacen;
+	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
 	private UISelectEntity ikProveedor;
@@ -87,12 +88,24 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 		  this.setIdProveedorPago(this.ikProveedorPago.getKey());
 	}
 
+  public UISelectEntity getIkDesarrollo() {
+    return ikDesarrollo;
+  }
+
+  public void setIkDesarrollo(UISelectEntity ikDesarrollo) {
+    this.ikDesarrollo = ikDesarrollo;
+		if(this.ikDesarrollo!= null)
+		  this.setIdDesarrollo(this.ikDesarrollo.getKey());
+  }
+
   public UISelectEntity getIkContrato() {
     return ikContrato;
   }
 
   public void setIkContrato(UISelectEntity ikContrato) {
     this.ikContrato = ikContrato;
+		if(this.ikContrato!= null)
+		  this.setIdContrato(this.ikContrato.getKey());
   }
 	
 	@Override

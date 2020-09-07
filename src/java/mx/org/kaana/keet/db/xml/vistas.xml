@@ -2893,12 +2893,9 @@
 					tc_keet_contratos_puntos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista
 				where
 					tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}
-				and
-					tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= {idContratoLoteContratista}
-				and 
-					tc_keet_contratos_puntos_contratistas.id_punto_paquete= {idPuntoPaquete}
-				and 
-					tc_keet_contratos_destajos_contratistas.id_estacion_estatus != {idEstacionEstatus}
+				  and tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= {idContratoLoteContratista}
+				  and tc_keet_contratos_puntos_contratistas.id_punto_paquete= {idPuntoPaquete}
+				  and tc_keet_contratos_destajos_contratistas.id_estacion_estatus != {idEstacionEstatus}
 			</select>
 			<select id="evidenciaDestajoProveedor">
 				select 
@@ -2912,10 +2909,8 @@
 					tc_keet_contratos_destajos_proveedores.id_estacion= {idEstacion}
 				and
 					tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= {idContratoLoteProveedor}
-				and 
-					tc_keet_contratos_puntos_proveedores.id_punto_paquete= {idPuntoPaquete}
-				and 
-					tc_keet_contratos_destajos_proveedores.id_estacion_estatus != {idEstacionEstatus}
+				  and tc_keet_contratos_puntos_proveedores.id_punto_paquete= {idPuntoPaquete}
+				  and tc_keet_contratos_destajos_proveedores.id_estacion_estatus != {idEstacionEstatus}
 			</select>
 			<select id="allImportados">
 				select 
@@ -4349,10 +4344,8 @@
 						tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 					where
 						tc_keet_materiales.clave like '{clave}%'				
-					and 
-						tc_keet_materiales.nivel=7
-					and 
-						tc_mantic_articulos.id_familia in ({familias})				
+					  and tc_keet_materiales.nivel=7
+					  and tc_mantic_articulos.id_familia in ({familias})				
 					group by 
 						tc_mantic_articulos.id_articulo,
 						tc_keet_materiales.nivel,        
@@ -4414,10 +4407,8 @@
 						tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 					where
 						{condicionClave}
-					and 
-						tc_keet_materiales.nivel=7
-					and 
-						tc_mantic_articulos.id_familia in ({familias})				
+					  and tc_keet_materiales.nivel=7
+					  and tc_mantic_articulos.id_familia in ({familias})				
 					group by 
 						tc_mantic_articulos.id_articulo,
 						tc_keet_materiales.nivel,        

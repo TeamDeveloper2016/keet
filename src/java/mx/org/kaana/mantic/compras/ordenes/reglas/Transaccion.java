@@ -281,8 +281,8 @@ public class Transaccion extends Inventarios implements Serializable {
 		boolean regresar                           = true;
 		TcKeetOrdenesContratosLotesDto contratoLote= null;
 		try {
-			for(String lote: this.lotes){
-				for(String familia: this.familias){
+			for(String lote: this.lotes) {
+				for(String familia: this.familias) {
 					contratoLote= new TcKeetOrdenesContratosLotesDto();
 					contratoLote.setIdContratoLote(Long.valueOf(lote));
 					contratoLote.setIdFamilia(Long.valueOf(familia));
@@ -297,4 +297,5 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // catch	
 		return regresar;
 	} // registrarFamiliasLotes
+  
 } 
