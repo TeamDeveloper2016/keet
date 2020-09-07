@@ -42,7 +42,6 @@ import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 import org.primefaces.event.TabChangeEvent;
 
 
@@ -407,8 +406,34 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.doLoadFaltantes();
 		else if(event.getTab().getTitle().equals("Ventas perdidas")) 
       this.doLoadPerdidas();
+		else if(event.getTab().getTitle().equals("Historial")) 
+      this.doLoadHistorico();
 	} // doTabChange
   
+  public void doLoadHistorico() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+      columns= new ArrayList<>();
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("familia", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      this.attrs.put("historico", UIEntity.build("VistaFamiliasProveedoresDto", "lazy", params, columns, Constantes.SQL_TODOS_REGISTROS));
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    }// finally
+	}
+
 	public void toLoadArticulos() {
 		List<Entity> articulos    = null;
     Map<String, Object> params= null;

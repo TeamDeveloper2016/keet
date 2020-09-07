@@ -5666,6 +5666,34 @@
 			</select>
 		</unit>
 		<unit id="VistaFamiliasProveedoresDto">
+			<select id="lazy">
+        select      
+          tc_keet_ordenes_contratos_lotes.id_orden_contrato_lote as id_key,
+          tc_keet_contratos.clave as contrato,
+          tc_keet_contratos.etapa,
+          tc_keet_contratos.no_viviendas,
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_contratos_lotes.clave,
+          tc_keet_familias.nombre as familia,
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) usuario,  
+          tc_keet_ordenes_contratos_lotes.registro
+        from      
+          tc_keet_ordenes_contratos_lotes
+        inner join
+          tc_keet_contratos_lotes on tc_keet_ordenes_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote
+        inner join
+          tc_keet_contratos on tc_keet_contratos_lotes.id_contrato = tc_keet_contratos.id_contrato
+        inner join
+          tc_keet_familias on tc_keet_ordenes_contratos_lotes.id_familia = tc_keet_familias.id_familia
+        inner join
+          tc_janal_usuarios on tc_keet_ordenes_contratos_lotes.id_usuario= tc_janal_usuarios.id_usuario
+        inner join
+          tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+        where      
+          id_orden_compra = {idOrdenCompra}
+        order by
+           lote, tc_keet_familias.nombre 
+      </select>  
 			<select id="row">
         select      
           tc_keet_familias.id_familia as id_key,
