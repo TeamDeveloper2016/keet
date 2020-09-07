@@ -17,6 +17,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
@@ -50,8 +51,8 @@ public class Transaccion extends Inventarios implements Serializable {
 	private TcManticOrdenesBitacoraDto bitacora;
 	private Long idFaltante;
 	private Correo correo;	
-	private List<String> lotes;
-	private List<String> familias;
+	private List<UISelectEntity> lotes;
+	private List<UISelectEntity> familias;
 
 	public Transaccion(Correo correo, Long idProveedor) {
 		super(-1L, idProveedor);
@@ -281,11 +282,11 @@ public class Transaccion extends Inventarios implements Serializable {
 		boolean regresar                           = true;
 		TcKeetOrdenesContratosLotesDto contratoLote= null;
 		try {
-			for(String lote: this.lotes) {
-				for(String familia: this.familias) {
+			for(UISelectEntity lote: this.lotes) {
+				for(UISelectEntity familia: this.familias) {
 					contratoLote= new TcKeetOrdenesContratosLotesDto();
-					contratoLote.setIdContratoLote(Long.valueOf(lote));
-					contratoLote.setIdFamilia(Long.valueOf(familia));
+					contratoLote.setIdContratoLote(lote.getKey());
+					contratoLote.setIdFamilia(familia.getKey());
 					contratoLote.setIdOrdenCompra(this.orden.getIdOrdenCompra());
 					contratoLote.setIdUsuario(JsfBase.getIdUsuario());
 					DaoFactory.getInstance().insert(sesion, contratoLote);

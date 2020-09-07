@@ -391,9 +391,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Articulos")) {
-			String[]familias= (String[]) this.attrs.get("familiasSeleccion");
-			String[]lotes= (String[]) this.attrs.get("lotesSeleccion");			
-			if(familias.length>= 1 && lotes.length>= 1){
+			List<UISelectEntity>familias= (List<UISelectEntity>) this.attrs.get("familiasSeleccion");
+			List<UISelectEntity>lotes   = (List<UISelectEntity>) this.attrs.get("lotesSeleccion");			
+			if(familias.size()> 0 && lotes.size()> 0) {
 				this.toLoadArticulos();
 				UIBackingUtilities.update("contenedorGrupos:sinIva");
 				UIBackingUtilities.update("contenedorGrupos:paginator");
@@ -413,8 +413,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		List<Entity> articulos    = null;
     Map<String, Object> params= null;
 		UISelectEntity proveedor  = null;
-		String[] familiasSeleccion= null;
-		String[] lotesSeleccion   = null;
+		List<UISelectEntity> familiasSeleccion= null;
+		List<UISelectEntity> lotesSeleccion   = null;
 		String[] claves           = null;
 		String familias           = "";
 		String clave              = "";
@@ -422,17 +422,17 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		try {
 			if(getAdminOrden().getArticulos().isEmpty() || getAdminOrden().getArticulos().size()== 1){
 				proveedor= (UISelectEntity) this.attrs.get("proveedor");
-				familiasSeleccion= (String[]) this.attrs.get("familiasSeleccion");
-				lotesSeleccion= (String[]) this.attrs.get("lotesSeleccion");
-				claves= new String[lotesSeleccion.length];
-				for(int count=0; count < lotesSeleccion.length; count++){
-					clave= toClaveMateriales(Long.valueOf(lotesSeleccion[count]));
+				familiasSeleccion= (List<UISelectEntity>) this.attrs.get("familiasSeleccion");
+				lotesSeleccion   = (List<UISelectEntity>) this.attrs.get("lotesSeleccion");
+				claves= new String[lotesSeleccion.size()];
+				for(int count=0; count < lotesSeleccion.size(); count++){
+					clave= this.toClaveMateriales(lotesSeleccion.get(count).getKey());
 					claves[count]= clave;
 				} // for			
 				params= new HashMap<>();
 				params.put("condicionClave", toCondicionClave(claves));									
-				for(String recordFamilia: familiasSeleccion)
-					familias= familias.concat(recordFamilia).concat(",");
+				for(UISelectEntity recordFamilia: familiasSeleccion)
+					familias= familias.concat(recordFamilia.getKey().toString()).concat(",");
 				params.put("familias", familias.substring(0, familias.length()-1));				
 				params.put("idProveedor", proveedor.getKey());				
 				articulos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", "materialesVariasClave", params);
@@ -797,8 +797,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			orden= new OrdenCompraProcess();
 			orden.setOrdenCompra((OrdenCompra)this.getAdminOrden().getOrden());
 			orden.setArticulos(this.getAdminOrden().getArticulos());
-			orden.setFamilias(Arrays.asList((String[]) this.attrs.get("familiasSeleccion")));
-			orden.setLotes(Arrays.asList((String[]) this.attrs.get("lotesSeleccion")));
+			orden.setFamilias((List<UISelectEntity>) this.attrs.get("familiasSeleccion"));
+			orden.setLotes((List<UISelectEntity>) this.attrs.get("lotesSeleccion"));
 			transaccion = new Transaccion(orden);
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {

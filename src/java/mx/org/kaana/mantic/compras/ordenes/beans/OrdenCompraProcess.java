@@ -1,19 +1,20 @@
 package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.util.List;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 public class OrdenCompraProcess {
 
 	private OrdenCompra ordenCompra;
 	private List<Articulo> articulos;
-	private List<String> lotes;
-	private List<String> familias;
+	private List<UISelectEntity> lotes;
+	private List<UISelectEntity> familias;
 
 	public OrdenCompraProcess() {
 		this(null, null, null, null);
 	}
 	
-	public OrdenCompraProcess(OrdenCompra ordenCompra, List<Articulo> articulos, List<String> lotes, List<String> familias) {
+	public OrdenCompraProcess(OrdenCompra ordenCompra, List<Articulo> articulos, List<UISelectEntity> lotes, List<UISelectEntity> familias) {
 		this.ordenCompra= ordenCompra;
 		this.articulos  = articulos;
 		this.lotes      = lotes;
@@ -36,19 +37,19 @@ public class OrdenCompraProcess {
 		this.articulos = articulos;
 	}
 
-	public List<String> getLotes() {
+	public List<UISelectEntity> getLotes() {
 		return lotes;
 	}
 
-	public void setLotes(List<String> lotes) {
+	public void setLotes(List<UISelectEntity> lotes) {
 		this.lotes = lotes;
 	}
 
-	public List<String> getFamilias() {
+	public List<UISelectEntity> getFamilias() {
 		return familias;
 	}
 
-	public void setFamilias(List<String> familias) {
+	public void setFamilias(List<UISelectEntity> familias) {
 		this.familias = familias;
 	}	
   
