@@ -282,11 +282,11 @@ public class Transaccion extends Inventarios implements Serializable {
 		boolean regresar                           = true;
 		TcKeetOrdenesContratosLotesDto contratoLote= null;
 		try {
-			for(UISelectEntity lote: this.lotes) {
-				for(UISelectEntity familia: this.familias) {
+			for(Object lote: this.lotes) {
+				for(Object familia: this.familias) {
 					contratoLote= new TcKeetOrdenesContratosLotesDto();
-					contratoLote.setIdContratoLote(lote.getKey());
-					contratoLote.setIdFamilia(familia.getKey());
+					contratoLote.setIdContratoLote(((UISelectEntity)lote).getKey());
+					contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
 					contratoLote.setIdOrdenCompra(this.orden.getIdOrdenCompra());
 					contratoLote.setIdUsuario(JsfBase.getIdUsuario());
 					DaoFactory.getInstance().insert(sesion, contratoLote);

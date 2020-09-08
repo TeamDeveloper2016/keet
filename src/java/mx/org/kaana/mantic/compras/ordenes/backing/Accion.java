@@ -42,6 +42,7 @@ import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 import org.primefaces.event.TabChangeEvent;
 
 
@@ -77,8 +78,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("isPesos", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
-			// this.attrs.put("familiasSeleccion", new String[]{});
-			// this.attrs.put("lotesSeleccion", new String[]{});
+			this.attrs.put("familiasSeleccion", new Object[] {});
+			this.attrs.put("lotesSeleccion", new Object[] {});
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -243,9 +244,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // doLoadContratos
 	
 	public void doLoadLotes() {
-		List<UISelectEntity> lotes = null;
-		Map<String, Object>params= null;
-    List<UISelectEntity> list= new ArrayList<>();
+		List<UISelectEntity> lotes= null;
+		Map<String, Object>params = null;
+    Object[] list             = null;
 		try {
 			params = new HashMap<>();
 			params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
@@ -256,14 +257,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
           List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
           if(!items.isEmpty()) {
+            list     = new Object[items.size()];
+            int count= 0;
             for (Entity entity : items) {
               int index= lotes.indexOf(new UISelectEntity(entity.toLong("idContratoLote")));
               if(index>= 0)
-                list.add(lotes.get(index));
+                list[count++]= lotes.get(index);
             } // for
           } // if  
         } // if  
-         this.attrs.put("lotesSeleccion", list);
+      if(list== null)
+        list= new Object[]{};
+      this.attrs.put("lotesSeleccion", list);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -350,26 +355,30 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		UISelectEntity proveedor     = null;
 		List<UISelectEntity> familias= null;
 		Map<String, Object>params    = null;
-    List<UISelectEntity> list    = new ArrayList<>();
+    Object[] list                = null;
 		try {
 			proveedor= (UISelectEntity) this.attrs.get("proveedor");
 			params= new HashMap<>();
 			params.put("idProveedor", proveedor.getKey());
 			familias= UIEntity.build("VistaFamiliasProveedoresDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("familias", familias);			
-      if(!familias.isEmpty()) 
+      if(!familias.isEmpty())
         if(!this.accion.equals(EAccion.AGREGAR)) {
     			params.put("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
           List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
           if(!items.isEmpty()) {
+            list     = new Object[items.size()];
+            int count= 0;
             for (Entity entity: items) {
               int index= familias.indexOf(new UISelectEntity(entity.toLong("idFamilia")));
               if(index>= 0)
-                list.add(familias.get(index));
+                list[count++]= familias.get(index);
             } // for
           } // if  
         } // if  
-      this.attrs.put("familiasSeleccion", list);
+      if(list== null)
+        list= new Object[]{};
+      this.attrs.put("familiasSeleccion",  list);
 		} // try
 		catch (Exception e) {		
 			throw e;
@@ -389,25 +398,32 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // doUpdateAlmacen
 
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Articulos")) {
-			List<UISelectEntity>familias= (List<UISelectEntity>) this.attrs.get("familiasSeleccion");
-			List<UISelectEntity>lotes   = (List<UISelectEntity>) this.attrs.get("lotesSeleccion");			
-			if(familias.size()> 0 && lotes.size()> 0) {
-				this.toLoadArticulos();
-				UIBackingUtilities.update("contenedorGrupos:sinIva");
-				UIBackingUtilities.update("contenedorGrupos:paginator");
-			} // if
-			else{
-				getAdminOrden().getArticulos().clear();
-				JsfBase.addMessage("Es necesario seleccionar los lotes y las familias de articulos para la carga de articulos !", ETipoMensaje.INFORMACION);
-			} // else			
-		} // if	
-		else if(event.getTab().getTitle().equals("Faltantes")) 
-      this.doLoadFaltantes();
-		else if(event.getTab().getTitle().equals("Ventas perdidas")) 
-      this.doLoadPerdidas();
-		else if(event.getTab().getTitle().equals("Historial")) 
-      this.doLoadHistorico();
+    switch (event.getTab().getTitle()) {
+      case "Articulos":
+        Object[] familias= (Object[])this.attrs.get("familiasSeleccion");
+        Object[] lotes   = (Object[])this.attrs.get("lotesSeleccion");
+        if(familias.length> 0 && lotes.length> 0) {
+          this.toLoadArticulos(Arrays.asList(familias), Arrays.asList(lotes));
+          UIBackingUtilities.update("contenedorGrupos:sinIva");
+          UIBackingUtilities.update("contenedorGrupos:paginator");
+        } // if
+        else {
+          getAdminOrden().getArticulos().clear();
+          JsfBase.addMessage("Es necesario seleccionar los lotes y las familias de articulos para la carga de articulos !", ETipoMensaje.INFORMACION);
+        } // else			
+        break;
+      case "Faltantes":
+        this.doLoadFaltantes();
+        break;
+      case "Ventas perdidas":
+        this.doLoadPerdidas();
+        break;
+      case "Historial":
+        this.doLoadHistorico();
+        break;
+      default:
+        break;
+    }
 	} // doTabChange
   
   public void doLoadHistorico() {
@@ -434,48 +450,49 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     }// finally
 	}
 
-	public void toLoadArticulos() {
+	private void toLoadArticulos(List<Object> familiasSeleccion, List<Object> lotesSeleccion) {
 		List<Entity> articulos    = null;
     Map<String, Object> params= null;
 		UISelectEntity proveedor  = null;
-		List<UISelectEntity> familiasSeleccion= null;
-		List<UISelectEntity> lotesSeleccion   = null;
-		String[] claves           = null;
-		String familias           = "";
-		String clave              = "";
-		int countArticulos        = 0;
+		StringBuilder familias    = new StringBuilder();
+		int count                 = 0;
 		try {
-			if(getAdminOrden().getArticulos().isEmpty() || getAdminOrden().getArticulos().size()== 1){
+			if(getAdminOrden().getArticulos().isEmpty() || getAdminOrden().getArticulos().size()== 1) {
+				params   = new HashMap<>();
 				proveedor= (UISelectEntity) this.attrs.get("proveedor");
-				familiasSeleccion= (List<UISelectEntity>) this.attrs.get("familiasSeleccion");
-				lotesSeleccion   = (List<UISelectEntity>) this.attrs.get("lotesSeleccion");
-				claves= new String[lotesSeleccion.size()];
-				for(int count=0; count < lotesSeleccion.size(); count++){
-					clave= this.toClaveMateriales(lotesSeleccion.get(count).getKey());
-					claves[count]= clave;
-				} // for			
-				params= new HashMap<>();
-				params.put("condicionClave", toCondicionClave(claves));									
-				for(UISelectEntity recordFamilia: familiasSeleccion)
-					familias= familias.concat(recordFamilia.getKey().toString()).concat(",");
-				params.put("familias", familias.substring(0, familias.length()-1));				
-				params.put("idProveedor", proveedor.getKey());				
-				articulos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", "materialesVariasClave", params);
-				if(articulos!= null && !articulos.isEmpty()){
-					this.getAdminOrden().getArticulos().clear();
-					for (Entity articulo : articulos) {
-						this.getAdminOrden().getArticulos().add(countArticulos, new Articulo(articulo.getKey()));
-						toMoveDataArticulo(new UISelectEntity(articulo), countArticulos);
-						countArticulos++;
-						/*articulo.toPrepare(
-							(Boolean)this.attrs.get("sinIva"), 
-							((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
-							((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
-						);
-						this.getAdminOrden().add(articulo);*/					
-					} // for
-					this.getAdminOrden().toCalculate();
-				} // if
+        StringBuilder sb= new StringBuilder();
+        for (Object lote: lotesSeleccion) {
+          familias.delete(0, familias.length());
+          for (Object familia: familiasSeleccion) {
+            params.put("idContratoLote", ((UISelectEntity)lote).getKey());
+            params.put("idFamilia", ((UISelectEntity)familia).getKey());
+            params.put("idContrato", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdContrato());
+            Value idKey= (Value)DaoFactory.getInstance().toField("VistaFamiliasProveedoresDto", "existe", params, "idKey");
+            if(idKey== null || idKey.getData()== null) {
+              familias.append(((UISelectEntity)familia).getKey()).append(", ");
+            } // if
+          } // for
+          if(familias.length()> 0) {
+            String clave= this.toClaveMateriales(((UISelectEntity)lote).getKey());
+            sb.append("(tc_keet_materiales.clave like '").append(clave).append("%' and tc_mantic_articulos.id_familia in (").append(familias.substring(0, familias.length()- 2)).append("))");
+            sb.append(" or ");
+          } // if
+        } // for
+        if(sb.length()> 0) {
+          params.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));				
+          params.put("idProveedor", proveedor.getKey());				
+          articulos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCapturaMaterialesDto", "materialesVariasClave", params);
+          if(articulos!= null && !articulos.isEmpty()){
+            this.getAdminOrden().getArticulos().clear();
+            for (Entity articulo : articulos) {
+              this.getAdminOrden().getArticulos().add(count, new Articulo(articulo.getKey()));
+              this.toMoveDataArticulo(new UISelectEntity(articulo), count++);
+            } // for
+            this.getAdminOrden().toCalculate();
+          } // if
+        } // if
+        else 
+          this.getAdminOrden().toStartCalculate();
 			} // if			
 		} // try
 		catch (Exception e) {
@@ -578,7 +595,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		}
 	}
 	
-	private String toCondicionClave(String[] claves){
+	private String toCondicionClave(String[] claves) {
 		String regresar        = null;
 		StringBuilder condicion= null;
 		try {
@@ -822,8 +839,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			orden= new OrdenCompraProcess();
 			orden.setOrdenCompra((OrdenCompra)this.getAdminOrden().getOrden());
 			orden.setArticulos(this.getAdminOrden().getArticulos());
-			orden.setFamilias((List<UISelectEntity>) this.attrs.get("familiasSeleccion"));
-			orden.setLotes((List<UISelectEntity>) this.attrs.get("lotesSeleccion"));
+			orden.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
+			orden.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
 			transaccion = new Transaccion(orden);
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
@@ -851,5 +868,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   	JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
     return (String)this.attrs.get("retorno");
   } // doCancelar
+ 
+  public void doEraseArticulos() {
+    this.getAdminOrden().getArticulos().clear();
+    if(this.getAdminOrden().getArticulos().size()> 0)
+      this.getAdminOrden().toCalculate();
+  }
   
 }

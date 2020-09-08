@@ -4383,9 +4383,9 @@
 						sum(tc_keet_materiales.cantidad) cantidad,        
 						tc_mantic_articulos.precio,
 						tc_mantic_unidades_medidas.nombre unidad_medida,
-						'   ' AS origen,
+						'   ' as origen,
 						tc_mantic_articulos.descripcion,				  
-						tc_mantic_articulos.precio AS original,
+						tc_mantic_articulos.precio as original,
 						tc_mantic_articulos.menudeo,
 						tc_mantic_articulos.medio_mayoreo,
 						tc_mantic_articulos.mayoreo,
@@ -4394,7 +4394,7 @@
 						tc_mantic_articulos.limite_mayoreo,
 						tc_mantic_articulos.iva,
 						tc_mantic_articulos.id_redondear,
-						CONCAT(IFNULL(tc_mantic_articulos.descuento, '0'), ',', IFNULL(tc_mantic_articulos.extra, '0')) AS porcentajes
+						concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes
 					from
 						tc_keet_materiales
 					inner join 
@@ -4406,9 +4406,8 @@
 					inner join 
 						tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 					where
-						{condicionClave}
-					  and tc_keet_materiales.nivel=7
-					  and tc_mantic_articulos.id_familia in ({familias})				
+					  tc_keet_materiales.nivel=7
+					  and ({condicion})
 					group by 
 						tc_mantic_articulos.id_articulo,
 						tc_keet_materiales.nivel,        
@@ -5700,7 +5699,21 @@
           tc_keet_contratos.id_contrato = {idContrato}
         order by
            lote, tc_keet_familias.nombre 
-      </select>  
+      </select>
+      <select id="existe">
+        select      
+          tc_keet_ordenes_contratos_lotes.id_orden_contrato_lote as id_key
+        from      
+          tc_keet_ordenes_contratos_lotes
+        inner join
+          tc_keet_contratos_lotes on tc_keet_ordenes_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote
+        inner join
+          tc_keet_contratos on tc_keet_contratos_lotes.id_contrato = tc_keet_contratos.id_contrato
+        where      
+          tc_keet_contratos.id_contrato = {idContrato}
+          and tc_keet_ordenes_contratos_lotes.id_familia= {idFamilia}
+          and tc_keet_ordenes_contratos_lotes.id_contrato_lote= {idContratoLote}
+      </select>
 			<select id="row">
         select      
           tc_keet_familias.id_familia as id_key,

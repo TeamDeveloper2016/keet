@@ -120,7 +120,7 @@
 						<p:outputLabel value="LA ORDEN DE COMPRA [#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}] SE (AUTO)GUARDO EL DIA #{manticComprasOrdendesAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticComprasOrdendesAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor lote familia" update="@(.recalculo) historico faltantes perdidos sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
+            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor idContrato lote familia" update="@(.recalculo) historico faltantes perdidos sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-95">		
 								<p:outputLabel for="consecutivo" value="No. orden:" style="display: #{manticComprasOrdendesAccion.agregar}" styleClass="recalculo"/>
@@ -177,6 +177,7 @@
 								</p:selectOneMenu>																						
 								<p:outputLabel for="lote" value="Lotes:"/>							
                 <p:selectCheckboxMenu id="lote" value="#{manticComprasOrdendesAccion.attrs.lotesSeleccion}" converter="janal.convertidor.Entity" label="ej. M001L1" filter="true" filterMatchMode="startsWith" styleClass="todos janal-wid-99" multiple="true" onchange="loadArtsLotes();" panelStyleClass="janal-wid-90" >
+                  <p:ajax event="change" listener="#{manticComprasOrdendesAccion.doEraseArticulos}" update="datosArticulos registros tabla" process="@this"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.lotes}" var="two" itemValue="#{two.key}" itemLabel="#{two.descripcionLote}"/>
 								</p:selectCheckboxMenu>
 								<p:remoteCommand name="loadArtsLotes" onstart="janal.bloquear();" process="@this lote contenedorGrupos" oncomplete="janal.desbloquear();"/>
@@ -228,6 +229,7 @@
   							</p:selectOneMenu>								
 								<p:outputLabel for="familia" value="Familia de materiales:"/>							
 								<p:selectCheckboxMenu id="familia" value="#{manticComprasOrdendesAccion.attrs.familiasSeleccion}" converter="janal.convertidor.Entity" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-99" multiple="true" onchange="loadArts();" panelStyle="janal-wid-99">
+                  <p:ajax event="change" listener="#{manticComprasOrdendesAccion.doEraseArticulos}" update="datosArticulos registros tabla" process="@this"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.familias}" var="three" itemValue="#{three.key}" itemLabel="#{three.nombre}"/>
 								</p:selectCheckboxMenu>		
 								<p:remoteCommand name="loadArts" onstart="janal.bloquear();" process="@this familia contenedorGrupos" oncomplete="janal.desbloquear();"/>
@@ -275,7 +277,7 @@
 											</p:panelGrid>	
 											<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 												<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" style="margin-top: -7px;">
-													<p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas"  style="float: right; display:#{manticComprasOrdendesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
+													<p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas" style="float: right; display:#{manticComprasOrdendesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
 													<p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticComprasOrdendesAccion.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticComprasOrdendesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas #{manticComprasOrdendesAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'disabled': ''}">
 														<p:ajax event="change" process="@this" listener="#{manticComprasOrdendesAccion.doResetDataTable()}" update="contenedorGrupos:tabla" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
 				  								</p:inputSwitch>			
@@ -287,13 +289,13 @@
 													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)" onstart="return !janal.precio($('#contenedorGrupos\\:tipoDeCambio'), '1').error;"/>
 												</p:inputText>	
 											</p:panelGrid>	
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                      <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" rendered="false">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
 												<p:inputText id="descuento" styleClass="janal-wid-90 janal-column-right key-press-enter" value="#{manticComprasOrdendesAccion.adminOrden.orden.descuento}">
 													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateDescuento}" process="@this descuento" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:descuento', 'contenedorGrupos\\:extra'); return true;" oncomplete="janal.reset();"/>
 												</p:inputText>	
 											</p:panelGrid>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" rendered="false">
 											  <p:outputLabel for="extra" value="% Extra:"/>
 											  <p:inputText id="extra" styleClass="janal-wid-90 janal-column-right key-press-enter" value="#{manticComprasOrdendesAccion.adminOrden.orden.extras}">
 													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateExtras}" process="@this extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:extra'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:extra', 'contenedorGrupos\\:descuento'); return true;" oncomplete="janal.reset();"/>
@@ -390,14 +392,14 @@
 														 </div>
 													</div>	
 												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                        <p:column class="janal-column-right MarAuto Responsive janal-wid-8" rendered="false">
 													<f:facet name="header">
 														<h:outputText value="% Descuento"/>
 													</f:facet>
 													<p:outputLabel value="#{row['descuento']}"/>
 													<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
 												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-6" rendered="false">
 													<f:facet name="header">
 														<h:outputText value="% Extra"/>
 													</f:facet>

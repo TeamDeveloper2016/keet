@@ -7,14 +7,14 @@ public class OrdenCompraProcess {
 
 	private OrdenCompra ordenCompra;
 	private List<Articulo> articulos;
-	private List<UISelectEntity> lotes;
-	private List<UISelectEntity> familias;
+	private List lotes;
+	private List familias;
 
 	public OrdenCompraProcess() {
 		this(null, null, null, null);
 	}
 	
-	public OrdenCompraProcess(OrdenCompra ordenCompra, List<Articulo> articulos, List<UISelectEntity> lotes, List<UISelectEntity> familias) {
+	public OrdenCompraProcess(OrdenCompra ordenCompra, List<Articulo> articulos, List lotes, List familias) {
 		this.ordenCompra= ordenCompra;
 		this.articulos  = articulos;
 		this.lotes      = lotes;
@@ -37,19 +37,19 @@ public class OrdenCompraProcess {
 		this.articulos = articulos;
 	}
 
-	public List<UISelectEntity> getLotes() {
+	public List getLotes() {
 		return lotes;
 	}
 
-	public void setLotes(List<UISelectEntity> lotes) {
+	public void setLotes(List lotes) {
 		this.lotes = lotes;
 	}
 
-	public List<UISelectEntity> getFamilias() {
+	public List getFamilias() {
 		return familias;
 	}
 
-	public void setFamilias(List<UISelectEntity> familias) {
+	public void setFamilias(List familias) {
 		this.familias = familias;
 	}	
   
