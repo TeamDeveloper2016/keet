@@ -56,6 +56,14 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
   	    this.setArticulos(this.toLoadOrdenDetalle());
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
+      this.orden.setIkDesarrollo(new UISelectEntity(new Entity(this.orden.getIdDesarrollo())));
+      this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
+      this.orden.setIkContrato(new UISelectEntity(new Entity(this.orden.getIdContrato())));
+      this.orden.setIkBanco(new UISelectEntity(new Entity(this.orden.getIdBanco())));
+      this.orden.setIkTipoMedioPago(new UISelectEntity(new Entity(this.orden.getIdTipoMedioPago())));
+      this.orden.setIkTipoPago(new UISelectEntity(new Entity(this.orden.getIdTipoPago())));
+      this.orden.setIkAlmacenista(new UISelectEntity(new Entity(this.orden.getIdAlmacenista())));
+      this.orden.setIkEmpresaTipoContacto(new UISelectEntity(new Entity(this.orden.getIdEmpresaTipoContacto())));
 		}	// if
 		else {
   		this.orden.setIdNotaTipo(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
@@ -68,6 +76,14 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 			this.orden.setConsecutivo(this.toConsecutivo("0"));
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.orden.setIkDesarrollo(new UISelectEntity(-1L));
+      this.orden.setIkCliente(new UISelectEntity(-1L));
+      this.orden.setIkContrato(new UISelectEntity(-1L));
+      this.orden.setIkBanco(new UISelectEntity(-1L));
+      this.orden.setIkTipoMedioPago(new UISelectEntity(-1L));
+      this.orden.setIkTipoPago(new UISelectEntity(-1L));
+      this.orden.setIkAlmacenista(new UISelectEntity(-1L));
+      this.orden.setIkEmpresaTipoContacto(new UISelectEntity(-1L));
 		} // else	
 		for (Articulo articulo : this.getArticulos()) {
 			if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()<= 0)

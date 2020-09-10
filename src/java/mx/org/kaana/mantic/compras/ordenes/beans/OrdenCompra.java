@@ -25,6 +25,11 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	private UISelectEntity ikContrato;
 	private UISelectEntity ikProveedor;
 	private UISelectEntity ikProveedorPago;
+	private UISelectEntity ikBanco;
+	private UISelectEntity ikTipoMedioPago;
+	private UISelectEntity ikTipoPago;
+	private UISelectEntity ikAlmacenista;
+	private UISelectEntity ikEmpresaTipoContacto;
 
 	public OrdenCompra() {
 		this(-1L);
@@ -35,7 +40,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	}
 
 	public OrdenCompra(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
-		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idOrdenEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subTotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, -1L, -1L);
+		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idOrdenEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subTotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, -1L, -1L, -1L, -1L, -1L, null, -1L, -1L);
 	}
 
 	public UISelectEntity getIkEmpresa() {
@@ -56,16 +61,6 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 		this.ikAlmacen=ikAlmacen;
 		if(this.ikAlmacen!= null)
 		  this.setIdAlmacen(this.ikAlmacen.getKey());
-	}
-
-	public UISelectEntity getIkCliente() {
-		return ikCliente;
-	}
-
-	public void setIkCliente(UISelectEntity ikCliente) {
-		this.ikCliente=ikCliente;
-		if(this.ikCliente!= null)
-		  this.setIdCliente(this.ikCliente.getKey());
 	}
 
 	public UISelectEntity getIkProveedor() {
@@ -98,6 +93,16 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 		  this.setIdDesarrollo(this.ikDesarrollo.getKey());
   }
 
+	public UISelectEntity getIkCliente() {
+		return ikCliente;
+	}
+
+	public void setIkCliente(UISelectEntity ikCliente) {
+		this.ikCliente=ikCliente;
+		if(this.ikCliente!= null)
+		  this.setIdCliente(this.ikCliente.getKey());
+	}
+
   public UISelectEntity getIkContrato() {
     return ikContrato;
   }
@@ -106,6 +111,56 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
     this.ikContrato = ikContrato;
 		if(this.ikContrato!= null)
 		  this.setIdContrato(this.ikContrato.getKey());
+  }
+
+  public UISelectEntity getIkBanco() {
+    return ikBanco;
+  }
+
+  public void setIkBanco(UISelectEntity ikBanco) {
+    this.ikBanco = ikBanco;
+		if(this.ikBanco!= null)
+		  this.setIdBanco(this.ikBanco.getKey());
+  }
+
+  public UISelectEntity getIkTipoMedioPago() {
+    return ikTipoMedioPago;
+  }
+
+  public void setIkTipoMedioPago(UISelectEntity ikTipoMedioPago) {
+    this.ikTipoMedioPago = ikTipoMedioPago;
+		if(this.ikTipoMedioPago!= null)
+		  this.setIdTipoMedioPago(this.ikTipoMedioPago.getKey());
+  }
+
+  public UISelectEntity getIkTipoPago() {
+    return ikTipoPago;
+  }
+
+  public void setIkTipoPago(UISelectEntity ikTipoPago) {
+    this.ikTipoPago = ikTipoPago;
+		if(this.ikTipoPago!= null)
+		  this.setIdTipoPago(this.ikTipoPago.getKey());
+  }
+
+  public UISelectEntity getIkAlmacenista() {
+    return ikAlmacenista;
+  }
+
+  public void setIkAlmacenista(UISelectEntity ikAlmacenista) {
+    this.ikAlmacenista = ikAlmacenista;
+		if(this.ikAlmacenista!= null)
+		  this.setIdAlmacenista(this.ikAlmacenista.getKey());
+  }
+
+  public UISelectEntity getIkEmpresaTipoContacto() {
+    return ikEmpresaTipoContacto;
+  }
+
+  public void setIkEmpresaTipoContacto(UISelectEntity ikEmpresaTipoContacto) {
+    this.ikEmpresaTipoContacto = ikEmpresaTipoContacto;
+		if(this.ikEmpresaTipoContacto!= null)
+		  this.setIdEmpresaTipoContacto(this.ikEmpresaTipoContacto.getKey());
   }
 	
 	@Override

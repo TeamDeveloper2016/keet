@@ -14,15 +14,19 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
 		<script type="text/javascript">
 	   Janal.Control.fields = {				 				
-				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:idCliente'      : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idContrato'     : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:idProveedorPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:consecutivo'      : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idAlmacen_focus'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idCliente_focus'  : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idContrato_focus' : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idProveedor_focus': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idTipoMedioPago'  : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idBanco_focus'    : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:referencia'       : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:idAlmacenista_focus': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idEmpresaTipoContacto_focus': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:dias'           : {validaciones: 'libre', mascara: 'entero', grupo: 'general'},
 				'contenedorGrupos\\:entregaEstimada': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:idGasto'        : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:idGasto_focus'  : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:tipoDeCambio'   : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'articulo'},			
@@ -161,6 +165,16 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>         
+                <p:outputLabel for="idAlmacenista" value="Almacenista:"/>
+                <p:selectOneMenu id="idAlmacenista" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacenista}" var="chalan" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt todos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                  <f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenistas}" var="alma" itemValue="#{alma}" itemLabel="#{alma.nombreCompleto}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{chalan.nombreCompleto}"/>
+                  </p:column>   
+                  <p:column headerText="Puesto">
+                    <h:outputText value="#{chalan.puesto}"/>
+                  </p:column>   
+                </p:selectOneMenu>
                 <p:outputLabel for="idContrato" value="Contrato:"/>
                 <p:selectOneMenu id="idContrato" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-99" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadLotes}" update="lote" process="@this idContrato" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -182,7 +196,7 @@
 								</p:selectCheckboxMenu>
 								<p:remoteCommand name="loadArtsLotes" onstart="janal.bloquear();" process="@this lote contenedorGrupos" oncomplete="janal.desbloquear();"/>
               </p:panelGrid>	
-              <p:remoteCommand name="reloadContrato" onstart="janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadContrato" onstart="janal.bloquear();" process="@this" update="idContrato idAlmacenista" oncomplete="janal.desbloquear();"/>
               <p:remoteCommand name="reloadDesarrollo" onstart="janal.bloquear();" process="@this" update="desarrollo" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 						<p:tab title="Proveedor">
@@ -201,8 +215,8 @@
 										<h:outputText value="#{item.diasEntrega}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel for="idProveedorPago" value="Condición de pago:"/>
-								<p:selectOneMenu id="idProveedorPago" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:outputLabel for="idProveedorPago" value="Condición de pago:" rendered="false"/>
+								<p:selectOneMenu id="idProveedorPago" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdatePlazo}" update="datosProveedor datosArticulos tabla @(.filas) @(.recalculo)" process="@this"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
@@ -262,6 +276,53 @@
 								</p:panelGrid>
 							</p:panelGrid>															
 						</p:tab>							
+						<p:tab title="Bancos">
+							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+      							<p:panelGrid id="bancos" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-95">
+  			     					<p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
+                      <p:selectOneMenu id="idTipoMedioPago" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                        <p:ajax event="change" process="@this" listener="#{manticComprasOrdendesAccion.doCheckTipoMedioPago}" update="@(.banco)"/>
+                        <f:selectItems value="#{manticComprasOrdendesAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                        <p:column headerText="Clave">
+                          <h:outputText value="#{item.clave}"/>
+                        </p:column>   
+                        <p:column headerText="Nombre">
+                          <h:outputText value="#{item.nombre}"/>
+                        </p:column>   
+                      </p:selectOneMenu>
+                      <p:outputLabel for="idBanco" value="Banco:" styleClass="banco"/>
+                      <p:selectOneMenu id="idBanco" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not manticComprasOrdendesAccion.attrs.isBanco}">
+                        <f:selectItems value="#{manticComprasOrdendesAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+                        <p:column headerText="Nombre">
+                          <h:outputText value="#{item.nombre}"/>
+                        </p:column>   
+                        <p:column headerText="Razón social">
+                          <h:outputText value="#{item.razonSocial}"/>
+                        </p:column>   
+                      </p:selectOneMenu>
+                      <p:outputLabel for="referencia" value="Referencia:" styleClass="banco"/>
+                      <p:inputText id="referencia" value="#{manticComprasOrdendesAccion.adminOrden.orden.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not manticComprasOrdendesAccion.attrs.isBanco}"/>
+                      <p:outputLabel for="idTipoPago" value="Método de pago:" rendered="false"/>												
+                      <p:selectOneMenu id="idTipoPago" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikTipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">					
+                        <f:selectItems value="#{manticComprasOrdendesAccion.attrs.tiposPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                        <p:column headerText="Clave">
+                          <h:outputText value="#{item.clave}"/>
+                        </p:column>   
+                        <p:column headerText="Nombre">
+                          <h:outputText value="#{item.nombre}"/>
+                        </p:column>   
+                      </p:selectOneMenu>
+          						<p:outputLabel for="idEmpresaTipoContacto" value="Correo contacto:"/>
+                      <p:selectOneMenu id="idEmpresaTipoContacto" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikEmpresaTipoContacto}" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                        <f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresaTiposContactos}" var="next" itemValue="#{next}" itemLabel="#{next.valor}"/>
+                      </p:selectOneMenu>
+                    </p:panelGrid> 
+                  </div>
+                </div>  
+              </div> 
+            </p:tab>  
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">

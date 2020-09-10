@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.db.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -91,17 +90,36 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   private Double deuda;
   @Column (name="original")
   private Double original;
+  @Column (name="id_cliente")
+  private Long idCliente;
+  @Column (name="id_desarrollo")
+  private Long idDesarrollo;
+  @Column (name="id_contrato")
+  private Long idContrato;
+  @Column (name="id_banco")
+  private Long idBanco;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
+  @Column (name="id_tipo_pago")
+  private Long idTipoPago;
+  @Column (name="referencia")
+  private String referencia;
+  @Column (name="id_almacenista")
+  private Long idAlmacenista;
+  @Column (name="id_empresa_tipo_contacto")
+  private Long idEmpresaTipoContacto;  
+  
 	
   public TcManticNotasEntradasDto() {
     this(new Long(-1L));
   }
 
   public TcManticNotasEntradasDto(Long key) {
-    this(null, null, null, null, null, LocalDate.now(), null, new Long(-1L), LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 30L, LocalDate.now(), 0D, null, 0D);
+    this(null, null, null, null, null, LocalDate.now(), null, new Long(-1L), LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 30L, LocalDate.now(), 0D, null, 0D, -1L, -1L, -1L, -1L, -1L, -1L, null, -1L, -1L);
     setKey(key);
   }
 
-  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idNotaTipo, LocalDate fechaRecepcion, String extras, Long idNotaEntrada, LocalDate fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long diasPlazo, LocalDate fechaPago, Double deuda, Long idProveedorPago, Double original) {
+  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idNotaTipo, LocalDate fechaRecepcion, String extras, Long idNotaEntrada, LocalDate fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long diasPlazo, LocalDate fechaPago, Double deuda, Long idProveedorPago, Double original, Long idDesarrollo, Long idCliente, Long idContrato, Long idBanco, Long idTipoMedioPago, Long idTipoPago, String referencia, Long idAlmacenista, Long idEmpresaTipoContacto) {
     setDescuentos(descuentos);
     setExcedentes(excedentes);
     setIdProveedor(idProveedor);
@@ -132,6 +150,15 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     setDeuda(deuda);
 		this.idProveedorPago= idProveedorPago;
 		this.original= original;
+		this.idCliente= idCliente;
+		this.idDesarrollo= idDesarrollo;
+		this.idContrato= idContrato;
+    this.idBanco= idBanco;
+    this.idTipoMedioPago= idTipoMedioPago;
+    this.idTipoPago= idTipoPago;
+    this.referencia= referencia;
+    this.idAlmacenista= idAlmacenista;
+    this.idEmpresaTipoContacto= idEmpresaTipoContacto;
 	}
 
   public void setDescuentos(Double descuentos) {
@@ -374,6 +401,78 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		this.original=original;
 	}
 
+  public Long getIdCliente() {
+    return idCliente;
+  }
+
+  public void setIdCliente(Long idCliente) {
+    this.idCliente = idCliente;
+  }
+
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
+  }
+
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
+  }
+
+  public Long getIdContrato() {
+    return idContrato;
+  }
+
+  public void setIdContrato(Long idContrato) {
+    this.idContrato = idContrato;
+  }
+
+  public Long getIdBanco() {
+    return idBanco;
+  }
+
+  public void setIdBanco(Long idBanco) {
+    this.idBanco = idBanco;
+  }
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Long getIdTipoPago() {
+    return idTipoPago;
+  }
+
+  public void setIdTipoPago(Long idTipoPago) {
+    this.idTipoPago = idTipoPago;
+  }
+
+  public String getReferencia() {
+    return referencia;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
+  public Long getIdAlmacenista() {
+    return idAlmacenista;
+  }
+
+  public void setIdAlmacenista(Long idAlmacenista) {
+    this.idAlmacenista = idAlmacenista;
+  }
+
+  public Long getIdEmpresaTipoContacto() {
+    return idEmpresaTipoContacto;
+  }
+
+  public void setIdEmpresaTipoContacto(Long idEmpresaTipoContacto) {
+    this.idEmpresaTipoContacto = idEmpresaTipoContacto;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -448,7 +547,25 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.append(getDeuda());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOriginal());
-    regresar.append("]");
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDesarrollo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCliente());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdContrato());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdBanco());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getReferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAlmacenista());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresaTipoContacto());
+     regresar.append("]");
   	return regresar.toString();
   }
 
@@ -485,13 +602,22 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.put("fechaPago", getFechaPago());
 		regresar.put("deuda", getDeuda());
 		regresar.put("original", getOriginal());
+		regresar.put("idDesarrollo", getIdDesarrollo());
+		regresar.put("idCliente", getIdCliente());
+		regresar.put("idContrato", getIdContrato());
+		regresar.put("idBanco", getIdBanco());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idTipoPago", getIdTipoPago());
+		regresar.put("referencia", getReferencia());
+		regresar.put("idAlmacenista", getIdAlmacenista());
+		regresar.put("IdEmpresaTipoContacto", getIdEmpresaTipoContacto());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescuentos(), getIdProveedor(), getIdProveedorPago(), getDescuento(), getIdOrdenCompra(), getIdNotaTipo(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getDiasPlazo(), getFechaPago(), getDeuda(), getOriginal()
+      getDescuentos(), getIdProveedor(), getIdProveedorPago(), getDescuento(), getIdOrdenCompra(), getIdNotaTipo(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getDiasPlazo(), getFechaPago(), getDeuda(), getOriginal(), getIdDesarrollo(), getIdCliente(), getIdContrato(), getIdBanco(), getIdTipoMedioPago(), getIdTipoPago(), getReferencia(), getIdAlmacenista(), getIdEmpresaTipoContacto()
     };
     return regresar;
   }
@@ -549,4 +675,5 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdNotaEntrada() != null ? getIdNotaEntrada().hashCode() : 0);
     return hash;
   }
+  
 }

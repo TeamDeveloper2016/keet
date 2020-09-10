@@ -82,17 +82,29 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   private Long idDesarrollo;
   @Column (name="id_contrato")
   private Long idContrato;
+  @Column (name="id_banco")
+  private Long idBanco;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
+  @Column (name="id_tipo_pago")
+  private Long idTipoPago;
+  @Column (name="referencia")
+  private String referencia;
+  @Column (name="id_almacenista")
+  private Long idAlmacenista;
+  @Column (name="id_empresa_tipo_contacto")
+  private Long idEmpresaTipoContacto;
 
   public TcManticOrdenesComprasDto() {
     this(new Long(-1L));
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, -1L, -1L, -1L, null, -1L, -1L);
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idDesarrollo, Long idContrato) {
+  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, LocalDate entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idDesarrollo, Long idContrato, Long idBanco, Long idTipoMedioPago, Long idTipoPago, String referencia, Long idAlmacenista, Long idEmpresaTipoContacto) {
     setIdProveedorPago(idProveedorPago);
     setDescuentos(descuentos);
     setExcedentes(excedentes);
@@ -117,9 +129,15 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setOrden(orden);
-		setIdDesarrollo(idDesarrollo);
-		setIdContrato(idContrato);
-  }
+		this.idDesarrollo= idDesarrollo;
+		this.idContrato= idContrato;
+    this.idBanco= idBanco;
+    this.idTipoMedioPago= idTipoMedioPago;
+    this.idTipoPago= idTipoPago;
+    this.referencia= referencia;
+    this.idAlmacenista= idAlmacenista;
+    this.idEmpresaTipoContacto= idEmpresaTipoContacto;
+ }
 	
   public void setIdProveedorPago(Long idProveedorPago) {
     this.idProveedorPago = idProveedorPago;
@@ -328,6 +346,54 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   public void setIdContrato(Long idContrato) {
     this.idContrato = idContrato;
   }
+
+  public Long getIdBanco() {
+    return idBanco;
+  }
+
+  public void setIdBanco(Long idBanco) {
+    this.idBanco = idBanco;
+  }
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Long getIdTipoPago() {
+    return idTipoPago;
+  }
+
+  public void setIdTipoPago(Long idTipoPago) {
+    this.idTipoPago = idTipoPago;
+  }
+
+  public String getReferencia() {
+    return referencia;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
+  public Long getIdAlmacenista() {
+    return idAlmacenista;
+  }
+
+  public void setIdAlmacenista(Long idAlmacenista) {
+    this.idAlmacenista = idAlmacenista;
+  }
+
+  public Long getIdEmpresaTipoContacto() {
+    return idEmpresaTipoContacto;
+  }
+
+  public void setIdEmpresaTipoContacto(Long idEmpresaTipoContacto) {
+    this.idEmpresaTipoContacto = idEmpresaTipoContacto;
+  }
 	
   @Transient
   @Override
@@ -395,6 +461,18 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.append(getIdDesarrollo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdContrato());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdBanco());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getReferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAlmacenista());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresaTipoContacto());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -428,13 +506,19 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("idContrato", getIdContrato());
+		regresar.put("idBanco", getIdBanco());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idTipoPago", getIdTipoPago());
+		regresar.put("referencia", getReferencia());
+		regresar.put("idAlmacenista", getIdAlmacenista());
+		regresar.put("IdEmpresaTipoContacto", getIdEmpresaTipoContacto());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getIdDesarrollo(), getIdContrato()
+			getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getIdDesarrollo(), getIdContrato(), getIdBanco(), getIdTipoMedioPago(), getIdTipoPago(), getReferencia(), getIdAlmacenista(), getIdEmpresaTipoContacto()
     };
     return regresar;
   }

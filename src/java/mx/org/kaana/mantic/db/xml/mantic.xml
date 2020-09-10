@@ -2801,7 +2801,17 @@
         from      
           tr_mantic_empresa_tipo_contacto
         where      
-          id_empresa_tipo_contacto = {idEmpresaTipoContacto} and id_empresa = {idEmpresa} and id_tipo_contacto = {idTipoContacto}
+          id_empresa = {idEmpresa} and id_tipo_contacto = {idTipoContacto}
+      </select>
+      <select id="tipos">
+        select      
+          tr_mantic_empresa_tipo_contacto.id_empresa_tipo_contacto as id_key,
+					tr_mantic_empresa_tipo_contacto.*
+        from      
+          tr_mantic_empresa_tipo_contacto
+        where      
+          id_empresa = {idEmpresa} 
+          and id_tipo_contacto in ({idTipoContacto})
       </select>
 			<select id="maximo">
         select      
@@ -2813,7 +2823,7 @@
          delete from tr_mantic_empresa_tipo_contacto where id_empresa = {idEmpresa}
       </delete> 
     </unit>    
-     <unit id="TrManticOrdenCompraCargoDto">
+    <unit id="TrManticOrdenCompraCargoDto">
       <select id="row">
         select      
           *
