@@ -605,25 +605,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // try
 		finally {
 			Methods.clean(params);
-		}
+		} // finally
 	}
 	
-	private String toCondicionClave(String[] claves) {
-		String regresar        = null;
-		StringBuilder condicion= null;
-		try {
-			condicion= new StringBuilder("(");
-			for(int count= 0; count < claves.length; count++)
-				condicion.append("tc_keet_materiales.clave like '").append(claves[count]).append("%' or ");
-			regresar= condicion.substring(0, condicion.length()-4).concat(")");
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toCondicionClave
-	
-	private String toClaveMateriales(Long idContratoLote) throws Exception{
+	private String toClaveMateriales(Long idContratoLote) throws Exception {
 		StringBuilder regresar        = null;
 		UISelectEntity contrato       = null;
 		List<UISelectEntity> contratos= null;

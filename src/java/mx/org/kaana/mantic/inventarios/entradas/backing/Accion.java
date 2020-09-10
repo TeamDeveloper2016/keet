@@ -53,6 +53,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -962,5 +963,143 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			super.finalize();
 		} // finally	
 	}
-	
+
+	private void toLoadTiposMediosPagos() {
+		List<UISelectEntity> tiposMediosPagos= null;
+		Map<String, Object>params            = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
+      if(!tiposMediosPagos.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoMedioPago(tiposMediosPagos.get(0));
+        else  
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoMedioPago(tiposMediosPagos.get(tiposMediosPagos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkTipoMedioPago())));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadTiposMediosPagos
+  
+	private void toLoadBancos() {
+		List<UISelectEntity> bancos= null;
+		Map<String, Object> params = null;
+		List<Columna> columns      = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			columns= new ArrayList<>();
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.seleccione("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS, "nombre");
+			this.attrs.put("bancos", bancos);
+      if(!bancos.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkBanco(bancos.get(0));
+        else  
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkBanco(bancos.get(bancos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkBanco())));
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadBancos  
+  
+	private void toLoadTiposPagos() {
+		List<UISelectEntity> tiposPagos= null;
+		Map<String, Object>params      = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposPagos= UIEntity.seleccione("TcManticTiposPagosDto", "row", params, "nombre");
+			this.attrs.put("tiposPagos", tiposPagos);
+      if(!tiposPagos.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoPago(tiposPagos.get(0));
+        else  
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoPago(tiposPagos.get(tiposPagos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkTipoPago())));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadTiposPagos
+  
+	private void toLoadAlmacenistas() {
+		List<UISelectEntity> almacenistas= new ArrayList<>();
+		Map<String, Object>params        = null;
+		try {
+			params= new HashMap<>();
+ 			params.put("campoLlave", "tc_keet_contratos_personal.id_contratos_personal");
+			params.put("idDesarrollo", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdDesarrollo());
+			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_puesto= 1");
+  	  almacenistas= UIEntity.build("VistaContratosDto", "personalAsignado", params);
+			this.attrs.put("almacenistas", almacenistas);
+      if(!almacenistas.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacenista(almacenistas.get(0));
+        else  
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacenista(almacenistas.get(almacenistas.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkAlmacenista())));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadAlmacenistas
+  
+	private void toLoadEmpresaTipoContacto() {
+		List<UISelectEntity> empresaTiposContactos= null;
+		Map<String, Object>params                 = null;
+		try {
+			params= new HashMap<>();
+			params.put("idEmpresa", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdEmpresa());
+			params.put("idTipoContacto", "9, 10, 11, 15, 16, 17, 18");
+			empresaTiposContactos= UIEntity.build("TrManticEmpresaTipoContactoDto", "tipos", params);
+			this.attrs.put("empresaTiposContactos", empresaTiposContactos);
+      if(!empresaTiposContactos.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkEmpresaTipoContacto(empresaTiposContactos.get(0));
+        else  
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkEmpresaTipoContacto(empresaTiposContactos.get(empresaTiposContactos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkEmpresaTipoContacto())));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadEmpresaTipoContacto
+ 
+	public void doCheckTipoMedioPago() {
+		Long tipoMedioPago= null;
+		try {
+      UIBackingUtilities.execute(
+        "janal.renovate('contenedorGrupos\\\\:idBanco_focus', {validaciones: 'libre', mascara: 'libre'});"+
+        "janal.renovate('contenedorGrupos\\\\:referencia', {validaciones: 'libre', mascara: 'libre'});"
+      );		
+			tipoMedioPago= ((NotaEntrada)this.getAdminOrden().getOrden()).getIdTipoMedioPago();
+			this.attrs.put("isBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoMedioPago));
+      if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoMedioPago)) 
+        UIBackingUtilities.execute(
+          "janal.renovate('contenedorGrupos\\\\:idBanco_focus', {validaciones: 'requerido', mascara: 'libre'});"+
+          "janal.renovate('contenedorGrupos\\\\:referencia', {validaciones: 'requerido', mascara: 'libre'});"
+        );		
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doCheckTipoMedioPago
+  
 }
