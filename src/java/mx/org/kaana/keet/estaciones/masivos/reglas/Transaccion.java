@@ -16,13 +16,16 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.keet.controles.reglas.Controles;
 import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TcKeetControlesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.keet.db.dto.TrKeetArticuloProveedorClienteDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
+import mx.org.kaana.keet.estaciones.masivos.beans.Control;
 import mx.org.kaana.keet.estaciones.masivos.beans.Estacion;
 import mx.org.kaana.keet.estaciones.masivos.beans.Material;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
@@ -176,8 +179,17 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						case PRECIOS_CONVENIO:
 							this.toPreciosClientes(sesion, file);
 						  break;
+						case CONTROLES:
+							if(this.idLimpiar== 1L)
+							  this.toControles(sesion, file);
+							else
+							  this.toUpdateControles(sesion, file);
+							break;
 					} // swtich
 				} // try
+        catch(Exception e) {
+          throw e;
+        } // catch
 				finally {
 					monitoreo.terminar();
 					monitoreo.setProgreso(0L);
@@ -222,6 +234,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			params.put("idContatoLote", this.idContatoLote);
 			regresar= (TcKeetContratosLotesDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosLotesDto.class, "TcKeetContratosLotesDto", "igual", params);
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -236,6 +251,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			params.put("idContratoLote", this.idContatoLote);
 			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaContratosLotesDto", "lote", params);
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -254,6 +272,26 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			params.put("clave", clave);
 			regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "estacion", params);
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	private Control toControlEstacion(Session sesion, String clave) throws Exception {
+		Control regresar         = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("clave", clave);
+			regresar= (Control)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaControlesLotesDto", "estacion", params);
+		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -269,6 +307,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			params.put("nivel", nivel);
 			regresar= (Material)DaoFactory.getInstance().toEntity(sesion, Material.class, "VistaContratosLotesMaterialesDto", "estacion", params);
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -291,6 +332,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
     		DaoFactory.getInstance().insert(sesion, regresar);
 			} // else
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -313,6 +357,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
     		DaoFactory.getInstance().insert(sesion, regresar);
 			} // else
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -331,6 +378,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			params.put("codigo", codigo);
 			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, proceso, "buscar", params);
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -346,6 +396,27 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			params.put("codigo", codigo);
 			regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "concepto", params);
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	private Control toControlConcepto(Session sesion, String clave, String codigo) throws Exception {
+		Control regresar         = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("clave", clave);
+			params.put("codigo", codigo);
+			regresar= (Control)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaControlesLotesDto", "concepto", params);
+		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -361,6 +432,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			params.put("codigo", codigo);
 			regresar= (Material)DaoFactory.getInstance().toEntity(sesion, Material.class, "VistaContratosLotesMaterialesDto", "material", params);
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -539,6 +613,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				regresar= true;
 			} // if
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -672,6 +749,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				regresar= true;
 			} // if
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -802,6 +882,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				regresar= true;
 			} // if
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
 			Methods.clean(params);
       if(workbook!= null) {
@@ -1400,6 +1483,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				regresar= true;
 			} // if
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -1529,6 +1615,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				regresar= true;
 			} // if
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -1689,6 +1778,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				regresar= true;
 			} // if
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
     finally {
 			Methods.clean(params);
       if(workbook!= null) {
@@ -1809,5 +1901,332 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
     } // finally
 		return regresar;
 	} // toPreciosClientes
-	
+
+	private Control toDeleteControles(Session sesion, Controles controles, String prototipo) throws Exception {
+		Control regresar          = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("clave", controles.toKey(4));
+			if(Objects.equals(this.idLimpiar, 1L))
+	  		DaoFactory.getInstance().deleteAll(sesion, TcKeetControlesDto.class, params);
+  		regresar= (Control)DaoFactory.getInstance().toEntity(sesion, Control.class, "VistaControlesLotesDto", "estaciones", params);
+			if(regresar!= null)
+				regresar.setCosto(0D);
+			else {
+				regresar= new Control(controles.toCode(), "&A", prototipo, 4L, 2L, 87L, JsfBase.getIdUsuario());
+    		DaoFactory.getInstance().insert(sesion, regresar);
+			} // else
+		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}  
+  private Boolean toControles(Session sesion, File archivo) throws Exception {
+		Boolean regresar = false;
+		Workbook workbook= null;
+		Sheet sheet      = null;
+		Control concepto = null;
+		Control parcial  = null;
+		Control control  = null; 
+		TcManticMasivasBitacoraDto bitacora= null;
+		try {
+			Semanas semanas= new Semanas();
+			int semana= semanas.getSemana(sesion);
+			Controles controles= new Controles();
+      WorkbookSettings workbookSettings = new WorkbookSettings();
+      workbookSettings.setEncoding("Cp1252");	
+			workbookSettings.setExcelDisplayLanguage("MX");
+      workbookSettings.setExcelRegionalSettings("MX");
+      workbookSettings.setLocale(new Locale("es", "MX"));
+			workbook= Workbook.getWorkbook(archivo, workbookSettings);
+			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
+				Entity contrato= this.toContratoDatos(sesion);
+				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+				LOG.info("Filas del documento: "+ sheet.getRows());
+				this.errores= 0;
+				int count   = 0; 
+				int partida = 0; 
+				int rubro   = 0; 
+				String codigoPartida= "";
+				String codigoRubro  = "";
+				if(contrato!= null) {
+					controles.setKeyLevel(contrato.toString("idEmpresa"), 0); // idEmpresa
+					controles.setKeyLevel(contrato.toString("ejercicio"), 1); // ejercicio
+					controles.setKeyLevel(contrato.toString("contrato"), 2); // orden del contrato
+					controles.setKeyLevel(contrato.toString("orden"), 3); // orden de contrato lote
+					concepto= this.toDeleteControles(sesion, controles, contrato.toString("prototipo"));
+					for(int fila= 1; concepto!= null && fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
+						try {
+							if(!Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
+								// 0       1      2     3        4         5         6				  7			  8
+								//MANZANA|LOTE|CODIGO|NOMBRE|CANTIDAD|COSTOS/IVA|UNIDADMEDIDA|INICIO|TERMINO
+								String manzana = sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
+								String lote    = sheet.getCell(1, fila).getContents()!= null? new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
+								String codigo  = new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+								String nombre  = new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+								String inicio  = sheet.getCell(7, fila).getContents()!= null? new String(sheet.getCell(7, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+								String termino = sheet.getCell(8, fila).getContents()!= null? new String(sheet.getCell(8, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+								double cantidad= Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+								double costo   = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8).replaceAll(Constantes.CLEAN_ART, "").trim();
+								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
+								if(!Cadena.isVacio(codigo) && codigo.length()> 0) {
+									if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
+										throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
+									if(!Objects.equals(lote, "*") && !Objects.equals(contrato.toString("lote"), lote))
+										throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
+									Entity item= this.toRubro(sesion, codigo);
+									if(item!= null && !item.isEmpty()) {
+										if(count== 0 && item.toLong("nivel")!= 5L)
+											throw new RuntimeException("El archivo no comienza con una estación correcta");
+										// EL NIVEL 5 ES UNA ESTACION POR LO TANTO EL COSTO SE INICIA EN CERO
+										if(item.toLong("nivel")== 5L) {
+											if(!Objects.equals(codigoPartida, codigo)) {
+												codigoPartida= codigo;
+												codigoRubro  = "";
+												rubro        = 0;
+												costo        = 0D;
+												partida++;
+												// ESTO ACTUALIZA EL COSTO TOTAL DE LOS CONCEPTOS
+												if(parcial!= null) {
+													Methods.setValueSubClass(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
+													DaoFactory.getInstance().update(sesion, parcial);
+												} // if
+											} // if
+											else 
+												throw new RuntimeException("El archivo tiene una estacion duplicada ["+ codigo+ "] {"+ nombre+ "}");
+										} // if
+										else {
+											if(!Objects.equals(codigoRubro, codigo)) {
+												codigoRubro= codigo;
+												rubro++;
+											} // if
+											else 
+												throw new RuntimeException("El archivo tiene un concepto duplicado ["+ codigo+ "] {"+ nombre+ "}");
+										} // else
+									} // else
+									else 
+										throw new RuntimeException("El archivo tiene un codigo que no existe ["+ codigo+ "] {"+ nombre+ "}");
+									// SE SUMA EL COSTO POR CADA CONCEPTO EXCEPTO LA QUE SON ESTACIONES PORQUE SE LIMPIO SU VALOR
+									concepto.setCosto(concepto.getCosto()+ costo);
+									controles.setKeyLevel(String.valueOf(partida), 4); // consecutivo de la estacion
+									controles.setKeyLevel(String.valueOf(rubro), 5); // consecutivo del concepto
+									control= concepto.clone();
+									// SI EL RUBRO ES CERO SIGNIFICA QUE INICIO LA NUEVA ESTACION POR LO TANTO SE COMIENZA CON LA SUMA EN CEROS
+									if(rubro== 0L) {
+										parcial= control;
+										parcial.setCosto(0D);
+									}
+									else
+										if(parcial!= null)
+											parcial.setCosto(parcial.getCosto()+ costo);
+									if(item.toLong("nivel")== 5L || (item.toLong("nivel")== 6L && costo> 0 && cantidad> 0)) {
+										control.setNivel(item.toLong("nivel"));
+										control.setUltimo(item.toLong("ultimo"));
+										control.setClave(controles.toCode());
+										control.setCodigo(codigo);
+										control.setNombre(nombre);
+										control.setDescripcion(nombre);
+										control.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
+										control.setCantidad(cantidad);
+										control.setCosto(costo);
+										Methods.setValueSubClass(control, "abono"+ semana, new Object[] {costo});
+										if(Cadena.isVacio(inicio))
+											control.setInicio(contrato.toDate("inicio"));
+										else
+											control.setInicio(Fecha.toLocalDate(inicio));
+										if(Cadena.isVacio(termino))
+											control.setTermino(contrato.toDate("termino"));
+										else
+											control.setTermino(Fecha.toLocalDate(termino));
+										control.setIdUsuario(JsfBase.getIdUsuario());
+  									DaoFactory.getInstance().insert(sesion, control);
+									} // if	
+									LOG.warn(count+ ".-  <"+ control.getNivel()+ "> ["+ control.getClave()+ "] ("+ control.getCodigo()+ ") {"+ control.getCosto()+ "} "+ control.getDescripcion());
+									monitoreo.incrementar();
+								} // if
+								else {
+									this.errores++;
+									LOG.warn(fila+ ": ["+ codigo+ "] cantidad: ["+ cantidad+ "] costo: ["+ costo+ "] manzana: ["+ manzana+ "] lote: ["+ lote+ "]");
+									TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+										sheet.getCell(0, fila).getContents(), // String codigo, 
+										-1L, // Long idMasivaDetalle, 
+										this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+										"EL CODIGO ["+ codigo+ "] CANTIDAD["+ cantidad+ "] COSTO["+ costo+ "], MANZANA["+ manzana+ "], LOTE["+ lote+ "] ESTAN EN CEROS" // String observaciones
+									);
+									DaoFactory.getInstance().insert(sesion, detalle);
+								} // else	
+								count++;
+							} // if	
+						} // try
+						catch(Exception e) {
+							LOG.error("[--->>> ["+ fila+ "] {"+ sheet.getCell(0, fila).getContents().toUpperCase()+ "} {"+ sheet.getCell(2, fila).getContents().toUpperCase()+ "} <<<---]");
+							Error.mensaje(e);
+							throw e;
+						} // catch
+						this.procesados= count;
+						LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+					} // for
+  				if(parcial!= null) {
+						Methods.setValueSubClass(parcial, "abono"+ semana, new Object[] {parcial.getCosto()});
+						DaoFactory.getInstance().update(sesion, parcial);
+					} // if
+  				if(concepto!= null) {
+						Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {concepto.getCosto()});
+  					DaoFactory.getInstance().update(sesion, concepto);
+					} // if
+				} // if
+				else 
+					throw new RuntimeException("El lote no existe en el contrato, por favor verifique");
+				bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
+  			DaoFactory.getInstance().insert(sesion, bitacora);
+				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= count;
+				regresar= true;
+			} // if
+		} // try
+    finally {
+      if(workbook!= null) {
+        workbook.close();
+        workbook = null;
+      } // if
+    } // finally
+		return regresar;
+	} // toControles
+
+  private Boolean toUpdateControles(Session sesion, File archivo) throws Exception {
+		Boolean regresar = false;
+		Workbook workbook= null;
+		Sheet sheet      = null;
+		Control raiz     = null;
+		Control control  = null;
+		Control concepto = null; 
+		TcManticMasivasBitacoraDto bitacora= null;
+		try {
+			Semanas semanas= new Semanas();
+			int semana     = semanas.getSemana(sesion);
+			Controles controles= new Controles();
+      WorkbookSettings workbookSettings = new WorkbookSettings();
+      workbookSettings.setEncoding("Cp1252");	
+			workbookSettings.setExcelDisplayLanguage("MX");
+      workbookSettings.setExcelRegionalSettings("MX");
+      workbookSettings.setLocale(new Locale("es", "MX"));
+			workbook= Workbook.getWorkbook(archivo, workbookSettings);
+			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
+				Entity contrato= this.toContratoDatos(sesion);
+				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+				LOG.info("Filas del documento: "+ sheet.getRows());
+				this.errores= 0;
+				int count   = 0; 
+				if(contrato!= null) {
+					controles.setKeyLevel(contrato.toString("idEmpresa"), 0); // idEmpresa
+					controles.setKeyLevel(contrato.toString("ejercicio"), 1); // ejercicio
+					controles.setKeyLevel(contrato.toString("contrato"), 2); // orden del contrato
+					controles.setKeyLevel(contrato.toString("orden"), 3); // orden de contrato lote
+					raiz= this.toDeleteControles(sesion, controles, contrato.toString("prototipo"));
+					for(int fila= 1; raiz!= null && fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
+						try {
+							if(!Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
+								// 0       1      2     3        4         5         6				  7			  8
+								//MANZANA|LOTE|CODIGO|NOMBRE|CANTIDAD|COSTOS/IVA|UNIDADMEDIDA|INICIO|TERMINO
+								String manzana = sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
+								String lote    = sheet.getCell(1, fila).getContents()!= null? new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "*";
+								String codigo  = new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+								String nombre  = new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+								String inicio  = sheet.getCell(7, fila).getContents()!= null? new String(sheet.getCell(7, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+								String termino = sheet.getCell(8, fila).getContents()!= null? new String(sheet.getCell(8, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+								double cantidad= Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+								double costo   = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+								codigo= new String(codigo.getBytes(ISO_8859_1), UTF_8).replaceAll(Constantes.CLEAN_ART, "").trim();
+								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
+								if(!Cadena.isVacio(codigo) && codigo.length()> 0) {
+									if(!Objects.equals(manzana, "*") && !Objects.equals(contrato.toString("manzana"), manzana))
+										throw new RuntimeException("El archivo contiene un numero de manzana incorrecto");
+									if(!Objects.equals(lote, "*") && !Objects.equals(contrato.toString("lote"), lote))
+										throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
+									Entity item= this.toRubro(sesion, codigo);
+									if(item!= null && !item.isEmpty() && item.toLong("nivel")== 6L) {
+										concepto= this.toControlConcepto(sesion, controles.toKey(4), codigo);
+										if(concepto!= null && concepto.isValid()) {
+											double diferencia= costo- concepto.getCosto();
+											concepto.setNombre(nombre);
+											concepto.setDescripcion(nombre);
+											concepto.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
+											concepto.setCantidad(cantidad);
+											concepto.setCosto(costo);
+											if(Cadena.isVacio(inicio))
+												concepto.setInicio(contrato.toDate("inicio"));
+											else
+												concepto.setInicio(Fecha.toLocalDate(inicio));
+											if(Cadena.isVacio(termino))
+												concepto.setTermino(contrato.toDate("termino"));
+											else
+												concepto.setTermino(Fecha.toLocalDate(termino));
+											concepto.setIdUsuario(JsfBase.getIdUsuario());
+											Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {costo});
+											DaoFactory.getInstance().update(sesion, concepto);
+											
+											// RECUPERAR LA ESTACION PADRE Y REALIZAR LA SUMA O RESTA SEGUN APLIQUE EL COSTO
+											if(control== null || !Objects.equals(control.getClave(), controles.toCode(concepto.getClave(), 5)))
+											  control= this.toControlEstacion(sesion, controles.toCode(concepto.getClave(), 5));
+											if(control!= null) {
+												control.setCosto(control.getCosto()+ diferencia);
+												Methods.setValueSubClass(control, "abono"+ semana, new Object[] {control.getCosto()});
+												DaoFactory.getInstance().update(sesion, control);
+											} // if
+	  									LOG.warn(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion());
+										} // if
+									} // if
+									monitoreo.incrementar();
+								} // if
+								else {
+									this.errores++;
+									LOG.warn(fila+ ": ["+ codigo+ "] cantidad: ["+ cantidad+ "] costo: ["+ costo+ "] manzana: ["+ manzana+ "] lote: ["+ lote+ "]");
+									TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+										sheet.getCell(0, fila).getContents(), // String codigo, 
+										-1L, // Long idMasivaDetalle, 
+										this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+										"EL CODIGO ["+ codigo+ "] CANTIDAD["+ cantidad+ "] COSTO["+ costo+ "], MANZANA["+ manzana+ "], LOTE["+ lote+ "] ESTAN EN CEROS" // String observaciones
+									);
+									DaoFactory.getInstance().insert(sesion, detalle);
+								} // else	
+								count++;
+							} // if	
+						} // try
+						catch(Exception e) {
+							LOG.error("[--->>> ["+ fila+ "] {"+ sheet.getCell(0, fila).getContents().toUpperCase()+ "} {"+ sheet.getCell(2, fila).getContents().toUpperCase()+ "} <<<---]");
+							Error.mensaje(e);
+							throw e;
+						} // catch
+						this.procesados= count;
+						LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+					} // for
+				} // if
+				else 
+					throw new RuntimeException("El lote no existe en el contrato, por favor verifique");
+				bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
+  			DaoFactory.getInstance().insert(sesion, bitacora);
+				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= count;
+				regresar= true;
+			} // if
+		} // try
+    finally {
+      if(workbook!= null) {
+        workbook.close();
+        workbook = null;
+      } // if
+    } // finally
+		return regresar;
+	} // toUpdateControles
+  
 }

@@ -7,6 +7,175 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratosLotesResidentesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes_residentes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes_residentes
+        where      
+          id_empresa_persona = {idEmpresaPersona} and id_contrato_lote = {idContratoLote}
+      </select>
+      <select id="existe">
+        select      
+          *
+        from      
+          tc_keet_contratos_lotes_residentes
+        where      
+          id_empresa_persona = {idEmpresaPersona} and id_contrato_lote = {idContratoLote}
+      </select>
+			<delete id="contratoLotePersona">
+				delete from tc_keet_contratos_lotes_residentes where id_empresa_persona = {idEmpresaPersona} and id_contrato_lote = {idContratoLote}
+			</delete>
+			<delete id="depuracionCambioPerfil">
+				delete from tc_keet_contratos_lotes_residentes where id_empresa_persona = {idEmpresaPersona}
+			</delete>
+			<select id="trabajoLotes">
+				select count(*) total from tc_keet_contratos_lotes_residentes where id_empresa_persona={idEmpresaPersona} and id_trabajo=1
+			</select>
+    </unit>    
+    <unit id="TcKeetControlesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_controles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_controles
+        where      
+          id_control = {idControl}
+      </select>
+      <select id="byId">
+        select      
+          tc_keet_controles.id_control as id_key,
+					tc_keet_controles.*
+        from      
+          tc_keet_controles
+        where 
+          id_control= {idEstacion} 
+				order by
+				  clave 
+      </select>
+      <select id="byClaveNivel">
+        select      
+          tc_keet_controles.id_control as id_key,
+					tc_keet_controles.*
+        from      
+          tc_keet_controles
+        where 
+          clave like '{clave}%'
+				and
+					nivel = {nivel}
+				order by
+				  clave 
+      </select>
+      <select id="getHijos">
+        select      
+          tc_keet_controles.id_control as id_key,
+					tc_keet_controles.*
+        from      
+          tc_keet_controles
+        where 
+          clave like '{clave}%'
+				and
+					nivel &gt;= {nivel}
+      </select>
+			 <select id="maxClave">
+        select      
+          max(clave) clave
+        from      
+          tc_keet_controles
+        where 
+          clave like '{clave}%'
+				and
+					nivel = {nivel}
+      </select>
+			<select id="minClave">
+        select      
+          min(clave) clave
+        from      
+          tc_keet_controles
+        where 
+          clave like '{clave}%'
+				and
+					nivel = {nivel}
+      </select>
+			<delete id="rows">
+				delete
+				  tc_keet_controles
+			  from
+				  tc_keet_controles
+				where 
+				 tc_keet_controles.clave like '{clave}%'
+         and tc_keet_controles.nivel> 4
+			</delete>
+			<update id="rows">
+				update
+				  tc_keet_controles
+				set
+				  abono_{semana}= abono_{anterior}- cargo_{anterior} 
+				where
+	        clave like '{clave}%'
+			</update>
+			<update id="abonos">
+				update
+				  tc_keet_controles
+				set
+				  abono_{semana}= costo 
+				where
+	        clave like '{clave}%'
+			</update>      
+    </unit>
+    <unit id="TcKeetControlesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_controles_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_controles_bitacora
+        where      
+          id_control_bitacora = {idControlBitacora} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>        
+    <unit id="TcKeetControlesEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_controles_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_controles_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
 		<unit id="TcKeetOrdenesContratosLotesDto">
       <select id="row">
         select      
@@ -2523,7 +2692,20 @@
 				  tc_keet_contratos_lotes.id_contrato_lote id_key,
           tc_keet_contratos_lotes.*,
           concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
-					((select count(*) total from tc_keet_contratos_lotes_contratistas where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote) + (select count(*) total from tc_keet_contratos_lotes_proveedores where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote)) contratistas
+					((select count(*) total from tc_keet_contratos_lotes_contratistas where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote) + (select count(*) total from tc_keet_contratos_lotes_proveedores where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote)) as contratistas
+        from      
+          tc_keet_contratos_lotes
+        where 
+          id_contrato= {idContrato} 
+				order by
+				  clave, manzana, lote
+      </select>
+			<select id="byContratoResidentes">
+        select      
+				  tc_keet_contratos_lotes.id_contrato_lote id_key,
+          tc_keet_contratos_lotes.*,
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					(select count(*) total from tc_keet_contratos_lotes_residentes where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote) as contratistas
         from      
           tc_keet_contratos_lotes
         where 

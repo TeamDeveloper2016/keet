@@ -104,8 +104,11 @@
 									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 14}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-precios-clientes.xls" title="Plantilla de precios de materiales por proveedor y cliente">
 										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>
+									<h:outputLink rendered="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 16}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-controles.xls" title="Seguimiento a residentes">
+										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+									</h:outputLink>
 								</f:facet>	
-								<p:selectOneRadio id="tipo" value="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo}" columns="2" styleClass="janal-wid-100-txt">
+								<p:selectOneRadio id="tipo" value="#{keetEstacionesMasivosImportar.masivo.idTipoMasivo}" columns="7" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" process="@this" listener="#{keetEstacionesMasivosImportar.doChangeTipo}" update="catalogo @(.involucrados) @(.importado) @(.janal-upload-frame)"/>
 									<f:selectItem itemLabel="PLANTILLAS" itemValue="11"/>
 									<f:selectItem itemLabel="ESTACIONES" itemValue="9"/>
@@ -113,13 +116,14 @@
 									<f:selectItem itemLabel="PERSONAL" itemValue="10"/>
 									<f:selectItem itemLabel="PRECIOS PROVEEDORES" itemValue="13"/>
 									<f:selectItem itemLabel="PRECIOS CONVENIOS" itemValue="14"/>
+									<f:selectItem itemLabel="CONTROLES" itemValue="16"/>
 								</p:selectOneRadio>
 							</p:panel>
 							<p:panelGrid columns="2" styleClass="janal-wid-100-txt involucrados" columnClasses="janal-wid-90, janal-wid-10">
-								<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" styleClass="involucrados"/>
-								<p:outputLabel for="idLimpiar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" styleClass="involucrados"/>
+								<p:outputLabel for="idContratoLote" value="Lotes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 16? '': 'none'}" styleClass="involucrados"/>
+								<p:outputLabel for="idLimpiar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 16? '': 'none'}" styleClass="involucrados"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30 janal-column-center">
-									<p:selectCheckboxMenu id="idContratoLote" multiple="true" filterPlaceholder="SELECCIONE EL LOTE" emptyLabel="NO HAY LOTES DISPONIBLES" value="#{keetEstacionesMasivosImportar.attrs.izContratoLote}" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}">
+									<p:selectCheckboxMenu id="idContratoLote" multiple="true" filterPlaceholder="SELECCIONE EL LOTE" emptyLabel="NO HAY LOTES DISPONIBLES" value="#{keetEstacionesMasivosImportar.attrs.izContratoLote}" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 16? '': 'none'}">
 										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.codigo or element.codigo eq ''? '': '-'} #{element.codigo}"/>
 										<p:column headerText="Ejercicio">
 											<h:outputText value="#{item.ejercicio}"/>
@@ -134,9 +138,9 @@
 											<h:outputText value="#{item.etapa}"/>
 										</p:column>   
 									</p:selectCheckboxMenu>
-									<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetEstacionesMasivosImportar.doExportar}" process="@this idContratoLote" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" />
+									<p:commandButton icon="fa fa-cloud-download" title="Exportar" action="#{keetEstacionesMasivosImportar.doExportar}" process="@this idContratoLote" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 16? '': 'none'}" />
 								</p:panelGrid>
-								<p:selectOneMenu id="idLimpiar" value="#{keetEstacionesMasivosImportar.attrs.idLimpiar}" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12? '': 'none'}" converter="javax.faces.Long" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idLimpiar" value="#{keetEstacionesMasivosImportar.attrs.idLimpiar}" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 16? '': 'none'}" converter="javax.faces.Long" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItem itemLabel="SI" itemValue="1"/>
 									<f:selectItem itemLabel="NO" itemValue="2"/>								
 								</p:selectOneMenu>

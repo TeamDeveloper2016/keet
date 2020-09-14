@@ -116,7 +116,11 @@
 		<unit id="VistaReportesOrdenesComprasDto">
 			<select id="reporteOrden">
 				select
-					tc_mantic_ordenes_compras.id_orden_compra as id_key,
+          tc_mantic_ordenes_compras.id_orden_compra as id_key,
+					tc_keet_desarrollos.nombres as centro_costos,
+					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
+					tc_mantic_bancos.nombre as banco,
+					tc_mantic_ordenes_compras.referencia,
 					tc_mantic_ordenes_compras.id_empresa,  
 				  tc_mantic_empresas.clave as clave_empresa,  
 				  tc_mantic_empresas.nombre as nombre_empresa,
@@ -126,7 +130,6 @@
 					tc_mantic_proveedores.id_proveedor,  
 					tc_mantic_proveedores.razon_social as proveedor,
 					tc_mantic_ordenes_compras.total,
-				  tc_mantic_ordenes_estatus.nombre as estatus,
 					tc_mantic_ordenes_compras.id_orden_estatus,
 					tc_mantic_ordenes_compras.registro as registro_orden_compra,
 					tc_mantic_ordenes_compras.entrega_estimada,
@@ -150,13 +153,17 @@
 					telefono_almacen.valor as almacen_telefono,
 					correo_almacen.valor as almacen_email,
 					tc_mantic_articulos.nombre as articulo,
-					tc_mantic_articulos.precio								
+					tc_mantic_articulos.precio				
 				from 
 					tc_mantic_ordenes_compras
 				inner join 
-					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+					tc_keet_desarrollos on tc_mantic_ordenes_compras.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				inner join 
-					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista=2
+					tc_mantic_tipos_medios_pagos on tc_mantic_ordenes_compras.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				left join 
+					tc_mantic_bancos on tc_mantic_ordenes_compras.id_banco= tc_mantic_bancos.id_banco
+				inner join 
+					tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista=2
 				inner join 
 					tr_mantic_proveedor_domicilio on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_domicilio.id_proveedor and tr_mantic_proveedor_domicilio.id_principal=1
 				inner join 
@@ -190,13 +197,11 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
 				left join 
-					tc_mantic_personas on tc_mantic_empresas.id_responsable = tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_mantic_ordenes_compras.id_almacenista= tc_mantic_personas.id_persona
 				left join 
 					tr_mantic_persona_tipo_contacto telefono on tc_mantic_personas.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
 				left join 
 					tr_mantic_persona_tipo_contacto correo on telefono.id_persona = correo.id_persona and correo.id_tipo_contacto=9
-				inner join 
-					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
 				where
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}									
 			</select>
@@ -208,11 +213,14 @@
           tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_empresas.titulo as titulo_empresa,
           tc_mantic_ordenes_compras.consecutivo,
+					tc_keet_desarrollos.nombres as centro_costos,
+					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
+					tc_mantic_bancos.nombre as banco,
+					tc_mantic_ordenes_compras.referencia,
           tc_mantic_proveedores.id_proveedor,
           tc_mantic_proveedores.razon_social as proveedor,
           tc_mantic_proveedores.rfc as proveedor_rfc,
           tc_mantic_ordenes_compras.total total_orden,
-          tc_mantic_ordenes_estatus.nombre as estatus,
           tc_mantic_ordenes_compras.id_orden_estatus,
           tc_mantic_ordenes_compras.registro as registro_orden_compra,
           tc_mantic_ordenes_compras.entrega_estimada,
@@ -232,25 +240,28 @@
             ' ) ',
             tc_mantic_articulos.nombre) as articulo,
           tc_mantic_articulos.precio,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as contacto,
+					tr_mantic_empresa_tipo_contacto.valor as correo_facturacion
 				from 
 					tc_mantic_ordenes_compras
 				inner join 
-					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+					tc_keet_desarrollos on tc_mantic_ordenes_compras.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				inner join 
-					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista=2
+					tc_mantic_tipos_medios_pagos on tc_mantic_ordenes_compras.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				left join 
+					tc_mantic_bancos on tc_mantic_ordenes_compras.id_banco= tc_mantic_bancos.id_banco
+				inner join 
+					tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista=2
 				inner join 
 					tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
 				inner join 
 					tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
-				inner join 
-					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
 				inner join
-					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
-				inner join
-					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+					tc_mantic_personas on tc_mantic_ordenes_compras.id_almacenista= tc_mantic_personas.id_persona
+				left join 
+					tr_mantic_empresa_tipo_contacto on tc_mantic_ordenes_compras.id_empresa_tipo_contacto = tr_mantic_empresa_tipo_contacto.id_empresa_tipo_contacto
 				where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	
       </select>

@@ -69,7 +69,8 @@ public enum EReportes implements IReportAttribute{
   PUNTOS_CONTROL("VistaPuntosControlReporteDto", "principal", "Puntos de revisión", "/Paginas/Keet/Catalogos/PuntosControl/Reportes/puntosRevision", EFormatos.PDF, "puntos_control", "/Paginas/Keet/Catalogos/PuntosControl/filtro"),
   ESTACIONES("VistaReportesEstaciones", "estaciones", "Estaciones", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "estaciones", "/Paginas/Keet/Estaciones/contrato"),
   PROTOTIPOS("VistaReportesEstaciones", "estaciones", "Estaciones", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "estaciones_prototipo", "/Paginas/Keet/Estaciones/contrato"),
-  MATERIALES("VistaReportesEstaciones", "materiales", "Materiales", "/Paginas/Keet/Materiales/Reportes/materiales", EFormatos.PDF, "materiales", "/Paginas/Keet/Materiales/filtro");
+  MATERIALES("VistaReportesEstaciones", "materiales", "Materiales", "/Paginas/Keet/Materiales/Reportes/materiales", EFormatos.PDF, "materiales", "/Paginas/Keet/Materiales/filtro"),
+  CONTROLES("VistaReportesEstaciones", "controles", "Controles", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "controles", "/Paginas/Keet/Estaciones/contrato");
 	
 	
 	private final String proceso;

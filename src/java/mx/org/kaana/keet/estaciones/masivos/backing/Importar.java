@@ -115,7 +115,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.masivo = new TcManticMasivasArchivosDto(
 				-1L, // Long idMasivaArchivo, 
 				Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), // String ruta, 
-				categoria.getId(), // Long idTipoMasivo, 
+				this.categoria.getId(), // Long idTipoMasivo, 
 				1L, // Long idMasivaEstatus, 
 				null, // String nombre, 
 				0L, // Long tamanio, 
@@ -195,7 +195,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		try {
 			this.masivo.setArchivo(this.getXls().getOriginal());
 		  this.masivo.setObservaciones((String)this.attrs.get("observaciones"));
-			if(ECargaMasiva.ESTACIONES.equals(this.categoria) || ECargaMasiva.MATERIALES.equals(this.categoria)) {
+      if(ECargaMasiva.ESTACIONES.equals(this.categoria) || ECargaMasiva.MATERIALES.equals(this.categoria) || ECargaMasiva.CONTROLES.equals(this.categoria)) {
 				LOG.error(this.attrs.get("izContratoLote"));
 				List<UISelectEntity> lotes= (List<UISelectEntity>)this.attrs.get("lotes");
 				Object[] items= (Object[])this.attrs.get("izContratoLote");
@@ -204,7 +204,7 @@ public class Importar extends IBaseImportar implements Serializable {
 					idSelect= lotes.get(lotes.indexOf(item));
 					this.attrs.put("seleccionados", count+ " de "+ items.length);
 					this.attrs.put("lote", idSelect.toString("clave")+ "-"+ idSelect.toString("codigo"));
-					transaccion= new Transaccion(this.masivo, this.categoria, idSelect.getKey(), this.masivo.getIdTipoMasivo()== 9L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
+					transaccion= new Transaccion(this.masivo, this.categoria, idSelect.getKey(), this.masivo.getIdTipoMasivo()== 9L || this.masivo.getIdTipoMasivo()== 12L || this.masivo.getIdTipoMasivo()== 16L? (Long)this.attrs.get("idLimpiar"): (Long)this.attrs.get("idEliminar"));
 					if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
 					} // if
 					else
@@ -275,6 +275,13 @@ public class Importar extends IBaseImportar implements Serializable {
 				this.toLoadProveedores();
 				this.toLoadClientes();
 				break;
+			case 15: 
+				this.categoria= ECargaMasiva.MATERIAL;
+				break;
+			case 16: 
+				this.categoria= ECargaMasiva.CONTROLES;
+		    this.toLoadContratosLotes();
+				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
 			this.attrs.put("procesados", 0);
@@ -284,7 +291,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.masivo = new TcManticMasivasArchivosDto(
 				-1L, // Long idMasivaArchivo, 
 				null, // String ruta, 
-				categoria.getId(), // Long idTipoMasivo, 
+				this.categoria.getId(), // Long idTipoMasivo, 
 				1L, // Long idMasivaEstatus, 
 				null, // String nombre, 
 				0L, // Long tamanio, 
@@ -311,7 +318,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		UIBackingUtilities.update("catalogo @(.involucrados) @(.importado) @(.janal-upload-frame)");
 		switch(this.masivo.getIdTipoMasivo().intValue()) {
 			case 9: 
-			case 12: 
+				this.categoria= ECargaMasiva.PERSONAL;
         UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
 			case 10: 
@@ -321,6 +328,10 @@ public class Importar extends IBaseImportar implements Serializable {
 				this.categoria= ECargaMasiva.PLANTILLAS;
         UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idPlantilla_focus', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
+			case 12: 
+				this.categoria= ECargaMasiva.MATERIALES;
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'requerido', mascara: 'libre'});");			
+				break;
 			case 13: 
 				this.categoria= ECargaMasiva.PRECIOS;
         UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor_focus', {validaciones: 'requerido', mascara: 'libre'});");			
@@ -328,6 +339,10 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 14: 
 				this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
         UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor_focus', {validaciones: 'requerido', mascara: 'libre'});janal.renovate('contenedorGrupos\\\\:idCliente_focus', {validaciones: 'requerido', mascara: 'libre'});");			
+				break;
+			case 16: 
+				this.categoria= ECargaMasiva.CONTROLES;
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
 		} // switch
 	}
@@ -515,6 +530,25 @@ public class Importar extends IBaseImportar implements Serializable {
 					JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.PRECIOS_CONVENIO.getProceso(), EExportacionXls.PRECIOS_CONVENIO.getIdXml(), EExportacionXls.PRECIOS_CONVENIO.getNombreArchivo()), EExportacionXls.PRECIOS_CONVENIO, "RFC PROVEEDOR,PROVEEDOR,RFC CLIENTE,CLIENTE,CLAVE,AUXILIAR,MATERIAL,PRECIO CONVENIO"));
 					JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 	  			break;
+				case CONTROLES:
+					lotes= (List<UISelectEntity>)this.attrs.get("lotes");
+				  items= (Object[])this.attrs.get("izContratoLote");
+          if(lotes!= null && !lotes.isEmpty() && items!= null) 
+					  idContratoLote= lotes.get(lotes.indexOf(items[0]));
+					if(idContratoLote!= null) {
+						estaciones.setKeyLevel(idContratoLote.toString("idEmpresa"), 0); // idEmpresa
+						estaciones.setKeyLevel(idContratoLote.toString("ejercicio"), 1); // ejercicio
+						estaciones.setKeyLevel(idContratoLote.toString("contrato"), 2); // orden del contrato
+						estaciones.setKeyLevel(idContratoLote.toString("orden"), 3); // orden de contrato lote
+						params.put("manzana", idContratoLote.toString("manzana"));
+						params.put("lote", idContratoLote.toString("lote"));
+						params.put("clave", estaciones.toKey(4));
+						JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.CONTROLES.getProceso(), EExportacionXls.CONTROLES.getIdXml(), EExportacionXls.CONTROLES.getNombreArchivo()), EExportacionXls.CONTROLES, "MANZANA,LOTE,CODIGO,NOMBRE,CANTIDAD,COSTO S/IVA,UNIDAD MEDIDA,INICIO,TERMINO"));
+						JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+					} // if
+			    else
+				    JsfBase.addMessage("Error:", "No se tiene un lote seleccionado !", ETipoMensaje.ALERTA);	
+				break;
 			} // swtich
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
 		} // try

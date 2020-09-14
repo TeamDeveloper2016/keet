@@ -4,6 +4,8 @@ import java.io.Serializable;
 import mx.org.kaana.keet.estaciones.reglas.MotorBusqueda;
 
 public class RegistroEstacion implements Serializable {
+
+  private static final long serialVersionUID = 1758595942879188961L;
 	
 	private Estacion estacion;
 

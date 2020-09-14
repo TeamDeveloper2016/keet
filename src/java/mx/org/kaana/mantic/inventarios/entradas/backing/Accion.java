@@ -1035,11 +1035,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} // loadTiposPagos
   
 	private void toLoadAlmacenistas() {
-		List<UISelectEntity> almacenistas= new ArrayList<>();
+		List<UISelectEntity> almacenistas= null;
 		Map<String, Object>params        = null;
 		try {
 			params= new HashMap<>();
- 			params.put("campoLlave", "tc_keet_contratos_personal.id_contratos_personal");
+ 			params.put("campoLlave", "tc_mantic_personas.id_persona");
 			params.put("idDesarrollo", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdDesarrollo());
 			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_puesto= 1");
   	  almacenistas= UIEntity.build("VistaContratosDto", "personalAsignado", params);

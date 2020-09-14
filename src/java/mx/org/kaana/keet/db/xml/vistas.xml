@@ -4,6 +4,73 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaControlesLotesDto">
+			<select id="exportar">
+				select
+				  tc_keet_controles.id_control as id_key,
+				  '{manzana}' as manzana,
+				  '{lote}' as lote,
+					tc_keet_controles.codigo,
+					tc_keet_controles.nombre,
+					tc_keet_controles.cantidad,
+					tc_keet_controles.costo as "costo s/iva",
+					tc_mantic_unidades_medidas.nombre as "unidad medida",
+				  date_format(tc_keet_controles.inicio, '%d/%m/%Y') as inicio,
+				  date_format(tc_keet_controles.termino, '%d/%m/%Y') as termino
+				from 
+					tc_keet_controles
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_keet_controles.id_empaque_unidad_medida= tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
+				where
+					tc_keet_controles.clave like '{clave}%'
+					and tc_keet_controles.nivel> 4
+				order by
+					tc_keet_controles.clave
+			</select>	
+			<select id="estaciones">
+				select
+				  tc_keet_controles.id_control as id_key,
+					tc_keet_controles.*,
+					tc_mantic_unidades_medidas.nombre as unidad
+				from 
+					tc_keet_controles
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_keet_controles.id_empaque_unidad_medida= tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
+				where
+					tc_keet_controles.clave like '{clave}%'
+				order by
+					tc_keet_controles.clave
+			</select>	
+			<select id="estacion">
+				select
+				  tc_keet_controles.id_control as id_key,
+					tc_keet_controles.*
+				from 
+					tc_keet_controles
+				where
+					tc_keet_controles.clave= '{clave}'
+				  and tc_keet_controles.nivel= 5
+				order by
+					tc_keet_controles.clave
+			</select>	
+			<select id="concepto">
+				select
+				  tc_keet_controles.id_control as id_key,
+					tc_keet_controles.*
+				from 
+					tc_keet_controles
+				where
+					tc_keet_controles.clave like '{clave}%'
+				  and tc_keet_controles.codigo= '{codigo}'
+				  and tc_keet_controles.nivel= 6
+				order by
+					tc_keet_controles.clave
+			</select>	      
+    </unit>  
 		<unit id="VistaComprasAlmacenDto">
 			<select id="compras">
 				select
@@ -2092,6 +2159,78 @@
 					tc_mantic_proveedores.razon_social
 				) subcontratistas
 			</select>
+			<select id="residentesDisponible">
+				select      					
+					convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,					
+					tr_mantic_empresa_personal.id_empresa_persona,
+					tc_keet_departamentos.nombre departamento,
+					tc_mantic_puestos.nombre puesto,
+					tr_mantic_empresa_personal.id_activo,
+					tr_mantic_empresa_personal.id_nomina,
+					tr_mantic_empresa_personal.nss,
+					tc_mantic_personas.nombres,
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,					
+					tc_mantic_personas.rfc,					
+					tc_mantic_personas.curp,
+					1 tipo
+        from                				
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+        where 
+          tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_lotes_residentes where tc_keet_contratos_lotes_residentes.id_contrato_lote= {idContratoLote})
+				and 
+					tr_mantic_empresa_personal.id_empresa= {idEmpresa}				  
+				  and {condicion}
+					and tc_mantic_puestos.nombre= 'RESIDENTE DE OBRA'
+				order by 
+					tc_mantic_puestos.nombre,
+					tc_mantic_personas.nombres
+			</select>
+			<select id="residentesAsignado">
+				select      
+					convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
+					tc_keet_departamentos.nombre departamento,
+					tc_mantic_puestos.nombre puesto,
+					tr_mantic_empresa_personal.id_activo,
+					tr_mantic_empresa_personal.id_nomina,
+					tr_mantic_empresa_personal.nss,
+					tc_mantic_personas.nombres,
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,					
+					tc_mantic_personas.rfc,					
+					tc_mantic_personas.curp,					          
+					1 tipo,
+					tc_keet_contratos_lotes_residentes.id_contrato_lote_residente,
+					tc_keet_contratos_lotes_residentes.id_contrato_lote,
+					tc_keet_contratos_lotes_residentes.id_empresa_persona,
+					tc_keet_contratos_lotes_residentes.observaciones,
+					tc_keet_contratos_lotes_residentes.id_trabajo,
+					tc_keet_contratos_lotes_residentes.id_usuario,
+					tc_keet_contratos_lotes_residentes.registro 
+        from      
+          tc_keet_contratos_lotes_residentes
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_contratos_lotes_residentes.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join 
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+        where 
+          tc_keet_contratos_lotes_residentes.id_contrato_lote= {idContratoLote} and tc_keet_contratos_lotes_residentes.id_trabajo=2
+				  and tr_mantic_empresa_personal.id_activo= 1
+				  and {condicion}
+				order by 
+					tc_mantic_puestos.nombre,
+					tc_mantic_personas.nombres
+			</select>      
 			<select id="contratistas">
 				select      
 					tr_mantic_empresa_personal.id_empresa_persona as id_key,			

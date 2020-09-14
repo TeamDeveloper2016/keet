@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="Lotes por contrato para asignar a los contratistas o sub-contratistas" />
+  <ui:param name="titulo" value="Lotes por contrato para asignar a los residentes de obra" />
   <ui:define name="librerias">
 		<style type="text/css">
 			.ui-commandlink {
@@ -26,32 +26,32 @@
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
 					<p:accordionPanel activeIndex="1" multiple="true">
-						<p:tab title="[ #{keetCatalogosContratosContratistasLotes.attrs.contrato.clave} ] #{keetCatalogosContratosContratistasLotes.attrs.contrato.etapa}">
+						<p:tab title="[ #{keetCatalogosContratosResidentesLotes.attrs.contrato.clave} ] #{keetCatalogosContratosResidentesLotes.attrs.contrato.etapa}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Viviendas:"/>
-								<p:inputText value="#{keetCatalogosContratosContratistasLotes.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetCatalogosContratosResidentesLotes.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Proyecto:"/>
-								<p:inputText value="[#{keetCatalogosContratosContratistasLotes.attrs.contrato.claveProyecto}] #{keetCatalogosContratosContratistasLotes.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetCatalogosContratosResidentesLotes.attrs.contrato.claveProyecto}] #{keetCatalogosContratosResidentesLotes.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Desarrollo:"/>
-								<p:inputText value="[#{keetCatalogosContratosContratistasLotes.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosContratistasLotes.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetCatalogosContratosResidentesLotes.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosResidentesLotes.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Domicilio:"/>
-								<p:inputText value="#{keetCatalogosContratosContratistasLotes.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="#{keetCatalogosContratosResidentesLotes.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Cliente:"/>
-								<p:inputText value="#{keetCatalogosContratosContratistasLotes.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetCatalogosContratosResidentesLotes.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>											
 					</p:accordionPanel>	
 					<p:spacer height="3px"/>
-					<p:dataGrid var="row" value="#{keetCatalogosContratosContratistasLotes.lotes}" columns="4" layout="grid" rowIndexVar="index"
-											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosContratistasLotes.lazyModel.rowCount gt Constantes.REGISTROS_POR_PAGINA}" id="tabla"
+					<p:dataGrid var="row" value="#{keetCatalogosContratosResidentesLotes.lotes}" columns="4" layout="grid" rowIndexVar="index"
+											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosResidentesLotes.lazyModel.rowCount gt Constantes.REGISTROS_POR_PAGINA}" id="tabla"
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
 											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
 											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.clave}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
-								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosContratistasLotes.doRegistrar}">
+								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosResidentesLotes.doRegistrar}">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" styleClass="manzana-lote-font janal-color-blue" style="cursor: pointer;"/>
-									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosContratistasLotes.attrs.seleccionado}"/>
+									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosResidentesLotes.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
 									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.fechaInicio}" escape="false" style="display: #{row.fechaInicio eq '-' ? 'none' : ''}"/>
@@ -75,12 +75,12 @@
   </ui:define>      
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosContratistasLotes.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosContratistasLotes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCatalogosContratosResidentesLotes.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosResidentesLotes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosContratistasLotes.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosContratistasLotes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosResidentesLotes.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosResidentesLotes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

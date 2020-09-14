@@ -224,4 +224,43 @@ public class MotorBusqueda implements Serializable{
 		} // finally
 		return regresar;
 	} // toContratistasAsignados
+  
+	public List<ContratistaLote> toResidentesDisponibles(String condicion) throws Exception{
+		List<ContratistaLote> regresar= null;
+		Map<String, Object>params      = null;
+		try {
+		  params= new HashMap<>();
+			params.put("idContratoLote", this.idPivote);			
+			params.put(Constantes.SQL_CONDICION, condicion);
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			regresar= DaoFactory.getInstance().toEntitySet(ContratistaLote.class, "VistaContratosDto", "residentesDisponible", params);      
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toResidentesDisponibles	
+	
+	public List<ContratistaLote> toResidentesAsignados(String condicion) throws Exception{
+		List<ContratistaLote> regresar= null;
+		Map<String, Object>params      = null;
+		try {
+		  params= new HashMap<>();			
+			params.put("idContratoLote", this.idPivote);			
+			params.put(Constantes.SQL_CONDICION, condicion);	
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			regresar= DaoFactory.getInstance().toEntitySet(ContratistaLote.class, "VistaContratosDto", "residentesAsignado", params);      
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toResidentesAsignados
+  
 }

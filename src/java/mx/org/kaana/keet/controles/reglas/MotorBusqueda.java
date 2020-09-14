@@ -1,29 +1,29 @@
-package mx.org.kaana.keet.estaciones.reglas;
+package mx.org.kaana.keet.controles.reglas;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.keet.estaciones.beans.Estacion;
+import mx.org.kaana.keet.controles.beans.Control;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
 public class MotorBusqueda implements Serializable{
 	
 	private static final long serialVersionUID = -2951697223110542896L;
-	private Long idEstacion;
+	private Long idControl;
 
-	public MotorBusqueda(Long idEstacion) {
-		this.idEstacion = idEstacion;
+	public MotorBusqueda(Long idControl) {
+		this.idControl = idControl;
 	}
 	
-	public Estacion toEstacion() throws Exception {
-		Estacion regresar       = null;
+	public Control toControl() throws Exception {
+		Control regresar       = null;
 		Map<String, Object>params= null;
 		try {
 		  params= new HashMap<>();
-			params.put("idEstacion", this.idEstacion);
-			regresar= (Estacion) DaoFactory.getInstance().toEntity(Estacion.class, "TcKeetEstacionesDto", "byId", params);
+			params.put("idControl", this.idControl);
+			regresar= (Control) DaoFactory.getInstance().toEntity(Control.class, "TcKeetControlesDto", "byId", params);
 			if(regresar!= null && regresar.isValid() && regresar.getIdEmpaqueUnidadMedida()!= null)
 				regresar.setIkEmpaqueUnidadMedida(new UISelectEntity(regresar.getIdEmpaqueUnidadMedida()));
 		} // try
