@@ -162,7 +162,7 @@ public final class Encriptar {
    // String texto = encriptado.encriptar("Hola", _CLAVE);
     //LOG.debug("encriptado: " + texto);
     //LOG.debug(texto);
-    String texto= encriptado.desencriptar("ir2SvBxAiWIbCDhVGdDv6A==", _CLAVE);
+    String texto= encriptado.desencriptar("ec798999a2b940c249ae", _CLAVE);
     System.out.println(texto);
     //LOG.debug("\u0053\u0049\u0041\u004E\u004F\u004D\u0049\u004E\u0041\u0032\u0030\u0030\u0035");
     //encriptado.des

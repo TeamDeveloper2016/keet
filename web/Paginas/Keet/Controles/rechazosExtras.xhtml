@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Puntos de revisión para rechazo" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {        				
+				'punto'        : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'},
+				'observaciones': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+      };							
+			
+			function validateCriterios(){
+				var ok= janal.execute();
+				if(ok)
+					janal.bloquear();
+				return ok;
+			} // validateCriterios
+    </script>				    
+  </ui:define>
+  <ui:define name="contenido">				
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:accordionPanel activeIndex="2" multiple="true">																			
+						<p:tab title="[ #{keetCatalogosContratosDestajosRechazosExtras.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosRechazosExtras.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosRechazosExtras.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosRechazosExtras.attrs.contratoLote.lote}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Viviendas:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazosExtras.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Proyecto:"/>
+								<p:inputText value="[#{keetCatalogosContratosDestajosRechazosExtras.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosRechazosExtras.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Desarrollo:"/>
+								<p:inputText value="[#{keetCatalogosContratosDestajosRechazosExtras.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosDestajosRechazosExtras.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazosExtras.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Cliente:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazosExtras.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>			
+						<p:tab title="Empleado">
+							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Puesto:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazosExtras.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Nombre:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazosExtras.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>																			
+						<p:tab title="Concepto">
+							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Código:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazosExtras.attrs.concepto.codigo}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Nombre:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazosExtras.attrs.concepto.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Paquete:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosRechazosExtras.attrs.concepto.descripcion}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>																			
+					</p:accordionPanel>	
+					<p:spacer/>
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosRechazosExtras.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosRechazosExtras.selecteds}" paginator="#{keetCatalogosContratosDestajosRechazosExtras.lazyModel.rowCount gt keetCatalogosContratosDestajosRechazosExtras.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            												
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Punto de revisión a rechazar"/>
+              </f:facet>
+              <h:outputText value="#{index+1}.- #{row.nombre}" styleClass="janal-color-black FontBold"/>
+            </p:column>		                        						
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-60" sortBy="#{row.factor}">
+              <f:facet name="header">
+                <h:outputText value="Factor"/>
+              </f:facet>
+              <h:outputText value="#{row.factor} %"/>
+            </p:column>		                        						
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosRechazosExtras.lazyModel== null? 0: keetCatalogosContratosDestajosRechazosExtras.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable> 
+					<p:outputLabel for="observaciones" value="Observaciones:"/>
+					<p:inputTextarea id="observaciones" value="#{keetCatalogosContratosDestajosRechazosExtras.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
+				</div>						        
+      </div>
+    </div>		           							
+  </ui:define>
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCatalogosContratosDestajosRechazosExtras.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosRechazosExtras.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosDestajosRechazosExtras.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosRechazosExtras.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

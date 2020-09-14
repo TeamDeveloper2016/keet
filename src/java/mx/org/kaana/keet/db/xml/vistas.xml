@@ -707,6 +707,48 @@
 				  and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
 				{sortOrder}			
 			</select>
+			<select id="destajoResidente">
+				select 
+				  tc_keet_contratos_destajos_residentes.id_contrato_destajo_residente as id_key,
+				  tc_keet_contratos_destajos_residentes.id_nomina,
+          concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+				  tc_keet_contratos.consecutivo,
+				  tc_keet_desarrollos.nombres as desarrollo,
+				  tc_keet_contratos.clave,
+				  tc_keet_contratos.etapa,
+				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+				  tc_keet_estaciones.codigo,
+				  tc_keet_rubros.nombre,
+				  tc_keet_contratos_destajos_residentes.porcentaje,
+				  tc_keet_contratos_destajos_residentes.costo,
+				  tc_keet_contratos_destajos_residentes.costo as total,
+				  tc_keet_contratos_destajos_residentes.registro
+				from
+				  tc_keet_contratos_destajos_residentes 
+				inner join
+				  tc_keet_contratos_lotes_residentes on tc_keet_contratos_destajos_residentes.id_contrato_lote_residente= tc_keet_contratos_lotes_residentes.id_contrato_lote_residente
+				inner join
+				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+				inner join
+				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+				inner join
+				  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join
+				  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join 
+				  tc_keet_controles on tc_keet_contratos_destajos_residentes.id_control= tc_keet_control.id_control
+				inner join
+				  tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo
+				left join 
+          tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina
+				left join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo 
+				where 
+				  (tc_keet_contratos_destajos_residentes.id_nomina= {idNomina} or tc_keet_contratos_destajos_residentes.id_nomina is null) 
+				  and tc_keet_contratos_lotes_residentes.id_empresa_persona= {idEmpresaPersona}		
+				  and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
+				{sortOrder}			
+			</select>
 			<select id="destajoProveedor">
         select 
 				  tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor as id_key,
@@ -3369,6 +3411,34 @@
 					order by 
 						id_key
 			</select>			
+			<select id="residentes">
+        select 
+          tc_keet_departamentos.id_departamento as id_key,
+          tc_keet_departamentos.descripcion, 
+          concat(tc_mantic_puestos.nombre, ' - ', tc_keet_departamentos.nombre) as nombre
+        from 
+          tc_keet_proyectos
+        inner join 
+          tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+        inner join 
+          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+        inner join 
+          tc_keet_contratos_lotes_residentes on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_residentes.id_contrato_lote
+        inner join 
+          tr_mantic_empresa_personal on tc_keet_contratos_lotes_residentes.id_empresa_persona=tr_mantic_empresa_personal.id_empresa_persona
+        inner join 
+          tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+        inner join
+          tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+        where 
+          tc_keet_proyectos.id_desarrollo={idDesarrollo}
+        group by 
+          tc_keet_departamentos.id_departamento,
+          tc_keet_departamentos.descripcion, 
+          tc_keet_departamentos.nombre 
+  			order by 
+					tc_keet_departamentos.nombre
+      </select>			
 			<select id="empleadosAsociados">
 				select 
 					principal.*
@@ -3426,7 +3496,33 @@
 					tipo
 				order by 
 					tipo, nombre_completo
-			</select>			
+			</select>		
+      <select id="residentesAsociados">
+        select 
+          convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
+          concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ', tc_mantic_personas.materno) nombre_completo, 
+          tc_mantic_puestos.nombre puesto,
+          1 tipo  
+        from 
+          tc_keet_proyectos
+        inner join 
+          tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+        inner join 
+          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+        inner join 
+          tc_keet_contratos_lotes_residentes on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_residentes.id_contrato_lote
+        inner join 
+          tr_mantic_empresa_personal on tc_keet_contratos_lotes_residentes.id_empresa_persona=tr_mantic_empresa_personal.id_empresa_persona
+        inner join 
+          tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+        inner join 
+          tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+        inner join 
+          tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+        where 
+          tc_keet_proyectos.id_desarrollo={idDesarrollo} 
+          and tc_keet_departamentos.id_departamento={idDepartamento}
+      </select>
 			<select id="lotesContratistas">
 				select 
 					tc_keet_contratos_lotes.id_contrato_lote id_key,
@@ -3474,6 +3570,30 @@
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_proveedores.id_proveedor={idFigura}
 				and 
 					{condicion}
+			</select>
+			<select id="lotesResidentes">
+				select 
+					tc_keet_contratos_lotes.id_contrato_lote id_key,
+					tc_keet_contratos_lotes.*,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+					tc_keet_contratos.clave clave_contrato,
+					tc_keet_contratos.etapa etapa_contrato,
+					tc_keet_proyectos.clave clave_proyecto,
+					tc_keet_proyectos.etapa etapa_proyecto,
+					tc_keet_contratos.orden orden_contrato,
+					tc_keet_contratos_lotes_residentes.id_contrato_lote_residente
+				from 
+					tc_keet_proyectos
+				inner join 
+					tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
+				inner join 
+					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_contratos_lotes_residentes on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_residentes.id_contrato_lote
+				where 
+					tc_keet_proyectos.id_desarrollo={idDesarrollo} 
+          and tc_keet_contratos_lotes_residentes.id_empresa_persona={idFigura}
+				  and {condicion}
 			</select>
 			<select id="conceptos">
 				select
@@ -3890,6 +4010,55 @@
 				where
 					tc_keet_estaciones.clave like '{clave}%'
 				)final
+			</select>
+			<select id="estatusControlManzanaLote">
+				select
+					sum(iniciado) as iniciado,
+					sum(en_proceso) as en_proceso,
+					sum(terminado) as terminado,
+					(sum(iniciado)+sum(en_proceso)+sum(terminado)) as total
+				from(
+				select 
+					case when tc_keet_controles.id_control_estatus= 1 then 1 else 0 end iniciado,
+					case when tc_keet_controles.id_control_estatus= 2 then 1 else 0 end en_proceso,
+					case when tc_keet_controles.id_control_estatus= 3 then 1 else 0 end terminado  
+				from(  
+				select
+					tc_keet_puntos_paquetes.id_punto_grupo,  
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_rubros_grupos.id_rubro_grupo,
+					tc_keet_rubros_grupos.id_rubro,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					tc_keet_rubros.orden
+				from 
+					tc_keet_puntos_paquetes
+				inner join
+					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+				inner join
+					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+				inner join
+					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+				where
+					tc_keet_puntos_grupos.id_departamento={idDepartamento}
+				group by
+					tc_keet_puntos_paquetes.id_punto_grupo,   
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_rubros_grupos.id_rubro_grupo,
+					tc_keet_rubros_grupos.id_rubro,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					tc_keet_rubros.orden
+				) principal
+				inner join
+					tc_keet_controles on principal.codigo = tc_keet_controles.codigo
+				where
+					tc_keet_controles.clave like '{clave}%'
+				) final
 			</select>
 		</unit>
 		<unit id="VistaPuntosControlDto">

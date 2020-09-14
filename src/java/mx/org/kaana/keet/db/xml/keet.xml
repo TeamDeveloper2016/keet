@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratosDestajosResidentesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_destajos_residentes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_destajos_residentes
+        where      
+          id_contrato_destajo_residente = {idContratoDestajoResidente} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
+    </unit>    
     <unit id="TcKeetContratosLotesResidentesDto">
       <select id="row">
         select      

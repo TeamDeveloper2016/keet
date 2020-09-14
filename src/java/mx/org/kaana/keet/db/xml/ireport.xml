@@ -353,6 +353,47 @@
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
 				order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>		
+      <select id="destajoResidente">
+				select 
+				  tc_keet_contratos_destajos_residentes.id_contrato_destajo_residente as id_key,
+				  tc_keet_contratos_destajos_residentes.id_nomina,
+          concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+				  tc_keet_contratos.consecutivo,
+				  tc_keet_desarrollos.nombres as desarrollo,
+				  tc_keet_contratos.clave,
+				  tc_keet_contratos.etapa,
+				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+				  tc_keet_controles.codigo,
+				  tc_keet_rubros.nombre,
+				  tc_keet_contratos_destajos_residentes.porcentaje,
+				  tc_keet_contratos_destajos_residentes.costo,
+				  tc_keet_contratos_destajos_residentes.costo as total,
+				  tc_keet_contratos_destajos_residentes.registro
+				from
+				  tc_keet_contratos_destajos_residentes 
+				inner join
+				  tc_keet_contratos_lotes_residentes on tc_keet_contratos_destajos_residentes.id_contrato_lote_residente= tc_keet_contratos_lotes_residentes.id_contrato_lote_residente
+				inner join
+				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_residentes.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+				inner join
+				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+				inner join
+				  tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join
+				  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join 
+				  tc_keet_controles on tc_keet_contratos_destajos_residentes.id_control= tc_keet_controles.id_control
+				inner join
+				  tc_keet_rubros on tc_keet_controles.codigo= tc_keet_rubros.codigo
+				left join 
+          tc_keet_nominas on tc_keet_contratos_destajos_residentes.id_nomina= tc_keet_nominas.id_nomina
+				left join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo 
+				where 
+				  (tc_keet_contratos_destajos_residentes.id_nomina= {idNomina} or tc_keet_contratos_destajos_residentes.id_nomina is null) 
+				  and tc_keet_contratos_lotes_residentes.id_empresa_persona= {idEmpresaPersona}		
+				order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
+			</select>      
     </unit>
     <unit id="VistaPuntosControlReporteDto">
       <select id="principal">

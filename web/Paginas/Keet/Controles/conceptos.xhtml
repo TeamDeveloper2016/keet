@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Conceptos a revisar por especialidad" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {        				
+				'criterios\\:nombreConcepto': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+      };							
+			
+			function validateCriterios(){
+				var ok= janal.execute();
+				if(ok)
+					janal.bloquear();
+				return ok;
+			} // validateCriterios
+			
+		  function localization() {												
+				if ("geolocation" in navigator) { 
+					navigator.geolocation.getCurrentPosition(function(position) { 						
+						distance({latitud: position.coords.latitude, longitud: position.coords.longitude});												
+					}); // navigator
+				} // if
+				else{
+					console.log("Browser doesn't support geolocation!");
+				} // else		
+				return true;
+			} // initLocalization
+			
+			function distance(gpsB) {
+				var gpsA= {latitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.latitud}, longitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.longitud}};
+				// var gpsB= {latitud: 21.850957, longitud: -102.307578};
+				var distance= janal.distanceMt(gpsA, gpsB);
+				if(distance&lt;= 10)
+				  $('#gps').attr('class', 'ui-info-messages ui-messages-info janal-column-center');
+				else
+					if(distance&gt; 10 &amp;&amp; distance&lt;= 20)
+					  $('#gps').attr('class', 'ui-warn-messages ui-messages-warn janal-column-center');
+				  else
+				    $('#gps').attr('class', 'ui-error-messages ui-messages-error janal-column-center');
+				$('#gps-title').html('GPS: ['+ gpsB.latitud+ ','+ gpsB.longitud+ '] estas a '+ distance+ ' metros del lote seleccionado');
+				var url= "https://www.google.com/maps?q="+ gpsB.latitud+ ","+ gpsB.longitud+ "&amp;z=17&amp;hl=es";
+				$('#gps-button').attr('onclick', 'window.open("'+ url+ '");');
+				janal.console('Se actualizo el calculo de la distancia: ['+ distance+']');
+				setTimeout('localization();', 3000);
+			}
+
+			$(document).ready(function () {
+				setTimeout('localization();', 1000);
+			});				
+    </script>				
+  </ui:define>
+  <ui:define name="contenido">				
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:accordionPanel id="criterios" activeIndex="2" multiple="true">																			
+						<p:tab title="[ #{keetCatalogosContratosDestajosConceptos.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosConceptos.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosConceptos.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosConceptos.attrs.contratoLote.lote}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Viviendas:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Proyecto:"/>
+								<p:inputText value="[#{keetCatalogosContratosDestajosConceptos.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosConceptos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Desarrollo:"/>
+								<p:inputText value="[#{keetCatalogosContratosDestajosConceptos.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosDestajosConceptos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel value="Cliente:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>			
+						<p:tab title="Empleado">
+							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Puesto:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:outputLabel value="Nombre:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+							</p:panelGrid>										
+						</p:tab>	
+						<p:tab title="Busqueda">
+							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel for="nombreConcepto" value="Nombre concepto:"/>
+								<p:inputText id="nombreConcepto" value="#{keetCatalogosContratosDestajosConceptos.attrs.nombreConcepto}" styleClass="janal-wid-100-txt">
+									<p:ajax event="keyup" process="@this nombreConcepto panelBusqueda" listener="#{keetCatalogosContratosDestajosConceptos.doLoad}" update="tabla"/>
+								</p:inputText>									
+							</p:panelGrid>										
+						</p:tab>														
+					</p:accordionPanel>	
+					<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100,janal-wid-col-30">
+						<div id="gps" class="ui-info-messages ui-messages-info janal-column-center">
+							<span id="gps-title">GPS: [@21.890563,-102.252030] estas a 0 metros del lote seleccionado</span>
+						</div>
+						<p:commandButton id="gps-button" type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.890563,-102.252030&amp;z=17&amp;hl=es');"/>
+					</p:panelGrid>
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionado}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModel.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+						<p:column class="janal-wid-col-30 janal-column-center">              
+              <f:facet name="header">
+                <h:outputText value="No"/>
+              </f:facet>
+              <h:outputText value="#{index+1}.-"/>
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-60" sortBy="#{row.codigo}">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row.codigo}" title="Costo mano obra: #{row.costo}"/>
+            </p:column>		                        
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Concepto(s) del lote"/>
+              </f:facet>
+              <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
+            </p:column>		                        
+						<p:column class="janal-wid-col-30 janal-column-center">
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+						</p:column>
+						<p:column class="janal-wid-col-115 janal-column-center">
+							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión." disabled="#{row.idEstacionEstatus eq '3'}"/>																						
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazar(row)}" title="Rechazar puntos de revisión" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+						</p:column>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModel== null? 0: keetCatalogosContratosDestajosConceptos.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable> 
+					<p:dataTable lazy="true" id="tablaExtras" widgetVar="kajoolTableExtras" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModelExtras}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionadoExtra}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModelExtras.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModelExtras.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}">
+						<f:facet name="header">							
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
+								<p:menuitem icon="fa fa-plus" value="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}"/>								
+							</p:menuButton>							
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}"/>              
+						</f:facet>												
+						<p:column class="janal-wid-col-30 janal-column-center">              
+              <f:facet name="header">
+                <h:outputText value="No"/>
+              </f:facet>
+              <h:outputText value="#{index+1}.-"/>
+            </p:column>		
+            <p:column class="janal-wid-col-60 janal-column-left MarAuto Responsive" sortBy="#{row.codigo}">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row.codigo}" title="Costo mano obra: #{row.costo}"/>
+            </p:column>		                        
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Concepto(s) extras"/>
+              </f:facet>
+              <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
+            </p:column>		                        
+						<p:column class="janal-wid-col-30 janal-column-center">
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+						</p:column>
+						<p:column class="janal-wid-col-85 janal-column-center">							
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+						</p:column>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModelExtras== null? 0: keetCatalogosContratosDestajosConceptos.lazyModelExtras.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable> 
+				</div>						        
+      </div>
+    </div>		           							
+  </ui:define>
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
