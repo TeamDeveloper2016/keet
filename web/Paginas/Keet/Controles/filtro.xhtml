@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Estaciones de los prototipos" />
+  <ui:param name="titulo" value="seguimiento de entregas entre residentes de obra" />
   <ui:define name="librerias">
     <script type="text/javascript">
     </script>		
@@ -76,7 +76,7 @@
 						<p:ajax event="rowSelect" update="idContextMenu"/>
             <f:facet name="header">		
 							<div class="janal-icons-header">
-								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-estaciones.xls" title="Plantilla de estaciones">
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-estaciones.xls" title="Plantilla de seguimiento a residentes de obra">
 									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 								</h:outputLink>
 							</div>	
@@ -145,7 +145,6 @@
         <p:menuitem icon="fa fa-tasks" action="#{keetControlesFiltro.doAccion('LISTAR')}" ajax="false" value="Estructura"  title="Ver estructura"/>
         <p:menuitem icon="fa fa-file-pdf-o" id ="repProt" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetControlesFiltro.doReporte('PROTOTIPOS')}" rendered="#{keetControlesFiltro.attrs.seleccionado.nivel eq '4'}" oncomplete="janal.desbloquear();" update="descargar"/>		
       </p:contextMenu>
-
     </div>		           				
   </ui:define>    
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la estacion?" />

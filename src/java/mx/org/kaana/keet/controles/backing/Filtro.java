@@ -274,7 +274,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("ikContratoLote", -1L);
 		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.CONTROLES.getId());
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Controles/filtro");
-		return "/Paginas/Keet/Controles/Masivos/importar".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
   
   public void doReporte(String nombre) throws Exception {    
