@@ -4,24 +4,24 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum EEstacionesEstatus {
+public enum EControlesEstatus {
 	
 	INICIAR    ("INICIAR"   , "circulo-rojo"    , "red"),
 	EN_PROCESO ("EN PROCESO", "circulo-amarillo", "yellow"),
 	TERMINADO  ("TERMINADO" , "circulo-verde"   , "green"),
 	CANCELADO  ("CANCELADO" , "circulo-naranja" , "orange");	
 	
-	private static final Map<Long, EEstacionesEstatus> lookup= new HashMap<>();		
+	private static final Map<Long, EControlesEstatus> lookup= new HashMap<>();		
 	private String nombre;	
 	private String semaforo;	
 	private String color;	
 	
 	static {
-    for (EEstacionesEstatus item: EnumSet.allOf(EEstacionesEstatus.class)) 
+    for (EControlesEstatus item: EnumSet.allOf(EControlesEstatus.class)) 
       lookup.put(item.getKey(), item);    
   } // static
 	
-	private EEstacionesEstatus(String nombre, String semaforo, String color) {
+	private EControlesEstatus(String nombre, String semaforo, String color) {
 		this.nombre  = nombre;
 		this.semaforo= semaforo;
 		this.color   = color;
@@ -43,7 +43,7 @@ public enum EEstacionesEstatus {
 		return color;
 	}
 	
-	public static EEstacionesEstatus fromId(Long id) {
+	public static EControlesEstatus fromId(Long id) {
     return lookup.get(id);
   } // fromId
   

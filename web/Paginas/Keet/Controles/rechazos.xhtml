@@ -28,41 +28,41 @@
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
 					<p:accordionPanel activeIndex="2" multiple="true">																			
-						<p:tab title="[ #{keetCatalogosContratosDestajosRechazos.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosRechazos.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosRechazos.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosRechazos.attrs.contratoLote.lote}">
+						<p:tab title="[ #{keetControlesRechazos.attrs.contrato.clave} ] #{keetControlesRechazos.attrs.contrato.etapa} M#{keetControlesRechazos.attrs.contratoLote.manzana}L#{keetControlesRechazos.attrs.contratoLote.lote}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Viviendas:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesRechazos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Proyecto:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosRechazos.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosRechazos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetControlesRechazos.attrs.contrato.claveProyecto}] #{keetControlesRechazos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Desarrollo:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosRechazos.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosDestajosRechazos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetControlesRechazos.attrs.contrato.claveDesarrollo}] #{keetControlesRechazos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Domicilio:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="#{keetControlesRechazos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Cliente:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesRechazos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>			
 						<p:tab title="Empleado">
 							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Puesto:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesRechazos.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Nombre:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesRechazos.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>																			
 						<p:tab title="Concepto">
 							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Código:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.concepto.codigo}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesRechazos.attrs.concepto.codigo}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Nombre:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.concepto.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesRechazos.attrs.concepto.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Paquete:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosRechazos.attrs.concepto.descripcion}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesRechazos.attrs.concepto.descripcion}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>																			
 					</p:accordionPanel>	
 					<p:spacer/>
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosRechazos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosRechazos.selecteds}" paginator="#{keetCatalogosContratosDestajosRechazos.lazyModel.rowCount gt keetCatalogosContratosDestajosRechazos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetControlesRechazos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesRechazos.selecteds}" paginator="#{keetControlesRechazos.lazyModel.rowCount gt keetControlesRechazos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
 						<p:column selectionMode="multiple" class="janal-wid-col-30 janal-column-center"/>						
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
@@ -77,23 +77,23 @@
               <h:outputText value="#{row.factor} %"/>
             </p:column>		                        						
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosRechazos.lazyModel== null? 0: keetCatalogosContratosDestajosRechazos.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetControlesRechazos.lazyModel== null? 0: keetControlesRechazos.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
 					<p:outputLabel for="observaciones" value="Observaciones:"/>
-					<p:inputTextarea id="observaciones" value="#{keetCatalogosContratosDestajosRechazos.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
+					<p:inputTextarea id="observaciones" value="#{keetControlesRechazos.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
 				</div>						        
       </div>
     </div>		           							
   </ui:define>
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCatalogosContratosDestajosRechazos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosRechazos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetControlesRechazos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetControlesRechazos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosDestajosRechazos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosRechazos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetControlesRechazos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetControlesRechazos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

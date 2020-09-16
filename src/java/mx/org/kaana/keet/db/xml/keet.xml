@@ -7,6 +7,75 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratosPuntosResidentesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_puntos_residentes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_puntos_residentes
+        where      
+          id_punto_paquete = {idPuntoPaquete} and id_contrato_destajo_residente = {idContratoDestajoResidente}
+      </select>
+      <select id="puntoPivote">
+        select 
+					tc_keet_contratos_puntos_residentes.id_contrato_punto_residente as id_key,
+          tc_keet_contratos_puntos_residentes.*
+				from      
+          tc_keet_contratos_puntos_residentes
+        where      
+          id_punto_paquete = {idPuntoPaquete} and id_contrato_destajo_residente = {idContratoDestajoResidente}
+      </select>
+      <delete id="rechazo">
+        delete from      
+          tc_keet_contratos_puntos_residentes
+        where      
+          id_punto_paquete = {idPuntoPaquete} and id_contrato_destajo_residente = {idContratoDestajoResidente}
+      </delete>      
+    </unit>    
+    <unit id="TcKeetContratosResidentesArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_residentes_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_residentes_archivos
+        where      
+          archivo = '{archivo}'
+      </select>
+    </unit>    
+    <unit id="TcKeetContratosRechazosResidentesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_rechazos_residentes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_rechazos_residentes
+        where      
+          id_contrato_rechazo_residente = {idContratoRechazoResidente}
+      </select>
+    </unit>    
     <unit id="TcKeetContratosDestajosResidentesDto">
       <select id="row">
         select      
@@ -24,6 +93,36 @@
         where      
           id_contrato_destajo_residente = {idContratoDestajoResidente} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
       </select>
+      <update id="nomina">
+				update 
+				  tc_keet_contratos_destajos_residentes
+				set 
+				  id_nomina= null 
+				where 
+				  id_nomina= {idNomina}
+			</update>
+      <update id="persona">
+        update 
+				  tc_keet_contratos_destajos_residentes
+				inner join
+				  tc_keet_contratos_lotes_residentes on tc_keet_contratos_destajos_residentes.id_contrato_lote_residente= tc_keet_contratos_lotes_residentes.id_contrato_lote_residente
+				set 
+				  tc_keet_contratos_destajos_residentes.id_nomina= null 
+				where 
+				  tc_keet_contratos_destajos_residentes.id_nomina= {idNomina}
+				  and tc_keet_contratos_lotes_residentes.id_empresa_persona= {idEmpresaPersona}
+			</update>
+			<select id="evidenciaDestajo">
+				select      
+					tc_keet_contratos_destajos_residentes.id_contrato_destajo_contratista as id_key,
+          tc_keet_contratos_destajos_residentes.*
+        from      
+          tc_keet_contratos_destajos_residentes
+        where 
+          tc_keet_contratos_destajos_residentes.id_control= {idControl}
+				  and tc_keet_contratos_destajos_residentes.id_contrato_lote_residente= {idContratoLoteResidente}
+				  and tc_keet_contratos_destajos_residentes.id_control_estatus != {idControlEstatus}
+			</select>		      
     </unit>    
     <unit id="TcKeetContratosLotesResidentesDto">
       <select id="row">

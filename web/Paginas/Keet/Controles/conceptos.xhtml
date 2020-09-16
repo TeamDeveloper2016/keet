@@ -14,7 +14,7 @@
 				'criterios\\:nombreConcepto': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };							
 			
-			function validateCriterios(){
+			function validateCriterios() {
 				var ok= janal.execute();
 				if(ok)
 					janal.bloquear();
@@ -34,7 +34,7 @@
 			} // initLocalization
 			
 			function distance(gpsB) {
-				var gpsA= {latitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.latitud}, longitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.longitud}};
+				var gpsA= {latitud: #{keetControlesConceptos.attrs.georreferencia.latitud}, longitud: #{keetControlesConceptos.attrs.georreferencia.longitud}};
 				// var gpsB= {latitud: 21.850957, longitud: -102.307578};
 				var distance= janal.distanceMt(gpsA, gpsB);
 				if(distance&lt;= 10)
@@ -61,33 +61,33 @@
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
 					<p:accordionPanel id="criterios" activeIndex="2" multiple="true">																			
-						<p:tab title="[ #{keetCatalogosContratosDestajosConceptos.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosConceptos.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosConceptos.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosConceptos.attrs.contratoLote.lote}">
+						<p:tab title="[ #{keetControlesConceptos.attrs.contrato.clave} ] #{keetControlesConceptos.attrs.contrato.etapa} M#{keetControlesConceptos.attrs.contratoLote.manzana}L#{keetControlesConceptos.attrs.contratoLote.lote}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Viviendas:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesConceptos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Proyecto:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosConceptos.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosConceptos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetControlesConceptos.attrs.contrato.claveProyecto}] #{keetControlesConceptos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Desarrollo:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosConceptos.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosDestajosConceptos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetControlesConceptos.attrs.contrato.claveDesarrollo}] #{keetControlesConceptos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Domicilio:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="#{keetControlesConceptos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Cliente:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesConceptos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>			
 						<p:tab title="Empleado">
 							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Puesto:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesConceptos.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Nombre:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosConceptos.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesConceptos.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>	
 						<p:tab title="Busqueda">
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel for="nombreConcepto" value="Nombre concepto:"/>
-								<p:inputText id="nombreConcepto" value="#{keetCatalogosContratosDestajosConceptos.attrs.nombreConcepto}" styleClass="janal-wid-100-txt">
-									<p:ajax event="keyup" process="@this nombreConcepto panelBusqueda" listener="#{keetCatalogosContratosDestajosConceptos.doLoad}" update="tabla"/>
+								<p:inputText id="nombreConcepto" value="#{keetControlesConceptos.attrs.nombreConcepto}" styleClass="janal-wid-100-txt">
+									<p:ajax event="keyup" process="@this nombreConcepto panelBusqueda" listener="#{keetControlesConceptos.doLoad}" update="tabla"/>
 								</p:inputText>									
 							</p:panelGrid>										
 						</p:tab>														
@@ -98,7 +98,7 @@
 						</div>
 						<p:commandButton id="gps-button" type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.890563,-102.252030&amp;z=17&amp;hl=es');"/>
 					</p:panelGrid>
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionado}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModel.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetControlesConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesConceptos.attrs.seleccionado}" paginator="#{keetControlesConceptos.lazyModel.rowCount gt keetControlesConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
 						<p:column class="janal-wid-col-30 janal-column-center">              
               <f:facet name="header">
                 <h:outputText value="No"/>
@@ -121,20 +121,20 @@
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
 						<p:column class="janal-wid-col-115 janal-column-center">
-							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión." disabled="#{row.idEstacionEstatus eq '3'}"/>																						
-							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
-							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazar(row)}" title="Rechazar puntos de revisión" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetControlesConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión." disabled="#{row.idEstacionEstatus eq '3'}"/>																						
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetControlesConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetControlesConceptos.doRechazar(row)}" title="Rechazar puntos de revisión" rendered="#{keetControlesConceptos.attrs.isAdmin}" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 						</p:column>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModel== null? 0: keetCatalogosContratosDestajosConceptos.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetControlesConceptos.lazyModel== null? 0: keetControlesConceptos.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
-					<p:dataTable lazy="true" id="tablaExtras" widgetVar="kajoolTableExtras" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModelExtras}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionadoExtra}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModelExtras.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModelExtras.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}">
+					<p:dataTable lazy="true" id="tablaExtras" widgetVar="kajoolTableExtras" var="row" value="#{keetControlesConceptos.lazyModelExtras}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesConceptos.attrs.seleccionadoExtra}" paginator="#{keetControlesConceptos.lazyModelExtras.rowCount gt keetControlesConceptos.lazyModelExtras.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single" rendered="#{keetControlesConceptos.attrs.isAdmin}">
 						<f:facet name="header">							
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
-								<p:menuitem icon="fa fa-plus" value="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}"/>								
+								<p:menuitem icon="fa fa-plus" value="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetControlesConceptos.doCapturarExtra}"/>								
 							</p:menuButton>							
-              <p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}"/>              
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetControlesConceptos.doCapturarExtra}"/>              
 						</f:facet>												
 						<p:column class="janal-wid-col-30 janal-column-center">              
               <f:facet name="header">
@@ -158,11 +158,11 @@
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
 						<p:column class="janal-wid-col-85 janal-column-center">							
-							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
-							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetControlesConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetControlesConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 						</p:column>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModelExtras== null? 0: keetCatalogosContratosDestajosConceptos.lazyModelExtras.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetControlesConceptos.lazyModelExtras== null? 0: keetControlesConceptos.lazyModelExtras.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
 				</div>						        
@@ -172,11 +172,11 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetControlesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetControlesConceptos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

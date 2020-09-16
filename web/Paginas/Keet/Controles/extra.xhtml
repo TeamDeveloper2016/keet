@@ -49,7 +49,7 @@
 			} // initLocalization
 			
 			function distance(gpsB) {
-				var gpsA= {latitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.latitud}, longitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.longitud}};
+				var gpsA= {latitud: #{keetControlesExtra.attrs.georreferencia.latitud}, longitud: #{keetControlesExtra.attrs.georreferencia.longitud}};
 				// var gpsB= {latitud: 21.850957, longitud: -102.307578};
 				var distance= janal.distanceMt(gpsA, gpsB);
 				if(distance&lt;= 10)
@@ -73,7 +73,7 @@
     </script>				
   </ui:define>
   <ui:define name="contenido">	
-		<pe:remoteCommand name="asignaGeoreferencia" process="@this" actionListener="#{keetCatalogosContratosDestajosExtra.doAsignaGeoreferencia}">  
+		<pe:remoteCommand name="asignaGeoreferencia" process="@this" actionListener="#{keetControlesExtra.doAsignaGeoreferencia}">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
 			<pe:methodParam name="latitud"/>  
 			<pe:methodParam name="longitud"/>  
@@ -88,32 +88,32 @@
 						<p:commandButton id="gps-button" type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.890563,-102.252030&amp;z=17&amp;hl=es');"/>
 					</p:panelGrid>	
 					<p:accordionPanel id="criterios" activeIndex="1" multiple="true">																			
-						<p:tab title="[ #{keetCatalogosContratosDestajosExtra.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosExtra.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosExtra.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosExtra.attrs.contratoLote.lote}">
+						<p:tab title="[ #{keetControlesExtra.attrs.contrato.clave} ] #{keetControlesExtra.attrs.contrato.etapa} M#{keetControlesExtra.attrs.contratoLote.manzana}L#{keetControlesExtra.attrs.contratoLote.lote}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Viviendas:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosExtra.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesExtra.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Proyecto:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosExtra.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosExtra.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetControlesExtra.attrs.contrato.claveProyecto}] #{keetControlesExtra.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Desarrollo:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosExtra.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosDestajosExtra.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetControlesExtra.attrs.contrato.claveDesarrollo}] #{keetControlesExtra.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Domicilio:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosExtra.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="#{keetControlesExtra.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Cliente:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosExtra.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesExtra.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>			
 						<p:tab title="Empleado">
 							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Puesto:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosExtra.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesExtra.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Nombre:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosExtra.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesExtra.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>							
 					</p:accordionPanel>						
 					<p:outputLabel for="especialidad" value="Estaciones:"/>
-					<p:selectOneMenu id="especialidad" value="#{keetCatalogosContratosDestajosExtra.attrs.especialidad}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">															
-						<f:selectItems value="#{keetCatalogosContratosDestajosExtra.attrs.especialidades}" var="element" itemValue="#{element}" itemLabel="[#{element.codigo}] #{element.nombre}"/>
+					<p:selectOneMenu id="especialidad" value="#{keetControlesExtra.attrs.especialidad}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">															
+						<f:selectItems value="#{keetControlesExtra.attrs.especialidades}" var="element" itemValue="#{element}" itemLabel="[#{element.codigo}] #{element.nombre}"/>
 						<p:column headerText="Código" styleClass="janal-wid-col-150">
 							<h:outputText value="#{item.codigo}"/>
 						</p:column> 						
@@ -122,8 +122,8 @@
 						</p:column> 						
 					</p:selectOneMenu>
 					<p:outputLabel for="concepto" value="Concepto:"/>
-					<p:selectOneMenu id="concepto" value="#{keetCatalogosContratosDestajosExtra.attrs.concepto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">															
-						<f:selectItems value="#{keetCatalogosContratosDestajosExtra.attrs.conceptos}" var="element" itemValue="#{element}" itemLabel="[#{element.codigo}] #{element.nombre}"/>
+					<p:selectOneMenu id="concepto" value="#{keetControlesExtra.attrs.concepto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">															
+						<f:selectItems value="#{keetControlesExtra.attrs.conceptos}" var="element" itemValue="#{element}" itemLabel="[#{element.codigo}] #{element.nombre}"/>
 						<p:column headerText="Código" styleClass="janal-wid-col-150">
 							<h:outputText value="#{item.codigo}"/>
 						</p:column> 						
@@ -132,21 +132,21 @@
 						</p:column> 						
 					</p:selectOneMenu>
 					<p:outputLabel for="descripcion" value="Descripción:"/>
-					<p:inputText id="descripcion" value="#{keetCatalogosContratosDestajosExtra.attrs.descripcion}" styleClass="janal-wid-100-txt"/>
+					<p:inputText id="descripcion" value="#{keetControlesExtra.attrs.descripcion}" styleClass="janal-wid-100-txt"/>
 					<p:outputLabel for="importe" value="Importe:"/>
-					<p:inputNumber id="importe" value="#{keetCatalogosContratosDestajosExtra.attrs.importe}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
+					<p:inputNumber id="importe" value="#{keetControlesExtra.attrs.importe}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
 				</div>						        
       </div>
     </div>		           							
   </ui:define>
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return janal.execute();" action="#{keetCatalogosContratosDestajosExtra.doAceptar}" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosExtra.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return janal.execute();" action="#{keetControlesExtra.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetControlesExtra.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return janal.execute();" action="#{keetCatalogosContratosDestajosExtra.doAceptar}" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosExtra.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return janal.execute();" action="#{keetControlesExtra.doAceptar}" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetControlesExtra.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

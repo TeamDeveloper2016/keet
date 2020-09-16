@@ -47,7 +47,7 @@
 			} // initLocalization
 			
 			function distance(gpsB) {
-				var gpsA= {latitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.latitud}, longitud: #{keetCatalogosContratosDestajosConceptos.attrs.georreferencia.longitud}};
+				var gpsA= {latitud: #{keetControlesPuntos.attrs.georreferencia.latitud}, longitud: #{keetControlesPuntos.attrs.georreferencia.longitud}};
 				// var gpsB= {latitud: 21.850957, longitud: -102.307578};
 				var distance= janal.distanceMt(gpsA, gpsB);
 				if(distance&lt;= 10)
@@ -71,7 +71,7 @@
     </script>				    
   </ui:define>
   <ui:define name="contenido">				
-		<pe:remoteCommand name="asignaGeoreferencia" process="@this" actionListener="#{keetCatalogosContratosDestajosPuntos.doAsignaGeoreferencia}">  
+		<pe:remoteCommand name="asignaGeoreferencia" process="@this" actionListener="#{keetControlesPuntos.doAsignaGeoreferencia}">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
 			<pe:methodParam name="latitud"/>  
 			<pe:methodParam name="longitud"/>  
@@ -80,36 +80,36 @@
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
 					<p:accordionPanel activeIndex="2" multiple="true">																			
-						<p:tab title="[ #{keetCatalogosContratosDestajosPuntos.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosPuntos.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosPuntos.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosPuntos.attrs.contratoLote.lote}">
+						<p:tab title="[ #{keetControlesPuntos.attrs.contrato.clave} ] #{keetControlesPuntos.attrs.contrato.etapa} M#{keetControlesPuntos.attrs.contratoLote.manzana}L#{keetControlesPuntos.attrs.contratoLote.lote}">
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Viviendas:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosPuntos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesPuntos.attrs.contrato.noViviendas}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Proyecto:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosPuntos.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosPuntos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetControlesPuntos.attrs.contrato.claveProyecto}] #{keetControlesPuntos.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Desarrollo:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosPuntos.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosDestajosPuntos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="[#{keetControlesPuntos.attrs.contrato.claveDesarrollo}] #{keetControlesPuntos.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Domicilio:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosPuntos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:inputText value="#{keetControlesPuntos.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Cliente:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosPuntos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesPuntos.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>			
 						<p:tab title="Empleado">
 							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Puesto:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosPuntos.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesPuntos.attrs.figura.puesto}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Nombre:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosPuntos.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesPuntos.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>																			
 						<p:tab title="Concepto">
 							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Código:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosPuntos.attrs.concepto.codigo}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesPuntos.attrs.concepto.codigo}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Nombre:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosPuntos.attrs.concepto.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesPuntos.attrs.concepto.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>								
 								<p:outputLabel value="Paquete:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosPuntos.attrs.concepto.descripcion}" styleClass="janal-wid-100-txt" readonly="true"/>								
+								<p:inputText value="#{keetControlesPuntos.attrs.concepto.descripcion}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>																			
 					</p:accordionPanel>	
@@ -119,7 +119,7 @@
 						</div>
 						<p:commandButton id="gps-button" type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.890563,-102.252030&amp;z=17&amp;hl=es');"/>
 					</p:panelGrid>
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosPuntos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosPuntos.selecteds}" paginator="#{keetCatalogosContratosDestajosPuntos.lazyModel.rowCount gt keetCatalogosContratosDestajosPuntos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetControlesPuntos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesPuntos.selecteds}" paginator="#{keetControlesPuntos.lazyModel.rowCount gt keetControlesPuntos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
 						<p:column selectionMode="multiple" class="janal-wid-col-30 janal-column-center"/>						
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
@@ -134,11 +134,11 @@
               <h:outputText value="#{row.factor} %"/>
             </p:column>		                        						
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosPuntos.lazyModel== null? 0: keetCatalogosContratosDestajosPuntos.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetControlesPuntos.lazyModel== null? 0: keetControlesPuntos.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
 					<p:spacer height="10px"/>
-					<p:dataTable lazy="true" id="tablaRechazos" widgetVar="kajoolTableRechazos" var="row" value="#{keetCatalogosContratosDestajosPuntos.lazyModelRechazos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosPuntos.lazyModelRechazos.rowCount gt keetCatalogosContratosDestajosPuntos.lazyModelRechazos.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
+					<p:dataTable lazy="true" id="tablaRechazos" widgetVar="kajoolTableRechazos" var="row" value="#{keetControlesPuntos.lazyModelRechazos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetControlesPuntos.lazyModelRechazos.rowCount gt keetControlesPuntos.lazyModelRechazos.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
 						<f:facet name="header">
 							<div style="text-align: left">
 								<p:outputLabel value="Puntos de control que fueron rechazados" styleClass="janal-text-white"/>
@@ -178,7 +178,7 @@
 							</p:panelGrid>
 						</p:rowExpansion>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetCatalogosContratosDestajosPuntos.lazyModelRechazos== null? 0: keetCatalogosContratosDestajosPuntos.lazyModelRechazos.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetControlesPuntos.lazyModelRechazos== null? 0: keetControlesPuntos.lazyModelRechazos.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
 				</div>						        
@@ -187,12 +187,12 @@
   </ui:define>
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCatalogosContratosDestajosPuntos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosPuntos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetControlesPuntos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetControlesPuntos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCatalogosContratosDestajosPuntos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosPuntos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetControlesPuntos.doAceptar}" onstart="return validateCriterios();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetControlesPuntos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

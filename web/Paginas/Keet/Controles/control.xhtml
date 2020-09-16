@@ -36,7 +36,7 @@
 						</p:tab>					
 						<p:tab title="Busqueda">
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																							
-                <p:outputLabel for="departamento" value="Puesto - Departamento:"/>
+                <p:outputLabel for="departamento" value="Departamento:"/>
                 <p:selectOneMenu id="departamento" value="#{keetControlesControl.attrs.especialidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetControlesControl.doLoadFiguras}" update="contratista tabla mientras persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadContratista();"/>
 									<f:selectItems value="#{keetControlesControl.attrs.especialidades}"/>
@@ -69,7 +69,7 @@
 								</p:selectOneMenu>
               </p:panelGrid>			
               <p:remoteCommand name="reloadContratista" onstart="janal.bloquear();" process="@this" update="contratista" oncomplete="janal.desbloquear();"/>
-              <p:remoteCommand name="reloadLotes" onstart="janal.bloquear();" process="@this" update="contratista" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadLotes" onstart="janal.bloquear();" process="@this" update="lotes" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
