@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="Conceptos a revisar por especialidad" />
+  <ui:param name="titulo" value="Conceptos a revisar por especialidad para los residentes de obra" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        				
@@ -118,12 +118,12 @@
               <h:outputText value="#{row.nombre}" styleClass="#{keetControlesConceptos.toColor(row)} FontBold" title="Costo mano obra: #{row.costo}"/>
             </p:column>		                        
 						<p:column class="janal-wid-col-30 janal-column-center">
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idControlEstatus eq '1' ? 'circulo-rojo': (row.idControlEstatus eq '2' ? 'circulo-amarillo' : (row.idControlEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idControlEstatus eq '1' ? 'SIN INICIAR': (row.idControlEstatus eq '2' ? 'EN PROCESO' : (row.idControlEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
 						<p:column class="janal-wid-col-115 janal-column-center">
-							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetControlesConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión." disabled="#{row.idEstacionEstatus eq '3'}"/>																						
-							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetControlesConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
-							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetControlesConceptos.doRechazar(row)}" title="Rechazar puntos de revisión" rendered="#{keetControlesConceptos.attrs.isAdmin}" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetControlesConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión." disabled="#{row.idControlEstatus eq '3'}"/>																						
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetControlesConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idControlEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetControlesConceptos.doRechazar(row)}" title="Rechazar puntos de revisión" rendered="#{keetControlesConceptos.attrs.isAdmin}" disabled="#{row.idControlEstatus eq '1'}"/>															
 						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetControlesConceptos.lazyModel== null? 0: keetControlesConceptos.lazyModel.rowCount}] registros"/>
@@ -155,11 +155,11 @@
               <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
             </p:column>		                        
 						<p:column class="janal-wid-col-30 janal-column-center">
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idControlEstatus eq '1' ? 'circulo-rojo': (row.idControlEstatus eq '2' ? 'circulo-amarillo' : (row.idControlEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idControlEstatus eq '1' ? 'SIN INICIAR': (row.idControlEstatus eq '2' ? 'EN PROCESO' : (row.idControlEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
 						<p:column class="janal-wid-col-85 janal-column-center">							
-							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetControlesConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
-							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetControlesConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetControlesConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idControlEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetControlesConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idControlEstatus eq '1'}"/>															
 						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetControlesConceptos.lazyModelExtras== null? 0: keetControlesConceptos.lazyModelExtras.rowCount}] registros"/>

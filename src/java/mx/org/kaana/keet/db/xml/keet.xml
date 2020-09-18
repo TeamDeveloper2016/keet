@@ -114,7 +114,7 @@
 			</update>
 			<select id="evidenciaDestajo">
 				select      
-					tc_keet_contratos_destajos_residentes.id_contrato_destajo_contratista as id_key,
+					tc_keet_contratos_destajos_residentes.id_contrato_destajo_residente as id_key,
           tc_keet_contratos_destajos_residentes.*
         from      
           tc_keet_contratos_destajos_residentes

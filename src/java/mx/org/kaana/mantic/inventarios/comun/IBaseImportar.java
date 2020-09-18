@@ -587,4 +587,5 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
 		return regresar;
 	}	// toRegisterFile
+  
 }

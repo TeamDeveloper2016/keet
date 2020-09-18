@@ -4249,7 +4249,7 @@
 						from 
 							tc_keet_contratos_destajos_contratistas
 						inner join
-							tc_keet_contratos_rechazos_contratistas ON tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_rechazos_contratistas.id_contrato_destajo_contratista
+							tc_keet_contratos_rechazos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_rechazos_contratistas.id_contrato_destajo_contratista
 						where
 							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}   
 					)
@@ -4337,7 +4337,7 @@
 						from 
 							tc_keet_contratos_destajos_contratistas
 						inner join
-							tc_keet_contratos_puntos_contratistas ON tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista
+							tc_keet_contratos_puntos_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_contratista
 						where
 							tc_keet_contratos_destajos_contratistas.id_estacion= {idEstacion}   
 					)
@@ -4366,7 +4366,7 @@
 						from 
 							tc_keet_contratos_destajos_residentes
 						inner join
-							tc_keet_contratos_puntos_contratistas ON tc_keet_contratos_destajos_residentes.id_contrato_destajo_residente = tc_keet_contratos_puntos_contratistas.id_contrato_destajo_residente
+							tc_keet_contratos_puntos_residentes on tc_keet_contratos_destajos_residentes.id_contrato_destajo_residente = tc_keet_contratos_puntos_residentes.id_contrato_destajo_residente
 						where
 							tc_keet_contratos_destajos_residentes.id_control= {idControl}
 					)		

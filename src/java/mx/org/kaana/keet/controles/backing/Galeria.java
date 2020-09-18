@@ -42,7 +42,7 @@ public class Galeria extends IBaseFilter implements Serializable {
 			this.attrs.put("figura", (Entity) JsfBase.getFlashAttribute("figura"));
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));									
-			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/").concat("images").concat("/"));						
+			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/").concat("residentes").concat("/"));						
 			doLoad();
     } // try
     catch (Exception e) {

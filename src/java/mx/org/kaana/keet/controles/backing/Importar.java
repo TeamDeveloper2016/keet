@@ -71,7 +71,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));      			
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);
 			this.attrs.put("idControl", ((Entity)this.attrs.get("concepto")).getKey());
-			this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
+			this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/residentes/"));
 			this.attrs.put("idContratoLoteResidente", ((Entity)this.attrs.get("seleccionadoPivote")).toLong("idContratoLoteResidente"));
 			this.attrs.put("file", ""); 
 			setFile(new Importado());
@@ -160,7 +160,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		Entity figura     = null;
 		try {			
 			figura= (Entity) this.attrs.get("figura");
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("destajos"));
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("residentes"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");			
       temp.append(Fecha.getAnioActual());
@@ -185,7 +185,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			fileSize= event.getFile().getSize();						
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
   		this.attrs.put("file", this.getFile().getName());	
-			idArchivo= toRegisterFile("destajos");							
+			idArchivo= this.toRegisterFile("residentes");							
 			this.documentos.add(toDestajoArchivo(idArchivo, figura.toLong("tipo")));
 		} // try
 		catch (Exception e) {
@@ -230,7 +230,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			JsfBase.getIdUsuario(), // idUsuario			
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), // idTipoArchivo			
 			(String)this.attrs.get("observaciones"), // observaciones 			
-			Configuracion.getInstance().getPropiedadSistemaServidor("destajos").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // alias
+			Configuracion.getInstance().getPropiedadSistemaServidor("residentes").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // alias
 			toIdContratoDestajoFigura(), // idContratoDestajoResidente
 			this.getFile().getOriginal() // nombre
 		); 		
@@ -246,7 +246,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			params.put("idControl", this.attrs.get("idControl"));			
 			params.put("idControlEstatus", EControlesEstatus.CANCELADO.getKey());			
 			params.put("idContratoLoteResidente", this.attrs.get("idContratoLoteResidente"));			
-			destajoFigura= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosDestajosResidenteDto", "evidenciaDestajo", params);
+			destajoFigura= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosDestajosResidentesDto", "evidenciaDestajo", params);
 			regresar= destajoFigura.getKey();
 		} // try
 		catch (Exception e) {			

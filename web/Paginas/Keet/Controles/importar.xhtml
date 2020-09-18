@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Importar evidencia de la revisión"/>
+	<ui:param name="titulo" value="Importar evidencia de la revisión para los residentes de obra"/>
 	<ui:define name="librerias">
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
 		<h:outputStylesheet library="janal" name="css/shCore.css"/>
@@ -89,7 +89,31 @@
 								<p:outputLabel value="Puesto:"/>
 								<p:inputText value="#{keetControlesImportar.attrs.figura.puesto}" styleClass="janal-wid-100-txt" disabled="true"/>
               </p:panelGrid>
-						</p:tab>						            						            																																																
+						</p:tab>				
+						<p:tab title="Importar">														
+							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetControlesImportar.attrs.observaciones}" onblur="processDataFile();"/>
+							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:observaciones"/>
+							<p:spacer height="5px"/>	
+							<p:fileUpload listener="#{keetControlesImportar.doFileUpload}" onstart="return janal.execute()" skinSimple="true" 
+							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+								multiple="false" allowTypes="#{keetControlesImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetControlesImportar.attrs.formatos}"/>														
+							<p:dataTable id="importado" var="row" value="#{keetControlesImportar.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   																
+								<p:column headerText="Concepto">
+									<h:outputText value="#{row.concepto}"/>
+								</p:column> 								
+								<p:column headerText="Especialidad">
+									<h:outputText value="#{row.especialidad}"/>
+								</p:column> 																								 
+							</p:dataTable>
+						</p:tab>            
 						<p:tab title="Archivos">
 							<p:dataTable id="importados" var="row" value="#{keetControlesImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
 								<p:column styleClass="janal-wid-col-30" headerText="No.">
@@ -138,30 +162,6 @@
 									</p:panelGrid>									
 								</p:panelGrid>							
 							</p:carousel>
-						</p:tab>
-						<p:tab title="Importar">														
-							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
-							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetControlesImportar.attrs.observaciones}" onblur="processDataFile();"/>
-							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:observaciones"/>
-							<p:spacer height="5px"/>	
-							<p:fileUpload listener="#{keetControlesImportar.doFileUpload}" onstart="return janal.execute()" skinSimple="true" 
-							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
-								multiple="false" allowTypes="#{keetControlesImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetControlesImportar.attrs.formatos}"/>														
-							<p:dataTable id="importado" var="row" value="#{keetControlesImportar.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
-								<p:column styleClass="janal-wid-col-30" headerText="No.">
-									<h:outputText value="#{index+ 1}.-"/>
-								</p:column>   								
-								<p:column headerText="Nombre">
-									<h:outputText value="#{row.nombre}"/>
-								</p:column>   																
-								<p:column headerText="Concepto">
-									<h:outputText value="#{row.concepto}"/>
-								</p:column> 								
-								<p:column headerText="Especialidad">
-									<h:outputText value="#{row.especialidad}"/>
-								</p:column> 																								 
-							</p:dataTable>
 						</p:tab>
 					</p:tabView>
 				</div>
