@@ -2,6 +2,7 @@ package mx.org.kaana.keet.controles.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.controles.enums.EColoresControles;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
@@ -269,4 +271,15 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+  
+	public String toColor(Entity row) {
+    String color= "";
+    for (EColoresControles item: EnumSet.allOf(EColoresControles.class))
+      if (row.toString("codigo").startsWith(item.getStart())) {
+        color= item.getColor();
+        break;
+      } // if        
+		return color;
+	} // toColor
+  
 }

@@ -85,7 +85,7 @@
 						</p:tab>	
 						<p:tab title="Busqueda">
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
-								<p:outputLabel for="nombreConcepto" value="Nombre concepto:"/>
+								<p:outputLabel for="nombreConcepto" value="Nombre código o concepto:"/>
 								<p:inputText id="nombreConcepto" value="#{keetControlesConceptos.attrs.nombreConcepto}" styleClass="janal-wid-100-txt">
 									<p:ajax event="keyup" process="@this nombreConcepto panelBusqueda" listener="#{keetControlesConceptos.doLoad}" update="tabla"/>
 								</p:inputText>									
@@ -98,7 +98,7 @@
 						</div>
 						<p:commandButton id="gps-button" type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.890563,-102.252030&amp;z=17&amp;hl=es');"/>
 					</p:panelGrid>
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetControlesConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesConceptos.attrs.seleccionado}" paginator="#{keetControlesConceptos.lazyModel.rowCount gt keetControlesConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetControlesConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesConceptos.attrs.seleccionado}" paginator="#{keetControlesConceptos.lazyModel.rowCount gt keetControlesConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">
 						<p:column class="janal-wid-col-30 janal-column-center">              
               <f:facet name="header">
                 <h:outputText value="No"/>
@@ -115,7 +115,7 @@
               <f:facet name="header">
                 <h:outputText value="Concepto(s) del lote"/>
               </f:facet>
-              <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
+              <h:outputText value="#{row.nombre}" styleClass="#{keetControlesConceptos.toColor(row)} FontBold" title="Costo mano obra: #{row.costo}"/>
             </p:column>		                        
 						<p:column class="janal-wid-col-30 janal-column-center">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>

@@ -3726,7 +3726,10 @@
 				inner join
 					tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
 				where
-					tc_keet_puntos_grupos.id_departamento= {idDepartamento} and tc_keet_rubros.nombre like upper('%{nombreConcepto}%') and tc_keet_puntos_grupos.id_extra=2
+					tc_keet_puntos_grupos.id_departamento= {idDepartamento} 
+          and (tc_keet_rubros.nombre like upper('%{nombreConcepto}%') 
+          or tc_keet_rubros.codigo like upper('%{nombreConcepto}%')) 
+          and tc_keet_puntos_grupos.id_extra=2
 				group by
 					tc_keet_puntos_paquetes.id_punto_grupo,   
 					tc_keet_puntos_grupos.id_departamento,
@@ -3780,7 +3783,10 @@
 				inner join
 					tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento
 				where
-					tc_keet_puntos_grupos.id_departamento= {idDepartamento} and tc_keet_rubros.nombre like upper('%{nombreConcepto}%') and tc_keet_puntos_grupos.id_extra=2
+					tc_keet_puntos_grupos.id_departamento= {idDepartamento} 
+          and (tc_keet_rubros.nombre like upper('%{nombreConcepto}%') 
+          or tc_keet_rubros.codigo like upper('%{nombreConcepto}%'))
+          and tc_keet_puntos_grupos.id_extra=2
 				group by
 					tc_keet_puntos_paquetes.id_punto_grupo,   
 					tc_keet_puntos_grupos.id_departamento,
@@ -3797,8 +3803,7 @@
 					tc_keet_controles on principal.codigo = tc_keet_controles.codigo
 				where
 					tc_keet_controles.clave like '{clave}%'
-				and
-					tc_keet_controles.id_control_estatus in ({estatus})
+				  and tc_keet_controles.id_control_estatus in ({estatus})
 				order by 
 				  tc_keet_controles.clave        
       </select>  

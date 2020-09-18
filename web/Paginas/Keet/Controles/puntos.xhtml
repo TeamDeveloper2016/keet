@@ -119,7 +119,7 @@
 						</div>
 						<p:commandButton id="gps-button" type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.890563,-102.252030&amp;z=17&amp;hl=es');"/>
 					</p:panelGrid>
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetControlesPuntos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesPuntos.selecteds}" paginator="#{keetControlesPuntos.lazyModel.rowCount gt keetControlesPuntos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">            						
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetControlesPuntos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesPuntos.selecteds}" paginator="#{keetControlesPuntos.lazyModel.rowCount gt keetControlesPuntos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
 						<p:column selectionMode="multiple" class="janal-wid-col-30 janal-column-center"/>						
             <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
