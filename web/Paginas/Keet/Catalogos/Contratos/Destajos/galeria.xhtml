@@ -63,7 +63,8 @@
 				<div class="ui-grid-col-12">											
 					<p:carousel id="tabla" value="#{keetCatalogosContratosDestajosGaleria.attrs.importados}" headerText="Galeria de evidencias" var="item" styleClass="importado" circular="true" responsive="true">
 						<p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;" styleClass="border-color-item">																		
-							<p:graphicImage url="#{item.url}" width="550" height="250"/>											
+              <a id="tabla:#{item.idKey}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{item.nombre}" data-group="icon-image" href="#{item.url}"/>
+              <p:graphicImage url="#{item.url}" width="550" height="250" title="Click para ver más grande la imagen" style="cursor:pointer;" onclick="$('#tabla\\:#{item.idKey}\\:source-image').click();"/>
 							<p:panelGrid columns="1" style="width: 100% !important" columnClasses="janal-column-left, janal-column-left">
 								<p:outputLabel value="&lt;b&gt;Nombre:&lt;/b&gt; #{item.nombre}" class="pad-description" escape="false"/>										
 								<p:outputLabel value="&lt;b&gt;Consecutivo:&lt;/b&gt; #{item.consecutivo}" class="pad-description" escape="false"/>

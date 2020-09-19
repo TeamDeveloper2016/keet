@@ -717,7 +717,7 @@
 				  tc_keet_contratos.clave,
 				  tc_keet_contratos.etapa,
 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
-				  tc_keet_estaciones.codigo,
+				  tc_keet_controles.codigo,
 				  tc_keet_rubros.nombre,
 				  tc_keet_contratos_destajos_residentes.porcentaje,
 				  tc_keet_contratos_destajos_residentes.costo,
@@ -728,7 +728,7 @@
 				inner join
 				  tc_keet_contratos_lotes_residentes on tc_keet_contratos_destajos_residentes.id_contrato_lote_residente= tc_keet_contratos_lotes_residentes.id_contrato_lote_residente
 				inner join
-				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_residentes.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
 				inner join
 				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
 				inner join
@@ -736,11 +736,11 @@
 				inner join
 				  tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				inner join 
-				  tc_keet_controles on tc_keet_contratos_destajos_residentes.id_control= tc_keet_control.id_control
+				  tc_keet_controles on tc_keet_contratos_destajos_residentes.id_control= tc_keet_controles.id_control
 				inner join
-				  tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo
+				  tc_keet_rubros on tc_keet_controles.codigo= tc_keet_rubros.codigo
 				left join 
-          tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina
+          tc_keet_nominas on tc_keet_contratos_destajos_residentes.id_nomina= tc_keet_nominas.id_nomina
 				left join 
 					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo 
 				where 
@@ -3621,6 +3621,9 @@
         where 
           tc_keet_proyectos.id_desarrollo={idDesarrollo} 
           and tc_keet_departamentos.id_departamento={idDepartamento}
+        group by
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
+          tc_mantic_puestos.nombre
       </select>
 			<select id="lotesContratistas">
 				select 

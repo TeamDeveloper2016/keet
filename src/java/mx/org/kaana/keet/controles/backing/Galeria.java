@@ -35,6 +35,7 @@ public class Galeria extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? "filtro" : JsfBase.getFlashAttribute("retorno"));
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -93,19 +94,17 @@ public class Galeria extends IBaseFilter implements Serializable {
 	} // doLoadFiles		
 	
 	public String doCancelar() {
-    String regresar= null;    
     try {						
 			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));												
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
-			regresar= "filtro".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-    return regresar;
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar		
   
 }

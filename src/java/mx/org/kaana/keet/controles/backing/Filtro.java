@@ -83,7 +83,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.current.setNivel(3L);
 				this.actualizarChildren(1);
 			} // if	
-		loadCombos();
+	  	this.loadCombos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -96,21 +96,22 @@ public class Filtro extends IBaseFilter implements Serializable {
 		String nodo                  = "";
 		TcKeetPrototiposDto prototipo= null;
     try {
-			if(this.attrs.get("idPrototipo")!=null && ((UISelectEntity)this.attrs.get("idPrototipo")).getKey()>0L){
+			if(this.attrs.get("idPrototipo")!= null && ((UISelectEntity)this.attrs.get("idPrototipo")).getKey()> 0L) {
 				prototipo= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, ((UISelectEntity)this.attrs.get("idPrototipo")).getKey());
 				this.current= (TcKeetControlesDto)DaoFactory.getInstance().findById(TcKeetControlesDto.class, prototipo.getIdEstacion());
 				actualizarChildren(1);
 			} // if
-			else if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
-				nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
-				this.current= new TcKeetControlesDto();
-				this.current.setClave(this.controles.toCode(nodo));
-				this.current.setNivel(1L);
-				actualizarChildren(1,2);
-				this.current.setNivel(3L);
-			} // else if
-			else
-				doInicio();
+			else 
+        if(this.attrs.get("idEmpresa")!= null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()> 0L) {
+          nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
+          this.current= new TcKeetControlesDto();
+          this.current.setClave(this.controles.toCode(nodo));
+          this.current.setNivel(1L);
+          this.actualizarChildren(1,2);
+          this.current.setNivel(3L);
+        } // else if
+        else
+          this.doInicio();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

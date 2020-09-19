@@ -322,6 +322,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
 			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");			
 			if(seleccionado.getKey().equals(Constantes.USUARIO_INACTIVO))				
 				regresar= "galeria".concat(Constantes.REDIRECIONAR);			
 			else

@@ -54,9 +54,9 @@
 										</p:column>   
 									</p:selectOneMenu>	
 									<p:panelGrid columns="4" styleClass="janal-wid-100-txt">
-  									<p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar destajo" disabled="true" style="display: #{not keetControlesControl.attrs.persona? '': 'none'}"/>
-	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetControlesControl.doDestajos}" process="@this" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetControlesControl.attrs.persona? '': 'none'}"/>
-                    <p:commandButton id="reporteDestajos" icon="fa fa-file-pdf-o" title="Destajos" action="#{keetControlesControl.doReporte('COMPLETO')}" disabled="#{not keetControlesControl.attrs.persona}" process="@this" update="descargar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" />
+  									<p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar avance" disabled="true" style="display: #{not keetControlesControl.attrs.persona? '': 'none'}"/>
+	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar avance" action="#{keetControlesControl.doDestajos}" process="@this" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetControlesControl.attrs.persona? '': 'none'}"/>
+                    <p:commandButton id="reporteDestajos" icon="fa fa-file-pdf-o" title="Avances" action="#{keetControlesControl.doReporte('COMPLETO')}" disabled="#{not keetControlesControl.attrs.persona}" process="@this" update="descargar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" />
 									</p:panelGrid>
 								</p:panelGrid>
 								<p:outputLabel for="lotes" value="Lotes:"/>
@@ -98,7 +98,7 @@
 							<f:facet name="footer">
 								<div class="janal-column-right">
 									<span style="display: #{row.iconEstatus eq '' ? '' : 'none'}">Importar imagenes ...</span>									
-									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}"/>									
+									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}" title="#{row.idControlEstatus eq '1' ? 'SIN INICIAR': (row.idControlEstatus eq '2' ? 'EN PROCESO' : (row.idControlEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 								</div>	
 							</f:facet>
 						</p:panel>						

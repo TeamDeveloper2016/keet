@@ -73,7 +73,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    } // catch		
+    } // catch		7
   } // init
 
 	private void loadCatalogos() {

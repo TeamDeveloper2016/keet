@@ -264,21 +264,30 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		Entity estatus           = null;
 		try {
 			params= new HashMap<>();
-			for(Entity mzaLote: this.lotes){
+			for(Entity mzaLote: this.lotes) {
 				params.clear();
 				params.put("idDepartamento", this.attrs.get("especialidad"));
 				params.put("clave", toClaveEstacion(mzaLote));
 				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaDestajosDto", "estatusControlManzanaLote", params);
-				if(estatus.toString("total")!= null){
-					if(estatus.toLong("total").equals(estatus.toLong("terminado")))
+				if(estatus.toString("total")!= null) {
+					if(estatus.toLong("total").equals(estatus.toLong("terminado"))) {
 						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.TERMINADO.getSemaforo()));
-					else if(estatus.toLong("total").equals(estatus.toLong("iniciado")))
-						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.INICIAR.getSemaforo()));
-					else
-						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.EN_PROCESO.getSemaforo()));
+						mzaLote.put("idControlEstatus", new Value("idControlEstatus", EEstacionesEstatus.TERMINADO.getKey()));
+          } // if  
+					else 
+            if(estatus.toLong("total").equals(estatus.toLong("iniciado"))) {
+						  mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.INICIAR.getSemaforo()));
+						  mzaLote.put("idControlEstatus", new Value("idControlEstatus", EEstacionesEstatus.INICIAR.getKey()));
+            } // if  
+            else {
+						  mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.EN_PROCESO.getSemaforo()));
+						  mzaLote.put("idControlEstatus", new Value("idControlEstatus", EEstacionesEstatus.EN_PROCESO.getKey()));
+            } // else  
 				} // if
-				else
+        else {
 					mzaLote.put("iconEstatus", new Value("iconEstatus", ""));
+					mzaLote.put("idControlEstatus", new Value("idControlEstatus", -1L));
+        } // else  
 			} // for
 		} // try
 		finally {
@@ -318,6 +327,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
 			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Controles/control");			
 			if(seleccionado.getKey().equals(Constantes.USUARIO_INACTIVO))				
 				regresar= "galeria".concat(Constantes.REDIRECIONAR);			
 			else
