@@ -62,19 +62,18 @@ public enum EReportes implements IReportAttribute{
   LISTADO_NOMINA_PROVEEDORES("VistaNominaConsultasDto", "proveedores", "Listado nómina subcontratistas", "/Paginas/Keet/Nominas/Reportes/proveedores", EFormatos.PDF, "listado_nomina_subcontratistas", "/Paginas/Keet/Nominas/proveedores"),
   DESTAJOS_CONTRATISTA       ("VistaNominaConsultasDto", "personas", "Detalle del destajos del contratista", "/Paginas/Keet/Nominas/Reportes/detalleDestajosContratistas", EFormatos.PDF, "detalle_destajos_contratista", "/Paginas/Keet/Nominas/filtro"),
   DESTAJOS_CAT_CONTRATISTA   ("VistaNominaConsultasDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
-  DESTAJOS_CAT_RESIDENTE    ("VistaNominaConsultasDto", "destajoResidente", "Avande del residente de obra", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "avance_residentes", "/Paginas/Keet/Controles/control"),
+  DESTAJOS_CAT_RESIDENTE    ("VistaNominaConsultasDto", "destajoResidente", "Avande del residente de obra", "/Paginas/Keet/Controles/Reportes/detallesDestajos", EFormatos.PDF, "avance_residentes", "/Paginas/Keet/Controles/control"),
   DESTAJOS_CAT_SUBCONTRATISTA("VistaNominaConsultasDto", "destajoProveedor", "Destajos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/detallesDestajos", EFormatos.PDF, "destajos_subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
   DESTAJOS_TOTALES_SUBCONTRATISTA("VistaNominaConsultasReportesDto", "destajoProveedor", "Destajos del subcontratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_subcontratista_desarrollos", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
   DESTAJOS_TOTALES_CONTRATISTA("VistaNominaConsultasReportesDto", "destajoPersona", "Destajos del contratista", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "destajos_contratista_desarrollos", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro"),
-  DESTAJOS_TOTALES_RESIDENTE("VistaNominaConsultasReportesDto", "destajoResidente", "Avance del resindente de obra", "/Paginas/Keet/Catalogos/Contratos/Destajos/Reportes/destajosPersona", EFormatos.PDF, "avances_residentes_desarrollos", "/Paginas/Keet/Controles/control"),
+  DESTAJOS_TOTALES_RESIDENTE("VistaNominaConsultasReportesDto", "destajoResidente", "Avance del resindente de obra", "/Paginas/Keet/Controles/Reportes/destajosPersona", EFormatos.PDF, "avances_residentes_desarrollos", "/Paginas/Keet/Controles/control"),
   NOMINA_LISTADO("VistaNominaReportesDto", "listadoNomina", "Listado nómina", "/Paginas/Keet/Nominas/Reportes/nominaEmpresa", EFormatos.PDF, "nomina", "/Paginas/Keet/Nominas/filtro"),
   PUNTOS_CONTROL("VistaPuntosControlReporteDto", "principal", "Puntos de revisión", "/Paginas/Keet/Catalogos/PuntosControl/Reportes/puntosRevision", EFormatos.PDF, "puntos_control", "/Paginas/Keet/Catalogos/PuntosControl/filtro"),
   ESTACIONES("VistaReportesEstaciones", "estaciones", "Estaciones", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "estaciones", "/Paginas/Keet/Estaciones/contrato"),
   PROTOTIPOS("VistaReportesEstaciones", "estaciones", "Estaciones", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "estaciones_prototipo", "/Paginas/Keet/Estaciones/contrato"),
   MATERIALES("VistaReportesEstaciones", "materiales", "Materiales", "/Paginas/Keet/Materiales/Reportes/materiales", EFormatos.PDF, "materiales", "/Paginas/Keet/Materiales/filtro"),
   CONTROLES("VistaReportesEstaciones", "controles", "Controles", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "controles", "/Paginas/Keet/Estaciones/contrato");
-	
-	
+		
 	private final String proceso;
   private final String idXml;
   private final String titulo; 
