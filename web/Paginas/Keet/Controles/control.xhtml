@@ -120,7 +120,7 @@
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetControlesControl.doReporte('DESARROLLO')}" oncomplete="janal.desbloquear();" update="descargar"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-envelope-o" title="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetControlesControl.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
 						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.nomina}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.nomina}" rendered="false">
 							<f:facet name="header">
 								<h:outputText value="Nómina"/>
 							</f:facet>
@@ -150,11 +150,11 @@
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.costo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.porcentaje}">
 							<f:facet name="header">
-								<h:outputText value="Costo"/>
+								<h:outputText value="Porcentaje"/>
 							</f:facet>
-							<h:outputText value="#{row['costo']}"/>
+							<h:outputText value="#{row['porcentaje']}"/>
 						</p:column>	
 						<f:facet name="footer">
 							<p:outputLabel value="&lt;span class='janal-color-blue'&gt;Total: &lt;strong&gt;[#{keetControlesControl.costoTotal}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>

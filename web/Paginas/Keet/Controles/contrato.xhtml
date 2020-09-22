@@ -95,6 +95,12 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetControlesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
 						</f:facet>												
+						<p:column class="MarAuto Responsive janal-wid-col-30" >
+							<f:facet name="header">
+								<h:outputText value="No"/>
+							</f:facet>
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-8" >
 							<f:facet name="header">
 								<h:outputText value="Codigo"/>
@@ -125,7 +131,13 @@
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-30">
+							<f:facet name="header">
+								<h:outputText value="" />
+							</f:facet>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idControlEstatus eq '1' ? 'circulo-rojo': (row.idControlEstatus eq '2' ? 'circulo-amarillo' : (row.idControlEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idControlEstatus eq '1' ? 'SIN INICIAR': (row.idControlEstatus eq '2' ? 'EN PROCESO' : (row.idControlEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+						</p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" rendered="false">
 							<f:facet name="header">
 								<h:outputText value="costo" />
 							</f:facet>

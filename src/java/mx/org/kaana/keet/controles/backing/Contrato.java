@@ -75,7 +75,7 @@ public class Contrato extends Filtro {
 				} // else if
 				else
 					this.doInicio();
-        this.attrs.put("filtroReporte",this.current.getClave().isEmpty()? "%": this.current.getClave().substring(0,13).concat("%"));
+        this.attrs.put("filtroReporte",this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
