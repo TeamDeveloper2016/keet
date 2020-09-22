@@ -167,6 +167,8 @@
           tc_keet_controles
         where 
           {condicion} 
+				order by
+				  clave 
       </select>
       <select id="identically">
         select      
@@ -174,7 +176,9 @@
         from      
           tc_keet_controles
         where      
-          id_control = {idControl}
+          clave = '{clave}'
+				order by
+				  clave 
       </select>
       <select id="byId">
         select      
@@ -183,7 +187,7 @@
         from      
           tc_keet_controles
         where 
-          id_control= {idEstacion} 
+          id_control= {idControl} 
 				order by
 				  clave 
       </select>
@@ -218,8 +222,7 @@
           tc_keet_controles
         where 
           clave like '{clave}%'
-				and
-					nivel = {nivel}
+				  and nivel = {nivel}
       </select>
 			<select id="minClave">
         select      
@@ -238,7 +241,7 @@
 				  tc_keet_controles
 				where 
 				 tc_keet_controles.clave like '{clave}%'
-         and tc_keet_controles.nivel> 4
+         and tc_keet_controles.nivel&gt; 4
 			</delete>
 			<update id="rows">
 				update
@@ -2670,7 +2673,7 @@
           consecutivo = '{consecutivo}' and id_contrato = {idContrato}
       </select>
     </unit>
-		    <unit id="TcKeetContratosArchivosDto">
+		 <unit id="TcKeetContratosArchivosDto">
       <select id="row">
         select      
           tc_keet_contratos_archivos.id_contrato_archivo as id_key,

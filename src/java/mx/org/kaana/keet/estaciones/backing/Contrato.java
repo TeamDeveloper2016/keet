@@ -1,17 +1,22 @@
 package mx.org.kaana.keet.estaciones.backing;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 
 @Named(value = "keetEstacionesContrato")
@@ -170,4 +175,23 @@ public class Contrato extends Filtro {
 		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
 
+  public String doUploadContrato(TcKeetEstacionesDto row) {
+    Map<String, Object> params= null;
+    try {
+      params = new HashMap<>();
+      params.put("idContrato", Numero.getLong(this.estaciones.toValueKey(row.getClave(), 3)));
+      params.put("orden", Numero.getLong(this.estaciones.toValueKey(row.getClave(), 4)));
+      Entity contrato = (Entity) DaoFactory.getInstance().toEntity("VistaContratosDto", "contrato", params);
+      this.attrs.put("contrato", contrato);
+    } // try
+    catch (Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return "";
+  }
+  
 }

@@ -1783,6 +1783,22 @@
           {condicion}
 				{sortOrder}
 			</select>	
+			<select id="contrato">
+				select 
+          tc_keet_contratos_lotes.id_contrato_lote as id_key,
+          tc_keet_contratos.id_contrato,
+          tc_keet_contratos.clave as numero,
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_contratos.no_viviendas,
+          tc_keet_contratos.etapa
+        from 
+          tc_keet_contratos
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+        where
+          tc_keet_contratos_lotes.id_contrato= {idContrato}
+          and tc_keet_contratos_lotes.orden= {orden}
+			</select>	
 			<select id="findDesarrollo">
 				select 
 					tc_keet_contratos.id_contrato as id_key,

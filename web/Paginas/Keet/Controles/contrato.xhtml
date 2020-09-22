@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Estaciones a utilizar en los lotes" />
+  <ui:param name="titulo" value="Conceptos a dar seguimiento en los lotes por los residentes de obra" />
   <ui:define name="librerias">
     <script type="text/javascript">
     </script>		
@@ -46,7 +46,7 @@
 							</p:selectOneMenu>
 								<p:outputLabel for="lote" value="Lote:"/>
 								<p:selectOneMenu id="lote" value="#{keetControlesContrato.attrs.lote}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-									<f:selectItems value="#{keetControlesContrato.attrs.lotes}" var="two" itemValue="#{two}" itemLabel="#{two.clave} #{empty two.manzana or two.manzana.toString() eq '-1'? '': '-'} #{two.manzana} #{empty two.lote or two.lote.toString() eq '-1'? '': '-'} #{empty two.lote or two.lote.toString() eq '-1'? '': two.lote}"/>
+									<f:selectItems value="#{keetControlesContrato.attrs.lotes}" var="two" itemValue="#{two}" itemLabel="#{two.clave} #{empty two.manzana or two.manzana eq ''? '': '-'} #{two.manzana} #{empty two.lote or two.lote.toString() eq '-1'? '': '-'} #{empty two.lote or two.lote eq '-1'? '': two.lote}"/>
 									 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
@@ -95,39 +95,57 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetControlesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-col-30" >
+						<p:column class="MarAuto Responsive janal-wid-col-30">
 							<f:facet name="header">
 								<h:outputText value="No"/>
 							</f:facet>
-							<h:outputText value="#{index+ 1}.-"/>
+							<h:outputText value="#{index+ 1}.- #{keetControlesContrato.doUploadContrato(row)}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-8" >
+						<p:column class="MarAuto Responsive janal-wid-5">
+							<f:facet name="header">
+								<h:outputText value="Contrato"/>
+							</f:facet>
+							<h:outputText value="#{keetControlesContrato.attrs.contrato.numero}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-10">
+							<f:facet name="header">
+								<h:outputText value="Etapa"/>
+							</f:facet>
+							<h:outputText value="#{keetControlesContrato.attrs.contrato.etapa}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-5">
+							<f:facet name="header">
+								<h:outputText value="Lote"/>
+							</f:facet>
+							<h:outputText value="#{keetControlesContrato.attrs.contrato.lote}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-6">
 							<f:facet name="header">
 								<h:outputText value="Codigo"/>
 							</f:facet>
 							<h:outputText value="#{row['codigo']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-33" >
+						<p:column class="MarAuto Responsive">
 							<f:facet name="header">
 								<h:outputText value="#{keetControlesContrato.titulo}"/>
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>			            
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" >
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-6" >
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
 							<h:outputText value="#{keetControlesContrato.doFecha(row['inicio'])}"/>
 						</p:column>	      
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" >
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-6" >
 							<f:facet name="header">
 								<h:outputText value="Termino" />
 							</f:facet>
 							<h:outputText value="#{keetControlesContrato.doFecha(row['termino'])}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 							<f:facet name="header">
-								<h:outputText value="Cantidad" />
+								<h:outputText value="Cantidad"/>
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}"/>
 						</p:column>

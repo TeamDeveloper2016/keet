@@ -95,53 +95,71 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetEstacionesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-col-30" >
+						<p:column class="MarAuto Responsive janal-wid-col-30">
 							<f:facet name="header">
 								<h:outputText value="No"/>
 							</f:facet>
-							<h:outputText value="#{index+ 1}.-"/>
+							<h:outputText value="#{index+ 1}.- #{keetEstacionesContrato.doUploadContrato(row)}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-8" >
+						<p:column class="MarAuto Responsive janal-wid-5">
+							<f:facet name="header">
+								<h:outputText value="Contrato"/>
+							</f:facet>
+							<h:outputText value="#{keetControlesContrato.attrs.contrato.numero}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-10">
+							<f:facet name="header">
+								<h:outputText value="Etapa"/>
+							</f:facet>
+							<h:outputText value="#{keetControlesContrato.attrs.contrato.etapa}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-5">
+							<f:facet name="header">
+								<h:outputText value="Lote"/>
+							</f:facet>
+							<h:outputText value="#{keetControlesContrato.attrs.contrato.lote}"/>
+						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-6">
 							<f:facet name="header">
 								<h:outputText value="Codigo"/>
 							</f:facet>
 							<h:outputText value="#{row['codigo']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-33" >
+						<p:column class="MarAuto Responsive">
 							<f:facet name="header">
-								<h:outputText value="#{keetEstacionesContrato.titulo}"/>
+								<h:outputText value="#{keetControlesContrato.titulo}"/>
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>			            
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" >
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-6" >
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
-							<h:outputText value="#{keetEstacionesContrato.doFecha(row['inicio'])}"/>
+							<h:outputText value="#{keetControlesContrato.doFecha(row['inicio'])}"/>
 						</p:column>	      
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" >
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-6" >
 							<f:facet name="header">
 								<h:outputText value="Termino" />
 							</f:facet>
-							<h:outputText value="#{keetEstacionesContrato.doFecha(row['termino'])}"/>
+							<h:outputText value="#{keetControlesContrato.doFecha(row['termino'])}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 							<f:facet name="header">
-								<h:outputText value="Cantidad" />
+								<h:outputText value="Cantidad"/>
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}"/>
-						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
-							<f:facet name="header">
-								<h:outputText value="Costo" />
-							</f:facet>
-							<h:outputText value="#{row['costo']}"/>
 						</p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-col-30">
 							<f:facet name="header">
 								<h:outputText value="" />
 							</f:facet>
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idControlEstatus eq '1' ? 'circulo-rojo': (row.idControlEstatus eq '2' ? 'circulo-amarillo' : (row.idControlEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idControlEstatus eq '1' ? 'SIN INICIAR': (row.idControlEstatus eq '2' ? 'EN PROCESO' : (row.idControlEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEtatus eq '1' ? 'circulo-rojo': (row.idEstacionEtatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEtatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEtatus eq '1' ? 'SIN INICIAR': (row.idEstacionEtatus eq '2' ? 'EN PROCESO' : (row.idEstacionEtatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+						</p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" rendered="false">
+							<f:facet name="header">
+								<h:outputText value="costo" />
+							</f:facet>
+							<h:outputText value="#{row['costo']}"/>
 						</p:column>
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetEstacionesContrato.hijos==null?0:keetEstacionesContrato.hijos.size()}] registros"/>
