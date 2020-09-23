@@ -1810,6 +1810,17 @@
 				order by
 				  nombre 
       </select>
+      <select id="residentes">
+        select      
+          tc_keet_departamentos.id_departamento as id_key,
+					tc_keet_departamentos.*
+        from      
+          tc_keet_departamentos
+        where 
+          id_departamento in (1, 21)
+				order by
+				  nombre 
+      </select>
       <select id="igual">
         select      
           *

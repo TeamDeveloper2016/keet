@@ -2388,6 +2388,40 @@
 				order by 
 					tipo, nombre_completo
 			</select>	
+			<select id="residentesSubAsociados">
+				select 
+					principal.*
+				from (
+					select 
+						convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,						
+						concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) nombre_completo,
+						tc_mantic_puestos.nombre puesto,
+						tc_keet_departamentos.nombre departamento,						
+						tr_mantic_empresa_personal.id_activo,												
+						1 tipo  																																																
+					from 
+						tr_mantic_empresa_personal
+					inner join 
+						tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+					inner join 
+						tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+					inner join 
+						tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+					where 
+						tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
+  				  and {condicion}
+					  and tc_mantic_puestos.nombre= 'RESIDENTE DE OBRA'
+				) principal
+				group by
+					id_key,					
+					nombre_completo,
+					puesto,
+					departamento,						
+					id_activo,											
+					tipo
+				order by 
+					tipo, nombre_completo
+			</select>	
 		</unit>
     <unit id="VistaPrototiposDto">
 			<select id="lazy">

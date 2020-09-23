@@ -21,13 +21,21 @@ public class Transaccion extends IBaseTnx {
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);
 	private Long idContratoLote;	
 	private List<SelectionItem> empleados;		
+	private Long idEmpresaPersona;
 	private String[] lotes;
+	private Long tipo;
 	
 	public Transaccion(Long idContratoLote, List<SelectionItem> empleados) {		
 		this.idContratoLote= idContratoLote;		
 		this.empleados     = empleados;
 	}	
 	
+	public Transaccion(Long idEmpresaPersona, String[] lotes, Long tipo) {
+		this.idEmpresaPersona= idEmpresaPersona;
+		this.lotes           = lotes;
+		this.tipo            = tipo;
+	}	
+  
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar         = true;
@@ -75,8 +83,8 @@ public class Transaccion extends IBaseTnx {
 		TcKeetContratosLotesResidentesDto regresar= null;
 		try {
 			regresar= new TcKeetContratosLotesResidentesDto();							
-      regresar.setIdContratoLote(this.idContratoLote);
-      regresar.setIdEmpresaPersona(key);
+      regresar.setIdContratoLote(key);
+      regresar.setIdEmpresaPersona(this.idEmpresaPersona);
       regresar.setObservaciones("ASIGNACION DEL RESPONSABLE DE OBRA AL LOTE [ContratoLote [" + this.idContratoLote + "]]");
 			regresar.setIdUsuario(idUsuario);
 			regresar.setIdTrabajo(2L);						

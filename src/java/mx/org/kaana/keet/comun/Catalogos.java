@@ -29,8 +29,20 @@ import mx.org.kaana.libs.reflection.Methods;
 
 public final class Catalogos {
 	
+	public static void toLoadResidentes(Map<String, Object> attrs) throws Exception {
+		Map<String, Object> params= null;		
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			attrs.put("departamentos", UISelect.seleccione("TcKeetDepartamentosDto", "residentes", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally		
+	} // toLoadDepartamentos
+  
 	public static void toLoadEspecialidades(Map<String, Object> attrs) throws Exception {
-		Map<String, Object> params      = null;		
+		Map<String, Object> params= null;		
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
