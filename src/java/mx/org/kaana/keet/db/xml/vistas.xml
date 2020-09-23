@@ -1799,6 +1799,35 @@
           tc_keet_contratos_lotes.id_contrato= {idContrato}
           and tc_keet_contratos_lotes.orden= {orden}
 			</select>	
+			<select id="galeria">	
+				select 
+				  tc_keet_contratos_lotes.id_contrato_lote as id_key,
+				  tc_keet_proyectos.id_desarrollo,
+				  tc_keet_proyectos.id_cliente,
+				  tc_keet_proyectos.etapa,
+				  tc_keet_contratos.id_empresa,
+				  tc_keet_contratos.clave,
+				  tc_keet_contratos.consecutivo,
+				  tc_keet_contratos.id_contrato,
+				  tc_keet_contratos.id_proyecto,
+				  tc_keet_contratos.id_contrato_estatus,
+				  tc_keet_contratos_lotes.id_contrato_lote,
+				  tc_keet_contratos_lotes.id_prototipo,
+				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+				  tc_keet_contratos_lotes.orden,
+				  tc_keet_contratos_lotes.latitud,
+				  tc_keet_contratos_lotes.longitud,
+				  tc_keet_contratos_lotes.id_contrato_lote_estatus
+        from 
+          tc_keet_contratos
+        inner join
+          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+        where
+          tc_keet_contratos_lotes.id_contrato= {idContrato}
+          and tc_keet_contratos_lotes.orden= {orden}
+			</select>	
 			<select id="findDesarrollo">
 				select 
 					tc_keet_contratos.id_contrato as id_key,

@@ -255,4 +255,10 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
     this.put(key, new Value(key, value, key));
   }
   
+  public void add(Entity entity) {
+    for (String key : entity.keySet()) {
+      this.put(key, entity.get(key));
+    }
+  }
+  
 }

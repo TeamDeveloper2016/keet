@@ -29,17 +29,14 @@ public class Galeria extends IBaseFilter implements Serializable {
   @PostConstruct
   @Override
   protected void init() {		
-    EOpcionesResidente opcion= null;
-		Long idDesarrollo        = null;
     try {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+			this.attrs.put("idContratoLote", JsfBase.getFlashAttribute("idContratoLote"));	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? "filtro" : JsfBase.getFlashAttribute("retorno"));
-			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
-			this.attrs.put("opcionResidente", opcion);
-			this.attrs.put("idDesarrollo", idDesarrollo);
+			this.attrs.put("opcionResidente", JsfBase.getFlashAttribute("opcionResidente"));
+			this.attrs.put("idDesarrollo", JsfBase.getFlashAttribute("idDesarrollo"));
 			this.attrs.put("figura", (Entity) JsfBase.getFlashAttribute("figura"));
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));									
@@ -95,8 +92,9 @@ public class Galeria extends IBaseFilter implements Serializable {
 	
 	public String doCancelar() {
     try {						
-			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));												
-			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));												
+			JsfBase.setFlashAttribute("idContratoLote", this.attrs.get("idContratoLote"));
+			JsfBase.setFlashAttribute("opcionResidente", (EOpcionesResidente)this.attrs.get("opcionResidente"));
+			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));
 			JsfBase.setFlashAttribute("idDesarrollo", (Long)this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 		} // try

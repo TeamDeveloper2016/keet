@@ -8,9 +8,11 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.keet.comun.gps.Point;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetControlesDto;
 import mx.org.kaana.keet.controles.reglas.Controles;
+import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -30,19 +32,24 @@ public class Contrato extends Filtro {
 			this.controles= new Controles();
 			this.controles.cleanLevels();
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
+      this.loadCombos();
+			if(JsfBase.getFlashAttribute("estacionProcess")!= null) {
 				this.current= (TcKeetControlesDto)JsfBase.getFlashAttribute("estacionProcess");
 				actualizarChildren(1);
 			} // if
-			else{
-				this.current=new TcKeetControlesDto();
-				this.current.setClave("");
-				this.current.setNivel(1L);
-				actualizarChildren(0, 3);
-				this.current.setNivel(3L);
-			} // if	
-		loadCombos();
-    this.attrs.put("filtroReporte","%");
+      else 
+        if(JsfBase.getFlashAttribute("idContratoLote")!= null) {
+          this.attrs.put("lote", new UISelectEntity((Long)JsfBase.getFlashAttribute("idContratoLote")));
+          this.doLoad();
+        }
+        else {
+          this.current=new TcKeetControlesDto();
+          this.current.setClave("");
+          this.current.setNivel(1L);
+          actualizarChildren(0, 3);
+          this.current.setNivel(3L);
+        } // if	
+      this.attrs.put("filtroReporte","%");
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -80,7 +87,7 @@ public class Contrato extends Filtro {
 				} // else if
 				else
 					this.doInicio();
-        this.attrs.put("filtroReporte",this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
+        this.attrs.put("filtroReporte", this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -183,14 +190,15 @@ public class Contrato extends Filtro {
 		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
 
-  public String doUploadContrato(TcKeetControlesDto row) {
+  public void doUploadContrato(TcKeetControlesDto row) {
     Map<String, Object> params= null;
     try {
       params = new HashMap<>();
       params.put("idContrato", Numero.getLong(this.controles.toValueKey(row.getClave(), 3)));
       params.put("orden", Numero.getLong(this.controles.toValueKey(row.getClave(), 4)));
       Entity contrato = (Entity) DaoFactory.getInstance().toEntity("VistaContratosDto", "contrato", params);
-      this.attrs.put("contrato", contrato);
+      if(contrato!= null && !contrato.isEmpty())
+        this.attrs.put("contrato", contrato);
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -199,7 +207,33 @@ public class Contrato extends Filtro {
     finally {
       Methods.clean(params);
     } // finally
-    return "";
   }
+
+	public String doGaleria(TcKeetControlesDto row) {
+    Map<String, Object> params= null;
+    String regresar           = null;    		
+    try {			
+      params = new HashMap<>();
+      params.put("idContrato", Numero.getLong(this.controles.toValueKey(row.getClave(), 3)));
+      params.put("orden", Numero.getLong(this.controles.toValueKey(row.getClave(), 4)));
+      Entity seleccionado= (Entity) DaoFactory.getInstance().toEntity("VistaContratosDto", "galeria", params);
+			JsfBase.setFlashAttribute("", EOpcionesResidente.CONTROLES);
+			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONTROLES);
+			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
+			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
+			JsfBase.setFlashAttribute("idContratoLote", seleccionado.toLong("idContratoLote"));
+			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Controles/contrato");			
+			regresar= "galeria".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			mx.org.kaana.libs.formato.Error.mensaje(e);			
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  } // doPagina
   
 }
