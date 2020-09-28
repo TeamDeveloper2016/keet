@@ -78,7 +78,7 @@
 							</ui:repeat>
 						</f:facet>
 					</p:toolbar>
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetControlesContrato.hijos}" rowKey="#{row.idControl}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesContrato.attrs.seleccionado}" selectionMode="single" paginator="#{keetControlesContrato.lazyModel.rowCount gt keetControlesContrato.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetControlesContrato.hijos}" rowKey="#{row.idControl}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetControlesContrato.attrs.seleccionado}" selectionMode="single" paginator="#{keetControlesContrato.lazyModel.rowCount gt keetControlesContrato.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowDblselect"  listener="#{keetControlesContrato.doActualizarChildren}" onstart="return janal.bloquear();" process="@this" update="tabla,seguimiento" oncomplete="janal.desbloquear();"/>
 						<f:facet name="header">							
 							<div class="janal-icons-header">
@@ -105,7 +105,7 @@
 							</f:facet>
 							<h:outputText value="#{index+ 1}.- #{keetControlesContrato.doUploadContrato(row)}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-5">
+						<p:column class="MarAuto Responsive janal-wid-7">
 							<f:facet name="header">
 								<h:outputText value="Contrato"/>
 							</f:facet>
@@ -117,13 +117,13 @@
 							</f:facet>
 							<h:outputText value="#{keetControlesContrato.attrs.contrato.etapa}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-5">
+						<p:column class="MarAuto Responsive janal-wid-7">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
 							<h:outputText value="#{keetControlesContrato.attrs.contrato.lote}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-6">
+						<p:column class="MarAuto Responsive janal-wid-10">
 							<f:facet name="header">
 								<h:outputText value="Codigo"/>
 							</f:facet>
@@ -135,13 +135,13 @@
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>			            
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-6" >
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" >
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
 							<h:outputText value="#{keetControlesContrato.doFecha(row['inicio'])}"/>
 						</p:column>	      
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-6" >
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" >
 							<f:facet name="header">
 								<h:outputText value="Termino" />
 							</f:facet>
@@ -153,11 +153,14 @@
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}"/>
 						</p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-30">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-30">
 							<f:facet name="header">
 								<h:outputText value="" />
 							</f:facet>
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idControlEstatus eq '1' ? 'circulo-rojo': (row.idControlEstatus eq '2' ? 'circulo-amarillo' : (row.idControlEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idControlEstatus eq '1' ? 'SIN INICIAR': (row.idControlEstatus eq '2' ? 'EN PROCESO' : (row.idControlEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+              <p:commandLink process="@this" update="tabla" title="Ver detalle del lote" action="#{keetControlesContrato.doResumenLote}">
+								<f:setPropertyActionListener value="#{row}" target="#{keetControlesContrato.attrs.seleccionado}"/>
+							  <h:graphicImage library="janal" name="icon/semaforos/#{row.idControlEstatus eq '1' ? 'circulo-rojo': (row.idControlEstatus eq '2' ? 'circulo-amarillo' : (row.idControlEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idControlEstatus eq '1' ? 'SIN INICIAR': (row.idControlEstatus eq '2' ? 'EN PROCESO' : (row.idControlEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
+							</p:commandLink>																	
 						</p:column>
             <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
               <p:commandButton process="@this" icon="fa fa-fire" title="Ver galería" action="#{keetControlesContrato.doGaleria(row)}"/>

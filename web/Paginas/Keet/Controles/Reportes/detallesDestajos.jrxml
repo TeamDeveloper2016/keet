@@ -74,6 +74,7 @@
 	<field name="COSTO" class="java.math.BigDecimal"/>
 	<field name="DESARROLLO" class="java.lang.String"/>
 	<field name="NOMBRE" class="java.lang.String"/>
+	<field name="REGISTRO" class="java.sql.Timestamp"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -125,7 +126,7 @@
 						<text><![CDATA[Código]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="266" y="0" width="395" height="15" forecolor="#FFFFFF" uuid="4c8187d2-da38-409e-9a98-59bfb7012325"/>
+						<reportElement x="266" y="0" width="296" height="15" forecolor="#FFFFFF" uuid="4c8187d2-da38-409e-9a98-59bfb7012325"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -137,6 +138,13 @@
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
 						<text><![CDATA[Porcentaje]]></text>
+					</staticText>
+					<staticText>
+						<reportElement x="562" y="0" width="99" height="15" forecolor="#FFFFFF" uuid="ea3466b1-b0a9-45c7-a39a-22a86d363d59"/>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="Arial Narrow" size="10" isBold="true"/>
+						</textElement>
+						<text><![CDATA[Fecha]]></text>
 					</staticText>
 				</frame>
 			</band>
@@ -321,7 +329,7 @@
 				<textFieldExpression><![CDATA[$F{ETAPA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="266" y="0" width="395" height="14" uuid="5b96539c-1289-4b0e-ba4c-a47875809bc7"/>
+				<reportElement x="266" y="0" width="296" height="14" uuid="5b96539c-1289-4b0e-ba4c-a47875809bc7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
@@ -353,6 +361,13 @@
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PORCENTAJE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="562" y="1" width="99" height="14" uuid="b30c971b-2b78-4633-87c8-c4551389bd32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORT_SCRIPTLET}.getFecha(23, $F{REGISTRO})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

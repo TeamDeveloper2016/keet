@@ -49,18 +49,10 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		return registroDesarrollo;
 	}
 
-	public void setRegistroDesarrollo(RegistroDesarrollo registroDesarrollo) {
-		this.registroDesarrollo = registroDesarrollo;
-	}			
-
 	public MapModel getModel() {
 		return model;
 	}
 
-	public void setModel(MapModel model) {
-		this.model = model;
-	}	
-	
 	@PostConstruct
   @Override
   protected void init() {		
@@ -77,8 +69,8 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 			this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
 			this.attrs.put("domicilio", toDomicilio());				
 			this.attrs.put("mostrarDetalle", true);				
-			loadContratos();
-			doLoad();
+			this.loadContratos();
+			this.doLoad();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -86,7 +78,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 	
-	private String toDomicilio(){
+	private String toDomicilio() {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
@@ -142,7 +134,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
       lotes= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "lotes", params, Constantes.SQL_TODOS_REGISTROS);
 			if(!lotes.isEmpty()){				
 				for(Entity lote: lotes){
-					icon= toIcon(lote);
+					icon  = this.toIcon(lote);
 					marker= new Marker(new LatLng(Double.valueOf(lote.toString("latitud")), Double.valueOf(lote.toString("longitud"))), "Contrato: ".concat(lote.toString("clave")).concat(", Lote: ").concat(lote.toString("codigo")), lote, icon);
 					this.model.addOverlay(marker);
 				} // for

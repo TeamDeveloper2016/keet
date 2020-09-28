@@ -272,5 +272,32 @@ public class Contrato extends Filtro implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // doLoadEstatus
+
+  public String doResumenLote() {
+    Map<String, Object> params= null;
+    String regresar           = null;    		
+    try {			
+      params = new HashMap<>();
+      TcKeetControlesDto row= (TcKeetControlesDto)this.attrs.get("seleccionado");
+      params.put("idContrato", Numero.getLong(this.controles.toValueKey(row.getClave(), 3)));
+      params.put("orden", Numero.getLong(this.controles.toValueKey(row.getClave(), 4)));
+      Entity seleccionado= (Entity) DaoFactory.getInstance().toEntity("VistaContratosDto", "galeria", params);
+			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
+			JsfBase.setFlashAttribute("clave", this.controles.toKey(row.getClave(), 4));												
+			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
+			JsfBase.setFlashAttribute("idContratoLote", seleccionado.toLong("idContratoLote"));
+			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Controles/contrato");			
+			regresar= "detalle".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			mx.org.kaana.libs.formato.Error.mensaje(e);			
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  } 
   
 }

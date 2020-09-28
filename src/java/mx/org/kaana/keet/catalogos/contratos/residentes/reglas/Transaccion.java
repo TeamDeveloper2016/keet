@@ -85,7 +85,7 @@ public class Transaccion extends IBaseTnx {
 			regresar= new TcKeetContratosLotesResidentesDto();							
       regresar.setIdContratoLote(key);
       regresar.setIdEmpresaPersona(this.idEmpresaPersona);
-      regresar.setObservaciones("ASIGNACION DEL RESPONSABLE DE OBRA AL LOTE [ContratoLote [" + this.idContratoLote + "]]");
+      regresar.setObservaciones("ASIGNACION DEL RESPONSABLE DE OBRA AL LOTE [ContratoLote {"+ key+ "}]");
 			regresar.setIdUsuario(idUsuario);
 			regresar.setIdTrabajo(2L);						
 		} // try

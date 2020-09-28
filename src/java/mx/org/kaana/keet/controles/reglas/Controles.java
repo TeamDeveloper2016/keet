@@ -77,7 +77,7 @@ public class Controles extends Maestro implements IArbol, Serializable {
     Map<String, Object> params       = new HashMap<>();
 		try {
       value   = toOnlyKey(value, level+ child);
-      params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+ child+ aumentarNivel))).concat(!Cadena.isVacio(this.estatus)? this.estatus: ""));
+      params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+ child+ aumentarNivel))).concat(!Cadena.isVacio(this.estatus) && (level+ child== 1)? this.estatus: ""));
       regresar= (List) DaoFactory.getInstance().findViewCriteria(TcKeetControlesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
@@ -112,7 +112,7 @@ public class Controles extends Maestro implements IArbol, Serializable {
 		try {
 			params  = new HashMap<>();
 			value   = this.toOnlyKey(value, level+child);
-			params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+ child))).concat(!Cadena.isVacio(this.estatus)? this.estatus: ""));
+			params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+ child))).concat(!Cadena.isVacio(this.estatus) && (level+ child== 1)? this.estatus: ""));
 			regresar= DaoFactory.getInstance().findPage(TcKeetControlesDto.class, params, first, records);
 		} // try
 		catch (Exception e) {

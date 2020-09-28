@@ -147,6 +147,10 @@ public class BarraProgreso extends DJDefaultScriptlet implements Serializable {
     return Fecha.formatear(formato, registro);
   }
 
+  public String getFecha(int formato, java.sql.Timestamp registro) {
+    return Fecha.formatear(formato, registro);
+  }
+
   public String getFecha(java.util.Date registro) {
     return getFecha(Fecha.FECHA_LARGA, registro);
   }

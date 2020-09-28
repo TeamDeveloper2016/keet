@@ -105,7 +105,7 @@
               </f:facet>
               <h:outputText value="#{index+1}.-"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-60" sortBy="#{row.codigo}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-120" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
@@ -116,6 +116,12 @@
                 <h:outputText value="Concepto(s) del lote"/>
               </f:facet>
               <h:outputText value="#{row.nombre}" styleClass="#{keetControlesConceptos.toColor(row)} FontBold" title="Costo mano obra: #{row.costo}"/>
+            </p:column>		                        
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.registro}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row.registro eq '31/12/2999 00:00'? '-': row.registro}"/>
             </p:column>		                        
 						<p:column class="janal-wid-col-30 janal-column-center">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idControlEstatus eq '1' ? 'circulo-rojo': (row.idControlEstatus eq '2' ? 'circulo-amarillo' : (row.idControlEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idControlEstatus eq '1' ? 'SIN INICIAR': (row.idControlEstatus eq '2' ? 'EN PROCESO' : (row.idControlEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>

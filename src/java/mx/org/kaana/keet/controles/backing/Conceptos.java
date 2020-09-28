@@ -54,10 +54,10 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 			this.attrs.put("georreferencia", JsfBase.getFlashAttribute("georreferencia"));
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
-			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
-			figura= (Entity) JsfBase.getFlashAttribute("figura");	
-			seleccionado= (Entity) JsfBase.getFlashAttribute("seleccionado");	
+			opcion        = (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
+			idDesarrollo  = (Long) JsfBase.getFlashAttribute("idDesarrollo");			
+			figura        = (Entity) JsfBase.getFlashAttribute("figura");	
+			seleccionado  = (Entity) JsfBase.getFlashAttribute("seleccionado");	
 			idDepartamento= (Long)JsfBase.getFlashAttribute("idDepartamento");	
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("figura", figura);      
@@ -105,10 +105,11 @@ public class Conceptos extends IBaseFilter implements Serializable {
     List<Columna> columns    = null;				
     try {      			
 			params= this.toPrepare();
-      columns= new ArrayList<>();      
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
-      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
-      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));                  
+      columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "controles", params, columns);			
 			UIBackingUtilities.resetDataTable();
     } // try

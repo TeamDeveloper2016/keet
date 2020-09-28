@@ -175,7 +175,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		} // finally
 	} // doLoadFiguras
 	
-	private String toDomicilio(){
+	private String toDomicilio() {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
@@ -375,8 +375,8 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       columns= new ArrayList<>();
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoResidente", params, columns);
       UIBackingUtilities.resetDataTable("tabla");
 			this.attrs.put("destajos", true);
@@ -406,7 +406,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
       isCompleto = tipo.equals("COMPLETO");
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
       UISelectEntity figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
-      params= new HashMap<>();  
+      params = new HashMap<>();  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
       if(isCompleto){
