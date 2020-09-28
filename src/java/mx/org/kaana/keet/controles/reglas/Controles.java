@@ -15,10 +15,14 @@ import mx.org.kaana.libs.cfg.Maestro;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.keet.db.dto.TcKeetControlesDto;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
 
 public class Controles extends Maestro implements IArbol, Serializable {
+
+  private static final long serialVersionUID = 277149125233392106L;
+  private String estatus;
 
 	public Controles() {
 		 super(
@@ -33,7 +37,16 @@ public class Controles extends Maestro implements IArbol, Serializable {
       new Detalle(6, 3, 2, "0", "[1..999]", "", "Concepto"),  // 6to nivel concepto a 3 digitos
       new Detalle(7, 3, 2, "0", "[1..999]", "", "Material"),  // 7to nivel material a 3 digitos
       new Detalle(8, 3, 2, "0", "[1..999]", "", ""))));
+     this.estatus= "";
 	}
+
+  public String getEstatus() {
+    return estatus;
+  }
+
+  public void setEstatus(String estatus) {
+    this.estatus = estatus;
+  }
 
 	@Override
   public List<TcKeetControlesDto> toFather(String value) throws Exception {
@@ -42,7 +55,7 @@ public class Controles extends Maestro implements IArbol, Serializable {
     Map<String, Object> params        = null;
 		try {
 			params=new HashMap<>();
-			for (String clave : list) {
+			for(String clave: list) {
 				params.put("clave", clave);
 				TcKeetControlesDto dto=(TcKeetControlesDto) DaoFactory.getInstance().findIdentically(TcKeetControlesDto.class, params);
 				if (dto!=null&&dto.getKey()!=-1L) {
@@ -64,7 +77,7 @@ public class Controles extends Maestro implements IArbol, Serializable {
     Map<String, Object> params       = new HashMap<>();
 		try {
       value   = toOnlyKey(value, level+ child);
-      params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+child+aumentarNivel))).concat(" "));
+      params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+ child+ aumentarNivel))).concat(!Cadena.isVacio(this.estatus)? this.estatus: ""));
       regresar= (List) DaoFactory.getInstance().findViewCriteria(TcKeetControlesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
@@ -99,7 +112,7 @@ public class Controles extends Maestro implements IArbol, Serializable {
 		try {
 			params  = new HashMap<>();
 			value   = this.toOnlyKey(value, level+child);
-			params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+child))).concat(" "));
+			params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+ child))).concat(!Cadena.isVacio(this.estatus)? this.estatus: ""));
 			regresar= DaoFactory.getInstance().findPage(TcKeetControlesDto.class, params, first, records);
 		} // try
 		catch (Exception e) {
@@ -173,8 +186,8 @@ public class Controles extends Maestro implements IArbol, Serializable {
     Map<String, Object> params        = null;
 		try {
 			params= new HashMap<>();
-			value = toOnlyKey(value, level+child);
-			params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel>="+(level+child))).concat(" "));
+			value = toOnlyKey(value, level+ child);
+			params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel>="+(level+ child))).concat(!Cadena.isVacio(this.estatus)? this.estatus: ""));
 			regresar=(List) DaoFactory.getInstance().findViewCriteria(TcKeetControlesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {

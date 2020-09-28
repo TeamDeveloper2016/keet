@@ -44,11 +44,11 @@
 									<h:outputText value="#{item.etapa}"/>
 								</p:column>   
 							</p:selectOneMenu>
-								<p:outputLabel for="lote" value="Lote:"/>
-								<p:selectOneMenu id="lote" value="#{keetControlesContrato.attrs.lote}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-									<f:selectItems value="#{keetControlesContrato.attrs.lotes}" var="two" itemValue="#{two}" itemLabel="#{two.clave} #{empty two.manzana or two.manzana eq ''? '': '-'} #{two.manzana} #{empty two.lote or two.lote.toString() eq '-1'? '': '-'} #{empty two.lote or two.lote eq '-1'? '': two.lote}"/>
-									 <p:column headerText="Clave">
-                  <h:outputText value="#{item.clave}"/>
+							<p:outputLabel for="lote" value="Lote:"/>
+              <p:selectOneMenu id="lote" value="#{keetControlesContrato.attrs.lote}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
+                <f:selectItems value="#{keetControlesContrato.attrs.lotes}" var="two" itemValue="#{two}" itemLabel="#{two.clave} #{empty two.manzana or two.manzana eq ''? '': '-'} #{two.manzana} #{empty two.lote or two.lote.toString() eq '-1'? '': '-'} #{empty two.lote or two.lote eq '-1'? '': two.lote}"/>
+                  <p:column headerText="Clave">
+                <h:outputText value="#{item.clave}"/>
                 </p:column>
                 <p:column headerText="Manzana">
                   <h:outputText value="#{item.manzana}"/>
@@ -56,7 +56,11 @@
                 <p:column headerText="Lote">
                   <h:outputText value="#{item.lote}"/>
                 </p:column>
-								</p:selectOneMenu>		             
+              </p:selectOneMenu>		             
+							<p:outputLabel for="estatus" value="Estatus:"/>
+              <p:selectOneMenu id="estatus" value="#{keetControlesContrato.attrs.estatus}" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetControlesContrato.attrs.allEstatus}"/>                
+              </p:selectOneMenu>
             </p:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right">

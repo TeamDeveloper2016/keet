@@ -73,11 +73,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.controles= new Controles();
 			this.controles.cleanLevels();
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
+			if(JsfBase.getFlashAttribute("estacionProcess")!= null) {
 				this.current= (TcKeetControlesDto)JsfBase.getFlashAttribute("estacionProcess");
 				this.actualizarChildren(1);
 			} // if
-			else{
+      else {
 				this.current=new TcKeetControlesDto();
 				this.current.setClave(this.controles.toCode("0012020999"));
 				this.current.setNivel(3L);
@@ -201,7 +201,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doInicio() {
 		JsfBase.setFlashAttribute("current", null);
-		init();
+		this.init();
 	} // doInicio
 
 	protected void loadEmpresas() {

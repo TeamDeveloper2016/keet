@@ -1,6 +1,8 @@
 package mx.org.kaana.keet.controles.backing;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -8,34 +10,43 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.keet.comun.gps.Point;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetControlesDto;
 import mx.org.kaana.keet.controles.reglas.Controles;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 
 @Named(value = "keetControlesContrato")
 @ViewScoped
-public class Contrato extends Filtro {
+public class Contrato extends Filtro implements Serializable {
+
+  private static final long serialVersionUID = -514629609713218351L;
 	
 	@PostConstruct
   @Override
   protected void init() {
     try {
-			this.controles= new Controles();
+      if(this.controles== null) {
+			  this.controles= new Controles();
+        this.loadCombos();
+        this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      } // if  
 			this.controles.cleanLevels();
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.loadCombos();
 			if(JsfBase.getFlashAttribute("estacionProcess")!= null) {
 				this.current= (TcKeetControlesDto)JsfBase.getFlashAttribute("estacionProcess");
-				actualizarChildren(1);
+				this.actualizarChildren(1);
 			} // if
       else 
         if(JsfBase.getFlashAttribute("idContratoLote")!= null) {
@@ -46,7 +57,7 @@ public class Contrato extends Filtro {
           this.current=new TcKeetControlesDto();
           this.current.setClave("");
           this.current.setNivel(1L);
-          actualizarChildren(0, 3);
+          this.actualizarChildren(0, 3);
           this.current.setNivel(3L);
         } // if	
       this.attrs.put("filtroReporte","%");
@@ -62,6 +73,10 @@ public class Contrato extends Filtro {
 		String nodo                 = "";
 		TcKeetContratosLotesDto lote= null;
     try {
+  		if(!Cadena.isVacio(this.attrs.get("estatus")) && !this.attrs.get("estatus").toString().equals("-1"))
+    		this.controles.setEstatus(" and (tc_keet_controles.id_control_estatus= ".concat((String)this.attrs.get("estatus")).concat(")"));
+      else
+        this.controles.setEstatus("");
 			if(this.attrs.get("lote")!= null && ((UISelectEntity)this.attrs.get("lote")).getKey()> 0L) {
 				lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(TcKeetContratosLotesDto.class, ((UISelectEntity)this.attrs.get("lote")).getKey());
 			  nodo= this.controles.toCodeByIdContrato(lote.getIdContrato());
@@ -70,24 +85,26 @@ public class Contrato extends Filtro {
 				this.current.setNivel(4L);
 				this.actualizarChildren(1);
 			} // if
-			else if(this.attrs.get("contrato")!=null && ((UISelectEntity)this.attrs.get("contrato")).getKey()>0L) {
-				nodo= this.controles.toCodeByIdContrato(((UISelectEntity)this.attrs.get("contrato")).getKey());
-				this.current= new TcKeetControlesDto();
-				this.current.setClave(nodo);
-				this.current.setNivel(3L);
-				this.actualizarChildren(1);
-			} // else if
-			else if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
-					nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
-					this.current= new TcKeetControlesDto();
-					this.current.setClave(this.controles.toCode(nodo));
-					this.current.setNivel(1L);
-					this.actualizarChildren(1,2);
-					this.current.setNivel(3L);
-				} // else if
-				else
-					this.doInicio();
-        this.attrs.put("filtroReporte", this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
+			else 
+        if(this.attrs.get("contrato")!=null && ((UISelectEntity)this.attrs.get("contrato")).getKey()>0L) {
+          nodo= this.controles.toCodeByIdContrato(((UISelectEntity)this.attrs.get("contrato")).getKey());
+          this.current= new TcKeetControlesDto();
+          this.current.setClave(nodo);
+          this.current.setNivel(3L);
+          this.actualizarChildren(1);
+        } // else if
+        else 
+          if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
+            nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
+            this.current= new TcKeetControlesDto();
+            this.current.setClave(this.controles.toCode(nodo));
+            this.current.setNivel(1L);
+            this.actualizarChildren(1,2);
+            this.current.setNivel(3L);
+          } // else if
+          else
+            this.doInicio();
+          this.attrs.put("filtroReporte", this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -101,6 +118,7 @@ public class Contrato extends Filtro {
 			this.loadEmpresas();
 			this.doLoadContratos();
 			this.doLoadLotes();
+      this.loadEstatus();
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -235,5 +253,24 @@ public class Contrato extends Filtro {
     } // finally
     return regresar;
   } // doPagina
+
+	private void loadEstatus() {
+		Map<String, Object>params    = null;
+		List<UISelectItem> allEstatus= null;
+		try {			
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			allEstatus= UISelect.seleccione("TcKeetControlesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			this.attrs.put("allEstatus", allEstatus);
+			this.attrs.put("estatus", UIBackingUtilities.toFirstKeySelectItem(allEstatus));
+		} // try
+		catch (Exception e) {
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadEstatus
   
 }

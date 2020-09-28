@@ -295,6 +295,16 @@
         where      
           nombre = '{nombre}'
       </select>
+			<select id="estatus">
+				select 
+				  id_control_estatus as id_key,
+					nombre,
+					estatus_asociados
+				from 
+				  tc_keet_controles_estatus
+				where 
+					{condicion}
+			</select>
     </unit>    
 		<unit id="TcKeetOrdenesContratosLotesDto">
       <select id="row">
