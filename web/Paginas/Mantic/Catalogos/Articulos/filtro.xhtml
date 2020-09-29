@@ -11,10 +11,10 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				codigo      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				nombre      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        fechaInicio : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        fechaTermino: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
+				codigo     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				nombre     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        fechaInicio: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaFin   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
 			};
 			function reload() {
 				$('.janal-control-imagen').each(function(index, item) {
@@ -110,9 +110,9 @@
 								<f:selectItem itemLabel="NO" itemValue="2"/>
 							</p:selectOneMenu>								
               <p:outputLabel for="fechaInicio" value="Actualizado inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="es"/>
               <p:outputLabel for="fechaTermino" value="Actualizado termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.fechaFin}" showOn="button" pattern="dd/MM/yyyy" locale="es"/>
 							<p:separator/>
 						</p:panelGrid>
 						<div class="janal-align-right">

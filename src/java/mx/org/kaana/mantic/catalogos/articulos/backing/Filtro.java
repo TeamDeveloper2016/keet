@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,11 +57,31 @@ import org.primefaces.model.StreamedContent;
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+	private LocalDate fechaInicio;
+	private LocalDate fechaFin;
+
+  public LocalDate getFechaInicio() {
+    return fechaInicio;
+  }
+
+  public void setFechaInicio(LocalDate fechaInicio) {
+    this.fechaInicio = fechaInicio;
+  }
+
+  public LocalDate getFechaFin() {
+    return fechaFin;
+  }
+
+  public void setFechaFin(LocalDate fechaFin) {
+    this.fechaFin = fechaFin;
+  }
 
   @PostConstruct
   @Override
   protected void init() {
     try {
+			// this.fechaInicio= LocalDate.of(Fecha.getAnioActual()- 1, 1, 1);
+			// this.fechaFin   = LocalDate.now();
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
     	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
@@ -141,10 +161,10 @@ public class Filtro extends Comun implements Serializable {
 		  		sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
 				} // if	
 		  sb.append("tc_mantic_articulos.id_vigente=").append(this.attrs.get("idVigente")).append(" and ");
-			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-			if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+			if(!Cadena.isVacio(this.fechaInicio))
+				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaInicio)).append("') and ");	
+			if(!Cadena.isVacio(this.fechaFin))
+				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaFin)).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("idFamilia")) && !this.attrs.get("idFamilia").toString().equals("-1"))
    		  sb.append("(tc_mantic_articulos.id_familia= ").append(this.attrs.get("idFamilia").toString()).append(") and ");
 			if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
