@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.template.backing.Reporte;
@@ -29,7 +28,7 @@ import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public abstract class IBaseReporteDestajos extends IBaseFilter implements Serializable{
+public abstract class IBaseReporteDestajos extends IBaseFilter implements Serializable {
 	
 	private static final Log LOG              = LogFactory.getLog(IBaseReporteDestajos.class);
 	private static final long serialVersionUID= 831285430730032608L;
@@ -106,7 +105,66 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  notificar= new IBaseAttachment(ECorreos.ADMINISTRACION, ECorreos.ADMINISTRACION.getEmail(), item, emailsAdmin, "Cafu - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
+					  notificar= new IBaseAttachment(ECorreos.ADMINISTRACION, ECorreos.ADMINISTRACION.getEmail(), item, emailsAdmin, "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
+					  LOG.info("Enviando correo a la cuenta: " + item);
+					  notificar.send();
+					} // if	
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) 
+   	  	    LOG.info("Eliminando archivo temporal: " + attachments.getAbsolute());				  
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+			if(sb.length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally
+	} // doSendMail
+  
+	public void doSendMailResidente(String reporte) {		
+		Map<String, Object> params= null;
+		String[] emails           = null;
+		List<Attachment> files    = null; 
+		IBaseAttachment notificar = null;
+		Attachment attachments    = null;
+		String emailsAdmin        = null;
+		StringBuilder sb          = null;
+		try {
+			params= new HashMap<>();
+			sb= new StringBuilder("");
+			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
+				for(Correo mail: this.selectedCorreos) {
+					if(!Cadena.isVacio(mail.getDescripcion()))
+						sb.append(mail.getDescripcion()).append(",");
+				} // for
+			} // if
+			emailsAdmin= TcConfiguraciones.getInstance().getPropiedad(EMAILS_ADMINS);
+			emails= new String[]{(sb.length()> 0? sb.substring(0, sb.length()- 1) : "")};		
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());			
+			params.put("personalDestajo", this.attrs.get("figuraNombreCompletoCorreo"));
+			params.put("correo", ECorreos.RESIDENTE.getEmail());			
+			this.doReporte(reporte, true);
+			params.put("tipo", "Reporte - ".concat(this.attrs.get("tituloCorreo").toString()));			
+			attachments= new Attachment(this.reporte.getNombre(), false);
+			files= new ArrayList<>();
+			files.add(attachments);
+			files.add(new Attachment("logo", ECorreos.RESIDENTE.getImages().concat("logo.png"), true));
+			params.put("attach", attachments.getId());
+			for (String item: emails) {
+				try {
+					if(!Cadena.isVacio(item)) {
+					  notificar= new IBaseAttachment(ECorreos.RESIDENTE, ECorreos.RESIDENTE.getEmail(), item, emailsAdmin, "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
 					  LOG.info("Enviando correo a la cuenta: " + item);
 					  notificar.send();
 					} // if	

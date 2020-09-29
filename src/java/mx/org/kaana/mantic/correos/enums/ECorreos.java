@@ -17,9 +17,10 @@ public enum ECorreos {
 	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "compras@ferreteriabonanza.com", "Compras F. Bonanza"),
 	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
 	//cafu
-	VENTAS        ("/mx/org/kaana/keet/correos/templates/ventas.html", "resources/janal/img/sistema/", "correo.ventas.user.produccion", "correo.ventas.pass.produccion", "ventas@cafu.jvmhost.net", "Ventas Cafu."),
-	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "resources/janal/img/sistema/", "correo.compras.user.produccion", "correo.compras.pass.produccion", "compras@cafu.jvmhost.net", "Compras Cafu."),
-	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración Cafu.");
+	VENTAS        ("/mx/org/kaana/keet/correos/templates/ventas.html", "resources/janal/img/sistema/", "correo.ventas.user.produccion", "correo.ventas.pass.produccion", "ventas@cafu.jvmhost.net", "Ventas CAFU."),
+	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "resources/janal/img/sistema/", "correo.compras.user.produccion", "correo.compras.pass.produccion", "compras@cafu.jvmhost.net", "Compras CAFU."),
+	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU."),
+	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.");
 	 
 	private String template;
 	private String images;

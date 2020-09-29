@@ -295,7 +295,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		} // finally		
 	} // toEstatusManzanaLote
 	
-	private String toClaveEstacion(Entity lote){
+	private String toClaveEstacion(Entity lote) {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
@@ -396,7 +396,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	} // doReporte	
 	
 	@Override
-   public void doReporte(String tipo, boolean sendMail) throws Exception {    
+  public void doReporte(String tipo, boolean sendMail) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
@@ -409,18 +409,18 @@ public class Control extends IBaseReporteDestajos implements Serializable {
       params = new HashMap<>();  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
-      if(isCompleto){
+      if(isCompleto) {
         reporteSeleccion= EReportes.DESTAJOS_TOTALES_RESIDENTE;  /* falta */
         parametros.put("REPORTE_TIPO_PERSONA", "RESIDENTE DE OBRA"); 
         parametros.put("REPORTE_FIGURA", figura.toString("nombreCompleto"));
-      }
+      } // if
       else {
         reporteSeleccion= EReportes.DESTAJOS_CAT_RESIDENTE;  
         parametros.put("REPORTE_DESARROLLO", "[".concat(getRegistroDesarrollo().getDesarrollo().getClave()).concat("] ".concat(getRegistroDesarrollo().getDesarrollo().getDescripcion())));
         parametros.put("REPORTE_DESARROLLO_DOMICILIO", getRegistroDesarrollo().getDomicilio().getCalle().concat(" # ").concat(getRegistroDesarrollo().getDomicilio().getNumeroExterior()));
         parametros.put("REPORTE_DESARROLLO_CP", getRegistroDesarrollo().getDomicilio().getCodigoPostal()); 
         parametros.put("REPORTE_FIGURA", figura.toString("puesto").concat(": ").concat(figura.toString("nombreCompleto")));
-      }
+      } // else
       int index= ((List<UISelectItem>)this.attrs.get("especialidades")).indexOf(new UISelectItem(Long.valueOf(this.attrs.get("especialidad").toString())));
       parametros.put("REPORTE_DEPARTAMENTO", ((List<UISelectItem>)this.attrs.get("especialidades")).get(index).getLabel());
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());

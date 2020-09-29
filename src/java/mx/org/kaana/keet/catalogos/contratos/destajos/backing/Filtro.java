@@ -402,16 +402,16 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     try {
       isCompleto = tipo.equals("COMPLETO");
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-      UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");			
-      figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
+      UISelectEntity figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
       params= new HashMap<>();  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
-      if(isCompleto){
+      if(isCompleto) {
         reporteSeleccion= figura.toLong("tipo").equals(1L)? EReportes.DESTAJOS_TOTALES_CONTRATISTA: EReportes.DESTAJOS_TOTALES_SUBCONTRATISTA;  
         parametros.put("REPORTE_TIPO_PERSONA", figura.toLong("tipo").equals(1L)? "CONTRATISTA":"SUBCONTRATISTA"); 
         parametros.put("REPORTE_FIGURA", figura.toString("nombreCompleto"));
-      }else{
+      }
+      else {
         reporteSeleccion= figura.toLong("tipo").equals(1L)? EReportes.DESTAJOS_CAT_CONTRATISTA: EReportes.DESTAJOS_CAT_SUBCONTRATISTA;  
         parametros.put("REPORTE_DESARROLLO", "[".concat(getRegistroDesarrollo().getDesarrollo().getClave()).concat("] ".concat(getRegistroDesarrollo().getDesarrollo().getDescripcion())));
         parametros.put("REPORTE_DESARROLLO_DOMICILIO", getRegistroDesarrollo().getDomicilio().getCalle().concat(" # ").concat(getRegistroDesarrollo().getDomicilio().getNumeroExterior()));

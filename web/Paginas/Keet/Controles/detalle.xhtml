@@ -71,17 +71,17 @@
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>	
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.porcentaje}">
-              <f:facet name="header">
-                <h:outputText value="Porcentaje"/>
-              </f:facet>
-              <h:outputText value="#{row['porcentaje']} %"/>
-            </p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
+            </p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.porcentaje}">
+              <f:facet name="header">
+                <h:outputText value="Porcentaje"/>
+              </f:facet>
+              <h:outputText value="#{row['porcentaje']} %"/>
             </p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-col-30">
               <f:facet name="header">
