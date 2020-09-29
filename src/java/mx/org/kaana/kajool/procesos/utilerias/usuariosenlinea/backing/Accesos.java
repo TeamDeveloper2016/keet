@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.procesos.utilerias.usuariosenlinea.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,9 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.personas.reglas.Gestor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,6 +35,24 @@ public class Accesos extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Accesos.class);
   private static final long serialVersionUID= 8793667741599428332L;
+	private LocalDate fechaInicio;
+	private LocalDate fechaFin;
+
+  public LocalDate getFechaInicio() {
+    return fechaInicio;
+  }
+
+  public void setFechaInicio(LocalDate fechaInicio) {
+    this.fechaInicio = fechaInicio;
+  }
+
+  public LocalDate getFechaFin() {
+    return fechaFin;
+  }
+
+  public void setFechaFin(LocalDate fechaFin) {
+    this.fechaFin = fechaFin;
+  }
 
   @PostConstruct
   @Override
@@ -40,7 +60,10 @@ public class Accesos extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("departamento", new String[] {});
+			this.attrs.put("puesto", new String[] {});
 			this.toLoadCatalog();
+      this.toLoadTiposPersonas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -76,16 +99,30 @@ public class Accesos extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
+		String[] puestos= (String[]) this.attrs.get("puesto");
+		String[] departamentos= (String[]) this.attrs.get("departamento");
 		if(!Cadena.isVacio(this.attrs.get("nombre"))) {
 			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-  		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) regexp '.*").append(nombre).append(".*') and ");
+  		sb.append("((upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) regexp '.*").append(nombre).append(".*') or (upper(tc_mantic_personas.apodo)= '").append(nombre).append("')) and ");
 		} // if
 		if(!Cadena.isVacio(this.attrs.get("cuenta")))
   		sb.append("(upper(tc_janal_sesiones.cuenta) like '%").append(this.attrs.get("cuenta")).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_janal_sesiones.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_janal_sesiones.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.fechaInicio))
+		  sb.append("(date_format(tc_janal_sesiones.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaInicio)).append("') and ");	
+		if(!Cadena.isVacio(this.fechaFin))
+		  sb.append("(date_format(tc_janal_sesiones.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaFin)).append("') and ");	
+		if(departamentos.length > 0) {
+			String allDepartametos= "";
+			for(String departamento: departamentos)
+				allDepartametos= allDepartametos.concat(departamento).concat(",");
+			sb.append("tr_mantic_empresa_personal.id_departamento in (").append(allDepartametos.substring(0, allDepartametos.length()-1)).append(") and ");
+		} // if		
+		if(puestos.length > 0) {
+			String allPuestos= "";
+			for(String puesto: puestos)
+				allPuestos= allPuestos.concat(puesto).concat(",");
+			sb.append("tr_mantic_empresa_personal.id_puesto in (").append(allPuestos.substring(0, allPuestos.length()-1)).append(") and ");
+		} // if
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -122,6 +159,13 @@ public class Accesos extends IBaseFilter implements Serializable {
     }// finally
 	}
 	
+	protected void toLoadTiposPersonas() throws Exception {
+    Gestor gestor = new Gestor();
+    gestor.loadTiposPersonas();
+    this.attrs.put("puestos", gestor.loadPuestosSimple());
+    this.attrs.put("departamentos", gestor.loadDepartamentosSimple());
+  } // loadTiposPersonas  
+  
   public Long getMinutos(Entity row) {
 		Long start= row.toTimestamp("comienza").atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		Long end  = row.toTimestamp("termina").atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();

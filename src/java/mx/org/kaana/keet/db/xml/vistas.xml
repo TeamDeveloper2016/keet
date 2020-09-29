@@ -3926,6 +3926,8 @@
 				where
 					tc_keet_controles.clave like '{clave}%'
 				  and tc_keet_controles.id_control_estatus in ({estatus})
+        group by
+           tc_keet_controles.id_control        
 				order by 
 				  tc_keet_controles.clave        
       </select>  

@@ -182,7 +182,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			sb.append("tr_mantic_empresa_personal.id_activo in (").append(this.attrs.get("idActivo")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("idSeguro")))
 			sb.append("tr_mantic_empresa_personal.id_seguro in (").append(this.attrs.get("idSeguro")).append(") and ");					
-		if(selectDepartamentos.length > 0){
+		if(selectDepartamentos.length > 0) {
 			String allDepartametos= "";
 			for(String departamento: selectDepartamentos)
 				allDepartametos= allDepartametos.concat(departamento).concat(",");

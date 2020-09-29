@@ -37,14 +37,22 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="nombre" value="Empleado:"/>
+              <p:outputLabel for="nombre" value="Empleado o apodo:"/>
               <p:inputText id="nombre" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.nombre}" styleClass="janal-wid-100-txt" placeholder="ejemplo: CARLOS CALDERON"/>
               <p:outputLabel for="cuenta" value="Cuenta acceso:"/>
               <p:inputText id="cuenta" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.cuenta}" styleClass="janal-wid-100-txt" placeholder="ejemplo: carlos.calderon"/>              
+              <p:outputLabel for="departamento" value="Departamento:"/>
+              <p:selectCheckboxMenu id="departamento" filterPlaceholder="SELECCIONE" label="SELECCIONE" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.departamento}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">
+                <f:selectItems value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.departamentos}"/>                
+              </p:selectCheckboxMenu>
+              <p:outputLabel for="puesto" value="Puesto:"/>
+              <p:selectCheckboxMenu id="puesto" filterPlaceholder="SELECCIONE" label="SELECCIONE" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.puesto}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">
+                <f:selectItems value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.puestos}"/>                
+              </p:selectCheckboxMenu> 
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" placeholder="ejemplo: 14/03/2020" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+							<p:calendar id="fechaInicio" placeholder="ejemplo: 14/03/2020" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="es" />
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" placeholder="ejemplo: 14/03/2020" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+							<p:calendar id="fechaTermino" placeholder="ejemplo: 14/03/2020" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kajoolMantenimientoUtileriasUsuarioAccesos.fechaFin}" showOn="button" pattern="dd/MM/yyyy" locale="es" />
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
