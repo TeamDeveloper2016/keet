@@ -84,7 +84,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   }
 
   public TrManticEmpresaPersonalDto(Long key) {
-    this(null, null, null, null, 0D, null, null, null, null, null, LocalDate.now(), null, null, null, new Long(-1L), null, null, LocalDate.now(), 0D, 0D, 0D, 2L, 2L);
+    this(null, null, 2L, null, 0D, null, null, null, null, null, LocalDate.now(), null, null, null, new Long(-1L), null, null, LocalDate.now(), 0D, 0D, 0D, 2L, 2L);
     setKey(key);
   }
 

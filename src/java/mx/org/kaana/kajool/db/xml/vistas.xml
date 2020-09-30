@@ -360,7 +360,8 @@
           inner join
             tc_janal_menus on tr_janal_menus_grupos.id_menu = tc_janal_menus.id_menu
           where
-            tr_janal_menus_perfiles.id_perfil= {idPerfil}			
+            tr_janal_menus_perfiles.id_perfil= {idPerfil}	
+        		and tc_janal_menus.publicar= 1
 					order by
 					  clave
 			</select>

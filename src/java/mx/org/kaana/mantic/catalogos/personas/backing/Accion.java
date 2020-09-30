@@ -93,7 +93,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				if(tipoPersona.getIdTipoPersona().equals(Long.valueOf(this.attrs.get("tipoPersona").toString())))
 					this.attrs.put("catalogo", Cadena.reemplazarCaracter(tipoPersona.name().toLowerCase(), '_' , ' '));
 			} // for			
-			doLoad();						
+			this.doLoad();						
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -101,7 +101,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void loadCollections() throws Exception{		
+	private void loadCollections() throws Exception {		
 		loadEmpresas();		
 		loadBancos();
 		doLoadPuestos();
@@ -267,6 +267,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 					if(this.attrs.get("tipoPersona")!= null)
 						this.registroPersona.getPersona().setIdTipoPersona(Long.valueOf(this.attrs.get("tipoPersona").toString()));	
 					this.registroPersona.getEmpresaPersona().setIdActivo(1L);
+    		  this.registroPersona.getEmpresaPersona().setIdContrato(2L);
+    		  this.registroPersona.getEmpresaPersona().setIdSeguro(2L);
+    		  this.registroPersona.getEmpresaPersona().setIdNomina(2L);
+    		  this.registroPersona.getEmpresaPersona().setIdPuesto(26L);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
