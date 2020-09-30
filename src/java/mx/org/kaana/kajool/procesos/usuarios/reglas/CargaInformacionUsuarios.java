@@ -159,8 +159,8 @@ public class CargaInformacionUsuarios {
         regresar.deleteCharAt(regresar.length() - 1); 
       } // if
       if (regresar.length() == 0) {
-        JsfBase.addMessage("No existen perfiles a los que pueda consultar, favor de veriifcarlo con el administrador del sistema", ETipoMensaje.ERROR);
-        throw new RuntimeException("No existen perfiles a los que pueda consultar, favor de veriifcarlo con el administrador del sistema");
+        JsfBase.addMessage("No existen perfiles a los que pueda consultar, favor de verificarlo con el administrador del sistema", ETipoMensaje.ERROR);
+        throw new RuntimeException("No existen perfiles a los que pueda consultar, favor de verificarlo con el administrador del sistema");
       } // if
     } // try
     catch (Exception e) {
@@ -180,12 +180,12 @@ public class CargaInformacionUsuarios {
    * @return Devuele los resultados en una lista de tipo Entity
    */
   public String busquedaPorNombre() throws Exception {
-    StringBuilder regresar = new StringBuilder();
-    String idPerfiles = null;
-    String condicionemp = null;
+    StringBuilder regresar= new StringBuilder();
+    String idPerfiles     = null;
+    String condicionemp   = null;
     try {
-      idPerfiles = recuperarIdPerfiles();
-      condicionemp = condicionEmpleado("", getCriteriosBusqueda().getNombre().toUpperCase());
+      idPerfiles  = recuperarIdPerfiles();
+      condicionemp= condicionEmpleado("", getCriteriosBusqueda().getNombre().toUpperCase());
       if (!Cadena.isVacio(condicionemp)) {
         regresar.append(condicionemp);
         regresar.append(" and ");

@@ -146,6 +146,8 @@ public class Transaccion extends IBaseTnx {
 			this.requisicion.getRequisicion().setIdSolicita(JsfBase.getAutentifica().getPersona().getIdPersona());
 			this.requisicion.getRequisicion().setIdUsuario(JsfBase.getIdUsuario());
 			this.requisicion.getRequisicion().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.requisicion.getRequisicion().setDescuento("0");
+			this.requisicion.getRequisicion().setDescuentos(0D);
 			regresar= DaoFactory.getInstance().insert(sesion, this.requisicion.getRequisicion())>= 1L;
 			if(regresar){
 				registraRequisicionProveedor(sesion, this.requisicion.getRequisicion().getIdRequisicion());

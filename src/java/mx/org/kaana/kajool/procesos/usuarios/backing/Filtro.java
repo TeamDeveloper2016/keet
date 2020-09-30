@@ -67,7 +67,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isPermisoDelega", JsfBase.isAdmin());
 			if(JsfBase.getFlashAttribute("idPersonaProcess")!= null){
 				this.attrs.put("idPersonaProcess", JsfBase.getFlashAttribute("idPersonaProcess"));
-				doBuscar();
+				this.doBuscar();
 				this.attrs.put("idPersonaProcess", null);
 			} // if
     } // try
@@ -103,9 +103,9 @@ public class Filtro extends IBaseFilter implements Serializable {
    * Recarga los datos segun la acicón que se ejecutó.
    */
   private void recargarTablaDatos(ETipoBusqueda tipoBusqueda) {
-    Map<String, Object> params = null;
-    List<Columna> campos = null;
-    CargaInformacionUsuarios carga = null;
+    Map<String, Object> params    = null;
+    List<Columna> campos          = null;
+    CargaInformacionUsuarios carga= null;
     try {
       carga = new CargaInformacionUsuarios(getCriteriosBusqueda());
       params = new HashMap<>();
