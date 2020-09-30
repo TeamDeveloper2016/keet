@@ -68,17 +68,19 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
   private Long idEmpresa;
   @Column (name="percepciones")
   private Double percepciones;
+  @Column (name="id_completa")
+  private Long idCompleta;
 
   public TcKeetNominasDto() {
     this(new Long(-1L));
   }
 
   public TcKeetNominasDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), LocalDate.now(), null, null, LocalDate.now(), null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, new Long(-1L), LocalDate.now(), null, null, LocalDate.now(), null, null, null, null, null, null, null, 2L);
     setKey(key);
   }
 
-  public TcKeetNominasDto(Double neto, Long idNominaEstatus, Double deducciones, Long idTipoNomina, Long personas, Double aportaciones, Long idNomina, LocalDate fechaPago, Long proveedores, Double total, LocalDate fechaDispersion, Long idNominaPeriodo, Double iva, Long idUsuario, Double subtotal, String observaciones, Long idEmpresa, Double percepciones) {
+  public TcKeetNominasDto(Double neto, Long idNominaEstatus, Double deducciones, Long idTipoNomina, Long personas, Double aportaciones, Long idNomina, LocalDate fechaPago, Long proveedores, Double total, LocalDate fechaDispersion, Long idNominaPeriodo, Double iva, Long idUsuario, Double subtotal, String observaciones, Long idEmpresa, Double percepciones, Long idCompleta) {
     setNeto(neto);
     setIdNominaEstatus(idNominaEstatus);
     setDeducciones(deducciones);
@@ -98,6 +100,7 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setPercepciones(percepciones);
+    this.idCompleta= idCompleta;
   }
 	
   public void setNeto(Double neto) {
@@ -252,6 +255,14 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
     return percepciones;
   }
 
+  public Long getIdCompleta() {
+    return idCompleta;
+  }
+
+  public void setIdCompleta(Long idCompleta) {
+    this.idCompleta = idCompleta;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -304,6 +315,8 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPercepciones());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCompleta());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -330,13 +343,14 @@ public class TcKeetNominasDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("percepciones", getPercepciones());
+		regresar.put("idCompleta", getIdCompleta());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getNeto(), getIdNominaEstatus(), getDeducciones(), getIdTipoNomina(), getPersonas(), getAportaciones(), getIdNomina(), getFechaPago(), getRegistro(), getProveedores(), getTotal(), getFechaDispersion(), getIdNominaPeriodo(), getIva(), getIdUsuario(), getSubtotal(), getObservaciones(), getIdEmpresa(), getPercepciones()
+    Object[] regresar = new Object[] {
+      getNeto(), getIdNominaEstatus(), getDeducciones(), getIdTipoNomina(), getPersonas(), getAportaciones(), getIdNomina(), getFechaPago(), getRegistro(), getProveedores(), getTotal(), getFechaDispersion(), getIdNominaPeriodo(), getIva(), getIdUsuario(), getSubtotal(), getObservaciones(), getIdEmpresa(), getPercepciones(), getIdCompleta()
     };
     return regresar;
   }

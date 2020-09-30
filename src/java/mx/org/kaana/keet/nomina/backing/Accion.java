@@ -37,7 +37,7 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Accion extends IBaseFilter implements Serializable {
 
-	private static final Log LOG=LogFactory.getLog(Accion.class);
+	private static final Log LOG= LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 318633488565639323L;
 
 	public Boolean getActivar() {
@@ -91,7 +91,8 @@ public class Accion extends IBaseFilter implements Serializable {
 					0D, // Double subtotal, 
 					((Nomina)this.attrs.get("nomina")).getObservaciones(), // String observaciones, 
 					JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
-					0D // Double percepciones
+					0D, // Double percepciones
+          ((Nomina)this.attrs.get("nomina")).getIdCompleta()// Long idCompleta     
 				);
   			transaccion= new Transaccion(nomina, JsfBase.getAutentifica());
 			} // if

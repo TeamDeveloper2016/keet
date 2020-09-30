@@ -15,6 +15,7 @@ public class Nomina extends TcKeetNominasPeriodosDto {
 	private Long idNomina;
 	private Long idTipoNomina;
 	private Long idNominaEstatus;
+	private Long idCompleta;
 	private Long proveedores;
 	private Long personas;
 	private Double total;
@@ -27,6 +28,7 @@ public class Nomina extends TcKeetNominasPeriodosDto {
 	  this.idNomina= -1L;
 		this.idTipoNomina= 2L;
 		this.idNominaEstatus= 1L;
+		this.idCompleta= 2L;
 		this.estatus= "";
 		this.proveedores= 0L;
 		this.personas= 0L;
@@ -57,6 +59,14 @@ public class Nomina extends TcKeetNominasPeriodosDto {
 	public void setIdNominaEstatus(Long idNominaEstatus) {
 		this.idNominaEstatus=idNominaEstatus;
 	}
+
+  public Long getIdCompleta() {
+    return idCompleta;
+  }
+
+  public void setIdCompleta(Long idCompleta) {
+    this.idCompleta = idCompleta;
+  }
 
 	public String getEstatus() {
 		return estatus;
