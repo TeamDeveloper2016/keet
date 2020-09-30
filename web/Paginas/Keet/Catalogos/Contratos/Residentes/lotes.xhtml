@@ -47,16 +47,16 @@
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
 											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
 											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
-						<p:panel header="#{row.clave}" style="text-align:center; border: 0px;">
+						<p:panel header="#{row.clave} #{empty row.prototipo? '': '-'} #{row.prototipo}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosResidentesLotes.doRegistrar}">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" styleClass="manzana-lote-font janal-color-blue" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosResidentesLotes.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
-									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.fechaInicio}" escape="false" style="display: #{row.fechaInicio eq '-' ? 'none' : ''}"/>
+									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false" style="display: #{row.fechaInicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.fechaInicio eq '-' ? '' : 'none'}"/>
-									<h:outputText value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.fechaTermino}" escape="false" style="display: #{row.fechaInicio eq '-' ? 'none' : ''}"/>
+									<h:outputText value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.termino}" escape="false" style="display: #{row.fechaInicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.fechaTermino eq '-' ? '' : 'none'}"/>
 									<h:outputText value="&lt;b&gt;Dias construccion:&lt;/b&gt; #{row.diasConstruccion}" escape="false" style="display: #{row.fechaInicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.diasConstruccion eq '-' ? '' : 'none'}"/>

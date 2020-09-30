@@ -78,7 +78,7 @@
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
 											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
 											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
-						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{row.clave}" style="text-align:center; border: 0px;">
+						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{row.clave} #{empty row.prototipo? '': '-'} #{row.prototipo}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="destajo" title="Ver detalle del articulo" action="#{keetControlesControl.doConceptos}">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" styleClass="manzana-lote-font janal-color-blue" style="cursor: pointer;"/>
@@ -91,7 +91,7 @@
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
 									<h:outputText value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.termino}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.termino eq '-' ? '' : 'none'}"/>
-									<h:outputText value="&lt;b&gt;Dias construccion:&lt;/b&gt; #{row.diasConstruccion}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+									<h:outputText value="&lt;b&gt;Días construccion:&lt;/b&gt; #{row.diasConstruccion}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.diasConstruccion eq '-' ? '' : 'none'}"/>
 								</p:panelGrid>								
 							</h:panelGrid>

@@ -2832,9 +2832,12 @@
 				  tc_keet_contratos_lotes.id_contrato_lote id_key,
           tc_keet_contratos_lotes.*,
           concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
-					((select count(*) total from tc_keet_contratos_lotes_contratistas where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote) + (select count(*) total from tc_keet_contratos_lotes_proveedores where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote)) as contratistas
+					((select count(*) total from tc_keet_contratos_lotes_contratistas where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote) + (select count(*) total from tc_keet_contratos_lotes_proveedores where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote)) as contratistas,
+          tc_keet_prototipos.nombre as prototipo
         from      
           tc_keet_contratos_lotes
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
         where 
           id_contrato= {idContrato} 
 				order by
@@ -2845,9 +2848,12 @@
 				  tc_keet_contratos_lotes.id_contrato_lote id_key,
           tc_keet_contratos_lotes.*,
           concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
-					(select count(*) total from tc_keet_contratos_lotes_residentes where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote) as contratistas
+					(select count(*) total from tc_keet_contratos_lotes_residentes where id_contrato_lote = tc_keet_contratos_lotes.id_contrato_lote) as contratistas,
+          tc_keet_prototipos.nombre as prototipo
         from      
           tc_keet_contratos_lotes
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
         where 
           id_contrato= {idContrato} 
 				order by
