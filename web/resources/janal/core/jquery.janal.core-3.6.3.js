@@ -63,7 +63,8 @@
       $control.console('Janal.Control.Function.init');
       if(typeof(root)!== 'undefined')
         this.root   = root;
-      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.3.8.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.4.8.js']);
+      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.3.8.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.5.2.js']);
+      //$control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.3.8.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js']);
       $control.console('Janal.Control.Function.init resource loaded');
     },
     dateFormat: function(format) {
@@ -336,6 +337,10 @@
        });
        return values;
      }, // value
+     input: function(id) {
+       var items= $('input[id$="'+ id+ '"], input[id$="'+ id+ $janal.INPUT_RESERVE+ '"], select[id$="'+ id+ $janal.INPUT_RESERVE+ '"] option:selected, textarea[id$="'+ id+ '"], input[id^="'+ id+ ':"]:checked, input[id*=":'+ id+ ':"]:checked, input[id$="'+ id+ ':"]:checked');
+       return items;
+     }, // value
      text: function(id) {
        return this.search(id).text();
      }, // text
@@ -409,6 +414,30 @@
 				} // else
 			  return {"value": $(element).val(), "error": false};	
 		 },
+     requerido: function(validator, element, value) {
+       var ok= false;
+       if($(element).is(':disabled'))
+         ok= true;
+       else
+         switch(element.nodeName.toLowerCase()) {
+           case 'select':
+             var options = $('option:selected', element);
+             if(options=== '-1' || value=== '-1')
+               ok= false;
+             else
+               ok= options.length> 0 && (element.type=== 'select-multiple' || ($.browser.msie && !(options[0].attributes['value'].specified)? options[0].text : options[0].value).length> 0);
+             break;
+           case 'input':
+             if (validator.checkable(element))
+               ok= validator.getLength(value, element)> 0;
+             else
+               ok= $(element).hasClass('ignore') || !$control.empty(value);
+             break;
+           default:
+             ok= $(element).hasClass('ignore') || !$control.empty(value);
+       } // switch       
+       return ok;
+     },
      fecha: function() {
        var meses= new Array ("enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre");
        var data = new Date();
@@ -502,7 +531,7 @@
       show        : 0
     },
     names         : {
-      validations : ['libre', 'max-caracteres', 'min-caracteres', 'igual-caracteres', 'mayor', 'mayor-igual', 'max-valor', 'menor', 'menor-igual', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'sat', 'flotante', 'flotante-signo', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'moral', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6', 'no-aplica', 'esta-en', 'correo', 'acceso', 'porcentaje'],
+      validations : ['libre', 'max-caracteres', 'min-caracteres', 'igual-caracteres', 'mayor', 'mayor-igual', 'max-valor', 'menor', 'menor-igual', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'sat', 'flotante', 'flotante-signo', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'moral', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6', 'no-aplica', 'esta-en', 'correo', 'acceso', 'porcentaje', 'depende'],
       masks       : ['libre', 'fecha', 'fecha-hora', 'registro', 'hora', 'hora-completa', 'tarjeta-credito', 'decimal', 'decimal-signo', 'letras', 'vocales', 'texto', 'numero', 'un-digito', 'dos-digitos', 'tres-digitos', 'tres-digitos-default', 'cuatro-digitos', 'cinco-digitos', 'siete-digitos', 'ocho-digitos', 'nueve-digitos', 'diez-digitos', 'entero', 'entero-blanco', 'entero-signo', 'entero-sin-signo', 'sat', 'flotante', 'flotante-signo', 'rfc', 'fiscal', 'moral', 'curp', 'moneda', 'moneda-decimal', 'mayusculas', 'minusculas', 'cuenta', 'numeros-letras', 'nombre-dto', 'telefono', 'ip', 'version', 'no-aplica','correo', 'valor-simple', 'acceso', 'alfanumerico', 'codigo', 'codigo-diagonal'],
       watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'sat', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'mayor', 'mayor-igual', 'mayor-a', 'max-valor', 'menor', 'menor-a', 'menor-igual', 'min-valor'],
       formats     : ['libre', 'cambiar-mayusculas', 'especial-mayusculas', 'cambiar-minusculas', 'rellenar-caracter', 'precio', 'cantidad', 'consecutivo', 'descuentos', 'sat', 'siguiente'],
@@ -1218,7 +1247,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.5.1';
+      return '0.3.6.3';
     }, // version
     align: function(pixels) {
       try {

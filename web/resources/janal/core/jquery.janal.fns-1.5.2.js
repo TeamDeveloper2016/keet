@@ -382,7 +382,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			} // else	
       return params.suma<= 100;
     }, function(params, element) {
-      return janal.parser(element)+ ' el porcentaje ('+ params.suma+ ') no puede ser mayor al 100%.';
+      return 'El porcentaje ('+ params.suma+ ') no puede ser mayor al 100%.';
     });
     
 	$.validator.addMethod('max-caracteres', function(value, element, params) {
@@ -436,7 +436,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return parseFloat(janal.cleanToken(value), 10)> params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor tiene que ser mayor '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor tiene que ser mayor '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('mayor-igual', function(value, element, params) {
@@ -450,7 +450,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor tiene que ser mayor o igual '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor tiene que ser mayor o igual '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('max-valor', function(value, element, params) {
@@ -464,7 +464,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor m\u00E1ximo es '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor m\u00E1ximo es '+ params.cuanto+ '.';
     });
 
   $.validator.addMethod('menor', function(value, element, params) {
@@ -478,7 +478,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)< params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser menor al permitido, el valor tiene que ser menor '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser menor al permitido, el valor tiene que ser menor '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('menor-igual', function(value, element, params) {
@@ -492,7 +492,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser menor al permitido, el valor tiene que ser menor o igual '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser menor al permitido, el valor tiene que ser menor o igual '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('min-valor', function(value, element, params) {
@@ -506,7 +506,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') debe ser menor al permitido, el valor m\u00EDnimo es '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') debe ser menor al permitido, el valor m\u00EDnimo es '+ params.cuanto+ '.';
     });
 
   $.validator.addMethod('requerido', function(value, element, params) {
@@ -539,7 +539,7 @@ $.mask.masks = $.extend($.mask.masks, {
           if(element.type=== 'hidden')
             msg= 'Se requiere al menos un elemento seleccionado.';
       } // switch
-      return janal.parser(element)+ ' '+ msg;
+      return msg;
     });
 
 	$.validator.addMethod('entero', function(value, element, params) {
@@ -584,7 +584,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
 			    return params.valores.indexOf(value)>= 0;
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' no se encuentra en '+ params.valores+ '.';
+      return 'El valor '+ janal.parser(element)+ ' no se encuentra en '+ params.valores+ '.';
     });
 
 	$.validator.addMethod('igual-a', function(value, element, params) {
@@ -598,7 +598,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
   			  return value=== janal.value(janal.cross($(element).attr('id'), params.cual));
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser igual a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+      return 'El valor '+ janal.parser(element)+ ' debe ser igual a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
     });
 
 	$.validator.addMethod('menor-a', function(value, element, params) {
@@ -614,7 +614,7 @@ $.mask.masks = $.extend($.mask.masks, {
   			  return janal.double(janal.cleanToken(value), 0)<= janal.double(janal.cleanToken(janal.value(janal.cross($(element).attr('id'), params.cual))), 0);
 				} // else
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser menor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+      return 'El valor '+ janal.parser(element)+ ' debe ser menor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
     });
 
 	$.validator.addMethod('mayor-a', function(value, element, params) {
@@ -628,7 +628,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else 
   			  return janal.double(janal.cleanToken(value), 0)>= janal.double(janal.cleanToken(janal.value(janal.cross($(element).attr('id'), params.cual))), 0);
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser mayor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+      return 'El valor '+ janal.parser(element)+ ' debe ser mayor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
     });
 
 	$.validator.addMethod('asterisco', function(value, element, params) {
@@ -801,7 +801,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			else
 			  return janal.isCustomDate(value);
 		}, function(params, element) {
-      'Formato de la fecha '+ janal.value($(element).attr('id'))+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy].';
+      'Formato de la fecha '+ janal.parser(element)+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy].';
     });	
 
 	$.validator.addMethod('fecha-menor', function(value, element, params) {
@@ -866,7 +866,7 @@ $.mask.masks = $.extend($.mask.masks, {
 				} // if
 				else
 					return false;
-		}, 'Formato de la fecha y hora es inv\u00E1lida, el formato es [dd/mm/yyyy HH:MM:SS].');
+		}, ' Formato de la fecha y hora es inv\u00E1lida, el formato es [dd/mm/yyyy HH:MM:SS].');
 
 	$.validator.addMethod('hora', function(value, element, params) {
 			if(janal.empty(value) || $(element).hasClass('ignore'))
@@ -1006,7 +1006,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			    return ok;
         } // else
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' no se encuentra en '+ params.valores+ '.';
+      return 'El valor '+ janal.parser(element)+ ' no se encuentra en '+ params.valores+ '.';
     });
 	
 	$.validator.addMethod('correo', function(value, element) {				
@@ -1024,4 +1024,22 @@ $.mask.masks = $.extend($.mask.masks, {
 		  else
 			  return /^([^%'])*$/.test(value);
 		}, 'La contrase\u00F1a tiene caracteres inv\u00E1lidos');
+    
+  $.validator.addMethod('depende', function(value, element, params) {
+		  if ($(element).hasClass('ignore'))
+				return true;
+			else
+        if(typeof(params.cual)=== 'undefined') {
+					janal.programmer([{summary: 'Funci\u00F3n: depende', detail: 'falta el parametro {cual}'}]);
+          return false;
+				}	// if
+        else {
+          var depende= janal.cross($(element).attr('id'), params.cual);
+          var source = janal.input(depende);
+          var ok     = source.length> 0 && janal.requerido(this, source[0], janal.value(depende));
+  			  return !ok || janal.requerido(this, element, value);
+        } // if  
+		}, function(params, element) {
+      return 'El dato es obligatorio. ';
+    });    
 }());

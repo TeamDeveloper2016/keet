@@ -8,11 +8,14 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/WEB-INF/plantillas/ingreso.xhtml">
 	<ui:define name="librerias">
+    // script type="text/javascript" src="/KEET/javax.faces.resource/core/jquery.validate.min-1.15.0.js.jsf?ln=janal
+    // script type="text/javascript" src="/KEET/javax.faces.resource/core/jquery.meio.mask.min-1.1.15.js.jsf?ln=janal
+    // script type="text/javascript" src="/KEET/javax.faces.resource/core/jquery.janal.fns-1.5.2.js.jsf?ln=janal"
 		<script type="text/javascript">
 			Janal.Control.errors = 2;
 			Janal.Control.fields = {
 				cuenta: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
-				contrasenia: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
+				contrasenia: {validaciones: 'depende({"cual": "cuenta"})', mascara: 'libre', grupo: 'ingresar'},
 				recuperar: {validaciones: 'requerido', mascara: 'libre', grupo: 'recuperar'},
 				curp: {validaciones: 'requerido', mascara: 'libre', grupo: 'recuperar'},
 				nueva: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
