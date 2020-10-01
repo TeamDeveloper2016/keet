@@ -4556,7 +4556,8 @@
 						tr_mantic_empresa_personal.ingreso,
 						tr_mantic_empresa_personal.baja,
 						tr_mantic_empresa_personal.contratacion,
-				    tr_mantic_empresa_personal.id_contratista
+				    tr_mantic_empresa_personal.id_contratista,
+            tr_mantic_empresa_personal.sueldo_semanal as "sueldo semanal"
 					from 
 						tc_mantic_personas
 					inner join
@@ -4570,7 +4571,7 @@
 					inner join
 						tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
 					left join
-						tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+						tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
 					left join 
 						tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 					left join 
