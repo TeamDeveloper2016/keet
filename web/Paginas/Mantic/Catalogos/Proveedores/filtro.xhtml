@@ -144,10 +144,10 @@
               <f:facet name="header">
                 <h:outputText value="Contacto" title="Telefono/Celular"/>
               </f:facet>
-              <h:outputText value="#{row['telefono']} , #{row['celular']}"/>
+              <h:outputText value="#{row['telefono']}#{empty row['celular'] or row['celular'] eq '' or empty row['telefono'] or row['telefono'] eq ''? '': ', '}#{row['celular']}"/>
             </p:column>														
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticCatalogosProveedoresFiltro.lazyModel==null?0:manticCatalogosProveedoresFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticCatalogosProveedoresFiltro.lazyModel== null? 0: manticCatalogosProveedoresFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">

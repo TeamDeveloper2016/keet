@@ -3585,7 +3585,7 @@
 				where
 					tc_mantic_proveedores.id_empresa in ({idEmpresa})    
 			    and {condicion}       
-					and tc_mantic_proveedores.id_subcontratista={idSubContratista} 
+					and tc_mantic_proveedores.id_subcontratista in ({idSubContratista})
 				{sortOrder}
 			</select>
 			<select id="portal">

@@ -209,7 +209,7 @@
               </p:panelGrid>
 						</p:tab>	
 						<p:tab title="Domicilios">
-              <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-150, janal-wid-80">
+              <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-12, janal-wid-88">
                 <p:dataList id="tablaDomicilios" value="#{manticCatalogosPersonasAccion.registroPersona.personasDomicilio}" var="domicilio" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
                   <p:commandLink update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Eliminar" action="#{manticCatalogosPersonasAccion.doEliminarDomicilio}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();">                    
 										<f:setPropertyActionListener value="#{domicilio}" target="#{manticCatalogosPersonasAccion.registroPersona.personaDomicilioSeleccion}" />

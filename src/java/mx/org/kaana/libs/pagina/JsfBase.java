@@ -24,6 +24,7 @@ public class JsfBase extends JsfUtilities {
   private static final String ADMIN    = "ADMINISTRADOR";
   private static final String ADMINS   = "SUPERUSUARIO";
   private static final String GERENTE  = "GERENTE";
+  private static final String DIRECTOR = "TECNICOS";
   private static final String CAJERO   = "CAJERO";
   private static final String RESIDENTE= "RESIDENTEDEOBRA";
 
@@ -48,9 +49,10 @@ public class JsfBase extends JsfUtilities {
   } // isAdmin
 
   public static boolean isGerente() throws Exception {
-    boolean regresar = false;
+    boolean regresar= false;
     try {
-      regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(GERENTE);
+      String perfil = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
+      regresar = perfil.equals(GERENTE) || (perfil.startsWith(DIRECTOR));
     } // try
     catch (Exception e) {
       throw e;

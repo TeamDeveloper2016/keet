@@ -94,7 +94,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns    = null;
 		Map<String, Object>params= null;
     try {
-      params= this.toPrepare();	
+      params = this.toPrepare();	
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipoProveedor", EFormatoDinamicos.MAYUSCULAS));
@@ -179,9 +179,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	
 	
 	protected Map<String, Object> toPrepare() {
-	  Map<String, Object> regresar  = new HashMap<>();	
-		StringBuilder sb              = new StringBuilder();
-	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
+	  Map<String, Object> regresar= new HashMap<>();	
+		StringBuilder sb            = new StringBuilder();
+	  UISelectEntity proveedor    = (UISelectEntity)this.attrs.get("proveedor");
 		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 		if(this.attrs.get("idProveedorProcess")!= null && !Cadena.isVacio(this.attrs.get("idProveedorProcess")))
 			sb.append("tc_mantic_proveedores.id_proveedor =").append(this.attrs.get("idProveedorProcess")).append(" and ");
@@ -206,7 +206,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
-		regresar.put("idSubContratista", 2L);
+		regresar.put("idSubContratista", "1, 2");
 		return regresar;		
 	}
 
