@@ -68,7 +68,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
-      doLoad(); 
+      this.doLoad(); 
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -76,23 +76,23 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // initload
   
-	private void loadCollections(){
-		loadEmpresas();
-		loadFamilias();
-		loadDepartamentos();
-		loadBancos();
-		loadTiposProveedores();
-		loadTipoPago();
-		loadTiposContactos();
-		loadTiposDomicilios();	
-		loadDomicilios();
-		loadEntidades();		
-		loadMunicipios();		
-		loadLocalidades();		
-		loadClientes();
+	private void loadCollections() {
+		this.loadEmpresas();
+		this.loadFamilias();
+		this.loadDepartamentos();
+		this.loadBancos();
+		this.loadTiposProveedores();
+		this.loadTipoPago();
+		this.loadTiposContactos();
+		this.loadTiposDomicilios();	
+		this.loadDomicilios();
+		this.loadEntidades();		
+		this.loadMunicipios();		
+		this.loadLocalidades();		
+		this.loadClientes();
 	} // loadCollections
 	
-	private void loadClientes(){
+	private void loadClientes() {
 		List<UISelectEntity> clientes= null;
 		Map<String, Object>params    = null;
 		try {
@@ -124,12 +124,12 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:
           idProveedor = Long.valueOf(this.attrs.get("idProveedor").toString());
           this.registroProveedor = new RegistroProveedor(idProveedor);
-					loadCollections();
-					if(!this.registroProveedor.getProveedoresDomicilio().isEmpty()){
+					this.loadCollections();
+					if(!this.registroProveedor.getProveedoresDomicilio().isEmpty()) {
 						this.registroProveedor.setProveedorDomicilioSeleccion(this.registroProveedor.getProveedoresDomicilio().get(0));
-						doConsultarProveedorDomicilio();
+						this.doConsultarProveedorDomicilio();
 					} // if
-					if(!this.registroProveedor.getPersonasTiposContacto().isEmpty()){
+					if(!this.registroProveedor.getPersonasTiposContacto().isEmpty()) {
 						this.registroProveedor.setPersonaTipoContacto(this.registroProveedor.getPersonasTiposContacto().get(0));
 						this.registroProveedor.doConsultarAgente();
 					} // if
@@ -188,7 +188,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch				
 	} // loadEmpresas
 	
-	private void loadFamilias(){
+	private void loadFamilias() {
 		List<UISelectItem> familias= null;
 		Map<String, Object>params  = null;
 		try {
@@ -250,7 +250,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch
   } // loadTiposDomicilios
 	
-  private void loadTipoPago(){
+  private void loadTipoPago() {
     List<UISelectItem> tiposPago= null;
 		Map<String, Object>params   = null;
     try {
@@ -267,7 +267,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // finally
   } // loadTipoPago
 	
-	private void loadTiposProveedores(){
+	private void loadTiposProveedores() {
 		List<UISelectEntity> tiposProveedores= null;
     List<Columna> formatos               = null;
     Map<String, Object> params           = null;
@@ -311,14 +311,14 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // loadEntidades
 	
-	private void toAsignaEntidad(){
+	private void toAsignaEntidad() {
 		Entity domicilio= null;
 		List<Entity>entidades= null;
 		try {
-			if(!this.registroProveedor.getDomicilio().getIdDomicilio().equals(-1L)){
+			if(!this.registroProveedor.getDomicilio().getIdDomicilio().equals(-1L)) {
 				domicilio= this.registroProveedor.getDomicilio().getDomicilio();
 				entidades= (List<Entity>) this.attrs.get("entidades");
-				for(Entity entidad: entidades){
+				for(Entity entidad: entidades) {
 					if(entidad.getKey().equals(domicilio.toLong("idEntidad")))
 						this.registroProveedor.getDomicilio().setIdEntidad(entidad);
 				} // for
@@ -336,7 +336,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params     = null;
 		List<Columna>campos            = null;
     try {
-			if(!this.registroProveedor.getDomicilio().getIdEntidad().getKey().equals(-1L)){
+			if(!this.registroProveedor.getDomicilio().getIdEntidad().getKey().equals(-1L)) {
 				params = new HashMap<>();
 				params.put("idEntidad", this.registroProveedor.getDomicilio().getIdEntidad().getKey());
 				campos= new ArrayList<>();
@@ -356,14 +356,14 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // loadMunicipios
 	
-	private void toAsignaMunicipio(){
+	private void toAsignaMunicipio() {
 		Entity domicilio= null;
 		List<Entity>municipios= null;
 		try {
-			if(!this.registroProveedor.getDomicilio().getIdMunicipio().getKey().equals(-1L)){
+			if(!this.registroProveedor.getDomicilio().getIdMunicipio().getKey().equals(-1L)) {
 				domicilio= this.registroProveedor.getDomicilio().getDomicilio();
 				municipios= (List<Entity>) this.attrs.get("municipios");
-				for(Entity municipio: municipios){
+				for(Entity municipio: municipios) {
 					if(municipio.getKey().equals(domicilio.toLong("idMunicipio")))
 						this.registroProveedor.getDomicilio().setIdMunicipio(municipio);
 				} // for
@@ -379,7 +379,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params= null;
 		List<Columna>campos= null;
     try {
-			if(!this.registroProveedor.getDomicilio().getIdMunicipio().getKey().equals(-1L)){
+			if(!this.registroProveedor.getDomicilio().getIdMunicipio().getKey().equals(-1L)) {
 				params = new HashMap<>();
 				params.put("idMunicipio", this.registroProveedor.getDomicilio().getIdMunicipio().getKey());
 				campos= new ArrayList<>();
@@ -406,11 +406,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 		Entity domicilio       = null;
 		List<Entity>localidades= null;
 		try {
-			if(!this.registroProveedor.getDomicilio().getIdDomicilio().equals(-1L)){
+			if(!this.registroProveedor.getDomicilio().getIdDomicilio().equals(-1L)) {
 				domicilio= this.registroProveedor.getDomicilio().getDomicilio();
 				localidades= (List<Entity>) this.attrs.get("localidades");
-				for(Entity localidad: localidades){
-					if(localidad.getKey().equals(domicilio.toLong("idLocalidad"))){
+				for(Entity localidad: localidades) {
+					if(localidad.getKey().equals(domicilio.toLong("idLocalidad"))) {
 						this.registroProveedor.getDomicilio().setIdLocalidad(localidad.getKey());
 						this.registroProveedor.getDomicilio().setLocalidad(localidad);
 					} // if
@@ -502,7 +502,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // doLoadDomicilios
 
-	public void doAsignaDomicilio(){
+	public void doAsignaDomicilio() {
 		List<UISelectEntity> domicilios        = null;
 		List<UISelectEntity> domiciliosBusqueda= null;
 		UISelectEntity domicilio               = null;
@@ -565,8 +565,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doLoadAtributos(boolean all) {    
 		List<Entity> domicilios= null;
     try {
-			if(all){
-				if(!this.registroProveedor.getDomicilio().getDomicilio().getKey().equals(-1L)){
+			if(all) {
+				if(!this.registroProveedor.getDomicilio().getDomicilio().getKey().equals(-1L)) {
 					domicilios= (List<Entity>) this.attrs.get("domicilios");
 					this.registroProveedor.getDomicilio().setDomicilio(domicilios.get(domicilios.indexOf(this.registroProveedor.getDomicilio().getDomicilio())));
 					this.registroProveedor.getDomicilio().setIdDomicilio(domicilios.get(domicilios.indexOf(this.registroProveedor.getDomicilio().getDomicilio())).getKey());
@@ -650,16 +650,16 @@ public class Accion extends IBaseAttribute implements Serializable {
 				this.registroProveedor.getDomicilio().setDomicilio(new Entity());
       this.registroProveedor.getDomicilio().setIdEntidad(domicilio.getIdEntidad());	
 			this.registroProveedor.getDomicilio().getDomicilio().put("idEntidad", new Value("idEntidad", domicilio.getIdEntidad().getKey()));
-      toAsignaEntidad();
-			loadMunicipios();
+      this.toAsignaEntidad();
+			this.loadMunicipios();
       this.registroProveedor.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());			
 			this.registroProveedor.getDomicilio().getDomicilio().put("idMunicipio", new Value("idMunicipio", domicilio.getIdMunicipio().getKey()));
-      toAsignaMunicipio();
-			loadLocalidades();
+      this.toAsignaMunicipio();
+			this.loadLocalidades();
       this.registroProveedor.getDomicilio().setLocalidad(domicilio.getLocalidad());			
       this.registroProveedor.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());			
 			this.registroProveedor.getDomicilio().getDomicilio().put("idLocalidad", new Value("idLocalidad", domicilio.getLocalidad().getKey()));
-      toAsignaLocalidad();			
+      this.toAsignaLocalidad();			
       this.registroProveedor.getDomicilio().setCalle(domicilio.getCalle());
       this.registroProveedor.getDomicilio().setNumeroExterior(domicilio.getNumeroExterior());
       this.registroProveedor.getDomicilio().setNumeroInterior(domicilio.getNumeroInterior());
@@ -668,6 +668,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.registroProveedor.getDomicilio().setYcalle(domicilio.getYcalle());
       this.registroProveedor.getDomicilio().setIdTipoDomicilio(domicilio.getIdTipoDomicilio());
       this.registroProveedor.getDomicilio().setPrincipal(domicilio.getPrincipal());
+			this.registroProveedor.getDomicilio().setCodigoPostal(domicilio.getCodigoPostal());
 			this.registroProveedor.getDomicilio().setNuevoCp(domicilio.isNuevoCp());
     } // try
     catch (Exception e) {
@@ -676,7 +677,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doEliminarArticuloCodigo	
 	
-	public void doActualizaDomicilio(){
+	public void doActualizaDomicilio() {
 		try {
 			this.registroProveedor.doActualizarProveedorDomicilio();
 			this.registroProveedor.setDomicilio(new Domicilio());
@@ -689,7 +690,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch
 	} // doActualizaDomicilio
 	
-	public void doEliminarDomicilio(){
+	public void doEliminarDomicilio() {
 		try {
 			this.registroProveedor.doEliminarProveedorDomicilio();
 			this.registroProveedor.setDomicilio(new Domicilio());
@@ -702,7 +703,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch
 	} // doActualizaDomicilio
 	
-	public void doAgregarProveedorAgente(){
+	public void doAgregarProveedorAgente() {
 		List<UISelectItem> representantes = null;
 		try {
 			representantes= (List<UISelectItem>) this.attrs.get("representantes");
@@ -728,7 +729,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doAgregarProveedor
 	
-	public void doActualizaAgente(){
+	public void doActualizaAgente() {
 		try {
 			this.registroProveedor.doActualizaAgente();
       this.registroProveedor.setPersonaTipoContactoPivote(new ProveedorContactoAgente());      
@@ -739,7 +740,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doActualizaRepresentante
 	
-	public void doEliminarAgente(){
+	public void doEliminarAgente() {
 		try {
       this.registroProveedor.doEliminarAgente();
       this.registroProveedor.setPersonaTipoContactoPivote(new ProveedorContactoAgente());      
@@ -818,7 +819,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doAsignaCodigo		
 	
-	public void doAgregarProveedorMaterial(){
+	public void doAgregarProveedorMaterial() {
 		List<UISelectEntity> articulos= null;
 		UISelectEntity articulo       = null;
 		try {

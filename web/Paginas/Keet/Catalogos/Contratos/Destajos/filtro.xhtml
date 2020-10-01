@@ -69,8 +69,8 @@
 									</p:column>   
 								</p:selectOneMenu>
               </p:panelGrid>										
-              <p:remoteCommand name="reloadContratista" onstart="janal.bloquear();" process="@this" update="contratista" oncomplete="janal.desbloquear();"/>
-              <p:remoteCommand name="reloadLotes" onstart="janal.bloquear();" process="@this" update="lotes" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadContratista" onstart="return janal.bloquear();" process="@this" update="contratista" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadLotes" onstart="return janal.bloquear();" process="@this" update="lotes" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
