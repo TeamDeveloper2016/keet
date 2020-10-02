@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.compras.ordenes.reglas;
 
+import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,8 +99,14 @@ public class Transaccion extends Inventarios implements Serializable {
 			if(this.orden!= null)
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para la orden de compra.");
-			if(this.orden!= null && this.orden.getIdCliente()!= null && this.orden.getIdCliente()< 0)
-				this.orden.setIdCliente(null);
+			if(this.orden!= null) {
+        if(this.orden.getIdCliente()!= null && this.orden.getIdCliente()< 0)
+				  this.orden.setIdCliente(null);
+        if(Objects.equal(-1L, this.orden.getIdBanco()))
+          this.orden.setIdBanco(null);
+        if(Objects.equal(-1L, this.orden.getIdTipoPago()))
+          this.orden.setIdTipoPago(null);
+      } // if
 			switch(accion) {
 				case MOVIMIENTOS:
 					if(this.orden.isValid()) {
