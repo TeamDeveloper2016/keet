@@ -40,12 +40,14 @@
 		VK_ENTER    : 13, 
 		VK_ESC      : 27,
 		VK_ASTERISK : 106,
+		VK_QUOTE    : 186,
 		VK_EQUALS   : 48,
 		VK_MINUS    : 109,
 		VK_COMA     : 191,
 		VK_OPEN     : 122,
 		VK_CLOSE    : 123,
 		VK_PLUS     : 107,
+		VK_MAS      : 187,
 		VK_DIV      : 111,
 		VK_POINT    : 110,
 		VK_UP       : 38,
@@ -59,7 +61,7 @@
 		VK_F8       : 119,
 		VK_F10       : 121,
 		VK_SAT	    : 188,
-	  change      : [13, 27, 106, 107, 110, 111, 121, 188, 189, 191, 220, 222, 226],
+	  change      : [13, 27, 106, 107, 110, 111, 121, 186, 187, 188, 189, 191, 220, 222, 226],
 	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
@@ -293,6 +295,7 @@
   						return $articulos.down(true);
 						break;
 					case $articulos.VK_ASTERISK:
+					case $articulos.VK_QUOTE:
 						if(calculate)
 						  return true;
 						else
@@ -305,6 +308,7 @@
               return $articulos.div();
 						break;
 					case $articulos.VK_PLUS:
+					case $articulos.VK_MAS:
 						if(calculate)
 						  return true;
 						else

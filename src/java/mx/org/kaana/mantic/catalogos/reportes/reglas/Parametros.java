@@ -47,13 +47,13 @@ public final class Parametros implements Serializable {
     this.idAlmacen   = idAlmacen;
     this.idProveedor = idProveedor;
     this.idCliente   = idCliente;
-    setComunes(toDatosEmpresa());
+    this.setComunes(toDatosEmpresa());
     if(this.idProveedor != -1L)
-      toComplementarProveedor();
+      this.toComplementarProveedor();
     if(this.idAlmacen != -1L)
-      toComplementarAlmacen(this.idAlmacen, true);
+      this.toComplementarAlmacen(this.idAlmacen, true);
     if(this.idCliente != -1L)
-      toComplementarCliente();
+      this.toComplementarCliente();
   }
   
   public Map<String, Object> getComunes() {

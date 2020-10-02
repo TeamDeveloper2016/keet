@@ -1836,7 +1836,7 @@
 				inner join
 					tc_mantic_notas_entradas on tc_mantic_creditos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada				
 				inner join 
-					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista=2
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)
 				inner join 
 					tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
 				inner join 
@@ -2029,7 +2029,7 @@
         left join
           tc_mantic_notas_entradas on tc_mantic_creditos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
         left join
-          tc_mantic_proveedores on tc_mantic_creditos_notas.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista=2
+          tc_mantic_proveedores on tc_mantic_creditos_notas.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)
         where
 					tc_mantic_creditos_notas.id_empresa in ({idEmpresa})
 					and {condicion}
@@ -5415,7 +5415,7 @@
 				inner join 
 					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
 				inner join 
-					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista=2
+					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista in (1, 2)
 				inner join 
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
@@ -7249,33 +7249,33 @@
            from 
 					   tc_mantic_proveedores left join tr_mantic_proveedor_tipo_contacto on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor and tr_mantic_proveedor_tipo_contacto.id_tipo_contacto between 1 and 8 
 					 where 
-        				tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista=2) telefonos_proveedor,
+        		 tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista in (1, 2)) telefonos_proveedor,
         	(select 
 					  group_concat(tr_mantic_proveedor_tipo_contacto.valor separator ' , ') emails 
           from 
             tc_mantic_proveedores left join tr_mantic_proveedor_tipo_contacto on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor and tr_mantic_proveedor_tipo_contacto.id_tipo_contacto between 9 and 11 
           where 
-            tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista=2) emails_proveedor
+            tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista in (1, 2)) emails_proveedor
         from 
           tc_mantic_proveedores 
-        inner join 
-          tr_mantic_proveedor_domicilio  on tc_mantic_proveedores.id_proveedor= tr_mantic_proveedor_domicilio.id_proveedor
-        inner join 
+        left join 
+          tr_mantic_proveedor_domicilio on tc_mantic_proveedores.id_proveedor= tr_mantic_proveedor_domicilio.id_proveedor
+        left join 
           tc_mantic_domicilios  domicilio_proveedor on tr_mantic_proveedor_domicilio.id_domicilio = domicilio_proveedor.id_domicilio
-        inner join 
+        left join 
           tc_janal_localidades localidad_proveedor on domicilio_proveedor.id_localidad = localidad_proveedor.id_localidad
-        inner join
+        left join
           tc_janal_municipios municipio_proveedor on localidad_proveedor.id_municipio = municipio_proveedor.id_municipio
-        inner join
+        left join
           tc_janal_entidades  entidad_proveedor on municipio_proveedor.id_entidad = entidad_proveedor.id_entidad
-        inner join
+        left join
           tc_janal_paises  pais_proveedor on entidad_proveedor.id_pais = pais_proveedor.id_pais
         left join 
 					tr_mantic_proveedor_agente on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor and tr_mantic_proveedor_agente.id_principal=1
 				left join 
 					tc_mantic_personas agentes on tr_mantic_proveedor_agente.id_agente= agentes.id_persona
         where
-          tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista=2
+          tc_mantic_proveedores.id_proveedor in ({idProveedor}) and tc_mantic_proveedores.id_subcontratista in (1, 2)
       </select>
       <select id="datosSubcontratistas">
         select

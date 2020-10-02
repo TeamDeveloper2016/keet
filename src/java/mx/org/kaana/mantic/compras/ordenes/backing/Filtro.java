@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -306,7 +307,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // else
 	} // doVerificarReporte		
 	
-	public void doLoadEstatus(){
+	public void doLoadEstatus() {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;
@@ -336,8 +337,15 @@ public class Filtro extends IBaseFilter implements Serializable {
 			TcManticOrdenesComprasDto orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, seleccionado.getKey());
 			bitacora    = new TcManticOrdenesBitacoraDto(Long.valueOf((String)this.attrs.get("estatus")), (String) this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getConsecutivo(), orden.getTotal());
 			transaccion = new Transaccion(orden, bitacora);
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
+        // SI CAMBIA A SOLICITA LANZA EL DIALOGO PARA MANDAR POR CORREO LA ORDEN DE COMPRA
+        if(Objects.equals(orden.getIdOrdenEstatus(), 3L)) {
+          this.doLoadMails();
+          UIBackingUtilities.update("dialogoCorreos");
+          UIBackingUtilities.execute("PF('dlgCorreos').show();");
+        } // if  
+      } // if  
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
 		} // try
