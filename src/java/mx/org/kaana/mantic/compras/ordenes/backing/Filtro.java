@@ -339,7 +339,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			transaccion = new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
-        // SI CAMBIA A SOLICITA LANZA EL DIALOGO PARA MANDAR POR CORREO LA ORDEN DE COMPRA
+        // SI CAMBIA EL ESTATUS A SOLICITA LANZA EL DIALOGO PARA MANDAR POR CORREO LA ORDEN DE COMPRA A LOS PROVEEDORES
         if(Objects.equals(orden.getIdOrdenEstatus(), 3L)) {
           this.doLoadMails();
           UIBackingUtilities.update("dialogoCorreos");
@@ -457,7 +457,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.ORDENES_COMPRA, ECorreos.ORDENES_COMPRA.getEmail(), item, "controlbonanza@gmail.com,jorge.alberto.vs.10@gmail.com", "Ferreteria Bonanza - Orden de compra", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.ORDENES_COMPRA, ECorreos.ORDENES_COMPRA.getEmail(), item, "", "CAFU Construcciones - Orden de compra", params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

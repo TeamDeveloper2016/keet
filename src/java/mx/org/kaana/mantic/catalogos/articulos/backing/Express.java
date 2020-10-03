@@ -59,6 +59,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.attrs.put("medioMayoreo", 40D);				
 			this.attrs.put("mayoreo", 40D);				
       this.doLoad();
+      this.loadFamilias();
       this.loadProveedores();
       this.loadCategorias();
       this.loadEmpaques();
@@ -457,5 +458,26 @@ public class Express extends IBaseAttribute implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	}	
-	
+
+  private void loadFamilias() {
+    List<UISelectItem> familias= null;
+    Map<String, Object> params = null;
+    EAccion eaccion            = null;
+    try {
+      params = new HashMap<>();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      familias = UISelect.build("TcKeetFamiliasDto", "familias", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("familias", familias);
+      eaccion = (EAccion) this.attrs.get("accion");
+      if (eaccion.equals(EAccion.AGREGAR)) 
+        this.registroArticulo.setIdFamilia((Long)UIBackingUtilities.toFirstKeySelectItem(familias));      
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // loadFamilias
+  
 }

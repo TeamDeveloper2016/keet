@@ -38,8 +38,8 @@ public class CFDIFactory implements Serializable {
 	
 	private static final Log LOG=LogFactory.getLog(CFDIFactory.class);
 	private static final long serialVersionUID =-5361573067043698091L;
-  private static final String USER           = "FERRBONANZA";
-  private static final String PASSWORD       = "ZABONAN2018";
+  private static final String USER           = "CAFUCONSTRUCCIONES";
+  private static final String PASSWORD       = "CAFU-TEMPORAL";
   private static final String USER_PU        = "FERRBONANZASANDBOX";
   private static final String PASSWORD_PU    = "zabonan2018sandbox";
   private static final String DESCRIPCION_IVA= "IVA";

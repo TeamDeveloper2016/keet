@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ordenDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.compras.ordenes.scriplet.OrdenesDetalles" uuid="a3542042-156a-46f2-b7a4-73d76a67d6b2">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="4"/>
-	<property name="ireport.y" value="111"/>
+	<property name="ireport.y" value="47"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -671,14 +671,18 @@
 				<text><![CDATA[METODO DE PAGO:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="331" y="21" width="33" height="18" uuid="059d7bf9-80b3-4826-978d-d61d69693c42"/>
+				<reportElement stretchType="RelativeToTallestObject" x="331" y="21" width="33" height="18" uuid="059d7bf9-80b3-4826-978d-d61d69693c42">
+					<printWhenExpression><![CDATA[$F{BANCO}!= null]]></printWhenExpression>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[BANCO:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="473" y="21" width="83" height="18" uuid="044ee4d1-29f7-4daf-a9b5-0754066f32ac"/>
+				<reportElement stretchType="RelativeToTallestObject" x="473" y="21" width="83" height="18" uuid="044ee4d1-29f7-4daf-a9b5-0754066f32ac">
+					<printWhenExpression><![CDATA[$F{REFERENCIA}!= null]]></printWhenExpression>
+				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="7" isBold="true"/>
 				</textElement>
@@ -691,15 +695,15 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TIPO_MEDIO_PAGO}]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
+			<textField pattern="" isBlankWhenNull="true">
 				<reportElement x="366" y="21" width="107" height="17" uuid="ea057dfd-fb19-4b80-b820-12a62a41ee51"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{BANCO}]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
-				<reportElement x="556" y="22" width="59" height="17" uuid="dc212a84-a2eb-4a63-b330-fe84771caf3d"/>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="556" y="21" width="59" height="17" uuid="dc212a84-a2eb-4a63-b330-fe84771caf3d"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
