@@ -1992,7 +1992,8 @@
 						tr_mantic_empresa_personal.id_departamento,
 						tr_mantic_empresa_personal.nss,
 						tr_mantic_empresa_personal.id_nomina,
-				    tr_mantic_empresa_personal.id_contratista
+				    tr_mantic_empresa_personal.id_contratista,
+            tc_keet_desarrollos.nombres as desarrollo
 					from      
 						tr_mantic_empresa_personal
 					inner join 
@@ -2001,6 +2002,10 @@
 						tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
 					inner join	
 						tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+          left join
+            tc_keet_contratos_personal on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratos_personal.id_empresa_persona
+          left join
+            tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 					where 
 						{condicion}
 					order by 
@@ -2010,8 +2015,7 @@
 			    tr_mantic_empresa_personal on principal.id_contratista= tr_mantic_empresa_personal.id_empresa_persona
 			  left join
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
-				order by 
-					principal.departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')), principal.nombre_completo, principal.puesto
+        {sortOrder}
 			</select>
 			<select id="totales">
 				select

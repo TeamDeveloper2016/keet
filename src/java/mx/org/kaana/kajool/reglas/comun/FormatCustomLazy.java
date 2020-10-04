@@ -50,10 +50,9 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
   public FormatCustomLazy(String proceso, String idXml, Map<String, Object> params, List<Columna> columns, EFiltersWith like) {
     this(proceso, idXml, params, columns, like,-1L);
   }
-
 	
 	public FormatCustomLazy(String proceso, String idXml, Map<String, Object> params, List<Columna> columns, EFiltersWith like, Long idFuenteDato) {
-    super(proceso, idXml, params, columns,idFuenteDato);
+    super(proceso, idXml, params, columns, idFuenteDato);
     this.like= like;
   }
 	
@@ -67,8 +66,6 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
     if(filters.size()> 0)
       this.getParams().put("filters", " and (".concat(toFilters(filters)).concat(")"));
     LOG.info("Lazy params: "+ this.getParams());
-		
-		UIBackingUtilities.execute("janal.onLoadCallBack();");
     return super.load(first, pageSize, sortField, sortOrder, filters);
   }
 

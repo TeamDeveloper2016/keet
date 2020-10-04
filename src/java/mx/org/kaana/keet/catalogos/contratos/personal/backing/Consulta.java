@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.formato.Error;
@@ -76,11 +77,13 @@ public class Consulta extends IBaseFilter implements Serializable {
     try {			
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, this.toPrepare());
+      params.put("sortOrder", "order by principal.departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')), principal.nombre_completo, principal.puesto");
 			columns= new ArrayList<>();
 			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-			this.lazyModel= new FormatLazyModel("VistaContratosDto", "consulta", params, columns);
+			columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
+			this.lazyModel= new FormatCustomLazy("VistaContratosDto", "consulta", params, columns);
 			UIBackingUtilities.resetDataTable("tabla");	
     } // try // try
     catch (Exception e) {

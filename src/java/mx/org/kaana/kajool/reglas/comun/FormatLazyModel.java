@@ -18,6 +18,7 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortOrder;
 
@@ -62,6 +63,7 @@ public class FormatLazyModel<T extends IBaseDto> extends EntityLazyModel<T> impl
 
 	@Override
 	public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, FilterMeta> filters) {
+		UIBackingUtilities.execute("janal.onLoadCallBack();");
 		List<T> regresar= super.load(first, pageSize, sortField, sortOrder, filters);		
 		if(regresar!= null) {
 			regresar= (List<T>)((ArrayList<T>)regresar).clone();
