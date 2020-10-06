@@ -293,7 +293,7 @@ public class RegistroAlmacen implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el domicilio", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el domicilio", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el domicilio", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -397,7 +397,7 @@ public class RegistroAlmacen implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -437,7 +437,7 @@ public class RegistroAlmacen implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -534,7 +534,7 @@ public class RegistroAlmacen implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el articulo", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el articulo", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el articulo", ETipoMensaje.INFORMACION);
 			this.almacenArticuloPivote= new AlmacenArticulo();
 		} // try
 		catch (Exception e) {

@@ -241,7 +241,7 @@ public class RegistroPersona implements Serializable {
 		this.deudor = deudor;
 	}	
 	
-	private void init(){
+	private void init() {
 		int countDomicilio   = 0;
 		int countBeneficiario= 0;
 		MotorBusqueda motor  = null;
@@ -251,12 +251,12 @@ public class RegistroPersona implements Serializable {
 			this.empresaPersona= motor.toDetallePersona();
 			this.deudor= motor.toDeudor(this.empresaPersona.getIdEmpresaPersona());
 			this.personasDomicilio= motor.toPersonasDomicilio(true);
-			for(PersonaDomicilio personaDomicilio: this.personasDomicilio){
+			for(PersonaDomicilio personaDomicilio: this.personasDomicilio) {
 				countDomicilio++;
 				personaDomicilio.setConsecutivo(Long.valueOf(countDomicilio));
 			} // for				
 			this.personasBeneficiarios= motor.toPersonasBeneficiarios();
-			for(PersonaBeneficiario personaBenefi: this.personasBeneficiarios){
+			for(PersonaBeneficiario personaBenefi: this.personasBeneficiarios) {
 				countBeneficiario++;
 				personaBenefi.setConsecutivo(Long.valueOf(countBeneficiario));
 			} // for				
@@ -271,7 +271,7 @@ public class RegistroPersona implements Serializable {
 		} // catch		
 	} // init
 	
-	public void doAgregarPersonaDomicilio(){
+	public void doAgregarPersonaDomicilio() {
 		PersonaDomicilio personaDomicilio= null;
 		try {								
 			personaDomicilio= new PersonaDomicilio(this.contadores.getTotalPersonasDomicilios() + this.countIndice, ESql.INSERT, true);	
@@ -287,15 +287,15 @@ public class RegistroPersona implements Serializable {
 		} // finally
 	} // doAgregarPersonaDomicilio
 	
-	public void doEliminarPersonaDomicilio(){
+	public void doEliminarPersonaDomicilio() {
 		try {			
-			if(this.personasDomicilio.remove(this.personaDomicilioSeleccion)){
+			if(this.personasDomicilio.remove(this.personaDomicilioSeleccion)) {
 				if(!this.personaDomicilioSeleccion.getNuevo())
 					addDeleteList(this.personaDomicilioSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el domicilio", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el domicilio", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el domicilio", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -303,7 +303,7 @@ public class RegistroPersona implements Serializable {
 		} // catch			
 	} // doEliminarPersonaDomicilio	
 	
-	public void doConsultarPersonaDomicilio(){
+	public void doConsultarPersonaDomicilio() {
 		PersonaDomicilio pivote= null;
 		try {			
 			pivote= this.personasDomicilio.get(this.personasDomicilio.indexOf(this.personaDomicilioSeleccion));
@@ -311,7 +311,7 @@ public class RegistroPersona implements Serializable {
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
 			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
-			if(pivote.getDomicilio() != null){
+			if(pivote.getDomicilio() != null) {
 				this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
 				this.domicilioPivote.setDomicilio(pivote.getDomicilio());
 			} // if
@@ -334,7 +334,7 @@ public class RegistroPersona implements Serializable {
 		} // catch		
 	} // doConsultarPersonaDomicilio
 	
-	public void doActualizarPersonaDomicilio(){
+	public void doActualizarPersonaDomicilio() {
 		PersonaDomicilio pivote= null;
 		try {			
 			pivote= this.personasDomicilio.get(this.personasDomicilio.indexOf(this.personaDomicilioSeleccion));			
@@ -349,12 +349,12 @@ public class RegistroPersona implements Serializable {
 	
 	private void setValuesPersonaDomicilio(PersonaDomicilio personaDomicilio, boolean actualizar) throws Exception{
 		try {
-			if(this.domicilio.getPrincipal()){
+			if(this.domicilio.getPrincipal()) {
 				for(PersonaDomicilio record: this.personasDomicilio)
 					record.setIdPrincipal(0L);
 			} // if
 			personaDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);			
-			if(this.domicilio.getDomicilio()!= null){
+			if(this.domicilio.getDomicilio()!= null) {
 				personaDomicilio.setDomicilio(this.domicilio.getDomicilio());
 				personaDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
 			} // if
@@ -379,7 +379,7 @@ public class RegistroPersona implements Serializable {
 		} // catch		
 	} // setValuesPersonaDomicilio
 	
-	public void doAgregarPersonaBeneficiario(){
+	public void doAgregarPersonaBeneficiario() {
 		PersonaBeneficiario perBeneficiario= null;
 		try {								
 			perBeneficiario= new PersonaBeneficiario(this.contadores.getTotalPersonasBeneficiarios()+ this.countIndice, ESql.INSERT, true);	
@@ -395,15 +395,15 @@ public class RegistroPersona implements Serializable {
 		} // finally
 	} // doAgregarPersonaBeneficiario
 	
-	public void doEliminarPersonaBeneficiario(){
+	public void doEliminarPersonaBeneficiario() {
 		try {			
-			if(this.personasBeneficiarios.remove(this.personaBeneficiarioSeleccion)){
+			if(this.personasBeneficiarios.remove(this.personaBeneficiarioSeleccion)) {
 				if(!this.personaBeneficiarioSeleccion.getNuevo())
 					addDeleteList(this.personaBeneficiarioSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el domicilio", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el domicilio", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el domicilio", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -411,7 +411,7 @@ public class RegistroPersona implements Serializable {
 		} // catch			
 	} // doEliminarPersonaBeneficiario	
 	
-	public void doConsultarPersonaBeneficiario(){
+	public void doConsultarPersonaBeneficiario() {
 		PersonaBeneficiario pivote= null;
 		try {			
 			pivote= this.personasBeneficiarios.get(this.personasBeneficiarios.indexOf(this.personaBeneficiarioSeleccion));
@@ -429,7 +429,7 @@ public class RegistroPersona implements Serializable {
 		} // catch		
 	} // doConsultarPersonaBeneficiario
 	
-	public void doActualizarPersonaBeneficiario(){
+	public void doActualizarPersonaBeneficiario() {
 		PersonaBeneficiario pivote= null;
 		try {			
 			pivote= this.personasBeneficiarios.get(this.personasBeneficiarios.indexOf(this.personaBeneficiarioSeleccion));			
@@ -458,7 +458,7 @@ public class RegistroPersona implements Serializable {
 		} // catch		
 	} // setValuesPersonaBeneficiario
 	
-	public void doAgregarClienteTipoContacto(){
+	public void doAgregarClienteTipoContacto() {
 		PersonaTipoContacto personaTipoContacto= null;
 		try {					
 			personaTipoContacto= new PersonaTipoContacto(this.contadores.getTotalPersonasTipoContacto()+ this.countIndice, ESql.INSERT, true, null);				
@@ -474,7 +474,7 @@ public class RegistroPersona implements Serializable {
 		} // finally
 	} // doAgregarClienteTipoContacto
 	
-	public void doAgregarPersonaBanco(){
+	public void doAgregarPersonaBanco() {
 		PersonaBanco personaBanco= null;
 		try {					
 			personaBanco= new PersonaBanco(this.contadores.getTotalPersonasBancos()+ this.countIndice, ESql.INSERT, true, null);							
@@ -489,15 +489,15 @@ public class RegistroPersona implements Serializable {
 		} // finally
 	} // doAgregarClienteTipoContacto
 	
-	public void doEliminarClienteTipoContacto(){
+	public void doEliminarClienteTipoContacto() {
 		try {			
-			if(this.personasTiposContacto.remove(this.personaTipoContactoSeleccion)){
+			if(this.personasTiposContacto.remove(this.personaTipoContactoSeleccion)) {
 				if(!this.personaTipoContactoSeleccion.getNuevo())
-					addDeleteList(this.personaTipoContactoSeleccion);
+					this.addDeleteList(this.personaTipoContactoSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -505,6 +505,22 @@ public class RegistroPersona implements Serializable {
 		} // catch			
 	} // doEliminarClienteTipoContacto
 	
+	public void doEliminarPersonaBanco() {
+		try {			
+			if(this.personasBancos.remove(this.personaBancoSeleccion)) {
+				if(!this.personaBancoSeleccion.getNuevo())
+					this.addDeleteList(this.personaBancoSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el banco", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue posible eliminar el banco", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarPersonaBanco
+  
 	private void addDeleteList(IBaseDto dto) throws Exception{
 		Transaccion transaccion= null;
 		try {
@@ -520,7 +536,7 @@ public class RegistroPersona implements Serializable {
 	public void doSeleccionarPrincipal(PersonaBanco principal) {
 		try {
 			for(PersonaBanco perBanco: this.personasBancos) {
-				if(!perBanco.equals(principal)){
+				if(!perBanco.equals(principal)) {
 					perBanco.setIdPrincipal(2L);
 					perBanco.setPrincipal(false);
 				} // if					

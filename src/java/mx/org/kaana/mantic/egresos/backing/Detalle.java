@@ -205,7 +205,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("No fue porsible eliminar el registro", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el registro", ETipoMensaje.INFORMACION);
 			doLoadNotasEntradas();
 		} // try
 		catch (Exception e) {
@@ -223,7 +223,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("No fue porsible eliminar el registro", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el registro", ETipoMensaje.INFORMACION);
 			doLoadCreditosNotas();
 		} // try
 		catch (Exception e) {
@@ -241,7 +241,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("No fue porsible eliminar el registro", ETipoMensaje.INFORMACION);			
+				JsfBase.addMessage("No fue posible eliminar el registro", ETipoMensaje.INFORMACION);			
 			doLoadEmpresasPagos();
 		} // try
 		catch (Exception e) {
@@ -259,7 +259,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("No fue porsible eliminar el registro", ETipoMensaje.INFORMACION);			
+				JsfBase.addMessage("No fue posible eliminar el registro", ETipoMensaje.INFORMACION);			
 			doLoadNotas();
 		} // try
 		catch (Exception e) {

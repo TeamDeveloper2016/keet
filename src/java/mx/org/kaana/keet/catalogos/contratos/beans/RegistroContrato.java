@@ -156,7 +156,7 @@ public class RegistroContrato implements Serializable {
 				JsfBase.addMessage("Se eliminó correctamente el empleado.", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el empleado.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el empleado.", ETipoMensaje.INFORMACION);
 		} // try // try
 		catch (Exception e) {
 			Error.mensaje(e);

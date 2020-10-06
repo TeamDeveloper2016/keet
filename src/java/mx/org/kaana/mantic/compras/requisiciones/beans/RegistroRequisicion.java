@@ -122,7 +122,7 @@ public class RegistroRequisicion implements Serializable {
 				JsfBase.addMessage("Se eliminó correctamente el proveedor", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el proveedor", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el proveedor", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

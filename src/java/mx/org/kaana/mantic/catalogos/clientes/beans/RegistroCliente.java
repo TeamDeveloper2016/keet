@@ -363,7 +363,7 @@ public class RegistroCliente implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el domicilio", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el domicilio", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el domicilio", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -470,7 +470,7 @@ public class RegistroCliente implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el representante", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el representante", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el representante", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -518,7 +518,7 @@ public class RegistroCliente implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -534,7 +534,7 @@ public class RegistroCliente implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -611,7 +611,7 @@ public class RegistroCliente implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -675,7 +675,7 @@ public class RegistroCliente implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el registro de servicio", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el registro de servicio", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el registro de servicio", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -691,7 +691,7 @@ public class RegistroCliente implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente el registro de transferencia", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el registro de transferencia", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el registro de transferencia", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -722,7 +722,7 @@ public class RegistroCliente implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente la vivienda", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar la vivienda", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar la vivienda", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -753,7 +753,7 @@ public class RegistroCliente implements Serializable{
 				JsfBase.addMessage("Se eliminó correctamente la infraestructura", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar la infraestructura", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar la infraestructura", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

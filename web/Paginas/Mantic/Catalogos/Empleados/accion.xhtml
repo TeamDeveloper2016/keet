@@ -370,8 +370,8 @@
 										</p:selectBooleanCheckbox>
 									</p:column>
                   <p:column style="width:32px;text-align: center">
-                    <p:commandButton update="tablaBancos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosPersonasAccion.registroPersona.doEliminarClienteTipoContacto}">
-                      <f:setPropertyActionListener value="#{contacto}" target="#{manticCatalogosPersonasAccion.registroPersona.personaBancoSeleccion}" />
+                    <p:commandButton update="tablaBancos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosPersonasAccion.registroPersona.doEliminarPersonaBanco}">
+                      <f:setPropertyActionListener value="#{banco}" target="#{manticCatalogosPersonasAccion.registroPersona.personaBancoSeleccion}" />
                     </p:commandButton>
                   </p:column>
                   <f:facet name="footer">

@@ -360,7 +360,7 @@ public class RegistroArticulo implements Serializable {
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el código", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el código", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -391,7 +391,7 @@ public class RegistroArticulo implements Serializable {
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el código", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el código", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -422,7 +422,7 @@ public class RegistroArticulo implements Serializable {
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el código", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el código", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -453,7 +453,7 @@ public class RegistroArticulo implements Serializable {
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el código", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el código", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -484,7 +484,7 @@ public class RegistroArticulo implements Serializable {
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el código", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el código", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -515,7 +515,7 @@ public class RegistroArticulo implements Serializable {
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el código", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el código", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -546,7 +546,7 @@ public class RegistroArticulo implements Serializable {
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el código", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue posible eliminar el código", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
