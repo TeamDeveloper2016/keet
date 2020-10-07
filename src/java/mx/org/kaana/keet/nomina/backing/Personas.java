@@ -89,10 +89,10 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
   			entity.put("idPuesto", new Value("idPuesto", (Long)JsfBase.getFlashAttribute("idPuesto")));
   			entity.put("idPersona", new Value("idPersona", (Long)JsfBase.getFlashAttribute("idPersona")));
 				this.attrs.put("idNomina", new UISelectEntity(entity));
-				this.attrs.put("idEmpresaPersona", new UISelectEntity((Long)JsfBase.getFlashAttribute("idEmpresaPersona")));
+				this.attrs.put("idEmpresaPersona", new UISelectEntity(JsfBase.getFlashAttribute("idEmpresaPersona")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaPersona")));
 				this.attrs.put("seleccionado", entity);
 				this.doLoad();
-				if(!Cadena.isVacio(entity.toLong("idEmpresaPersona")))
+				if(!Cadena.isVacio(entity.toLong("idEmpresaPersona")) && entity.toLong("idEmpresaPersona")!= -1L)
 					this.doLoadDetalle();
 				this.attrs.put("idNomina", new UISelectEntity(-1L));
 				this.attrs.put("idEmpresaPersona", new UISelectEntity(-1L));

@@ -1034,11 +1034,18 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				}	// if
         else {
-          var depende= janal.cross($(element).attr('id'), params.cual);
-          var source = janal.input(depende);
-          var ok     = source.length> 0 && janal.requerido(this, source[0], janal.value(depende));
-  			  return !ok || janal.requerido(this, element, value);
-        } // if  
+          if(typeof(params.criterio)=== 'undefined') 
+            params.criterio= 'requerido';
+          if(typeof(params.aplicar)=== 'undefined') 
+            params.aplicar= 'requerido';
+          var ok= this.element('#'+ params.cual);
+          if(ok) {
+            ok= janal.valid(params.cual, params.criterio.replaceAll('[', '(').replaceAll(']', ')').replaceAll('\u00B4', '"'));
+            if(ok)
+              ok= janal.valid($(element).attr('id'), params.aplicar.replaceAll('[', '(').replaceAll(']', ')').replaceAll('\u00B4', '"'));
+          } // if  
+          return ok;
+        } // else
 		}, function(params, element) {
       return 'El dato es obligatorio. ';
     });    

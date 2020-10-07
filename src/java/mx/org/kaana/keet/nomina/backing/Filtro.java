@@ -43,7 +43,7 @@ import mx.org.kaana.mantic.enums.EReportes;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 6319984968937774153L;
-	LocalDate fecha;
+	private LocalDate fecha;
   protected Reporte reporte;
 
 	public Reporte getReporte() {
