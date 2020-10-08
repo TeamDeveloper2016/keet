@@ -1043,7 +1043,11 @@ $.mask.masks = $.extend($.mask.masks, {
             ok= janal.valid(params.cual, params.criterio.replaceAll('[', '(').replaceAll(']', ')').replaceAll('\u00B4', '"'));
             if(ok)
               ok= janal.valid($(element).attr('id'), params.aplicar.replaceAll('[', '(').replaceAll(']', ')').replaceAll('\u00B4', '"'));
+            else
+              ok= true;
           } // if  
+          else
+            ok= true;
           return ok;
         } // else
 		}, function(params, element) {
