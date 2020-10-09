@@ -140,6 +140,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.fechaEstimada= Calendar.getInstance();
+			this.attrs.put("familiasSeleccion", new Object[] {});
+			this.attrs.put("lotesSeleccion", new Object[] {});
+			this.attrs.put("isBanco", Boolean.FALSE);
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -172,8 +175,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         case MODIFICAR:					
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
-					ordenCompra= (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, notaEntrada.getIdOrdenCompra());
-					this.tipoOrden         = notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
+					ordenCompra   = (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, notaEntrada.getIdOrdenCompra());
+					this.tipoOrden= notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
           this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					
@@ -186,6 +189,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			//this.doResetDataTable();
 			this.toLoadCatalog();
+      this.toLoadBancos();
+      this.toLoadTiposMediosPagos();
+      this.toLoadTiposPagos();
+      this.toLoadAlmacenistas();
+      this.toLoadEmpresaTipoContacto();
 			this.doFilterRows();
     } // try
     catch (Exception e) {
@@ -308,7 +316,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			  if(!ordenes.isEmpty()) 
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkOrdenCompra(ordenes.get(0));
 			} // if	
-			doLoadDesarrollos();
+			this.doLoadDesarrollos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -342,6 +350,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				desarrollo= new UISelectEntity((((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo()));			
 			this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));			
 			this.attrs.put("cliente", desarrollo.toString("razonSocial"));
+      this.doLoadContratos();
     } // try
     catch (Exception e) {
       throw e;
@@ -352,6 +361,96 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     }// finally
 	} // doLoadDesarrollos
 	
+	public void doUpdateCliente() {
+		List<UISelectEntity> desarrollos= null;
+		UISelectEntity desarrollo       = null;
+		List<Columna> columns           = null;
+		Map<String, Object>params       = null;
+		try {
+			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollos");
+			desarrollo = ((NotaEntrada)this.getAdminOrden().getOrden()).getIkDesarrollo();
+			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));			
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_almacenes.id_desarrollo=" + desarrollo.getKey());
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "row", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty()) 
+			  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+			this.doLoadContratos();
+      this.toLoadAlmacenistas();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+	} // doUpdateCliente
+  
+	public void doLoadContratos() {
+		List<UISelectEntity> contratos= null;
+		Map<String, Object>params     = null;
+		try {
+			params= new HashMap<>();
+			params.put("idDesarrollo", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdDesarrollo());
+			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+			this.attrs.put("contratos", contratos);
+      if(!contratos.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(0));
+        else  
+          ((NotaEntrada)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(contratos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkContrato())));
+			this.doLoadLotes();
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadContratos
+	
+	public void doLoadLotes() {
+		List<UISelectEntity> lotes= null;
+		Map<String, Object>params = null;
+    Object[] list             = null;
+		try {
+			params = new HashMap<>();
+			params.put("idContrato", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdContrato());
+			lotes= UIEntity.build("TcKeetContratosLotesDto", "byContratoContratistas", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("lotes", lotes);						
+      if(!lotes.isEmpty()) 
+        if(!this.accion.equals(EAccion.AGREGAR)) { 
+    			params.put("idOrdenCompra", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
+          if(!items.isEmpty()) {
+            list     = new Object[items.size()];
+            int count= 0;
+            for (Entity entity : items) {
+              int index= lotes.indexOf(new UISelectEntity(entity.toLong("idContratoLote")));
+              if(index>= 0)
+                list[count++]= lotes.get(index);
+            } // for
+          } // if  
+        } // if  
+      if(list== null)
+        list= new Object[]{};
+      this.attrs.put("lotesSeleccion", list);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadLotes
+  
 	public void doUpdateProveedor() {
 		try {
 			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
@@ -364,6 +463,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			temporal.put("fechaEstimada", new Value("fechaEstimada", this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias"))));
 			this.attrs.put("proveedor", temporal);
 			this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, temporal.getKey());
+			this.toUpdateFamilias();
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor())));
 			this.doUpdatePlazo();
 			// this.doCalculateFechaPago();
@@ -375,6 +475,43 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // catch   
 	} 
 	
+	private void toUpdateFamilias() throws Exception {
+		UISelectEntity proveedor     = null;
+		List<UISelectEntity> familias= null;
+		Map<String, Object>params    = null;
+    Object[] list                = null;
+		try {
+			proveedor= (UISelectEntity) this.attrs.get("proveedor");
+			params= new HashMap<>();
+			params.put("idProveedor", proveedor.getKey());
+			familias= UIEntity.build("VistaFamiliasProveedoresDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("familias", familias);			
+      if(!familias.isEmpty())
+        if(!this.accion.equals(EAccion.AGREGAR)) {
+    			params.put("idOrdenCompra", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
+          if(!items.isEmpty()) {
+            list     = new Object[items.size()];
+            int count= 0;
+            for (Entity entity: items) {
+              int index= familias.indexOf(new UISelectEntity(entity.toLong("idFamilia")));
+              if(index>= 0)
+                list[count++]= familias.get(index);
+            } // for
+          } // if  
+        } // if  
+      if(list== null)
+        list= new Object[]{};
+      this.attrs.put("familiasSeleccion",  list);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // toUpdateFamilias
+  
 	private String toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
 		fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);
 		if(tipoDia== 2) {
@@ -981,7 +1118,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 	} // loadTiposMediosPagos
@@ -1007,7 +1144,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		catch (Exception e) {
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 	} // loadBancos  
@@ -1029,7 +1166,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 	} // loadTiposPagos
@@ -1053,7 +1190,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 	} // loadAlmacenistas
@@ -1076,7 +1213,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 	} // loadEmpresaTipoContacto
@@ -1101,5 +1238,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doCheckTipoMedioPago
+ 
+  public void doEraseArticulos() {
+    this.getAdminOrden().getArticulos().clear();
+    if(this.getAdminOrden().getArticulos().size()> 0)
+      this.getAdminOrden().toCalculate();
+  }
   
 }

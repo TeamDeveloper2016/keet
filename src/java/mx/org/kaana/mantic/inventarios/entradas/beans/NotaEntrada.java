@@ -21,7 +21,6 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 
 	private static final long serialVersionUID=3088884892456452488L;
 	
-	private UISelectEntity ikAlmacen;
 	private UISelectEntity ikProveedor;
   private UISelectEntity ikProveedorPago;
 	private UISelectEntity ikOrdenCompra;
@@ -31,6 +30,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	private UISelectEntity ikBanco;
 	private UISelectEntity ikTipoMedioPago;
 	private UISelectEntity ikTipoPago;
+	private UISelectEntity ikAlmacen;
 	private UISelectEntity ikAlmacenista;
 	private UISelectEntity ikEmpresaTipoContacto;
 

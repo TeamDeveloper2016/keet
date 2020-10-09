@@ -568,7 +568,8 @@
 				from
 					tc_mantic_clientes
 				where  
-					 upper(tc_mantic_clientes.rfc)= '{rfc}'				
+					upper(tc_mantic_clientes.rfc)= '{rfc}'
+          or upper(tc_mantic_clientes.clave)= '{rfc}'
 			</select>		
 			<select id="proveedor">
 				select
@@ -577,8 +578,8 @@
 				from
 					tc_mantic_proveedores
 				where  
-					upper(tc_mantic_proveedores.rfc)= '{rfc}'				
-				  and tc_mantic_proveedores.id_subcontratista=2
+					upper(tc_mantic_proveedores.rfc)= '{rfc}'
+          or upper(tc_mantic_proveedores.clave)= '{rfc}'
 			</select>		
 			<select id="trabajo">
 				select
@@ -10374,9 +10375,9 @@
 				from
 					tr_keet_articulo_proveedor_cliente
 				inner join
-					tc_mantic_articulos ON tr_keet_articulo_proveedor_cliente.id_articulo = tc_mantic_articulos.id_articulo
+					tc_mantic_articulos on tr_keet_articulo_proveedor_cliente.id_articulo = tc_mantic_articulos.id_articulo
 				inner join
-					tc_mantic_clientes ON tr_keet_articulo_proveedor_cliente.id_cliente = tc_mantic_clientes.id_cliente
+					tc_mantic_clientes on tr_keet_articulo_proveedor_cliente.id_cliente = tc_mantic_clientes.id_cliente
 				where
 					tr_keet_articulo_proveedor_cliente.id_proveedor= {idProveedor}
 			</select>
