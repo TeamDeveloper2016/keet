@@ -55,6 +55,7 @@ import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -573,15 +574,54 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Importar") && this.attrs.get("faltantes")== null)
-			this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
-	  else
-  		if(event.getTab().getTitle().equals("Articulos")) {
-				UIBackingUtilities.update("contenedorGrupos:sinIva");
-				UIBackingUtilities.update("contenedorGrupos:paginator");
-			} // if
+    switch (event.getTab().getTitle()) {
+      case "Articulos":
+        Object[] familias= (Object[])this.attrs.get("familiasSeleccion");
+        Object[] lotes   = (Object[])this.attrs.get("lotesSeleccion");
+        if(familias.length> 0 && lotes.length> 0) {
+          // this.toLoadArticulos(Arrays.asList(familias), Arrays.asList(lotes));
+          UIBackingUtilities.update("contenedorGrupos:sinIva");
+          UIBackingUtilities.update("contenedorGrupos:paginator");
+        } // if
+        else {
+          getAdminOrden().getArticulos().clear();
+          UIBackingUtilities.execute("janal.show([{summary: 'Contrato:', detail: 'No tiene definido un lote.'},{summary: 'Proveedor:', detail: 'No tiene definido una familia.'}]);"); 
+        } // else			
+        break;
+      case "Importar":
+     		if(this.attrs.get("faltantes")== null)
+		  	  this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+        break;
+      case "Historial":
+        this.doLoadHistorico();
+        break;
+    } // switch    
 	}
 	
+  public void doLoadHistorico() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      params.put("idContrato", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdContrato());
+      columns= new ArrayList<>();
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("familia", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      this.attrs.put("historico", UIEntity.build("VistaFamiliasProveedoresDto", "lazy", params, columns, Constantes.SQL_TODOS_REGISTROS));
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    }// finally
+	}
+  
 	public void doFileUpload(FileUploadEvent event) {
 		this.attrs.put("relacionados", 0);
 		if(this.proveedor!= null) {

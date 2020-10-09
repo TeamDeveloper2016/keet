@@ -285,7 +285,7 @@
 									<p:ajax event="keyup" listener="#{manticInventariosEntradasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
 								</p:inputNumber>
 								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es">
+								<p:calendar id="fechaPago" inputStyleClass="janal-wid-96" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es">
 									<p:ajax event="dateSelect" listener="#{manticInventariosEntradasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
 								</p:calendar>
 								<p:spacer width="1px"/><p:separator/>
@@ -321,7 +321,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="familia" value="Familia de materiales:"/>							
-                <p:selectCheckboxMenu id="familia" value="#{manticInventariosEntradasAccion.attrs.familiasSeleccion}" converter="janal.convertidor.Entity" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="janal-wid-100-txt" multiple="true" onchange="loadArts();" panelStyle="janal-wid-100-txt" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
+                <p:selectCheckboxMenu id="familia" value="#{manticInventariosEntradasAccion.attrs.familiasSeleccion}" converter="janal.convertidor.Entity" label="ej. ACEROS, MADERAS, CONCRETOS" filter="true" filterMatchMode="startsWith" styleClass="recalculo janal-wid-100-txt" multiple="true" onchange="loadArts();" panelStyle="janal-wid-100-txt" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
                   <p:ajax event="change" listener="#{manticInventariosEntradasAccion.doEraseArticulos}" update="datosArticulos registros tabla" process="@this"/>
 									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.familias}" var="three" itemValue="#{three.key}" itemLabel="#{three.nombre}"/>
 								</p:selectCheckboxMenu>		
@@ -906,6 +906,73 @@
 								</p:panelGrid>
 							</p:panel>
 						</p:tab>
+						<p:tab title="Historial">
+							<p:dataTable id="historico" var="row" value="#{manticInventariosEntradasAccion.attrs.historico}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
+								<p:column class="MarAuto Responsive janal-wid-col-20">
+									<f:facet name="header">
+										<h:outputText value="No."/>
+									</f:facet>
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Contrato"/>
+									</f:facet>
+									<h:outputText value="#{row['contrato']}"/>
+								</p:column>		
+								<p:column  class="MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Etapa"/>
+									</f:facet>
+									<h:outputText value="#{row['etapa']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Orden compra"/>
+									</f:facet>
+									<h:outputText value="#{row['consecutivo']}"/>	
+								</p:column>		
+								<p:column class="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Proveedor"/>
+									</f:facet>
+									<h:outputText value="#{row['proveedor']}"/>	
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Clave"/>
+									</f:facet>
+									<h:outputText value="#{row['clave']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Usuario"/>
+									</f:facet>
+									<h:outputText value="#{row['usuario']}"/>
+								</p:column>		
+								<p:column class="janal-column-left MarAuto Responsive janal-wid-8">
+									<f:facet name="header">
+										<h:outputText value="Lote"/>
+									</f:facet>
+									<h:outputText value="#{row['lote']}"/>
+								</p:column>		
+								<p:column class="janal-column-left MarAuto Responsive janal-wid-12">
+									<f:facet name="header">
+										<h:outputText value="Familia"/>
+									</f:facet>
+									<h:outputText value="#{row['familia']}"/>	
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-12">
+									<f:facet name="header">
+										<h:outputText value="Fecha"/>
+									</f:facet>
+									<h:outputText value="#{row['registro']}"/>
+								</p:column>		
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{manticInventariosEntradasAccion.attrs.historico== null? 0: manticInventariosEntradasAccion.attrs.historico.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>              
+						</p:tab>            
 					</p:tabView>
 				</div>
 			</div>
