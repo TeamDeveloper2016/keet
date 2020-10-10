@@ -50,12 +50,10 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
-import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -1283,6 +1281,32 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     this.getAdminOrden().getArticulos().clear();
     if(this.getAdminOrden().getArticulos().size()> 0)
       this.getAdminOrden().toCalculate();
+  }
+ 
+  @Override
+  protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {  
+    super.toMoveData(articulo, index);
+    Articulo temporal         = this.getAdminOrden().getArticulos().get(index);
+		Map<String, Object> params= new HashMap<>();
+		try {
+			if(articulo.size()> 1) {
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idProveedor", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor());
+				params.put("idCliente", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdCliente());
+        // RECUPERAR EL PRECIO CONVENIO O EL PRECIO DE LISTA O EL PRECIO BASE
+        Entity precios= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "precios", params);
+        if(precios!= null && !precios.isEmpty()) {
+          temporal.setValor(precios.toDouble("precio"));
+          temporal.setPrecio(precios.toDouble("precio"));
+          if(!articulo.containsKey("costo")) 
+			      temporal.setCosto(precios.toDouble("precio"));
+          this.getAdminOrden().toCalculate(index);
+        } // if  
+      } // if   
+		} // try
+		finally {
+			Methods.clean(params);
+		}
   }
   
 }

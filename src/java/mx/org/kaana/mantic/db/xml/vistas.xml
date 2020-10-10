@@ -5350,6 +5350,24 @@
 			</select>			
 		</unit>
 		<unit id="VistaOrdenesComprasDto">
+      <select id="precios">
+        select
+          tr_keet_articulo_proveedor_cliente.precio_convenio as precio
+        from
+          tr_keet_articulo_proveedor_cliente
+        where
+          tr_keet_articulo_proveedor_cliente.id_articulo= {idArticulo}
+          and tr_keet_articulo_proveedor_cliente.id_proveedor= {idProveedor} 
+          and tr_keet_articulo_proveedor_cliente.id_cliente= {idCliente}
+        union all  
+        select
+          tc_keet_articulos_proveedores.precio_base as precio
+        from
+          tc_keet_articulos_proveedores
+        where
+          tc_keet_articulos_proveedores.id_articulo= {idArticulo}
+          and tc_keet_articulos_proveedores.id_proveedor= {idProveedor} 
+      </select>  
 			<select id="pendientes">
 				select
 					tc_mantic_devoluciones.id_devolucion as id_key,

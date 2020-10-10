@@ -96,17 +96,18 @@
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem  value="Agregar" action="#{manticCatalogosProveedoresFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 								<p:separator/>
-								<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticCatalogosProveedoresFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
-								<p:separator/>
-								<p:menuitem icon="fa fa-cloud-upload" value="Importar precios por proveedor" action="#{manticCatalogosProveedoresFiltro.doUploadProveedor()}" title="Importar precios" onstart="return janal.bloquear()"/>
-								<p:separator/>
-								<p:menuitem icon="fa fa-cloud-upload" value="Importar precios por cliente" action="#{manticCatalogosProveedoresFiltro.doUploadCliente()}" title="Importar precios" onstart="return janal.bloquear()"/>
-								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-cloud-upload" value="Importar" title="Carga masiva" action="#{manticCatalogosProveedoresFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+								<p:menuitem icon="fa fa-cloud-upload" value="Precios proveedor" action="#{manticCatalogosProveedoresFiltro.doUploadProveedor()}" title="Importar precios" onstart="return janal.bloquear()"/>
+								<p:menuitem icon="fa fa-cloud-upload" value="Precios cliente" action="#{manticCatalogosProveedoresFiltro.doUploadCliente()}" title="Importar precios" onstart="return janal.bloquear()"/>
+								<p:separator/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" action="#{manticCatalogosProveedoresFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-history" title="Carga masiva" action="#{manticCatalogosProveedoresFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Carga masiva" action="#{manticCatalogosProveedoresFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Precios proveedor" action="#{manticCatalogosProveedoresFiltro.doUploadProveedor()}" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Precios cliente" action="#{manticCatalogosProveedoresFiltro.doUploadCliente()}" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>												

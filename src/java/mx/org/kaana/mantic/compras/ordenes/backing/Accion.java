@@ -801,7 +801,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		try {
 			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollos");
 			desarrollo = ((OrdenCompra)this.getAdminOrden().getOrden()).getIkDesarrollo();
-			this.attrs.put("cliente", desarrollos.get(desarrollos.indexOf(desarrollo)).toString("razonSocial"));			
+      UISelectEntity cliente= desarrollos.get(desarrollos.indexOf(desarrollo));
+			this.attrs.put("cliente", cliente.toString("razonSocial"));			
+      ((OrdenCompra)this.getAdminOrden().getOrden()).setIkCliente(cliente);
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -1011,5 +1013,30 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doCheckTipoMedioPago
+ 
+  @Override
+  protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {  
+    super.toMoveData(articulo, index);
+    Articulo temporal         = this.getAdminOrden().getArticulos().get(index);
+		Map<String, Object> params= new HashMap<>();
+		try {
+			if(articulo.size()> 1) {
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idProveedor", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor());
+				params.put("idCliente", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdCliente());
+        // RECUPERAR EL PRECIO CONVENIO O EL PRECIO DE LISTA O EL PRECIO BASE
+        Entity precios= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "precios", params);
+        if(precios!= null && !precios.isEmpty()) {
+          temporal.setValor(precios.toDouble("precio"));
+			    temporal.setCosto(precios.toDouble("precio"));
+          temporal.setPrecio(precios.toDouble("precio"));
+          this.getAdminOrden().toCalculate(index);
+        } // if  
+      } // if   
+		} // try
+		finally {
+			Methods.clean(params);
+		}
+  }
   
 }

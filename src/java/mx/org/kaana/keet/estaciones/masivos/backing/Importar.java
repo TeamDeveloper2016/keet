@@ -269,6 +269,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				break;
 			case 13: 
 				this.categoria= ECargaMasiva.PRECIOS;
+				this.toLoadProveedores();
 				break;
 			case 14: 
 				this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
