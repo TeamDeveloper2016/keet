@@ -65,6 +65,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));
 			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));    
+			this.attrs.put("nombreConcepto", JsfBase.getFlashAttribute("nombreConcepto"));
 			this.loadCatalogos();
 			this.doLoad();
     } // try // try
@@ -159,7 +160,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 				transaccion= new Seguimiento(toLoadRevision(), this.selecteds.length== Integer.valueOf(this.attrs.get("totalRegistros").toString()) ? EControlesEstatus.TERMINADO.getKey() : EControlesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.PROCESAR)){
 					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
-					regresar= doCancelar();
+					regresar= this.doCancelar();
 				} // if
 				else
 					JsfBase.addMessage("Captura de puntos de revisión", "Ocurrió un error al realizar la captura de los puntos de revision.", ETipoMensaje.ERROR);
@@ -211,6 +212,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
+			JsfBase.setFlashAttribute("nombreConcepto", this.attrs.get("nombreConcepto"));			
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {

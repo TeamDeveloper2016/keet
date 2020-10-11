@@ -64,11 +64,11 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			this.attrs.put("seleccionadoPivote", seleccionado);      			
 			this.attrs.put("idDesarrollo", idDesarrollo);      
 			this.attrs.put("idDepartamento", idDepartamento);      			
-			this.attrs.put("nombreConcepto", "");      			
+			this.attrs.put("nombreConcepto", JsfBase.getFlashAttribute("nombreConcepto")!= null? JsfBase.getFlashAttribute("nombreConcepto"): "");      			
 			this.loadCatalogos();						
 			this.doLoad();
 			if(JsfBase.isAdminEncuestaOrAdmin())
-				doLoadExtras();
+				this.doLoadExtras();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -104,7 +104,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
     List<Columna> columns    = null;				
     try {      			
-			params= this.toPrepare();
+			params = this.toPrepare();
       columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
@@ -251,6 +251,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("concepto", seleccionado);	
 		JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
+		JsfBase.setFlashAttribute("nombreConcepto", this.attrs.get("nombreConcepto"));			
 	} // toSetFlash
 	
 	public String doCancelar() {

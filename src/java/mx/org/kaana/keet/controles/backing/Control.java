@@ -139,7 +139,8 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			especialidades= UISelect.seleccione("VistaCapturaDestajosDto", "residentes", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			// especialidades= UISelect.seleccione("VistaCapturaDestajosDto", "residentes", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			especialidades= UISelect.build("VistaCapturaDestajosDto", "residentes", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("especialidades", especialidades);
 			this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
 		} // try
@@ -159,11 +160,13 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-			figuras= UIEntity.seleccione("VistaCapturaDestajosDto", "residentesAsociados", params, campos, "puesto");
+			//figuras= UIEntity.seleccione("VistaCapturaDestajosDto", "residentesAsociados", params, campos, "puesto");
+			figuras= UIEntity.build("VistaCapturaDestajosDto", "residentesAsociados", params, campos);
 			this.attrs.put("figuras", figuras);
 			this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
 			this.attrs.put("destajos", false);
 			this.attrs.put("persona", false);
+      //UIBackingUtilities.execute("reloadLotes();");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

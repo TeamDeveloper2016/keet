@@ -102,7 +102,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       this.attrs.put("persona", false);				
       this.attrs.put("proveedor", false);							
 			this.loadCatalogos();			
-			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null){
+			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null) {
 				idDepartamento= (Long) JsfBase.getFlashAttribute("idDepartamento");
 				figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");
 				this.attrs.put("especialidad", idDepartamento);
@@ -139,7 +139,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			especialidades= UISelect.seleccione("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			//especialidades= UISelect.seleccione("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			especialidades= UISelect.build("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("especialidades", especialidades);
 			this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
 		} // try
@@ -148,7 +149,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		} // finally
 	} // loadEspecialidades
 	
-	public void doLoadFiguras(){
+	public void doLoadFiguras() {
 		List<UISelectEntity> figuras= null;
 		Map<String, Object>params   = null;
 		List<Columna> campos        = null;
@@ -159,7 +160,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-			figuras= UIEntity.seleccione("VistaCapturaDestajosDto", "empleadosAsociados", params, campos, "puesto");
+			//figuras= UIEntity.seleccione("VistaCapturaDestajosDto", "empleadosAsociados", params, campos, "puesto");
+			figuras= UIEntity.build("VistaCapturaDestajosDto", "empleadosAsociados", params, campos);
 			this.attrs.put("figuras", figuras);
 			this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
 			this.attrs.put("destajos", false);
@@ -176,7 +178,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		} // finally
 	} // doLoadFiguras
 	
-	private String toDomicilio(){
+	private String toDomicilio() {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
@@ -268,12 +270,12 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		Entity estatus           = null;
 		try {
 			params= new HashMap<>();
-			for(Entity mzaLote: this.lotes){
+			for(Entity mzaLote: this.lotes) {
 				params.clear();
 				params.put("idDepartamento", this.attrs.get("especialidad"));
 				params.put("clave", toClaveEstacion(mzaLote));
 				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaDestajosDto", "estatusManzanaLote", params);
-				if(estatus.toString("total")!= null){
+				if(estatus.toString("total")!= null) {
 					if(estatus.toLong("total").equals(estatus.toLong("terminado")))
 						mzaLote.put("iconEstatus", new Value("iconEstatus", EEstacionesEstatus.TERMINADO.getSemaforo()));
 					else if(estatus.toLong("total").equals(estatus.toLong("iniciado")))
@@ -290,7 +292,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		} // finally		
 	} // toEstatusManzanaLote
 	
-	private String toClaveEstacion(Entity lote){
+	private String toClaveEstacion(Entity lote) {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
