@@ -312,9 +312,9 @@ public class Importar extends IBaseImportar implements Serializable {
 	private void toCheckRequerido() {
     UIBackingUtilities.execute(
 			"janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'libre', mascara: 'libre'});"+
-			"janal.renovate('contenedorGrupos\\\\:idPlantilla_focus', {validaciones: 'libre', mascara: 'libre'});"+
-			"janal.renovate('contenedorGrupos\\\\:idProveedor_focus', {validaciones: 'libre', mascara: 'libre'});"+
-			"janal.renovate('contenedorGrupos\\\\:idCliente_focus', {validaciones: 'libre', mascara: 'libre'});"
+			"janal.renovate('contenedorGrupos\\\\:idPlantilla', {validaciones: 'libre', mascara: 'libre'});"+
+			"janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'libre', mascara: 'libre'});"+
+			"janal.renovate('contenedorGrupos\\\\:idCliente', {validaciones: 'libre', mascara: 'libre'});"
 	  );		
 		UIBackingUtilities.update("catalogo @(.involucrados) @(.importado) @(.janal-upload-frame)");
 		switch(this.masivo.getIdTipoMasivo().intValue()) {
@@ -327,7 +327,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				break;
 			case 11: 
 				this.categoria= ECargaMasiva.PLANTILLAS;
-        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idPlantilla_focus', {validaciones: 'requerido', mascara: 'libre'});");			
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idPlantilla', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
 			case 12: 
 				this.categoria= ECargaMasiva.MATERIALES;
@@ -335,11 +335,11 @@ public class Importar extends IBaseImportar implements Serializable {
 				break;
 			case 13: 
 				this.categoria= ECargaMasiva.PRECIOS;
-        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor_focus', {validaciones: 'requerido', mascara: 'libre'});");			
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
 			case 14: 
 				this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
-        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor_focus', {validaciones: 'requerido', mascara: 'libre'});janal.renovate('contenedorGrupos\\\\:idCliente_focus', {validaciones: 'requerido', mascara: 'libre'});");			
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'requerido', mascara: 'libre'});janal.renovate('contenedorGrupos\\\\:idCliente', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
 			case 16: 
 				this.categoria= ECargaMasiva.CONTROLES;
@@ -421,11 +421,19 @@ public class Importar extends IBaseImportar implements Serializable {
   public void toLoadProveedores() {
     Map<String, Object> params= null;
     try {
+      Entity entity= new Entity(Constantes.TOP_OF_ITEMS);
+      entity.add("clave", "TODOS");
+      entity.add("rfc", "TODOS");
+      entity.add("razonSocial", "TODOS");
+      UISelectEntity todos= new UISelectEntity(entity);
       params = new HashMap();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			if(this.attrs.get("proveedores")== null)
-        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "sucursales", params));
-      this.attrs.put("idProveedor", new UISelectEntity("-1"));
+			if(this.attrs.get("proveedores")== null) {
+        List<UISelectEntity> proveedores= UIEntity.build("TcManticProveedoresDto", "sucursales", params);
+        proveedores.add(todos);
+        this.attrs.put("proveedores", proveedores);
+      } // if  
+      this.attrs.put("idProveedor", todos);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -439,11 +447,19 @@ public class Importar extends IBaseImportar implements Serializable {
 	public void toLoadClientes() {
     Map<String, Object> params= null;
 		try {
+      Entity entity= new Entity(Constantes.TOP_OF_ITEMS);
+      entity.add("clave", "TODOS");
+      entity.add("rfc", "TODOS");
+      entity.add("razonSocial", "TODOS");
+      UISelectEntity todos= new UISelectEntity(entity);
       params = new HashMap();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			if(this.attrs.get("clientes")== null)
-        this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", params, "clave"));
-      this.attrs.put("idCliente", new UISelectEntity("-1"));
+			if(this.attrs.get("clientes")== null) {
+        List<UISelectEntity> clientes= UIEntity.seleccione("TcManticClientesDto", "sucursales", params, "clave");
+        clientes.add(todos);
+        this.attrs.put("clientes", clientes);
+      } // if  
+      this.attrs.put("idCliente", todos);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

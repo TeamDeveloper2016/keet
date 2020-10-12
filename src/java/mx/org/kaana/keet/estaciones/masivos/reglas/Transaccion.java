@@ -1714,7 +1714,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							double especial= Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
 							if(!Cadena.isVacio(rfc) && !Cadena.isVacio(clave)) {
 								TcManticProveedoresDto proveedor= null;
-								if(Objects.equals(rfc, "*"))
+								if(Objects.equals(rfc, "*") || this.idContatoLote!= Constantes.TOP_OF_ITEMS)
 									proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.idContatoLote);
 								else
 									proveedor= this.toFindProveedor(sesion, rfc);
@@ -1824,12 +1824,12 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							double precio  = Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
 							if(!Cadena.isVacio(rfcProveedor) && !Cadena.isVacio(rfcCliente) && !Cadena.isVacio(clave)) {
 								TcManticProveedoresDto proveedor= null;
-								if(Objects.equals(rfcProveedor, "*"))
+								if(Objects.equals(rfcProveedor, "*") || this.idContatoLote!= Constantes.TOP_OF_ITEMS)
 									proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.idContatoLote);
 								else
 									proveedor= this.toFindProveedor(sesion, rfcProveedor);
 								TcManticClientesDto cliente= null;
-								if(Objects.equals(rfcCliente, "*"))
+								if(Objects.equals(rfcCliente, "*") || this.idPrototipo!= Constantes.TOP_OF_ITEMS)
 									cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, this.idPrototipo);
 								else
 									cliente= this.toFindCliente(sesion, rfcCliente);

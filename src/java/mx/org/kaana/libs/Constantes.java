@@ -69,6 +69,7 @@ public final class Constantes {
   public static final int LENGTH_CLAVE         = 4;
   public static final int LENGTH_CONSECUTIVO   = 6;
   public static final int BUFFER_SIZE          = 6124;
+  public static final long TOP_OF_ITEMS        = 99999L;
 
   //Constantes para la lectura del xml
   public static final String DML_IDENTICO        = "identically";

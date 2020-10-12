@@ -576,7 +576,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       case "Articulos":
         Object[] familias= (Object[])this.attrs.get("familiasSeleccion");
         Object[] lotes   = (Object[])this.attrs.get("lotesSeleccion");
-        if(familias.length> 0 && lotes.length> 0) {
+        if((familias.length> 0 && lotes.length> 0) || this.getIsDirecta()) {
           // this.toLoadArticulos(Arrays.asList(familias), Arrays.asList(lotes));
           UIBackingUtilities.update("contenedorGrupos:sinIva");
           UIBackingUtilities.update("contenedorGrupos:paginator");

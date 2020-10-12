@@ -499,8 +499,6 @@
 				where  
 					(upper(tc_mantic_articulos_codigos.codigo)= '{codigo}' or upper(tc_mantic_articulos_codigos.codigo)= '{auxiliar}')
 				  and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
-				limit
-				 0, 1
 			</select>		
 			<select id="encontrado">
 				select
