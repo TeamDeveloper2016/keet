@@ -135,7 +135,7 @@ public class Notificar implements Serializable {
     regresar.append("Administrador KAJOOL");
     regresar.append("</td></tr>");
     regresar.append("<tr><td>");
-    regresar.append("<img alt=\"Ferreteria Bonanza\" width=\"277\" height=\"80\" src=\"data:image/png;base64,");
+    regresar.append("<img alt=\"Constructora CAFU\" width=\"277\" height=\"80\" src=\"data:image/png;base64,");
     regresar.append(logoJanal);
     regresar.append("\" /> </td> ");
     regresar.append("\" />");
@@ -145,7 +145,7 @@ public class Notificar implements Serializable {
   }
 
 	public static void main(String ... args) throws Exception {
-		Notificar notificar= new Notificar("compras@ferreteriabonanza.com", "jimenez76@yahoo.com", "demostracion", "https://ferreteriabonanza.com/");
+		Notificar notificar= new Notificar("compras@cafuconstrucciones.com", "jimenez76@yahoo.com", "demostracion", "https://cafuconstrucciones.com/");
 		notificar.enviar();
 	}
 

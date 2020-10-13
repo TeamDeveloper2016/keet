@@ -121,7 +121,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	
 //  public void doNotificar() {
 //		try {
-//  		Notificar notificar= new Notificar("compras@ferreteriabonanza.com", "jimenez76@yahoo.com", "demostracion", "https://ferreteriabonanza.com/");
+//  		Notificar notificar= new Notificar("compras@cafuconstrucciones.com", "jimenez76@yahoo.com", "demostracion", "https://cafuconstrucciones.com/");
 //	  	notificar.enviar();
 //	  	LOG.info("Se envio el correo de forma exitosa");
 //		  this.correo= Boolean.TRUE;
@@ -136,7 +136,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	private String toWriteInvitacion(String nombre, String puesto) throws MalformedURLException, IOException, IOException {
 		String regresar= Constantes.RUTA_TEMPORALES.concat(Archivo.toFormatNameFile("fegems")).concat(".jpg");
 		//final BufferedImage image = ImageIO.read(new File(JsfBase.getRealPath(ECorreos.FACTURACION.getImages().concat("invitacion.jpg"))));
-		final BufferedImage image = ImageIO.read(new URL("https://bonanza.jvmhost.net/MANTIC/resources/janal/img/correo/invitacion.jpg"));
+		final BufferedImage image = ImageIO.read(new URL("https://cafu.jvmhost.net/KEET/resources/janal/img/correo/invitacion.jpg"));
    	Graphics g = image.getGraphics();
     g.setColor(new Color(157, 197, 23));
 		final int width= 693;
@@ -196,12 +196,12 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	}	
 	
 	public static void main(String ... args) throws MalformedURLException, IOException, IOException {
-		final BufferedImage image = ImageIO.read(new URL("https://bonanza.jvmhost.net/MANTIC/resources/janal/img/correo/invitacion.jpg"));
+		final BufferedImage image = ImageIO.read(new URL("https://cafu.jvmhost.net/KEET/resources/janal/img/correo/invitacion.jpg"));
    	Graphics g = image.getGraphics();
     g.setColor(new Color(157, 197, 23));
 		final int width= 895;
     g.setFont(g.getFont().deriveFont(33f));
-    g.drawString("Mto. Alejandro Jiménez García", (int)(width/2)- (int)(g.getFontMetrics().stringWidth("Mto. Alejandro Jiménez García")/2), 450);
+    g.drawString("Mto. Team Developer 2016", (int)(width/2)- (int)(g.getFontMetrics().stringWidth("Mto. Team Developer 2016")/2), 450);
     g.setColor(new Color(113, 112, 111));
     g.setFont(g.getFont().deriveFont(20f));
     g.drawString("Subprocurador de eventos especiales dentro del territorio", (int)(width/ 2)- (int)(g.getFontMetrics().stringWidth("Subprocurador de eventos especiales dentro del territorio")/ 2), 480);
