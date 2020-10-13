@@ -10,11 +10,11 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.reflection.Methods;
 
 /**
- *@company INEGI
- *@project IKTAN (Sistema de seguimiento y control de proyectos)
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
  *@date 19/02/2020
  *@time 11:06:05 PM 
- *@author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ *@author Team Developer 2016 <team.developer2016@gmail.com>
  */
 public class Crud {
 
