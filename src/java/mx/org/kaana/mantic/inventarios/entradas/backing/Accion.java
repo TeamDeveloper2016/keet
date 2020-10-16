@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaProcess;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -165,9 +167,19 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 					} // if
 					else {
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIdEmpresa(ordenCompra.getIdEmpresa());
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkDesarrollo(new UISelectEntity(new Entity(ordenCompra.getIdDesarrollo())));
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(new Entity(ordenCompra.getIdCliente())));
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkContrato(new UISelectEntity(new Entity(ordenCompra.getIdContrato())));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(ordenCompra.getIdAlmacen())));
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacenista(new UISelectEntity(new Entity(ordenCompra.getIdAlmacenista())));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(ordenCompra.getIdProveedor())));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(new UISelectEntity(new Entity(ordenCompra.getIdProveedorPago())));
+            if(ordenCompra.getIdBanco()!= null) 
+  						((NotaEntrada)this.getAdminOrden().getOrden()).setIkBanco(new UISelectEntity(new Entity(ordenCompra.getIdBanco())));
+            if(ordenCompra.getIdTipoMedioPago()!= null) 
+	  					((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoMedioPago(new UISelectEntity(new Entity(ordenCompra.getIdTipoMedioPago())));
+            if(ordenCompra.getIdTipoPago()!= null) 
+						  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoPago(new UISelectEntity(new Entity(ordenCompra.getIdTipoPago())));
 						this.fechaEstimada.setTimeInMillis(ordenCompra.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 					} // else	
           break;
@@ -209,6 +221,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
+    NotaEntradaProcess nota= null;
     try {			
 			// this.getAdminOrden().toCheckTotales();
 			((NotaEntrada)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
@@ -220,7 +233,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			// este ajuste fue para recuperar el importe total de la factura asociada para confrontarla con el importe total de la nota de entrada
 			//if(((NotaEntrada)this.getAdminOrden().getOrden()).getOriginal().equals(0D))
 			//	((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(((NotaEntrada)this.getAdminOrden().getOrden()).getTotal());
-			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
+			nota= new NotaEntradaProcess();
+			nota.setNotaEntrada((NotaEntrada)this.getAdminOrden().getOrden());
+			nota.setArticulos(this.getAdminOrden().getArticulos());
+			nota.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
+			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
+      
+			transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
 					if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
@@ -417,6 +436,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public void doLoadLotes() {
 		List<UISelectEntity> lotes= null;
 		Map<String, Object>params = null;
+    List<Entity> items        = null; 
     Object[] list             = null;
 		try {
 			params = new HashMap<>();
@@ -424,19 +444,23 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			lotes= UIEntity.build("TcKeetContratosLotesDto", "byContratoContratistas", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("lotes", lotes);						
       if(!lotes.isEmpty()) 
-        if(!this.accion.equals(EAccion.AGREGAR)) { 
+        if(this.accion.equals(EAccion.AGREGAR)) { 
     			params.put("idOrdenCompra", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
-          if(!items.isEmpty()) {
-            list     = new Object[items.size()];
-            int count= 0;
-            for (Entity entity : items) {
-              int index= lotes.indexOf(new UISelectEntity(entity.toLong("idContratoLote")));
-              if(index>= 0)
-                list[count++]= lotes.get(index);
-            } // for
-          } // if  
+          items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
         } // if  
+        else {
+    			params.put("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+          items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetNotasContratosLotesDto", "lotes", params);
+        } // if
+      if(items!= null && !items.isEmpty()) {
+        list     = new Object[items.size()];
+        int count= 0;
+        for (Entity entity : items) {
+          int index= lotes.indexOf(new UISelectEntity(entity.toLong("idContratoLote")));
+          if(index>= 0)
+            list[count++]= lotes.get(index);
+        } // for
+      } // if  
       if(list== null)
         list= new Object[]{};
       this.attrs.put("lotesSeleccion", list);
@@ -478,6 +502,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		UISelectEntity proveedor     = null;
 		List<UISelectEntity> familias= null;
 		Map<String, Object>params    = null;
+    List<Entity> items           = null;
     Object[] list                = null;
 		try {
 			proveedor= (UISelectEntity) this.attrs.get("proveedor");
@@ -486,19 +511,23 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			familias= UIEntity.build("VistaFamiliasProveedoresDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("familias", familias);			
       if(!familias.isEmpty())
-        if(!this.accion.equals(EAccion.AGREGAR)) {
+        if(this.accion.equals(EAccion.AGREGAR)) {
     			params.put("idOrdenCompra", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-          List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
-          if(!items.isEmpty()) {
-            list     = new Object[items.size()];
-            int count= 0;
-            for (Entity entity: items) {
-              int index= familias.indexOf(new UISelectEntity(entity.toLong("idFamilia")));
-              if(index>= 0)
-                list[count++]= familias.get(index);
-            } // for
-          } // if  
-        } // if  
+          items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
+        } // if
+        else {
+    			params.put("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+          items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetNotasContratosLotesDto", "lotes", params);
+        } // else  
+      if(items!=null && !items.isEmpty()) {
+        list     = new Object[items.size()];
+        int count= 0;
+        for (Entity entity: items) {
+          int index= familias.indexOf(new UISelectEntity(entity.toLong("idFamilia")));
+          if(index>= 0)
+            list[count++]= familias.get(index);
+        } // for
+      } // if  
       if(list== null)
         list= new Object[]{};
       this.attrs.put("familiasSeleccion",  list);

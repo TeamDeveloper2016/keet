@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.util.List;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 
 public class OrdenCompraProcess {
 

@@ -24,6 +24,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenLoteFamilia;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
@@ -125,6 +126,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					} // else	
       		for (Articulo articulo: this.articulos) 
 						articulo.setModificado(false);
+				  this.registrarFamiliasLotes(sesion);
 					break;
 				case AGREGAR:
 					Siguiente consecutivo= this.toSiguiente(sesion);
@@ -135,7 +137,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						this.toFillArticulos(sesion);
 						bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 						if(DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L)
-							regresar= registrarFamiliasLotes(sesion);
+							this.registrarFamiliasLotes(sesion);
 					} // if
 					break;
 				case MODIFICAR:
@@ -144,8 +146,10 @@ public class Transaccion extends Inventarios implements Serializable {
 					bitacoraOrden= (TcManticOrdenesBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcManticOrdenesBitacoraDto.class, this.orden.toMap(), "ultimo");
 					if(!bitacoraOrden.getImporte().equals(this.orden.getTotal())) {
   					bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-  					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+  					if(DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L);
+							regresar= this.registrarFamiliasLotes(sesion);
 					} // if
+					this.registrarFamiliasLotes(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= this.toNotExistsNotas(sesion);
@@ -155,6 +159,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						regresar= regresar && DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						bitacoraOrden= new TcManticOrdenesBitacoraDto(2L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+            DaoFactory.getInstance().deleteAll(sesion, TcKeetOrdenesContratosLotesDto.class, this.orden.toMap());
 					} // if	
 					else
        			this.messageError= "No se puede eliminar la orden de compra porque existen notas de entrada asociadas.";
@@ -285,10 +290,11 @@ public class Transaccion extends Inventarios implements Serializable {
 		return regresar;
 	} // toClientesTipoContacto
 	
-	private boolean registrarFamiliasLotes(Session sesion) throws Exception{
+	private boolean registrarFamiliasLotes(Session sesion) throws Exception {
 		boolean regresar                           = true;
 		TcKeetOrdenesContratosLotesDto contratoLote= null;
 		try {
+      List<OrdenLoteFamilia> items= (List<OrdenLoteFamilia>)DaoFactory.getInstance().toEntitySet(sesion, OrdenLoteFamilia.class, "TcKeetOrdenesContratosLotesDto", "lotes", this.orden.toMap());
 			for(Object lote: this.lotes) {
 				for(Object familia: this.familias) {
 					contratoLote= new TcKeetOrdenesContratosLotesDto();
@@ -296,9 +302,18 @@ public class Transaccion extends Inventarios implements Serializable {
 					contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
 					contratoLote.setIdOrdenCompra(this.orden.getIdOrdenCompra());
 					contratoLote.setIdUsuario(JsfBase.getIdUsuario());
-					DaoFactory.getInstance().insert(sesion, contratoLote);
+          OrdenLoteFamilia existe= new OrdenLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
+          int index= items.indexOf(existe);
+          if(index< 0)
+					  DaoFactory.getInstance().insert(sesion, contratoLote);
+          else
+            items.get(index).setExiste(Boolean.TRUE);
 				} // for
 			} // for
+      for (OrdenLoteFamilia item: items) {
+        if(!item.getExiste())
+          DaoFactory.getInstance().delete(sesion, TcKeetOrdenesContratosLotesDto.class, item.getIdOrdenContratoLote());
+      } // for
 		} // try
 		catch (Exception e) {			
 			throw e;

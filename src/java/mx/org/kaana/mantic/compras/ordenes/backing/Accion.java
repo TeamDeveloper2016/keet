@@ -195,6 +195,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           ((OrdenCompra)this.getAdminOrden().getOrden()).setIkDesarrollo(desarrollos.get(0));
         else
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkDesarrollo(desarrollos.get(desarrollos.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkDesarrollo())));
+        ((OrdenCompra)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(((OrdenCompra)this.getAdminOrden().getOrden()).getIkDesarrollo().toLong("idCliente")));
 			  this.attrs.put("cliente", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkDesarrollo().toString("razonSocial"));
         columns.clear();
         columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));

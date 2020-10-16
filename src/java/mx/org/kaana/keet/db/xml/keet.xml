@@ -7,6 +7,39 @@
   </model>
 
   <dml>
+    <unit id="TcKeetNotasContratosLotesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_notas_contratos_lotes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_notas_contratos_lotes
+        where      
+          id_familia = {idFamilia} and id_contrato_lote = {idContratoLote} and id_nota_entrada = {idNotaEntrada}
+      </select>
+      <select id="lotes">
+        select      
+          tc_keet_notas_contratos_lotes.id_nota_contrato_lote as id_key,
+          tc_keet_notas_contratos_lotes.*
+        from      
+          tc_keet_notas_contratos_lotes
+        where      
+          id_nota_entrada = {idNotaEntrada}
+      </select>
+      <delete id="rows">
+        delete from
+          tc_keet_ordenes_contratos_lotes
+        where
+          id_nota_entrada = {idNotaEntrada}
+      </delete>
+    </unit>
     <unit id="TcKeetContratosPuntosResidentesDto">
       <select id="row">
         select      
@@ -333,6 +366,12 @@
         where      
           id_orden_compra = {idOrdenCompra}
       </select>
+      <delete id="rows">
+        delete from
+          tc_keet_ordenes_contratos_lotes
+        where
+          id_orden_compra = {idOrdenCompra}
+      </delete>
     </unit>
 		<unit id="TcKeetProveedoresFamiliasDto">
       <select id="row">

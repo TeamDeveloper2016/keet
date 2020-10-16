@@ -13,11 +13,13 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.db.dto.TcKeetNotasContratosLotesDto;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
@@ -34,6 +36,8 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaProcess;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaLoteFamilia;
 import org.apache.log4j.Logger;
 
 /**
@@ -56,6 +60,8 @@ public class Transaccion extends Inventarios implements Serializable {
 	private Importado pdf;
 	private String messageError;
 	private TcManticNotasBitacoraDto bitacora;
+	private List<UISelectEntity> lotes;
+	private List<UISelectEntity> familias;
 
 	public Transaccion(TcManticNotasEntradasDto orden, TcManticNotasBitacoraDto bitacora) {
 		this(orden);
@@ -77,6 +83,12 @@ public class Transaccion extends Inventarios implements Serializable {
 		this.pdf      = pdf;
 	} // Transaccion
 
+	public Transaccion(NotaEntradaProcess notaProcess, boolean aplicar, Importado xml, Importado pdf) {
+		this(notaProcess.getNotaEntrada(), notaProcess.getArticulos(), aplicar, xml, pdf);
+		this.familias= notaProcess.getFamilias();
+		this.lotes   = notaProcess.getLotes();
+	} // Transaccion
+  
 	protected void setMessageError(String messageError) {
 		this.messageError=messageError;
 	}
@@ -113,12 +125,13 @@ public class Transaccion extends Inventarios implements Serializable {
 						  this.orden.setIdOrdenCompra(null);
 					  regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					  bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
-					  regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
        	    this.toUpdateDeleteXml(sesion);	
 					} // else	
 					this.toFillArticulos(sesion);
       		for (Articulo articulo: this.articulos) 
 						articulo.setModificado(false);
+          this.registrarFamiliasLotes(sesion);
 					break;
 				case COMPLETO:
 					consecutivo= this.toSiguiente(sesion);
@@ -132,6 +145,7 @@ public class Transaccion extends Inventarios implements Serializable {
   				if(this.aplicar) 
 						this.toApplyNotaEntrada(sesion);
 	   	    this.toUpdateDeleteXml(sesion);	
+          this.registrarFamiliasLotes(sesion);
 					break;
 				case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
@@ -146,6 +160,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
+          this.registrarFamiliasLotes(sesion);
 					break;
 				case COMPLEMENTAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -164,6 +179,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
+          this.registrarFamiliasLotes(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= this.toNotExistsArticulosBitacora(sesion);
@@ -177,6 +193,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 						this.toCheckOrden(sesion);
        	    this.toDeleteXmlPdf();	
+            DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasContratosLotesDto.class, this.orden.toMap());
 					} // if
 					else
        			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos.";
@@ -484,4 +501,36 @@ public class Transaccion extends Inventarios implements Serializable {
 			} // for
 	}	
 
+	private boolean registrarFamiliasLotes(Session sesion) throws Exception {
+		boolean regresar                         = true;
+		TcKeetNotasContratosLotesDto contratoLote= null;
+		try {
+      List<NotaLoteFamilia> items= (List<NotaLoteFamilia>)DaoFactory.getInstance().toEntitySet(sesion, NotaLoteFamilia.class, "TcKeetNotasContratosLotesDto", "lotes", this.orden.toMap());
+			for(Object lote: this.lotes) {
+				for(Object familia: this.familias) {
+					contratoLote= new TcKeetNotasContratosLotesDto();
+					contratoLote.setIdContratoLote(((UISelectEntity)lote).getKey());
+					contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
+					contratoLote.setIdNotaEntrada(this.orden.getIdNotaEntrada());
+					contratoLote.setIdUsuario(JsfBase.getIdUsuario());
+					DaoFactory.getInstance().insert(sesion, contratoLote);
+          NotaLoteFamilia existe= new NotaLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
+          int index= items.indexOf(existe);
+          if(index< 0)
+					  DaoFactory.getInstance().insert(sesion, contratoLote);
+          else
+            items.get(index).setExiste(Boolean.TRUE);
+				} // for
+			} // for
+      for (NotaLoteFamilia item: items) {
+        if(!item.getExiste())
+          DaoFactory.getInstance().delete(sesion, TcKeetNotasContratosLotesDto.class, item.getIdNotaContratoLote());
+      } // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return regresar;
+	} // registrarFamiliasLotes  
+  
 } 
