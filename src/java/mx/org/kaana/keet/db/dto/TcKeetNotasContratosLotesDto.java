@@ -6,6 +6,8 @@ import java.util.Map;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
@@ -30,6 +32,8 @@ public class TcKeetNotasContratosLotesDto implements IBaseDto, Serializable {
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_nota_contrato_lote")
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
   private Long idNotaContratoLote;
   @Column (name="id_contrato_lote")
   private Long idContratoLote;
