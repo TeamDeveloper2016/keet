@@ -126,18 +126,18 @@ public class Transaccion extends Inventarios implements Serializable {
 					} // else	
       		for (Articulo articulo: this.articulos) 
 						articulo.setModificado(false);
-				  this.registrarFamiliasLotes(sesion);
+				  regresar= this.registrarFamiliasLotes(sesion);
 					break;
 				case AGREGAR:
 					Siguiente consecutivo= this.toSiguiente(sesion);
 					this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L){
+					if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L) {
 						this.toFillArticulos(sesion);
 						bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 						if(DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L)
-							this.registrarFamiliasLotes(sesion);
+							regresar= this.registrarFamiliasLotes(sesion);
 					} // if
 					break;
 				case MODIFICAR:
@@ -146,10 +146,9 @@ public class Transaccion extends Inventarios implements Serializable {
 					bitacoraOrden= (TcManticOrdenesBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcManticOrdenesBitacoraDto.class, this.orden.toMap(), "ultimo");
 					if(!bitacoraOrden.getImporte().equals(this.orden.getTotal())) {
   					bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-  					if(DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L);
-							regresar= this.registrarFamiliasLotes(sesion);
+  					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
 					} // if
-					this.registrarFamiliasLotes(sesion);
+					regresar= this.registrarFamiliasLotes(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= this.toNotExistsNotas(sesion);

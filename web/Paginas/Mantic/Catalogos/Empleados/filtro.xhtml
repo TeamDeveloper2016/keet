@@ -178,7 +178,7 @@
               <h:outputText value="#{filtro['seguro']}"/>
             </p:column>
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">							
-							<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idActivo eq '2' ? 'circulo-rojo' : (filtro.idActivo eq '1' and filtro.nss != '' and filtro.idNomina eq '2' ? 'circulo-azul' : (filtro.idActivo eq '1' and filtro.nss eq '' ? 'circulo-amarillo' : 'circulo-verde'))}.png" title="Empleado #{filtro.idActivo eq '1' ? '': 'NO '}activo"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idActivo eq '2' ? 'circulo-rojo' : (filtro.idActivo eq '1' and filtro.idNomina eq '2' ? 'circulo-azul' : (filtro.idActivo eq '1' and filtro.idSeguro eq '2' ? 'circulo-amarillo' : 'circulo-verde'))}.png" title="Empleado #{filtro.idActivo eq '1' ? '': 'NO '}activo"/>
 						</p:column>												
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosEmpleadosFiltro.lazyModel==null?0:manticCatalogosEmpleadosFiltro.lazyModel.rowCount}] registros"/>

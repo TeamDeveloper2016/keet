@@ -12,10 +12,12 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         idEmpresa   : {validaciones: 'libre', mascara: 'libre'},
+        idDesarrollo: {validaciones: 'libre', mascara: 'libre'},
         idNomina    : {validaciones: 'libre', mascara: 'libre'},
         ejercicio   : {validaciones: 'libre', mascara: 'libre'},
         semana      : {validaciones: 'libre', mascara: 'libre'},
         idTipoNomina: {validaciones: 'libre', mascara: 'libre'},
+        idSemaforo  : {validaciones: 'libre', mascara: 'libre'},
         estatus     : {validaciones: 'libre', mascara: 'libre'},
         nombre      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
@@ -41,6 +43,17 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+							<p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
+							<p:selectOneMenu id="idDesarrollo" value="#{keetNominasPersonas.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetNominasPersonas.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+              
 							<p:outputLabel for="nomina" value="Nómina:"/>
 							<p:selectOneMenu id="nomina" value="#{keetNominasPersonas.attrs.idNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetNominasPersonas.attrs.nominas}" var="element" itemValue="#{element}" itemLabel="#{element.nomina}"/>
@@ -82,6 +95,17 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>	
+							<p:outputLabel for="idSemaforo" value="Semaforo:"/>
+							<p:selectOneMenu id="idSemaforo" value="#{keetNominasPersonas.attrs.idSemaforo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{keetNominasPersonas.attrs.semaforos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Color" styleClass="janal-column-center">
+                  <h:graphicImage library="janal" name="icon/semaforos/#{item.color}.png"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+              
 							<p:outputLabel for="departamento" value="Departamento:"/>
 							<p:selectOneMenu id="departamento" value="#{keetNominasPersonas.attrs.idDepartamento}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 								<f:selectItems value="#{keetNominasPersonas.attrs.departamentos}"/>
@@ -181,7 +205,7 @@
 							<h:outputText value="#{row['neto']}"/>
 						</p:column>	
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and (not empty row.nss.toString) and row.idPago.toLong eq '2' ? 'circulo-azul': (row.idActivo.toLong eq '1' and empty row.nss.toString? 'circulo-amarillo' : 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idPago.toLong eq '2' ? 'circulo-azul': (row.idActivo.toLong eq '1' and row.idSeguro.toLong eq '2'? 'circulo-amarillo' : 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 						</p:column>	
 						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
 							<p:commandButton icon="fa fa-search" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
@@ -189,6 +213,7 @@
 							</p:commandButton>
 						</p:column>
 						<f:facet name="footer">
+							<p:outputLabel value="Costo: [#{keetNominasPersonas.costoGrupo}]" style="float:left;" styleClass="janal-color-blue"/>
 							<p:outputLabel value="Total [#{keetNominasPersonas.lazyModel== null? 0: keetNominasPersonas.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>

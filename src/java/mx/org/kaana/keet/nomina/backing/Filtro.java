@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.nomina.backing;
 
+import com.sun.jersey.json.impl.writer.A2EXmlStreamWriterProxy;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -190,7 +191,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
 		try {
 			this.loadEmpresas();
-      // this.fecha  = LocalDate.now();
 			params= new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());

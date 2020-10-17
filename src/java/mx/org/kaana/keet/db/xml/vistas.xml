@@ -507,6 +507,7 @@
 					tr_mantic_empresa_personal.clave,
 					tr_mantic_empresa_personal.id_activo,
 					tr_mantic_empresa_personal.id_nomina as id_pago,
+					tr_mantic_empresa_personal.id_seguro,
 					tr_mantic_empresa_personal.nss,
 					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
 					tc_mantic_personas.apodo,
@@ -531,6 +532,8 @@
 					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento= tc_keet_departamentos.id_departamento
 				inner join 
 					tc_mantic_empresas on tc_keet_nominas.id_empresa= tc_mantic_empresas.id_empresa
+        left join 
+          tc_keet_contratos_personal on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratos_personal.id_empresa_persona
 				where
 					{condicion}
 				) principal
@@ -1992,6 +1995,7 @@
 						tr_mantic_empresa_personal.id_departamento,
 						tr_mantic_empresa_personal.nss,
 						tr_mantic_empresa_personal.id_nomina,
+						tr_mantic_empresa_personal.id_seguro,
 				    tr_mantic_empresa_personal.id_contratista,
             tc_keet_desarrollos.nombres as desarrollo
 					from      

@@ -59,6 +59,16 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 		this.lazyDestajo=lazyDestajo;
 	}
 	
+  public String getCostoGrupo() {
+    Double costo = 0D;
+		if(this.lazyModel!= null)
+			for (IBaseDto item: (List<IBaseDto>)this.lazyModel.getWrappedData()) {
+				Entity row= (Entity)item;
+				costo+= new Double(row.toString("neto"));
+			} // for	
+		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo);
+	}
+
   public String getCostoTotal() {
     Double costo = 0D;
 		if(this.lazyDestajo!= null)
@@ -73,7 +83,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
   @Override
   protected void init() {
     try {
-			initBase();
+			this.initBase();
 			this.attrs.put("idTipoFiguraCorreo", 1L);			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
@@ -183,6 +193,8 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			sb.append("(tc_keet_nominas.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
 			sb.append("(tc_keet_nominas.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)				
+			sb.append("(tc_keet_contratos_personal.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
   	regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(!Cadena.isVacio(this.attrs.get("idNomina")) && ((UISelectEntity)this.attrs.get("idNomina")).getKey()>= 1L)
 			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
@@ -196,6 +208,23 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			sb.append("tc_keet_nominas.id_tipo_nomina= ").append(((UISelectEntity)this.attrs.get("idTipoNomina")).getKey()).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
 			sb.append("tc_keet_nominas.id_nomina_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("idSemaforo")) && ((UISelectEntity)this.attrs.get("idSemaforo")).getKey()>= 2L) {
+      Long key= ((UISelectEntity)this.attrs.get("idSemaforo")).getKey();
+      switch(key.intValue()) {
+        case 1:   // Empleados activos
+          sb.append("(tr_mantic_empresa_personal.id_activo= 1) and ");    
+          break;
+        case 2:   // Activos sin seguro
+          sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.id_seguro= 2) and ");    
+          break;
+        case 3:   // Activos sin deposito al banco
+          sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.id_nomina= 2) and ");    
+          break;
+        case 5:   // Empleados con licencia medica 
+          sb.append("(tr_mantic_empresa_personal.id_activo= 1) and ");    
+          break;
+      } // switch
+    } // if  
 		if(this.attrs.get("idPuesto")!= null && !Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
 			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
@@ -231,6 +260,32 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			Catalogos.toLoadDepartamentos(this.attrs);
 			Catalogos.toLoadPuestos(this.attrs);
 			Catalogos.toLoadContratistas(this.attrs);
+      
+      this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, "clave"));
+      this.attrs.put("idDesarrollo", new UISelectEntity(-1L));
+      List<UISelectEntity> semaforos= new ArrayList<>();
+      Entity seleccione= new Entity(-1L);
+      seleccione.add("color", "circulo-gris");
+      seleccione.add("nombre", "SELECCIONE");
+      semaforos.add(new UISelectEntity(seleccione));
+      Entity verde= new Entity(1L);
+      verde.add("color", "circulo-verde");
+      verde.add("nombre", "EMPLEADOS ACTIVOS");
+      semaforos.add(new UISelectEntity(verde));
+      Entity amarillo= new Entity(2L);
+      amarillo.add("color", "circulo-amarillo");
+      amarillo.add("nombre", "ACTIVOS SIN SEGURO");
+      semaforos.add(new UISelectEntity(amarillo));
+      Entity azul= new Entity(3L);
+      azul.add("color", "circulo-azul");
+      azul.add("nombre", "ACTIVOS SIN DEPOSITO AL BANCO");
+      semaforos.add(new UISelectEntity(azul));
+      Entity magenta= new Entity(4L);
+      magenta.add("color", "circulo-magenta");
+      magenta.add("nombre", "EMPLEADOS CON INCAPACIDAD MEDICA");
+      semaforos.add(new UISelectEntity(magenta));
+      this.attrs.put("semaforos", semaforos);
+      this.attrs.put("idSemaforo", new UISelectEntity(-1L));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

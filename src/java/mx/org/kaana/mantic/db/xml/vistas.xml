@@ -4403,6 +4403,7 @@
 				  if(tr_mantic_empresa_personal.id_seguro= 1, 'SI', 'NO') as seguro,
 					tr_mantic_empresa_personal.clave,
 					tr_mantic_empresa_personal.id_nomina,
+					tr_mantic_empresa_personal.id_seguro,
 					if(tr_mantic_empresa_personal.nss is null, '', tr_mantic_empresa_personal.nss) nss,		
 					tc_keet_departamentos.nombre departamento
 				from 
