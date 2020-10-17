@@ -111,6 +111,10 @@ public class UIBackingUtilities {
 		getCurrentInstance().ajax().update(component);
 	}
 	
+	public static void scrollTo(String component) {
+		getCurrentInstance().scrollTo(component);
+	}
+	
 	public static void addCallbackParam(String name, Object params) {
 		getCurrentInstance().ajax().addCallbackParam(name, params);
 	}

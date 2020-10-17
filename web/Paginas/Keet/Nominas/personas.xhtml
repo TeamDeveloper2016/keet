@@ -213,11 +213,11 @@
 							</p:commandButton>
 						</p:column>
 						<f:facet name="footer">
-							<p:outputLabel value="Costo: [#{keetNominasPersonas.costoGrupo}]" style="float:left;" styleClass="janal-color-blue"/>
+							<p:outputLabel value="Costo: [#{keetNominasPersonas.costoGrupo}]" style="float:left;" styleClass="janal-color-blue janal-font-bold"/>
 							<p:outputLabel value="Total [#{keetNominasPersonas.lazyModel== null? 0: keetNominasPersonas.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>
-					<p:panel header="Estatus del empleado" toggleable="true" collapsed="true">
+					<p:panel id="colores" header="Estatus del empleado" toggleable="true" collapsed="true">
 						<p:panelGrid columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 							<p:outputLabel value="Empleados activos"/>
 							<p:outputLabel value="Empleados inactivos"/>

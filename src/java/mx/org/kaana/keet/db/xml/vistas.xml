@@ -514,6 +514,7 @@
 					tc_mantic_personas.id_persona,
 					tc_keet_nominas_personas.percepciones,
 					tc_keet_nominas_personas.deducciones,
+					tc_keet_nominas_personas.neto as pago,
 					tc_keet_nominas_personas.neto,
 					tr_mantic_empresa_personal.id_contratista
 				from

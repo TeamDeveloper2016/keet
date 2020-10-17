@@ -64,7 +64,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 		if(this.lazyModel!= null)
 			for (IBaseDto item: (List<IBaseDto>)this.lazyModel.getWrappedData()) {
 				Entity row= (Entity)item;
-				costo+= new Double(row.toString("neto"));
+				costo+= row.toDouble("pago");
 			} // for	
 		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo);
 	}
@@ -280,10 +280,10 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       azul.add("color", "circulo-azul");
       azul.add("nombre", "ACTIVOS SIN DEPOSITO AL BANCO");
       semaforos.add(new UISelectEntity(azul));
-      Entity magenta= new Entity(4L);
-      magenta.add("color", "circulo-magenta");
-      magenta.add("nombre", "EMPLEADOS CON INCAPACIDAD MEDICA");
-      semaforos.add(new UISelectEntity(magenta));
+//      Entity magenta= new Entity(4L);
+//      magenta.add("color", "circulo-magenta");
+//      magenta.add("nombre", "EMPLEADOS CON INCAPACIDAD MEDICA");
+//      semaforos.add(new UISelectEntity(magenta));
       this.attrs.put("semaforos", semaforos);
       this.attrs.put("idSemaforo", new UISelectEntity(-1L));
 		} // try
@@ -399,6 +399,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			if(puesto== 6L)
 			  this.doLoadDestajo();
 			this.attrs.put("nomina", true);
+      UIBackingUtilities.scrollTo("detalle");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -428,6 +429,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajo", params, columns);
       UIBackingUtilities.resetDataTable("destajo");
+      UIBackingUtilities.scrollTo("destajo");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
