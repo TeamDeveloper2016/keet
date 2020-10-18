@@ -82,15 +82,17 @@
 						<p:spacer/>
 					</p:panelGrid>	
 					<p:panel header="Estatus del empleado" toggleable="true" collapsed="false">
-						<p:panelGrid columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+						<p:panelGrid columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 							<p:outputLabel value="Empleados activos"/>
 							<p:outputLabel value="Empleados inactivos"/>
 							<p:outputLabel value="Activos sin seguro"/>
 							<p:outputLabel value="Activos sin deposito al banco"/>
+							<p:outputLabel value="Activos sin seguro/deposito"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-amarillo.png"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
+							<h:graphicImage library="janal" name="icon/semaforos/circulo-turquesa.png"/>
 						</p:panelGrid>	
 					</p:panel>
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosPersonalConsulta.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalConsulta.attrs.seleccionado}" paginator="#{keetCatalogosContratosPersonalConsulta.lazyModel.rowCount gt keetCatalogosContratosPersonalConsulta.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
@@ -115,9 +117,10 @@
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2' ? 'circulo-azul': (row.idActivo.toLong eq '1' and row.idSeguro.toLong eq '2'? 'circulo-amarillo' : 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
-							<p:spacer width="3px"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2' and row.idSeguro.toLong eq '2'? 'circulo-turquesa': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '1' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2' and row.idSeguro.toLong eq '1'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
+							<p:spacer width="5px"/>
 							<p:outputLabel value="[#{empty row.contratista.toString? row.departamento: row.contratista}] [#{row.puesto}] #{row['nombreCompleto']}" styleClass="janal-wid-100-txt"/>							
+              <p:outputLabel value="#{keetCatalogosContratosPersonalConsulta.doCheckIncidente(row)}" styleClass="janal-font-bold janal-color-orange janal-align-right" escape="false"/>
             </p:column>														            						
             <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
               <f:facet name="header">

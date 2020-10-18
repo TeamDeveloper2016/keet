@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -24,9 +25,11 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.incidentes.ETipoIndicente;
 
 @Named(value = "keetCatalogosContratosPersonalConsulta")
 @ViewScoped
@@ -190,4 +193,32 @@ public class Consulta extends IBaseFilter implements Serializable {
 		} // else
     return regresar;
 	} // doVerificarReporte	
+  
+  public String doCheckIncidente(Entity row) {
+    String regresar          = "";
+    Map<String, Object>params= null;
+    List<Columna>columns     = null;		
+		try {		
+      params= new HashMap<>();      
+      params.put("idEmpresaPersona", row.toLong("idKey"));
+ 			columns= new ArrayList<>();
+			columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticIncidentesDto", "incidente", params);
+      if(entity!= null && !entity.isEmpty()) {
+        UIBackingUtilities.toFormatEntity(entity, columns);
+        regresar= "<i class='fa fa-lg ".concat(ETipoIndicente.toIcon(entity.toLong("idTipoIncidente").intValue())).concat("' title='Vigencia: [").concat(entity.toString("inicio")).concat(" al ").concat(entity.toString("termino")).concat("]  Tipo: [").concat(ETipoIndicente.toTitle(entity.toLong("idTipoIncidente").intValue())).concat("]'></i>");
+      } // if
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+    return regresar;
+  } // 
+  
 }

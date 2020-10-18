@@ -5597,13 +5597,24 @@
 					tc_mantic_incidentes
 				where 
 					id_empresa_persona= {idEmpresaPersona}
-				and 
-					id_tipo_incidente={idTipoIncidente}
-				and 
-					id_incidente_estatus in ({estatus})
-				and 
-					('{fecha}' between tc_mantic_incidentes.inicio and tc_mantic_incidentes.termino)
+				  and id_tipo_incidente={idTipoIncidente}
+				  and id_incidente_estatus in ({estatus})
+				  and ('{fecha}' between tc_mantic_incidentes.inicio and tc_mantic_incidentes.termino)
 			</select>
+      <select id="incidente">
+        select
+          id_tipo_incidente, id_incidente_estatus, inicio, termino
+        from  
+          tc_mantic_incidentes
+        where
+          now()&gt;= inicio
+          and now()&lt;= termino
+          and id_incidente_estatus in (1, 2, 3)
+          and id_tipo_incidente in (1, 2, 3, 4, 5, 6, 9)
+          and id_empresa_persona= {idEmpresaPersona}        
+        order by
+          id_tipo_incidente
+      </select>  
 			<delete id="rows">
 				delete tc_mantic_incidentes from tc_mantic_incidentes where id_incidente= {idIncidente}
 			</delete>
@@ -5613,7 +5624,7 @@
 				set 
 				  id_nomina= null 
 				where 
-				 id_nomina= {idNomina}
+				  id_nomina= {idNomina}
 			</update>
 			<update id="persona">
 				update 

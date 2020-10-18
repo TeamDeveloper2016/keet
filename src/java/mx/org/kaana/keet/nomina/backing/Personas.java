@@ -10,6 +10,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
@@ -33,6 +34,7 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.incidentes.ETipoIndicente;
 import mx.org.kaana.xml.Dml;
 
 @Named(value = "keetNominasPersonas")
@@ -220,8 +222,8 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
         case 3:   // Activos sin deposito al banco
           sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.id_nomina= 2) and ");    
           break;
-        case 5:   // Empleados con licencia medica 
-          sb.append("(tr_mantic_empresa_personal.id_activo= 1) and ");    
+        case 4:   // Empleados con licencia medica 
+          sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.id_nomina= 2 and tr_mantic_empresa_personal.id_seguro= 2) and ");    
           break;
       } // switch
     } // if  
@@ -280,7 +282,11 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       azul.add("color", "circulo-azul");
       azul.add("nombre", "ACTIVOS SIN DEPOSITO AL BANCO");
       semaforos.add(new UISelectEntity(azul));
-//      Entity magenta= new Entity(4L);
+      Entity turquesa= new Entity(4L);
+      turquesa.add("color", "circulo-turquesa");
+      turquesa.add("nombre", "ACTIVOS SIN SEGURO/DEPOSITO");
+      semaforos.add(new UISelectEntity(turquesa));
+//      Entity magenta= new Entity(5L);
 //      magenta.add("color", "circulo-magenta");
 //      magenta.add("nombre", "EMPLEADOS CON INCAPACIDAD MEDICA");
 //      semaforos.add(new UISelectEntity(magenta));
@@ -400,6 +406,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			  this.doLoadDestajo();
 			this.attrs.put("nomina", true);
       UIBackingUtilities.scrollTo("detalle");
+      this.attrs.put("incidencia", this.doCheckIncidente(entity));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -440,4 +447,32 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       Methods.clean(columns);
     } // finally		
   } // doLoadDestajo	
+  
+  public String doCheckIncidente(Entity row) {
+    String regresar          = "";
+    Map<String, Object>params= null;
+    List<Columna>columns     = null;		
+		try {		
+      params= new HashMap<>();      
+      params.put("idEmpresaPersona", row.toLong("idEmpresaPersona"));
+ 			columns= new ArrayList<>();
+			columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticIncidentesDto", "incidente", params);
+      if(entity!= null && !entity.isEmpty()) {
+        UIBackingUtilities.toFormatEntity(entity, columns);
+        regresar= "<i class='fa fa-lg ".concat(ETipoIndicente.toIcon(entity.toLong("idTipoIncidente").intValue())).concat("' title='Vigencia: [").concat(entity.toString("inicio")).concat(" al ").concat(entity.toString("termino")).concat("]  Tipo: [").concat(ETipoIndicente.toTitle(entity.toLong("idTipoIncidente").intValue())).concat("]'></i>");
+      } // if
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+    return regresar;
+  } // 
+  
 }
