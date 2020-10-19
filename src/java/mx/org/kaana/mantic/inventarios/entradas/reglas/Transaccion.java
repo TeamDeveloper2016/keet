@@ -506,26 +506,28 @@ public class Transaccion extends Inventarios implements Serializable {
 		TcKeetNotasContratosLotesDto contratoLote= null;
 		try {
       List<NotaLoteFamilia> items= (List<NotaLoteFamilia>)DaoFactory.getInstance().toEntitySet(sesion, NotaLoteFamilia.class, "TcKeetNotasContratosLotesDto", "lotes", this.orden.toMap());
-			for(Object lote: this.lotes) {
-				for(Object familia: this.familias) {
-					contratoLote= new TcKeetNotasContratosLotesDto();
-					contratoLote.setIdContratoLote(((UISelectEntity)lote).getKey());
-					contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
-					contratoLote.setIdNotaEntrada(this.orden.getIdNotaEntrada());
-					contratoLote.setIdUsuario(JsfBase.getIdUsuario());
-					DaoFactory.getInstance().insert(sesion, contratoLote);
-          NotaLoteFamilia existe= new NotaLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
-          int index= items.indexOf(existe);
-          if(index< 0)
-					  DaoFactory.getInstance().insert(sesion, contratoLote);
-          else
-            items.get(index).setExiste(Boolean.TRUE);
-				} // for
-			} // for
-      for (NotaLoteFamilia item: items) {
-        if(!item.getExiste())
-          DaoFactory.getInstance().delete(sesion, TcKeetNotasContratosLotesDto.class, item.getIdNotaContratoLote());
-      } // for
+      if(this.lotes!= null && this.familias!= null) {
+        for(Object lote: this.lotes) {
+          for(Object familia: this.familias) {
+            contratoLote= new TcKeetNotasContratosLotesDto();
+            contratoLote.setIdContratoLote(((UISelectEntity)lote).getKey());
+            contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
+            contratoLote.setIdNotaEntrada(this.orden.getIdNotaEntrada());
+            contratoLote.setIdUsuario(JsfBase.getIdUsuario());
+            DaoFactory.getInstance().insert(sesion, contratoLote);
+            NotaLoteFamilia existe= new NotaLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
+            int index= items.indexOf(existe);
+            if(index< 0)
+              DaoFactory.getInstance().insert(sesion, contratoLote);
+            else
+              items.get(index).setExiste(Boolean.TRUE);
+          } // for
+        } // for
+        for (NotaLoteFamilia item: items) {
+          if(!item.getExiste())
+            DaoFactory.getInstance().delete(sesion, TcKeetNotasContratosLotesDto.class, item.getIdNotaContratoLote());
+        } // for
+      } // if  
 		} // try
 		catch (Exception e) {			
 			throw e;

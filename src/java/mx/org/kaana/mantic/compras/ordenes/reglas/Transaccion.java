@@ -294,25 +294,27 @@ public class Transaccion extends Inventarios implements Serializable {
 		TcKeetOrdenesContratosLotesDto contratoLote= null;
 		try {
       List<OrdenLoteFamilia> items= (List<OrdenLoteFamilia>)DaoFactory.getInstance().toEntitySet(sesion, OrdenLoteFamilia.class, "TcKeetOrdenesContratosLotesDto", "lotes", this.orden.toMap());
-			for(Object lote: this.lotes) {
-				for(Object familia: this.familias) {
-					contratoLote= new TcKeetOrdenesContratosLotesDto();
-					contratoLote.setIdContratoLote(((UISelectEntity)lote).getKey());
-					contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
-					contratoLote.setIdOrdenCompra(this.orden.getIdOrdenCompra());
-					contratoLote.setIdUsuario(JsfBase.getIdUsuario());
-          OrdenLoteFamilia existe= new OrdenLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
-          int index= items.indexOf(existe);
-          if(index< 0)
-					  DaoFactory.getInstance().insert(sesion, contratoLote);
-          else
-            items.get(index).setExiste(Boolean.TRUE);
-				} // for
-			} // for
-      for (OrdenLoteFamilia item: items) {
-        if(!item.getExiste())
-          DaoFactory.getInstance().delete(sesion, TcKeetOrdenesContratosLotesDto.class, item.getIdOrdenContratoLote());
-      } // for
+      if(this.lotes!= null && this.familias!= null) {
+        for(Object lote: this.lotes) {
+          for(Object familia: this.familias) {
+            contratoLote= new TcKeetOrdenesContratosLotesDto();
+            contratoLote.setIdContratoLote(((UISelectEntity)lote).getKey());
+            contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
+            contratoLote.setIdOrdenCompra(this.orden.getIdOrdenCompra());
+            contratoLote.setIdUsuario(JsfBase.getIdUsuario());
+            OrdenLoteFamilia existe= new OrdenLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
+            int index= items.indexOf(existe);
+            if(index< 0)
+              DaoFactory.getInstance().insert(sesion, contratoLote);
+            else
+              items.get(index).setExiste(Boolean.TRUE);
+          } // for
+        } // for
+        for (OrdenLoteFamilia item: items) {
+          if(!item.getExiste())
+            DaoFactory.getInstance().delete(sesion, TcKeetOrdenesContratosLotesDto.class, item.getIdOrdenContratoLote());
+        } // for
+      } // if  
 		} // try
 		catch (Exception e) {			
 			throw e;
