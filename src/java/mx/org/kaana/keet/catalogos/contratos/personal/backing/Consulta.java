@@ -57,7 +57,8 @@ public class Consulta extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
-      this.attrs.put("idSeguro", -1L);						
+      this.attrs.put("idActivo", 1L);	
+      this.attrs.put("idSeguro", -1L);	
 			this.loadCatalogos();
 			this.doLoad();
 			this.toTotales();
