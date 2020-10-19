@@ -206,7 +206,7 @@
 							<h:outputText value="#{row['neto']}"/>
 						</p:column>	
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idPago.toLong eq '2' and row.idSeguro.toLong eq '2'? 'circulo-turquesa': (row.idActivo.toLong eq '1' and row.idPago.toLong eq '1' and row.idSeguro.toLong eq '2'? 'circulo-amarillo' : row.idActivo.toLong eq '1' and row.idPago.toLong eq '2' and row.idSeguro.toLong eq '1'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idPago.toLong eq '2'? 'circulo-azul': (row.idActivo.toLong eq '1' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 						</p:column>	
 						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
 							<p:commandButton icon="fa fa-search" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
@@ -219,17 +219,15 @@
 						</f:facet>
 					</p:dataTable>
 					<p:panel id="colores" header="Estatus del empleado" toggleable="true" collapsed="true">
-						<p:panelGrid columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+						<p:panelGrid columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 							<p:outputLabel value="Empleados activos"/>
 							<p:outputLabel value="Empleados inactivos"/>
 							<p:outputLabel value="Activos sin seguro"/>
 							<p:outputLabel value="Activos sin deposito al banco"/>
-							<p:outputLabel value="Activos sin seguuro/deposito"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-amarillo.png"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
-							<h:graphicImage library="janal" name="icon/semaforos/circulo-turquesa.png"/>
 						</p:panelGrid>	
 					</p:panel>	
 					<h:commandLink id="detallePdf">

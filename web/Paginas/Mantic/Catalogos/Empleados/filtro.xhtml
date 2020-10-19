@@ -178,7 +178,7 @@
               <h:outputText value="#{row['seguro']}"/>
             </p:column>
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">							
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo eq '2' ? 'circulo-rojo' : (row.idActivo eq '1' and row.idNomina eq '2' and row.idSeguro eq '2'? 'circulo-turquesa': (row.idActivo eq '1' and row.idNomina eq '1' and row.idSeguro eq '2'? 'circulo-amarillo' : row.idActivo eq '1' and row.idNomina eq '2' and row.idSeguro eq '1'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo eq '1' ? '': 'NO '}activo"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo eq '2' ? 'circulo-rojo' : (row.idActivo eq '1' and row.idNomina eq '2'? 'circulo-azul': (row.idActivo eq '1' and row.idSeguro eq '2'? 'circulo-amarillo': 'circulo-verde'))}.png" title="Empleado #{row.idActivo eq '1' ? '': 'NO '}activo"/>
 						</p:column>												
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosEmpleadosFiltro.lazyModel==null?0:manticCatalogosEmpleadosFiltro.lazyModel.rowCount}] registros"/>
@@ -196,17 +196,15 @@
 						<p:menuitem id="deposito" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doDeposito('true')}" update="tabla" icon="fa fa-money" value="Deposito" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idNomina eq '2'}"/>					
 						<p:menuitem id="nodeposito" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doDeposito('false')}" update="tabla" icon="fa fa-deviantart" value="No deposito" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.idNomina eq '1'}"/>					
           </p:contextMenu>
-					<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+					<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 						<p:outputLabel value="Empleados activos"/>
 						<p:outputLabel value="Empleados inactivos"/>
 						<p:outputLabel value="Activos sin seguro"/>
 						<p:outputLabel value="Activos sin deposito al banco"/>
-						<p:outputLabel value="Activos sin seguro/deposito"/>
 						<h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
 						<h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
 						<h:graphicImage library="janal" name="icon/semaforos/circulo-amarillo.png"/>
 						<h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
-						<h:graphicImage library="janal" name="icon/semaforos/circulo-turquesa.png"/>
 					</p:panelGrid>	
         </div>
       </div>

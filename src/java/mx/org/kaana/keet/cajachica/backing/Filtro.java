@@ -147,7 +147,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
-	} // loadEmpresas	
+	} // doLoadDesarrollos	
 	
 	private void loadEstatus(){		
 		Map<String, Object>params    = null;

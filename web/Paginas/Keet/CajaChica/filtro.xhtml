@@ -60,7 +60,7 @@
               </p:selectOneMenu>
               <p:outputLabel for="desarrollo" value="Desarrollo:"/>
               <p:selectOneMenu id="desarrollo" value="#{keetCajaChicaFiltro.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetCajaChicaFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <f:selectItems value="#{keetCajaChicaFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

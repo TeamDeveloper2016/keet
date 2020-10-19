@@ -223,7 +223,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
           sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.id_nomina= 2) and ");    
           break;
         case 4:   // Empleados con licencia medica 
-          sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.id_nomina= 2 and tr_mantic_empresa_personal.id_seguro= 2) and ");    
+          // sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.id_nomina= 2 and tr_mantic_empresa_personal.id_seguro= 2) and ");    
           break;
       } // switch
     } // if  
@@ -282,10 +282,10 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       azul.add("color", "circulo-azul");
       azul.add("nombre", "ACTIVOS SIN DEPOSITO AL BANCO");
       semaforos.add(new UISelectEntity(azul));
-      Entity turquesa= new Entity(4L);
-      turquesa.add("color", "circulo-turquesa");
-      turquesa.add("nombre", "ACTIVOS SIN SEGURO/DEPOSITO");
-      semaforos.add(new UISelectEntity(turquesa));
+//      Entity turquesa= new Entity(4L);
+//      turquesa.add("color", "circulo-turquesa");
+//      turquesa.add("nombre", "ACTIVOS SIN SEGURO/DEPOSITO");
+//      semaforos.add(new UISelectEntity(turquesa));
 //      Entity magenta= new Entity(5L);
 //      magenta.add("color", "circulo-magenta");
 //      magenta.add("nombre", "EMPLEADOS CON INCAPACIDAD MEDICA");

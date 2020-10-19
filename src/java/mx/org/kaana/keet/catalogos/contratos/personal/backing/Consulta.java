@@ -24,6 +24,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -68,6 +69,7 @@ public class Consulta extends IBaseFilter implements Serializable {
   } // init
   
 	private void loadCatalogos() throws Exception {
+    this.doLoadDesarrollos();
 		Catalogos.toLoadDepartamentos(this.attrs);
 		Catalogos.toLoadPuestos(this.attrs);
 		Catalogos.toLoadContratistas(this.attrs);
@@ -81,6 +83,9 @@ public class Consulta extends IBaseFilter implements Serializable {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, this.toPrepare());
       params.put("sortOrder", "order by principal.departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')), principal.nombre_completo, principal.puesto");
+			params.put("union", "left join");
+  		if(!Cadena.isVacio(this.attrs.get("idSinDesarrollo")) && ((Long)this.attrs.get("idSinDesarrollo")).equals(1L)) 
+  	    params.put("union", "inner join");
 			columns= new ArrayList<>();
 			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
@@ -120,6 +125,8 @@ public class Consulta extends IBaseFilter implements Serializable {
 	
 	private String toPrepare() {
 		StringBuilder sb= new StringBuilder();
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !((UISelectEntity)this.attrs.get("idDesarrollo")).getKey().equals(-1L))
+		  sb.append("(tc_keet_desarrollos.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");		
 		if(!Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
 			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
@@ -136,6 +143,10 @@ public class Consulta extends IBaseFilter implements Serializable {
   			sb.append("(tr_mantic_empresa_personal.id_activo= 1 and tr_mantic_empresa_personal.nss is not null and tr_mantic_empresa_personal.nss!= '') and ");
 		  else
 	  		sb.append("(tr_mantic_empresa_personal.id_activo= 1 and (tr_mantic_empresa_personal.nss is null or tr_mantic_empresa_personal.nss= '')) and ");
+		if(!Cadena.isVacio(this.attrs.get("idSinDesarrollo")) && !((Long)this.attrs.get("idSinDesarrollo")).equals(-1L)) {
+       if(((Long)this.attrs.get("idSinDesarrollo"))!= 1L)
+ 	  		 sb.append("(tc_keet_desarrollos.nombres is null) and ");
+    } // if
 		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
 			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
   		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) regexp '.*").append(nombre).append(".*') and ");
@@ -220,5 +231,26 @@ public class Consulta extends IBaseFilter implements Serializable {
     } // finally
     return regresar;
   } // 
+  
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();			
+  		params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
+			this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadDesarrollos	
   
 }

@@ -11,9 +11,10 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        
-				'tabla\\:puesto_input'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'tabla\\:departamento_input': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
-				'tabla\\:contratista_input' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+				'tabla\\:departamento': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
+				'tabla\\:idDesarrollo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'tabla\\:puesto'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'tabla\\:contratista' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };							
 			
 			function validateCriterios(){
@@ -33,6 +34,17 @@
 					<p:accordionPanel id="panelBusqueda" activeIndex="0" multiple="true">
 						<p:tab title="Busqueda">
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																							
+                <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+                <p:selectOneMenu id="idDesarrollo" value="#{keetCatalogosContratosPersonalConsulta.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosPersonalConsulta.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{keetCatalogosContratosPersonalConsulta.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombres}"/>
+                  </p:column>                   
+                </p:selectOneMenu>
 								<p:outputLabel for="departamento" value="Departamento:"/>
 								<p:selectOneMenu id="departamento" value="#{keetCatalogosContratosPersonalConsulta.attrs.idDepartamento}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosPersonalConsulta.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
@@ -56,21 +68,30 @@
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombres}"/>
 									</p:column>   
-								</p:selectOneMenu>																	
-								<p:outputLabel for="idActivo" value="Empleado activos:"/>
-								<p:selectOneMenu id="idActivo" value="#{keetCatalogosContratosPersonalConsulta.attrs.idActivo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosPersonalConsulta.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
-									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
-									<f:selectItem itemValue="1" itemLabel="SI"/>
-									<f:selectItem itemValue="2" itemLabel="NO"/>
-								</p:selectOneMenu>																	
-								<p:outputLabel for="idSeguro" value="Empleado asegurados:"/>
-								<p:selectOneMenu id="idSeguro" value="#{keetCatalogosContratosPersonalConsulta.attrs.idSeguro}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosPersonalConsulta.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
-									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
-									<f:selectItem itemValue="1" itemLabel="SI"/>
-									<f:selectItem itemValue="2" itemLabel="NO"/>
-								</p:selectOneMenu>																	
+								</p:selectOneMenu>	
+                <p:panelGrid layout="grid" columns="3" styleClass="janal-wid-100">
+								  <p:outputLabel for="idActivo" value="Empleado activos:"/>
+                  <p:outputLabel for="idSeguro" value="Empleado asegurados:"/>
+                  <p:outputLabel for="idSinDesarrollo" value="Empleado asignados:"/>
+								  <p:selectOneMenu id="idActivo" value="#{keetCatalogosContratosPersonalConsulta.attrs.idActivo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosPersonalConsulta.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                    <f:selectItem itemValue="1" itemLabel="SI"/>
+                    <f:selectItem itemValue="2" itemLabel="NO"/>
+                  </p:selectOneMenu>																	
+                  <p:selectOneMenu id="idSeguro" value="#{keetCatalogosContratosPersonalConsulta.attrs.idSeguro}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosPersonalConsulta.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                    <f:selectItem itemValue="1" itemLabel="SI"/>
+                    <f:selectItem itemValue="2" itemLabel="NO"/>
+                  </p:selectOneMenu>																	
+                  <p:selectOneMenu id="idSinDesarrollo" value="#{keetCatalogosContratosPersonalConsulta.attrs.idSinDesarrollo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosPersonalConsulta.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                    <f:selectItem itemValue="1" itemLabel="SI"/>
+                    <f:selectItem itemValue="2" itemLabel="NO"/>
+                  </p:selectOneMenu>																	
+  							</p:panelGrid>										
 							</p:panelGrid>										
 						</p:tab>
 					</p:accordionPanel>	
@@ -82,17 +103,15 @@
 						<p:spacer/>
 					</p:panelGrid>	
 					<p:panel header="Estatus del empleado" toggleable="true" collapsed="false">
-						<p:panelGrid columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+						<p:panelGrid columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 							<p:outputLabel value="Empleados activos"/>
 							<p:outputLabel value="Empleados inactivos"/>
 							<p:outputLabel value="Activos sin seguro"/>
 							<p:outputLabel value="Activos sin deposito al banco"/>
-							<p:outputLabel value="Activos sin seguro/deposito"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-amarillo.png"/>
 							<h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
-							<h:graphicImage library="janal" name="icon/semaforos/circulo-turquesa.png"/>
 						</p:panelGrid>	
 					</p:panel>
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosPersonalConsulta.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalConsulta.attrs.seleccionado}" paginator="#{keetCatalogosContratosPersonalConsulta.lazyModel.rowCount gt keetCatalogosContratosPersonalConsulta.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
@@ -117,7 +136,7 @@
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2' and row.idSeguro.toLong eq '2'? 'circulo-turquesa': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '1' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2' and row.idSeguro.toLong eq '1'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2'? 'circulo-azul': (row.idActivo.toLong eq '1' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 							<p:spacer width="5px"/>
 							<p:outputLabel value="[#{empty row.contratista.toString? row.departamento: row.contratista}] [#{row.puesto}] #{row['nombreCompleto']}" styleClass="janal-wid-100-txt"/>							
               <p:outputLabel value="#{keetCatalogosContratosPersonalConsulta.doCheckIncidente(row)}" styleClass="janal-font-bold janal-color-orange janal-align-right" escape="false"/>
