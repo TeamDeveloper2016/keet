@@ -139,7 +139,7 @@
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2'? 'circulo-azul': (row.idActivo.toLong eq '1' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 							<p:spacer width="5px"/>
 							<p:outputLabel value="[#{empty row.contratista.toString? row.departamento: row.contratista}] [#{row.puesto}] #{row['nombreCompleto']}" styleClass="janal-wid-100-txt"/>							
               <p:outputLabel value="#{keetCatalogosContratosPersonalConsulta.doCheckIncidente(row)}" styleClass="janal-font-bold janal-color-orange janal-align-right" escape="false"/>

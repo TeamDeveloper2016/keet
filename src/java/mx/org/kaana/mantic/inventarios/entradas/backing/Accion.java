@@ -1290,15 +1290,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		Long tipoMedioPago= null;
 		try {
       UIBackingUtilities.execute(
-        "janal.renovate('contenedorGrupos\\\\:idBanco_focus', {validaciones: 'libre', mascara: 'libre'});"+
-        "janal.renovate('contenedorGrupos\\\\:referencia', {validaciones: 'libre', mascara: 'libre'});"
+        "janal.renovate('contenedorGrupos\\\\:idBanco', {validaciones: 'libre', mascara: 'libre'});"
       );		
 			tipoMedioPago= ((NotaEntrada)this.getAdminOrden().getOrden()).getIdTipoMedioPago();
 			this.attrs.put("isBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoMedioPago));
       if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoMedioPago)) 
         UIBackingUtilities.execute(
-          "janal.renovate('contenedorGrupos\\\\:idBanco_focus', {validaciones: 'requerido', mascara: 'libre'});"+
-          "janal.renovate('contenedorGrupos\\\\:referencia', {validaciones: 'requerido', mascara: 'libre'});"
+          "janal.renovate('contenedorGrupos\\\\:idBanco_focus', {validaciones: 'requerido', mascara: 'libre'});"
         );		
 		} // try
 		catch (Exception e) {
