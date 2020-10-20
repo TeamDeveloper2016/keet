@@ -270,12 +270,12 @@ public class Registro extends IBaseAttribute implements Serializable {
 				if(this.allEmpleados.contains(item))
 					empleados.add(this.allEmpleados.get(this.allEmpleados.indexOf(item)));
 			} // for
-			accion= event.isAdd() ? EAccion.PROCESAR : EAccion.DEPURAR;
+			accion= event.isAdd()? EAccion.PROCESAR : EAccion.DEPURAR;
 			transaccion= new Transaccion((Long)this.attrs.get("idDesarrollo"), empleados);
 			if(transaccion.ejecutar(accion))
-				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Se ".concat(accion.equals(EAccion.PROCESAR) ? "asignaron" : "desasignaron").concat(" de forma correcta los empleados."), ETipoMensaje.INFORMACION);			
+				JsfBase.addMessage("Desarrollo", "Se ".concat(accion.equals(EAccion.PROCESAR) ? "asignaron" : "desasignaron").concat(" de forma correcta los empleados."), ETipoMensaje.INFORMACION);			
 			else
-				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Ocurrió un error al ".concat(accion.equals(EAccion.PROCESAR) ? "asignar" : "desasignar").concat(" los empleados."), ETipoMensaje.ERROR);
+				JsfBase.addMessage("Desarrollo", "Ocurrió un error al ".concat(accion.equals(EAccion.PROCESAR) ? "asignar" : "desasignar").concat(" los empleados."), ETipoMensaje.ERROR);
 			/*if(event.isAdd()){				
 				for(SelectionItem item: transfers){
 					if(!this.movimientosAdd.contains(item))

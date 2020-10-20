@@ -1,6 +1,7 @@
 package mx.org.kaana.keet.catalogos.contratos.personal.reglas;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,15 +70,34 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		Map<String, Object>params         = null;
 		TcKeetContratosPersonalDto dto    = null;
 		TrManticEmpresaPersonalDto persona= null;
-		Long idUsuario                    = -1L;
-		Incidente incidente               = null;
 		EAccion accionIncidente           = null;
 		boolean procesaEmpleado           = true;
 		Long numeroRegistros              = null;
 		try {
-			switch(accion){
+			switch(accion) {
+				case COMPLEMENTAR:									
+					params= new HashMap<>();
+					for(SelectionItem item: this.empleados) {
+            params.put("idEmpresaPersona", item.getKey());
+						dto= (TcKeetContratosPersonalDto)DaoFactory.getInstance().toEntity(sesion, TcKeetContratosPersonalDto.class, "TcKeetContratosPersonalDto", "existe", params);
+						if(dto== null) {	
+							dto= new TcKeetContratosPersonalDto();							
+							dto.setIdDesarrollo(this.idDesarrollo);
+							dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
+							dto.setIdUsuario(JsfBase.getIdUsuario());
+							dto.setIdVigente(1L);
+							dto.setObservaciones("Asignación de empleado al desarrollo " + this.idDesarrollo);
+							DaoFactory.getInstance().insert(sesion, dto);
+						} // if
+            else {
+              dto.setIdDesarrollo(this.idDesarrollo);
+							dto.setObservaciones("Se reasignó el empleado al desarrollo " + this.idDesarrollo);
+              dto.setRegistro(LocalDateTime.now());
+							DaoFactory.getInstance().update(sesion, dto);
+            } // else
+					} // for					
+					break;				
 				case PROCESAR:									
-					idUsuario= JsfBase.getIdUsuario();
 					params= new HashMap<>();
 					for(SelectionItem item: this.empleados) {
 						procesaEmpleado= true;
@@ -92,7 +112,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							dto= new TcKeetContratosPersonalDto();							
 							dto.setIdDesarrollo(this.idDesarrollo);
 							dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
-							dto.setIdUsuario(idUsuario);
+							dto.setIdUsuario(JsfBase.getIdUsuario());
 							dto.setIdVigente(1L);
 							dto.setObservaciones("Asignación de empleado al desarrollo " + this.idDesarrollo);
 							DaoFactory.getInstance().insert(sesion, dto);
@@ -109,31 +129,31 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					} // for
 					break;
 				case REGISTRAR:
-					if(eliminarIncidencias(sesion)){
-						for(ScheduleEvent event: this.eventModel.getEvents()){
-							incidente= (Incidente) event.getData();
-							switch(incidente.getAccion()){
+					if(eliminarIncidencias(sesion)) {
+						for(ScheduleEvent event: this.eventModel.getEvents()) {
+							Incidente incidencia= (Incidente) event.getData();
+							switch(incidencia.getAccion()){
 								case INSERT:
-									incidente.setIdIncidente(-1L);
+									incidencia.setIdIncidente(-1L);
 									accionIncidente= EAccion.AGREGAR;								
 									break;
 								case UPDATE:
 									accionIncidente= EAccion.ASIGNAR;								
 									break;
 							} // switch						
-							setIncidente(incidente);
+							this.setIncidente(incidencia);
 							super.ejecutar(sesion, accionIncidente);
 						} // for
 					} // if
 					break;
 				case SUBIR:
-					for(DocumentoIncidencia incidencia: this.incidencias){
-						if(DaoFactory.getInstance().insert(sesion, incidencia)>=1L)
-							toSaveFile(incidencia.getIdArchivo());
+					for(DocumentoIncidencia incidencia: this.incidencias) {
+						if(DaoFactory.getInstance().insert(sesion, incidencia)>= 1L)
+							this.toSaveFile(incidencia.getIdArchivo());
 					} // for
 					break;
 				case JUSTIFICAR:
-					eliminarIncidencias(sesion);
+					this.eliminarIncidencias(sesion);
 					break;
 				default:
 					super.ejecutar(sesion, accion);

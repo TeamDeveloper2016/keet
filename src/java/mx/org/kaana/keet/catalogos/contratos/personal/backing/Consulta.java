@@ -38,6 +38,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultSeparator;
 import org.primefaces.model.menu.MenuModel;
 
 @Named(value = "keetCatalogosContratosPersonalConsulta")
@@ -270,44 +271,62 @@ public class Consulta extends IBaseFilter implements Serializable {
  
   public void doLoadMenu() {
     String fraccionamiento= "";
+    DefaultMenuItem item  = null;
     this.model = new DefaultMenuModel();
     Entity seleccionado= (Entity)this.attrs.get("seleccionado");
     if(seleccionado!= null && !seleccionado.isEmpty())
       fraccionamiento= seleccionado.toString("desarrollo");
     List<UISelectEntity> desarrollos= (List<UISelectEntity>)this.attrs.get("desarrollos");
-    if(desarrollos!= null && !desarrollos.isEmpty())
+    if(seleccionado!= null && desarrollos!= null && !desarrollos.isEmpty())
       for (UISelectEntity desarrollo : desarrollos) {
-        if(desarrollo.getKey()!= -1L) {
-          DefaultMenuItem item = DefaultMenuItem.builder()
-                      .id("AJG_"+ desarrollo.toString("clave"))
-                      .value(desarrollo.toString("nombres"))
-                      .title(desarrollo.toString("nombres"))
-                      .icon("fa fa-recycle")
-                      .command("#{keetCatalogosContratosPersonalConsulta.doChangeDesarrollo}")
-                      .update("tabla")
-                      .process("@this tabla")
-                      .onstart("return janal.bloquear()")
-                      .oncomplete("janal.desbloquear()")
-                      .disabled(Objects.equals(fraccionamiento, desarrollo.toString("nombres")))
-                      .build();    
-          this.model.addElement(item);
+        if(desarrollo.getKey()== -1L) {
+         item = DefaultMenuItem.builder()
+          .id("AJG_QUITAR")
+          .value("DESASIGNAR")
+          .title("DESASIGNAR")
+          .icon("fa fa-remove")
+          .command("#{keetCatalogosContratosPersonalConsulta.doChangeDesarrollo("+ Constantes.TOP_OF_ITEMS+ ",'"+ desarrollo.toString("nombres")+"')}")
+          .update("tabla")
+          .process("@this tabla")
+          .onstart("return janal.bloquear();")
+          .oncomplete("janal.desbloquear();")
+          .build();    
+        } // if
+        else {
+          item = DefaultMenuItem.builder()
+            .id("AJG_"+ desarrollo.toString("clave"))
+            .value(desarrollo.toString("nombres"))
+            .title(desarrollo.toString("nombres"))
+            .icon("fa fa-refresh")
+            .command("#{keetCatalogosContratosPersonalConsulta.doChangeDesarrollo("+ desarrollo.getKey()+ ",'"+ desarrollo.toString("nombres")+"')}")
+            .update("tabla")
+            .process("@this tabla")
+            .onstart("return janal.bloquear();")
+            .oncomplete("janal.desbloquear();")
+            .disabled(Objects.equals(fraccionamiento, desarrollo.toString("nombres")))
+            .build();    
         } // if  
-                    // .disabled()
-                    // Boolean.valueOf("#{empty keetCatalogosContratosPersonalConsulta.attrs.seleccionado.desarrollo}")
+        if(desarrollo.getKey()!= -1L)  
+          this.model.addElement(item);
+        else
+          if(!Cadena.isVacio(fraccionamiento)) {
+            this.model.addElement(item);
+            this.model.addElement(DefaultSeparator.builder().build());    
+          } // if
       } // for
   }
   
-  public void doChangeDesarrollo() {
-    Entity seleccionado    = (Entity)this.attrs.get("seleccionado");
+  public void doChangeDesarrollo(Long idDesarrollo, String desarrollo) {
 		Transaccion transaccion= null;
+    Entity seleccionado    = (Entity)this.attrs.get("seleccionado");
     List<SelectionItem> empleados= new ArrayList<>();
 		try {
-      empleados.add(new SelectionItem(seleccionado.toLong("idEmpresaPersona").toString(), seleccionado.toString("nombreCompleto")));
-			transaccion= new Transaccion(seleccionado.toLong("idDesarrollo"), empleados);
-			if(transaccion.ejecutar(EAccion.PROCESAR))
-				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Se asignarón de forma correcta los empleados.", ETipoMensaje.INFORMACION);			
+      empleados.add(new SelectionItem(seleccionado.getKey().toString(), seleccionado.toString("nombreCompleto")));
+			transaccion= new Transaccion(idDesarrollo, empleados);
+			if(transaccion.ejecutar(Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? EAccion.DEPURAR: EAccion.COMPLEMENTAR))
+				JsfBase.addMessage("Desarrollo", "Se "+ (Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? "eliminó": "asignó")+ " el empleado a ["+ desarrollo+ "].<br/>"+ seleccionado.toString("nombreCompleto"), ETipoMensaje.INFORMACION);			
 			else
-				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Ocurrió un error al asignar los empleados.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Desarrollo", "Ocurrió un error al "+ (Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? "asingar": "eliminar")+ " el empleado.", ETipoMensaje.ERROR);
       this.doLoad();
 		} // try
 		catch (Exception e) {

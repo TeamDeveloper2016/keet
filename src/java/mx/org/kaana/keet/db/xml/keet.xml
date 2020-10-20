@@ -2680,6 +2680,14 @@
         where      
           id_contratos_personal = {idContratosPersonal}
       </select>
+      <select id="existe">
+        select      
+          *
+        from      
+          tc_keet_contratos_personal
+        where      
+          id_empresa_persona= {idEmpresaPersona}
+      </select>
 			<select id="maximo">
 				select      
           max(id_contratos_personal) maximo
