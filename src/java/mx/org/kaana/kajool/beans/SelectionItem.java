@@ -18,6 +18,7 @@ public class SelectionItem implements Serializable {
   private String key;
 	private Long idActivo;
 	private Long idNomina;
+	private Long idSeguro;
 	private String nss;
 	private Long tipo;
 
@@ -25,15 +26,16 @@ public class SelectionItem implements Serializable {
 		this(key, item, 1L, 2L, null, null);
   }
 
-  public SelectionItem(String key, String item, Long idActivo, Long idNomina, String nss) {
-		this(key, item, idActivo, idNomina, nss, null);
+  public SelectionItem(String key, String item, Long idActivo, Long idNomina, Long idSeguro, String nss) {
+		this(key, item, idActivo, idNomina, idSeguro, nss, null);
 	}
 	
-  public SelectionItem(String key, String item, Long idActivo, Long idNomina, String nss, Long tipo) {
+  public SelectionItem(String key, String item, Long idActivo, Long idNomina,  Long idSeguro, String nss, Long tipo) {
     this.item    = item;
     this.key     = key;
 		this.idActivo= idActivo;
 		this.idNomina= idNomina;
+		this.idSeguro= idSeguro;
 		this.nss     = nss;
 		this.tipo    = tipo;
   }
@@ -69,6 +71,14 @@ public class SelectionItem implements Serializable {
 	public void setIdNomina(Long idNomina) {
 		this.idNomina=idNomina;
 	}
+
+  public Long getIdSeguro() {
+    return idSeguro;
+  }
+
+  public void setIdSeguro(Long idSeguro) {
+    this.idSeguro = idSeguro;
+  }
 
 	public String getNss() {
 		return nss;
@@ -108,8 +118,9 @@ public class SelectionItem implements Serializable {
     return hash;
   }
 
-	@Override
-	public String toString() {
-		return "SelectionItem{"+"item="+item+", key="+key+", idActivo="+idActivo+'}';
-	}
+  @Override
+  public String toString() {
+    return "SelectionItem{" + "item=" + item + ", key=" + key + ", idActivo=" + idActivo + ", idNomina=" + idNomina + ", idSeguro=" + idSeguro + ", nss=" + nss + ", tipo=" + tipo + '}';
+  }
+  
 }

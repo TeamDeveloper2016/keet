@@ -1899,6 +1899,7 @@
 					tc_mantic_puestos.id_puesto,
 					tr_mantic_empresa_personal.id_activo,
 					tr_mantic_empresa_personal.id_nomina,
+					tr_mantic_empresa_personal.id_seguro,
 					tr_mantic_empresa_personal.nss,
 					tc_mantic_personas.nombres,
 					tc_mantic_personas.paterno,
@@ -1950,6 +1951,7 @@
 					tc_mantic_puestos.id_puesto,
 					tr_mantic_empresa_personal.id_activo,
 					tr_mantic_empresa_personal.id_nomina,
+					tr_mantic_empresa_personal.id_seguro,
 					tr_mantic_empresa_personal.nss,
 					tc_mantic_personas.nombres,
 					tc_mantic_personas.paterno,
@@ -1998,6 +2000,7 @@
 						tr_mantic_empresa_personal.id_nomina,
 						tr_mantic_empresa_personal.id_seguro,
 				    tr_mantic_empresa_personal.id_contratista,
+            ifnull(tc_keet_desarrollos.id_desarrollo, -1) as id_desarrollo,
             tc_keet_desarrollos.nombres as desarrollo
 					from      
 						tr_mantic_empresa_personal
@@ -2145,6 +2148,7 @@
 					tc_mantic_puestos.nombre puesto,
 					tr_mantic_empresa_personal.id_activo,
 					tr_mantic_empresa_personal.id_nomina,
+					tr_mantic_empresa_personal.id_seguro,
 					tr_mantic_empresa_personal.nss,
 					tc_mantic_personas.nombres,
 					tc_mantic_personas.paterno,
@@ -2232,6 +2236,7 @@
 					tc_mantic_puestos.nombre puesto,
 					tr_mantic_empresa_personal.id_activo,
 					tr_mantic_empresa_personal.id_nomina,
+					tr_mantic_empresa_personal.id_seguro,
 					tr_mantic_empresa_personal.nss,
 					tc_mantic_personas.nombres,
 					tc_mantic_personas.paterno,

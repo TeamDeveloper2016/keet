@@ -9,14 +9,17 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.beans.SelectionItem;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
@@ -31,14 +34,25 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.incidentes.ETipoIndicente;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.MenuModel;
 
 @Named(value = "keetCatalogosContratosPersonalConsulta")
 @ViewScoped
 public class Consulta extends IBaseFilter implements Serializable {
+  private static final Log LOG = LogFactory.getLog(Consulta.class);
 
   private static final long serialVersionUID= 8793667741599428879L;		
 	protected FormatLazyModel totales;	
 	protected Reporte reporte;
+  private MenuModel model;
+
+  public MenuModel getModel() {
+    return model;
+  }
 	
 	public Reporte getReporte() {
 		return reporte;
@@ -253,5 +267,53 @@ public class Consulta extends IBaseFilter implements Serializable {
       Methods.clean(params);
     }// finally
 	} // doLoadDesarrollos	
+ 
+  public void doLoadMenu() {
+    String fraccionamiento= "";
+    this.model = new DefaultMenuModel();
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+    if(seleccionado!= null && !seleccionado.isEmpty())
+      fraccionamiento= seleccionado.toString("desarrollo");
+    List<UISelectEntity> desarrollos= (List<UISelectEntity>)this.attrs.get("desarrollos");
+    if(desarrollos!= null && !desarrollos.isEmpty())
+      for (UISelectEntity desarrollo : desarrollos) {
+        if(desarrollo.getKey()!= -1L) {
+          DefaultMenuItem item = DefaultMenuItem.builder()
+                      .id("AJG_"+ desarrollo.toString("clave"))
+                      .value(desarrollo.toString("nombres"))
+                      .title(desarrollo.toString("nombres"))
+                      .icon("fa fa-recycle")
+                      .command("#{keetCatalogosContratosPersonalConsulta.doChangeDesarrollo}")
+                      .update("tabla")
+                      .process("@this tabla")
+                      .onstart("return janal.bloquear()")
+                      .oncomplete("janal.desbloquear()")
+                      .disabled(Objects.equals(fraccionamiento, desarrollo.toString("nombres")))
+                      .build();    
+          this.model.addElement(item);
+        } // if  
+                    // .disabled()
+                    // Boolean.valueOf("#{empty keetCatalogosContratosPersonalConsulta.attrs.seleccionado.desarrollo}")
+      } // for
+  }
+  
+  public void doChangeDesarrollo() {
+    Entity seleccionado    = (Entity)this.attrs.get("seleccionado");
+		Transaccion transaccion= null;
+    List<SelectionItem> empleados= new ArrayList<>();
+		try {
+      empleados.add(new SelectionItem(seleccionado.toLong("idEmpresaPersona").toString(), seleccionado.toString("nombreCompleto")));
+			transaccion= new Transaccion(seleccionado.toLong("idDesarrollo"), empleados);
+			if(transaccion.ejecutar(EAccion.PROCESAR))
+				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Se asignarón de forma correcta los empleados.", ETipoMensaje.INFORMACION);			
+			else
+				JsfBase.addMessage("Registro de empleados en el desarrollo.", "Ocurrió un error al asignar los empleados.", ETipoMensaje.ERROR);
+      this.doLoad();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  }
   
 }

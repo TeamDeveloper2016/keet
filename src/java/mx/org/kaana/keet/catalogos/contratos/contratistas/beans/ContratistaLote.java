@@ -17,6 +17,7 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	private String rfc;
 	private Long idActivo;		
 	private Long idNomina;		
+	private Long idSeguro;		
 	private String nss;		
 	private ESql sqlAccion;
 	private Boolean nuevo;
@@ -39,10 +40,10 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	}
 	
 	public ContratistaLote(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, 2L, null, null, -1L);		
+		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, 2L, 2L, null, null, -1L);		
 	}
 
-	public ContratistaLote(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, Long idNomina, String nss, Long tipo, Long idKey) {
+	public ContratistaLote(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, Long idNomina, Long idSeguro, String nss, Long tipo, Long idKey) {
 		super(key);
 		this.nombres         = nombres;
 		this.paterno         = paterno;
@@ -59,6 +60,7 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 		this.nombreDesarrollo= nombreDesarrollo;
 		this.idPersona       = idPersona;
 		this.idNomina        = idNomina;
+		this.idSeguro        = idSeguro;
 		this.nss             = nss;
 		this.tipo            = tipo;
 		this.idKey           = idKey;
@@ -183,6 +185,14 @@ public class ContratistaLote extends TcKeetContratosLotesContratistasDto impleme
 	public void setIdNomina(Long idNomina) {
 		this.idNomina=idNomina;
 	}
+
+  public Long getIdSeguro() {
+    return idSeguro;
+  }
+
+  public void setIdSeguro(Long idSeguro) {
+    this.idSeguro = idSeguro;
+  }
 
 	public String getNss() {
 		return nss;

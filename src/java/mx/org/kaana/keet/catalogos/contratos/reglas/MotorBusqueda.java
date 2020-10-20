@@ -28,7 +28,7 @@ public class MotorBusqueda implements Serializable{
 		this.idPivote= idPivote;
 	}
 	
-	public Contrato toContrato() throws Exception{
+	public Contrato toContrato() throws Exception {
 		Contrato regresar        = null;
 		Map<String, Object>params= null;
 		try {
@@ -47,7 +47,7 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toContrato	
 	
-	public List<Lote> toLotes() throws Exception{
+	public List<Lote> toLotes() throws Exception {
 		List<Lote> regresar      = null;
 		Map<String, Object>params= null;
 		try {
@@ -66,15 +66,15 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toLotes
 	
-	public List<ContratoPersonal> toPersonas() throws Exception{
+	public List<ContratoPersonal> toPersonas() throws Exception {
 		return toPersonasCondicion("tc_keet_contratos_personal.id_contratos_personal", Constantes.SQL_VERDADERO);
 	} // toPersonas
 	
-	public List<ContratoPersonal> toPersonasAsignadas(String condicion) throws Exception{
+	public List<ContratoPersonal> toPersonasAsignadas(String condicion) throws Exception {
 		return toPersonasCondicion("tr_mantic_empresa_personal.id_empresa_persona", condicion);
 	} // toPersonasAsignadas
 	
-	private List<ContratoPersonal> toPersonasCondicion(String campoLlave, String condicion) throws Exception{
+	private List<ContratoPersonal> toPersonasCondicion(String campoLlave, String condicion) throws Exception {
 		List<ContratoPersonal> regresar= null;
 		Map<String, Object>params      = null;
 		try {
@@ -93,11 +93,11 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toPersonasAsignadas
 	
-	public List<ContratoPersonal> toPersonasDisponibles() throws Exception{
+	public List<ContratoPersonal> toPersonasDisponibles() throws Exception {
 		return toPersonasDisponibles(Constantes.SQL_VERDADERO);
 	} // toPersonasDisponibles
 	
-	public List<ContratoPersonal> toPersonasDisponibles(String condicion) throws Exception{
+	public List<ContratoPersonal> toPersonasDisponibles(String condicion) throws Exception {
 		List<ContratoPersonal> regresar= null;
 		Map<String, Object>params      = null;
 		try {
@@ -116,7 +116,7 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toPersonasDisponibles	
 	
-	public ContratoPersonal toPersonaIncidencia(boolean contrato) throws Exception{
+	public ContratoPersonal toPersonaIncidencia(boolean contrato) throws Exception {
 		ContratoPersonal regresar= null;
 		Map<String, Object>params= null;
 		try {
@@ -133,7 +133,7 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toPersonasDisponibles	
 	
-	public List<Incidente> toIncidencias(Long grupo) throws Exception{
+	public List<Incidente> toIncidencias(Long grupo) throws Exception {
 		List<Incidente> regresar= null;
 		Map<String, Object>params= null;
 		try {
@@ -151,7 +151,7 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toInicidencias
 	
-	public List<Incidente> toAllIncidencias() throws Exception{
+	public List<Incidente> toAllIncidencias() throws Exception {
 		List<Incidente> regresar= null;
 		Map<String, Object>params= null;
 		try {
@@ -168,7 +168,7 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toInicidencias
 	
-	public List<TcKeetDiasFestivosDto> toAllDiasFeriados() throws Exception{
+	public List<TcKeetDiasFestivosDto> toAllDiasFeriados() throws Exception {
 		List<TcKeetDiasFestivosDto> regresar= null;
 		Map<String, Object>params= null;
 		try {
@@ -185,7 +185,7 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toInicidencias
 	
-	public List<ContratistaLote> toContratistasDisponibles(String condicion, String condicionProveedor) throws Exception{
+	public List<ContratistaLote> toContratistasDisponibles(String condicion, String condicionProveedor) throws Exception {
 		List<ContratistaLote> regresar= null;
 		Map<String, Object>params      = null;
 		try {
@@ -205,7 +205,7 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toContratistasDisponibles	
 	
-	public List<ContratistaLote> toContratistasAsignados(String condicion, String condicionProveedor) throws Exception{
+	public List<ContratistaLote> toContratistasAsignados(String condicion, String condicionProveedor) throws Exception {
 		List<ContratistaLote> regresar= null;
 		Map<String, Object>params      = null;
 		try {
@@ -225,7 +225,7 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toContratistasAsignados
   
-	public List<ContratistaLote> toResidentesDisponibles(String condicion) throws Exception{
+	public List<ContratistaLote> toResidentesDisponibles(String condicion) throws Exception {
 		List<ContratistaLote> regresar= null;
 		Map<String, Object>params      = null;
 		try {
@@ -244,7 +244,7 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toResidentesDisponibles	
 	
-	public List<ContratistaLote> toResidentesAsignados(String condicion) throws Exception{
+	public List<ContratistaLote> toResidentesAsignados(String condicion) throws Exception {
 		List<ContratistaLote> regresar= null;
 		Map<String, Object>params      = null;
 		try {

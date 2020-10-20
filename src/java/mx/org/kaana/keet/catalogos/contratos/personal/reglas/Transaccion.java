@@ -79,16 +79,16 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 				case PROCESAR:									
 					idUsuario= JsfBase.getIdUsuario();
 					params= new HashMap<>();
-					for(SelectionItem item: this.empleados){
+					for(SelectionItem item: this.empleados) {
 						procesaEmpleado= true;
 						persona= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findById(sesion, TrManticEmpresaPersonalDto.class, Long.valueOf(item.getKey()));
-						if(persona.getIdDepartamento().equals(ADMINISTRATIVO_POR_DIA)){
+						if(persona.getIdDepartamento().equals(ADMINISTRATIVO_POR_DIA)) {
 							params.clear();
 							params.put("idEmpresaPersona", item.getKey());
 							numeroRegistros= DaoFactory.getInstance().toField(sesion, "TcKeetContratosPersonalDto", "numeroRegistros", params, "total").toLong();
 							procesaEmpleado= numeroRegistros.equals(0L);
 						} // if
-						if(procesaEmpleado){	
+						if(procesaEmpleado) {	
 							dto= new TcKeetContratosPersonalDto();							
 							dto.setIdDesarrollo(this.idDesarrollo);
 							dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
@@ -100,7 +100,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					} // for					
 					break;				
 				case DEPURAR:
-					for(SelectionItem item: this.empleados){
+					for(SelectionItem item: this.empleados) {
 						if(verificacionLotes(sesion, Long.valueOf(item.getKey()))){
 							params= new HashMap<>();
 							params.put("idEmpresaPersona", Long.valueOf(item.getKey()));						

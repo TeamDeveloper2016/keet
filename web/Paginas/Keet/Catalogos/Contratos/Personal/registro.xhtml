@@ -100,7 +100,7 @@
 						<f:facet name="targetCaption">[#{keetCatalogosContratosPersonalRegistro.attrs.totalAsignados}] Asignados</f:facet>
 						<p:ajax event="transfer" onstart="return janal.bloquear();" listener="#{keetCatalogosContratosPersonalRegistro.onTransfer}" oncomplete="reloadValues();"/>												
 						<p:column style="width: 95% !important">
-							<h:graphicImage library="janal" name="icon/semaforos/#{empleado.idActivo eq '2'? 'circulo-rojo': (empleado.idActivo eq '1' and (not empty empleado.nss) and empleado.idNomina eq '2'? 'circulo-azul': (empleado.idActivo eq '1' and empty empleado.nss? 'circulo-amarillo': 'circulo-verde'))}.png" title="Empleado #{empleado.idActivo eq '1' ? '': 'NO '}activo"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{empleado.idActivo eq '2'? 'circulo-rojo': (empleado.idActivo eq '1' and empleado.idNomina eq '2' and empleado.idSeguro eq '2'? 'circulo-amarillo': (empleado.idActivo eq '1' and empleado.idNomina eq '2'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{empleado.idActivo eq '1' ? '': 'NO '}activo"/>
 							<p:spacer width="3px"/>
 							<h:outputText value=" #{empleado.item}" styleClass="janal-wid-100-txt"/>
 						</p:column>

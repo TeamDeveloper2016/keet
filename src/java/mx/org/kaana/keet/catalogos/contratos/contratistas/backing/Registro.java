@@ -160,7 +160,7 @@ public class Registro extends IBaseAttribute implements Serializable {
 	private List<SelectionItem> toListSelectionIten(List<ContratistaLote> entities) {
 		List<SelectionItem> regresar= new ArrayList<>();
 		for(ContratistaLote item: entities)
-			regresar.add(new SelectionItem(String.valueOf(item.getIdKey()), "[".concat(item.getDepartamento()).concat("] [").concat(item.getPuesto()).concat("] ").concat(item.getNombres()).concat(" ").concat(item.getPaterno()).concat(" ").concat(item.getMaterno()), item.getIdActivo(), item.getIdNomina(), item.getNss(), item.getTipo()));
+			regresar.add(new SelectionItem(String.valueOf(item.getIdKey()), "[".concat(item.getDepartamento()).concat("] [").concat(item.getPuesto()).concat("] ").concat(item.getNombres()).concat(" ").concat(item.getPaterno()).concat(" ").concat(item.getMaterno()), item.getIdActivo(), item.getIdNomina(), item.getIdSeguro(), item.getNss(), item.getTipo()));
 		return regresar;
 	} // toListSelectionIten	
 	

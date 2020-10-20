@@ -17,6 +17,7 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 	private Long idActivo;		
 	private String nss;		
 	private Long idNomina;		
+	private Long idSeguro;		
 	private ESql sqlAccion;
 	private Boolean nuevo;
 	private String clave;
@@ -38,10 +39,10 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 	}
 	
 	public ContratoPersonal(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, "", 1L, null);		
+		this(key, "", "", "", "", "", "", "", -1L, sqlAccion, nuevo, "", "", "", -1L, "", 1L, 2L, null);		
 	}
 
-	public ContratoPersonal(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, String descripcion, Long idNomina, String nss) {
+	public ContratoPersonal(Long key, String nombres, String paterno, String materno, String puesto, String departamento, String curp, String rfc, Long idActivo, ESql sqlAccion, Boolean nuevo, String clave, String claveDesarrollo, String nombreDesarrollo, Long idPersona, String descripcion, Long idNomina, Long idSeguro, String nss) {
 		super(key);
 		this.nombres         = nombres;
 		this.paterno         = paterno;
@@ -59,6 +60,7 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 		this.idPersona       = idPersona;
 		this.descripcion     = descripcion;
 		this.idNomina        = idNomina;
+		this.idSeguro        = idSeguro;
 		this.nss             = nss;
 	}
 	
@@ -197,5 +199,13 @@ public class ContratoPersonal extends TcKeetContratosPersonalDto implements Seri
 	public void setIdNomina(Long idNomina) {
 		this.idNomina=idNomina;
 	}
-	
+
+  public Long getIdSeguro() {
+    return idSeguro;
+  }
+
+  public void setIdSeguro(Long idSeguro) {
+    this.idSeguro = idSeguro;
+  }
+  
 }
