@@ -72,10 +72,10 @@
 										<h:outputText value="#{item.nombres}"/>
 									</p:column>   
 								</p:selectOneMenu>	
-                <p:panelGrid layout="grid" columns="3" styleClass="janal-wid-100">
-								  <p:outputLabel for="idActivo" value="Empleado activos:"/>
-                  <p:outputLabel for="idSeguro" value="Empleado asegurados:"/>
-                  <p:outputLabel for="idSinDesarrollo" value="Empleado asignados:"/>
+                <p:panelGrid columns="3" styleClass="janal-wid-100">
+								  <p:outputLabel for="idActivo" value="Empleados activos:"/>
+                  <p:outputLabel for="idSeguro" value="Empleados asegurados:"/>
+                  <p:outputLabel for="idSinDesarrollo" value="Empleados asignados:"/>
 								  <p:selectOneMenu id="idActivo" value="#{keetCatalogosContratosPersonalConsulta.attrs.idActivo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
                     <p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosPersonalConsulta.doLoad}" update="tabla" oncomplete="janal.desbloquear();"/>
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>

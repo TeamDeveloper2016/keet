@@ -285,7 +285,7 @@ public class Consulta extends IBaseFilter implements Serializable {
           .value("DESASIGNAR")
           .title("DESASIGNAR")
           .icon("fa fa-remove")
-          .command("#{keetCatalogosContratosPersonalConsulta.doChangeDesarrollo("+ Constantes.TOP_OF_ITEMS+ ",'"+ desarrollo.toString("nombres")+"')}")
+          .command("#{keetCatalogosContratosPersonalConsulta.doChangeDesarrollo("+ Constantes.TOP_OF_ITEMS+ ",'"+ fraccionamiento+ "')}")
           .update("tabla")
           .process("@this tabla")
           .onstart("return janal.bloquear();")
@@ -324,7 +324,7 @@ public class Consulta extends IBaseFilter implements Serializable {
       empleados.add(new SelectionItem(seleccionado.getKey().toString(), seleccionado.toString("nombreCompleto")));
 			transaccion= new Transaccion(idDesarrollo, empleados);
 			if(transaccion.ejecutar(Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? EAccion.DEPURAR: EAccion.COMPLEMENTAR))
-				JsfBase.addMessage("Desarrollo", "Se "+ (Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? "eliminó": "asignó")+ " el empleado a ["+ desarrollo+ "].<br/>"+ seleccionado.toString("nombreCompleto"), ETipoMensaje.INFORMACION);			
+				JsfBase.addMessage("Desarrollo", "Se "+ (Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? "eliminó": "asignó")+ " el empleado a(de) "+ desarrollo+ ".<br/>"+ seleccionado.toString("nombreCompleto"), ETipoMensaje.INFORMACION);			
 			else
 				JsfBase.addMessage("Desarrollo", "Ocurrió un error al "+ (Objects.equals(idDesarrollo, Constantes.TOP_OF_ITEMS)? "asingar": "eliminar")+ " el empleado.", ETipoMensaje.ERROR);
       this.doLoad();
