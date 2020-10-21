@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -467,10 +468,13 @@ public class Transaccion extends TransaccionFactura {
 				codigo.setIdArticulo(idArticulo);				
 				codigo.setIdUsuario(JsfBase.getIdUsuario());
 				codigo.setObservaciones(this.articulo.getObservaciones());
-				if(asignaPrincipal){
+				if(asignaPrincipal) {
 					codigo.setIdProveedor(count==0 ? null : codigo.getIdProveedor());
 					codigo.setIdPrincipal(count==0 ? 1L : 2L);
 				} // if
+        else
+          if(Objects.equals(codigo.getIdProveedor(), -1L))
+            codigo.setIdProveedor(null);
 				codigo.setOrden(count + 1L);
 				dto= (TcManticArticulosCodigosDto) codigo;
 				alterSqlAction= this.eaccionGeneral.equals(EAccion.COPIAR);
