@@ -54,6 +54,7 @@
 			
 			function check(value) {
 				$('input[name|=\"contenedorGrupos\\:tipo\"][value|=\"'+ value+ '\"]').click();
+        reloadProveedores();
 			}
 			
 			$(document).ready(function() {
@@ -77,6 +78,7 @@
 		<p:poll widgetVar="etiqueta" interval="5" update="contenedorGrupos:procesoGlobal" autoStart="false" async="true" oncomplete="reloadProgress();"/>
 		<p:commandButton id="progreso" action="progreso?faces-redirect=true" process="@this" style="display: none;" immediate="true" ajax="false"/>
 		<p:remoteCommand name="viewFile" actionListener="#{keetEstacionesMasivosImportar.doViewFile}" process="@this" update="@(.viewXLS)" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
+    <p:remoteCommand name="reloadProveedores" onstart="return janal.bloquear();" process="@this" update="@(.involucrados)" oncomplete="janal.desbloquear();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">

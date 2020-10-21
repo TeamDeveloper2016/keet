@@ -221,6 +221,10 @@ public class Consulta extends IBaseFilter implements Serializable {
     return regresar;
 	} // doVerificarReporte	
   
+  public String getDoCheckIncidente() {
+    return "";
+  }
+          
   public String doCheckIncidente(Entity row) {
     String regresar          = "";
     Map<String, Object>params= null;

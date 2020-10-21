@@ -1819,8 +1819,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							//RFCPROVEEDOR|PROVEEDOR|RFCCLIENTE|CLIENTE|CLAVE|AUXILIAR|MATERIAL|PRECIOCONVENIO
 							String rfcProveedor= sheet.getCell(0, fila).getContents()!= null? new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
 							String rfcCliente  = sheet.getCell(2, fila).getContents()!= null? new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
-							String clave   = sheet.getCell(3, fila).getContents()!= null? new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
-							String auxiliar= sheet.getCell(4, fila).getContents()!= null? new String(sheet.getCell(4, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+							String clave   = sheet.getCell(4, fila).getContents()!= null? new String(sheet.getCell(4, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
+							String auxiliar= sheet.getCell(5, fila).getContents()!= null? new String(sheet.getCell(5, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): null;
 							double precio  = Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, *]", ""): "0", 0D);
 							if(!Cadena.isVacio(rfcProveedor) && !Cadena.isVacio(rfcCliente) && !Cadena.isVacio(clave)) {
 								TcManticProveedoresDto proveedor= null;
