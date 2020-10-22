@@ -602,7 +602,7 @@ public class Transaccion extends IBaseTnx {
 										if(iva!= 0D)
 											articulo.setIva(iva< 1? iva* 100: iva);
 										if(!Cadena.isVacio(sheet.getCell(3, fila).getContents()))
-									  	articulo.setIdFamilia(this.toFindFamilia(sesion, sheet.getCell(3, fila).getContents()));
+									  	articulo.setIdFamilia(this.toFindFamilia(sesion, sheet.getCell(3, fila).getContents().toUpperCase()));
 										if(!Cadena.isVacio(sheet.getCell(7, fila).getContents()))
 											articulo.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()));
 										if(!Cadena.isVacio(sat))
@@ -646,7 +646,7 @@ public class Transaccion extends IBaseTnx {
 											"0", // String descuento, 
 											"0", // String extra, 
 											null, // String idFacturama
-											this.toFindFamilia(sesion, sheet.getCell(3, fila).getContents()), // idFamilia
+											this.toFindFamilia(sesion, sheet.getCell(3, fila).getContents().toUpperCase()), // idFamilia
 											2L // descontinuado
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
@@ -797,7 +797,7 @@ public class Transaccion extends IBaseTnx {
 							String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							// 0           1          2        3        4          5        6       7          8      
 							//CODIGO|CODIGOAUXILIAR|NOMBRE|FAMILIA|COSTOS/IVA|UNIDADMEDIDA|IVA|STOCKMINIMO|STOCKMAXIMO
-							String familia = new String(sheet.getCell(3, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							String familia = sheet.getCell(3, fila).getContents().toUpperCase();
 							double costo   = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double iva     = Numero.getDouble(sheet.getCell(6, fila).getContents()!= null? sheet.getCell(6, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);
 							double minimo  = Numero.getDouble(sheet.getCell(7, fila).getContents()!= null? sheet.getCell(7, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
