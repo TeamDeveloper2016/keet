@@ -157,6 +157,14 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toPuestoPersona
 	
+	public Long toContratistaPersona() throws Exception{
+		Long regresar= -1L;
+		TrManticEmpresaPersonalDto contratistaPersona= toDetallePersona();
+		if(contratistaPersona!= null && contratistaPersona.isValid())
+				regresar= contratistaPersona.getIdContratista();
+		return regresar;
+	} // toPuestoPersona
+	
 	public TrManticEmpresaPersonalDto toDetallePersona() throws Exception{
 		TrManticEmpresaPersonalDto regresar= null;
 		Map<String, Object>params          = null;
@@ -165,7 +173,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
 			regresar= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);			
 			if(regresar!= null)
-			this.idEmpresaPersona= regresar.getIdEmpresaPersona();
+			  this.idEmpresaPersona= regresar.getIdEmpresaPersona();
 		} // try
 		catch (Exception e) {			
 			throw e;

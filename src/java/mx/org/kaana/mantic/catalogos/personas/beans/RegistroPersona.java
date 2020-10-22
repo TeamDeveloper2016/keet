@@ -40,6 +40,7 @@ public class RegistroPersona implements Serializable {
 	private Domicilio domicilio;
 	private Domicilio domicilioPivote;
 	private Long idPuesto;
+	private Long idContratista;
 	private Long idEmpresa;
 	private boolean activo;
 	
@@ -51,6 +52,9 @@ public class RegistroPersona implements Serializable {
 		this.idPersona          = idPersona;
 		this.contadores         = new ContadoresListas();
 		this.countIndice        = 0L;
+		this.idPuesto           = -1L;
+    this.idContratista      = -1L;
+		this.idEmpresa          = -1L;
 		this.deleteList         = new ArrayList<>();
 		this.domicilio          = new Domicilio();
 		this.domicilioPivote    = new Domicilio();
@@ -70,6 +74,7 @@ public class RegistroPersona implements Serializable {
 		this.domicilio            = domicilio;
 		this.domicilioPivote      = domicilio;
 		this.idPuesto             = -1L;
+    this.idContratista        = -1L;
 		this.idEmpresa            = -1L;
 		this.personasBeneficiarios= personasBeneficiarios;
 		this.personasBancos       = personasBancos;
@@ -159,6 +164,14 @@ public class RegistroPersona implements Serializable {
 	public void setIdPuesto(Long idPuesto) {
 		this.idPuesto = idPuesto;
 	}	
+
+  public Long getIdContratista() {
+    return idContratista;
+  }
+
+  public void setIdContratista(Long idContratista) {
+    this.idContratista = idContratista;
+  }
 
 	public Long getIdEmpresa() {
 		return idEmpresa;
@@ -263,6 +276,7 @@ public class RegistroPersona implements Serializable {
 			this.personasTiposContacto= motor.toPersonasTipoContacto();		
 			this.personasBancos= motor.toPersonasBancos();		
 			this.idPuesto= motor.toPuestoPersona();
+      this.idContratista= motor.toContratistaPersona();
 			this.idEmpresa= motor.toEmpresaPersona();
 		} // try
 		catch (Exception e) {			
@@ -547,4 +561,5 @@ public class RegistroPersona implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	}
+  
 }

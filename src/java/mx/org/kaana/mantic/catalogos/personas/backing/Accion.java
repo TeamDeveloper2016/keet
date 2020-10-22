@@ -102,28 +102,26 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // init
 
 	private void loadCollections() throws Exception {		
-		loadEmpresas();		
-		loadBancos();
-		doLoadPuestos();
-		loadTitulos();
-		loadTiposPersonas();   
-		loadTiposContactos();
-		loadTiposDomicilios();
-		loadEntidades();
-		loadMunicipios();
-		loadLocalidades();		
-		loadDomicilios();
+		this.loadEmpresas();		
+		this.loadBancos();
+		this.loadTitulos();
+		this.loadTiposPersonas();   
+		this.loadTiposContactos();
+		this.loadTiposDomicilios();
+		this.loadEntidades();
+		this.loadMunicipios();
+		this.loadLocalidades();		
+		this.loadDomicilios();
 		if((boolean)this.attrs.get("mostrarClientes"))
-			loadClientes();
+			this.loadClientes();
 		if((boolean)this.attrs.get("mostrarProveedores"))
-			loadProveedores();
-		loadEstadosCiviles();
-		loadTiposParentescos();
-		loadDepartamentos();
-		loadContratistas();
+			this.loadProveedores();
+		this.loadEstadosCiviles();
+		this.loadTiposParentescos();
+		this.loadDepartamentos();
 	} // loadCollections	
 	
-	private void loadDepartamentos(){
+	private void loadDepartamentos() {
 		List<UISelectItem> departamentos= null;
 		Map<String, Object> params      = null;		
 		try {
@@ -204,7 +202,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       puestos = UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!puestos.isEmpty()) {
 				this.attrs.put("puestos", puestos);
-				this.attrs.put("idPuesto", UIBackingUtilities.toFirstKeySelectItem(puestos));
+        if(EAccion.AGREGAR.equals((EAccion)this.attrs.get("accion")))
+				  this.attrs.put("idPuesto", UIBackingUtilities.toFirstKeySelectItem(puestos));
+        else
+          this.attrs.put("idPuesto", puestos.get(puestos.indexOf(new UISelectItem(this.registroPersona.getIdPuesto()))));
 			} // if
     } // try
     catch (Exception e) {
@@ -237,14 +238,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	private void loadContratistas(){
 		List<UISelectEntity>contratistas= null;		
-		List<Columna> campos            = null;
+		List<Columna> columns           = null;
 		try {
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			contratistas= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, campos, Constantes.SQL_TODOS_REGISTROS, "nombres");
+			columns= new ArrayList<>();
+			columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			contratistas= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS, "nombres");
 			this.attrs.put("contratistas", contratistas);
-			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
+      if(EAccion.AGREGAR.equals((EAccion)this.attrs.get("accion")))
+  			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
+      else
+        this.attrs.put("idContratista", contratistas.get(contratistas.indexOf(new UISelectEntity(this.registroPersona.getIdContratista()))));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -286,12 +290,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 						doConsultarBeneficiario();
 					} // if					
 					this.attrs.put("idEmpresa", new UISelectEntity(this.registroPersona.getIdEmpresa()));					
-					doLoadPuestos();
           break;
       } // switch
 			this.registroPersona.getPersona().setEstilo(TEMA);
 			this.registroPersona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
-			doActualizaIconEstatus();
+      this.doLoadPuestos();
+      this.loadContratistas();
+			this.doActualizaIconEstatus();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

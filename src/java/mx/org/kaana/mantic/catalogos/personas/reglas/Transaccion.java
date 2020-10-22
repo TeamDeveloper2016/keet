@@ -321,7 +321,7 @@ public class Transaccion extends IBaseTnx{
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
 			empresaPersonal= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
-			if(empresaPersonal!= null && empresaPersonal.isValid()){						
+			if(empresaPersonal!= null && empresaPersonal.isValid()) {						
 				empresaPersonal.setIdActivo(this.persona.getEmpresaPersona().getIdActivo());
 				empresaPersonal.setClave(this.persona.getEmpresaPersona().getClave());
 				empresaPersonal.setIdContrato(this.persona.getEmpresaPersona().getIdContrato());
@@ -336,12 +336,13 @@ public class Transaccion extends IBaseTnx{
 				empresaPersonal.setFactorInfonavit(this.persona.getEmpresaPersona().getFactorInfonavit());
 				empresaPersonal.setIdDepartamento(this.persona.getEmpresaPersona().getIdDepartamento());
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
+				empresaPersonal.setIdContratista(this.persona.getEmpresaPersona().getIdContratista());
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
 				empresaPersonal.setIdNomina(this.persona.getEmpresaPersona().getIdNomina());
 				empresaPersonal.setIdSeguro(this.persona.getEmpresaPersona().getIdSeguro());
 				bitacora(sesion, "Empleados", empresaPersonal);
 				oldData= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findById(sesion, empresaPersonal.getClass(), empresaPersonal.getKey());
-				if(registrarIncidenciaCambios(sesion, empresaPersonal, oldData)){
+				if(registrarIncidenciaCambios(sesion, empresaPersonal, oldData)) {
 					if(DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L)	
 						regresar= registraDeudor(sesion, empresaPersonal.getIdEmpresaPersona());
 				} // if
