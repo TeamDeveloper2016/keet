@@ -123,32 +123,32 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private String toCondicion() {
 		String regresar             = null;
-		StringBuilder condicion     = null;
+		StringBuilder sb            = null;
 		UISelectEntity cliente      = null;
 		List<UISelectEntity>clientes= null;
 		try {
-			condicion= new StringBuilder("");
+			sb= new StringBuilder("");
 			cliente= (UISelectEntity)this.attrs.get("cliente");
 			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
 			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-				condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+				sb.append("tc_mantic_clientes.razon_social regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
 			else 
 				if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-					condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+					sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
 			if(!Cadena.isVacio(this.attrs.get("estatus")))
-				condicion.append("tc_mantic_clientes.id_activo in (").append(this.attrs.get("estatus")).append(") and ");			
+				sb.append("tc_mantic_clientes.id_activo in (").append(this.attrs.get("estatus")).append(") and ");			
 			if(!Cadena.isVacio(this.attrs.get("grupo")))
-				condicion.append("tc_mantic_clientes.grupo like '%").append(this.attrs.get("grupo")).append("%' and ");
+				sb.append("tc_mantic_clientes.grupo like '%").append(this.attrs.get("grupo")).append("%' and ");
 			if(!Cadena.isVacio(this.attrs.get("rfc")))
-				condicion.append("tc_mantic_clientes.rfc like '%").append(this.attrs.get("rfc")).append("%' and ");
+				sb.append("tc_mantic_clientes.rfc like '%").append(this.attrs.get("rfc")).append("%' and ");
 			if(!Cadena.isVacio(this.attrs.get("clave")))
-				condicion.append("tc_mantic_clientes.clave like '%").append(this.attrs.get("clave")).append("%' and ");
+				sb.append("tc_mantic_clientes.clave like '%").append(this.attrs.get("clave")).append("%' and ");
 			if(this.attrs.get("idClienteProcess")!= null && !Cadena.isVacio(this.attrs.get("idClienteProcess")))
-				condicion.append("tc_mantic_clientes.id_cliente =").append(this.attrs.get("idClienteProcess")).append(" and ");			
-			if(Cadena.isVacio(condicion))
+				sb.append("tc_mantic_clientes.id_cliente =").append(this.attrs.get("idClienteProcess")).append(" and ");			
+			if(Cadena.isVacio(sb))
 				regresar= Constantes.SQL_VERDADERO;
 			else
-				regresar= condicion.substring(0, condicion.length() -4);
+				regresar= sb.substring(0, sb.length() -4);
 		} // try
 		catch (Exception e) {			
 			throw e;

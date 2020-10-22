@@ -82,13 +82,9 @@
 								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-proveedores.xls" title="Plantilla de proveedores XLS">
 									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 								</h:outputLink>
-							</div>
-							<div class="janal-icons-header">
 								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-precios-proveedores.xls" title="Plantilla de precios por proveedor">
 									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 								</h:outputLink>
-							</div>
-							<div class="janal-icons-header">
 								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-precios-clientes.xls" title="Plantilla de precios por cliente">
 									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 								</h:outputLink>
@@ -105,11 +101,11 @@
 								<p:separator/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" action="#{manticCatalogosProveedoresFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Carga masiva" action="#{manticCatalogosProveedoresFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Precios proveedor" action="#{manticCatalogosProveedoresFiltro.doUploadProveedor()}" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Precios cliente" action="#{manticCatalogosProveedoresFiltro.doUploadCliente()}" onstart="return janal.bloquear()"/>						
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>												
             <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">

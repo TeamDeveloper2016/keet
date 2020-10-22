@@ -11,8 +11,11 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				codigo     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				nombre     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				idEmpresa  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				idAlmacen  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				codigo     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				nombre     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				idFamilia  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         fechaInicio: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaFin   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
 			};

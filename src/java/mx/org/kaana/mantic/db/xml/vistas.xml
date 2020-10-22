@@ -3588,6 +3588,63 @@
 					and tc_mantic_proveedores.id_subcontratista in ({idSubContratista})
 				{sortOrder}
 			</select>
+			<select id="precios">
+				select 
+					tc_keet_articulos_proveedores.id_articulo_proveedor as id_key,
+					tc_mantic_proveedores.clave,
+					tc_mantic_proveedores.rfc,
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_empresas.clave clave_empresa,
+					tc_mantic_empresas.nombre nombre_empresa,
+					tc_mantic_articulos.nombre as material,
+					tc_mantic_articulos_codigos.codigo,
+					tc_keet_articulos_proveedores.precio_base as precio
+				from   
+				   tc_keet_articulos_proveedores
+				inner join   
+					 tc_mantic_proveedores on tc_keet_articulos_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join 
+					tc_mantic_empresas on tc_mantic_proveedores.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+				   tc_mantic_articulos on tc_keet_articulos_proveedores.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+				   tc_mantic_articulos_codigos on tc_keet_articulos_proveedores.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				where
+					tc_mantic_proveedores.id_empresa in ({idEmpresa})    
+			    and {condicion}       
+				{sortOrder}
+			</select>
+			<select id="convenios">
+				select 
+					tr_keet_articulo_proveedor_cliente.id_articulo_proveedor_cliente as id_key,
+					tc_mantic_proveedores.clave as pclave,
+					tc_mantic_proveedores.rfc as prfc,
+					tc_mantic_proveedores.razon_social as prazon_social,
+					tc_mantic_clientes.clave as cclave,
+					tc_mantic_clientes.rfc as crfc,
+					tc_mantic_clientes.razon_social as crazon_social,
+					tc_mantic_empresas.clave clave_empresa,
+					tc_mantic_empresas.nombre nombre_empresa,
+					tc_mantic_articulos.nombre as material,
+					tc_mantic_articulos_codigos.codigo,
+					tr_keet_articulo_proveedor_cliente.precio_convenio as precio
+				from   
+				   tr_keet_articulo_proveedor_cliente
+				inner join   
+					 tc_mantic_proveedores on tr_keet_articulo_proveedor_cliente.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join   
+					 tc_mantic_clientes on tr_keet_articulo_proveedor_cliente.id_cliente= tc_mantic_clientes.id_cliente
+				inner join 
+					tc_mantic_empresas on tc_mantic_proveedores.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+				   tc_mantic_articulos on tr_keet_articulo_proveedor_cliente.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+				   tc_mantic_articulos_codigos on tr_keet_articulo_proveedor_cliente.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				where
+					tc_mantic_proveedores.id_empresa in ({idEmpresa})    
+			    and {condicion}       
+				{sortOrder}
+      </select> 
 			<select id="portal">
 				select 
 					tc_mantic_proveedores.id_proveedor as id_key,

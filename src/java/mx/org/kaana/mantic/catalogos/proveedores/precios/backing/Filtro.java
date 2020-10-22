@@ -1,7 +1,8 @@
-package mx.org.kaana.mantic.catalogos.proveedores.backing;
+package mx.org.kaana.mantic.catalogos.proveedores.precios.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,9 @@ import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Gestor;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import org.primefaces.event.SelectEvent;
 
-@Named(value = "manticCatalogosProveedoresFiltro")
+@Named(value = "manticCatalogosProveedoresPreciosFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
@@ -38,13 +40,13 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-      this.attrs.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
+      this.attrs.put("sortOrder", "order by tc_mantic_proveedores.razon_social, tc_mantic_articulos.nombre");
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-      this.loadEmpresas();
+      this.toLoadCatalog();
       this.loadTiposProveedores();
 			if(JsfBase.getFlashAttribute("idProveedorProcess")!= null){
 				this.attrs.put("idProveedorProcess", JsfBase.getFlashAttribute("idProveedorProcess"));
-				doLoad();
+				this.doLoad();
 				this.attrs.put("idProveedorProcess", null);
 			} // if			
     } // try
@@ -54,41 +56,40 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-	private void loadEmpresas() {
-		Map<String, Object>params= null;
-		List<Columna> columns    = null;
-		try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();			
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+	private void toLoadCatalog() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch				
-	} // loadEmpresas
-	
+      this.attrs.put("familias", (List<UISelectEntity>) UIEntity.seleccione("TcKeetFamiliasDto", "familias", params, Collections.EMPTY_LIST, "nombre"));
+			this.attrs.put("idFamilia", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+  
   private void loadTiposProveedores() throws Exception {
     Gestor gestor = new Gestor();
     gestor.loadTiposProveedores();
     this.attrs.put("tiposProveedores", gestor.getTiposProveedores());
     this.attrs.put("tipoProveedor", UIBackingUtilities.toFirstKeySelectEntity(gestor.getTiposProveedores()));
   }
-
-  private String toAllTiposProveedores() {
-    StringBuilder regresar = new StringBuilder();
-    List<UISelectEntity> tiposProveedores = (List<UISelectEntity>) this.attrs.get("tiposProveedores");
-    for (UISelectEntity tipoProvedor : tiposProveedores) {
-      regresar.append(tipoProvedor.getKey());
-      regresar.append(",");
-    } // for
-    return regresar.substring(0, regresar.length() - 1);
-  }
-
+  
   @Override
   public void doLoad() {
     List<Columna> columns    = null;
@@ -96,11 +97,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       params = this.toPrepare();	
       columns= new ArrayList<>();
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("tipoProveedor", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("tipoDia", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      this.lazyModel = new FormatCustomLazy("VistaProveedoresDto", params, columns);
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("material", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("precio", EFormatoDinamicos.MILES_CON_DECIMALES));
+      this.lazyModel = new FormatCustomLazy("VistaProveedoresDto", "precios", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -119,7 +121,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-      JsfBase.setFlashAttribute("idProveedor", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("idArticuloProveedor", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -133,7 +135,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       transaccion = new Transaccion(new TcManticProveedoresDto(((Entity)this.attrs.get("seleccionado")).getKey()));
       transaccion.ejecutar(EAccion.ELIMINAR);
-      JsfBase.addMessage("Eliminar proveedor", "El proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+      JsfBase.addMessage("Eliminar precio", "El precio del articulo para el proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -198,6 +200,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  sb.append("(tc_mantic_proveedores.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("idTipoProveedor")) && !this.attrs.get("idTipoProveedor").toString().equals("-1"))
   		sb.append("(tc_mantic_proveedores.id_tipo_proveedor= ").append(this.attrs.get("idTipoProveedor")).append(") and ");
+    if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
+      sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
+    if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
+      sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
+    else 
+      if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
+        String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+        sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
+      } // if	
+    if(!Cadena.isVacio(this.attrs.get("idFamilia")) && !this.attrs.get("idFamilia").toString().equals("-1"))
+      sb.append("(tc_mantic_articulos.id_familia= ").append(this.attrs.get("idFamilia").toString()).append(") and ");
 		if(this.attrs.get("idEmpresa")!= null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)
 		  regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 		else
@@ -206,7 +219,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
-		regresar.put("idSubContratista", "1, 2");
 		return regresar;		
 	}
 
@@ -221,11 +233,91 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Proveedores/filtro");
 		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
-	
-	public String doUploadCliente() {
-		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PRECIOS_CONVENIO.getId());
-		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Proveedores/filtro");
-		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
-	}
+
+	public void doUpdateCodigos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			String search= (String)this.attrs.get("codigoCodigo"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				params.put("sucursales", this.attrs.get("idEmpresa"));
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);			
+  		params.put("codigo", search);			
+      this.attrs.put("codigos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateCodigos
+
+	public List<UISelectEntity> doCompleteCodigo(String query) {
+		this.attrs.put("codigoCodigo", query);
+    this.doUpdateCodigos();		
+		return (List<UISelectEntity>)this.attrs.get("codigos");
+	}	// doCompleteCodigo
+
+	public void doAsignaCodigo(SelectEvent event) {
+		UISelectEntity seleccion    = null;
+		List<UISelectEntity> codigos= null;
+		try {
+			codigos= (List<UISelectEntity>) this.attrs.get("codigos");
+			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
+			this.attrs.put("codigoSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCodigo	  
+
+	public void doUpdateArticulos() {
+		List<Columna> columns         = null;
+    Map<String, Object> params    = null;
+		List<UISelectEntity> articulos= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			String search= (String) this.attrs.get("codigoFiltro"); 
+			if(!Cadena.isVacio(search)) 
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);			        
+      articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
+      this.attrs.put("articulosFiltro", articulos);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}	// doUpdateArticulos
   
+	public List<UISelectEntity> doCompleteArticulo(String query) {
+		this.attrs.put("existeFiltro", null);
+		this.attrs.put("codigoFiltro", query);
+    this.doUpdateArticulos();
+		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
+	}	// doCompleteArticulo
+
 }

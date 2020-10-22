@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Catalogo de precios convenidos de materiales por proveedor y cliente"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+				idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        pclave      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        pgrupo      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        prfc        : {validaciones: 'rfc',   mascara: 'fiscal', formatos: 'cambiar-mayusculas', grupo: 'general'},      
+        prazonSocial: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        cclave      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        cgrupo      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        crfc        : {validaciones: 'rfc'  , mascara: 'fiscal', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        crazonSocial: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
+				codigo      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				nombre      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				idFamilia   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosProveedoresConveniosFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticCatalogosProveedoresConveniosFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="pclave" value="Clave proveedor:"/>
+              <p:inputText id="pclave" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.pclave}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="pgrupo" value="Grupo ó familia proveedor:"/>
+              <p:inputText id="pgrupo" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.pgrupo}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="prfc" value="RFC proveedor:"/>
+              <p:inputText id="prfc" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.prfc}" styleClass="janal-wid-100-txt"/>              			                            
+              <p:outputLabel for="prazonSocial" value="Proveedor:"/>
+							<p:autoComplete id="prazonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.proveedor}" completeMethod="#{manticCatalogosProveedoresConveniosFiltro.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{custom.rfc}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>			
+              <p:outputLabel for="tipoProveedor"  value="Tipo proveedor:"/>
+              <p:selectOneMenu id="tipoProveedor" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.idTipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
+                <f:selectItems value="#{manticCatalogosProveedoresConveniosFiltro.attrs.tiposProveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column>
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+                <p:column styleClass="janal-column-right" headerText="Tiempo estimado de entrega(dias)">
+                  <h:outputText value="#{item.dias}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="cclave" value="Clave cliente:"/>
+              <p:inputText id="cclave" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.cclave}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="cgrupo" value="Grupo ó familia cliente:"/>
+              <p:inputText id="cgrupo" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.cgrupo}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="crfc" value="RFC cliente:"/>
+              <p:inputText id="crfc" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.crfc}" styleClass="janal-wid-100-txt"/>              			                            
+              <p:outputLabel for="crazonSocial" value="Cliente:"/>
+              <p:autoComplete id="crazonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.cliente}" completeMethod="#{manticCatalogosProveedoresConveniosFiltro.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{custom.rfc}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+              <p:outputLabel for="codigo" value="Código:"/>
+              <p:autoComplete id="codigo" placeholder="ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.codigoBuscado}" completeMethod="#{manticCatalogosProveedoresConveniosFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticCatalogosProveedoresConveniosFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini"  width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Código:" />
+										<h:outputText value="#{customCodigo.propio}"/>
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{customCodigo.nombre}"/>
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+							<p:outputLabel for="nombre" value="Material:"/>							
+							<p:autoComplete id="nombre" var="custom" placeholder="Nombre articulo" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.nombre}" completeMethod="#{manticCatalogosProveedoresConveniosFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini"  width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Propio:" />
+										<h:outputText value="#{custom.propio}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />
+										<h:outputText value="IVA:" />
+										<h:outputText value="#{custom.iva}" />
+										<h:outputText value="Costo:" />
+										<h:outputText value="$ #{custom.precio}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+							<p:outputLabel for="idFamilia" value="Familia:"/>
+ 							<p:selectOneMenu id="idFamilia" value="#{manticCatalogosProveedoresConveniosFiltro.attrs.idFamilia}" var="option" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticCatalogosProveedoresConveniosFiltro.attrs.familias}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{option.nombre}"/>
+                </p:column>   
+							</p:selectOneMenu>              
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{manticCatalogosProveedoresConveniosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticCatalogosProveedoresConveniosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosProveedoresConveniosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosProveedoresConveniosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosProveedoresConveniosFiltro.lazyModel.rowCount gt manticCatalogosProveedoresConveniosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <f:facet name="header">
+							<div class="janal-icons-header">
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-proveedores.xls" title="Plantilla de proveedores XLS">
+									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+								</h:outputLink>
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-precios-proveedores.xls" title="Plantilla de precios por proveedor">
+									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+								</h:outputLink>
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-precios-clientes.xls" title="Plantilla de precios por cliente">
+									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+								</h:outputLink>
+							</div>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem  value="Agregar" action="#{manticCatalogosProveedoresConveniosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+								<p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-cloud-upload" value="Importar proveedores" title="Carga masiva" action="#{manticCatalogosProveedoresConveniosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+								<p:menuitem icon="fa fa-cloud-upload" value="Precios proveedor" action="#{manticCatalogosProveedoresConveniosFiltro.doUploadProveedor()}" title="Importar precios" onstart="return janal.bloquear()"/>
+								<p:menuitem icon="fa fa-cloud-upload" value="Precios cliente" action="#{manticCatalogosProveedoresConveniosFiltro.doUploadCliente()}" title="Importar precios" onstart="return janal.bloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" action="#{manticCatalogosProveedoresConveniosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Carga masiva" action="#{manticCatalogosProveedoresConveniosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Precios proveedor" action="#{manticCatalogosProveedoresConveniosFiltro.doUploadProveedor()}" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Precios cliente" action="#{manticCatalogosProveedoresFiltro.doUploadCliente()}" onstart="return janal.bloquear()"/>						
+            </f:facet>												
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.cclave}">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{row['pclave']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.crazonSocial}">
+              <f:facet name="header">
+                <h:outputText value="Proveedor"/>
+              </f:facet>
+              <h:outputText value="#{row['prazonSocial']}"/>
+            </p:column>	      						
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.cclave}">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{row['cclave']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.crazonSocial}">
+              <f:facet name="header">
+                <h:outputText value="Cliente"/>
+              </f:facet>
+              <h:outputText value="#{row['crazonSocial']}"/>
+            </p:column>	      						
+						<p:column class="janal-column-left janal-wid-10 MarAuto Responsive" sortBy="#{row.codigo}">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row['codigo']}"/>
+            </p:column>	      
+						<p:column class="MarAuto Responsive" sortBy="#{row.material}">
+              <f:facet name="header">
+                <h:outputText value="Material"/>
+              </f:facet>
+              <h:outputText value="#{row['material']}"/>
+            </p:column>														
+						<p:column class="MarAuto Responsive janal-wid-12 janal-column-right" sortBy="#{row.precio}">
+              <f:facet name="header">
+                <h:outputText value="Precio"/>
+              </f:facet>
+              <h:outputText value="#{row['precio']}"/>
+            </p:column>														
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosProveedoresConveniosFiltro.lazyModel== null? 0: manticCatalogosProveedoresConveniosFiltro.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem id="consultar" action="#{manticCatalogosProveedoresConveniosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
+            <p:menuitem id="modificar" action="#{manticCatalogosProveedoresConveniosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+          </p:contextMenu>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>    
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el precio convenido del material ?" />
+  <ui:param name="accionConfirmacion" value="#{manticCatalogosProveedoresConveniosFiltro}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <h:panelGrid columns="2">
+      <p:outputLabel value="Proveedor: "/>
+      <p:outputLabel value="#{manticCatalogosProveedoresConveniosFiltro.attrs.seleccionado.prazonSocial}"/>
+      <p:outputLabel value="Cliente: "/>
+      <p:outputLabel value="#{manticCatalogosProveedoresConveniosFiltro.attrs.seleccionado.crazonSocial}"/>
+      <p:outputLabel value="Material: "/>
+      <p:outputLabel value="#{manticCatalogosProveedoresConveniosFiltro.attrs.seleccionado.material}"/>
+      <p:outputLabel value="Precio: "/>
+      <p:outputLabel value="#{manticCatalogosProveedoresConveniosFiltro.attrs.seleccionado.precio}"/>
+    </h:panelGrid>			
+  </ui:define>
+</ui:composition>
