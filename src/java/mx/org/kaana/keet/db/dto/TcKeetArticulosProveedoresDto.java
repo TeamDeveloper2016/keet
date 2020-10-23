@@ -53,7 +53,7 @@ public class TcKeetArticulosProveedoresDto implements IBaseDto, Serializable {
   }
 
   public TcKeetArticulosProveedoresDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, LocalDateTime.now());
+    this(-1L, 0D, null, new Long(-1L), -1L, 0D, 0D, LocalDateTime.now());
     setKey(key);
   }
 

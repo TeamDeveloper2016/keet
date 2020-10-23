@@ -48,7 +48,7 @@
               <p:inputText id="grupo" value="#{manticCatalogosProveedoresPreciosFiltro.attrs.grupo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosProveedoresPreciosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
-              <p:outputLabel for="razonSocial" value="Razón social:"/>
+              <p:outputLabel for="razonSocial" value="Proveedor:"/>
 							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosProveedoresPreciosFiltro.attrs.proveedor}" completeMethod="#{manticCatalogosProveedoresPreciosFiltro.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">

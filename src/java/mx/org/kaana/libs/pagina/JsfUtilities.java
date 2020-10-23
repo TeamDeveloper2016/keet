@@ -141,11 +141,6 @@ public class JsfUtilities {
     JsfUtilities.getViewRoot().getAttributes().put(key, value);
   }	
 	
-	public static void setFlashAttributeInterprete (String key, Object value) {  	
-	   FacesContext.getCurrentInstance().getExternalContext().getFlash().put(key, value);
-		 JsfUtilities.getSession().removeAttribute("kajoolCapturaInterpreteLanzador");
-	}
-
   public static void setFlashAttribute (String key, Object value) {  	
   	FacesContext.getCurrentInstance().getExternalContext().getFlash().put(key, value);
   }

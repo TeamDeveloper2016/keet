@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -27,7 +28,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Gestor;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticCatalogosProveedoresPreciosFiltro")
@@ -44,10 +44,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.toLoadCatalog();
       this.loadTiposProveedores();
-			if(JsfBase.getFlashAttribute("idProveedorProcess")!= null){
-				this.attrs.put("idProveedorProcess", JsfBase.getFlashAttribute("idProveedorProcess"));
+			if(JsfBase.getFlashAttribute("idArticuloProveedor")!= null){
+				this.attrs.put("idArticuloProveedor", JsfBase.getFlashAttribute("idArticuloProveedor"));
 				this.doLoad();
-				this.attrs.put("idProveedorProcess", null);
+				this.attrs.put("idArticuloProveedor", null);
 			} // if			
     } // try
     catch (Exception e) {
@@ -121,6 +121,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
+      JsfBase.setFlashAttribute("retorno", "filtro");      
       JsfBase.setFlashAttribute("idArticuloProveedor", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
     } // try
     catch (Exception e) {
@@ -133,7 +134,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doEliminar() {
     Transaccion transaccion = null;
     try {
-      transaccion = new Transaccion(new TcManticProveedoresDto(((Entity)this.attrs.get("seleccionado")).getKey()));
+      transaccion = new Transaccion(new TcKeetArticulosProveedoresDto(((Entity)this.attrs.get("seleccionado")).getKey()));
       transaccion.ejecutar(EAccion.ELIMINAR);
       JsfBase.addMessage("Eliminar precio", "El precio del articulo para el proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
     } // try
@@ -185,8 +186,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb            = new StringBuilder();
 	  UISelectEntity proveedor    = (UISelectEntity)this.attrs.get("proveedor");
 		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
-		if(this.attrs.get("idProveedorProcess")!= null && !Cadena.isVacio(this.attrs.get("idProveedorProcess")))
-			sb.append("tc_mantic_proveedores.id_proveedor =").append(this.attrs.get("idProveedorProcess")).append(" and ");
+		if(this.attrs.get("idArticuloProveedor")!= null && !Cadena.isVacio(this.attrs.get("idArticuloProveedor")))
+			sb.append("tc_keet_articulos_proveedores.id_articulo_proveedor =").append(this.attrs.get("idArticuloProveedor")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
 			sb.append("(tc_mantic_proveedores.clave like '%").append(this.attrs.get("clave")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("grupo")))
@@ -283,7 +284,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doAsignaCodigo	  
 
-	public void doUpdateArticulos() {
+	public List<UISelectEntity> doCompleteArticulo(String query) {
+		this.attrs.put("existeFiltro", null);
+		this.attrs.put("codigoFiltro", query);
 		List<Columna> columns         = null;
     Map<String, Object> params    = null;
 		List<UISelectEntity> articulos= null;
@@ -311,13 +314,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
-	}	// doUpdateArticulos
-  
-	public List<UISelectEntity> doCompleteArticulo(String query) {
-		this.attrs.put("existeFiltro", null);
-		this.attrs.put("codigoFiltro", query);
-    this.doUpdateArticulos();
-		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
+		return articulos;
 	}	// doCompleteArticulo
 
 }
