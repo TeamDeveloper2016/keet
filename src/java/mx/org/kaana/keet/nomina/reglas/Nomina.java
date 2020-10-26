@@ -266,11 +266,21 @@ public class Nomina implements Serializable {
 				int count= 0;
 				// REMOVER TODOS LOS INCIDENTES QUE SE ALCANZARON A APLICAR EN LA NOMINA
 				while(count< incidentes.size()) {
-					if(Cadena.isVacio(incidentes.get(count).getIdNomina()))
+          TcManticIncidentesDto incidente= incidentes.get(count);
+          // MARCAR TODOS AQUELLOS MOVIMIENTOS QUE NO AFECTAN NOMINA PARA DEJARLOS EN LA NOMINA ACTIVA
+          if(!(Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.FALTA.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.DIAFESTIVO.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.TRIPLE.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.EXEDENTE.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.PRESTAMO.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.APERTURACH.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.SALDOCH.idTipoIncidente())))
+            incidente.setIdNomina(this.nomina.getIdNomina());
+					if(Cadena.isVacio(incidente.getIdNomina()))
 						incidentes.remove(count);
 					else {
 						// APLICAR AQUELLOS INCIDENTES QUE SI FUERON SELECCIONADOS
-						DaoFactory.getInstance().update(this.sesion, incidentes.get(count));
+						DaoFactory.getInstance().update(this.sesion, incidente);
 						count++;
 					} // else
 				} // while

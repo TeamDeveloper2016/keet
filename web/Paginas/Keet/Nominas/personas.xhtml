@@ -19,6 +19,8 @@
         idTipoNomina: {validaciones: 'libre', mascara: 'libre'},
         idSemaforo  : {validaciones: 'libre', mascara: 'libre'},
         estatus     : {validaciones: 'libre', mascara: 'libre'},
+        netoMayor   : {validaciones: 'libre', mascara: 'libre'},
+        netoMenor   : {validaciones: 'libre', mascara: 'libre'},
         nombre      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
     </script>		
@@ -53,7 +55,6 @@
                   <h:outputText value="#{item.nombres}"/>
                 </p:column>   
               </p:selectOneMenu>	
-              
 							<p:outputLabel for="nomina" value="Nómina:"/>
 							<p:selectOneMenu id="nomina" value="#{keetNominasPersonas.attrs.idNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetNominasPersonas.attrs.nominas}" var="element" itemValue="#{element}" itemLabel="#{element.nomina}"/>
@@ -67,29 +68,29 @@
                   <h:outputText value="#{item.termino}"/>
                 </p:column>   
               </p:selectOneMenu>	
-							<p:outputLabel for="ejercicio" value="Ejercicio:"/>
-							<p:selectOneMenu id="ejercicio" value="#{keetNominasPersonas.attrs.ejercicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:outputLabel for="ejercicio" value="Ejercicio:" rendered="false"/>
+							<p:selectOneMenu id="ejercicio" value="#{keetNominasPersonas.attrs.ejercicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
                 <f:selectItems value="#{keetNominasPersonas.attrs.ejercicios}" var="element" itemValue="#{element}" itemLabel="#{element.ejercicio}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.ejercicio}"/>
                 </p:column>   
               </p:selectOneMenu>	
-							<p:outputLabel for="semana" value="Semana:"/>
-							<p:selectOneMenu id="semana" value="#{keetNominasPersonas.attrs.semana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:outputLabel for="semana" value="Semana:" rendered="false"/>
+							<p:selectOneMenu id="semana" value="#{keetNominasPersonas.attrs.semana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
                 <f:selectItems value="#{keetNominasPersonas.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.semana}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.semana}"/>
                 </p:column>   
               </p:selectOneMenu>	
-							<p:outputLabel for="tipo" value="Tipo nómina:"/>
-							<p:selectOneMenu id="tipo" value="#{keetNominasPersonas.attrs.idTipoNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:outputLabel for="tipo" value="Tipo nómina:" rendered="false"/>
+							<p:selectOneMenu id="tipo" value="#{keetNominasPersonas.attrs.idTipoNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
                 <f:selectItems value="#{keetNominasPersonas.attrs.tipos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>	
-							<p:outputLabel for="estatus" value="Estatus:"/>
-							<p:selectOneMenu id="estatus" value="#{keetNominasPersonas.attrs.estatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:outputLabel for="estatus" value="Estatus:" rendered="false"/>
+							<p:selectOneMenu id="estatus" value="#{keetNominasPersonas.attrs.estatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
                 <f:selectItems value="#{keetNominasPersonas.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
@@ -105,7 +106,6 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>	
-              
 							<p:outputLabel for="departamento" value="Departamento:"/>
 							<p:selectOneMenu id="departamento" value="#{keetNominasPersonas.attrs.idDepartamento}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 								<f:selectItems value="#{keetNominasPersonas.attrs.departamentos}"/>
@@ -127,6 +127,10 @@
 									<h:outputText value="#{item.nombres}"/>
 								</p:column>   
 							</p:selectOneMenu>																	
+							<p:outputLabel for="netoMayor" value="Neto mayor:" styleClass="janal-wid-100-txt"/>
+							<p:inputText id="netoMayor" placeholder="Ejemplo 2360.12" styleClass="janal-wid-100-txt" value="#{keetNominasPersonas.attrs.netoMayor}"/>
+							<p:outputLabel for="netoMenor" value="Neto menor:" styleClass="janal-wid-100-txt"/>
+							<p:inputText id="netoMenor" placeholder="Ejemplo 2360.12" styleClass="janal-wid-100-txt" value="#{keetNominasPersonas.attrs.netoMenor}"/>
 							<p:outputLabel for="nombre" value="Nombre ó apodo:" styleClass="janal-wid-100-txt"/>							
 							<p:inputText id="nombre" placeholder="Nombre empleado o apodo" styleClass="janal-wid-100-txt" value="#{keetNominasPersonas.attrs.nombre}"/>
               <p:separator/>

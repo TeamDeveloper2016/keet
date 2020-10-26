@@ -335,9 +335,12 @@ public class Transaccion extends IBaseTnx {
 			// SI ES UN PROCESO AUTOMATICO TOMAR LAS SUCURSALES HACIENDO UNA CONSULTA O LLEANDO EL AUTENTIFCA CON EL USUARIO DEFAULT
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
+			params.put(Constantes.SQL_CONDICION, Objects.equals(this.nomina.getIdCompleta(), 2L)? " (tr_mantic_empresa_personal.id_contratista is null and tr_mantic_empresa_personal.id_puesto!= 6) ": Constantes.SQL_VERDADERO);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "todos", params);
 			if(personal!= null && !personal.isEmpty()) {
-			  Long proveedores= DaoFactory.getInstance().toSize(sesion, "VistaNominaDto", "proveedores", params);
+			  Long proveedores= 0L;
+        if(Objects.equals(this.nomina.getIdCompleta(), 1L))
+          proveedores= DaoFactory.getInstance().toSize(sesion, "VistaNominaDto", "proveedores", params);
   			monitoreo.setTotal(proveedores+ personal.size());
 	  		monitoreo.setId("NOMINA DEL PERSONAL");				
 				int count= 1;

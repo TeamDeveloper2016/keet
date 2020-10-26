@@ -1,6 +1,5 @@
 package mx.org.kaana.keet.nomina.backing;
 
-import com.sun.jersey.json.impl.writer.A2EXmlStreamWriterProxy;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

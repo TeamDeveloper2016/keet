@@ -3,6 +3,7 @@ package mx.org.kaana.keet.nomina.backing;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -53,7 +54,7 @@ public class Progreso extends IBaseAttribute implements Serializable {
 				params.put("idNomina", idNomina);
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 				Nomina nomina= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "nomina", params);			
-				Value value= DaoFactory.getInstance().toField("VistaNominaDto", nomina.getIdTipoNomina()== 1L? "ordinaria": "complementaria", params, "tuplas");
+				Value value= DaoFactory.getInstance().toField("VistaNominaDto", Objects.equals(nomina.getIdCompleta(), 2L)? "personalPorDia": Objects.equals(nomina.getIdTipoNomina(), 1L)? "ordinaria": "complementaria", params, "tuplas");
 				if(value!= null && value.getData()!= null)
 					this.attrs.put("tuplas", value.toLong());
 				UIBackingUtilities.execute("procesar();");
@@ -81,6 +82,7 @@ public class Progreso extends IBaseAttribute implements Serializable {
 	}
 	
 	public String doRegresar() {
+		JsfBase.setFlashAttribute("idNomina", this.attrs.get("idNomina"));
 		String retorno= (String)this.attrs.get("retorno");
 		return retorno== null? "filtro".concat(Constantes.REDIRECIONAR): retorno.concat(Constantes.REDIRECIONAR);
 	}

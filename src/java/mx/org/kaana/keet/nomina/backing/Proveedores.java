@@ -95,9 +95,9 @@ public class Proveedores extends IBaseReporteDestajos implements Serializable {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by nomina desc");
       columns= new ArrayList<>();
-      columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("iva", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("iva", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaNominaConsultasDto", "proveedores", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("nomina", false);

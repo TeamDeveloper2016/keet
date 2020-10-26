@@ -124,9 +124,9 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       params= this.toPrepare();	
 			params.put("sortOrder", "order by nomina desc");
       columns= new ArrayList<>();
-      columns.add(new Columna("percepciones", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("deducciones", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("neto", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("percepciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("deducciones", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("neto", EFormatoDinamicos.MILES_CON_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaNominaConsultasDto", "personas", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("nomina", false);
@@ -236,6 +236,10 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
 			else
 				sb.append("tr_mantic_empresa_personal.id_contratista=").append(this.attrs.get("idContratista")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("netoMayor")))
+			sb.append("tc_keet_nominas_personas.neto>=").append(this.attrs.get("netoMayor")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("netoMenor")))
+			sb.append("tc_keet_nominas_personas.neto<=").append(this.attrs.get("netoMenor")).append(" and ");
 		if(this.attrs.get("nombre")!= null && !Cadena.isVacio(this.attrs.get("nombre"))) {
 			String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
   		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, ' '), ' ', ifnull(tc_mantic_personas.apodo, ' '))) regexp '.*").append(nombre).append(".*') and ");
