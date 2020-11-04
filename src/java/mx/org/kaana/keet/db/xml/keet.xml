@@ -1771,6 +1771,14 @@
         order by 
           nombre
       </select>
+			<select id="siguiente">
+        select      
+          *
+        from      
+          tc_keet_familias
+				where
+          id_familia = {idFamilia}
+      </select>
     </unit>		
     <unit id="TcKeetBitacorasDto">
       <select id="row">

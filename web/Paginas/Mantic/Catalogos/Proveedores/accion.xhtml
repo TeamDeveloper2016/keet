@@ -433,7 +433,7 @@
 								</p:dataTable>	
 							</p:panelGrid>								
 						</p:tab>
-						<p:tab id="tabArticulos" title="Articulos">
+            <p:tab id="tabArticulos" title="Articulos" rendered="false">
               <p:panelGrid id="panelArticulos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaArticulos" rowIndexVar="index" var="articulo" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorArticulos}" rows="6" paginator="false" reflow="true" rowKey="#{articulo.key}" emptyMessage=" " styleClass="paginated">
                   <p:column headerText="Articulo" styleClass="articuloo">										
@@ -468,7 +468,7 @@
                 </p:dataTable>	
               </p:panelGrid>	
             </p:tab>
-						<p:tab id="tabArticulosCliente" title="Articulos cliente">
+						<p:tab id="tabArticulosCliente" title="Articulos cliente" rendered="false">
               <p:panelGrid id="panelArticulosCliente" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaArticulosCliente" rowIndexVar="index" var="articuloCliente" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorArticulosCliente}" rows="6" paginator="false" reflow="true" rowKey="#{articuloCliente.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Articulo" styleClass="articuloCliente">										

@@ -38,6 +38,10 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="acronimo")
+  private String acronimo;
+  @Column (name="consecutivo")
+  private Integer consecutivo;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -46,14 +50,17 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   }
 
   public TcKeetFamiliasDto(Long key) {
-    this(null, new Long(-1L), null, null);
+    this(null, new Long(-1L), null, null, null, 1L);
     setKey(key);
   }
 
-  public TcKeetFamiliasDto(String descripcion, Long idFamilia, Long idUsuario, String nombre) {
+  public TcKeetFamiliasDto(String descripcion, Long idFamilia, Long idUsuario, String nombre, String acronimo, Long consecutivo) {
     setDescripcion(descripcion);
     setIdFamilia(idFamilia);
     setIdUsuario(idUsuario);
+    setNombre(nombre);
+    this.acronimo= acronimo;
+    this.consecutivo= this.consecutivo;
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
   }
@@ -90,6 +97,22 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
     return nombre;
   }
 
+  public String getAcronimo() {
+    return acronimo;
+  }
+
+  public void setAcronimo(String acronimo) {
+    this.acronimo = acronimo;
+  }
+
+  public Integer getConsecutivo() {
+    return consecutivo;
+  }
+
+  public void setConsecutivo(Integer consecutivo) {
+    this.consecutivo = consecutivo;
+  }
+
   public void setRegistro(LocalDateTime registro) {
     this.registro = registro;
   }
@@ -121,6 +144,10 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getAcronimo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getConsecutivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -140,7 +167,7 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdFamilia(), getIdUsuario(), getNombre(), getRegistro()
+      getDescripcion(), getIdFamilia(), getIdUsuario(), getNombre(), getRegistro(), getAcronimo(), getConsecutivo()
     };
     return regresar;
   }

@@ -100,23 +100,19 @@ public class Transaccion extends IBaseTnx {
         if (registraProveedoresDomicilios(sesion, idProveedor)) {
           if (registraProveedoresAgentes(sesion, idProveedor)) {
 						if (registraProveedoresMateriales(sesion, idProveedor)) {
-							if (registraProveedoresArticulos(sesion, idProveedor)) {
-								if (registraProveedoresArticulosClientes(sesion, idProveedor)) {
-									if(registraProveedoresTipoContacto(sesion, idProveedor)){
-										if(registraProveedoresDepartamentos(sesion, idProveedor)){
-											if(registraProveedoresServicios(sesion, idProveedor)){
-												if(registraProveedoresTransferencia(sesion, idProveedor)){
-													if(registraProveedoresFamilias(sesion, idProveedor)){
-														if(registraProveedoresFormaPago(sesion, idProveedor)){
-															this.registroProveedor.getPortal().setIdProveedor(idProveedor);
-															if(this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina()) && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia()))
-																regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;					
-															else
-																regresar= true;
-														} // if
-													} // if
-												} // if
-											} // if
+              if(registraProveedoresTipoContacto(sesion, idProveedor)){
+                if(registraProveedoresDepartamentos(sesion, idProveedor)){
+                  if(registraProveedoresServicios(sesion, idProveedor)){
+                    if(registraProveedoresTransferencia(sesion, idProveedor)){
+                      if(registraProveedoresFamilias(sesion, idProveedor)){
+                        if(registraProveedoresFormaPago(sesion, idProveedor)){
+                          this.registroProveedor.getPortal().setIdProveedor(idProveedor);
+                          if(this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina()) && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia()))
+                            regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;					
+                          else
+                            regresar= true;
+                        } // if
+                      } // if
 										} // if
 									} // if
 								} // if
@@ -140,34 +136,30 @@ public class Transaccion extends IBaseTnx {
       if (registraProveedoresDomicilios(sesion, idProveedor)) {
         if (registraProveedoresAgentes(sesion, idProveedor)) {
 					if (registraProveedoresMateriales(sesion, idProveedor)) {
-						if (registraProveedoresArticulos(sesion, idProveedor)) {
-							if (registraProveedoresArticulosClientes(sesion, idProveedor)) {
-								if (registraProveedoresTipoContacto(sesion, idProveedor)) {
-									if (registraProveedoresDepartamentos(sesion, idProveedor)) {
-										if(registraProveedoresFormaPago(sesion, idProveedor)){
-											if(registraProveedoresServicios(sesion, idProveedor)){
-												if(registraProveedoresTransferencia(sesion, idProveedor)){
-													if(registraProveedoresFamilias(sesion, idProveedor)){
-														if(this.registroProveedor.getPortal().isValid()){
-															if(DaoFactory.getInstance().update(sesion, this.registroProveedor.getPortal())>= 0L){
-																regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
-															} // if
-														} // if
-														else{										
-															regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
-															if(regresar && this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina())  && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia())){
-																this.registroProveedor.getPortal().setIdProveedor(idProveedor);
-																regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;
-															} // if
-														} // else
-													} // if
-												} // if
-											} // if
-										} // if
-									} // if
-								} // if
-							} // if
-						} // if
+            if (registraProveedoresTipoContacto(sesion, idProveedor)) {
+              if (registraProveedoresDepartamentos(sesion, idProveedor)) {
+                if(registraProveedoresFormaPago(sesion, idProveedor)){
+                  if(registraProveedoresServicios(sesion, idProveedor)){
+                    if(registraProveedoresTransferencia(sesion, idProveedor)){
+                      if(registraProveedoresFamilias(sesion, idProveedor)){
+                        if(this.registroProveedor.getPortal().isValid()){
+                          if(DaoFactory.getInstance().update(sesion, this.registroProveedor.getPortal())>= 0L){
+                            regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
+                          } // if
+                        } // if
+                        else{										
+                          regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
+                          if(regresar && this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina())  && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia())){
+                            this.registroProveedor.getPortal().setIdProveedor(idProveedor);
+                            regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;
+                          } // if
+                        } // else
+                      } // if
+                    } // if
+                  } // if
+                } // if
+              } // if
+            } // if
           } // if
         } // if
       } // if

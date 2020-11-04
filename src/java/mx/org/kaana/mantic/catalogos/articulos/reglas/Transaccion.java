@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.keet.db.dto.TcKeetFamiliasDto;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
@@ -240,7 +241,7 @@ public class Transaccion extends TransaccionFactura {
 		Long idImagen            = -1L;
 		Long idCategoria         = null;
 		try {			
-			if(eliminarRegistros(sesion)){
+			if(eliminarRegistros(sesion)) {
 				this.messageError= "Error al registrar el articulo.\nVerificar que el articulo no se encuentre registrado.";
 				this.articulo.getArticulo().setIdRedondear(this.articulo.isRedondear()? ACTIVO : INACTIVO);
 				this.articulo.getArticulo().setIdUsuario(JsfBase.getIdUsuario());
@@ -281,7 +282,7 @@ public class Transaccion extends TransaccionFactura {
 													this.articulo.getArticulo().setIdImagen(idImagen);
 													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 					} } } } } } } }	} // if												
-				if(idArticulo > -1 && this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
+				if(idArticulo > -1 && this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && Configuracion.getInstance().isEtapaProduccion())
 					registraArticuloFacturama(sesion, idArticulo);
 			} // if
 		} // try
@@ -459,7 +460,10 @@ public class Transaccion extends TransaccionFactura {
 		boolean asignaPrincipal        = false;
 		boolean alterSqlAction         = false;
 		try {
-			for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()){
+      // AJUSTE PARA QUE SE GENERE UNA CLAVE UNICA POR ARTICULO
+      if(this.articulo.getArticulosCodigos().isEmpty())
+        this.articulo.getArticulosCodigos().add(this.toSiguienteClave(sesion, this.articulo.getArticulo().getIdFamilia()));
+			for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()) {
 				if(codigo.getIdPrincipal().equals(1L))
 					countPrincipal++;
 			} // if
@@ -750,4 +754,30 @@ public class Transaccion extends TransaccionFactura {
 	private boolean actualizar(Session sesion, IBaseDto dto) throws Exception{
 		return DaoFactory.getInstance().update(sesion, dto) >= 1L;
 	} // actualizar
+
+	private ArticuloCodigo toSiguienteClave(Session sesion, Long idFamilia) {
+		ArticuloCodigo regresar   = new ArticuloCodigo(-1L, ESql.INSERT, true);
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idFamilia", idFamilia);
+			TcKeetFamiliasDto familia= (TcKeetFamiliasDto)DaoFactory.getInstance().toEntity(sesion, TcKeetFamiliasDto.class, "TcKeetFamiliasDto", "siguiente", params);
+			if(familia!= null) {
+			  regresar.setCodigo(familia.getAcronimo()+ Cadena.rellenar(String.valueOf(familia.getConsecutivo()), 4, '0', true));
+        familia.setConsecutivo(familia.getConsecutivo()+ 1);
+        DaoFactory.getInstance().update(sesion, familia);
+      } // if
+			regresar.setIdPrincipal(1L);
+			regresar.setIdUsuario(JsfBase.getIdUsuario());
+			regresar.setOrden(1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguienteClave
+  
 }

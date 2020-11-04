@@ -135,7 +135,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public String doCancelar() {   
     JsfBase.setFlashAttribute("idArticuloProveedor", this.attrs.get("idArticuloProveedor"));
-    return (String)this.attrs.get("retorno");
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doAccion
 
 	public List<UISelectEntity> doCompleteProveedor(String codigo) {

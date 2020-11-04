@@ -374,8 +374,8 @@ public class RegistroProveedor implements Serializable{
 			this.proveedoresServicio= motor.toServicios();
 			this.proveedoresTransferencia= motor.toTransferencias();
 			this.proveedoresMateriales= motor.toMateriales();
-			this.proveedorArticulos= motor.toArticulos();
-			this.proveedorArticulosCliente= motor.toArticulosCliente();
+			// this.proveedorArticulos= motor.toArticulos();
+			// this.proveedorArticulosCliente= motor.toArticulosCliente();
 			this.proveedoresFamilias= motor.toFamilias();
 		} // try
 		catch (Exception e) {

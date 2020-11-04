@@ -18,6 +18,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
@@ -27,12 +28,16 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticCatalogosArticulosAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
+  private static final Log LOG = LogFactory.getLog(Accion.class);
+  
   private static final long serialVersionUID = 327393488565639367L;
   private RegistroArticulo registroArticulo;
 	private StreamedContent image;
@@ -75,7 +80,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     EAccion eaccion= null;
     Long idArticulo= -1L;
     try {
-      eaccion= (EAccion) this.attrs.get("accion");
+      eaccion= this.attrs.get("accion")== null? EAccion.AGREGAR: (EAccion) this.attrs.get("accion");
 			this.attrs.put("activeClon", eaccion.equals(EAccion.ACTIVAR) || eaccion.equals(EAccion.MODIFICAR));
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
@@ -114,6 +119,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				this.image= null;
 			} // if
       if (transaccion.ejecutar(eaccion)) {
+        JsfBase.setFlashAttribute("idArticuloProcess", this.registroArticulo.getArticulo().getIdArticulo());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
@@ -164,8 +170,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       familias = UISelect.build("TcKeetFamiliasDto", "familias", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("familias", familias);
       eaccion = (EAccion) this.attrs.get("accion");
-      if (eaccion.equals(EAccion.AGREGAR)) 
-        this.registroArticulo.setIdFamilia((Long)UIBackingUtilities.toFirstKeySelectItem(familias));      
+      if (eaccion.equals(EAccion.AGREGAR))
+        this.registroArticulo.getArticulo().setIdFamilia((Long)UIBackingUtilities.toFirstKeySelectItem(familias));      
     } // try
     catch (Exception e) {
       throw e;
@@ -328,10 +334,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 			accion= (EAccion)this.attrs.get("accion");			
 			if(accion.equals(EAccion.AGREGAR) || (this.registroArticulo.getArticulo().getIdImagen()== null || this.registroArticulo.getArticulo().getIdImagen() < 1L)) 
 				this.registroArticulo.doDeleteFile();										
-			if (this.registroArticulo.validaImagenComun()){
+			if (this.registroArticulo.validaImagenComun()) {
 				transaccion= new Transaccion(this.registroArticulo, 0D);
-				if(transaccion.ejecutar(EAccion.DEPURAR)){
-					if(this.image!= null){
+				if(transaccion.ejecutar(EAccion.DEPURAR)) {
+					if(this.image!= null) {
 						this.image.getStream().close();
 						this.image= null;
 					}	// if				

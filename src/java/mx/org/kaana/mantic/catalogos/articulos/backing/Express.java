@@ -14,7 +14,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
@@ -28,7 +27,6 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 import org.primefaces.event.SelectEvent;
@@ -127,15 +125,14 @@ public class Express extends IBaseAttribute implements Serializable {
   } // doAccion
 
 	private void prepareRegistro() {	
-		ArticuloCodigo codigo= null;
+//		ArticuloCodigo codigo= null;
 		try {			
-			codigo= new ArticuloCodigo(-1L, ESql.INSERT, true);
-			codigo.setCodigo((String) JsfBase.getParametro("codigoDialog_input"));
-			codigo.setIdPrincipal(1L);
-			codigo.setIdUsuario(JsfBase.getIdUsuario());
-			codigo.setOrden(1L);
+//			codigo= new ArticuloCodigo(-1L, ESql.INSERT, true);
+//			codigo.setCodigo((String) JsfBase.getParametro("codigoDialog_input"));
+//			codigo.setIdPrincipal(1L);
+//			codigo.setIdUsuario(JsfBase.getIdUsuario());
+//			codigo.setOrden(1L);
 			this.registroArticulo.getArticulosCodigos().clear();
-			this.registroArticulo.getArticulosCodigos().add(codigo);
 			this.registroArticulo.getArticulo().setNombre((String) JsfBase.getParametro("nombreDialog_input"));
 			this.registroArticulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida(1L);
@@ -470,7 +467,7 @@ public class Express extends IBaseAttribute implements Serializable {
       this.attrs.put("familias", familias);
       eaccion = (EAccion) this.attrs.get("accion");
       if (eaccion.equals(EAccion.AGREGAR)) 
-        this.registroArticulo.setIdFamilia((Long)UIBackingUtilities.toFirstKeySelectItem(familias));      
+        this.registroArticulo.getArticulo().setIdFamilia((Long)UIBackingUtilities.toFirstKeySelectItem(familias));      
     } // try
     catch (Exception e) {
       throw e;

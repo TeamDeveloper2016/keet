@@ -4,7 +4,6 @@ import java.io.Serializable;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.recurso.Configuracion;
 
 /**
  *@company KAANA

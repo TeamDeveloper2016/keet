@@ -44,7 +44,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.loadTiposProveedores();
 			if(JsfBase.getFlashAttribute("idProveedorProcess")!= null){
 				this.attrs.put("idProveedorProcess", JsfBase.getFlashAttribute("idProveedorProcess"));
-				doLoad();
+				this.doLoad();
 				this.attrs.put("idProveedorProcess", null);
 			} // if			
     } // try

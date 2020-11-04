@@ -218,7 +218,7 @@
 							</p:commandButton>
 						</p:column>
 						<f:facet name="footer">
-							<p:outputLabel value="Costo: [#{keetNominasPersonas.costoGrupo}]" style="float:left;" styleClass="janal-color-blue janal-font-bold"/>
+              <p:outputLabel value="Costo: [#{keetNominasPersonas.costoGrupo}]" style="float:left;" styleClass="janal-color-blue janal-font-bold" rendered="false"/>
 							<p:outputLabel value="Total [#{keetNominasPersonas.lazyModel== null? 0: keetNominasPersonas.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>

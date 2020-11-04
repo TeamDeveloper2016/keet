@@ -185,7 +185,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toImporte
 	
-	private Double toArticulos(){
+	private Double toArticulos() {
 		Double regresar= 0D;
 		for(Articulo articulo: this.gasto.getArticulos())
 			regresar= regresar + articulo.getCantidad();

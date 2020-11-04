@@ -29,7 +29,6 @@ public class RegistroArticulo implements Serializable {
 	
 	private Long idArticulo;
 	private Long idEmpaque;
-	private Long idFamilia;
 	private String observaciones;
 	private TcManticArticulosDto articulo;
 	private List<ArticuloCodigo> articulosCodigos;
@@ -103,7 +102,6 @@ public class RegistroArticulo implements Serializable {
 		this.idBarras            = idBarras;
 		this.imagen              = imagen;
 		this.idVigente           = idVigente;
-		this.idFamilia           = 1L;
 	}
 
 	public Long getIdArticulo() {
@@ -152,14 +150,6 @@ public class RegistroArticulo implements Serializable {
 
 	public void setIdEmpaque(Long idEmpaque) {
 		this.idEmpaque = idEmpaque;
-	}
-
-	public Long getIdFamilia() {
-		return idFamilia;
-	}
-
-	public void setIdFamilia(Long idFamilia) {
-		this.idFamilia=idFamilia;
 	}
 
 	public String getObservaciones() {
@@ -294,7 +284,7 @@ public class RegistroArticulo implements Serializable {
 		this.imagen = imagen;
 	}
 	
-	private void init(){
+	private void init() {
 		MotorBusqueda motorBusqueda                = null;
 		TrManticEmpaqueUnidadMedidaDto unidadMedida= null;
 		try {
@@ -304,7 +294,6 @@ public class RegistroArticulo implements Serializable {
 				this.idBarras = this.articulo.getIdBarras().equals(1L);
 			  this.redondear= this.articulo.getIdRedondear()== 1L;
 			  this.idVigente= this.articulo.getIdVigente()== 1L;
-  			this.idFamilia= this.articulo.getIdFamilia();
 			} // if	
 			unidadMedida= motorBusqueda.toEmpaqueUnidadMedida(this.articulo.getIdEmpaqueUnidadMedida());
 			this.idEmpaque= unidadMedida.getIdEmpaque();
@@ -337,7 +326,7 @@ public class RegistroArticulo implements Serializable {
 		} // catch		
 	} // initCollections
 	
-	public void doAgregarArticuloCodigo(){
+	public void doAgregarArticuloCodigo() {
 		ArticuloCodigo articuloCodigo= null;
 		try {					
 			articuloCodigo= new ArticuloCodigo(this.contadores.getTotalArticulosCodigos() + this.countIndice, ESql.INSERT, true);				
@@ -352,9 +341,9 @@ public class RegistroArticulo implements Serializable {
 		} // finally
 	} // doAgregarArticuloCodigo
 	
-	public void doEliminarArticuloCodigo(){
+	public void doEliminarArticuloCodigo() {
 		try {			
-			if(this.articulosCodigos.remove(this.articulosCodigosSeleccion)){
+			if(this.articulosCodigos.remove(this.articulosCodigosSeleccion)) {
 				if(!this.articulosCodigosSeleccion.getNuevo())
 					addDeleteList(this.articulosCodigosSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
@@ -368,7 +357,7 @@ public class RegistroArticulo implements Serializable {
 		} // catch			
 	} // doEliminarArticuloCodigo
 	
-	public void doAgregarEspecificacion(){
+	public void doAgregarEspecificacion() {
 		Especificacion especificacion= null;
 		try {					
 			especificacion= new Especificacion(this.contadores.getTotalEspecificaciones() + this.countIndice, ESql.INSERT, true);				
@@ -383,9 +372,9 @@ public class RegistroArticulo implements Serializable {
 		} // finally
 	} // doAgregarEspecificacion
 	
-	public void doEliminarEspecificacion(){
+	public void doEliminarEspecificacion() {
 		try {			
-			if(this.especificaciones.remove(this.especificacionSeleccion)){
+			if(this.especificaciones.remove(this.especificacionSeleccion)) {
 				if(!this.especificacionSeleccion.getNuevo())
 					addDeleteList(this.especificacionSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
@@ -399,7 +388,7 @@ public class RegistroArticulo implements Serializable {
 		} // catch			
 	} // doEliminarEspecificacion
 	
-	public void doAgregarDescuento(){
+	public void doAgregarDescuento() {
 		Descuento descuento= null;
 		try {					
 			descuento= new Descuento(this.contadores.getTotalDescuentos() + this.countIndice, ESql.INSERT, true);				
@@ -414,9 +403,9 @@ public class RegistroArticulo implements Serializable {
 		} // finally
 	} // doAgregarEspecificacion
 	
-	public void doEliminarDescuento(){
+	public void doEliminarDescuento() {
 		try {			
-			if(this.articulosDescuentos.remove(this.articuloDescuentoSeleccion)){
+			if(this.articulosDescuentos.remove(this.articuloDescuentoSeleccion)) {
 				if(!this.articuloDescuentoSeleccion.getNuevo())
 					addDeleteList(this.articuloDescuentoSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
@@ -430,7 +419,7 @@ public class RegistroArticulo implements Serializable {
 		} // catch			
 	} // doEliminarEspecificacion
 	
-	public void doAgregarDescuentoEspecial(){
+	public void doAgregarDescuentoEspecial() {
 		DescuentoEspecial descuentoEspecial= null;
 		try {					
 			descuentoEspecial= new DescuentoEspecial(this.contadores.getTotalDescuentosEspeciales() + this.countIndice, ESql.INSERT, true);				
@@ -445,9 +434,9 @@ public class RegistroArticulo implements Serializable {
 		} // finally
 	} // doAgregarEspecificacion
 	
-	public void doEliminarDescuentoEspecial(){
+	public void doEliminarDescuentoEspecial() {
 		try {			
-			if(this.clientesDescuentos.remove(this.clienteDescuentoSeleccion)){
+			if(this.clientesDescuentos.remove(this.clienteDescuentoSeleccion)) {
 				if(!this.clienteDescuentoSeleccion.getNuevo())
 					addDeleteList(this.clienteDescuentoSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
@@ -461,7 +450,7 @@ public class RegistroArticulo implements Serializable {
 		} // catch			
 	} // doEliminarEspecificacion
 	
-	public void doAgregarPrecioSugerido(){
+	public void doAgregarPrecioSugerido() {
 		PrecioSugerido precioSugerido= null;
 		try {					
 			precioSugerido= new PrecioSugerido(this.contadores.getTotalPreciosSugeridos() + this.countIndice, ESql.INSERT, true);				
@@ -476,9 +465,9 @@ public class RegistroArticulo implements Serializable {
 		} // finally
 	} // doAgregarEspecificacion
 	
-	public void doEliminarPrecioSugerido(){
+	public void doEliminarPrecioSugerido() {
 		try {			
-			if(this.preciosSugeridos.remove(this.precioSugeridoSeleccion)){
+			if(this.preciosSugeridos.remove(this.precioSugeridoSeleccion)) {
 				if(!this.precioSugeridoSeleccion.getNuevo())
 					addDeleteList(this.precioSugeridoSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
@@ -492,7 +481,7 @@ public class RegistroArticulo implements Serializable {
 		} // catch			
 	} // doEliminarEspecificacion
 	
-	public void doAgregarArticuloProveedor(){
+	public void doAgregarArticuloProveedor() {
 		ArticuloProveedor articuloProveedor= null;
 		try {					
 			articuloProveedor= new ArticuloProveedor(this.contadores.getTotalArticulosProveedor() + this.countIndice, ESql.INSERT, true);				
@@ -507,9 +496,9 @@ public class RegistroArticulo implements Serializable {
 		} // finally
 	} // doAgregarEspecificacion
 	
-	public void doEliminarArticuloProveedor(){
+	public void doEliminarArticuloProveedor() {
 		try {			
-			if(this.articulosProveedores.remove(this.articuloProveedorSeleccion)){
+			if(this.articulosProveedores.remove(this.articuloProveedorSeleccion)) {
 				if(!this.articuloProveedorSeleccion.getNuevo())
 					addDeleteList(this.articuloProveedorSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
@@ -523,7 +512,7 @@ public class RegistroArticulo implements Serializable {
 		} // catch			
 	} // doEliminarEspecificacion	
 	
-	public void doAgregarTipoVenta(){
+	public void doAgregarTipoVenta() {
 		TipoVenta tipoVenta= null;
 		try {					
 			tipoVenta= new TipoVenta(this.contadores.getTotalTiposVentas() + this.countIndice, ESql.INSERT, true);				
@@ -538,9 +527,9 @@ public class RegistroArticulo implements Serializable {
 		} // finally
 	} // doAgregarEspecificacion
 	
-	public void doEliminarTipoVenta(){
+	public void doEliminarTipoVenta() {
 		try {			
-			if(this.articulosTiposVenta.remove(this.articuloTiposVentaSeleccion)){
+			if(this.articulosTiposVenta.remove(this.articuloTiposVentaSeleccion)) {
 				if(!this.articuloTiposVentaSeleccion.getNuevo())
 					addDeleteList(this.articuloTiposVentaSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
@@ -582,7 +571,7 @@ public class RegistroArticulo implements Serializable {
 		} // catch
 	} // doFileUpload
 	
-	public boolean validaImagenComun(){
+	public boolean validaImagenComun() {
 		boolean regresar   = false;
 		MotorBusqueda motor= null;		
 		try {
@@ -596,7 +585,7 @@ public class RegistroArticulo implements Serializable {
 		return regresar;
 	} // validaImagenComun 	
 	
-	public void doDeleteFile(){
+	public void doDeleteFile() {
 		String genericPath= null;		
 		File image        = null;
 		File imageContent = null;
@@ -647,7 +636,7 @@ public class RegistroArticulo implements Serializable {
 		return regresar.toString();
 	} // toDetailMessage
 	
-	private void addDeleteList(IBaseDto dto){
+	private void addDeleteList(IBaseDto dto) {
 		try {
 			this.deleteList.add(dto);
 		} // try
@@ -656,7 +645,7 @@ public class RegistroArticulo implements Serializable {
 		} // catch		
 	} // addDeleteList
 	
-	public void doCancelar(){
+	public void doCancelar() {
 		File result= null;
 		try {
 			if (this.importado != null && !Cadena.isVacio(this.importado.getName())) {

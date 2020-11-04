@@ -90,6 +90,11 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
 			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
 			this.toLoadCatalog();
+			if(JsfBase.getFlashAttribute("idArticuloProcess")!= null){
+				this.attrs.put("idArticuloProcess", JsfBase.getFlashAttribute("idArticuloProcess"));
+				doLoad();
+				this.attrs.put("idArticuloProcess", null);
+			} // if			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -151,6 +156,8 @@ public class Filtro extends Comun implements Serializable {
 		StringBuilder sb            = null;
 		try {
 			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
+      if(this.attrs.get("idArticuloProcess")!= null && !Cadena.isVacio(this.attrs.get("idArticuloProcess")))
+        sb.append("tc_mantic_articulos.id_articulo=").append(this.attrs.get("idArticuloProcess")).append(" and ");
 			if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
 				sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
