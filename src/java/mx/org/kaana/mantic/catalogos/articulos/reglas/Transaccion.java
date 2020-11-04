@@ -201,7 +201,7 @@ public class Transaccion extends TransaccionFactura {
 											//if(DaoFactory.getInstance().deleteAll(sesion, TcManticImagenesDto.class, params)> -1L){
 											if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TrManticArticuloPresentacionDto", "rows", params)> -1L){
 												regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo())>= 1L;
-												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
+												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && !Configuracion.getInstance().isEtapaDesarrollo())
 													eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
 				}	}	}	}	}	}	}	} } // if		
 		} // try
@@ -282,7 +282,7 @@ public class Transaccion extends TransaccionFactura {
 													this.articulo.getArticulo().setIdImagen(idImagen);
 													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 					} } } } } } } }	} // if												
-				if(idArticulo > -1 && this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && Configuracion.getInstance().isEtapaProduccion())
+				if(idArticulo > -1 && this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && !Configuracion.getInstance().isEtapaDesarrollo())
 					registraArticuloFacturama(sesion, idArticulo);
 			} // if
 		} // try
@@ -368,7 +368,7 @@ public class Transaccion extends TransaccionFactura {
 												else							
 													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 												sesion.flush();
-												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
+												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && !Configuracion.getInstance().isEtapaDesarrollo())
 													actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());												
 			} } } } } } } } }			
 		} // try
