@@ -761,7 +761,7 @@ public class Transaccion extends TransaccionFactura {
 		try {
 			params=new HashMap<>();
 			params.put("idFamilia", idFamilia);
-			TcKeetFamiliasDto familia= (TcKeetFamiliasDto)DaoFactory.getInstance().toEntity(sesion, TcKeetFamiliasDto.class, "TcKeetFamiliasDto", "siguiente", params);
+			TcKeetFamiliasDto familia= (TcKeetFamiliasDto)DaoFactory.getInstance().findById(sesion, TcKeetFamiliasDto.class, idFamilia);
 			if(familia!= null) {
 			  regresar.setCodigo(familia.getAcronimo()+ Cadena.rellenar(String.valueOf(familia.getConsecutivo()), 4, '0', true));
         familia.setConsecutivo(familia.getConsecutivo()+ 1);
