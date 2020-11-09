@@ -32,7 +32,6 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 	
 	private static final Log LOG              = LogFactory.getLog(IBaseReporteDestajos.class);
 	private static final long serialVersionUID= 831285430730032608L;
-	private static final String EMAILS_ADMINS = "correo.admin.system";
 	protected Reporte reporte;
 	protected List<Correo> correos;
 	protected List<Correo> selectedCorreos;	
@@ -77,7 +76,6 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 		List<Attachment> files    = null; 
 		IBaseAttachment notificar = null;
 		Attachment attachments    = null;
-		String emailsAdmin        = null;
 		StringBuilder sb          = null;
 		try {
 			params= new HashMap<>();
@@ -88,7 +86,6 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 						sb.append(mail.getDescripcion()).append(",");
 				} // for
 			} // if
-			emailsAdmin= TcConfiguraciones.getInstance().getPropiedad(EMAILS_ADMINS);
 			emails= new String[]{(sb.length()> 0? sb.substring(0, sb.length()- 1) : "")};		
 			params.put("header", "...");
 			params.put("footer", "...");
@@ -105,7 +102,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  notificar= new IBaseAttachment(ECorreos.ADMINISTRACION, ECorreos.ADMINISTRACION.getEmail(), item, emailsAdmin, "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
+					  notificar= new IBaseAttachment(ECorreos.ADMINISTRACION, ECorreos.ADMINISTRACION.getEmail(), item, ECorreos.ADMINISTRACION.getBackup(), "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
 					  LOG.info("Enviando correo a la cuenta: " + item);
 					  notificar.send();
 					} // if	
@@ -136,7 +133,6 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 		List<Attachment> files    = null; 
 		IBaseAttachment notificar = null;
 		Attachment attachments    = null;
-		String emailsAdmin        = null;
 		StringBuilder sb          = null;
 		try {
 			params= new HashMap<>();
@@ -147,7 +143,6 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 						sb.append(mail.getDescripcion()).append(",");
 				} // for
 			} // if
-			emailsAdmin= TcConfiguraciones.getInstance().getPropiedad(EMAILS_ADMINS);
 			emails= new String[]{(sb.length()> 0? sb.substring(0, sb.length()- 1) : "")};		
 			params.put("header", "...");
 			params.put("footer", "...");
@@ -164,7 +159,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  notificar= new IBaseAttachment(ECorreos.RESIDENTE, ECorreos.RESIDENTE.getEmail(), item, emailsAdmin, "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
+					  notificar= new IBaseAttachment(ECorreos.RESIDENTE, ECorreos.RESIDENTE.getEmail(), item, ECorreos.RESIDENTE.getBackup(), "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
 					  LOG.info("Enviando correo a la cuenta: " + item);
 					  notificar.send();
 					} // if	

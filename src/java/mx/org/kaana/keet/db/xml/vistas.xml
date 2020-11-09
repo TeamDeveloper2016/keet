@@ -1277,7 +1277,7 @@
       </select>  
 			<select id="ordinaria">
         select
-          sum(total) as tuplas
+          sum(tuplas) as tuplas
         from (				
 				select
 					count(*) as tuplas
@@ -1291,7 +1291,7 @@
 					and tc_mantic_personas.id_tipo_persona!= 1
         union all
         select
-					count(distinct(tc_keet_contratos_lotes_proveedores.id_proveedor)) as total
+					count(distinct(tc_keet_contratos_lotes_proveedores.id_proveedor)) as tuplas
 				from
 					tc_keet_contratos_destajos_proveedores
 				inner join

@@ -108,7 +108,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 				this.attrs.put("especialidad", idDepartamento);
 				this.doLoadFiguras();				
 				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));
-				doLoad();
+				this.doLoad();
 			} // if
     } // try // try
     catch (Exception e) {
@@ -167,6 +167,8 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("destajos", false);
 			this.attrs.put("persona", false);
       //UIBackingUtilities.execute("reloadLotes();");
+      if(figuras!= null && !figuras.isEmpty())
+        this.doLoad();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

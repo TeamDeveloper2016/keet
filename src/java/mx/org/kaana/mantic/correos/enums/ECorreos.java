@@ -1,5 +1,7 @@
 package mx.org.kaana.mantic.correos.enums;
 
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.TcConfiguraciones;
 
 /**
@@ -12,15 +14,15 @@ import mx.org.kaana.libs.recurso.TcConfiguraciones;
 
 public enum ECorreos {
 	
-  FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "facturas@cafuconstrucciones.com", "Facturas CAFU"), 
-	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@cafuconstrucciones.com", "Ventas CAFU"),
-	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "compras@cafuconstrucciones.com", "Compras CAFU."),
-	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@cafuconstrucciones.com", "Ventas CAFU"),
+  FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "facturas@cafuconstrucciones.com", "Facturas CAFU", ""), 
+	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@cafuconstrucciones.com", "Ventas CAFU", "compras2@cafuconstrucciones.com"),
+	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "compras@cafuconstrucciones.com", "Compras CAFU.", "compras2@cafuconstrucciones.com"),
+	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@cafuconstrucciones.com", "Ventas CAFU", ""),
 	//cafu
-	VENTAS        ("/mx/org/kaana/keet/correos/templates/ventas.html", "resources/janal/img/sistema/", "correo.ventas.user.produccion", "correo.ventas.pass.produccion", "ventas@cafu.jvmhost.net", "Ventas CAFU."),
-	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "resources/janal/img/sistema/", "correo.compras.user.produccion", "correo.compras.pass.produccion", "compras@cafu.jvmhost.net", "Compras CAFU."),
-	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU."),
-	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.");
+	VENTAS        ("/mx/org/kaana/keet/correos/templates/ventas.html", "resources/janal/img/sistema/", "correo.ventas.user.produccion", "correo.ventas.pass.produccion", "ventas@cafu.jvmhost.net", "Ventas CAFU.", ""),
+	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "resources/janal/img/sistema/", "correo.compras.user.produccion", "correo.compras.pass.produccion", "compras@cafu.jvmhost.net", "Compras CAFU.", ""),
+	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", ""),
+	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", "");
 	 
 	private String template;
 	private String images;
@@ -28,14 +30,16 @@ public enum ECorreos {
 	private String password;
 	private String email;
 	private String alias;
+  private String backup;
 
-	private ECorreos(String template, String images, String user, String password, String email, String alias) {
+	private ECorreos(String template, String images, String user, String password, String email, String alias, String backup) {
 		this.template= template;
 		this.images  = images;
 		this.user    = user;
 		this.password= password;
 		this.email   = email;
 		this.alias   = alias;
+		this.backup  = Cadena.isVacio(backup)? TcConfiguraciones.getInstance().getPropiedad(Constantes.EMAILS_BACKUP_SYSTEM): backup.concat(",").concat(TcConfiguraciones.getInstance().getPropiedad(Constantes.EMAILS_BACKUP_SYSTEM));
 	}
 
 	public String getTemplate() {
@@ -61,4 +65,9 @@ public enum ECorreos {
 	public String getAlias() {
 		return alias;
 	}
+
+  public String getBackup() {
+    return backup;
+  }
+  
 }

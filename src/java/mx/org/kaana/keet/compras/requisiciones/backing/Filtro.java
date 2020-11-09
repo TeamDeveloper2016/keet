@@ -36,7 +36,6 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
-import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.MotorBusqueda;
@@ -55,7 +54,6 @@ import org.primefaces.model.StreamedContent;
 public class Filtro extends IBaseFilter implements Serializable {  
 
 	private static final long serialVersionUID= 2808389228136682363L;
-	private static final String EMAILS_ADMINS = "correo.admin.system";
 	private static final String DATA_FILE     = "CONSECUTIVO,PROVEEDOR,CODIGO PROVEEDOR,CODIGO,NOMBRE,CANTIDAD,PRECIO";
 	private static final String DATA_MAIL     = "CONSECUTIVO,PROVEEDOR,CODIGO PROVEEDOR,CODIGO,NOMBRE,CANTIDAD";
 	private LocalDate fechaInicio;
@@ -500,7 +498,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		List<Attachment> files    = null;
 		Entity seleccionado       = null;
 		StringBuilder sb          = null;
-		String emailsAdmin        = null;
 		Xls xls                   = null;
 		String template           = "REQUISICION";
 		String salida             = null;
@@ -523,7 +520,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 				} // if
 				params= new HashMap<>();						
 				files= new ArrayList<>(); 
-				emailsAdmin= TcConfiguraciones.getInstance().getPropiedad(EMAILS_ADMINS);
 				emails= new String[]{(sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
 				params.put("header", "...");
 				params.put("footer", "...");
@@ -540,7 +536,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				for (String item: emails) {
 					try {
 						if(!Cadena.isVacio(item)) {
-							IBaseAttachment notificar= new IBaseAttachment(ECorreos.COMPRAS, ECorreos.COMPRAS.getEmail(), item, emailsAdmin, "CAFU - Requisición de compra", params, files);							
+							IBaseAttachment notificar= new IBaseAttachment(ECorreos.COMPRAS, ECorreos.COMPRAS.getEmail(), item, ECorreos.COMPRAS.getBackup(), "CAFU - Requisición de compra", params, files);							
 							notificar.send();
 						} // if	
 					} // try

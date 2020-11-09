@@ -748,9 +748,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	private void toCheckProveedor(boolean checkItems) {
-		Articulo faltante= null;
-		int relacionados = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
-		Map<String, Object> params=null;
+		Articulo faltante        = null;
+		int relacionados         = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
+		Integer idTipoComparacion= (Integer)this.attrs.get("idTipoComparacion");
+	  Map<String, Object> params=null;
 		try {
 			params= new HashMap<>();
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
@@ -758,7 +759,19 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			int x= 0;
 			while(faltantes!= null && x< faltantes.size()) {
 				faltante= faltantes.get(x);
-  			params.put("codigo", faltante.getCodigo());
+				switch(idTipoComparacion) {
+			   case 1: // COMPRAR CODIGO
+    			 params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_articulos_codigos.codigo)= upper('"+ faltante.getCodigo()+"')");
+					 break;
+  			 case 2: // COMPRAR AMBOS CODIGO Y NOMBRE
+    			 params.put(Constantes.SQL_CONDICION, "(upper(tc_mantic_articulos_codigos.codigo)= upper('"+ faltante.getCodigo()+"') or upper(tc_mantic_notas_detalles.origen)= upper('"+ faltante.getOrigen()+"'))");
+					 break;
+				 case 3: // COMPRAR NOMBRE
+    			 params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_notas_detalles.origen)= upper('"+ faltante.getOrigen()+"')");
+					 break;
+				 default:
+				   params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos_codigos.codigo= 'null'");
+  			} // switch
 				List<UISelectEntity> disponibles= UIEntity.build("VistaNotasEntradasDto", "proveedor", params, Collections.EMPTY_LIST); 
 				if(disponibles!= null && !disponibles.isEmpty()) {
 					relacionados++;
@@ -773,7 +786,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						disponibles.get(0).put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
 						disponibles.get(0).put("origen", new Value("origen", faltante.getNombre()));
 						disponibles.get(0).put("facturado", new Value("facturado", true));
- 						disponibles.get(0).put("disponible", new Value("disponible", false));
+						disponibles.get(0).put("disponible", new Value("disponible", false));
 						this.attrs.put("encontrado", disponibles.get(0));
 						this.attrs.put("omitirMensaje", disponibles.get(0).toLong("idArticulo"));
 						this.doFindArticulo(this.getAdminOrden().getArticulos().size()- 1);

@@ -11,6 +11,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -200,11 +201,11 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
   public void setCantidad(Double cantidad) {
-    this.cantidad = cantidad;
+    this.cantidad = Cadena.isVacio(cantidad)? 1D: cantidad;
   }
 
   public Double getCantidad() {
-    return Numero.toRedondearSat(cantidad);
+    return Numero.toRedondearSat(Cadena.isVacio(cantidad)? 1d: cantidad);
   }
 
   public void setIdArticulo(Long idArticulo) {
