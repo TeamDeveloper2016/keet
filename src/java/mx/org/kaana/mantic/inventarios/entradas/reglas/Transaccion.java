@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -108,6 +109,10 @@ public class Transaccion extends Inventarios implements Serializable {
 				params= new HashMap<>();
 				params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
+        if(Objects.equals(-1L, this.orden.getIdBanco()))
+          this.orden.setIdBanco(null);
+        if(Objects.equals(-1L, this.orden.getIdTipoPago()))
+          this.orden.setIdTipoPago(null);
 			} // if
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada.");
 			switch(accion) {
@@ -514,7 +519,6 @@ public class Transaccion extends Inventarios implements Serializable {
             contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
             contratoLote.setIdNotaEntrada(this.orden.getIdNotaEntrada());
             contratoLote.setIdUsuario(JsfBase.getIdUsuario());
-            DaoFactory.getInstance().insert(sesion, contratoLote);
             NotaLoteFamilia existe= new NotaLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
             int index= items.indexOf(existe);
             if(index< 0)

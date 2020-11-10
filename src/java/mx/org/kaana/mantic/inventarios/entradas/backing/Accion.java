@@ -43,6 +43,7 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Random;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -200,6 +201,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			//this.doResetDataTable();
 			this.toLoadCatalog();
+      this.toLoadProveedor();
       this.toLoadBancos();
       this.toLoadTiposMediosPagos();
       this.toLoadTiposPagos();
@@ -362,10 +364,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
       this.attrs.put("desarrollos", desarrollos);			
-			if(this.accion.equals(EAccion.AGREGAR))
+			if(this.accion.equals(EAccion.AGREGAR) && (this.attrs.get("ordenCompra")== null || Objects.equals(-1L, ((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo())))
 				desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));				
 			else
-				desarrollo= new UISelectEntity((((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo()));			
+				desarrollo= desarrollos.get(desarrollos.indexOf(new UISelectEntity((((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo()))));			
 			this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));			
 			this.attrs.put("cliente", desarrollo.toString("razonSocial"));
       this.doLoadContratos();
@@ -419,7 +421,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
       if(!contratos.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR))
+        if(this.accion.equals(EAccion.AGREGAR) && Objects.equals(-1L, ((NotaEntrada)this.getAdminOrden().getOrden()).getIkContrato().getKey()))
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(0));
         else  
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(contratos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkContrato())));
@@ -474,12 +476,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // finally
 	} // doLoadLotes
   
-	public void doUpdateProveedor() {
+	public void toLoadProveedor() {
 		try {
-			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
-				this.getAdminOrden().getArticulos().clear();
-				this.getAdminOrden().toCalculate();
-			} // if	
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			UISelectEntity temporal= ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor();
 			temporal= proveedores.get(proveedores.indexOf(temporal));
@@ -489,8 +487,21 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.toUpdateFamilias();
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor())));
 			this.doUpdatePlazo();
-			// this.doCalculateFechaPago();
 			this.toCheckProveedor(true);
+		}	
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	} 
+	
+	public void doUpdateProveedor() {
+		try {
+			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
+				this.getAdminOrden().getArticulos().clear();
+				this.getAdminOrden().toCalculate();
+			} // if	
+      this.toLoadProveedor();
 		}	
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -1031,6 +1042,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
 			} // if	
+      if(Objects.equals(null, ((NotaEntrada)this.getAdminOrden().getOrden()).getIdBanco()))
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setIdBanco(-1L);
+      if(Objects.equals(null, ((NotaEntrada)this.getAdminOrden().getOrden()).getIdTipoPago()))
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setIdTipoPago(-1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1217,7 +1232,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			bancos= UIEntity.seleccione("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS, "nombre");
 			this.attrs.put("bancos", bancos);
       if(!bancos.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR))
+        if(this.accion.equals(EAccion.AGREGAR) && Objects.equals(-1L, ((NotaEntrada)this.getAdminOrden().getOrden()).getIkBanco()))
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkBanco(bancos.get(0));
         else  
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkBanco(bancos.get(bancos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkBanco())));

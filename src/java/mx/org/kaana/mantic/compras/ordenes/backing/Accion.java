@@ -469,7 +469,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		StringBuilder familias    = new StringBuilder();
 		int count                 = 0;
 		try {
-			if(getAdminOrden().getArticulos().isEmpty() || getAdminOrden().getArticulos().size()== 1) {
+			if(getAdminOrden().getArticulos().isEmpty()) {
 				params   = new HashMap<>();
 				proveedor= (UISelectEntity) this.attrs.get("proveedor");
         StringBuilder sb= new StringBuilder();

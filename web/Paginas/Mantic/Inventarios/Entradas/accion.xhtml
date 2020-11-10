@@ -192,6 +192,8 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
 								<p:outputLabel for="consecutivo" value="No. nota:" style="display: #{manticInventariosEntradasAccion.agregar}"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticInventariosEntradasAccion.agregar}"/>
+								<p:outputLabel for="proveedor" value="Proveedor:" style="display: #{manticInventariosEntradasAccion.agregar}"/>
+                <p:inputText id="proveedor" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.proveedor.razonSocial}" readonly="true" style="display: #{manticInventariosEntradasAccion.agregar}"/>
 								<p:spacer width="1px" style="display: #{manticInventariosEntradasAccion.agregar}"/><p:separator style="display: #{manticInventariosEntradasAccion.agregar}"/>
 								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
                 <p:selectOneMenu id="desarrollo" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
@@ -274,18 +276,18 @@
 								<p:outputLabel for="factura" value="No factura:"/>
 								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-96" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
 								<p:outputLabel for="deuda" value="Deuda:"/>
 								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.deuda}"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-96" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
 								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
 								<p:inputNumber id="diasPlazo" inputStyleClass="janal-wid-100-txt janal-column-right" styleClass="involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.diasPlazo}" decimalPlaces="0">
 									<p:ajax event="keyup" listener="#{manticInventariosEntradasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
 								</p:inputNumber>
 								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-96" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es">
+								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es">
 									<p:ajax event="dateSelect" listener="#{manticInventariosEntradasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
 								</p:calendar>
 								<p:spacer width="1px"/><p:separator/>
@@ -361,7 +363,7 @@
 									<div class="ui-grid-col-12">
       							<p:panelGrid id="bancos" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
   			     					<p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
-                      <p:selectOneMenu id="idTipoMedioPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                      <p:selectOneMenu id="idTipoMedioPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">					
                         <p:ajax event="change" process="@this" listener="#{manticInventariosEntradasAccion.doCheckTipoMedioPago}" update="@(.banco)"/>
                         <f:selectItems value="#{manticInventariosEntradasAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                         <p:column headerText="Clave">
@@ -372,7 +374,7 @@
                         </p:column>   
                       </p:selectOneMenu>
                       <p:outputLabel for="idBanco" value="Banco:" styleClass="banco"/>
-                      <p:selectOneMenu id="idBanco" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not manticInventariosEntradasAccion.attrs.isBanco}">
+                      <p:selectOneMenu id="idBanco" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not manticInventariosEntradasAccion.isDirecta and not manticInventariosEntradasAccion.attrs.isBanco}">
                         <f:selectItems value="#{manticInventariosEntradasAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
                         <p:column headerText="Nombre">
                           <h:outputText value="#{item.nombre}"/>
@@ -382,7 +384,7 @@
                         </p:column>   
                       </p:selectOneMenu>
                       <p:outputLabel for="referencia" value="Referencia:" styleClass="banco"/>
-                      <p:inputText id="referencia" value="#{manticInventariosEntradasAccion.adminOrden.orden.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not manticInventariosEntradasAccion.attrs.isBanco}"/>
+                      <p:inputText id="referencia" value="#{manticInventariosEntradasAccion.adminOrden.orden.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not manticInventariosEntradasAccion.isDirecta and not manticInventariosEntradasAccion.attrs.isBanco}"/>
                       <p:outputLabel for="idTipoPago" value="Método de pago:" rendered="false"/>												
                       <p:selectOneMenu id="idTipoPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikTipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">					
                         <f:selectItems value="#{manticInventariosEntradasAccion.attrs.tiposPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -394,7 +396,7 @@
                         </p:column>   
                       </p:selectOneMenu>
           						<p:outputLabel for="idEmpresaTipoContacto" value="Correo contacto:"/>
-                      <p:selectOneMenu id="idEmpresaTipoContacto" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikEmpresaTipoContacto}" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                      <p:selectOneMenu id="idEmpresaTipoContacto" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikEmpresaTipoContacto}" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
                         <f:selectItems value="#{manticInventariosEntradasAccion.attrs.empresaTiposContactos}" var="next" itemValue="#{next}" itemLabel="#{next.valor}"/>
                       </p:selectOneMenu>
                     </p:panelGrid> 
@@ -408,7 +410,7 @@
 									<div class="ui-grid-col-12">
       							<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-12, janal-wid-15, janal-wid-15">
 											<p:outputLabel for="sinIva" value="Los precios son &lt;strong&gt;Netos&lt;/strong&gt;:" escape="false"/>
-											<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-20, janal-wid-30">
+											<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-40, janal-wid-20, janal-wid-30">
 												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticInventariosEntradasAccion.attrs.sinIva}" onLabel="SI" offLabel="NO" styleClass="filas">
 													 <p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateIvaTipoDeCambio()}" process="@this" update="@(.filas) @(.recalculo)"/>
 												</p:inputSwitch>
