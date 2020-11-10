@@ -1362,9 +1362,9 @@
 		},
 		readingMode: function(action) {
 			var actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
-			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button,div.ui-inputswitch').each(function(index) {  
+			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-selectcheckboxmenu,div.ui-chkbox,span.ui-button,div.ui-inputswitch').each(function(index) {  
 				if(actionValidate=== 'CONSULTAR') {
-					if(this.id!== 'verificadorValue' && this.id!== 'verificadorBuscarPor'){
+					if(this.id!== 'verificadorValue' && this.id!== 'verificadorBuscarPor') {
 						if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon"))) {
 							if(this.tagName=== 'A') {
 								$(this).attr('iktan', $(this).attr('href'));
@@ -1379,7 +1379,7 @@
 								} // if
 								else 
 									$(this).prop('disabled', 'disabled').addClass('ui-state-disabled'); 
-							//$janal.console('janal.readingMode: '+ this.tagName+ ' => '+ this.id+ ' => '+ $(this).attr('disabled')+ ' -> '+ $(this).attr('class'));
+							$janal.console('janal.readingMode, tagName: '+ this.tagName+ ' id: '+ this.id+ ' selector: '+ this.selector+ ' disabled: '+ $(this).attr('disabled')+ ' class: '+ $(this).attr('class'));
 						} // if
 					} // if
 				} // if

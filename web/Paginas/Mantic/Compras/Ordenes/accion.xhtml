@@ -40,7 +40,7 @@
 			};	
 			
     	$(document).ready(function() {
-				setTimeout("janal.readingMode('#{manticComprasOrdendesAccion.attrs.nombreAccion}')", 500);
+        disabledComponent();
         jsArticulos= new Janal.Control.Articulos.Core(#{manticComprasOrdendesAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:', #{manticComprasOrdendesAccion.attrs.paginator});
 				janal.decimals= 4;
       });
@@ -58,7 +58,11 @@
 					janal.desbloquear();
 				} // if	
 				return ok;
-			} // execute			
+			} // execute		
+      
+      function disabledComponent() {
+        setTimeout("janal.readingMode('#{manticComprasOrdendesAccion.attrs.nombreAccion}')", 500);
+      }      
 		</script>   
 		<style type="text/css">
 			.ui-selectcheckboxmenu-token-label {
@@ -124,7 +128,7 @@
 						<p:outputLabel value="LA ORDEN DE COMPRA [#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}] SE (AUTO)GUARDO EL DIA #{manticComprasOrdendesAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticComprasOrdendesAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor idContrato lote familia" update="@(.recalculo) historico faltantes perdidos sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
+            <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor idContrato lote familia" update="@(.recalculo) historico faltantes perdidos sinIva datosArticulos registros" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); disabledComponent();"/>
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-7, janal-wid-93">		
 								<p:outputLabel for="consecutivo" value="No. orden:" style="display: #{manticComprasOrdendesAccion.agregar}" styleClass="recalculo"/>

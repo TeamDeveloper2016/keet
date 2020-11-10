@@ -55,7 +55,7 @@
 			};
 			
     	$(document).ready(function() {
-				setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);
+        disabledComponent();
         jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosEntradasAccion.adminOrden.filtrados.size()}, 'contenedorGrupos\\:tabla\\:', #{manticInventariosEntradasAccion.attrs.paginator});
 				janal.decimals= 4;
 				// $(window).on('beforeunload', function() {cleanUploadFiles(); return true;});
@@ -108,6 +108,10 @@
 					janal.warn('Articulos', 'No se ha seleccionado un articulo de cada lista !');
 				return ok;
 			}
+      
+      function disabledComponent() {
+        setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);
+      }
 		</script>   
 		<style>
 			.janal-upload-frame {
@@ -187,7 +191,7 @@
 						<p:outputLabel value="LA NOTA DE ENTRADA [#{manticInventariosEntradasAccion.adminOrden.orden.consecutivo}] SE (AUTO)GUARDO EL DIA #{manticInventariosEntradasAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticInventariosEntradasAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticInventariosEntradasAccion.doTabChange}" process="@this idAlmacen idProveedor" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
+            <p:ajax event="tabChange" listener="#{manticInventariosEntradasAccion.doTabChange}" process="@this idAlmacen idProveedor" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle(); disabledComponent();"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
 								<p:outputLabel for="consecutivo" value="No. nota:" style="display: #{manticInventariosEntradasAccion.agregar}"/>

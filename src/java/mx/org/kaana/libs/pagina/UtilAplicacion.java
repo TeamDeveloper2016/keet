@@ -52,7 +52,7 @@ public class UtilAplicacion {
 
   private static final String LESS  = "janal.mantic.less.min-2.5.0.js";
   private static final String CSS   = "janal.mantic.core-0.8.8.css";
-  private static final String CORE  = "jquery.janal.core-3.7.0.js";
+  private static final String CORE  = "jquery.janal.core-3.7.1.js";
   private static final String VENTAS= "jquery.janal.ventas.core-1.0.8.js";
   private static final String VALES = "jquery.janal.vales.core-0.0.4.js";
 	private static final String TICKET= "jquery.janal.ticket.core-0.1.7.js";
