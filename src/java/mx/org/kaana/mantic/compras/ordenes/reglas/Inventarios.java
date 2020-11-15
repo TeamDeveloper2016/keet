@@ -183,7 +183,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), nota.getDeuda()* -1L, nota.getIdNotaEntrada(), nota.getFechaPago(), nota.getDeuda()- nota.getExcedentes(), nota.getDeuda()- nota.getExcedentes());
 				DaoFactory.getInstance().insert(sesion, deuda);
 				
-    		// Recuperar el detalle de las notas de entrada para afectas inventarios 
+    		// Recuperar el detalle de las notas de entrada para afectar inventarios 
     		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaNotasEntradasDto", "detalle", nota.toMap());
 				for (Articulo articulo: todos) {
 					TcManticNotasDetallesDto item= articulo.toNotaDetalle();
@@ -195,4 +195,18 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 		} // for
 	}
 	
+  protected void toCreateOrdenCompra(Session sesion, Map<String, Object> params) {
+		// Map<String, Object> params= null;
+		try {
+			params= new HashMap<>();
+      
+    } // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+		//	Methods.clean(params);
+		} // finally    
+  }
+  
 }

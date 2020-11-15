@@ -255,11 +255,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 	} // doLoadDesarrollos
 	
-	public void doReporte(String nombre) throws Exception{
-		doReporte(nombre, false);
+	public void doReporte(String nombre) throws Exception {
+		this.doReporte(nombre, false);
 	} // doReporte
 	
-	private void doReporte(String nombre, boolean email) throws Exception{
+	private void doReporte(String nombre, boolean email) throws Exception {
 		Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
@@ -283,6 +283,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      if(reporteSeleccion.equals(EReportes.ORDEN_DETALLE)) 
+        parametros.put("REPORTE_FIRMA", JsfBase.getRealPath("/Paginas/Mantic/Catalogos/Empleados/Firmas/"));
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));					
 			if(email) 
         this.reporte.doAceptarSimple();			

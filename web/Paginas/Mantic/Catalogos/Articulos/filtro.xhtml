@@ -95,7 +95,7 @@
 										<h:outputText value="#{custom.nombre}" />
 										<h:outputText value="IVA:" />
 										<h:outputText value="#{custom.iva}" />
-										<h:outputText value="Costo:" />
+										<h:outputText value="Costo sin IVA:" />
 										<h:outputText value="$ #{custom.precio}" />
 									</h:panelGrid>
 								</f:facet>
@@ -215,7 +215,7 @@
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
 							</p:column>														
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.precio}">
 								<f:facet name="header">
 									<h:outputText value="Costo"/>
 								</f:facet>

@@ -241,7 +241,15 @@
             tc_mantic_articulos.nombre) as articulo,
           tc_mantic_articulos.precio,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as contacto,
-					tr_mantic_empresa_tipo_contacto.valor as correo_facturacion
+					tr_mantic_empresa_tipo_contacto.valor as correo_facturacion,
+          tc_mantic_ordenes_compras.id_usuario,
+					(select
+					   concat(tc_manti_personal.nombres, ' ', tc_manti_personal.paterno, ' ', ifnull(tc_manti_personal.materno, ''))
+					 from 
+             tc_mantic_personas as tc_manti_personal 
+           where
+             tc_janal_usuarios.id_persona= tc_manti_personal.id_persona
+          ) as usuario
 				from 
 					tc_mantic_ordenes_compras
 				inner join 
@@ -262,6 +270,8 @@
 					tc_mantic_personas on tc_mantic_ordenes_compras.id_almacenista= tc_mantic_personas.id_persona
 				left join 
 					tr_mantic_empresa_tipo_contacto on tc_mantic_ordenes_compras.id_empresa_tipo_contacto = tr_mantic_empresa_tipo_contacto.id_empresa_tipo_contacto
+        inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario          
 				where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	
       </select>

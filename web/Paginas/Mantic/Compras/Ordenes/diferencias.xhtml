@@ -275,7 +275,7 @@
 			</div>
 		</div>	
 	</div>
-  <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
+  <hr class="ui-widget-content"/>
   <div class="janal-line-button">
     <div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
@@ -287,6 +287,7 @@
 		</div>	
   </div>
   </ui:define> 
+  <ui:param name="lineaSeparacion" value="false"/>  
 	<ui:define name="dialogos">
 		<h:form prependId="true">
 			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus(); janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
