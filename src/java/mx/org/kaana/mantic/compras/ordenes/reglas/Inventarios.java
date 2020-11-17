@@ -211,6 +211,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
         cloneOrdenCompra.setSubTotal(0D);
         cloneOrdenCompra.setImpuestos(0D);
         cloneOrdenCompra.setTotal(0D);
+        cloneOrdenCompra.setIdOrdenFuente(idOrdenCompra);
         DaoFactory.getInstance().insert(sesion, cloneOrdenCompra);
         for (TcManticOrdenesDetallesDto item: detalles) {
           item.setIdOrdenCompra(cloneOrdenCompra.getIdOrdenCompra());

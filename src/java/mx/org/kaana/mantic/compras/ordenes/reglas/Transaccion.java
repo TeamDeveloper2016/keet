@@ -184,7 +184,7 @@ public class Transaccion extends Inventarios implements Serializable {
               clone.setConsecutivo(consecutivo.getConsecutivo());
               clone.setOrden(consecutivo.getOrden());
               clone.setEjercicio(new Long(Fecha.getAnioActual()));
-              clone.setObservaciones((clone.getObservaciones()!= null? clone.getObservaciones()+ ", ": "")+ "ORDEN GENERADA A PARTIR DE LA ORDEN: "+ this.orden.getConsecutivo());
+              clone.setObservaciones((clone.getObservaciones()!= null? clone.getObservaciones()+ ", ": "")+ "ORDEN FUENTE "+ this.orden.getConsecutivo());
               this.cloneOrdenCompra= this.toCreateOrdenCompra(sesion, this.orden.getKey(), clone);
             } // if  
 					} // if
