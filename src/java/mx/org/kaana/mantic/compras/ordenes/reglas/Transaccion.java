@@ -55,10 +55,12 @@ public class Transaccion extends Inventarios implements Serializable {
 	private Correo correo;	
 	private List<UISelectEntity> lotes;
 	private List<UISelectEntity> familias;
+  private TcManticOrdenesComprasDto cloneOrdenCompra;
 
 	public Transaccion(Correo correo, Long idProveedor) {
 		super(-1L, idProveedor);
-		this.correo     = correo;
+		this.correo= correo;
+    this.cloneOrdenCompra= null;
 	}	// Transaccion
 	
 	public Transaccion(TcManticOrdenesComprasDto orden, TcManticOrdenesBitacoraDto bitacora) {
@@ -80,6 +82,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		super(orden.getIdAlmacen(), orden.getIdProveedor());
 		this.orden    = orden;		
 		this.articulos= articulos;
+    this.cloneOrdenCompra= null;
 	} // Transaccion
 
 	public Transaccion(Long idFaltante) {
@@ -91,6 +94,10 @@ public class Transaccion extends Inventarios implements Serializable {
 		return messageError;
 	} // getMessageError
 
+  public TcManticOrdenesComprasDto getCloneOrdenCompra() {
+    return cloneOrdenCompra;
+  }
+  
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar                        = false;
@@ -167,8 +174,19 @@ public class Transaccion extends Inventarios implements Serializable {
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdOrdenEstatus(this.bitacora.getIdOrdenEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.orden.getIdOrdenEstatus().equals(7L)) 
+						if(this.orden.getIdOrdenEstatus().equals(7L)) {
 							this.toCommonNotaEntrada(sesion, -1L, this.orden.toMap());
+              // ESTO ES PARA GENERAR UNA NUEVA ORDEN DE COMPRA PARTIENDO DE LAS PARTIDAS QUE NO FUERON SURTIDAS O QUE LES FALTO POR SURTIR
+              TcManticOrdenesComprasDto clone= (TcManticOrdenesComprasDto)orden.clone();
+              clone.setIdOrdenCompra(-1L);
+              clone.setIdOrdenEstatus(1L);
+              consecutivo= this.toSiguiente(sesion);
+              clone.setConsecutivo(consecutivo.getConsecutivo());
+              clone.setOrden(consecutivo.getOrden());
+              clone.setEjercicio(new Long(Fecha.getAnioActual()));
+              clone.setObservaciones((clone.getObservaciones()!= null? clone.getObservaciones()+ ", ": "")+ "ORDEN GENERADA A PARTIR DE LA ORDEN: "+ this.orden.getConsecutivo());
+              this.cloneOrdenCompra= this.toCreateOrdenCompra(sesion, this.orden.getKey(), clone);
+            } // if  
 					} // if
 					break;
 				case DEPURAR:

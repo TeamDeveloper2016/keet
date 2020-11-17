@@ -25,7 +25,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
 @Entity
 @Table(name="tc_mantic_ordenes_compras")
-public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
+public class TcManticOrdenesComprasDto implements IBaseDto, Serializable, Cloneable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="id_proveedor_pago")
@@ -576,4 +576,9 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdOrdenCompra() != null ? getIdOrdenCompra().hashCode() : 0);
     return hash;
   }
+  
+  public Object clone() throws CloneNotSupportedException {  
+	  return (TcManticOrdenesComprasDto)super.clone();  
+  }  
+  
 }

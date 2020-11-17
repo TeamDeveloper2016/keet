@@ -11,6 +11,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.keet.db.dto.TcKeetOrdenesContratosLotesDto;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -27,6 +28,8 @@ import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import org.hibernate.Session;
 
 /**
@@ -195,18 +198,56 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 		} // for
 	}
 	
-  protected void toCreateOrdenCompra(Session sesion, Map<String, Object> params) {
-		// Map<String, Object> params= null;
+  protected TcManticOrdenesComprasDto toCreateOrdenCompra(Session sesion, Long idOrdenCompra, TcManticOrdenesComprasDto cloneOrdenCompra) throws Exception {
+    TcManticOrdenesComprasDto regresar= null;
+		Map<String, Object> params        = null;
 		try {
 			params= new HashMap<>();
-      
+      params.put("idOrdenCompra", idOrdenCompra);
+      List<TcManticOrdenesDetallesDto> detalles= (List<TcManticOrdenesDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticOrdenesDetallesDto.class, "TcManticOrdenesDetallesDto", "clonar", params);
+      if(detalles!= null && !detalles.isEmpty()) {
+        cloneOrdenCompra.setDescuentos(0D);
+        cloneOrdenCompra.setExcedentes(0D);
+        cloneOrdenCompra.setSubTotal(0D);
+        cloneOrdenCompra.setImpuestos(0D);
+        cloneOrdenCompra.setTotal(0D);
+        DaoFactory.getInstance().insert(sesion, cloneOrdenCompra);
+        for (TcManticOrdenesDetallesDto item: detalles) {
+          item.setIdOrdenCompra(cloneOrdenCompra.getIdOrdenCompra());
+          item.setDescuentos(Numero.toRedondearSat(item.getCantidades()* item.getDescuentos()/ item.getCantidad()));
+          item.setExcedentes(Numero.toRedondearSat(item.getCantidades()* item.getExcedentes()/ item.getCantidad()));
+          item.setSubTotal(Numero.toRedondearSat(item.getCantidades()* item.getSubTotal()/ item.getCantidad()));
+          item.setImpuestos(Numero.toRedondearSat(item.getCantidades()* item.getImpuestos()/ item.getCantidad()));
+          item.setImporte(Numero.toRedondearSat(item.getCantidades()* item.getImporte()/ item.getCantidad()));
+          item.setCantidad(item.getCantidades());
+          item.setImportes(0D);
+          item.setRegistro(LocalDateTime.now());
+          DaoFactory.getInstance().insert(sesion, item);
+          cloneOrdenCompra.setDescuentos(cloneOrdenCompra.getDescuentos()+ item.getDescuentos());
+          cloneOrdenCompra.setExcedentes(cloneOrdenCompra.getExcedentes()+ item.getExcedentes());
+          cloneOrdenCompra.setSubTotal(cloneOrdenCompra.getSubTotal()+ item.getSubTotal());
+          cloneOrdenCompra.setImpuestos(cloneOrdenCompra.getImpuestos()+ item.getImpuestos());
+          cloneOrdenCompra.setTotal(cloneOrdenCompra.getTotal()+ item.getImporte());
+        } // for
+        DaoFactory.getInstance().update(sesion, cloneOrdenCompra);
+        //FALTA CLONAR LA PARTE DE LOS CONTRATOS CON LOS LOTES ASOCIADOS A LA ORDEN DE COMPRA PASADA
+        List<TcKeetOrdenesContratosLotesDto> lotes= (List<TcKeetOrdenesContratosLotesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKeetOrdenesContratosLotesDto.class, "TcKeetOrdenesContratosLotesDto", "lotes", params);
+        for (TcKeetOrdenesContratosLotesDto item: lotes) {
+          item.setIdOrdenCompra(cloneOrdenCompra.getIdOrdenCompra());
+          item.setRegistro(LocalDateTime.now());
+          DaoFactory.getInstance().insert(sesion, item);
+        } // for
+        regresar= cloneOrdenCompra;
+      } // if  
     } // try
 		catch (Exception e) {
+      regresar= null;
 			throw e;
 		} // catch
 		finally {
-		//	Methods.clean(params);
+			Methods.clean(params);
 		} // finally    
+    return regresar;
   }
   
 }

@@ -4862,6 +4862,14 @@
         where      
           id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo}
       </select>
+      <select id="clonar">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_detalles
+        where      
+          id_orden_compra = {idOrdenCompra} and cantidades> 0
+      </select>
 			<select id="incompleto">
 				select
 					count(*) as total

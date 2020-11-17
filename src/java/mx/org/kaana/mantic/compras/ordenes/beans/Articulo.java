@@ -429,7 +429,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.toCalculate();
 	}
 
-	public boolean autorizedDiscount(){
+	public boolean autorizedDiscount() {
 		boolean regresar= false;	
 		if(this.getDescuento().equals("0")){
 			regresar= true;

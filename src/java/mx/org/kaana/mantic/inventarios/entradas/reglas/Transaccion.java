@@ -521,8 +521,11 @@ public class Transaccion extends Inventarios implements Serializable {
             contratoLote.setIdUsuario(JsfBase.getIdUsuario());
             NotaLoteFamilia existe= new NotaLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
             int index= items.indexOf(existe);
-            if(index< 0)
+            if(index< 0) {
               DaoFactory.getInstance().insert(sesion, contratoLote);
+              existe.setExiste(Boolean.TRUE);
+              items.add(existe);
+            } // if  
             else
               items.get(index).setExiste(Boolean.TRUE);
           } // for
