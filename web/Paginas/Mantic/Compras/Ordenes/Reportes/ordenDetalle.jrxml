@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ordenDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.compras.ordenes.scriplet.OrdenesDetalles" uuid="a3542042-156a-46f2-b7a4-73d76a67d6b2">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="128"/>
+	<property name="ireport.y" value="76"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -107,6 +107,7 @@
 	<field name="CORREO_FACTURACION" class="java.lang.String"/>
 	<field name="USUARIO" class="java.lang.String"/>
 	<field name="ID_USUARIO" class="java.math.BigDecimal"/>
+	<field name="ETAPA" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -142,23 +143,23 @@
 					<textFieldExpression><![CDATA[$F{CONSECUTIVO}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement stretchType="RelativeToTallestObject" x="0" y="59" width="145" height="14" uuid="36a6925e-d965-4d5d-93a4-2bd736b51760"/>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="48" width="145" height="14" uuid="36a6925e-d965-4d5d-93a4-2bd736b51760"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9" isBold="false"/>
+						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
 					<text><![CDATA[Centro de costos]]></text>
 				</staticText>
 				<textField pattern="dd/MM/yyyy HH.mm.ss">
-					<reportElement x="0" y="37" width="145" height="19" uuid="966ad116-3f9c-443a-a735-6e5e7f869815"/>
+					<reportElement x="0" y="30" width="145" height="19" uuid="966ad116-3f9c-443a-a735-6e5e7f869815"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{REGISTRO_ORDEN_COMPRA}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement stretchType="RelativeToTallestObject" x="0" y="19" width="145" height="19" uuid="464dfccd-055d-4ca6-858d-ee03bb8ed4eb"/>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="20" width="145" height="11" uuid="464dfccd-055d-4ca6-858d-ee03bb8ed4eb"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9" isBold="false"/>
+						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
 					<text><![CDATA[Fecha/Hora Emisión:]]></text>
 				</staticText>
@@ -306,7 +307,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["CLIENTE: "+$P{REPORTE_EMPRESA_CONTACTO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_CONTACTO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
 				<reportElement x="374" y="59" width="230" height="10" uuid="0817af57-fb9a-4e54-be0c-936dde188e20"/>
@@ -463,11 +464,18 @@
 				<textFieldExpression><![CDATA["FACTURACION: "+$F{CORREO_FACTURACION}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="604" y="112" width="145" height="19" uuid="cb31746f-4d56-469e-99ca-ca70990ce3e1"/>
+				<reportElement x="604" y="101" width="145" height="16" uuid="cb31746f-4d56-469e-99ca-ca70990ce3e1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CENTRO_COSTOS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="607" y="116" width="145" height="15" uuid="939ef178-ea9e-4c00-9363-1fc5205a1f3d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ETAPA}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

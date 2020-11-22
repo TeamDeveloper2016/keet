@@ -7220,8 +7220,8 @@
 					   tc_mantic_empresas left join tr_mantic_empresa_tipo_contacto on tc_mantic_empresas.id_empresa = tr_mantic_empresa_tipo_contacto.id_empresa and tr_mantic_empresa_tipo_contacto.id_tipo_contacto between 9 and 11 
 					 where 
         	tc_mantic_empresas.id_empresa) emails_empresa,
-        	concat(responsable_empresa.nombres,' ' ,responsable_empresa.paterno,' ',responsable_empresa.materno) as responsable_empresa,
-          responsable_empresa.rfc rfc_empresa,	 
+        	tc_mantic_empresas.titulo as responsable_empresa,
+          tc_mantic_empresas.rfc rfc_empresa,	 
           concat(replace(replace(upper(municipio_empresa.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_empresa.descripcion),', ',upper(pais_empresa.descripcion)) as empresa_region,            
           (select 
 					  group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') emails 

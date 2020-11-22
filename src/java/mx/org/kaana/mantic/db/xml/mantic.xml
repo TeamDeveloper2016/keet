@@ -2812,6 +2812,8 @@
         where      
           id_empresa = {idEmpresa} 
           and id_tipo_contacto in ({idTipoContacto})
+        order by
+          id_tipo_contacto
       </select>
 			<select id="maximo">
         select      
