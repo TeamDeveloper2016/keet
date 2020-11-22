@@ -2813,7 +2813,7 @@
           id_empresa = {idEmpresa} 
           and id_tipo_contacto in ({idTipoContacto})
         order by
-          id_tipo_contacto
+          id_tipo_contacto desc
       </select>
 			<select id="maximo">
         select      
