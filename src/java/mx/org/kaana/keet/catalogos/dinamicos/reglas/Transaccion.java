@@ -16,7 +16,7 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {	
-		boolean regresar        = false;
+		boolean regresar= false;
 		try {	
 			switch(accion){
 				case AGREGAR:			
@@ -37,4 +37,5 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // ejecutar
+  
 }

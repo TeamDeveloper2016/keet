@@ -41,7 +41,7 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
   @Column (name="acronimo")
   private String acronimo;
   @Column (name="consecutivo")
-  private Integer consecutivo;
+  private Long consecutivo;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -60,8 +60,7 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
     setIdUsuario(idUsuario);
     setNombre(nombre);
     this.acronimo= acronimo;
-    this.consecutivo= this.consecutivo;
-    setNombre(nombre);
+    this.consecutivo= consecutivo;
     setRegistro(LocalDateTime.now());
   }
 	
@@ -105,11 +104,11 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
     this.acronimo = acronimo;
   }
 
-  public Integer getConsecutivo() {
+  public Long getConsecutivo() {
     return consecutivo;
   }
 
-  public void setConsecutivo(Integer consecutivo) {
+  public void setConsecutivo(Long consecutivo) {
     this.consecutivo = consecutivo;
   }
 
@@ -160,6 +159,8 @@ public class TcKeetFamiliasDto implements IBaseDto, Serializable {
 		regresar.put("idFamilia", getIdFamilia());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("nombre", getNombre());
+		regresar.put("acronimo", getAcronimo());
+		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }

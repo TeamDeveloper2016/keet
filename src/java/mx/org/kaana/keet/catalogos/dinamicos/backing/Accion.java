@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -56,7 +57,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("unit", JsfBase.getFlashAttribute("unit"));      
       this.attrs.put("idXml", JsfBase.getFlashAttribute("idXml"));      
-      this.attrs.put("idKey", JsfBase.getFlashAttribute("idKey"));			
+      this.attrs.put("idKey", JsfBase.getFlashAttribute("idKey"));	
+      // CAPTURAR LOS CAMPOS PARA CUANDO SEA EL CATALOGO DE FAMILIAS
+        this.attrs.put("isAcronimo", Objects.equals(ECatalogosDinamicos.FAMILIAS, catalogoDinamico));
+        this.attrs.put("isConsecutivo", Objects.equals(ECatalogosDinamicos.FAMILIAS, catalogoDinamico));
       this.doLoad();      
 			if(catalogoDinamico.getEstatus())
 				this.selectionItems= new DualListModel<>(loadEstatus(false), loadEstatus(true));     						

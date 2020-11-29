@@ -261,8 +261,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 		List<UISelectEntity> proveedores= null;
 		try {
 			proveedores= (List<UISelectEntity>) this.attrs.get("proveedores");
-			seleccion= proveedores.get(proveedores.indexOf((UISelectEntity)event.getObject()));
-			this.setIkProveedor(seleccion);
+      int index= proveedores.indexOf((UISelectEntity)event.getObject());
+      if(index>= 0) {
+			  seleccion= proveedores.get(index);
+			  this.setIkProveedor(seleccion);
+      } // if  
       this.toLookForPrecio();
 		} // try
 		catch (Exception e) {

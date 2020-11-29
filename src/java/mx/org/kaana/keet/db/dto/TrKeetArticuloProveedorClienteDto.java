@@ -53,7 +53,7 @@ public class TrKeetArticuloProveedorClienteDto implements IBaseDto, Serializable
   }
 
   public TrKeetArticuloProveedorClienteDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, LocalDateTime.now());
+    this(null, null, null, null, new Long(-1L), 0D, null, LocalDateTime.now());
     setKey(key);
   }
 
