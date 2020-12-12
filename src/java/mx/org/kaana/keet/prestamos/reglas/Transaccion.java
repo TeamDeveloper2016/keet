@@ -1,7 +1,9 @@
 package mx.org.kaana.keet.prestamos.reglas;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -13,15 +15,20 @@ import mx.org.kaana.keet.db.dto.TcKeetPrestamosBitacoraDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
 import mx.org.kaana.keet.prestamos.enums.EEstatusPrestamos;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transaccion {
 
+  private static final Log LOG = LogFactory.getLog(Transaccion.class);
+  
 	private RegistroPrestamo prestamo;	
 
 	public Transaccion(RegistroPrestamo prestamo) {
@@ -54,9 +61,12 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					regresar= DaoFactory.getInstance().insert(sesion, this.prestamo.getPrestamo())>= 1L;
 					bitacoraDto= new TcKeetPrestamosBitacoraDto("", this.prestamo.getPrestamo().getKey(), -1L, idUsuario, this.prestamo.getPrestamo().getIdPrestamoEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
-					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)){
-						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona());
-						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
+					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)) {
+						List<Incidente> incidentes= this.toLoadIncidente(deudoresDto.getIdEmpresaPersona());
+            for (Incidente item: incidentes) {
+              this.setIncidente(item);
+  						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
+            } // if
 					} // if
 					break;
 				case DESACTIVAR:
@@ -68,15 +78,15 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					regresar= DaoFactory.getInstance().update(sesion, this.prestamo.getPrestamo())>= 1L;
 					bitacoraDto= new TcKeetPrestamosBitacoraDto("", this.prestamo.getPrestamo().getKey(), -1L, idUsuario, this.prestamo.getPrestamo().getIdPrestamoEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
-					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)){
-						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona());
-						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
-					} // if
+//					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)) {
+//						this.toLoadIncidente(deudoresDto.getIdEmpresaPersona());
+//						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
+//					} // if
 					break;
 				case SUBIR:					
 					for (Documento dto : this.prestamo.getDocumentos()) {
 						if (DaoFactory.getInstance().insert(sesion, dto) >= 1L) 
-							toSaveFile(dto.getIdArchivo());
+							this.toSaveFile(dto.getIdArchivo());
 					} // for
 					break;
 			} // switch						
@@ -108,16 +118,36 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	} // toSiguiente
 
-	private void loadIncidente(Session sesion, Long idEmpresaPersona) throws Exception {
-		this.getIncidente().setCosto(this.prestamo.getPrestamo().getImporte());
-		this.getIncidente().setTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.name());
-		this.getIncidente().setIdTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.getKey());
-		this.getIncidente().setVigenciaInicio(LocalDate.now());
-		this.getIncidente().setVigenciaFin(LocalDate.now());
-		this.getIncidente().setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
-		this.getIncidente().setIdEmpresaPersona(idEmpresaPersona);
+	private List<Incidente> toLoadIncidente(Long idEmpresaPersona) throws Exception {
+    List<Incidente> regresar= new ArrayList<>();
+    double total  = this.prestamo.getPrestamo().getImporte();
+    double importe= (int)(total / this.prestamo.getPrestamo().getSemanas());
+    double residuo= this.prestamo.getPrestamo().getImporte() % this.prestamo.getPrestamo().getSemanas();
+    double suma   = 0D;
+    for(int x= 1; x<= this.prestamo.getPrestamo().getSemanas().intValue(); x++) {
+      if(residuo!= 0D && x== this.prestamo.getPrestamo().getSemanas().intValue()) 
+        importe= (int)(total- suma);
+      else 
+        suma+= importe; 
+      Incidente item= new Incidente();
+      item.setCosto(importe);
+      item.setTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.name());
+      item.setIdTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.getKey());
+      item.setVigenciaInicio(LocalDate.now());
+      item.setVigenciaFin(LocalDate.now());
+      item.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
+      item.setIdEmpresaPersona(idEmpresaPersona);
+      item.setIdPrestamo(this.prestamo.getPrestamo().getIdPrestamo());
+      item.setObservaciones("FOLIO ("+ x+ ") PRESTAMO[".concat(this.prestamo.getPrestamo().getConsecutivo()).concat("] {").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA, this.prestamo.getPrestamo().getRegistro())).concat("}"));
+      regresar.add(item);
+    } // for
+    return regresar;
 	}
 	
-
-	
+  public static void main(String ... args) {
+    LOG.info(100.50% 4);   
+    LOG.info((int)(100.50/ 4));   
+    LOG.debug("ok");   
+  }
+  
 }

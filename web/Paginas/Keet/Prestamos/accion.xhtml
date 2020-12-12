@@ -15,6 +15,7 @@
 				'contenedorGrupos\\:idAfectaNomina': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:importe': {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{keetPrestamosAccion.attrs.disponible}})', mascara: 'libre'},
 				'contenedorGrupos\\:antiguedad': {validaciones: 'requerido|flotante|mayor({"cuanto":90})', mascara: 'libre'},
+				'contenedorGrupos\\:semanas': {validaciones: 'requerido|entero|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
 
@@ -40,7 +41,7 @@
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 								<p:outputLabel for="deudor" value="Nombre del empleado(a):"/>
 								<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosAccion.prestamo.prestamo.ikDeudor}" completeMethod="#{keetPrestamosAccion.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-									<p:ajax event="itemSelect" listener="#{keetPrestamosAccion.doLoadDisponible}" process="@this" update="informacionDeudor"/>
+									<p:ajax event="itemSelect" listener="#{keetPrestamosAccion.doLoadDisponible}" process="@this" update="informacionDeudor semanas pagos"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 											<h:outputText value="Nombre:" />
@@ -50,7 +51,7 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>
-								<p:panelGrid  id="informacionDeudor" columns="2" styleClass="janal-wid-100-txt">
+								<p:panelGrid id="informacionDeudor" columns="2" styleClass="janal-wid-100-txt">
 									<p:outputLabel for="fecha" value="Fecha ingreso o re-ingreso:"/>
 									<p:outputLabel for="antiguedad" value="Antigüedad en días:"/>
 									<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.fecha}" readonly="true"/>																								
@@ -60,14 +61,27 @@
 									<p:inputText id="limite" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.limite}" readonly="true"/>																								
 									<p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.disponible}" readonly="true"/>																								
 								</p:panelGrid>
-								<p:outputLabel for="importe" value="Importe del prestamo:"/>
-								<p:inputText id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosAccion.prestamo.prestamo.importe}" />	
-								<p:outputLabel for="idAfectaNomina" value="Con cargo a la nómina:"/>
-								<p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosAccion.prestamo.prestamo.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
-									<f:selectItem itemValue="1" itemLabel="SI"/>
-									<f:selectItem itemValue="2" itemLabel="NO"/>
-								</p:selectOneMenu>				
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
+  								<p:outputLabel for="importe" value="Importe del prestamo:"/>
+  								<p:outputLabel value="Pago(s):"/>
+	  							<p:inputText id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosAccion.prestamo.prestamo.importe}">	
+                    <p:ajax event="blur" process="@this" update="pagos" listener="#{keetPrestamosAccion.doCalculo}"/>
+                  </p:inputText>  
+                  <p:inputText id="pagos" styleClass="janal-wid-100-txt janal-color-orange" value="#{keetPrestamosAccion.attrs.calculo}" readonly="true"/>	
+                </p:panelGrid>  
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
+                  <p:outputLabel for="idAfectaNomina" value="Con cargo a la nómina:"/>
+                  <p:outputLabel for="semanas" value="Semanas:"/>
+                  <p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosAccion.prestamo.prestamo.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                    <p:ajax event="change" process="@this" update="semanas pagos" listener="#{keetPrestamosAccion.doCalculo}"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                    <f:selectItem itemValue="1" itemLabel="SI"/>
+                    <f:selectItem itemValue="2" itemLabel="NO"/>
+                  </p:selectOneMenu>				
+                  <p:inputText id="semanas" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.semanas}" disabled="#{not(keetPrestamosAccion.prestamo.prestamo.idAfectaNomina eq 1)}">
+                    <p:ajax event="blur" process="@this" update="pagos" listener="#{keetPrestamosAccion.doCalculo}"/>
+                  </p:inputText>  
+                </p:panelGrid>  
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.observaciones}" />
               </p:panelGrid>

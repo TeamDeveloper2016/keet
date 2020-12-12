@@ -168,8 +168,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(this.attrs.get("idNomina")!= null && !Cadena.isVacio(this.attrs.get("idNomina")))
 			sb.append("tc_keet_nominas.id_nomina=").append(this.attrs.get("idNomina")).append(" and ");
 		if(!Cadena.isVacio(this.fecha)) {
-  		sb.append("date_format(tc_keet_nominas_periodos.inicio, '%Y%m%d')<= '").append(fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
-	  	sb.append("date_format(tc_keet_nominas_periodos.termino, '%Y%m%d')>= '").append(fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+  		sb.append("date_format(tc_keet_nominas_periodos.inicio, '%Y%m%d')<= '").append(this.fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+	  	sb.append("date_format(tc_keet_nominas_periodos.termino, '%Y%m%d')>= '").append(this.fecha.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
 		} // if
 		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && ((UISelectEntity)this.attrs.get("ejercicio")).getKey()>= 1L)				
 			sb.append("tc_keet_nominas_periodos.ejercicio = ").append(((UISelectEntity)this.attrs.get("ejercicio")).getKey()).append(" and ");

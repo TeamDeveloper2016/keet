@@ -55,10 +55,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idPrestamo", JsfBase.getFlashAttribute("idPrestamo"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
-      this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
-      this.attrs.put("disponible", 0);      
-      this.attrs.put("antiguedad", 0);      
-      this.attrs.put("limite", 0);      
+      this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("disponible", 0);
+      this.attrs.put("antiguedad", 0);
+      this.attrs.put("limite", 0);
+      this.attrs.put("calculo", 500D);
       this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, LocalDate.now()));      
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.loadCatalogos();
@@ -95,6 +96,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.prestamo= new RegistroPrestamo();
+          this.prestamo.getPrestamo().setIdAfectaNomina(-1L);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -179,5 +181,14 @@ public class Accion extends IBaseAttribute implements Serializable {
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("deudores");
 	}	// doCompleteCliente
-	
+
+  public void doCalculo() {
+    if(this.getPrestamo().getPrestamo().getSemanas()<= 0)
+      this.getPrestamo().getPrestamo().setSemanas(1L);
+    if(this.getPrestamo().getPrestamo().getImporte()<= 0)
+      this.getPrestamo().getPrestamo().setImporte(1D);
+    double calculo= Numero.toRedondear(this.getPrestamo().getPrestamo().getImporte()/ this.getPrestamo().getPrestamo().getSemanas());
+    this.attrs.put("calculo", calculo);  
+  }
+  
 }

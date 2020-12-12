@@ -2,6 +2,8 @@ package mx.org.kaana.mantic.compras.ordenes.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +59,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private List<Correo> correos;
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
+	private LocalDate fechaInicio;
+	private LocalDate fechaTermino;
 
 	public List<Correo> getCorreos() {
 		return correos;
@@ -77,6 +81,22 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void setCorreo(Correo correo) {
 		this.correo = correo;
 	}	
+
+  public LocalDate getFechaInicio() {
+    return fechaInicio;
+  }
+
+  public void setFechaInicio(LocalDate fechaInicio) {
+    this.fechaInicio = fechaInicio;
+  }
+
+  public LocalDate getFechaTermino() {
+    return fechaTermino;
+  }
+
+  public void setFechaTermino(LocalDate fechaTermino) {
+    this.fechaTermino = fechaTermino;
+  }
 	
   @PostConstruct
   @Override
@@ -176,10 +196,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   		sb.append("(tc_mantic_ordenes_compras.id_orden_compra=").append(this.attrs.get("idOrdenCompra")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ordenes_compras.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.fechaInicio))
+		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		if(!Cadena.isVacio(this.fechaTermino))
+		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
   		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
@@ -266,7 +286,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= toPrepare();	
+      params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_empresa, tc_mantic_ordenes_compras.ejercicio, tc_mantic_ordenes_compras.orden");

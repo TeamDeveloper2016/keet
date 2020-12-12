@@ -51,6 +51,8 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
   private Long idPrestamoEstatus;
   @Column (name="ejercicio")
   private Long ejercicio;
+  @Column (name="semanas")
+  private Long semanas;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -59,11 +61,11 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetPrestamosDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, 1L);
     setKey(key);
   }
 
-  public TcKeetPrestamosDto(String consecutivo, Long idPrestamo, Long idUsuario, Long idAfectaNomina, Long idDeudor, String observaciones, Double saldo, Long orden, Double importe, Long idPrestamoEstatus, Long ejercicio) {
+  public TcKeetPrestamosDto(String consecutivo, Long idPrestamo, Long idUsuario, Long idAfectaNomina, Long idDeudor, String observaciones, Double saldo, Long orden, Double importe, Long idPrestamoEstatus, Long ejercicio, Long semanas) {
     setConsecutivo(consecutivo);
     setIdPrestamo(idPrestamo);
     setIdUsuario(idUsuario);
@@ -76,6 +78,7 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
     setIdPrestamoEstatus(idPrestamoEstatus);
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
+    this.semanas= semanas;
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -174,6 +177,14 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Long getSemanas() {
+    return semanas;
+  }
+
+  public void setSemanas(Long semanas) {
+    this.semanas = semanas;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -212,6 +223,8 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSemanas());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -231,13 +244,14 @@ public class TcKeetPrestamosDto implements IBaseDto, Serializable {
 		regresar.put("idPrestamoEstatus", getIdPrestamoEstatus());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
+		regresar.put("semanas", getSemanas());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdPrestamo(), getIdUsuario(), getIdAfectaNomina(), getIdDeudor(), getObservaciones(), getSaldo(), getOrden(), getImporte(), getIdPrestamoEstatus(), getEjercicio(), getRegistro()
+      getConsecutivo(), getIdPrestamo(), getIdUsuario(), getIdAfectaNomina(), getIdDeudor(), getObservaciones(), getSaldo(), getOrden(), getImporte(), getIdPrestamoEstatus(), getEjercicio(), getRegistro(), getSemanas()
     };
     return regresar;
   }
