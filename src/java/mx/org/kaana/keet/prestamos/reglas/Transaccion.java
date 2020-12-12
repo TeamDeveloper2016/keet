@@ -78,10 +78,16 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					regresar= DaoFactory.getInstance().update(sesion, this.prestamo.getPrestamo())>= 1L;
 					bitacoraDto= new TcKeetPrestamosBitacoraDto("", this.prestamo.getPrestamo().getKey(), -1L, idUsuario, this.prestamo.getPrestamo().getIdPrestamoEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraDto)>= 1L;
-//					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)) {
-//						this.toLoadIncidente(deudoresDto.getIdEmpresaPersona());
-//						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
-//					} // if
+          // IR A LOS INCIDENTES DE NOMINA QUE NO SE HAN COBRADO Y CANCELARLOS
+					if(this.prestamo.getPrestamo().getIdAfectaNomina().equals(1L)) {
+						List<Incidente> incidentes= this.toLoadPrestamosIncidente(sesion);
+            if(incidentes!= null && !incidentes.isEmpty())
+              for (Incidente item: incidentes) {
+                item.setIdIncidenteEstatus(EEstatusIncidentes.CANCELADA.getIdEstatusInicidente());
+                this.setIncidente(item);
+                super.ejecutar(sesion, EAccion.ASIGNAR);
+              } // if  
+					} // if
 					break;
 				case SUBIR:					
 					for (Documento dto : this.prestamo.getDocumentos()) {
@@ -118,6 +124,20 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	} // toSiguiente
 
+	private List<Incidente> toLoadPrestamosIncidente(Session sesion) throws Exception {
+    List<Incidente> regresar  = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idPrestamo", this.prestamo.getPrestamo().getIdPrestamo());
+      regresar= (List<Incidente>)DaoFactory.getInstance().toEntitySet(sesion, Incidente.class, "TcManticIncidentesDto", "prestamos", params);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+    return regresar;  
+  } 
+  
 	private List<Incidente> toLoadIncidente(Long idEmpresaPersona) throws Exception {
     List<Incidente> regresar= new ArrayList<>();
     double total  = this.prestamo.getPrestamo().getImporte();
