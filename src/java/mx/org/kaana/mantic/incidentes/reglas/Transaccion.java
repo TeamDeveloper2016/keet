@@ -162,7 +162,7 @@ public class Transaccion extends IBaseTnx {
 	} // registrarIncidente
 	
 	private boolean isProcesoEmpleado() {
-		return ETiposIncidentes.PRESTAMO_NOMINA.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.ALTA.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.REINGRESO.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.BAJA.getKey().equals(this.incidente.getIdTipoIncidente());
+		return ETiposIncidentes.ABONO_NOMINA.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.PRESTAMO_NOMINA.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.ALTA.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.REINGRESO.getKey().equals(this.incidente.getIdTipoIncidente()) || ETiposIncidentes.BAJA.getKey().equals(this.incidente.getIdTipoIncidente());
 	} // isProcesoEmpleado 
 	
 	private boolean registrarBitacora(Session sesion, Long idIncidente, Long idEstatus) throws Exception{
