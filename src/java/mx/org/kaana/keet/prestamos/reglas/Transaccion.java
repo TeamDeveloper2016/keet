@@ -151,8 +151,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
         suma+= importe; 
       Incidente item= new Incidente();
       item.setCosto(importe);
-      item.setTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.name());
-      item.setIdTipoIncidente(ETiposIncidentes.PRESTAMO_NOMINA.getKey());
+      item.setTipoIncidente(ETiposIncidentes.ABONO_NOMINA.name());
+      item.setIdTipoIncidente(ETiposIncidentes.ABONO_NOMINA.getKey());
       item.setVigenciaInicio(LocalDate.now());
       item.setVigenciaFin(LocalDate.now());
       item.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());

@@ -60,6 +60,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("isLiquidar", JsfBase.getFlashAttribute("isLiquidar"));
 			this.pagoDto= new TcKeetPrestamosPagosDto();
+      this.pagoDto.setIdAfectaNomina(2L);
 			this.cargarDatosDeudor();
 			this.pagoDto.setIdPrestamo((Long)JsfBase.getFlashAttribute("idPrestamo"));
 			doLoad();
@@ -79,7 +80,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");      
 			transaccion = new Transaccion(this.pagoDto);
 			if (transaccion.ejecutar(eaccion)) {
-				this.attrs.put("numeroPrestamos", transaccion.getPrestamosPagados());
+				this.attrs.put("numeroPrestamos", transaccion.getPagos());
 				this.attrs.put("cambio", transaccion.getCambio());
 				JsfBase.addMessage("Se registró el pago de forma correcta.", ETipoMensaje.INFORMACION);
 				//JsfBase.

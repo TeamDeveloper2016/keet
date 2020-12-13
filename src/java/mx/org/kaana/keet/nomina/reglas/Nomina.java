@@ -73,6 +73,10 @@ public class Nomina implements Serializable {
 		this.load();
 	}
 
+  public TcKeetNominasPeriodosDto getPeriodo() {
+    return periodo;
+  }
+
 	private void load() throws Exception {
 		Map<String, Object> params=null;
 		try {

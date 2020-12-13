@@ -24,20 +24,20 @@ import org.hibernate.Session;
 
 public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transaccion {
 
-	private TcKeetPrestamosPagosDto prestamosPagosDto;
+	protected TcKeetPrestamosPagosDto prestamosPagos;
   private Long idDeudor;	
-  private int prestamosPagados;	
+  private int pagos;	
   private Double cambio;	
 
 
-	public Transaccion(TcKeetPrestamosPagosDto prestamosPagosDto) {
+	public Transaccion(TcKeetPrestamosPagosDto prestamosPagos) {
 		super(new Incidente());
-		this.prestamosPagosDto= prestamosPagosDto;	
-		this.prestamosPagados= 0;
+		this.prestamosPagos= prestamosPagos;	
+		this.pagos= 0;
 	}
 
-	public int getPrestamosPagados() {
-		return prestamosPagados;
+	public int getPagos() {
+		return pagos;
 	}
 
 	public Double getCambio() {
@@ -46,47 +46,47 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar               = false;
-		TcKeetDeudoresDto deudoresDto  = null;
-		TcKeetPrestamosPagosDto keetPrestamosPagosDto= null;
+		boolean regresar             = false;
+		TcKeetDeudoresDto deudoresDto= null;
+		TcKeetPrestamosPagosDto pago = null;
 		try {
 			switch(accion){
 				case REGISTRAR:
-					keetPrestamosPagosDto= calcularPago(sesion, this.prestamosPagosDto.getIdPrestamo(), this.prestamosPagosDto.getPago(), EEstatusPrestamos.LIQUIDADA);
+					pago= calcularPago(sesion, this.prestamosPagos.getIdPrestamo(), this.prestamosPagos.getPago(), EEstatusPrestamos.LIQUIDADA);
 					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.idDeudor);
-					deudoresDto.setSaldo(deudoresDto.getSaldo()- keetPrestamosPagosDto.getAbono());
-					deudoresDto.setDisponible(deudoresDto.getDisponible()+ keetPrestamosPagosDto.getAbono());
+					deudoresDto.setSaldo(deudoresDto.getSaldo()- pago.getAbono());
+					deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
 					DaoFactory.getInstance().update(sesion, deudoresDto);
-					regresar= DaoFactory.getInstance().insert(sesion, keetPrestamosPagosDto)>= 1L;
-					this.prestamosPagados= 1;
-					if(this.prestamosPagosDto.getIdAfectaNomina().equals(1L)){
-						this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
-						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
-					} // if
+					regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
+					this.pagos= 1;
+//					if(this.prestamosPagosDto.getIdAfectaNomina().equals(1L)) {
+//						this.toLoadIncidente(deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
+//						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
+//					} // if
 					break;
 				case COMPLETO:
-					keetPrestamosPagosDto= this.prestamosPagosDto;
-					keetPrestamosPagosDto.setCambio(this.prestamosPagosDto.getPago());
-					for(TcKeetPrestamosDto item: (List<TcKeetPrestamosDto>) DaoFactory.getInstance().toEntitySet(sesion, TcKeetPrestamosDto.class,"TcKeetPrestamosDto", "activosByIdDeudor", ((TcKeetPrestamosDto) DaoFactory.getInstance().findById(sesion, TcKeetPrestamosDto.class, this.prestamosPagosDto.getIdPrestamo())).toMap())){
-						keetPrestamosPagosDto= calcularPago(sesion, item.getIdPrestamo(), keetPrestamosPagosDto.getCambio(), EEstatusPrestamos.SALDADA);
-						keetPrestamosPagosDto.setRegistro(LocalDateTime.now());
+					pago= this.prestamosPagos;
+					pago.setCambio(this.prestamosPagos.getPago());
+					for(TcKeetPrestamosDto item: (List<TcKeetPrestamosDto>) DaoFactory.getInstance().toEntitySet(sesion, TcKeetPrestamosDto.class,"TcKeetPrestamosDto", "activosByIdDeudor", ((TcKeetPrestamosDto) DaoFactory.getInstance().findById(sesion, TcKeetPrestamosDto.class, this.prestamosPagos.getIdPrestamo())).toMap())){
+						pago= calcularPago(sesion, item.getIdPrestamo(), pago.getCambio(), EEstatusPrestamos.SALDADA);
+						pago.setRegistro(LocalDateTime.now());
 						deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.idDeudor);
-						deudoresDto.setSaldo(deudoresDto.getSaldo()- keetPrestamosPagosDto.getAbono());
-						deudoresDto.setDisponible(deudoresDto.getDisponible()+ keetPrestamosPagosDto.getAbono());
+						deudoresDto.setSaldo(deudoresDto.getSaldo()- pago.getAbono());
+						deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
 						DaoFactory.getInstance().update(sesion, deudoresDto);
-						regresar= DaoFactory.getInstance().insert(sesion, keetPrestamosPagosDto)>= 1L;
-						this.prestamosPagados++;
-						if(keetPrestamosPagosDto.getIdAfectaNomina().equals(1L)){
-							this.loadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
-							super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
-						} // if
-						if(keetPrestamosPagosDto.getCambio()== 0D)
+						regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
+						this.pagos++;
+//						if(keetPrestamosPagosDto.getIdAfectaNomina().equals(1L)){
+//							this.toLoadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
+//							super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
+//						} // if
+						if(pago.getCambio()== 0D)
 							break;
 					} // for
 					break;
 			} // switch	
-			this.cambio= keetPrestamosPagosDto.getCambio();
-		} // try
+			this.cambio= pago!= null? pago.getCambio(): 0D;
+		} // try // try // try // try
 		catch (Exception e) {			
 			throw new Exception(e);
 		} // catch		
@@ -118,19 +118,19 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		TcKeetPrestamosPagosDto regresar= null;
 		TcKeetPrestamosDto prestamosDto = null;
 		Siguiente siguiente             = null;
-		Double cambio, abono            = null;
+		Double restante, abono          = null;
 		TcKeetPrestamosBitacoraDto bitacoraDto= null;
 		try {
 			prestamosDto= (TcKeetPrestamosDto) DaoFactory.getInstance().findById(sesion, TcKeetPrestamosDto.class, idPrestamo);
 			this.idDeudor= prestamosDto.getIdDeudor();
-			siguiente= toSiguiente(sesion);
-			if((prestamosDto.getSaldo()-pago)>= 0){ //sin cambio
+			siguiente= this.toSiguiente(sesion);
+			if((prestamosDto.getSaldo()-pago)>= 0) { //sin cambio
 				abono= pago;
-				cambio= 0D;
+				restante= 0D;
 			} // if
 			else{
 				abono= prestamosDto.getSaldo();
-				cambio= pago- prestamosDto.getSaldo();
+				restante= pago- prestamosDto.getSaldo();
 			}// else
 			prestamosDto.setSaldo(prestamosDto.getSaldo()-abono);
 			if(prestamosDto.getSaldo()== 0D)
@@ -140,15 +140,15 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			DaoFactory.getInstance().update(sesion, prestamosDto);
 			bitacoraDto= new TcKeetPrestamosBitacoraDto("", prestamosDto.getKey(), -1L, JsfBase.getIdUsuario(), prestamosDto.getIdPrestamoEstatus());
 			DaoFactory.getInstance().insert(sesion, bitacoraDto);
-			regresar= new TcKeetPrestamosPagosDto(siguiente.getConsecutivo(), cambio, idPrestamo, JsfBase.getIdUsuario(), this.prestamosPagosDto.getIdAfectaNomina(), -1L, this.prestamosPagosDto.getObservaciones(), abono, siguiente.getOrden(), pago, Long.parseLong(String.valueOf(this.getCurrentYear())));
-		} // try
+			regresar= new TcKeetPrestamosPagosDto(siguiente.getConsecutivo(), restante, idPrestamo, JsfBase.getIdUsuario(), this.prestamosPagos.getIdAfectaNomina(), -1L, this.prestamosPagos.getObservaciones(), abono, siguiente.getOrden(), pago, Long.parseLong(String.valueOf(this.getCurrentYear())));
+		} // try // try
 		catch (Exception e) {
 			throw e;
 		} // catch
 		return regresar;
 	}
 	
-	private void loadIncidente(Session sesion, Long idEmpresaPersona, TcKeetPrestamosPagosDto prestamoPagoDto) throws Exception{
+	private void toLoadIncidente(Long idEmpresaPersona, TcKeetPrestamosPagosDto prestamoPagoDto) throws Exception{
 		this.getIncidente().setCosto(prestamoPagoDto.getAbono());
 		this.getIncidente().setTipoIncidente(ETiposIncidentes.ABONO_NOMINA.name());
 		this.getIncidente().setIdTipoIncidente(ETiposIncidentes.ABONO_NOMINA.getKey());
@@ -157,6 +157,5 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		this.getIncidente().setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
 		this.getIncidente().setIdEmpresaPersona(idEmpresaPersona);
 	}
-
 	
 }

@@ -91,7 +91,7 @@ public class Exportar extends IBaseFilter implements Serializable {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      params.put("sortOrder", "order by tc_mantic_incidentes.id_desarrollo, tc_mantic_incidentes.consecutivo");
+      params.put("sortOrder", "order by tc_mantic_incidentes.id_desarrollo, tc_mantic_incidentes.consecutivo desc");
       this.lazyModel = new FormatCustomLazy("VistaIncidentesDto", "principal", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -143,7 +143,7 @@ public class Exportar extends IBaseFilter implements Serializable {
 			sb.append("tc_mantic_incidentes.id_empresa_persona=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
 		else if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
 			String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-			sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
+			sb.append("((tc_mantic_personas.nombres regexp '.*").append(nombre).append(".*') or (tc_mantic_personas.apodo regexp '.*").append(nombre).append(".*')) and ");				
 		} // else if			  						
 		sb.append("(date_format(tc_mantic_incidentes.inicio, '%Y%m%d')>= date_format('").append(this.fechaInicio.toString()).append("', '%Y%m%d')) and ");					
 		sb.append("(date_format(tc_mantic_incidentes.termino, '%Y%m%d')<= date_format('").append(this.fechaFin.toString()).append("', '%Y%m%d')) and ");			

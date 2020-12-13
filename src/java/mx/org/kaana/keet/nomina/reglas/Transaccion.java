@@ -11,7 +11,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
@@ -22,7 +21,9 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPersonasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasRubrosDto;
+import mx.org.kaana.keet.db.dto.TcKeetPrestamosPagosDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
+import mx.org.kaana.keet.nomina.enums.ECodigosIncidentes;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -48,7 +49,7 @@ import org.hibernate.Session;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transaccion {
 
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);
 	
@@ -74,6 +75,7 @@ public class Transaccion extends IBaseTnx {
 	}
 
 	public Transaccion(Long idNomina, Autentifica autentifica, TcKeetNominasBitacoraDto bitacora) {
+    super(new TcKeetPrestamosPagosDto());
 		this.idNomina= idNomina;
 		this.autentifica= autentifica;
 		this.bitacora= bitacora;
@@ -93,6 +95,7 @@ public class Transaccion extends IBaseTnx {
 	}
 	
 	private Transaccion(Long idNomina, Autentifica autentifica, Long idEmpresaPersona, Long idProveedor) {
+    super(new TcKeetPrestamosPagosDto());
 		this.idNomina        = idNomina;
 		this.autentifica     = autentifica;
 		this.idEmpresaPersona= idEmpresaPersona;
@@ -100,6 +103,7 @@ public class Transaccion extends IBaseTnx {
 	}
 
 	public Transaccion(Long idFigura, Long idTipoFigura, Correo correo) {
+    super(new TcKeetPrestamosPagosDto());
 		this.idFigura    = idFigura;
 		this.idTipoFigura= idTipoFigura;
 		this.correo      = correo;
@@ -110,7 +114,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= true;
     try {
       this.messageError= "Ocurrio un error en el proceso de calculo de la nómina.";
-			if(!accion.equals(EAccion.COMPLEMENTAR)){
+			if(!accion.equals(EAccion.COMPLEMENTAR)) {
 				if(this.idNomina== -1L) {
 					DaoFactory.getInstance().insert(sesion, this.nomina);
 					this.idNomina= this.nomina.getIdNomina();
@@ -524,17 +528,25 @@ public class Transaccion extends IBaseTnx {
 			params.put("idNomina", this.nomina.getIdNomina());
 			List<TcManticIncidentesDto> incidentes= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticIncidentesDto.class, "VistaNominaDto", "aplicar", params);
 			if(incidentes!= null && !incidentes.isEmpty()) {		
-				for (TcManticIncidentesDto incidente: incidentes) {
-					incidente.setIdIncidenteEstatus(3L);
-					DaoFactory.getInstance().update(sesion, incidente);
+				for (TcManticIncidentesDto item: incidentes) {
+					item.setIdIncidenteEstatus(3L);
+					DaoFactory.getInstance().update(sesion, item);
 					TcManticIncidentesBitacoraDto estatus= new TcManticIncidentesBitacoraDto(
 						"CAMBIO AUTOMATICO POR NOMINA", // String justificacion, 
-						incidente.getIdIncidente(), // Long idIncidente, 
+						item.getIdIncidente(), // Long idIncidente, 
 						-1L, // Long idIncidenteBitacora, 
 						this.autentifica.getPersona().getIdUsuario(), // Long idUsuario, 
 						3L // Long idIncidenteEstatus
 					);
 					DaoFactory.getInstance().insert(sesion, estatus);
+          // SE TIENE GENERAR EL ABONO PARA EL PAGO DEL PRESTAMO PORQUE YA FUE COBRADO EN LA NOMINA QUE CIERRA
+          if(Objects.equals(item.getIdTipoIncidente(), ECodigosIncidentes.ABONO.idTipoIncidente())) {
+            this.prestamosPagos.setIdPrestamo(item.getIdPrestamo());
+            this.prestamosPagos.setPago(item.getCosto());
+            this.prestamosPagos.setIdAfectaNomina(2L);
+            this.prestamosPagos.setObservaciones("NOMINA ["+ this.calculos.getPeriodo().getEjercicio()+ "-"+ this.calculos.getPeriodo().getOrden()+ "] PAGO");
+            super.ejecutar(sesion, EAccion.REGISTRAR);
+          } // if
 				} // for
       } // if
 		} // try
