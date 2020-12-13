@@ -158,7 +158,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
       item.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
       item.setIdEmpresaPersona(idEmpresaPersona);
       item.setIdPrestamo(this.prestamo.getPrestamo().getIdPrestamo());
-      item.setObservaciones("FOLIO ("+ x+ ") PRESTAMO[".concat(this.prestamo.getPrestamo().getConsecutivo()).concat("] {").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA, this.prestamo.getPrestamo().getRegistro())).concat("}"));
+      item.setObservaciones("FOLIO ("+ x+ ") PRESTAMO[".concat(this.prestamo.getPrestamo().getConsecutivo()).concat("] [").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA, this.prestamo.getPrestamo().getRegistro())).concat("]"));
       regresar.add(item);
     } // for
     return regresar;

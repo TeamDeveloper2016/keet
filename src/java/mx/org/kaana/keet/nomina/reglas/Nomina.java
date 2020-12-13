@@ -277,6 +277,7 @@ public class Nomina implements Serializable {
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.TRIPLE.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.EXEDENTE.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.PRESTAMO.idTipoIncidente()) ||
+               Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.ABONO.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.APERTURACH.idTipoIncidente()) ||
                Objects.equals(incidente.getIdTipoIncidente(), ECodigosIncidentes.SALDOCH.idTipoIncidente())))
             incidente.setIdNomina(this.nomina.getIdNomina());

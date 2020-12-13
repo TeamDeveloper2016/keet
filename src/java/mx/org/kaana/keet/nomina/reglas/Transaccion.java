@@ -544,7 +544,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             this.prestamosPagos.setIdPrestamo(item.getIdPrestamo());
             this.prestamosPagos.setPago(item.getCosto());
             this.prestamosPagos.setIdAfectaNomina(2L);
-            this.prestamosPagos.setObservaciones("NOMINA ["+ this.calculos.getPeriodo().getEjercicio()+ "-"+ this.calculos.getPeriodo().getOrden()+ "] PAGO");
+            this.prestamosPagos.setObservaciones("PAGO NOMINA ["+ this.calculos.getPeriodo().getEjercicio()+ "-"+ this.calculos.getPeriodo().getOrden()+ "]");
             super.ejecutar(sesion, EAccion.REGISTRAR);
           } // if
 				} // for
