@@ -4,6 +4,55 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaIngresosDto">
+			<select id="lazy">
+        select
+          tc_keet_ingresos.id_ingreso as id_key,
+          tc_keet_ingresos.id_empresa,
+          tc_keet_ingresos.id_desarrollo,
+          tc_keet_ingresos.id_cliente,
+          tc_keet_ingresos.id_contrato,
+          tc_keet_ingresos.consecutivo,
+          tc_keet_ingresos.factura,
+          tc_keet_ingresos.id_normal,
+          if(tc_keet_ingresos.id_normal= 1, "NORMAL", "EXTRA") as tipo,
+          tc_keet_ingresos.total,
+          tc_keet_ingresos.id_ingreso_estatus,
+          tc_mantic_empresas.nombre as empresa,
+          tc_mantic_clientes.razon_social,
+          tc_keet_ingresos_estatus.nombre as estatus,
+          tc_keet_ingresos_estatus.estatus_asociados,
+          tc_keet_ingresos.registro
+        from
+          tc_keet_ingresos
+        inner join
+          tc_mantic_empresas on tc_keet_ingresos.id_empresa= tc_mantic_empresas.id_empresa
+        inner join
+          tc_keet_desarrollos on tc_keet_ingresos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        inner join
+          tc_mantic_clientes on tc_keet_ingresos.id_cliente= tc_mantic_clientes.id_cliente
+        inner join
+          tc_keet_ingresos_estatus on tc_keet_ingresos.id_ingreso_estatus= tc_keet_ingresos_estatus.id_ingreso_estatus
+        where
+          tc_mantic_empresas.id_empresa in ({idEmpresa})
+				  and {condicion}
+        {sortOrder}
+      </select>
+      <select id="clientes">
+        select
+          tc_keet_desarrollos.id_cliente as id_key,
+          tc_keet_desarrollos.nombres,
+          tc_keet_desarrollos.id_cliente,
+          tc_mantic_clientes.clave,
+          tc_mantic_clientes.razon_social
+        from
+          tc_keet_desarrollos 
+        inner join
+          tc_mantic_clientes on tc_keet_desarrollos.id_cliente= tc_mantic_clientes.id_cliente
+        where
+          tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+      </select>  
+    </unit>    
 		<unit id="VistaControlesLotesDto">
 			<select id="detalle">
         select

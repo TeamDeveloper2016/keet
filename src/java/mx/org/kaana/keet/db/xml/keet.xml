@@ -7,6 +7,63 @@
   </model>
 
   <dml>
+    <unit id="TcKeetIngresosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_ingresos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_ingresos
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+    </unit>    
+    <unit id="TcKeetIngresosEstatusDto">
+      <select id="row">
+        select      
+				  tc_keet_ingresos_estatus.id_ingreso_estatus as id_key,
+          tc_keet_ingresos_estatus.*
+        from      
+          tc_keet_ingresos_estatus
+        where 
+          {condicion} 
+				order by 
+				  id_ingreso_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_ingresos_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKeetIngresosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_ingresos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_ingresos_archivos
+        where      
+          id_ingreso = {idIngreso} and id_tipo_archivo = {idTipoArchivo} and mes = {mes} and nombre = '{nombre}' and ejercicio = {ejercicio}
+      </select>
+    </unit>    
     <unit id="TcKeetNotasContratosLotesDto">
       <select id="row">
         select      

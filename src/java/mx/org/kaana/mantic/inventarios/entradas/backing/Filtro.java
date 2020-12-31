@@ -1,7 +1,8 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,6 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -43,8 +43,26 @@ import mx.org.kaana.mantic.enums.ETipoMovimiento;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID=1368701967796774746L;
+  private LocalDate fechaInicio;
+  private LocalDate fechaTermino;
   private Reporte reporte;
-	
+
+  public LocalDate getFechaInicio() {
+    return fechaInicio;
+  }
+
+  public void setFechaInicio(LocalDate fechaInicio) {
+    this.fechaInicio = fechaInicio;
+  }
+
+  public LocalDate getFechaTermino() {
+    return fechaTermino;
+  }
+
+  public void setFechaTermino(LocalDate fechaTermino) {
+    this.fechaTermino = fechaTermino;
+  }
+  
 	public Reporte getReporte() {
 		return reporte;
 	}	// getReporte
@@ -160,10 +178,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   		sb.append("(tc_mantic_notas_entradas.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
 		if(!Cadena.isVacio(this.attrs.get("factura")))
   		sb.append("(tc_mantic_notas_entradas.factura like '%").append(this.attrs.get("factura")).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.fechaInicio))
+		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		if(!Cadena.isVacio(this.fechaTermino))
+		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
   		sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idNotaEstatus")) && !this.attrs.get("idNotaEstatus").toString().equals("-1"))
