@@ -12,6 +12,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'idDesarrollo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'ordenCompra'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
         'consecutivo'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
         'factura'      : {validaciones: 'libre', mascara: 'numeros-letras', formatos: 'cambiar-mayusculas', grupo: 'general'},
@@ -66,8 +67,8 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-							<p:outputLabel for="desarrollo" value="Desarrollo:"/>
-              <p:selectOneMenu id="desarrollo" value="#{manticInventariosEntradasFiltro.attrs.desarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{manticInventariosEntradasFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticInventariosEntradasFiltro.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>

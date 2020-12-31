@@ -172,8 +172,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(!Cadena.isVacio(this.attrs.get("desarrollo")) && ((UISelectEntity)this.attrs.get("desarrollo")).getKey()>= 1L)
-  		sb.append("(tc_mantic_ordenes_compras.id_desarrollo=").append(((UISelectEntity)this.attrs.get("desarrollo")).getKey()).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && ((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()>= 1L)
+  		sb.append("(tc_mantic_ordenes_compras.id_desarrollo=").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -201,7 +201,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			columns.remove(0);
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcManticNotasEstatusDto", "row", params, columns, "nombre"));
 			this.attrs.put("idNotaEstatus", new UISelectEntity("-1"));
-			doLoadDesarrollos();
+			this.doLoadDesarrollos();
     } // try
     catch (Exception e) {
       throw e;
@@ -227,7 +227,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave"));			
-			this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+			this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
     } // try
     catch (Exception e) {
       throw e;
