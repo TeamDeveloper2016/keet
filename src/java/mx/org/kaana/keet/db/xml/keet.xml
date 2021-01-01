@@ -24,6 +24,29 @@
         where      
           consecutivo = '{consecutivo}'
       </select>
+			<select id="folio">
+				select
+				  consecutivo, registro
+				from
+				  tc_keet_ingresos
+				where
+				  factura = '{factura}'
+				  and id_cliente= {idCliente}
+				  and date_format(registro, '%Y%m%d')&gt;= '{inicio}' and date_format(registro, '%Y%m%d')&lt;= '{termino}'
+					and id_ingreso&lt;&gt; {idIngreso}
+				order by
+				  registro desc				
+			</select>      
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_ingresos
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 900000			
+			</select>		
     </unit>    
     <unit id="TcKeetIngresosEstatusDto">
       <select id="row">
@@ -63,6 +86,49 @@
         where      
           id_ingreso = {idIngreso} and id_tipo_archivo = {idTipoArchivo} and mes = {mes} and nombre = '{nombre}' and ejercicio = {ejercicio}
       </select>
+      <select id="exists">
+        select      
+          *
+        from      
+          tc_keet_ingresos_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_ingreso = {idIngreso}
+				order by
+				  registro desc
+      </select>
+      <select id="all">
+        select      
+          *
+        from      
+          tc_keet_ingresos_archivos
+        where      
+          id_ingreso = {idIngreso}
+      </select>
+      <select id="listado">
+        select      
+          *
+        from      
+          tc_keet_ingresos_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+			<select id="ejercicios">
+        select      
+          distinct(ejercicio) as id_key
+        from      
+          tc_keet_ingresos_archivos
+ 				order by
+				  ejercicio
+			</select>
+			<update id="rows">
+				update tc_keet_ingresos_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_ingreso = {idIngreso}
+			</update>
+			<delete id="rows">
+				delete from tc_keet_ingresos_archivos where id_ingreso = {idIngreso}
+			</delete>      
     </unit>    
     <unit id="TcKeetNotasContratosLotesDto">
       <select id="row">
