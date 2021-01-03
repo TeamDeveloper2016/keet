@@ -63,11 +63,11 @@ public class TcKeetIngresosArchivosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetIngresosArchivosDto(Long key) {
-    this(null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
-
-  public TcKeetIngresosArchivosDto(Long idIngreso, String archivo, String ruta, String nombre, Long ejercicio, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idIngresoArchivo, Long idPrincipal, String observaciones, String alias, Long mes) {
+  
+  public TcKeetIngresosArchivosDto(Long idIngresoArchivo, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, String alias, Long mes, Long idIngreso, String nombre, String observaciones, Long ejercicio, Long idPrincipal, String archivo) {
     setIdIngreso(idIngreso);
     setArchivo(archivo);
     setRuta(ruta);

@@ -2,6 +2,7 @@ package mx.org.kaana.keet.ingresos.backing;
 
 import java.io.File;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,7 +28,9 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.db.dto.TcKeetIngresosDto;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -35,6 +38,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import mx.org.kaana.keet.ingresos.reglas.Transaccion;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
@@ -127,6 +131,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso")== null? -1L: JsfBase.getFlashAttribute("idIngreso"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -142,6 +147,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       switch (this.accion) {
         case AGREGAR:								
           this.ingreso= new TcKeetIngresosDto();
+ 					this.ingreso.setIdUsuario(JsfBase.getIdUsuario());
     			this.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
           this.setIkDesarrollo(new UISelectEntity(-1L));
           this.setIkCliente(new UISelectEntity(-1L));
@@ -165,9 +171,26 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // catch		
   } // doLoad
 
-  public String doAceptar() {  
-  	JsfBase.setFlashAttribute("idIngreso", this.attrs.get("idIngreso"));
-    return null;
+  public String doAceptar() { 
+    this.ingreso.setIdNormal(this.ingreso.getIdContrato()<= 0? 2L: 1L);
+    Transaccion transaccion= null;
+    String regresar        = null;
+    try {
+			transaccion = new Transaccion(this.ingreso, this.getXml(), this.getPdf());
+			if (transaccion.ejecutar(this.accion)) {
+  			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+ 				if(!this.accion.equals(EAccion.CONSULTAR)) 
+  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
+      } // if
+      else 
+				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    JsfBase.setFlashAttribute("idIngreso", this.ingreso.getIdIngreso());
+    return regresar;
   } // doAccion
 
   public String doCancelar() {   
@@ -308,8 +331,12 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 	public void doTabChange(TabChangeEvent event) {
     switch (event.getTab().getTitle()) {
       case "Importar":
-     		if(this.attrs.get("faltantes")== null)
-		  	  this.doLoadFiles("TcManticIngresosArchivosDto", this.ingreso.getIdIngreso(), "idIngreso", false, 1D);
+        if(this.ingreso.getIdDesarrollo()!= null && this.ingreso.getIdDesarrollo()> 0L) {
+     		  if(this.attrs.get("faltantes")== null)
+		  	    this.doLoadFiles("TcManticIngresosArchivosDto", this.ingreso.getIdIngreso(), "idIngreso", false, 1D);
+        } // if
+        else
+    			JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero.", ETipoMensaje.ALERTA);      			
         break;
     } // switch    
 	}
@@ -318,6 +345,14 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		if(this.ingreso.getIdDesarrollo()!= null && this.ingreso.getIdDesarrollo()> 0L) {
 			this.doFileUpload(event, this.ingreso.getFechaFactura().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("ingresos"), this.cliente.getRfc(), false, 1D);
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
+        this.ingreso.setDescuentos(0D);
+        this.ingreso.setImpuestos(Numero.getDouble(this.getFactura().getImpuesto().getTraslado().getImporte(), 0D));
+        this.ingreso.setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
+        this.ingreso.setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
+        this.ingreso.setSaldo(this.ingreso.getTotal());
+        this.ingreso.setDisponible(0D);
+        this.ingreso.setFactura(this.getFactura().getFolio());
+        this.ingreso.setFechaFactura(Fecha.toLocalDate(this.getFactura().getFecha()));
 				this.doCheckFolio();
 			} // if
 		} // if

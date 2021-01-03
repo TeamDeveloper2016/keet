@@ -72,17 +72,19 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="disponible")
   private Double disponible;
+  @Column (name="id_normal")
+  private Long idNormal;
 
   public TcKeetIngresosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetIngresosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, LocalDate.now(), null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, new Long(-1L), null, null, LocalDate.now(), null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetIngresosDto(Double descuentos, Long idIngresoEstatus, Long idIngreso, Long idCliente, Long idDesarrollo, LocalDate fechaRecepcion, Double saldo, LocalDate fechaFactura, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Double impuestos, Long idContrato, Double subTotal, String observaciones, Long idEmpresa, Long orden, Double disponible) {
+  public TcKeetIngresosDto(Double descuentos, Long idIngresoEstatus, Long idIngreso, Long idCliente, Long idDesarrollo, LocalDate fechaRecepcion, Double saldo, LocalDate fechaFactura, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Double impuestos, Long idContrato, Double subTotal, String observaciones, Long idEmpresa, Long orden, Double disponible, Long idNormal) {
     setDescuentos(descuentos);
     setIdIngresoEstatus(idIngresoEstatus);
     setIdIngreso(idIngreso);
@@ -104,6 +106,7 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setOrden(orden);
     setDisponible(disponible);
+    this.idNormal= idNormal;
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -274,6 +277,14 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     return disponible;
   }
 
+  public Long getIdNormal() {
+    return idNormal;
+  }
+
+  public void setIdNormal(Long idNormal) {
+    this.idNormal = idNormal;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -330,6 +341,8 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDisponible());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdNormal());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -358,13 +371,14 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("disponible", getDisponible());
+		regresar.put("idNormal", getIdNormal());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdIngresoEstatus(), getIdIngreso(), getIdCliente(), getIdDesarrollo(), getFechaRecepcion(), getSaldo(), getFechaFactura(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getImpuestos(), getIdContrato(), getSubTotal(), getObservaciones(), getIdEmpresa(), getOrden(), getDisponible()
+      getDescuentos(), getIdIngresoEstatus(), getIdIngreso(), getIdCliente(), getIdDesarrollo(), getFechaRecepcion(), getSaldo(), getFechaFactura(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getImpuestos(), getIdContrato(), getSubTotal(), getObservaciones(), getIdEmpresa(), getOrden(), getDisponible(), getIdNormal()
     };
     return regresar;
   }

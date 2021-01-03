@@ -642,13 +642,22 @@ public  class Fecha {
 	public static LocalDate toLocalDate(String date) {
 		//             0123456789
 		// date equals 01-01-2018
+    //             0123456789
+    // date equals 2019-12-10T18:24:31
 		LocalDate regresar= null;
 		try {
-		  regresar= LocalDate.of(
-				Integer.parseInt(date.substring(6, 10)),
-				Integer.parseInt(date.substring(3, 5)),
-				Integer.parseInt(date.substring(0, 2))
-			);
+      if(date.length()<= 10)
+        regresar= LocalDate.of(
+          Integer.parseInt(date.substring(6, 10)),
+          Integer.parseInt(date.substring(3, 5)),
+          Integer.parseInt(date.substring(0, 2))
+        );
+      else
+        regresar= LocalDate.of(
+          Integer.parseInt(date.substring(0, 4)),
+          Integer.parseInt(date.substring(5, 7)),
+          Integer.parseInt(date.substring(8, 10))
+        );
 		} // try
 		catch(Exception e) {
 			regresar= LocalDate.now();

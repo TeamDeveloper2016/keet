@@ -29,7 +29,8 @@
 				'contenedorGrupos\\:fechaFactura'     : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:fechaRecepcion'   : {validaciones: 'requerido|fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaFactura"})', mascara: 'fecha', grupo: 'general', individual: true},
 				'contenedorGrupos\\:importe'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', individual: true, grupo: 'general'},			
-				'contenedorGrupos\\:observaciones'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+				'contenedorGrupos\\:observaciones'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
+				'contenedorGrupos\\:comentarios'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};
 			
     	$(document).ready(function() {
@@ -37,6 +38,10 @@
 				janal.decimals= 4;
       });
 			
+      function disabledComponent() {
+        setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);
+      }
+      
 			function execute() {
 				var ok= janal.execute();
 				janal.desbloquear();
@@ -131,11 +136,11 @@
 								</p:selectOneMenu>																						
 								<p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="factura" value="No factura:"/>
-								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados" value="#{keetIngresosAccion.ingreso.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ingreso.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{keetIngresosAccion.ingreso.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{keetIngresosAccion.ingreso.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
 								<p:outputLabel for="importe" value="Importe:"/>
-								<p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{keetIngresosAccion.ingreso.total}"/>
+								<p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="#{keetIngresosAccion.ingreso.total}"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha pago:"/>
 								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{keetIngresosAccion.ingreso.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
@@ -145,8 +150,7 @@
 						</p:tab>
 						<p:tab title="Importar">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{keetIngresosAccion.diferente? '': 'none'}">
-								<p:outputLabel value="El RFC del cliente [#{keetIngresosAccion.cliente.rfc}] #{keetIngresosAccion.cliente.razonSocial} no coincide con el de la factura [#{keetIngresosAccion.emisor.rfc}]" styleClass="janal-color-orange" style="cursor: pointer;"/>
-								<p:spacer height="5px"/>
+								<p:outputLabel value="El RFC del cliente [#{keetIngresosAccion.cliente.rfc}] #{keetIngresosAccion.cliente.razonSocial} no coincide con el de la factura [#{keetIngresosAccion.emisor.rfc}] #{keetIngresosAccion.emisor.nombre}" styleClass="janal-color-orange" style="cursor: pointer;"/>
 							</p:panelGrid>	
 							<p:outputLabel for="comentarios" value="Comentarios:" styleClass="janal-wid-100-txt" style="display:#{keetIngresosAccion.consultar};"/><br style="display:#{keetIngresosAccion.consultar};"/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.attrs.observaciones}" style="display:#{keetIngresosAccion.consultar};"/>
@@ -159,7 +163,7 @@
 							<br/>
 							<p:commandLink value="PDF importado: #{keetIngresosAccion.pdf.ruta}#{keetIngresosAccion.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty keetIngresosAccion.pdf)? 'display: none': ''}"/>
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-                <p:dataTable id="faltante" var="row" styleClass="importado janal-wid-99" value="#{keetIngresosAccion.attrs.faltantes}" selection="#{keetIngresosAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom" selectionMode="single">
+                <p:dataTable id="faltante" var="row" styleClass="importado janal-wid-100-txt" value="#{keetIngresosAccion.attrs.faltantes}" selection="#{keetIngresosAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom" selectionMode="single">
                   <f:facet name="header">
                     <div style="display: flow-root;">
                       <p:outputLabel value="Partidas cargadas del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
@@ -185,15 +189,15 @@
                   </p:column>		
                   <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
                     <f:facet name="header">
-                      <h:outputText value="Cantidad"/>
-                    </f:facet>
-                    <h:outputText value="#{row['cantidad']}"/>	
-                  </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
-                    <f:facet name="header">
                       <h:outputText value="Costo"/>
                     </f:facet>
                     <h:outputText value="#{row['costo']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                    <f:facet name="header">
+                      <h:outputText value="Cantidad"/>
+                    </f:facet>
+                    <h:outputText value="#{row['cantidad']}"/>	
                   </p:column>		
                   <p:column class="janal-column-right MarAuto Responsive janal-wid-12">
                     <f:facet name="header">
@@ -207,9 +211,21 @@
                     </f:facet>
                     <h:outputText value="#{row['iva']}"/>
                   </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-5">
+                    <f:facet name="header">
+                      <h:outputText value="Impuesto"/>
+                    </f:facet>
+                    <h:outputText value="#{row['impuestos']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-5">
+                    <f:facet name="header">
+                      <h:outputText value="Total"/>
+                    </f:facet>
+                    <h:outputText value="#{row['importe']}"/>
+                  </p:column>		
                   <f:facet name="footer">
                     <div style="float:right;">
-                      <p:outputLabel value="Total articulos: #{keetIngresosAccion.attrs.faltantes.size()},   Facturado: #{keetIngresosAccion.ingreso.total}" styleClass="importado janal-color-orange"/>
+                      <p:outputLabel value="Total articulos: #{keetIngresosAccion.attrs.faltantes.size()}, Facturado: $#{keetIngresosAccion.ingreso.total}" styleClass="importado janal-color-blue"/>
                     </div>
                   </f:facet>
                 </p:dataTable>

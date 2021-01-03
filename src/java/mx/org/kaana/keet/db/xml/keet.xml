@@ -84,7 +84,7 @@
         from      
           tc_keet_ingresos_archivos
         where      
-          id_ingreso = {idIngreso} and id_tipo_archivo = {idTipoArchivo} and mes = {mes} and nombre = '{nombre}' and ejercicio = {ejercicio}
+          id_ingreso = {idIngreso} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
       </select>
       <select id="exists">
         select      
@@ -129,6 +129,24 @@
 			<delete id="rows">
 				delete from tc_keet_ingresos_archivos where id_ingreso = {idIngreso}
 			</delete>      
+    </unit>    
+    <unit id="TcKeetIngresosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_ingresos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_ingresos_bitacora
+        where      
+          id_ingreso_estatus = {idIngresoEstatus} and id_ingreso = {idIngreso} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+      </select>
     </unit>    
     <unit id="TcKeetNotasContratosLotesDto">
       <select id="row">
