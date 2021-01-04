@@ -15,16 +15,17 @@ public class Importado implements Serializable {
 	private String medicion;
 	private String ruta;
 	private String observaciones;
+	private Long idArchivo;
 
   public Importado() {
-		this("", "", EFormatos.FREE, 0L, 0L, "", "", "");
+		this("", "", EFormatos.FREE, 0L, 0L, "", "", "", -1L);
 	}
 	
-  public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta, String observaciones) {
-		this(name, content, format, size, fileSize, medicion, ruta, observaciones, name);
+  public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta, String observaciones, Long idArchivo) {
+		this(name, content, format, size, fileSize, medicion, ruta, observaciones, name, idArchivo);
 	}
 	
-  public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta, String observaciones, String original) {
+  public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta, String observaciones, String original, Long idArchivo) {
     this.name    = name;
     this.content = content;
     this.format  = format;
@@ -34,6 +35,7 @@ public class Importado implements Serializable {
 		this.ruta    = ruta;
 		this.observaciones= observaciones;
 		this.original= original;
+    this.idArchivo= idArchivo;
   }
 
   public String getName() {
@@ -107,6 +109,14 @@ public class Importado implements Serializable {
 	public void setOriginal(String original) {
 		this.original=original;
 	}
+
+  public Long getIdArchivo() {
+    return idArchivo;
+  }
+
+  public void setIdArchivo(Long idArchivo) {
+    this.idArchivo = idArchivo;
+  }
 	
   @Override
   public int hashCode() {
@@ -132,7 +142,7 @@ public class Importado implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Importado{"+"name="+name+", original="+original+", content="+content+", format="+format+", size="+size+", fileSize="+fileSize+", medicion="+medicion+", ruta="+ruta+", observaciones="+observaciones+'}';
+		return "Importado{"+"name="+name+", original="+original+", content="+content+", format="+format+", size="+size+", fileSize="+fileSize+", medicion="+medicion+", ruta="+ruta+", observaciones="+observaciones+", idArchivo="+idArchivo+'}';
 	}
 	
 	

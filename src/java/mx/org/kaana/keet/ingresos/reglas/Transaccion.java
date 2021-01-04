@@ -16,7 +16,6 @@ import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetIngresosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetIngresosBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetIngresosDto;
-import mx.org.kaana.keet.db.dto.TcKeetNotasContratosLotesDto;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -24,6 +23,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.log4j.Logger;
@@ -47,17 +47,15 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private String messageError;
 	private TcKeetIngresosBitacoraDto bitacora;
 
-	public Transaccion(TcKeetIngresosDto orden, TcKeetIngresosBitacoraDto bitacora) {
-		this(orden);
-		this.xml= null;
-		this.pdf= null;
-		this.bitacora= bitacora;
-	}
-	
 	public Transaccion(TcKeetIngresosDto orden) {
 		this(orden, null, null);
 	}
 
+	public Transaccion(TcKeetIngresosDto orden, TcKeetIngresosBitacoraDto bitacora) {
+		this(orden);
+		this.bitacora= bitacora;
+	}
+	
 	public Transaccion(TcKeetIngresosDto orden, Importado xml, Importado pdf) {
 		this.orden    = orden;		
 		this.xml      = xml;
@@ -79,58 +77,28 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		Map<String, Object> params            = null;
 		Siguiente consecutivo                 = null;
 		try {
-			if(this.orden!= null) {
-				params= new HashMap<>();
-				params.put("idIngreso", this.orden.getIdIngreso());
-        if(Objects.equals(-1L, this.orden.getIdContrato()))
-          this.orden.setIdContrato(null);
-			} // if
+			params= new HashMap<>();
+      if(this.orden!= null && Objects.equals(-1L, this.orden.getIdContrato()))
+        this.orden.setIdContrato(null);
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
 			switch(accion) {
-				case MOVIMIENTOS:
-					if(this.orden.isValid()) {
-  					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-					} // if
-					else {
-					  consecutivo= this.toSiguiente(sesion);
-					  this.orden.setConsecutivo(consecutivo.getConsecutivo());
-					  this.orden.setOrden(consecutivo.getOrden());
-					  this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					  regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					  bitacoraNota= new TcKeetIngresosBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdIngreso(), this.orden.getIdIngresoEstatus());
-						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-       	    this.toUpdateDeleteXml(sesion);	
-					} // else	
-					break;
-				case COMPLETO:
-					consecutivo= this.toSiguiente(sesion);
-					this.orden.setConsecutivo(consecutivo.getConsecutivo());
-					this.orden.setOrden(consecutivo.getOrden());
-					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-				  bitacoraNota= new TcKeetIngresosBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdIngreso(), this.orden.getIdIngresoEstatus());
-					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-	   	    this.toUpdateDeleteXml(sesion);	
-					break;
 				case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
 					this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+					this.orden.setIdIngresoEstatus(1L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 				  bitacoraNota= new TcKeetIngresosBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdIngreso(), this.orden.getIdIngresoEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
      	    this.toUpdateDeleteXml(sesion);	
 					break;
-				case COMPLEMENTAR:
-					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-	   	    this.toUpdateDeleteXml(sesion);	
-					break;				
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
      	    this.toUpdateDeleteXml(sesion);	
 					break;				
 				case ELIMINAR:
+  				params.put("idIngreso", this.orden.getIdIngreso());
           regresar= DaoFactory.getInstance().deleteAll(sesion, TcKeetIngresosArchivosDto.class, params)>= 1L;
           regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
           this.orden.setIdIngresoEstatus(2L);
@@ -143,7 +111,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 						this.orden.setIdIngresoEstatus(this.bitacora.getIdIngresoEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						if(this.bitacora.getIdIngresoEstatus().equals(2L)) {
-							regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
+	     				params.put("idIngreso", this.orden.getIdIngreso());
+			  			regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
 							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 							this.orden.setIdIngresoEstatus(2L);
 							bitacoraNota= new TcKeetIngresosBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdIngreso(), 2L);
@@ -152,6 +121,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					} // if
 					break;
 			} // switch
+      if(this.orden!= null && this.orden.getIdContrato()== null)
+        this.orden.setIdContrato(-1L);
 			if(!regresar)
         throw new Exception("");
 		} // try
@@ -221,25 +192,25 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	} 
 	
 	protected void toUpdateDeleteXml(Session sesion) throws Exception {
-		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
 		TcKeetIngresosArchivosDto tmp= null;
 		if(this.orden.getIdIngreso()!= -1L) {
 			if(this.xml!= null) {
 				tmp= new TcKeetIngresosArchivosDto(
-					-1L,
-					this.xml.getRuta(),
-					this.xml.getFileSize(),
-					JsfBase.getIdUsuario(),
-					1L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("ingresos").concat(this.xml.getRuta()).concat(this.xml.getName()),
-					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-					this.orden.getIdIngreso(),
-					this.xml.getName(),
-					this.xml.getObservaciones(),
-					new Long(Calendar.getInstance().get(Calendar.YEAR)),
-					1L,
-					this.xml.getOriginal()
+					-1L, // idNotaArchivo 
+					this.xml.getRuta(), // ruta
+					this.xml.getFileSize(), // tamanio
+					JsfBase.getIdUsuario(), // idUsuario
+					1L, // idTipoArchivo
+					Configuracion.getInstance().getPropiedadSistemaServidor("ingresos").concat(this.xml.getRuta()).concat(this.xml.getName()), // alias
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1), // mes
+					this.orden.getIdIngreso(), // idIngreso
+					this.xml.getName(), // nombre
+					this.xml.getObservaciones(), // observacion
+					new Long(Calendar.getInstance().get(Calendar.YEAR)), // ejercicio
+					1L, // idPrincipal
+					this.xml.getOriginal() // archivo
 				);
+        this.toSaveFile(sesion, this.xml.getIdArchivo());
 				TcKeetIngresosArchivosDto exists= (TcKeetIngresosArchivosDto)DaoFactory.getInstance().toEntity(TcKeetIngresosArchivosDto.class, "TcKeetIngresosArchivosDto", "identically", tmp.toMap());
 				File file= new File(tmp.getAlias());
 				if(exists== null && file.exists()) {
@@ -269,6 +240,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					1L,
 					this.pdf.getOriginal()
 				);
+        this.toSaveFile(sesion, this.pdf.getIdArchivo());
 				TcKeetIngresosArchivosDto exists= (TcKeetIngresosArchivosDto)DaoFactory.getInstance().toEntity(TcKeetIngresosArchivosDto.class, "TcKeetIngresosArchivosDto", "identically", tmp.toMap());
 				File file= new File(tmp.getAlias());
 				if(exists== null && file.exists()) {
@@ -294,4 +266,21 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			} // for
 	}	
 
+	protected boolean toSaveFile(Session sesion, Long idKey) throws Exception {
+		boolean regresar         = false;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idEliminado", 2L);
+			regresar= DaoFactory.getInstance().update(TcManticArchivosDto.class, idKey, params)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally				
+		return regresar;
+	} // toSaveFile  
+  
 } 

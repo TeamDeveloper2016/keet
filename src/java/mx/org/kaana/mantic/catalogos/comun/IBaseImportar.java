@@ -131,17 +131,14 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			if(isXls) {
 				if(!this.toVerificaXls(result))
           throw new KajoolBaseException("El archivo ["+ event.getFile().getFileName()+ "] no tiene el formato adecuado para la carga" );
-        this.xls= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+        this.xls= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
         this.attrs.put("xls", this.xls.getName());
 			} //
 			else
 			  if(nameFile.endsWith(EFormatos.PDF.name())) {
-			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if
-			
-			//**
-			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -174,11 +171,8 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
-			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName());
+			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName(), 1L));
   		this.attrs.put("file", this.file.getName()); 			
-
-			//**
-			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -211,11 +205,8 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
-			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", "/img/proveedores", (String)this.attrs.get("observaciones"), event.getFile().getFileName());
+			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", "/img/proveedores", (String)this.attrs.get("observaciones"), event.getFile().getFileName(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName(), 1L));
   		this.attrs.put("file", this.file.getName()); 	
-			
-			//**
-			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -312,14 +303,14 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				params.put("idTipoArchivo", 8L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
 				if(tmp!= null) {
-					this.xls= new Importado(tmp.toString("nombre"), "XLS", EFormatos.XLS, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
+					this.xls= new Importado(tmp.toString("nombre"), "XLS", EFormatos.XLS, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"), -1L);
 					this.toVerificaXls(new File(tmp.toString("alias")));
   				this.attrs.put("xls", this.xls.getName()); 
 				} // if	
 				params.put("idTipoArchivo", 2L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
 				if(tmp!= null) {
-					this.pdf= new Importado(tmp.toString("nombre"), "PDF", EFormatos.PDF, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
+					this.pdf= new Importado(tmp.toString("nombre"), "PDF", EFormatos.PDF, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"), -1L);
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if	
 			} // try
@@ -582,13 +573,11 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 					if(result.exists())
 					  result.delete();
 				} // if
-        this.xls= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+        this.xls= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), masivo.getRuta(), path.toString(), nameFile, 2L));
         masivo.setNombre(this.xls.getName());
 				masivo.setAlias(path.toString());
 				masivo.setTamanio(event.getFile().getSize());
         this.attrs.put("xls", this.xls.getName());
-				//**
-				this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), masivo.getRuta(), masivo.getAlias(), masivo.getNombre());
 			} //
 			else
 				result.delete();
@@ -600,17 +589,21 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		} // catch
 	} // doFileUpload	
 
-  private void toSaveFileRecord(String archivo, String ruta, String alias, String nombre) throws Exception {
+  private Long toSaveFileRecord(String archivo, String ruta, String alias, String nombre, Long idEliminado) throws Exception {
+		Long regresar= -1L;
 		TcManticArchivosDto registro= new TcManticArchivosDto(
 			archivo, // String archivo, 
-			2L, // Long idEliminado, 
+			idEliminado, // Long idEliminado 1 es igual a eliminar, 2 es igual a no eliminar
 			ruta, // String ruta, 
 			JsfBase.getIdUsuario(), // Long idUsuario, 
 			alias, // String alias, 
 			-1L, // Long idArchivo, 
 			nombre // String nombre
 		);
-		DaoFactory.getInstance().insert(registro);
+		regresar= DaoFactory.getInstance().insert(registro);
+		if(regresar <= 0)
+			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
+		return regresar;
 	}
 		
 	public static void main(String ... args) {

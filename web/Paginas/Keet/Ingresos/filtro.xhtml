@@ -124,12 +124,12 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem value="Agregar" action="#{keetIngresosFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+								<p:menuitem value="Agregar" action="#{keetIngresosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" action="#{keetIngresosFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+							<p:commandButton styleClass="xs-pantalla" action="#{keetIngresosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>	            
@@ -199,7 +199,7 @@
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetIngresosFiltro.doMovimientos}"/>
             <p:separator rendered="#{fn:contains('|1|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetIngresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
-            <p:menuitem id="importar" icon="fa fa-external-link" value="Importar XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{keetIngresosFiltro.doImportar}" rendered="#{fn:contains('|1|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
+            <p:menuitem id="importar" icon="fa fa-external-link" value="Importar XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{keetIngresosFiltro.doImportar}" rendered="false and #{fn:contains('|1|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
           </p:contextMenu>						
         </div>
       </div>

@@ -151,7 +151,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				params.put("idTipoArchivo", 2L);
 				tmp= (TcManticClientesPagosArchivosDto) DaoFactory.getInstance().toEntity(TcManticClientesPagosArchivosDto.class, "VistaClientesDto", "existsPagos", params); 
 				if(tmp!= null) {
-					setFile(new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones()));
+					setFile(new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones(), -1L));
   				this.attrs.put("file", getFile().getName()); 
 				} // if	
 			} // try

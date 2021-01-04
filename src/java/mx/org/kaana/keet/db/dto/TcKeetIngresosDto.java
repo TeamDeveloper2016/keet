@@ -42,8 +42,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
   private Long idDesarrollo;
   @Column (name="fecha_recepcion")
   private LocalDate fechaRecepcion;
-  @Column (name="saldo")
-  private Double saldo;
   @Column (name="fecha_factura")
   private LocalDate fechaFactura;
   @Column (name="ejercicio")
@@ -70,8 +68,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
   private Long idEmpresa;
   @Column (name="orden")
   private Long orden;
-  @Column (name="disponible")
-  private Double disponible;
   @Column (name="id_normal")
   private Long idNormal;
 
@@ -80,18 +76,17 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetIngresosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, LocalDate.now(), null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, new Long(-1L), null, null, LocalDate.now(), LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
-
-  public TcKeetIngresosDto(Double descuentos, Long idIngresoEstatus, Long idIngreso, Long idCliente, Long idDesarrollo, LocalDate fechaRecepcion, Double saldo, LocalDate fechaFactura, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Double impuestos, Long idContrato, Double subTotal, String observaciones, Long idEmpresa, Long orden, Double disponible, Long idNormal) {
+  
+  public TcKeetIngresosDto(Double descuentos, Long idIngresoEstatus, Long idIngreso, Long idCliente, Long idDesarrollo, LocalDate fechaRecepcion, LocalDate fechaFactura, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Double impuestos, Long idContrato, Double subTotal, String observaciones, Long idEmpresa, Long orden, Long idNormal) {
     setDescuentos(descuentos);
     setIdIngresoEstatus(idIngresoEstatus);
     setIdIngreso(idIngreso);
     setIdCliente(idCliente);
     setIdDesarrollo(idDesarrollo);
     setFechaRecepcion(fechaRecepcion);
-    setSaldo(saldo);
     setFechaFactura(fechaFactura);
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
@@ -105,7 +100,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setOrden(orden);
-    setDisponible(disponible);
     this.idNormal= idNormal;
   }
 	
@@ -155,14 +149,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
 
   public LocalDate getFechaRecepcion() {
     return fechaRecepcion;
-  }
-
-  public void setSaldo(Double saldo) {
-    this.saldo = saldo;
-  }
-
-  public Double getSaldo() {
-    return saldo;
   }
 
   public void setFechaFactura(LocalDate fechaFactura) {
@@ -269,14 +255,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     return orden;
   }
 
-  public void setDisponible(Double disponible) {
-    this.disponible = disponible;
-  }
-
-  public Double getDisponible() {
-    return disponible;
-  }
-
   public Long getIdNormal() {
     return idNormal;
   }
@@ -312,8 +290,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFechaRecepcion());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getSaldo());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFechaFactura());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
@@ -340,8 +316,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getDisponible());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNormal());
     regresar.append("]");
   	return regresar.toString();
@@ -356,7 +330,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("idDesarrollo", getIdDesarrollo());
 		regresar.put("fechaRecepcion", getFechaRecepcion());
-		regresar.put("saldo", getSaldo());
 		regresar.put("fechaFactura", getFechaFactura());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
@@ -370,7 +343,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
-		regresar.put("disponible", getDisponible());
 		regresar.put("idNormal", getIdNormal());
   	return regresar;
   }
@@ -378,7 +350,7 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescuentos(), getIdIngresoEstatus(), getIdIngreso(), getIdCliente(), getIdDesarrollo(), getFechaRecepcion(), getSaldo(), getFechaFactura(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getImpuestos(), getIdContrato(), getSubTotal(), getObservaciones(), getIdEmpresa(), getOrden(), getDisponible(), getIdNormal()
+      getDescuentos(), getIdIngresoEstatus(), getIdIngreso(), getIdCliente(), getIdDesarrollo(), getFechaRecepcion(), getFechaFactura(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getImpuestos(), getIdContrato(), getSubTotal(), getObservaciones(), getIdEmpresa(), getOrden(), getIdNormal()
     };
     return regresar;
   }

@@ -130,6 +130,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+      String ruta= path.toString();
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
@@ -138,13 +139,13 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			this.toWriteFile(result, event.getFile().getInputStream(), isXml);
 			fileSize= event.getFile().getSize();			
 			if(isXml) {
-			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
 				this.toReadFactura(result, sinIva, tipoDeCambio);
 				this.attrs.put("xml", this.xml.getName());
 			} //
 			else
 			  if(nameFile.endsWith(EFormatos.PDF.name())) {
-			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if
 		} // try
@@ -172,13 +173,14 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+      String ruta= path.toString();
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
-			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
   		this.attrs.put("file", this.file.getName()); 			
 		} // try
 		catch (Exception e) {
@@ -308,7 +310,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 				if(tmp!= null) {
 					File reference= new File(tmp.toString("alias"));
 					if(reference.exists()) {
-					  this.xml= new Importado(tmp.toString("nombre"), EFormatos.XML.name(), EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
+					  this.xml= new Importado(tmp.toString("nombre"), EFormatos.XML.name(), EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"), -1L);
 					  this.toReadFactura(reference, sinIva, tipoDeCambio);
   				  this.attrs.put("xml", this.xml.getName()); 
 					} // if	
@@ -316,7 +318,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 				params.put("idTipoArchivo", 2L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
 				if(tmp!= null) {
-					this.pdf= new Importado(tmp.toString("nombre"), EFormatos.PDF.name(), EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
+					this.pdf= new Importado(tmp.toString("nombre"), EFormatos.PDF.name(), EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"), -1L);
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if	
 			} // try
@@ -587,5 +589,22 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
 		return regresar;
 	}	// toRegisterFile
+
+  private Long toSaveFileRecord(String archivo, String ruta, String alias, String nombre, Long idEliminado) throws Exception {
+		Long regresar= -1L;
+		TcManticArchivosDto registro= new TcManticArchivosDto(
+			archivo, // String archivo, 
+			idEliminado, // Long idEliminado 1 es igual a eliminar, 2 es igual a NO eliminar, 3 es cuando entre el job y borre el archivo porque existe, 4 es cuando entre el job y el archivo no existe
+			ruta, // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			alias, // String alias, 
+			-1L, // Long idArchivo, 
+			nombre // String nombre
+		);
+		regresar= DaoFactory.getInstance().insert(registro);
+		if(regresar <= 0)
+			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
+		return regresar;
+	}
   
 }

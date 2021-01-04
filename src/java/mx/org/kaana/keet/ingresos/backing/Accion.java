@@ -2,7 +2,6 @@ package mx.org.kaana.keet.ingresos.backing;
 
 import java.io.File;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -126,8 +125,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   @Override
   protected void init() {		
     try {
-			// if(JsfBase.getFlashAttribute("accion")== null)
-			//	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			if(JsfBase.getFlashAttribute("accion")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso")== null? -1L: JsfBase.getFlashAttribute("idIngreso"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -176,6 +175,12 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     Transaccion transaccion= null;
     String regresar        = null;
     try {
+      if(!Cadena.isVacio((String)this.attrs.get("observaciones"))) {
+        if(this.getXml()!= null)
+          this.getXml().setObservaciones((String)this.attrs.get("observaciones")); 
+        if(this.getPdf()!= null)
+          this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
+      } // if
 			transaccion = new Transaccion(this.ingreso, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
   			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
@@ -349,8 +354,6 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         this.ingreso.setImpuestos(Numero.getDouble(this.getFactura().getImpuesto().getTraslado().getImporte(), 0D));
         this.ingreso.setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
         this.ingreso.setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
-        this.ingreso.setSaldo(this.ingreso.getTotal());
-        this.ingreso.setDisponible(0D);
         this.ingreso.setFactura(this.getFactura().getFolio());
         this.ingreso.setFechaFactura(Fecha.toLocalDate(this.getFactura().getFecha()));
 				this.doCheckFolio();

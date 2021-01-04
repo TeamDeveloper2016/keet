@@ -229,8 +229,9 @@ public class MotorBusqueda implements Serializable{
 		try {
 			if(idImagen!= null){
 				imagen= (TcManticImagenesDto) DaoFactory.getInstance().findById(TcManticImagenesDto.class, idImagen);
+        /*UPLOAD*/
 				if(imagen!= null)
-					regresar= new Importado(imagen.getNombre(), imagen.getArchivo(), EFormatos.FREE, imagen.getTamanio(), imagen.getTamanio(), BYTES, imagen.getRuta(), "");			
+					regresar= new Importado(imagen.getNombre(), imagen.getArchivo(), EFormatos.FREE, imagen.getTamanio(), imagen.getTamanio(), BYTES, imagen.getRuta(), "", -1L);			
 			} // if
 			else
 				regresar= new Importado();

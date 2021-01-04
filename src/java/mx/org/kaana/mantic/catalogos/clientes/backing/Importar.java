@@ -48,6 +48,7 @@ import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 
 /**
  *@company KAANA
@@ -156,13 +157,15 @@ public class Importar extends IBaseAttribute implements Serializable {
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+      String ruta= path.toString();
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
-			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+      /*UPLOAD*/
+			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
   		this.attrs.put("file", this.file.getName()); 			
 		} // try
 		catch (Exception e) {
@@ -191,7 +194,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 				params.put("idTipoArchivo", 2L);
 				tmp= (TcManticClientesArchivosDto)DaoFactory.getInstance().toEntity(TcManticClientesArchivosDto.class, "VistaClientesRepresentantesDto", "exists", params); 
 				if(tmp!= null) {
-					this.file= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+					this.file= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones(), -1L);
   				this.attrs.put("file", this.file.getName()); 
 				} // if	
 			} // try
@@ -331,4 +334,22 @@ public class Importar extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);
 		} // catch
 	}	// doCerrar
+  
+  private Long toSaveFileRecord(String archivo, String ruta, String alias, String nombre, Long idEliminado) throws Exception {
+		Long regresar= -1L;
+		TcManticArchivosDto registro= new TcManticArchivosDto(
+			archivo, // String archivo, 
+			idEliminado, // Long idEliminado 1 es igual a eliminar, 2 es igual a no eliminar
+			ruta, // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			alias, // String alias, 
+			-1L, // Long idArchivo, 
+			nombre // String nombre
+		);
+		regresar= DaoFactory.getInstance().insert(registro);
+		if(regresar <= 0)
+			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
+		return regresar;
+	}
+   
 }

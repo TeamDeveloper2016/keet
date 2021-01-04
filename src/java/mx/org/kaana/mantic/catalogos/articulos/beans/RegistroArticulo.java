@@ -561,7 +561,8 @@ public class RegistroArticulo implements Serializable {
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();
-			this.importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, genericPath, "", event.getFile().getFileName());      
+      /*UPLOAD*/
+			this.importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, genericPath, "", event.getFile().getFileName(), -1L);      
 			this.toMessageImage();		
 			this.articulo.setIdImagen(-1L);
 		} // try

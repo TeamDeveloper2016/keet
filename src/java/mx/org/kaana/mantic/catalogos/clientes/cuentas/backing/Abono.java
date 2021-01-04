@@ -28,6 +28,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.comun.IBasePagos;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
@@ -197,7 +198,7 @@ public class Abono extends IBasePagos implements Serializable {
 				params.put("idTipoArchivo", 2L);
 				tmp= (TcManticClientesPagosArchivosDto) DaoFactory.getInstance().toEntity(TcManticClientesPagosArchivosDto.class, "VistaClientesDto", "existsPagos", params); 
 				if(tmp!= null) {
-					setFile(new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones()));
+					setFile(new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones(), -1L));
   				this.attrs.put("file", getFile().getName()); 
 				} // if	
 			} // try
@@ -272,13 +273,15 @@ public class Abono extends IBasePagos implements Serializable {
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+      String ruta= path.toString();
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
-			setFile(new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
+      /*UPLOAD*/
+			setFile(new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L)));
   		this.attrs.put("file", getFile().getName()); 			
 		} // try
 		catch (Exception e) {
@@ -288,4 +291,22 @@ public class Abono extends IBasePagos implements Serializable {
 			  result.delete();
 		} // catch
 	} // doFileUpload		
+  
+  private Long toSaveFileRecord(String archivo, String ruta, String alias, String nombre, Long idEliminado) throws Exception {
+		Long regresar= -1L;
+		TcManticArchivosDto registro= new TcManticArchivosDto(
+			archivo, // String archivo, 
+			idEliminado, // Long idEliminado 1 es igual a eliminar, 2 es igual a no eliminar
+			ruta, // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			alias, // String alias, 
+			-1L, // Long idArchivo, 
+			nombre // String nombre
+		);
+		regresar= DaoFactory.getInstance().insert(registro);
+		if(regresar <= 0)
+			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
+		return regresar;
+	}
+  
 }

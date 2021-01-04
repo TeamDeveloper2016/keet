@@ -71,8 +71,8 @@
 				overflow-x: auto !important;
 				max-height: 370px;
 			}			
-			.ui-datatable .ui-datatable-header, .ui-datatable .ui-datatable-footer {
-				text-align: center !important;
+			.ui-datatable .ui-datatable-header {
+				text-align: left !important;
 			}	
 			.zui-datatable .ui-datatable-tablewrapper table tbody .ui-state-highlight td {
 				color: #0059b3 !important;
@@ -169,6 +169,12 @@
                       <p:outputLabel value="Partidas cargadas del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
                     </div>	
                   </f:facet>
+                  <p:column class="MarAuto Responsive janal-wid-col-38">
+                    <f:facet name="header">
+                      <h:outputText value="No"/>
+                    </f:facet>
+                    <h:outputText value="#{index+ 1}.-"/>
+                  </p:column>		
                   <p:column class="MarAuto Responsive janal-wid-12">
                     <f:facet name="header">
                       <h:outputText value="SAT"/>
@@ -224,9 +230,7 @@
                     <h:outputText value="#{row['importe']}"/>
                   </p:column>		
                   <f:facet name="footer">
-                    <div style="float:right;">
-                      <p:outputLabel value="Total articulos: #{keetIngresosAccion.attrs.faltantes.size()}, Facturado: $#{keetIngresosAccion.ingreso.total}" styleClass="importado janal-color-blue"/>
-                    </div>
+                    <p:outputLabel value="Facturado: $ #{keetIngresosAccion.ingreso.total}" styleClass="importado janal-color-blue janal-font-bold"/>
                   </f:facet>
                 </p:dataTable>
 							</p:panelGrid>	
