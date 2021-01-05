@@ -113,13 +113,13 @@ public class Filtro extends IBaseFilter implements Serializable {
         idIngreso= ((Entity)this.attrs.get("seleccionado")).getKey();
 		  JsfBase.setFlashAttribute("accion", eaccion);
 			JsfBase.setFlashAttribute("retorno", "filtro");
-			JsfBase.setFlashAttribute("idIngreso", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? idIngreso: -1L);
+			JsfBase.setFlashAttribute("idIngreso", eaccion.equals(EAccion.AGREGAR)? -1L: idIngreso);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+		return regresar.concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar() {

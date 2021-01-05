@@ -16,7 +16,9 @@
         'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+        'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'montoInicio'    : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        'montoTermino'   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'}
       };
 			
 			fieldsDialog = {
@@ -51,8 +53,10 @@
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
 							</p:selectOneMenu>
-							<p:outputLabel for="consecutivo" value="No. ticket:"/>
-							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasSaldos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:outputLabel for="consecutivo" value="Consecutivo:"/>
+							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasSaldos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:outputLabel for="folio" value="Folio factura:"/>
+							<p:inputText id="folio" value="#{manticCatalogosClientesCuentasSaldos.attrs.folio}" styleClass="janal-wid-100-txt janal-column-right"/> 
               <p:outputLabel for="razonSocial" value="Razón social:"/>
 							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesCuentasSaldos.attrs.cliente}" completeMethod="#{manticCatalogosClientesCuentasSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
@@ -75,6 +79,13 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" />
+							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasSaldos.attrs.montoInicio}" converter="javax.faces.Double">
+								<p:ajax event="blur" listener="#{manticCatalogosClientesCuentasSaldos.doMontoUpdate}" process="@this" update="montoTermino"/>
+							</p:inputText>	
+							<p:outputLabel for="montoTermino" value="Monto termino:"/>
+							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasSaldos.attrs.montoTermino}" converter="javax.faces.Double">							
+								<p:ajax event="blur" listener="#{manticCatalogosClientesCuentasSaldos.doMontoUpdate}" process="@this" update="montoInicio"/>
+							</p:inputText>	
   						<p:separator/>
 						</p:panelGrid>
 						<div class="janal-align-right">
@@ -85,7 +96,7 @@
 				</div>
 				<p:spacer/>
 				<div id="collapse-content" class="ui-grid-col-9">
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasSaldos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasSaldos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasSaldos.lazyModel.rowCount gt manticCatalogosClientesCuentasSaldos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosClientesCuentasSaldos.toColor(filtro)}">
+					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosClientesCuentasSaldos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasSaldos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasSaldos.lazyModel.rowCount gt manticCatalogosClientesCuentasSaldos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosClientesCuentasSaldos.toColor(filtro)}">
 						<f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem value="Ticket express" action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()"/>						
@@ -100,70 +111,70 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
 						</f:facet>												
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
 							</f:facet>
-							<h:outputText value="#{filtro['consecutivo']}"/>
+							<h:outputText value="#{row['consecutivo']}"/>
 						</p:column>					
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.razonSocial}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
 							<f:facet name="header">
 								<h:outputText value="Cliente"/>
 							</f:facet>
-							<h:outputText value="#{filtro['razonSocial']}"/>
+							<h:outputText value="#{row['razonSocial']}"/>
 						</p:column>					
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
 							<f:facet name="header">
 								<h:outputText value="Vendedor"/>
 							</f:facet>
-							<h:outputText value="#{filtro['persona']}"/>
+							<h:outputText value="#{row['persona']}"/>
 						</p:column>											
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
-							<h:outputText value="#{filtro['estatus']}"/>
+							<h:outputText value="#{row['estatus']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.importe}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
-							<h:outputText value="#{filtro['importe']}"/>
+							<h:outputText value="#{row['importe']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.saldo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['saldo']}"/>
+							<h:outputText value="#{row['saldo']}"/>
 						</p:column>						
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.regitro}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha" title="Fecha en la que se hizo la venta"/>
 							</f:facet>
-							<h:outputText value="#{filtro['registro']}"/>
+							<h:outputText value="#{row['registro']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.limite}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.limite}">
 							<f:facet name="header">
 								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
 							</f:facet>
-							<h:outputText value="#{filtro['limite']}"/>
+							<h:outputText value="#{row['limite']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{filtro.dias}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.dias}">
 							<f:facet name="header">
 								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
 							</f:facet>
-							<h:outputText value="#{filtro['dias']}"/>
+							<h:outputText value="#{row['dias']}"/>
 						</p:column>
 						<f:facet name="footer">
 							<div style="display:flow-root;">
 								<p:outputLabel value="Las filas que estan color, son cuentas por cobrar que se agregaron de forma de manual" style="float: left;" escape="false"/>
 								<div style="float:right;">
-    							<p:outputLabel value="Total [#{manticCatalogosClientesCuentasSaldos.lazyModel==null?0:manticCatalogosClientesCuentasSaldos.lazyModel.rowCount}] registros"  styleClass="importado janal-color-orange"/>
+    							<p:outputLabel value="Total [#{manticCatalogosClientesCuentasSaldos.lazyModel== null? 0: manticCatalogosClientesCuentasSaldos.lazyModel.rowCount}] registros"  styleClass="importado janal-color-orange"/>
 								</div>
 							</div>
 						</f:facet>
 					</p:dataTable>
-					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
+					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
 						<p:menuitem id="consultar" action="#{manticCatalogosClientesCuentasSaldos.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar venta" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
             <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this tabla" />					

@@ -2,6 +2,7 @@ package mx.org.kaana.keet.ingresos.reglas;
 
 import java.io.File;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,8 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.log4j.Logger;
@@ -110,13 +113,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdIngresoEstatus(this.bitacora.getIdIngresoEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.bitacora.getIdIngresoEstatus().equals(2L)) {
-	     				params.put("idIngreso", this.orden.getIdIngreso());
-			  			regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
-							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
-							this.orden.setIdIngresoEstatus(2L);
-							bitacoraNota= new TcKeetIngresosBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdIngreso(), 2L);
-							regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+						if(this.bitacora.getIdIngresoEstatus().equals(3L)) {
+  						// AGREGAR UNA CUENTA POR COBRAR 
+              this.toRecordDeuda(sesion, this.orden.getTotal());
 						} // if	
 					} // if
 					break;
@@ -282,5 +281,26 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // finally				
 		return regresar;
 	} // toSaveFile  
+  
+  protected void toRecordDeuda(Session sesion, Double importe) throws Exception {
+		TcManticClientesDeudasDto deuda= null;		
+		deuda= new TcManticClientesDeudasDto();
+		deuda.setIdIngreso(this.orden.getIdIngreso());
+		deuda.setIdCliente(this.orden.getIdCliente());
+		deuda.setIdUsuario(JsfBase.getIdUsuario());
+		deuda.setImporte(importe);
+		deuda.setSaldo(importe);
+		deuda.setLimite(this.toLimiteCredito(sesion));
+		deuda.setIdClienteEstatus(1L);
+		DaoFactory.getInstance().insert(sesion, deuda);		
+	} // registrarDeuda  
+  
+	public LocalDate toLimiteCredito(Session sesion) throws Exception {
+		TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
+		Long addDias= cliente.getPlazoDias();			
+		LocalDate regresar= LocalDate.now();			
+		regresar.plusDays(addDias.intValue());
+		return regresar;
+	} // toLimiteCredito
   
 } 

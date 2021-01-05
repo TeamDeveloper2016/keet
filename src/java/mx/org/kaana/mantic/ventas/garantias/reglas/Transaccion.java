@@ -1,9 +1,7 @@
 package mx.org.kaana.mantic.ventas.garantias.reglas;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -605,7 +603,7 @@ public class Transaccion extends IBaseTnx{
 	protected void registrarDeuda(Session sesion, Double importe) throws Exception{
 		TcManticClientesDeudasDto deuda= null;		
 		deuda= new TcManticClientesDeudasDto();
-		deuda.setIdVenta(this.detalleGarantia.getIdVenta());
+		// deuda.setIdVenta(this.detalleGarantia.getIdVenta());
 		deuda.setIdCliente(this.detalleGarantia.getIdCliente());
 		deuda.setIdUsuario(JsfBase.getIdUsuario());
 		deuda.setImporte(importe);

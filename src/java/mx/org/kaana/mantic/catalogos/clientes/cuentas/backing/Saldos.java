@@ -155,7 +155,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
   		sb.append("tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%' and ");						
   	if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
+  		sb.append("(tc_keet_ingresos.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
+  	if(!Cadena.isVacio(this.attrs.get("folio")))
+  		sb.append("(tc_keet_ingresos.folio= ").append(this.attrs.get("folio")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
@@ -164,6 +166,10 @@ public class Saldos extends IBaseFilter implements Serializable {
   		sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
 		if(!Cadena.isVacio(this.attrs.get("dias")))
   		sb.append("((datediff(tc_mantic_clientes_deudas.limite, now())* -1)>= ").append(this.attrs.get("dias")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
+		  sb.append("(tc_keet_ingresos.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
+		  sb.append("(tc_keet_ingresos.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))			
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -283,7 +289,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= toPrepare();
+      params= this.toPrepare();
       params.put("idCliente", this.idCliente);
 			params.put("cliente", this.attrs.get("cliente"));
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
@@ -440,7 +446,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = null;
     Entity seleccionado = ((Entity)this.attrs.get("seleccionado"));
 		try{		
-      params= toPrepare();
+      params= this.toPrepare();
       params.put("idCliente", seleccionado.toString("idCliente"));
       params.put("idClienteDeuda", seleccionado.getKey());
       params.put("fechaInicio", this.attrs.get("vigenciaIni"));
@@ -573,4 +579,12 @@ public class Saldos extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAgregarCorreo
+  
+	public void doMontoUpdate() {
+	  if(this.attrs.get("montoInicio")!= null && this.attrs.get("montoTermino")== null)
+			this.attrs.put("montoTermino", this.attrs.get("montoInicio"));
+	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
+			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
+	}
+  
 }

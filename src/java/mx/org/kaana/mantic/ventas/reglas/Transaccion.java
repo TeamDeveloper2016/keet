@@ -639,7 +639,7 @@ public class Transaccion extends TransaccionFactura {
 	protected void registrarDeuda(Session sesion, Double importe) throws Exception{
 		TcManticClientesDeudasDto deuda= null;		
 		deuda= new TcManticClientesDeudasDto();
-		deuda.setIdVenta(getOrden().getIdVenta());
+		// deuda.setIdVenta(getOrden().getIdVenta());
 		deuda.setIdCliente(getOrden().getIdCliente());
 		deuda.setIdUsuario(JsfBase.getIdUsuario());
 		deuda.setImporte(importe);

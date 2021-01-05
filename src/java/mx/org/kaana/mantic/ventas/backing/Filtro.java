@@ -74,7 +74,7 @@ public class Filtro extends IBaseTicket implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
 			params.put("sortOrder", this.attrs.get("sortOrder"));
       columns = new ArrayList<>();

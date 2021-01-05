@@ -50,8 +50,8 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   private Double saldo;
   @Column (name="limite")
   private LocalDate limite;
-  @Column (name="id_venta")
-  private Long idVenta;
+  @Column (name="id_ingreso")
+  private Long idIngreso;
   @Column (name="importe")
   private Double importe;
   @Column (name="registro")
@@ -66,7 +66,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticClientesDeudasDto(Long idClienteEstatus, Long idCliente, Long idUsuario, Long idClienteDeuda, String observaciones, Double saldo, LocalDate limite, Long idVenta, Double importe) {
+  public TcManticClientesDeudasDto(Long idClienteEstatus, Long idCliente, Long idUsuario, Long idClienteDeuda, String observaciones, Double saldo, LocalDate limite, Long idIngreso, Double importe) {
     setIdClienteEstatus(idClienteEstatus);
     setIdCliente(idCliente);
     setIdUsuario(idUsuario);
@@ -74,7 +74,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setSaldo(saldo);
     setLimite(limite);
-    setIdVenta(idVenta);
+    setIdIngreso(idIngreso);
     setImporte(importe);
     setRegistro(LocalDateTime.now());
   }
@@ -135,12 +135,12 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     return limite;
   }
 
-  public void setIdVenta(Long idVenta) {
-    this.idVenta = idVenta;
+  public void setIdIngreso(Long idIngreso) {
+    this.idIngreso = idIngreso;
   }
 
-  public Long getIdVenta() {
-    return idVenta;
+  public Long getIdIngreso() {
+    return idIngreso;
   }
 
   public void setImporte(Double importe) {
@@ -188,7 +188,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getLimite());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdVenta());
+		regresar.append(getIdIngreso());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
@@ -207,7 +207,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("saldo", getSaldo());
 		regresar.put("limite", getLimite());
-		regresar.put("idVenta", getIdVenta());
+		regresar.put("idIngreso", getIdIngreso());
 		regresar.put("importe", getImporte());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -216,7 +216,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdClienteEstatus(), getIdCliente(), getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getSaldo(), getLimite(), getIdVenta(), getImporte(), getRegistro()
+    getIdClienteEstatus(), getIdCliente(), getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getSaldo(), getLimite(), getIdIngreso(), getImporte(), getRegistro()
     };
     return regresar;
   }

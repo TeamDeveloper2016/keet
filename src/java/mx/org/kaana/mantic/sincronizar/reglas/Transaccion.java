@@ -97,7 +97,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			if(documento.getVdeudas()!= null && !documento.getVdeudas().isEmpty())
 				for (TcManticClientesDeudasDto item : documento.getVdeudas()) {
 					item.setIdClienteDeuda(-1L);
-					item.setIdVenta(documento.getVenta().getIdVenta());
+					// item.setIdVenta(documento.getVenta().getIdVenta());
 					regresar= DaoFactory.getInstance().insert(sesion, item).intValue()>= 1;
 					idClienteDeuda= item.getIdClienteDeuda();
 					// FALTA AFECTAR EL CATALOGO DE CLIENTES PARA MODIFICAR SU SALDO CORRESPONDIENTE

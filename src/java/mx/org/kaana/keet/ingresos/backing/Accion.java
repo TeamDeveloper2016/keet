@@ -125,8 +125,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   @Override
   protected void init() {		
     try {
-			if(JsfBase.getFlashAttribute("accion")== null)
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+//			if(JsfBase.getFlashAttribute("accion")== null)
+//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso")== null? -1L: JsfBase.getFlashAttribute("idIngreso"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
