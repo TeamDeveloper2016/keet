@@ -24,22 +24,18 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
-import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends TransaccionFactura{
+public class Transaccion extends TransaccionFactura {
 
-	private static final Log LOG=LogFactory.getLog(Transaccion.class);
+	private static final Log LOG= LogFactory.getLog(Transaccion.class);
 	
 	private List<Entity> cuentas;
 	private String messageError;
 	private TcManticClientesPagosDto pago;
 	private Long idCliente;
-	private Long idCaja;
-	private Long idEmpresa;
-	private Long idCierreActivo;
 	private Long idBanco;
 	private String referencia;
 	private Double pagoGeneral;
@@ -48,19 +44,17 @@ public class Transaccion extends TransaccionFactura{
 	private Long idClientePago;
 	private Importado file;
 
-	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idEmpresa, Long idBanco, String referencia, boolean saldar) {
-		this(pago, idCaja, -1L, idEmpresa, idBanco, referencia, saldar);
+	public Transaccion(TcManticClientesPagosDto pago, Long idBanco, String referencia, boolean saldar) {
+		this(pago, -1L, idBanco, referencia, saldar);
 	} // Transaccion
 	
-	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idCliente, Long idEmpresa, Long idBanco, String referencia, boolean saldar) {
-		this(pago, idCaja, idCliente, idEmpresa, idBanco, referencia, null, saldar);
+	public Transaccion(TcManticClientesPagosDto pago, Long idCliente, Long idBanco, String referencia, boolean saldar) {
+		this(pago, idCliente, idBanco, referencia, null, saldar);
 	}
 	
-	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idCliente, Long idEmpresa, Long idBanco, String referencia, List<Entity> cuentas, boolean saldar) {
+	public Transaccion(TcManticClientesPagosDto pago, Long idCliente, Long idBanco, String referencia, List<Entity> cuentas, boolean saldar) {
 		this.pago      = pago;
 		this.idCliente = idCliente;
-		this.idCaja    = idCaja;
-		this.idEmpresa = idEmpresa;
 		this.idBanco   = idBanco;
 		this.referencia= referencia;
 		this.cuentas   = cuentas;
@@ -103,14 +97,14 @@ public class Transaccion extends TransaccionFactura{
     return regresar;
 	} // ejecutar
 	
-	private boolean procesarPago(Session sesion) throws Exception{
+	private boolean procesarPago(Session sesion) throws Exception {
 		boolean regresar               = false;
 		TcManticClientesDeudasDto deuda= null;
 		Double saldo                   = 0D;
 		Siguiente orden                = null;
 		try {
-			if(toCierreCaja(sesion, this.pago.getPago())){
-				this.pago.setIdCierre(this.idCierreActivo);				
+			if(this.toCierreCaja(sesion, this.pago.getPago())) {
+				this.pago.setIdCierre(-1L);				
 				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
 					this.pago.setReferencia(this.referencia);
 					this.pago.setIdBanco(this.idBanco);
@@ -138,7 +132,7 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // procesarPago
 	
-	private boolean procesarPagoGeneral(Session sesion) throws Exception{		
+	private boolean procesarPagoGeneral(Session sesion) throws Exception {		
 		boolean regresar         = true;
 		List<Entity> deudas      = null;		
 		Map<String, Object>params= null;
@@ -185,19 +179,19 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // procesarPagoGeneral
 	
-	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception{
+	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception {
 		TcManticClientesPagosDto registroPago= null;
 		boolean regresar                     = false;
 		Siguiente orden	                     = null;
 		try {
-			if(toCierreCaja(sesion, pagoParcial)){
+			if(this.toCierreCaja(sesion, pagoParcial)){
 				registroPago= new TcManticClientesPagosDto();
 				registroPago.setIdClienteDeuda(idClienteDeuda);
 				registroPago.setIdUsuario(JsfBase.getIdUsuario());
-				registroPago.setObservaciones("Pago aplicado a la deuda general del cliente. ".concat(this.pago.getObservaciones()).concat(". Pago general por $").concat(this.pagoGeneral.toString()));
+				registroPago.setObservaciones("PAGO APLICADO A LA DEUDA GENERAL DEL CLIENTE. ".concat(this.pago.getObservaciones()).concat(". PAGO GENERAL POR $").concat(this.pagoGeneral.toString()));
 				registroPago.setPago(pagoParcial);
 				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
-				registroPago.setIdCierre(this.idCierreActivo);
+				registroPago.setIdCierre(-1L);
 				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
 					registroPago.setIdBanco(this.idBanco);
 					registroPago.setReferencia(this.referencia);
@@ -215,14 +209,14 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // registrarPago
 	
-	private List<Entity> toDeudas(Session sesion) throws Exception{
+	private List<Entity> toDeudas(Session sesion) throws Exception {
 		List<Entity> regresar    = null;
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
-			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro desc");
+			params.put("sortOrder", "order by dias desc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
 		} // try
 		catch (Exception e) {			
@@ -231,28 +225,29 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // toDeudas	
 	
-	private boolean toCierreCaja(Session sesion, Double pago) throws Exception{
-		mx.org.kaana.mantic.ventas.caja.reglas.Transaccion cierre= null;
-		VentaFinalizada datosCierre= null;
-		boolean regresar= false;
-		try {
-			datosCierre= new VentaFinalizada();
-			datosCierre.getTicketVenta().setIdEmpresa(this.idEmpresa);
-			datosCierre.setIdCaja(this.idCaja);
-			datosCierre.getTotales().setEfectivo(pago);
-			cierre= new mx.org.kaana.mantic.ventas.caja.reglas.Transaccion(datosCierre);
-			if(cierre.verificarCierreCaja(sesion)){
-				this.idCierreActivo= cierre.getIdCierreVigente();
-				regresar= cierre.alterarCierreCaja(sesion, this.pago.getIdTipoMedioPago());
-			} // if
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch		
-		return regresar;
+	private boolean toCierreCaja(Session sesion, Double pago) throws Exception {
+//		mx.org.kaana.mantic.ventas.caja.reglas.Transaccion cierre= null;
+//		VentaFinalizada datosCierre= null;
+//		boolean regresar= false;
+//		try {
+//			datosCierre= new VentaFinalizada();
+//			datosCierre.getTicketVenta().setIdEmpresa(this.idEmpresa);
+//			datosCierre.setIdCaja(this.idCaja);
+//			datosCierre.getTotales().setEfectivo(pago);
+//			cierre= new mx.org.kaana.mantic.ventas.caja.reglas.Transaccion(datosCierre);
+//			if(cierre.verificarCierreCaja(sesion)){
+//				this.idCierreActivo= cierre.getIdCierreVigente();
+//				regresar= cierre.alterarCierreCaja(sesion, this.pago.getIdTipoMedioPago());
+//			} // if
+//		} // try
+//		catch (Exception e) {			
+//			throw e; 
+//		} // catch		
+//		return regresar;
+		return true;
 	} // toCierreCaja
 	
-	private boolean procesarPagoSegmento(Session sesion) throws Exception{		
+	private boolean procesarPagoSegmento(Session sesion) throws Exception {		
 		boolean regresar         = true;
 		List<Entity> deudas      = null;		
 		Map<String, Object>params= null;
@@ -264,9 +259,9 @@ public class Transaccion extends TransaccionFactura{
 		try {
 			deudas= toDeudas(sesion);
 			for(Entity deuda: deudas){
-				for(Entity cuenta: this.cuentas){
-					if(deuda.getKey().equals(cuenta.getKey())){
-						if(saldo > 0){					
+				for(Entity cuenta: this.cuentas) {
+					if(deuda.getKey().equals(cuenta.getKey())) {
+						if(saldo > 0) {					
 							saldoDeuda= Double.valueOf(deuda.toString("saldo"));
 							if(saldoDeuda < this.pago.getPago()){
 								pagoParcial= saldoDeuda;
@@ -275,7 +270,7 @@ public class Transaccion extends TransaccionFactura{
 								abono= 0D;
 								idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
 							} // if
-							else{						
+              else {						
 								pagoParcial= this.pago.getPago();
 								saldo= 0D;
 								abono= saldoDeuda - this.pago.getPago();
@@ -289,8 +284,8 @@ public class Transaccion extends TransaccionFactura{
 								actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
 							}	// if				
 						} // if
-						else if (this.saldar){
-							if(registrarPago(sesion, deuda.getKey(), 0D)){
+						else if (this.saldar) {
+							if(registrarPago(sesion, deuda.getKey(), 0D)) {
 								params= new HashMap<>();
 								params.put("saldo", 0);
 								params.put("idClienteEstatus", EEstatusClientes.FINALIZADA.getIdEstatus());
@@ -396,4 +391,5 @@ public class Transaccion extends TransaccionFactura{
 		} // finally
 		return regresar;
 	} // toSiguiente
+  
 }

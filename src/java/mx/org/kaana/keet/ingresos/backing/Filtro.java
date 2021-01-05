@@ -32,7 +32,6 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.ingresos.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 
 @Named(value = "keetIngresosFiltro")

@@ -2,6 +2,8 @@ package mx.org.kaana.mantic.catalogos.clientes.cuentas.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +34,8 @@ public class Pagos extends IBaseFilter implements Serializable {
 	private UISelectEntity encontrado;
   private Long idCliente;
 	private boolean filtro;
+  private LocalDate fechaInicio;
+  private LocalDate fechaTermino;
 
 	public UISelectEntity getEncontrado() {
 		return encontrado;
@@ -44,13 +48,29 @@ public class Pagos extends IBaseFilter implements Serializable {
 	public boolean isFiltro() {
 		return filtro;
 	}
+
+  public LocalDate getFechaInicio() {
+    return fechaInicio;
+  }
+
+  public void setFechaInicio(LocalDate fechaInicio) {
+    this.fechaInicio = fechaInicio;
+  }
+
+  public LocalDate getFechaTermino() {
+    return fechaTermino;
+  }
+
+  public void setFechaTermino(LocalDate fechaTermino) {
+    this.fechaTermino = fechaTermino;
+  }
 	
   @PostConstruct
   @Override
   protected void init() {
     try {
 			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null ? -1L: Long.valueOf(JsfBase.getFlashAttribute("idCliente").toString());			
-      this.attrs.put("sortOrder", "order by tc_mantic_ventas.consecutivo, tc_mantic_clientes_deudas.registro desc");
+      this.attrs.put("sortOrder", "order by tc_keet_ingresos.consecutivo, tc_mantic_clientes_deudas.registro desc");
       this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -98,13 +118,17 @@ public class Pagos extends IBaseFilter implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+  		sb.append("(tc_keet_ingresos.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
+		if(!Cadena.isVacio(this.fechaInicio))
+		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		if(!Cadena.isVacio(this.fechaTermino))
+		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
   		sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
+		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
+		  sb.append("(tc_mantic_clientes_deudas.importe>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
+		  sb.append("(tc_mantic_clientes_deudas.importe<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("dias")))
   		sb.append("(datediff(tc_mantic_clientes_deudas.limite, now())>= ").append(this.attrs.get("dias")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
@@ -131,7 +155,7 @@ public class Pagos extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
@@ -157,6 +181,7 @@ public class Pagos extends IBaseFilter implements Serializable {
 			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 3) {
 				params = new HashMap<>();      
 				params.put(Constantes.SQL_CONDICION, "upper(razon_social) like upper('%".concat((String)this.attrs.get("busqueda")).concat("%')"));
+				// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 				columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));			
 				columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));			
@@ -212,4 +237,12 @@ public class Pagos extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // loadSucursales
+ 
+ 	public void doMontoUpdate() {
+	  if(this.attrs.get("montoInicio")!= null && this.attrs.get("montoTermino")== null)
+			this.attrs.put("montoTermino", this.attrs.get("montoInicio"));
+	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
+			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
+	}
+  
 }

@@ -10,13 +10,15 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        
-        'cliente'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        cliente     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        consecutivo : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        dias        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        vencidos    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaInicio : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaTermino: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        montoInicio : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        montoTermino: {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'}
       };		
 			
 			fieldsDialog ={
@@ -38,6 +40,7 @@
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasPagos.attrs.isMatriz}"/>
 							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesCuentasPagos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 								<f:selectItems value="#{manticCatalogosClientesCuentasPagos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -48,8 +51,8 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="cliente" value="Cliente:"/>
 							<p:inputText id="cliente" value="#{manticCatalogosClientesCuentasPagos.attrs.cliente}" styleClass="janal-wid-100-txt" title="Código, RFC ó Razón social"/> 
-							<p:outputLabel for="consecutivo" value="No. ticket:"/>
-							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasPagos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:outputLabel for="consecutivo" value="Consecutivo:"/>
+							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasPagos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="dias" value="Días vencidos:"/>
 							<p:inputText id="dias" value="#{manticCatalogosClientesCuentasPagos.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="vencidos" value="Vencidos:"/>
@@ -58,9 +61,16 @@
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 							</p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasPagos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasPagos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasPagos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasPagos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasPagos.attrs.montoInicio}" converter="javax.faces.Double">
+								<p:ajax event="blur" listener="#{manticCatalogosClientesCuentasPagos.doMontoUpdate}" process="@this" update="montoTermino"/>
+							</p:inputText>	
+							<p:outputLabel for="montoTermino" value="Monto termino:"/>
+							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasPagos.attrs.montoTermino}" converter="javax.faces.Double">							
+								<p:ajax event="blur" listener="#{manticCatalogosClientesCuentasPagos.doMontoUpdate}" process="@this" update="montoInicio"/>
+							</p:inputText>	
 							<p:separator/>
 						</p:panelGrid>
 						<div class="janal-align-right">
@@ -72,13 +82,17 @@
 				<p:spacer/>
 				<div id="collapse-content" class="ui-grid-col-9">
 					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasPagos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasPagos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasPagos.lazyModel.rowCount gt manticCatalogosClientesCuentasPagos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-						<f:facet name="header">
-							<p:menuButton styleClass="lg-pantalla" value="Opciones">
-								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+						<f:facet name="header" >
+							<div class="lg-pantalla">
+								<p:menuButton   value="Opciones">
+									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								</p:menuButton>
+							</div>  
+							<div class="xs-pantalla">              
+								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							</div>  
 						</f:facet>												
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">

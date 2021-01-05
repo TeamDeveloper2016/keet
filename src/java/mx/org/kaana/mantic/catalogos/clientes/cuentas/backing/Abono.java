@@ -52,9 +52,9 @@ public class Abono extends IBasePagos implements Serializable {
       this.attrs.put("idClienteDeuda", JsfBase.getFlashAttribute("idClienteDeuda"));    
 			this.attrs.put("cliente", DaoFactory.getInstance().findById(TcManticClientesDto.class, Long.valueOf(this.attrs.get("idCliente").toString())));			
 			this.attrs.put("saldar", "2");						
-			initValues();
-			loadClienteDeuda();
-			doLoad();
+			this.initValues();
+			this.loadClienteDeuda();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -62,7 +62,7 @@ public class Abono extends IBasePagos implements Serializable {
     } // catch		
   } // init	
 	
-	private void loadClienteDeuda() throws Exception{
+	private void loadClienteDeuda() throws Exception {
 		Entity deuda             = null;
 		Map<String, Object>params= null;
 		try {
@@ -74,6 +74,8 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("permitirPago", deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus()));
 			this.attrs.put("deuda", deuda);
 			this.attrs.put("pago", deuda.toDouble("saldo"));			
+      if(!deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())) 
+        UIBackingUtilities.execute("janal.bloquear(); PF('dlgPago').show();");
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -92,9 +94,9 @@ public class Abono extends IBasePagos implements Serializable {
 			params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "pagosDeuda", params, columns);
       UIBackingUtilities.resetDataTable();		
@@ -110,59 +112,37 @@ public class Abono extends IBasePagos implements Serializable {
   } // doLoad
 
 	public String doRegresar() {	  
+		JsfBase.setFlashAttribute("idClienteDeuda", this.attrs.get("idClienteDeuda"));
 		return "saldos".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
 	
-	public void doRegistrarPago(){
+	public void doRegistrarPago() {
 		Transaccion transaccion      = null;
 		TcManticClientesPagosDto pago= null;
 		boolean tipoPago             = false;
 		boolean saldar               = false;
 		try {
-			/*if(validaPago()){*/
-				saldar= Long.valueOf(this.attrs.get("saldar").toString()).equals(1L);
-				pago= new TcManticClientesPagosDto();
-				pago.setIdClienteDeuda(Long.valueOf(this.attrs.get("idClienteDeuda").toString()));
-				pago.setIdUsuario(JsfBase.getIdUsuario());
-				pago.setObservaciones(this.attrs.get("observaciones").toString());
-				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
-				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
-				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idCliente").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), saldar);
-				if(transaccion.ejecutar(EAccion.AGREGAR)){
-					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
-					loadClienteDeuda();
-				} // if
-				else
-					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
-			/*} // if
-			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y mayor a 0.", ETipoMensaje.ERROR);*/
+      saldar= Long.valueOf(this.attrs.get("saldar").toString()).equals(1L);
+      pago= new TcManticClientesPagosDto();
+      pago.setIdClienteDeuda(Long.valueOf(this.attrs.get("idClienteDeuda").toString()));
+      pago.setIdUsuario(JsfBase.getIdUsuario());
+      pago.setObservaciones(this.attrs.get("observaciones").toString());
+      pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
+      pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+      tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
+      transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("idCliente").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), saldar);
+      if(transaccion.ejecutar(EAccion.AGREGAR)){
+        JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
+        loadClienteDeuda();
+      } // if
+      else
+        JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // doRegistrarPago
-	
-	private boolean validaPago(){
-		boolean regresar= false;
-		Double pago     = 0D;
-		Double saldo    = 0D;
-		Entity deuda    = null;
-		try {
-			pago= Double.valueOf(this.attrs.get("pago").toString());
-			if(pago > 0D){
-				deuda= (Entity) this.attrs.get("deuda");
-				saldo= Double.valueOf(deuda.toString("saldo"));
-				regresar= pago<= saldo;
-			} // if
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch
-		return regresar;
-	} // validaPago		
 	
 	@Override
 	public void doLoadImportados() {
@@ -308,5 +288,5 @@ public class Abono extends IBasePagos implements Serializable {
 			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
 		return regresar;
 	}
-  
+	
 }
