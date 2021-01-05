@@ -27,7 +27,7 @@ public class GestorSQL implements Serializable{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idVenta", this.idVenta);
+			params.put("idIngreso", this.idVenta);
 			params.put("idCliente", this.idCliente);
 			regresar= (Entity) DaoFactory.getInstance().toEntity("TcManticClientesDeudasDto", "deudaVenta", params);
 		} // try
@@ -47,7 +47,7 @@ public class GestorSQL implements Serializable{
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
-			params.put("idVenta", this.idVenta);
+			params.put("idIngreso", this.idVenta);
 			saldo= (Entity) DaoFactory.getInstance().toEntity("TcManticClientesDeudasDto", "saldoClienteExcluirVenta", params);
 			if(saldo!= null)
 				regresar= saldo.toDouble("saldo");

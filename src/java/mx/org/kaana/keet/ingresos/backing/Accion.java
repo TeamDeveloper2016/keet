@@ -131,6 +131,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso")== null? -1L: JsfBase.getFlashAttribute("idIngreso"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
+			this.attrs.put("folio", "");
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -147,6 +148,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         case AGREGAR:								
           this.ingreso= new TcKeetIngresosDto();
  					this.ingreso.setIdUsuario(JsfBase.getIdUsuario());
+ 					this.ingreso.setFechaRecepcion(this.ingreso.getFechaRecepcion().plusDays(7));
     			this.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
           this.setIkDesarrollo(new UISelectEntity(-1L));
           this.setIkCliente(new UISelectEntity(-1L));
@@ -181,14 +183,18 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         if(this.getPdf()!= null)
           this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
       } // if
-			transaccion = new Transaccion(this.ingreso, this.getXml(), this.getPdf());
-			if (transaccion.ejecutar(this.accion)) {
-  			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
- 				if(!this.accion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
+      if(Cadena.isVacio(this.attrs.get("folio"))) {
+        transaccion = new Transaccion(this.ingreso, this.getXml(), this.getPdf());
+        if (transaccion.ejecutar(this.accion)) {
+          regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+          if(!this.accion.equals(EAccion.CONSULTAR)) 
+            JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
+        } // if
+        else 
+          JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
       } // if
       else 
-				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+        JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -366,6 +372,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 	public void doCheckFolio() {
 		Map<String, Object> params=null;
 		try {
+			this.attrs.put("folio", "");
 			params=new HashMap<>();
 			params.put("factura", this.ingreso.getFactura());
 			params.put("idCliente", this.ingreso.getIdCliente());
@@ -380,8 +387,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 				params.put("termino", Calendar.getInstance().get(Calendar.YEAR)+ "1231");
 			} // else
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcKeetIngresosDto", "folio", params);
-			if(entity!= null && entity.size()> 0) 
+			if(entity!= null && entity.size()> 0) {
 				UIBackingUtilities.execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ this.ingreso.getFactura()+ "] se registró en la factura con consecutivo "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
+   			this.attrs.put("folio", "El folio ["+ this.ingreso.getFactura()+ "] se registró en la factura con consecutivo "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.");
+      } // if  
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

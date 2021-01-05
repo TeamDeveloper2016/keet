@@ -122,7 +122,8 @@ public class Saldos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: Long.valueOf(JsfBase.getFlashAttribute("idCliente").toString());			
+			this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso"));			
+			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");
 			this.filtro = this.idCliente.equals(-1L);
       this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
@@ -130,8 +131,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				this.loadSucursales();
       this.toLoadCatalog();
-			if(!this.idCliente.equals(-1L)) {
+			if(!this.idCliente.equals(-1L) || !Cadena.isVacio(this.attrs.get("idIngreso"))) {
 				this.doLoad();
+        this.attrs.put("idIngreso", null);
 				this.idCliente= -1L;
 			} // if
       this.attrs.put("plazo", 1);
@@ -180,6 +182,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 		List<UISelectEntity>clientes= (List<UISelectEntity>)this.attrs.get("clientes");
     if(!this.idCliente.equals(-1L))
       sb.append("tc_mantic_clientes_deudas.id_cliente= ").append(this.idCliente).append(" and ");
+  	if(!Cadena.isVacio(this.attrs.get("idIngreso")))
+  		sb.append("(tc_mantic_clientes_deudas.id_ingreso = ").append(this.attrs.get("idIngreso")).append(") and ");
 		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
 			sb.append("tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%' and ");			
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))

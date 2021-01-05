@@ -112,6 +112,7 @@ public class Abono extends IBasePagos implements Serializable {
   } // doLoad
 
 	public String doRegresar() {	  
+		JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));
 		JsfBase.setFlashAttribute("idClienteDeuda", this.attrs.get("idClienteDeuda"));
 		return "saldos".concat(Constantes.REDIRECIONAR);
 	} // doRegresar

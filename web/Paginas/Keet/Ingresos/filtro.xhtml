@@ -19,6 +19,8 @@
         factura      : {validaciones: 'libre', mascara: 'numeros-letras', formatos: 'cambiar-mayusculas', grupo: 'general'},
         fechaInicio  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        montoInicio : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        montoTermino: {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
         idIngresoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
 			
@@ -101,7 +103,15 @@
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
               <p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetIngresosFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetIngresosFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{keetIngresosFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
+							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{keetIngresosFiltro.attrs.montoInicio}" converter="javax.faces.Double">
+								<p:ajax event="blur" listener="#{keetIngresosFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>
+							</p:inputText>	
+							<p:outputLabel for="montoTermino" value="Monto termino:"/>
+							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{keetIngresosFiltro.attrs.montoTermino}" converter="javax.faces.Double">							
+								<p:ajax event="blur" listener="#{keetIngresosFiltro.doMontoUpdate}" process="@this" update="montoInicio"/>
+							</p:inputText>	
               <p:outputLabel for="idIngresoEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idIngresoEstatus" value="#{keetIngresosFiltro.attrs.idIngresoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{keetIngresosFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -197,9 +207,9 @@
             <p:menuitem id="modificar" value="Modificar" action="#{keetIngresosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus eq '1'}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus eq '1'}"/>					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetIngresosFiltro.doMovimientos}"/>
-            <p:separator rendered="#{fn:contains('|1|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetIngresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
-            <p:menuitem id="importar" icon="fa fa-external-link" value="Importar XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{keetIngresosFiltro.doImportar}" rendered="false and #{fn:contains('|1|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
+            <p:separator/>
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetIngresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
+            <p:menuitem id="pagos" icon="fa fa-funnel-dollar" value="Pagos" onstart="return janal.bloquear()" process="@this tabla" action="#{keetIngresosFiltro.doRecordPagos}" rendered="#{fn:contains('|3|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
           </p:contextMenu>						
         </div>
       </div>

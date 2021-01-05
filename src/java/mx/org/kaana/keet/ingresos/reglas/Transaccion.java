@@ -120,8 +120,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					} // if
 					break;
 			} // switch
-      if(this.orden!= null && this.orden.getIdContrato()== null)
-        this.orden.setIdContrato(-1L);
 			if(!regresar)
         throw new Exception("");
 		} // try

@@ -63,8 +63,8 @@
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
 							</p:selectOneMenu>
-							<p:outputLabel for="consecutivo" value="No. ticket:"/>
-							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasSaldos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:outputLabel for="consecutivo" value="Consecutivo:"/>
+							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasSaldos.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="razonSocial" value="Razón social:"/>
 							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesCuentasSaldos.attrs.cliente}" completeMethod="#{manticCatalogosClientesCuentasSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
@@ -87,6 +87,7 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasSaldos.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasSaldos.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticCatalogosClientesCuentasSaldos.doMontoUpdate}" process="@this" update="montoTermino"/>
 							</p:inputText>	
@@ -260,7 +261,6 @@
                 </p:column>
                 <f:facet name="footer">
                   <div style="display:flow-root;">
-                    <p:outputLabel value="Las filas que estan color, son cuentas por cobrar que se agregaron de forma manual" style="float: left;" escape="false"/>
                     <div style="float: right;">
                       <p:outputLabel value="Total [#{manticCatalogosClientesCuentasSaldos.lazyModelDetalle== null? 0: manticCatalogosClientesCuentasSaldos.lazyModelDetalle.rowCount}] registros" styleClass="importado janal-color-orange"/>
                     </div>
@@ -305,6 +305,7 @@
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
+  <ui:param name="lineaSeparacion" value="false" />
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar estado de cuenta" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
 			<h:form id="formDialogoCorreos" prependId="false">
