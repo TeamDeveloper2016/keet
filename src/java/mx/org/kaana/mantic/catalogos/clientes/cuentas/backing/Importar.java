@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -30,6 +31,7 @@ import org.primefaces.event.TabChangeEvent;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
+import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 
 /**
@@ -64,10 +66,12 @@ public class Importar extends IBaseImportar implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("idClienteDeuda")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
       this.idClienteDeuda= JsfBase.getFlashAttribute("idClienteDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idClienteDeuda");
-			this.clienteDeuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(TcManticClientesDeudasDto.class, this.idClienteDeuda);
+			this.clienteDeuda  = (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(TcManticClientesDeudasDto.class, this.idClienteDeuda);
 			if(this.clienteDeuda!= null) {			  
 				this.cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(TcManticClientesDto.class, this.clienteDeuda.getIdCliente());
+        this.loadClienteDeuda();
 				this.doLoad();
 			} // if
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -103,6 +107,26 @@ public class Importar extends IBaseImportar implements Serializable {
     } // finally
 	} // toLoadCatalog
 
+	private void loadClienteDeuda() throws Exception {
+		Entity deuda             = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", this.attrs.get("idCliente"));			
+			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.id_cliente_deuda=" + this.idClienteDeuda);
+			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "cuentas", params);
+			this.attrs.put("deuda", deuda);
+			this.attrs.put("pago", deuda.toDouble("saldo"));			
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // loadClienteDeuda
+  
   private void doLoadImportados() {
 		List<Columna> columns= null;
 		try {
@@ -166,6 +190,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doLoadFiles	
 
   public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));
   	JsfBase.setFlashAttribute("idClienteDeuda", this.idClienteDeuda);
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar

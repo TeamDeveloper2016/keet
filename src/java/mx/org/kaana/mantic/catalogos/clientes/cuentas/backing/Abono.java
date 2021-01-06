@@ -47,7 +47,6 @@ public class Abono extends IBasePagos implements Serializable {
   @Override
   protected void init() {
     try {			
-      this.attrs.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));     
       this.attrs.put("idClienteDeuda", JsfBase.getFlashAttribute("idClienteDeuda"));    
 			this.attrs.put("cliente", DaoFactory.getInstance().findById(TcManticClientesDto.class, Long.valueOf(this.attrs.get("idCliente").toString())));			
@@ -68,7 +67,7 @@ public class Abono extends IBasePagos implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));			
-			params.put("sortOrder", this.attrs.get("sortOrder"));
+			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.id_cliente_deuda=" + this.attrs.get("idClienteDeuda"));
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "cuentas", params);
 			this.attrs.put("permitirPago", deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus()));

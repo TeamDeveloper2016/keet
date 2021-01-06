@@ -57,29 +57,25 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:panelGrid id="panelDetalle" columns="3" styleClass="janal-wid-100" columnClasses=" , janal-wid-15, janal-wid-15">
-   					<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20">
-  						<p:outputLabel value="Desarrollo:"/>						
-	  					<p:outputLabel value="Cliente:"/>						
-            </p:panelGrid>  
+					<p:panelGrid id="panelDetalle" columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-10, , janal-wid-12, janal-wid-12, janal-wid-12">
+ 						<p:outputLabel value="Desarrollo:"/>						
+  					<p:outputLabel value="Cliente:"/>						
  						<p:outputLabel value="Consecutivo:"/>						
-   					<p:panelGrid columns="2" styleClass="janal-wid-100">
-						<p:outputLabel value="Estatus:"/>						
-  						<p:outputLabel value="Fecha limite:"/>
-            </p:panelGrid>  
-   					<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20">
-              <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
-              <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
-            </p:panelGrid>  
+            <p:outputLabel value="Estatus:"/>						
+            <p:outputLabel value="Fecha limite:"/>
+            <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+            <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
  						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.ticket}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
-   					<p:panelGrid columns="2" styleClass="janal-wid-100">
-  						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>
-						  <p:inputText value="#{manticCatalogosClientesCuentasAbono.doFecha(manticCatalogosClientesCuentasAbono.attrs.deuda.limite)}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
-            </p:panelGrid>  
-						<p:outputLabel value="Registro pago:"/>						
+						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>
+					  <p:inputText value="#{manticCatalogosClientesCuentasAbono.doFecha(manticCatalogosClientesCuentasAbono.attrs.deuda.limite)}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+ 						<p:outputLabel value="Contrato:"/>
+						<p:outputLabel value="Registró factura:"/>						
+						<p:outputLabel value="Tipo:"/>
 						<p:outputLabel value="Importe:"/>						
 						<p:outputLabel value="Saldo:"/>						
+						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.clave}" styleClass="janal-wid-100-txt" readonly="true"/>
 						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.persona}" styleClass="janal-wid-100-txt" readonly="true"/>
+						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.tipo}" styleClass="janal-wid-100-txt" readonly="true"/>
 						<p:inputText value="$ #{manticCatalogosClientesCuentasAbono.attrs.deuda.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 						<p:inputText value="$ #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>						
 						<p:spacer/>

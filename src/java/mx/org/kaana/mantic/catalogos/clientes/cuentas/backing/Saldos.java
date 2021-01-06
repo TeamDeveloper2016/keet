@@ -406,8 +406,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // doVerificarReporte	
 	
 	public String doImportar() {
+		JsfBase.setFlashAttribute("idIngreso", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idIngreso"));
+		JsfBase.setFlashAttribute("idCliente", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idCliente"));
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");		
-		JsfBase.setFlashAttribute("idClienteDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
+		JsfBase.setFlashAttribute("idClienteDeuda", ((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 		return "importar".concat(Constantes.REDIRECIONAR);
 	}
 	
