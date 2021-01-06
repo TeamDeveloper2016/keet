@@ -3815,9 +3815,11 @@
 				{sortOrder}								
 			</select>	
 			<select id="clientes">	
-				select
+        select
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+					tc_keet_desarrollos.id_desarrollo,
 					tc_mantic_clientes_deudas.id_cliente,
+					tc_keet_desarrollos.nombres as desarrollo,
 					tc_mantic_clientes.razon_social,
 					count(*) as cuentas,
 					sum(tc_mantic_clientes_deudas.importe) as importe,
@@ -3834,18 +3836,29 @@
 					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
 				inner join 
 					tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
+				inner join 
+					tc_keet_desarrollos on tc_keet_ingresos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				left join 
+					tc_keet_contratos on tc_keet_ingresos.id_contrato= tc_keet_contratos.id_contrato
 				where
           tc_keet_ingresos.id_empresa in ({idEmpresa})
           and {condicion}
         group by
-          tc_mantic_clientes_deudas.id_cliente
-				{sortOrder}								
+          tc_keet_ingresos.id_desarrollo, 
+					tc_mantic_clientes_deudas.id_cliente
+ 				{sortOrder}								
 			</select>	
 			<select id="detalle">	
 				select
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+					tc_keet_desarrollos.id_desarrollo,
 					tc_mantic_clientes_deudas.id_cliente,
-					tc_keet_ingresos.consecutivo as ticket,
+					tc_keet_contratos.id_contrato,
+					tc_keet_desarrollos.nombres as desarrollo,
+					tc_keet_ingresos.consecutivo,
+					tc_keet_contratos.clave,
+					tc_keet_contratos.nombre as contrato,
+					if(tc_keet_contratos.id_contrato is null, 'EXTRA', 'NORMAL') as tipo,
 					2 as id_manual,
 					tc_mantic_clientes_deudas.importe,
 					tc_mantic_clientes_deudas.saldo,
@@ -3861,6 +3874,10 @@
 					tc_mantic_clientes_deudas
 				inner join
 					tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
+				inner join 
+					tc_keet_desarrollos on tc_keet_ingresos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				left join 
+					tc_keet_contratos on tc_keet_ingresos.id_contrato= tc_keet_contratos.id_contrato
 				inner join 
 					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
 				inner join 
