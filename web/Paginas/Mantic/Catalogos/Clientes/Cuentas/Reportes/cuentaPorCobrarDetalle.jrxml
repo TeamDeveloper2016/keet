@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cuentaPorCobrarDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.inventarios.scriplet.NotaEntradaDetalle" uuid="1023c188-e20d-4ec9-8796-09eb96bd4ed9">
-	<property name="ireport.zoom" value="1.4615378250000008"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
@@ -444,28 +444,28 @@
 				<textFieldExpression><![CDATA["JOSE ANTONIO DAVALOS PADILLA"]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement isPrintRepeatedValues="false" x="172" y="121" width="47" height="10" uuid="1ff8ef91-d778-4031-bd31-2428a6da1878"/>
+				<reportElement isPrintRepeatedValues="false" x="184" y="121" width="47" height="10" uuid="1ff8ef91-d778-4031-bd31-2428a6da1878"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CLAVE}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="135" y="121" width="34" height="10" uuid="813e4a11-9a98-48f5-b6f8-cac00897ee61"/>
+				<reportElement stretchType="RelativeToTallestObject" x="135" y="121" width="49" height="10" uuid="813e4a11-9a98-48f5-b6f8-cac00897ee61"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<text><![CDATA[CLAVE:]]></text>
+				<text><![CDATA[CONTRATO:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="219" y="121" width="26" height="10" uuid="8decd44a-2426-4845-8493-91c664107d5d"/>
+				<reportElement stretchType="RelativeToTallestObject" x="231" y="121" width="26" height="10" uuid="8decd44a-2426-4845-8493-91c664107d5d"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
 				<text><![CDATA[TIPO:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement isPrintRepeatedValues="false" x="245" y="121" width="79" height="10" uuid="e7f4127a-3620-44f9-bd7c-22bc3d5d063b"/>
+				<reportElement isPrintRepeatedValues="false" x="257" y="121" width="79" height="10" uuid="e7f4127a-3620-44f9-bd7c-22bc3d5d063b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>

@@ -330,7 +330,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public String doRecordPagos() {
 		JsfBase.setFlashAttribute("idIngreso", ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("idCliente", ((Entity)this.attrs.get("seleccionado")).toLong("idCliente"));
-		JsfBase.setFlashAttribute("regreso", "/Paginas/Keet/Ingresos/filtro");
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Ingresos/filtro");
 		return "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos".concat(Constantes.REDIRECIONAR);
 	}
 

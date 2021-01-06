@@ -193,7 +193,7 @@
 							</f:facet>
 							<h:outputText value="#{row['saldo']}"/>
 						</p:column>						
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.abonado}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.abonado}">
 							<f:facet name="header">
 								<h:outputText value="Abonado"/>
 							</f:facet>
@@ -323,8 +323,8 @@
                 <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTA_COBRAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:menuitem id="reporteDetalle" icon="fa fa-file-pdf-o" value="Cuenta por cobrar" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('DEUDAS_CLIENTES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:menuitem id="estadoDeCuenta" icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
-                <p:separator/>					
-                <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                <p:separator rendered="false"/>					
+                <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="false"/>
               </p:contextMenu>
               <h:commandLink id="detallePdf">
                 <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
@@ -343,10 +343,10 @@
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesCuentasSaldos.doRegresar}" immediate="true"/>
+      <p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesCuentasSaldos.doRegresar}" immediate="true" rendered="#{not empty manticCatalogosClientesCuentasSaldos.attrs.retorno}"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesCuentasSaldos.doRegresar}" immediate="true"/>
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesCuentasSaldos.doRegresar}" immediate="true" rendered="#{not empty manticCatalogosClientesCuentasSaldos.attrs.retorno}"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
@@ -419,13 +419,13 @@
 				</h:panelGrid>	
         <h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100"  id="panelFechas">
 					<h:outputLabel for="vigenciaIni" value="Inicio"/>
-          <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.attrs.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3) }"/>
+          <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3) }"/>
           <h:outputLabel for="vigenciaFin" value="Fin"/>
-          <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.attrs.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3) }"/>
+          <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3) }"/>
 				</h:panelGrid>
         <hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this,@parent" value="Aceptar" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporteEspecial}" onstart="PF('dlgPlazo').hide();" />
+          <p:commandButton icon="fa fa-check" process="@this, @parent" update="tabla" value="Aceptar" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporteEspecial}" onstart="PF('dlgPlazo').hide();" />
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgPlazo').hide();"/>
 				</div>
 			</h:form>

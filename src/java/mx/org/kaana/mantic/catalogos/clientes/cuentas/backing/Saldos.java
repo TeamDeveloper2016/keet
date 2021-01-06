@@ -66,6 +66,9 @@ public class Saldos extends IBaseFilter implements Serializable {
   protected FormatLazyModel lazyModelDetalle;
   private LocalDate fechaInicio;
   private LocalDate fechaTermino;
+  private LocalDate vigenciaIni;
+  private LocalDate vigenciaFin;
+  
 
 	public UISelectEntity getEncontrado() {
 		return encontrado;
@@ -118,12 +121,29 @@ public class Saldos extends IBaseFilter implements Serializable {
   public void setFechaTermino(LocalDate fechaTermino) {
     this.fechaTermino = fechaTermino;
   }
+
+  public LocalDate getVigenciaIni() {
+    return vigenciaIni;
+  }
+
+  public void setVigenciaIni(LocalDate vigenciaIni) {
+    this.vigenciaIni = vigenciaIni;
+  }
+
+  public LocalDate getVigenciaFin() {
+    return vigenciaFin;
+  }
+
+  public void setVigenciaFin(LocalDate vigenciaFin) {
+    this.vigenciaFin = vigenciaFin;
+  }
   
   @PostConstruct
   @Override
   protected void init() {
     try {
 			this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso"));			
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));			
 			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");
 			this.filtro = this.idCliente.equals(-1L);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
@@ -255,7 +275,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 
 	public String doRegresar() {
 	  JsfBase.setFlashAttribute("idCliente", this.idCliente);		
-		return "filtro".concat(Constantes.REDIRECIONAR);
+		return this.attrs.get("retorno")!= null? ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR): "null";
 	} 
 	
 	public void doClientes() {
@@ -466,11 +486,11 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // doCompleteCliente			
 	
 	public String doAccion() {
-		String regresar= "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR); 
+		String regresar= "/Paginas/Keet/Ingresos/accion".concat(Constantes.REDIRECIONAR); 
 		try {
 			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");					
-			JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idVenta"));			
+			JsfBase.setFlashAttribute("idIngreso", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idIngreso"));			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -487,7 +507,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			plazo= Integer.valueOf(this.attrs.get("plazo").toString());
       actual= Calendar.getInstance();
       actual.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(Fecha.getHoy()));
-      this.attrs.put("vigenciaFin",new java.sql.Date(actual.getTimeInMillis()));
+      this.attrs.put("vigenciaFin", new java.sql.Date(actual.getTimeInMillis()));
       inicio= Calendar.getInstance();
       inicio.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(Fecha.getHoy()));
       this.attrs.put("tipoReporteEspecial", "DEUDAS_CLIENTES");
@@ -528,6 +548,8 @@ public class Saldos extends IBaseFilter implements Serializable {
       params.put("idClienteDeuda", seleccionado.getKey());
       params.put("fechaInicio", this.attrs.get("vigenciaIni"));
       params.put("fechaFin", this.attrs.get("vigenciaFin"));
+      // params.put("fechaInicio", this.vigenciaIni.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+      // params.put("fechaFin", this.vigenciaFin.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
       reporteSeleccion= EReportes.valueOf(this.attrs.get("tipoReporteEspecial").toString());
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
       parametros= comunes.getComunes();
@@ -540,7 +562,8 @@ public class Saldos extends IBaseFilter implements Serializable {
         this.reporte.doAceptarSimple();			
 			else 
 				if(this.doVerificarReporte())
-          this.reporte.doAceptar();			      
+          this.reporte.doAceptar();			
+      this.doLoad();
     } // try
     catch(Exception e) {
       Error.mensaje(e);

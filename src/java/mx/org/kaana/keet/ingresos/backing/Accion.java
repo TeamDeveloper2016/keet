@@ -160,7 +160,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.setIkEmpresa(new UISelectEntity(new Entity(this.ingreso.getIdEmpresa())));
           this.setIkDesarrollo(new UISelectEntity(new Entity(this.ingreso.getIdDesarrollo())));
           this.setIkCliente(new UISelectEntity(new Entity(this.ingreso.getIdCliente())));
-          this.setIkContrato(new UISelectEntity(new Entity(this.ingreso.getIdContrato())));
+          if(this.ingreso.getIdContrato()== null)
+            this.setIkContrato(new UISelectEntity(-1L));
+          else
+            this.setIkContrato(new UISelectEntity(new Entity(this.ingreso.getIdContrato())));
           this.cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, this.ingreso.getIdCliente());
           break;
       } // switch
@@ -348,7 +351,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       case "Importar":
         if(this.ingreso.getIdDesarrollo()!= null && this.ingreso.getIdDesarrollo()> 0L) {
      		  if(this.attrs.get("faltantes")== null)
-		  	    this.doLoadFiles("TcManticIngresosArchivosDto", this.ingreso.getIdIngreso(), "idIngreso", false, 1D);
+		  	    this.doLoadFiles("TcKeetIngresosArchivosDto", this.ingreso.getIdIngreso(), "idIngreso", false, 1D);
         } // if
         else
     			JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero.", ETipoMensaje.ALERTA);      			

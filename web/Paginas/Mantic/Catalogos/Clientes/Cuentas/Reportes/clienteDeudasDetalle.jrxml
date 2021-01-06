@@ -545,7 +545,7 @@
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement isPrintRepeatedValues="false" x="607" y="68" width="141" height="21" uuid="daf73aba-4b5b-4023-9544-8fc453aff2db"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="10" isBold="true"/>
+					<font fontName="Arial Narrow" size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DESARROLLO}]]></textFieldExpression>
 			</textField>
@@ -557,21 +557,21 @@
 				<reportElement style="EvenOddRowStyle" x="0" y="0" width="752" height="14" uuid="9d60de64-b171-4c35-802a-009f1d02fb3b"/>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="61" y="0" width="54" height="14" uuid="a9950a85-c4af-473a-8934-0d7b22e1aedd"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false" isStrikeThrough="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CONSECUTIVO}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="116" y="0" width="66" height="14" uuid="0d44f575-7d81-4770-865d-36dd6252db8a"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{CONTRATO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{CLAVE}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="183" y="0" width="81" height="14" uuid="d8dae735-56cb-4f43-bd20-0354dd224e56"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{FACTURA}]]></textFieldExpression>
