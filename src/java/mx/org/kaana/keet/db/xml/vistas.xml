@@ -52,6 +52,7 @@
           tc_mantic_clientes on tc_keet_desarrollos.id_cliente= tc_mantic_clientes.id_cliente
         where
           tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+          and tc_mantic_clientes.id_cliente> 0
       </select>  
 			<select id="movimientos">
 				select

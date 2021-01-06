@@ -184,14 +184,18 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
       } // if
       if(Cadena.isVacio(this.attrs.get("folio"))) {
-        transaccion = new Transaccion(this.ingreso, this.getXml(), this.getPdf());
-        if (transaccion.ejecutar(this.accion)) {
-          regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-          if(!this.accion.equals(EAccion.CONSULTAR)) 
-            JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
+        if(!Cadena.isVacio(this.getXml())) {
+          transaccion = new Transaccion(this.ingreso, this.getXml(), this.getPdf());
+          if (transaccion.ejecutar(this.accion)) {
+            regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+            if(!this.accion.equals(EAccion.CONSULTAR)) 
+              JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
+          } // if
+          else 
+            JsfBase.addMessage("Ocurrió un error al registrar la factura !", ETipoMensaje.ERROR);      			
         } // if
         else 
-          JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
       } // if
       else 
         JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);

@@ -68,7 +68,7 @@
 							<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
               <p:selectOneMenu id="idDesarrollo" value="#{keetIngresosFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" listener="#{keetIngresosFiltro.doLoadContratos}" process="@this" update="idCliente idContrato"/>
-                <f:selectItems value="#{keetIngresosFiltro.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <f:selectItems value="#{keetIngresosFiltro.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

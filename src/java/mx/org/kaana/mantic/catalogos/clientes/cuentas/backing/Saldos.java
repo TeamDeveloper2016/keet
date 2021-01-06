@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,9 +126,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 			this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso"));			
 			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");
 			this.filtro = this.idCliente.equals(-1L);
-      this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				this.loadSucursales();
       this.toLoadCatalog();
@@ -182,7 +182,11 @@ public class Saldos extends IBaseFilter implements Serializable {
     if(!this.idCliente.equals(-1L))
       sb.append("tc_mantic_clientes_deudas.id_cliente= ").append(this.idCliente).append(" and ");
   	if(!Cadena.isVacio(this.attrs.get("idIngreso")))
-  		sb.append("(tc_mantic_clientes_deudas.id_ingreso = ").append(this.attrs.get("idIngreso")).append(") and ");
+  		sb.append("(tc_keet_ingresos.id_ingreso = ").append(this.attrs.get("idIngreso")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1"))
+  		sb.append("(tc_keet_ingresos.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
+  		sb.append("(tc_keet_ingresos.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
 		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
 			sb.append("tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%' and ");			
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
@@ -211,7 +215,7 @@ public class Saldos extends IBaseFilter implements Serializable {
         if(!Objects.equals(-1L, estatus.getKey()))
           sb.append("(tc_mantic_clientes_deudas.id_cliente_estatus= ").append(estatus.getKey()).append(") and ");
     if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))			
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+		  regresar.put("idEmpresa", this.attrs.get("idEmpresa").toString());
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(sb.length()== 0)
@@ -237,6 +241,8 @@ public class Saldos extends IBaseFilter implements Serializable {
       } // if
       this.attrs.put("allEstatus", estatus);
 			this.attrs.put("idClienteEstatus", new UISelectEntity("0"));
+			this.doLoadDesarrollos();
+			this.doLoadContratos();
     } // try
     catch (Exception e) {
       throw e;
@@ -248,7 +254,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // toLoadCatalog
 
 	public String doRegresar() {
-	  JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));		
+	  JsfBase.setFlashAttribute("idCliente", this.idCliente);		
 		return "filtro".concat(Constantes.REDIRECIONAR);
 	} 
 	
@@ -261,7 +267,6 @@ public class Saldos extends IBaseFilter implements Serializable {
 			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 3) {
 				params = new HashMap<>();      
 				params.put(Constantes.SQL_CONDICION, "upper(razon_social) like upper('%".concat((String)this.attrs.get("busqueda")).concat("%')"));
-				// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 				columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));			
 				columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));			
@@ -311,7 +316,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			sucursales=(List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
 			this.attrs.put("sucursales", sucursales);			
-			this.attrs.put("idEmpresa", -1L);			
+			this.attrs.put("idEmpresa", new UISelectEntity(-1L));			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -698,4 +703,68 @@ public class Saldos extends IBaseFilter implements Serializable {
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
 	}
  
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+		UISelectEntity empresa    = null;
+    try {
+			params= new HashMap<>();			
+			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
+			if(empresa.getKey()>= 1L)
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
+			else
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "nombres"));			
+			this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	} // doLoadDesarrollos
+	
+	public void doLoadContratos() {
+		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		UISelectEntity empresa   = null;
+    List<UISelectEntity> clientes= null;
+	  try {
+			columns= new ArrayList<>();
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			empresa= (UISelectEntity)this.attrs.get("idEmpresa");
+			if(empresa!= null && empresa.getKey()> 0L) 
+			  params.put("sucursales", empresa.getKey());
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1")) {
+			  this.attrs.put("contratos", UIEntity.build("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS));
+        clientes= UIEntity.build("VistaIngresosDto", "clientes", params, columns, Constantes.SQL_TODOS_REGISTROS);
+      } // if  
+      else {
+        this.attrs.put("contratos", UIEntity.seleccione("VistaContratosDto", "byEmpresa", params, "clave"));
+        clientes= UIEntity.seleccione("TcManticClientesDto", "sucursales", params, columns, "razonSocial");
+      } // else   
+      this.attrs.put("clientes", clientes);
+      if(clientes!= null && !clientes.isEmpty())
+        this.attrs.put("idCliente", clientes.get(0));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	} // doLoadContratos  
+  
 }

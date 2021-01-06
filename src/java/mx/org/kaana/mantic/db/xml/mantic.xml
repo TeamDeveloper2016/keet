@@ -3424,6 +3424,7 @@
           tc_mantic_clientes
         where 
           id_empresa in ({sucursales})
+          and id_cliente> 0
 				order by
 				  clave
       </select>
