@@ -153,7 +153,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();	
-      params.put("sortOrder", "order by	tc_keet_ingresos.id_desarrollo,	tc_keet_contratos.id_contrato desc");
+      params.put("sortOrder", "order by	tc_keet_ingresos.consecutivo desc");
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
@@ -330,7 +330,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
 			JsfBase.setFlashAttribute("idClienteDeuda", seleccionado.getKey());
-			JsfBase.setFlashAttribute("idCliente", seleccionado.toString("idCliente"));
+			JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
 			regresar= "abono".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
@@ -345,7 +345,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		Entity seleccionado= null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
-			JsfBase.setFlashAttribute("idCliente", seleccionado.toString("idCliente"));
+			JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
 			regresar= "deuda".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
@@ -733,7 +733,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 		List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
 		UISelectEntity empresa   = null;
-    List<UISelectEntity> clientes= null;
+    List<UISelectEntity> clientes = null;
+    List<UISelectEntity> contratos= null;
 	  try {
 			columns= new ArrayList<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
@@ -746,16 +747,19 @@ public class Saldos extends IBaseFilter implements Serializable {
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1")) {
-			  this.attrs.put("contratos", UIEntity.build("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS));
-        clientes= UIEntity.build("VistaIngresosDto", "clientes", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			  contratos= UIEntity.build("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+        clientes = UIEntity.build("VistaIngresosDto", "clientes", params, columns, Constantes.SQL_TODOS_REGISTROS);
       } // if  
       else {
-        this.attrs.put("contratos", UIEntity.seleccione("VistaContratosDto", "byEmpresa", params, "clave"));
-        clientes= UIEntity.seleccione("TcManticClientesDto", "sucursales", params, columns, "razonSocial");
+        contratos= UIEntity.seleccione("VistaContratosDto", "byEmpresa", params, "clave");
+        clientes = UIEntity.seleccione("TcManticClientesDto", "sucursales", params, columns, "razonSocial");
       } // else   
       this.attrs.put("clientes", clientes);
       if(clientes!= null && !clientes.isEmpty())
         this.attrs.put("idCliente", clientes.get(0));
+      this.attrs.put("contratos", contratos);
+      if(contratos!= null && !contratos.isEmpty())
+        this.attrs.put("idContrato", contratos.get(0));
     } // try
     catch (Exception e) {
       Error.mensaje(e);

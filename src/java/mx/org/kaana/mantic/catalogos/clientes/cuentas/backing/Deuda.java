@@ -280,10 +280,10 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params.put("sortOrder", this.attrs.get("sortOrder"));			
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
       columns= new ArrayList<>();  
-			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));						
 			this.pagosSegmento= new FormatLazyModel("VistaClientesDto", "cuentas", params, columns);      
@@ -324,7 +324,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0. o la cuenta ya se encuentra finalizada.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0. o la factura ya se encuentra finalizada.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -332,7 +332,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch				
 	} // doRegistrarPago
 	
-	private boolean validaPago(){
+	private boolean validaPago() {
 		boolean regresar= false;
 		Double pago     = 0D;
 		Double saldo    = 0D;
@@ -443,7 +443,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0. ó no se selecciono ninguna cuenta.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0. ó no se selecciono ninguna factura.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

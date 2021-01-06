@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="Historial de abonos del cliente" />
+  <ui:param name="titulo" value="Historial de pagos del cliente" />
   <ui:define name="librerias">
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
 		<h:outputStylesheet library="janal" name="css/shCore.css"/>
@@ -58,16 +58,22 @@
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
 					<p:panelGrid id="panelDetalle" columns="3" styleClass="janal-wid-100" columnClasses=" , janal-wid-15, janal-wid-15">
-						<p:outputLabel value="Cliente:"/>						
-						<p:outputLabel value="Estatus:"/>						
+   					<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20">
+  						<p:outputLabel value="Desarrollo:"/>						
+	  					<p:outputLabel value="Cliente:"/>						
+            </p:panelGrid>  
+ 						<p:outputLabel value="Consecutivo:"/>						
    					<p:panelGrid columns="2" styleClass="janal-wid-100">
-  						<p:outputLabel value="Consecutivo:"/>						
+						<p:outputLabel value="Estatus:"/>						
   						<p:outputLabel value="Fecha limite:"/>
             </p:panelGrid>  
-            <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
-						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>
+   					<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20">
+              <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+              <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
+            </p:panelGrid>  
+ 						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.ticket}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
    					<p:panelGrid columns="2" styleClass="janal-wid-100">
-   						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.ticket}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+  						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>
 						  <p:inputText value="#{manticCatalogosClientesCuentasAbono.doFecha(manticCatalogosClientesCuentasAbono.attrs.deuda.limite)}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
             </p:panelGrid>  
 						<p:outputLabel value="Registro pago:"/>						
@@ -212,7 +218,7 @@
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="contenedorGrupos" />
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="50%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
+		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="70%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoPago" prependId="false">
 				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-12, janal-wid-86">
 					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="false and #{manticCatalogosClientesCuentasAbono.attrs.isMatriz}"/>
