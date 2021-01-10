@@ -129,6 +129,10 @@ public abstract class IBaseAttribute implements Serializable {
 		return Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero);
 	}
 
+  public String doNumerico(Double numero) {
+		return Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero);
+	}
+
   public String doNumerico(Value numero) {
 		return Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero.toLong());
 	}

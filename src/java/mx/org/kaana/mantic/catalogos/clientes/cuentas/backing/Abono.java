@@ -23,6 +23,7 @@ import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
@@ -122,18 +123,18 @@ public class Abono extends IBasePagos implements Serializable {
 		boolean tipoPago             = false;
 		boolean saldar               = false;
 		try {
-      saldar= Long.valueOf(this.attrs.get("saldar").toString()).equals(1L);
+      saldar= ((Long)this.attrs.get("saldar")).equals(1L);
       pago= new TcManticClientesPagosDto();
-      pago.setIdClienteDeuda(Long.valueOf(this.attrs.get("idClienteDeuda").toString()));
+      pago.setIdClienteDeuda((Long)this.attrs.get("idClienteDeuda"));
       pago.setIdUsuario(JsfBase.getIdUsuario());
-      pago.setObservaciones(this.attrs.get("observaciones").toString());
-      pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
-      pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+      pago.setObservaciones((String)this.attrs.get("observaciones"));
+      pago.setPago((Double)this.attrs.get("pago"));
+      pago.setIdTipoMedioPago(((UISelectEntity)this.attrs.get("tipoPago")).getKey());
       tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-      transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("idCliente").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), saldar);
+      transaccion= new Transaccion(pago, (Long)this.attrs.get("idCliente"), tipoPago ? -1 : ((UISelectEntity)this.attrs.get("banco")).getKey(), tipoPago ? "" : (String)this.attrs.get("referencia"), saldar);
       if(transaccion.ejecutar(EAccion.AGREGAR)){
         JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
-        loadClienteDeuda();
+        this.loadClienteDeuda();
       } // if
       else
         JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);

@@ -75,17 +75,17 @@ public class Transaccion extends TransaccionFactura {
 				this.pagoGeneral= this.pago.getPago();
       switch (accion) {
         case AGREGAR:					
-						regresar= procesarPago(sesion);
+						regresar= this.procesarPago(sesion);
           break;       
         case PROCESAR:					
-						regresar= procesarPagoGeneral(sesion);
+						regresar= this.procesarPagoGeneral(sesion);
           break;       
 				case COMPLEMENTAR: 
-					regresar= procesarPagoSegmento(sesion);
+					regresar= this.procesarPagoSegmento(sesion);
 					break;
 				case SUBIR:
 					regresar= true;
-					toUpdateDeleteFilePago(sesion);
+					this.toUpdateDeleteFilePago(sesion);
 					break;
       } // switch
       if (!regresar) 
@@ -104,7 +104,7 @@ public class Transaccion extends TransaccionFactura {
 		Siguiente orden                = null;
 		try {
 			if(this.toCierreCaja(sesion, this.pago.getPago())) {
-				this.pago.setIdCierre(-1L);				
+				this.pago.setIdCierre(null);				
 				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
 					this.pago.setReferencia(this.referencia);
 					this.pago.setIdBanco(this.idBanco);
@@ -119,7 +119,7 @@ public class Transaccion extends TransaccionFactura {
 					deuda.setSaldo(saldo);
 					deuda.setIdClienteEstatus(saldo.equals(0D) || this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
-					actualizarSaldoCatalogoCliente(sesion, deuda.getIdCliente(), this.pago.getPago(), false);
+					this.actualizarSaldoCatalogoCliente(sesion, deuda.getIdCliente(), this.pago.getPago(), false);
 				} // if
 			} // if
 		} // try
@@ -142,7 +142,7 @@ public class Transaccion extends TransaccionFactura {
 		Double abono             = 0D;		
 		Long idEstatus           = -1L;
 		try {
-			deudas= toDeudas(sesion);
+			deudas= this.toDeudas(sesion);
 			for(Entity deuda: deudas){
 				if(saldo > 0){					
 					saldoDeuda= Double.valueOf(deuda.toString("saldo"));
@@ -164,7 +164,7 @@ public class Transaccion extends TransaccionFactura {
 						params.put("saldo", abono);
 						params.put("idClienteEstatus", idEstatus);
 						DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
-						actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
+						this.actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
 					}	// if				
 				} // if
 			} // for
@@ -184,14 +184,14 @@ public class Transaccion extends TransaccionFactura {
 		boolean regresar                     = false;
 		Siguiente orden	                     = null;
 		try {
-			if(this.toCierreCaja(sesion, pagoParcial)){
+			if(this.toCierreCaja(sesion, pagoParcial)) {
 				registroPago= new TcManticClientesPagosDto();
 				registroPago.setIdClienteDeuda(idClienteDeuda);
 				registroPago.setIdUsuario(JsfBase.getIdUsuario());
-				registroPago.setObservaciones("PAGO APLICADO A LA DEUDA GENERAL DEL CLIENTE. ".concat(this.pago.getObservaciones()).concat(". PAGO GENERAL POR $").concat(this.pagoGeneral.toString()));
+				registroPago.setObservaciones("PAGO APLICADO A LA DEUDA. ".concat(this.pago.getObservaciones()).concat(". PAGO GENERAL POR $").concat(this.pagoGeneral.toString()));
 				registroPago.setPago(pagoParcial);
 				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
-				registroPago.setIdCierre(-1L);
+				registroPago.setIdCierre(null);
 				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
 					registroPago.setIdBanco(this.idBanco);
 					registroPago.setReferencia(this.referencia);
@@ -276,7 +276,7 @@ public class Transaccion extends TransaccionFactura {
 								abono= saldoDeuda - this.pago.getPago();
 								idEstatus= this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 							} /// else
-							if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
+							if(this.registrarPago(sesion, deuda.getKey(), pagoParcial)){
 								params= new HashMap<>();
 								params.put("saldo", abono);
 								params.put("idClienteEstatus", idEstatus);

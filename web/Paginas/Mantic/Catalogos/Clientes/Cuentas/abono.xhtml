@@ -23,9 +23,10 @@
 			};
 
 			fieldsDialog = {
-				'pago': {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
+				'pago'      : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
+				'tipoPago'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
 				'referencia': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
-				'observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+				'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
 			function start() {
@@ -242,9 +243,9 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>
+          <p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4" converter="javax.faces.Double"/>
 					<p:outputLabel for="saldar" value="Saldar: "/>
-					<p:selectOneRadio id="saldar" value="#{manticCatalogosClientesCuentasAbono.attrs.saldar}">
+          <p:selectOneRadio id="saldar" value="#{manticCatalogosClientesCuentasAbono.attrs.saldar}" converter="javax.faces.Long">
 						<f:selectItem itemLabel="SI" itemValue="1"/>
 						<f:selectItem itemLabel="NO" itemValue="2"/>
 					</p:selectOneRadio>
