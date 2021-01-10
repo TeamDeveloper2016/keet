@@ -150,7 +150,7 @@
 						</p:tab>
 						<p:tab title="Importar">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{keetIngresosAccion.diferente? '': 'none'}">
-								<p:outputLabel value="El RFC del cliente [#{keetIngresosAccion.cliente.rfc}] #{keetIngresosAccion.cliente.razonSocial} no coincide con el de la factura [#{keetIngresosAccion.emisor.rfc}] #{keetIngresosAccion.emisor.nombre}" styleClass="janal-color-orange" style="cursor: pointer;"/>
+								<p:outputLabel value="El RFC del cliente [#{keetIngresosAccion.cliente.rfc}] #{keetIngresosAccion.cliente.razonSocial} no coincide con el de la factura [#{keetIngresosAccion.receptor.rfc}] #{keetIngresosAccion.receptor.nombre}" styleClass="janal-color-orange" style="cursor: pointer;"/>
 							</p:panelGrid>	
 							<p:outputLabel for="comentarios" value="Comentarios:" styleClass="janal-wid-100-txt" style="display:#{keetIngresosAccion.consultar};"/><br style="display:#{keetIngresosAccion.consultar};"/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.attrs.observaciones}" style="display:#{keetIngresosAccion.consultar};"/>

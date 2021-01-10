@@ -27,7 +27,6 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
-import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.log4j.Logger;
 
