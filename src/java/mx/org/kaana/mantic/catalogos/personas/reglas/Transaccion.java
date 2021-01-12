@@ -42,7 +42,7 @@ import mx.org.kaana.mantic.enums.EEstatusIncidentes;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends IBaseTnx {
 
 	private static final String CONTRATISTA= "CONTRATISTA";
 	private IBaseDto dto;
@@ -178,16 +178,22 @@ public class Transaccion extends IBaseTnx{
     try {
       params = new HashMap<>();
       params.put("idPersona", this.persona.getIdPersona());
-      if (DaoFactory.getInstance().deleteAll(sesion, TrManticPersonaDomicilioDto.class, params) > -1L) {
-				if (DaoFactory.getInstance().deleteAll(sesion, TcKeetPersonasBeneficiariosDto.class, params) > -1L) {
-					if (DaoFactory.getInstance().deleteAll(sesion, TrManticPersonaTipoContactoDto.class, params) > -1L) {
-						if (DaoFactory.getInstance().deleteAll(sesion, TcKeetPersonasBancosDto.class, params) > -1L) {
-							if (DaoFactory.getInstance().deleteAll(sesion, TrManticEmpresaPersonalDto.class, params) > -1L) {
-								regresar = DaoFactory.getInstance().delete(sesion, TcManticPersonasDto.class, this.persona.getIdPersona()) >= 1L;
-							} // if
-						} // if
-					} // if
-				} // if
+      if (DaoFactory.getInstance().deleteAll(sesion, TcManticIncidentesBitacoraDto.class, "persona", params) > -1L) {
+        if (DaoFactory.getInstance().deleteAll(sesion, TcManticIncidentesDto.class, "persona", params) > -1L) {
+          if (DaoFactory.getInstance().deleteAll(sesion, TcKeetDeudoresDto.class, "persona", params) > -1L) {
+            if (DaoFactory.getInstance().deleteAll(sesion, TrManticPersonaDomicilioDto.class, params) > -1L) {
+              if (DaoFactory.getInstance().deleteAll(sesion, TcKeetPersonasBeneficiariosDto.class, params) > -1L) {
+                if (DaoFactory.getInstance().deleteAll(sesion, TrManticPersonaTipoContactoDto.class, params) > -1L) {
+                  if (DaoFactory.getInstance().deleteAll(sesion, TcKeetPersonasBancosDto.class, params) > -1L) {
+                    if (DaoFactory.getInstance().deleteAll(sesion, TrManticEmpresaPersonalDto.class, params) > -1L) {
+                      regresar = DaoFactory.getInstance().delete(sesion, TcManticPersonasDto.class, this.persona.getIdPersona()) >= 1L;
+                    } // if
+                  } // if
+                } // if
+              } // if
+            } // if
+          } // if
+        } // if
       } // if
     } // try
     catch (Exception e) {

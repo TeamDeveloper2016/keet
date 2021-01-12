@@ -5683,6 +5683,16 @@
 				 id_nomina= {idNomina}
 				 and id_empresa_persona= {idEmpresaPersona}
 			</update>
+			<delete id="persona">
+				delete 
+          tc_mantic_incidentes
+        from 
+          tc_mantic_incidentes
+        inner join  
+          tr_mantic_empresa_personal on tc_mantic_incidentes.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+        where 
+          tr_mantic_empresa_personal.id_persona= {idPersona}
+			</delete>
     </unit>
 		<unit id="TcManticIncidentesBitacoraDto">
       <select id="row">
@@ -5703,6 +5713,18 @@
       </select>
 			<delete id="rows">
 				delete from tc_mantic_incidentes_bitacora where id_incidente= {idIncidente}
+			</delete>
+			<delete id="persona">
+				delete 
+          tc_mantic_incidentes_bitacora 
+        from 
+          tc_mantic_incidentes_bitacora 
+        inner join  
+          tc_mantic_incidentes on tc_mantic_incidentes_bitacora.id_incidente= tc_mantic_incidentes.id_incidente
+        inner join  
+          tr_mantic_empresa_personal on tc_mantic_incidentes.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+        where 
+          tr_mantic_empresa_personal.id_persona= {idPersona}
 			</delete>
     </unit>
 		<unit id="TcManticTiposIncidentesDto">

@@ -1221,6 +1221,17 @@
         where      
           id_deudor = {idDeudor} and id_empresa_persona = {idEmpresaPersona}
       </select>
+			<delete id="persona">
+				delete 
+          tc_keet_deudores
+        from 
+          tc_keet_deudores
+        inner join  
+          tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+        where 
+          tr_mantic_empresa_personal.id_persona= {idPersona}
+			</delete>
+      
     </unit>
     <unit id="TcKeetClientesPortalesDto">
       <select id="row">
