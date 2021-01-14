@@ -120,7 +120,7 @@ public class UIBackingUtilities {
 	}
 	
 	public static void showMessageInDialog(FacesMessage message) {
-	  getCurrentInstance().dialog().showMessageDynamic(message);	
+	  getCurrentInstance().dialog().showMessageDynamic(message, false);	
 	}
 	
 	public static void openDialog(String dialog) {

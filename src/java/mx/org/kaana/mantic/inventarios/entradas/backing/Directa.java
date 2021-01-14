@@ -70,11 +70,11 @@ import org.primefaces.model.StreamedContent;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticInventariosEntradasAccion")
+@Named(value= "manticInventariosEntradasDirecta")
 @ViewScoped
-public class Accion extends IBaseArticulos implements IBaseStorage, Serializable {
+public class Directa extends IBaseArticulos implements IBaseStorage, Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Accion.class);
+	private static final Log LOG              = LogFactory.getLog(Directa.class);
   private static final long serialVersionUID= 327393488565639367L;
 	
 	private EAccion accion;	
@@ -130,20 +130,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("idTipoComparacion", 1);
 			this.aplicar  =  false;
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
-			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
+			// if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
+			//	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			this.tipoOrden= EOrdenes.NORMAL;
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
-      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.attrs.put("idOrdenCompra", -1L);
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.fechaEstimada= Calendar.getInstance();
-			this.attrs.put("familiasSeleccion", new Object[] {});
-			this.attrs.put("lotesSeleccion", new Object[] {});
 			this.attrs.put("isBanco", Boolean.FALSE);
 			this.doLoad();
     } // try
@@ -238,8 +236,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			nota= new NotaEntradaProcess();
 			nota.setNotaEntrada((NotaEntrada)this.getAdminOrden().getOrden());
 			nota.setArticulos(this.getAdminOrden().getArticulos());
-			nota.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
-			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
       
 			transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
@@ -366,13 +362,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("desarrollos", desarrollos);			
 			if(this.accion.equals(EAccion.AGREGAR) && (this.attrs.get("ordenCompra")== null || Objects.equals(-1L, ((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo())))
 				desarrollo= UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos"));				
-      else {
-        int index= ((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo()== null? -1: desarrollos.indexOf(new UISelectEntity((((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo())));
-        if(index< 0)
-				  desarrollo= desarrollos.get(0);			
-        else  
-				  desarrollo= desarrollos.get(index);			
-      } // if  
+			else
+				desarrollo= desarrollos.get(desarrollos.indexOf(new UISelectEntity((((TcManticOrdenesComprasDto)this.attrs.get("ordenCompra")).getIdDesarrollo()))));			
 			this.attrs.put("desarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));			
 			this.attrs.put("cliente", desarrollo.toString("razonSocial"));
       this.doLoadContratos();
@@ -430,7 +421,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(0));
         else  
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(contratos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkContrato())));
-			this.doLoadLotes();
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
@@ -440,47 +430,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // finally
 	} // doLoadContratos
 	
-	public void doLoadLotes() {
-		List<UISelectEntity> lotes= null;
-		Map<String, Object>params = null;
-    List<Entity> items        = null; 
-    Object[] list             = null;
-		try {
-			params = new HashMap<>();
-			params.put("idContrato", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdContrato());
-			lotes= UIEntity.build("TcKeetContratosLotesDto", "byContratoContratistas", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("lotes", lotes);						
-      if(!lotes.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR)) { 
-    			params.put("idOrdenCompra", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-          items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
-        } // if  
-        else {
-    			params.put("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-          items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetNotasContratosLotesDto", "lotes", params);
-        } // if
-      if(items!= null && !items.isEmpty()) {
-        list     = new Object[items.size()];
-        int count= 0;
-        for (Entity entity : items) {
-          int index= lotes.indexOf(new UISelectEntity(entity.toLong("idContratoLote")));
-          if(index>= 0)
-            list[count++]= lotes.get(index);
-        } // for
-      } // if  
-      if(list== null)
-        list= new Object[]{};
-      this.attrs.put("lotesSeleccion", list);
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-	} // doLoadLotes
-  
 	public void toLoadProveedor() {
 		try {
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
@@ -489,10 +438,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			temporal.put("fechaEstimada", new Value("fechaEstimada", this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias"))));
 			this.attrs.put("proveedor", temporal);
 			this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, temporal.getKey());
-			this.toUpdateFamilias();
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor())));
 			this.doUpdatePlazo();
-			this.toCheckProveedor(true);
 		}	
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -502,10 +449,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	public void doUpdateProveedor() {
 		try {
-			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
-				this.getAdminOrden().getArticulos().clear();
-				this.getAdminOrden().toCalculate();
-			} // if	
       this.toLoadProveedor();
 		}	
 	  catch (Exception e) {
@@ -514,48 +457,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // catch   
 	} 
 	
-	private void toUpdateFamilias() throws Exception {
-		UISelectEntity proveedor     = null;
-		List<UISelectEntity> familias= null;
-		Map<String, Object>params    = null;
-    List<Entity> items           = null;
-    Object[] list                = null;
-		try {
-			proveedor= (UISelectEntity) this.attrs.get("proveedor");
-			params= new HashMap<>();
-			params.put("idProveedor", proveedor.getKey());
-			familias= UIEntity.build("VistaFamiliasProveedoresDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("familias", familias);			
-      if(!familias.isEmpty())
-        if(this.accion.equals(EAccion.AGREGAR)) {
-    			params.put("idOrdenCompra", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdOrdenCompra());
-          items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetOrdenesContratosLotesDto", "lotes", params);
-        } // if
-        else {
-    			params.put("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-          items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetNotasContratosLotesDto", "lotes", params);
-        } // else  
-      if(items!=null && !items.isEmpty()) {
-        list     = new Object[items.size()];
-        int count= 0;
-        for (Entity entity: items) {
-          int index= familias.indexOf(new UISelectEntity(entity.toLong("idFamilia")));
-          if(index>= 0)
-            list[count++]= familias.get(index);
-        } // for
-      } // if  
-      if(list== null)
-        list= new Object[]{};
-      this.attrs.put("familiasSeleccion",  list);
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-	} // toUpdateFamilias
-  
 	private String toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
 		fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);
 		if(tipoDia== 2) {
@@ -619,52 +520,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public void doTabChange(TabChangeEvent event) {
     switch (event.getTab().getTitle()) {
       case "Articulos":
-        Object[] familias= (Object[])this.attrs.get("familiasSeleccion");
-        Object[] lotes   = (Object[])this.attrs.get("lotesSeleccion");
-        if((familias.length> 0 && lotes.length> 0) || this.getIsDirecta()) {
-          // this.toLoadArticulos(Arrays.asList(familias), Arrays.asList(lotes));
-          UIBackingUtilities.update("contenedorGrupos:sinIva");
-          UIBackingUtilities.update("contenedorGrupos:paginator");
-        } // if
-        else {
-          getAdminOrden().getArticulos().clear();
-          UIBackingUtilities.execute("janal.show([{summary: 'Contrato:', detail: 'No tiene definido un lote.'},{summary: 'Proveedor:', detail: 'No tiene definido una familia.'}]);"); 
-        } // else			
         break;
       case "Importar":
      		if(this.attrs.get("faltantes")== null)
 		  	  this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
         break;
       case "Historial":
-        this.doLoadHistorico();
         break;
     } // switch    
 	}
 	
-  public void doLoadHistorico() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-    try {
-      params.put("idContrato", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdContrato());
-      columns= new ArrayList<>();
-      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("etapa", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("familia", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("contrato", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("noViviendas", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.attrs.put("historico", UIEntity.build("VistaFamiliasProveedoresDto", "lazy", params, columns, Constantes.SQL_TODOS_REGISTROS));
-    } // try
-    catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(params);
-      Methods.clean(columns);
-    }// finally
-	}
-  
 	public void doFileUpload(FileUploadEvent event) {
 		this.attrs.put("relacionados", 0);
 		if(this.proveedor!= null) {
@@ -699,129 +564,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // for
 		Collections.sort(disponibles);
 		this.attrs.put("disponibles", disponibles);
-    this.toCheckArticulos(checkItems);
 	}
 
-	private boolean isEqualsItems(Integer idTipoComparacion, Articulo faltante, Articulo disponible) {
-	  boolean regresar= false;
-		switch(idTipoComparacion) {
-			case 1: // COMPRAR AMBOS CODIGO Y NOMBRE
-				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 &&  Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
-			            (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 &&  Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
-			case 2: // COMPRAR CODIGO
-				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 &&  Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo()));
-			case 3: // COMPRAR NOMBRE
-				regresar= (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 &&  Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
-				break;
-		} // switch
-		return regresar;
-	}
-	
-	private void toCheckArticulos(boolean checkItems) {
-		Articulo faltante, disponible= null;
-		int relacionados             = 0;
-		try {
-			Integer idTipoComparacion= (Integer)this.attrs.get("idTipoComparacion");
-		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
-			int x= 0;
-			while(faltantes!= null && x< faltantes.size()) {
-				faltante= faltantes.get(x);
-  		  List<Articulo> disponibles= (List<Articulo>)this.attrs.get("disponibles");
-				int y        = 0;
-  			boolean found= false;
-				while (y< disponibles.size()) {
-					disponible= disponibles.get(y);
-					if(this.isEqualsItems(idTipoComparacion, faltante, disponible)) {
-						relacionados++;
-  				  LOG.info(relacionados+ ".- Relacionados ["+ disponible.getCodigo()+ "] "+ disponible.getNombre());
-						found= true;
-      			faltantes.remove(faltante);
-    			  disponibles.remove(disponible);
-						if(checkItems)
-    			    this.toMoveArticulo(disponible, faltante);
-						disponible.setDisponible(false);
-						break;
-					} // if	
-					else
-					  y++;
-				} // for
-				// EL ARTICULO FUE BUSCADO POR CODIGO EN EL PROVEDOR
-				if(!found) {
-					x++;
-   				LOG.info(x+ ".- NO ENCONTRADO ["+ faltante.getCodigo()+ "] "+ faltante.getNombre());
-				} // if	
-				// YA NO HAY MAS ARTICULOS QUE BUSCAR TODOS FUERON ASIGNADOS
-				if(disponibles.isEmpty())
-					break;
-			} // for
-		} // try
-	  catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-		this.attrs.put("relacionados", relacionados);
-		this.toCheckProveedor(checkItems);
-	}
-	
-	private void toCheckProveedor(boolean checkItems) {
-		Articulo faltante        = null;
-		int relacionados         = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
-		Integer idTipoComparacion= (Integer)this.attrs.get("idTipoComparacion");
-	  Map<String, Object> params=null;
-		try {
-			params= new HashMap<>();
-			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
-		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
-			int x= 0;
-			while(faltantes!= null && x< faltantes.size()) {
-				faltante= faltantes.get(x);
-				switch(idTipoComparacion) {
-			   case 1: // COMPRAR CODIGO
-    			 params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_articulos_codigos.codigo)= upper('"+ faltante.getCodigo()+"')");
-					 break;
-  			 case 2: // COMPRAR AMBOS CODIGO Y NOMBRE
-    			 params.put(Constantes.SQL_CONDICION, "(upper(tc_mantic_articulos_codigos.codigo)= upper('"+ faltante.getCodigo()+"') or upper(tc_mantic_notas_detalles.origen)= upper('"+ faltante.getOrigen()+"'))");
-					 break;
-				 case 3: // COMPRAR NOMBRE
-    			 params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_notas_detalles.origen)= upper('"+ faltante.getOrigen()+"')");
-					 break;
-				 default:
-				   params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos_codigos.codigo= 'null'");
-  			} // switch
-				List<UISelectEntity> disponibles= UIEntity.build("VistaNotasEntradasDto", "proveedor", params, Collections.EMPTY_LIST); 
-				if(disponibles!= null && !disponibles.isEmpty()) {
-					relacionados++;
-					faltantes.remove(faltante);
-					if(checkItems) {
-						disponibles.get(0).put("sat", new Value("sat", faltante.getSat()));
-						disponibles.get(0).put("codigo", new Value("codigo", faltante.getCodigo()));
-						disponibles.get(0).put("costo", new Value("costo", faltante.getCosto()));
-						disponibles.get(0).put("cantidad", new Value("cantidad", faltante.getCantidad()));
-						disponibles.get(0).put("descuento", new Value("descuento", faltante.getDescuento()));
-						disponibles.get(0).put("iva", new Value("iva", faltante.getIva()));
-						disponibles.get(0).put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
-						disponibles.get(0).put("origen", new Value("origen", faltante.getNombre()));
-						disponibles.get(0).put("facturado", new Value("facturado", true));
-						disponibles.get(0).put("disponible", new Value("disponible", false));
-						this.attrs.put("encontrado", disponibles.get(0));
-						this.attrs.put("omitirMensaje", disponibles.get(0).toLong("idArticulo"));
-						this.doFindArticulo(this.getAdminOrden().getArticulos().size()- 1);
-					} // if
-				} // if	
-				else
-					x++;
-			} // while
-		} // try
-	  catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-		this.attrs.put("relacionados", relacionados);
-	}
-	
 	@Override
 	public void doFaltanteArticulo() {
 		Articulo faltante  = (Articulo)this.attrs.get("faltante");
@@ -1016,7 +760,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				String alias= Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName());
 				this.toReadFactura(new File(alias), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
 				// VERIFICAR SI ES UNA NOTA DE ENTRADA DIRECTA Y CAMBIAR EL PROVEEDOR QUE SE TIENE POR EL QUE SE CARGANDO DE LA FACTURA 
-				// EN CASO DE QUE NO EXISTA MANDAR UN MENSAJE DE QUE ESE PROVEEDOR NO EXISTE EN EL CATALGO DE PROVEEDORES PARA QUE SE AGREGUE
+				// EN CASO DE QUE NO EXISTA MANDAR UN MENSAJE DE QUE ESE PROVEEDOR NO EXISTE EN EL CATALAGO DE PROVEEDORES PARA QUE SE AGREGUE
 				this.toMoveSelectedProveedor();
 				this.toPrepareDisponibles(true);
 			} // if	
@@ -1171,7 +915,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						this.attrs.put("proveedor", temporal);
 						this.toLoadCondiciones(temporal);
 						this.doUpdatePlazo();
-						this.toCheckProveedor(true);
 						File oldFileName= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
 						FileInputStream source= new FileInputStream(oldFileName);
 						File target= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(newFileName).concat(this.getXml().getName()));
@@ -1180,7 +923,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						this.getXml().setRuta(newFileName);
 					} // if	
 					else
-						JsfBase.addAlert("El proveedor no existe en el catalogo de proveedores,<br/>favor de agregarlo antes al catálogo para generar la nota de entrada.<br/><br/> RFC ["+ this.getEmisor().getRfc()+ "] ".concat(this.getEmisor().getNombre()).concat("<br/>"), ETipoMensaje.ALERTA);
+						JsfBase.addAlert("El proveedor no existe en el catalogo de proveedores,<br/>favor de agregarlo antes al catálogo para generar<br/>la nota de entrada.<br/>RFC ["+ this.getEmisor().getRfc()+ "] Razón social [".concat(this.getEmisor().getNombre()).concat("]<br/>"), ETipoMensaje.ALERTA);
 				} // if
 		  } // if
 	  }	// try

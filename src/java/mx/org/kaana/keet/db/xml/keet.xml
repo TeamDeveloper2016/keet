@@ -1231,7 +1231,6 @@
         where 
           tr_mantic_empresa_personal.id_persona= {idPersona}
 			</delete>
-      
     </unit>
     <unit id="TcKeetClientesPortalesDto">
       <select id="row">
