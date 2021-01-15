@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,6 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -60,6 +58,7 @@ import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.event.TabCloseEvent;
 import org.primefaces.model.StreamedContent;
 
 /**
@@ -1112,5 +1111,20 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 			Methods.clean(params);
 		}
   }
-  
+ 
+  public void onTabChange(TabChangeEvent event) {
+//    FacesMessage msg = new FacesMessage("Tab Changed", "Active Tab: " + event.getTab().getTitle());
+   switch(event.getTab().getTitle()) {
+     case "Factura":
+       break;
+     case "Indirectos":
+       break;
+     case "Directos":
+       break;
+     case "Mano de obra":
+       break;
+   } // switch
+   
+  }
+         
 }

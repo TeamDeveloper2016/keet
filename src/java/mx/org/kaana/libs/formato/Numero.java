@@ -103,7 +103,7 @@ public final class Numero {
     int operador= valor< 0? -1: 1;
     valor= operador* (Math.floor(Math.abs(valor)*100000+ 0.5000001)/100000.0);
 		String regresar= String.valueOf(valor);
-    return regresar.indexOf(".")> 0? regresar.substring(0, regresar.indexOf(".")+ decimals+ 1): regresar;
+    return regresar.indexOf(".")> 0 && regresar.indexOf(".")+ decimals+ 1<= regresar.length()? regresar.substring(0, regresar.indexOf(".")+ decimals+ 1): regresar;
   } // redondear
 
   public static String toTruncate(double valor) {
