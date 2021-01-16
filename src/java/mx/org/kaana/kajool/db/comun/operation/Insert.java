@@ -1,5 +1,6 @@
 package mx.org.kaana.kajool.db.comun.operation;
 
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 
@@ -42,5 +43,9 @@ public class Insert implements IActions {
 		return hash;
 	}
 
+  @Override
+  public Map getFields() {
+    return this.dto.toMap();
+  }
 	
 }

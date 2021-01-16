@@ -1,5 +1,6 @@
 package mx.org.kaana.kajool.db.comun.operation;
 
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import org.hibernate.Session;
@@ -45,4 +46,9 @@ public class DeleteKey implements IActions {
 		throw null; //To change body of generated methods, choose Tools | Templates.
 	}
 
+  @Override
+  public Map getFields() {
+    throw null; 
+  }
+  
 }

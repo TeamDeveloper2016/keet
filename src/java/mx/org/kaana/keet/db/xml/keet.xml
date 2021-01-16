@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcKeetNotasDirectosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_notas_directos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_notas_directos
+        where      
+          id_cliente = {idCliente} and id_desarrollo = {idDesarrollo} and id_contrato = {idContrato} and id_nota_entrada = {idNotaEntrada}
+      </select>
+    </unit>    
+    <unit id="TcKeetNotasManosObrasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_notas_manos_obras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_notas_manos_obras
+        where      
+          id_cliente = {idCliente} and id_desarrollo = {idDesarrollo} and id_empresa_persona = {idEmpresaPersona} and id_contrato = {idContrato} and id_nota_entrada = {idNotaEntrada}
+      </select>
+    </unit>    
     <unit id="TcKeetIngresosDto">
       <select id="row">
         select      

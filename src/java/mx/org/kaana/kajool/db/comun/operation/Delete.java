@@ -1,5 +1,6 @@
 package mx.org.kaana.kajool.db.comun.operation;
 
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import org.hibernate.Session;
@@ -42,6 +43,11 @@ public class Delete implements IActions {
     int hash = 7;
     hash = 67 * hash + (dto.getKey() != null ? dto.getKey().hashCode() : 0);
     return hash;
+  }
+
+  @Override
+  public Map getFields() {
+    return this.dto.toMap();
   }
 
 }

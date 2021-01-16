@@ -46,4 +46,9 @@ public class UpdateParcial implements IActions{
 		throw null; //To change body of generated methods, choose Tools | Templates.
 	}
 
+  @Override
+  public Map getFields() {
+    return null;
+  }
+  
 }

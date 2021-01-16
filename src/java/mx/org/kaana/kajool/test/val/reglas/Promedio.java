@@ -23,9 +23,9 @@ public class Promedio {
    */
   public static void main(String[] args) {
     List<Reactivo> personal= new ArrayList<>();
-    personal.add(new Reactivo(15D));
-    personal.add(new Reactivo(15D));
-    personal.add(new Reactivo(15D));
+    personal.add(new Reactivo(15D)); // DGEE Blancas
+    personal.add(new Reactivo(15D)); // DGEE Duran
+    personal.add(new Reactivo(15D)); // DGEE Perez
 //    personal.add(new Reactivo(15D));
     Direccion direccion= new Direccion(personal, 15D);
     LOG.info("DRN "+ direccion.execute()+ " Ok.");        
