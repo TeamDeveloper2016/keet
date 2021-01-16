@@ -11,7 +11,7 @@ public class Insert implements IActions {
 
   private IBaseDto dto;
 
-  public Insert(IBaseDto dto) {
+  public Insert(IBaseDto dto) { 
     this.dto= dto;
   }
 

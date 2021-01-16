@@ -90,4 +90,10 @@ public class NotaProyecto extends TcKeetNotasDirectosDto implements Serializable
     return TcKeetNotasDirectosDto.class;
   }
 
+  public boolean isEqual(NotaProyecto proyecto) {
+    return ((this.getIdDesarrollo()== null && proyecto.getIdDesarrollo()== null) || (this.getIdDesarrollo().equals(proyecto.getIdDesarrollo()))) &&
+           ((this.getIdCliente()== null && proyecto.getIdCliente()== null) || (this.getIdCliente().equals(proyecto.getIdCliente()))) &&
+           ((this.getIdContrato()== null && proyecto.getIdContrato()== null) || (this.getIdContrato().equals(proyecto.getIdContrato())));
+  }
+          
 }

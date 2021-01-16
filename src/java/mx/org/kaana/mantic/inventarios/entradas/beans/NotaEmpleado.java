@@ -99,5 +99,11 @@ public class NotaEmpleado extends TcKeetNotasManosObrasDto implements Serializab
     return TcKeetNotasManosObrasDto.class;
   }
 
+  public boolean isEqual(NotaEmpleado empleado) {
+    return ((this.getIdDesarrollo()== null && empleado.getIdDesarrollo()== null) || (this.getIdDesarrollo().equals(empleado.getIdDesarrollo()))) &&
+           ((this.getIdCliente()== null && empleado.getIdCliente()== null) || (this.getIdCliente().equals(empleado.getIdCliente()))) &&
+           ((this.getIdContrato()== null && empleado.getIdContrato()== null) || (this.getIdContrato().equals(empleado.getIdContrato()))) &&
+           ((this.getIdEmpresaPersona()== null && empleado.getIdEmpresaPersona()== null) || (this.getIdEmpresaPersona().equals(empleado.getIdEmpresaPersona())));
+  }
   
 }

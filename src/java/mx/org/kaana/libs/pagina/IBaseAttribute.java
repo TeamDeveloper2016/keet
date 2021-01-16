@@ -66,15 +66,15 @@ public abstract class IBaseAttribute implements Serializable {
   }
 
   public String doFechaEstandar(Timestamp fecha) {
-		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
+		return fecha== null? "": Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
 	}
 	
   public String doFechaEstandar(LocalDateTime fecha) {
-		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
+		return fecha== null? "": Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
 	}
 	
   public String doFechaEstandar(LocalDate fecha) {
-		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
+		return fecha== null? "": Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
 	}
 	
   public String doDecimalSat(Double numero) {
@@ -82,19 +82,19 @@ public abstract class IBaseAttribute implements Serializable {
 	}
 	
   public String doDecimalSat(String numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(new Double(numero)));
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(new Double(numero)));
 	}
 	
   public String doDecimalSat(BigDecimal numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
 	}
 	
   public String doDecimalSat(Value numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
 	}
 	
   public String doMonedaSat(Double numero) {
-		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(numero));
+		return numero== null? "0": Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(numero));
 	}
 	
   public String doMonedaSat(String numero) {
@@ -102,7 +102,7 @@ public abstract class IBaseAttribute implements Serializable {
 	}
 	
   public String doMonedaSat(BigDecimal numero) {
-		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+		return numero== null? "0": Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
 	}
 	
   public String doMonedaSat(Value numero) {
@@ -110,63 +110,63 @@ public abstract class IBaseAttribute implements Serializable {
 	}
 	
   public String doNumericoSat(Double numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero));
+		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero));
 	}
 	
   public String doNumericoSat(String numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(new Double(numero)));
+		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(new Double(numero)));
 	}
 	
   public String doNumericoSat(BigDecimal numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
 	}
 	
   public String doNumericoSat(Value numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
+		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
 	}
 
   public String doNumerico(Long numero) {
-		return Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero);
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero);
 	}
 
   public String doNumerico(Double numero) {
-		return Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero);
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero);
 	}
 
   public String doNumerico(Value numero) {
-		return Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero.toLong());
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero.toLong());
 	}
 	
   public String doMiles(Long numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero);
+		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero);
 	}
 
   public String doMiles(Value numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero.toLong());
+		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero.toLong());
 	}
 
   public String doMiles(BigDecimal numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
 	}
 
   public String doMiles(Double numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero);
+		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero);
 	}
 
   public String doRegistro(Timestamp registro) {
-		return Global.format(EFormatoDinamicos.FECHA_HORA, registro);
+		return registro== null? "": Global.format(EFormatoDinamicos.FECHA_HORA, registro);
 	}
 
   public String doRegistro(LocalDateTime registro) {
-		return Global.format(EFormatoDinamicos.FECHA_HORA, registro);
+		return registro== null? "": Global.format(EFormatoDinamicos.FECHA_HORA, registro);
 	}
 
   public String doFecha(LocalDate fecha) {
-		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
+		return fecha== null? "": Global.format(EFormatoDinamicos.FECHA_CORTA, fecha);
 	}
 
   public String doFecha(Value fecha) {
-		return Global.format(EFormatoDinamicos.FECHA_CORTA, fecha.toDate());
+		return fecha== null? "": Global.format(EFormatoDinamicos.FECHA_CORTA, fecha.toDate());
 	}
 
 }

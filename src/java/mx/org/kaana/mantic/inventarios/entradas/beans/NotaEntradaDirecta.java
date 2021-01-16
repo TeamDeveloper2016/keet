@@ -5,7 +5,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.operation.IActions;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.inventarios.entradas.enums.EGastos;
+import static mx.org.kaana.mantic.inventarios.entradas.enums.EGastos.DIRECTOS;
+import static mx.org.kaana.mantic.inventarios.entradas.enums.EGastos.INDIRECTOS;
+import static mx.org.kaana.mantic.inventarios.entradas.enums.EGastos.MANO_DE_OBRA;
 
 /**
  *@company KAJOOL
@@ -21,6 +28,9 @@ public class NotaEntradaDirecta extends NotaEntrada implements Serializable {
 
   private List<IActions> proyectos;
   private List<IActions> empleados;
+  private Double inDirectos;
+  private Double directos;
+  private Double manoDeObra;
 
   public NotaEntradaDirecta() throws Exception {
     this(1L, null);
@@ -30,6 +40,9 @@ public class NotaEntradaDirecta extends NotaEntrada implements Serializable {
     super(key, idOrdenCompra);
     this.proyectos= new ArrayList<>();
     this.empleados= new ArrayList<>();
+    this.inDirectos= 0D;
+    this.directos  = 0D;
+    this.manoDeObra= 0D;
   }
 
   public NotaEntradaDirecta(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, LocalDate fechaRecepcion, String extras, Long idNotaEntrada, LocalDate fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idProveedorPago) {
@@ -43,15 +56,98 @@ public class NotaEntradaDirecta extends NotaEntrada implements Serializable {
   }
 
   public List<IActions> getEmpleados() {
-    return empleados;
+    return this.empleados;
   }
 
+  public Double getInDirectos() {
+    return this.inDirectos;
+  }
+
+  public Double getDirectos() {
+    return this.directos;
+  }
+
+  public Double getManoDeObra() {
+    return this.manoDeObra;
+  }
+
+  public Double getSaldo() {
+    return Numero.toRedondearSat(this.getDeuda()- (this.inDirectos+ this.directos+ this.manoDeObra));
+  }
+
+  public String getInDirectos$() {
+    return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.inDirectos);
+  }
+
+  public String getDirectos$() {
+    return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.directos);
+  }
+
+  public String getManoDeObra$() {
+    return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.manoDeObra);
+  }
+
+  public String getTotal$() {
+    return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(this.inDirectos+ this.directos+ this.manoDeObra));
+  }
+
+  public String getSaldo$() {
+    return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(this.getDeuda()- (this.inDirectos+ this.directos+ this.manoDeObra)));
+  }
+
+  public boolean isEqualProyecto(NotaProyecto proyecto) {
+    boolean regresar= false;
+    for (IActions item: this.proyectos) {
+      regresar= ((NotaProyecto)item.getDto()).isEqual(proyecto);
+      if(regresar)
+        break;
+    } // for
+    return regresar;
+  }
+  
+  public boolean isEqualEmplado(NotaEmpleado empleado) {
+    boolean regresar= false;
+    for (IActions item: this.empleados) {
+      regresar= ((NotaEmpleado)item.getDto()).isEqual(empleado);
+      if(regresar)
+        break;
+    } // for
+    return regresar;
+  }
+  
+  public void toAdd(EGastos gastos, Double importe) {
+    switch(gastos) {
+      case INDIRECTOS:
+        this.inDirectos+= importe;
+        break;
+      case DIRECTOS:
+        this.directos+= importe;
+        break;
+      case MANO_DE_OBRA:
+        this.manoDeObra+= importe;
+        break;
+    } // switch
+  }
+  
+  public void toRemove(EGastos gastos, Double importe) {
+    switch(gastos) {
+      case INDIRECTOS:
+        this.inDirectos-= importe;
+        break;
+      case DIRECTOS:
+        this.directos-= importe;
+        break;
+      case MANO_DE_OBRA:
+        this.manoDeObra-= importe;
+        break;
+    } // switch
+  }
+  
   @Override
   protected void finalize() throws Throwable {
     super.finalize(); 
     Methods.clean(this.proyectos);
     Methods.clean(this.empleados);
   }
-  
   
 }

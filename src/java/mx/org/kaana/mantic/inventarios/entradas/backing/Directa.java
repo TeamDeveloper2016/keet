@@ -42,14 +42,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.Random;
-import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.operation.Delete;
 import mx.org.kaana.kajool.db.comun.operation.IActions;
 import mx.org.kaana.kajool.db.comun.operation.Insert;
+import mx.org.kaana.kajool.db.comun.operation.Select;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
-import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -59,9 +57,8 @@ import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEmpleado;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaProcess;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaProyecto;
-import mx.org.kaana.mantic.libs.factura.beans.Concepto;
+import mx.org.kaana.mantic.inventarios.entradas.enums.EGastos;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -906,24 +903,31 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     List<UISelectEntity> contratos= (List<UISelectEntity>) this.attrs.get("contratosProyecto");
     this.proyecto.setIkContrato(contratos.get(contratos.indexOf(this.proyecto.getIkContrato())));
     this.proyecto.setContrato(this.proyecto.getIkContrato().toString("clave")+ "-"+ this.proyecto.getIkContrato().toString("etapa"));
-    NotaProyecto clon= this.proyecto;
-    ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().add(new Insert(this.proyecto));
-    this.proyecto= new NotaProyecto(new Long((int)(Math.random()*-10000)));
-    this.proyecto.setIkDesarrollo(clon.getIkDesarrollo());
-    this.proyecto.setDesarrollo(clon.getDesarrollo());
-    this.proyecto.setIkCliente(clon.getIkCliente());
-    this.proyecto.setCliente(clon.getCliente());
-    this.proyecto.setIkContrato(clon.getIkContrato());
-    this.proyecto.setContrato(clon.getContrato());
+    if(!((NotaEntradaDirecta)this.getAdminOrden().getOrden()).isEqualProyecto(this.proyecto)) {
+      NotaProyecto clon= this.proyecto;
+      ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().add(new Insert(this.proyecto));
+      this.proyecto= new NotaProyecto(new Long((int)(Math.random()*-10000)));
+      this.proyecto.setIkDesarrollo(clon.getIkDesarrollo());
+      this.proyecto.setDesarrollo(clon.getDesarrollo());
+      this.proyecto.setIkCliente(clon.getIkCliente());
+      this.proyecto.setCliente(clon.getCliente());
+      this.proyecto.setIkContrato(clon.getIkContrato());
+      this.proyecto.setContrato(clon.getContrato());
+      ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toAdd(EGastos.DIRECTOS, clon.getImporte());
+    } // if
+    else
+			JsfBase.addMessage("El proyecto ya se encuentra registrado en los gastos !", ETipoMensaje.INFORMACION);
   }
             
   public void doEliminarProyecto() {
-    IActions proyecto= (IActions)this.attrs.get("proyecto");
-    if(proyecto!= null) {
-      int index= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().indexOf(proyecto);
+    IActions clon= (IActions)this.attrs.get("proyecto");
+    if(clon!= null) {
+      int index= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().indexOf(clon);
       if(index>= 0) {
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().remove(index);
-        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().add(new Delete(proyecto.getDto()));
+        if(clon instanceof Select)
+          ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().add(new Delete(clon.getDto()));
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toRemove(EGastos.DIRECTOS, ((NotaProyecto)clon.getDto()).getImporte());
       } // if  
     } // if
   }
@@ -932,24 +936,31 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     List<UISelectEntity> contratos= (List<UISelectEntity>) this.attrs.get("contratosEmpleado");
     this.empleado.setIkContrato(contratos.get(contratos.indexOf(this.empleado.getIkContrato())));
     this.empleado.setContrato(this.empleado.getIkContrato().toString("clave")+ "-"+ this.empleado.getIkContrato().toString("etapa"));
-    NotaEmpleado clon= this.empleado;
-    ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Insert(this.empleado));
-    this.empleado= new NotaEmpleado(new Long((int)(Math.random()*-10000)));
-    this.empleado.setIkDesarrollo(clon.getIkDesarrollo());
-    this.empleado.setDesarrollo(clon.getDesarrollo());
-    this.empleado.setIkCliente(clon.getIkCliente());
-    this.empleado.setCliente(clon.getCliente());
-    this.empleado.setIkContrato(clon.getIkContrato());
-    this.empleado.setContrato(clon.getContrato());
-  }
+    if(!((NotaEntradaDirecta)this.getAdminOrden().getOrden()).isEqualEmplado(this.empleado)) {
+      NotaEmpleado clon= this.empleado;
+      ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Insert(this.empleado));
+      this.empleado= new NotaEmpleado(new Long((int)(Math.random()*-10000)));
+      this.empleado.setIkDesarrollo(clon.getIkDesarrollo());
+      this.empleado.setDesarrollo(clon.getDesarrollo());
+      this.empleado.setIkCliente(clon.getIkCliente());
+      this.empleado.setCliente(clon.getCliente());
+      this.empleado.setIkContrato(clon.getIkContrato());
+      this.empleado.setContrato(clon.getContrato());
+      ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toAdd(EGastos.MANO_DE_OBRA, clon.getImporte());
+    } // if
+    else
+			JsfBase.addMessage("El empleado ya se encuentra registrado en los gastos !", ETipoMensaje.INFORMACION);
+ }
   
   public void doEliminarEmpleado() {
-    IActions empleado= (IActions)this.attrs.get("empleado");
-    if(empleado!= null) {
-      int index= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().indexOf(empleado);
+    IActions clon= (IActions)this.attrs.get("empleado");
+    if(clon!= null) {
+      int index= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().indexOf(clon);
       if(index>= 0) {
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().remove(index);
-        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Delete(empleado.getDto()));
+        if(clon instanceof Select)
+          ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Delete(clon.getDto()));
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toRemove(EGastos.MANO_DE_OBRA, ((NotaEmpleado)clon.getDto()).getImporte());
       } // if  
     } // if
   }
