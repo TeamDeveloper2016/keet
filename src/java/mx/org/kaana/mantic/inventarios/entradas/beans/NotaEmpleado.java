@@ -19,6 +19,7 @@ public class NotaEmpleado extends TcKeetNotasManosObrasDto implements Serializab
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
+	private UISelectEntity ikEmpresaPersona;
   private String desarrollo;
   private String cliente;
   private String contrato;
@@ -60,6 +61,16 @@ public class NotaEmpleado extends TcKeetNotasManosObrasDto implements Serializab
     this.ikContrato = ikContrato;
 		if(this.ikContrato!= null)
 		  this.setIdContrato(this.ikContrato.getKey());
+  }
+
+  public UISelectEntity getIkEmpresaPersona() {
+    return ikEmpresaPersona;
+  }
+
+  public void setIkEmpresaPersona(UISelectEntity ikEmpresaPersona) {
+    this.ikEmpresaPersona = ikEmpresaPersona;
+		if(this.ikEmpresaPersona!= null)
+		  this.setIdEmpresaPersona(this.ikEmpresaPersona.getKey());
   }
   
   public String getDesarrollo() {

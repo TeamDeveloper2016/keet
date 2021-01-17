@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.db.comun.operation.IActions;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.entradas.enums.EGastos;
 import static mx.org.kaana.mantic.inventarios.entradas.enums.EGastos.DIRECTOS;
@@ -26,6 +27,7 @@ public class NotaEntradaDirecta extends NotaEntrada implements Serializable {
 
   private static final long serialVersionUID = -5382825768231834838L;
 
+	private UISelectEntity ikEmpresa;
   private List<IActions> proyectos;
   private List<IActions> empleados;
   private Double inDirectos;
@@ -50,6 +52,16 @@ public class NotaEntradaDirecta extends NotaEntrada implements Serializable {
     this.proyectos= new ArrayList<>();
     this.empleados= new ArrayList<>();
   }
+  
+	public UISelectEntity getIkEmpresa() {
+		return ikEmpresa;
+	}
+
+	public void setIkEmpresa(UISelectEntity ikEmpresa) {
+		this.ikEmpresa=ikEmpresa;
+		if(this.ikEmpresa!= null)
+		  this.setIdEmpresa(this.ikEmpresa.getKey());
+	}
   
   public List<IActions> getProyectos() {
     return proyectos;

@@ -59,6 +59,7 @@ import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaProcess;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaProyecto;
 import mx.org.kaana.mantic.inventarios.entradas.enums.EGastos;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -146,6 +147,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 			//	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.tipoOrden= EOrdenes.NORMAL;
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
       this.attrs.put("idOrdenCompra", -1L);
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -289,18 +291,21 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
-      this.attrs.put("almacenes", UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
- 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
-			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
-				if(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdAlmacen()== null)
-				  ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-				else {
-					int index= almacenes.indexOf(new UISelectEntity(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdAlmacen()));
-					if(index>= 0)
-					  ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(index));
-					else
-  				  ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-				} // else	
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+ 			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
+			if(!empresas.isEmpty()) {
+				this.attrs.put("idPedidoSucursal", empresas.get(0));
+				if(this.accion.equals(EAccion.AGREGAR))
+  				((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
+			  else 
+				  ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIkEmpresa())));
+			} // if	
+  		params.put("sucursales", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIkEmpresa());
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("proveedores", UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "razonSocial"));
@@ -321,13 +326,6 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
   				this.toLoadCondiciones(new UISelectEntity(new Entity(this.proveedor.getIdProveedor())));
 				if(this.accion.equals(EAccion.AGREGAR))
 					this.doCalculateFechaPago();
-			} // if	
-			if(this.attrs.get("idOrdenCompra")!= null) {
-        columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-        this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
-			  List<UISelectEntity> ordenes= (List<UISelectEntity>)this.attrs.get("ordenes");
-			  if(!ordenes.isEmpty()) 
-				  ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkOrdenCompra(ordenes.get(0));
 			} // if	
 			this.doLoadDesarrollos();
     } // try
@@ -968,5 +966,44 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
   public String doColorRow(IActions row) {
     return row instanceof Delete? "janal-table-tr-hide": ""; 
   }
+ 
+  public void doLoadEmpleadoDisponible(SelectEvent event) {  
+		UISelectEntity seleccion      = null;
+		List<UISelectEntity> empleados= null;
+		try {
+			empleados= (List<UISelectEntity>) this.attrs.get("empleados");
+			seleccion= empleados.get(empleados.indexOf((UISelectEntity)event.getObject()));
+      this.empleado.setIkEmpresaPersona(seleccion);
+      this.empleado.setEmpleado(seleccion.toString("empleado"));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+  } // doLoadEmpleadoDisponible
   
+ 	public List<UISelectEntity> doCompleteEmpleado(String text) {
+ 		List<Columna> campos      = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			campos= new ArrayList<>();
+			campos.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("apodo", EFormatoDinamicos.MAYUSCULAS));
+  	  params.put("sucursales", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdEmpresa());
+			params.put("nombre", text.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"));
+      this.attrs.put("empleados", UIEntity.build("VistaIngresosDto", "persona", params));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(campos);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("empleados");
+	}	// doCompleteEmpleado
+          
 }
