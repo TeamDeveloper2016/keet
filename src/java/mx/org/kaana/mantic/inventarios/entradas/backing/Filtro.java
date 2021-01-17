@@ -125,21 +125,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  idOrdenCompra= ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra");
 			  idNotaTipo   = ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo");
 			} // if
-			if(idNotaTipo.equals(3L)) {
-				regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-				JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
-			} // if	
-			else {
-				if(eaccion.equals(EAccion.COMPLETO)) 
-					JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
-				else 
-					JsfBase.setFlashAttribute("accion", eaccion);		
-				if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && idNotaTipo.equals(2L))) 
-					regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
-				else
-					regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-  			JsfBase.setFlashAttribute("idOrdenCompra", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || idNotaTipo.equals(2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
-			} // else	
+      switch(idNotaTipo.intValue()) {
+        case 1: // DIRECTA
+          regresar= "directa".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+          JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
+          break;
+        case -1:// NORMAL
+        case 2: // NORMAL
+          if(eaccion.equals(EAccion.COMPLETO)) 
+            JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+          else 
+            JsfBase.setFlashAttribute("accion", eaccion);	
+          if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && idNotaTipo.equals(2L))) 
+            regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
+          else
+            regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+          JsfBase.setFlashAttribute("idOrdenCompra", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || idNotaTipo.equals(2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
+          break;
+        case 3: // MANUAL
+          regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+          JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
+          break;
+      } // switch     
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? idNotaEntrada: -1L);
 		} // try

@@ -34,7 +34,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaDirecta;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
-import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
+import mx.org.kaana.mantic.inventarios.entradas.reglas.Proceso;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
@@ -55,7 +55,6 @@ import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEmpleado;
-import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaProcess;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaProyecto;
 import mx.org.kaana.mantic.inventarios.entradas.enums.EGastos;
 import org.primefaces.event.FileUploadEvent;
@@ -154,6 +153,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.fechaEstimada= Calendar.getInstance();
 			this.attrs.put("isBanco", Boolean.FALSE);
+      this.attrs.put("folio", "");
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -180,8 +180,6 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkDesarrollo(new UISelectEntity(new Entity(ordenCompra.getIdDesarrollo())));
 						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(new Entity(ordenCompra.getIdCliente())));
 						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkContrato(new UISelectEntity(new Entity(ordenCompra.getIdContrato())));
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(ordenCompra.getIdAlmacen())));
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkAlmacenista(new UISelectEntity(new Entity(ordenCompra.getIdAlmacenista())));
 						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(ordenCompra.getIdProveedor())));
 						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkProveedorPago(new UISelectEntity(new Entity(ordenCompra.getIdProveedorPago())));
             if(ordenCompra.getIdBanco()!= null) 
@@ -223,41 +221,51 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
   } // doLoad
 
   public String doAceptar() {  
-    Transaccion transaccion= null;
+    Proceso transaccion    = null;
     String regresar        = null;
-    NotaEntradaProcess nota= null;
     try {			
-			// this.getAdminOrden().toCheckTotales();
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-			this.getAdminOrden().toAdjustArticulos();
-			// este ajuste fue para recuperar el importe total de la factura asociada para confrontarla con el importe total de la nota de entrada
-			//if(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getOriginal().equals(0D))
-			//	((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setOriginal(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getTotal());
-			nota= new NotaEntradaProcess();
-			nota.setNotaEntrada((NotaEntradaDirecta)this.getAdminOrden().getOrden());
-			nota.setArticulos(this.getAdminOrden().getArticulos());
-      
-			transaccion = new Transaccion(nota, false, this.getXml(), this.getPdf());
-			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR)) {
-					regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-					if(this.accion.equals(EAccion.AGREGAR))
-    			  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					else
-   			    UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-				} // if	
-				else
-					this.getAdminOrden().toStartCalculate();
- 				if(!this.accion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
+      if(!Cadena.isVacio((String)this.attrs.get("observaciones"))) {
+        if(this.getXml()!= null)
+          this.getXml().setObservaciones((String)this.attrs.get("observaciones")); 
+        if(this.getPdf()!= null)
+          this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
+      } // if
+      if(this.getFactura()!= null) {
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDescuentos(0D);
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setExcedentes(0D);
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setImpuestos(Numero.getDouble(this.getFactura().getImpuesto().getTraslado().getImporte(), 0D));
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
+      } // if  
+      if(Cadena.isVacio(this.attrs.get("folio"))) {
+        if(!Cadena.isVacio(this.getXml())) {
+          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
+            transaccion = new Proceso((NotaEntradaDirecta)this.getAdminOrden().getOrden(), this.getXml(), this.getPdf());
+            if (transaccion.ejecutar(this.accion)) {
+              if(this.accion.equals(EAccion.AGREGAR)) {
+                regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+                if(this.accion.equals(EAccion.AGREGAR))
+                  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+                else
+                  UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+              } // if	
+              else
+                this.getAdminOrden().toStartCalculate();
+              if(!this.accion.equals(EAccion.CONSULTAR)) 
+                JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
+              JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+            } // if
+            else 
+              JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
+          } // if  
+          else 
+            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
+        } // if
+        else 
+          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
+      } // if
+      else 
+        JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -354,15 +362,23 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
-  		desarrollo = desarrollos.get(0);				
-      this.attrs.put("desarrollosProyecto", desarrollos);			
-      this.attrs.put("desarrollosEmpleado", desarrollos);			
-			this.proyecto.setIkDesarrollo(desarrollo);			
-			this.proyecto.setIdCliente(desarrollo.toLong("idCliente"));
-			this.proyecto.setCliente(desarrollo.toString("razonSocial"));
-			this.empleado.setIkDesarrollo(desarrollo);
-			this.empleado.setIdCliente(desarrollo.toLong("idCliente"));
-			this.empleado.setCliente(desarrollo.toString("razonSocial"));
+      if(desarrollo!= null && !desarrollos.isEmpty()) {
+        desarrollo = desarrollos.get(0);				
+        this.attrs.put("desarrollosProyecto", desarrollos);			
+        this.attrs.put("desarrollosEmpleado", desarrollos);			
+        this.proyecto.setIkDesarrollo(desarrollo);			
+        this.proyecto.setIdCliente(desarrollo.toLong("idCliente"));
+        this.proyecto.setCliente(desarrollo.toString("razonSocial"));
+        this.empleado.setIkDesarrollo(desarrollo);
+        this.empleado.setIdCliente(desarrollo.toLong("idCliente"));
+        this.empleado.setCliente(desarrollo.toString("razonSocial"));
+      } // if
+      else {
+        this.attrs.put("desarrollosProyecto", null);			
+        this.attrs.put("desarrollosEmpleado", null);			
+        this.proyecto.setIkDesarrollo(new UISelectEntity(-1L));			
+        this.empleado.setIkDesarrollo(new UISelectEntity(-1L));
+      } // else
       this.doLoadContratosProyecto();
       this.doLoadContratosEmpleado();
     } // try
@@ -382,7 +398,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 		try {
 			desarrollos= (List<UISelectEntity>) this.attrs.get("desarrollosProyecto");
       this.proyecto.setIkDesarrollo(desarrollos.get(desarrollos.indexOf(this.proyecto.getIkDesarrollo())));
-			this.proyecto.setDesarrollo(this.empleado.getIkDesarrollo().toString("nombres"));			
+			this.proyecto.setDesarrollo(this.proyecto.getIkDesarrollo().toString("nombres"));			
 			this.proyecto.setIkCliente(new UISelectEntity(this.proyecto.getIkDesarrollo().toLong("idCliente")));
 			this.proyecto.setCliente(this.proyecto.getIkDesarrollo().toString("razonSocial"));			
 			this.doLoadContratosProyecto();
@@ -539,13 +555,9 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 
 	public void doTabChange(TabChangeEvent event) {
     switch (event.getTab().getTitle()) {
-      case "Articulos":
-        break;
       case "Importar":
-     		if(this.attrs.get("faltantes")== null)
-		  	  this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
-        break;
-      case "Historial":
+     		if(this.attrs.get("disponibles")== null)
+		  	  this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", false, this.getAdminOrden().getTipoDeCambio());
         break;
     } // switch    
 	}
@@ -589,6 +601,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	public void doCheckFolio() {
 		Map<String, Object> params=null;
 		try {
+      this.attrs.put("folio", "");
 			params=new HashMap<>();
 			params.put("factura", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFactura());
 			params.put("idProveedor", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdProveedor());
@@ -603,8 +616,10 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 				params.put("termino", Calendar.getInstance().get(Calendar.YEAR)+ "1231");
 			} // else
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "folio", params);
-			if(entity!= null && entity.size()> 0) 
+			if(entity!= null && entity.size()> 0) {
 				UIBackingUtilities.execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
+        this.attrs.put("folio", "El folio ["+ params.get("factura")+ "] se registró en la nota de entrada con consecutivo "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.");        
+      } // if  
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -686,15 +701,16 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	
 	@Override
 	public void toSaveRecord() {
-    Transaccion transaccion= null;
-    try {			
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-			transaccion = new Transaccion(((NotaEntradaDirecta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), false, this.getXml(), this.getPdf());
-			this.getAdminOrden().toAdjustArticulos();
+    Proceso transaccion= null;
+    try {			 
+      if(this.getFactura()!= null) {
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDescuentos(0D);
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setExcedentes(0D);
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setImpuestos(Numero.getDouble(this.getFactura().getImpuesto().getTraslado().getImporte(), 0D));
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
+      } // if  
+			transaccion = new Proceso((NotaEntradaDirecta)this.getAdminOrden().getOrden(), this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
  			  UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 la nota de entrada', '"+ ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				this.accion= EAccion.MODIFICAR;
@@ -912,6 +928,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
       this.proyecto.setIkContrato(clon.getIkContrato());
       this.proyecto.setContrato(clon.getContrato());
       ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toAdd(EGastos.DIRECTOS, clon.getImporte());
+			UIBackingUtilities.execute("janal.restore();");
     } // if
     else
 			JsfBase.addMessage("El proyecto ya se encuentra registrado en los gastos !", ETipoMensaje.INFORMACION);
@@ -926,6 +943,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
         if(clon instanceof Select)
           ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().add(new Delete(clon.getDto()));
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toRemove(EGastos.DIRECTOS, ((NotaProyecto)clon.getDto()).getImporte());
+  			UIBackingUtilities.execute("janal.restore();");
       } // if  
     } // if
   }
@@ -945,6 +963,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
       this.empleado.setIkContrato(clon.getIkContrato());
       this.empleado.setContrato(clon.getContrato());
       ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toAdd(EGastos.MANO_DE_OBRA, clon.getImporte());
+ 			UIBackingUtilities.execute("janal.restore();");
     } // if
     else
 			JsfBase.addMessage("El empleado ya se encuentra registrado en los gastos !", ETipoMensaje.INFORMACION);
@@ -959,6 +978,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
         if(clon instanceof Select)
           ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Delete(clon.getDto()));
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toRemove(EGastos.MANO_DE_OBRA, ((NotaEmpleado)clon.getDto()).getImporte());
+  			UIBackingUtilities.execute("janal.restore();");
       } // if  
     } // if
   }

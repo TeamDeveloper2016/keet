@@ -315,4 +315,5 @@ public class Reporte extends BaseReportes implements Serializable{
     this.ijuntar= null;
     this.ireporte= null;
   } // clean
+  
 }

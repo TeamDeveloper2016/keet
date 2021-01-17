@@ -60,6 +60,5 @@ public class NotaEntradaProcess {
   public void setFamilias(List familias) {
     this.familias = familias;
   }
-
     
 }

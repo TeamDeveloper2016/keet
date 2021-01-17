@@ -54,13 +54,13 @@ public class Transaccion extends Inventarios implements Serializable {
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
 	private static final long serialVersionUID=-6069204157451117549L;
  
-	private TcManticNotasEntradasDto orden;	
+	protected TcManticNotasEntradasDto orden;	
 	private List<Articulo> articulos;
-	private boolean aplicar;
-	private Importado xml;
-	private Importado pdf;
-	private String messageError;
-	private TcManticNotasBitacoraDto bitacora;
+	protected boolean aplicar;
+	protected Importado xml;
+	protected Importado pdf;
+	protected String messageError;
+	protected TcManticNotasBitacoraDto bitacora;
 	private List<UISelectEntity> lotes;
 	private List<UISelectEntity> familias;
 
@@ -301,7 +301,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // if
 	}
 	
-	private Siguiente toSiguiente(Session sesion) throws Exception {
+	protected Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar= null;
 		Map<String, Object> params=null;
 		try {
@@ -324,7 +324,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		return regresar;
 	}
 	
-	private void toCheckOrden(Session sesion) throws Exception {
+	protected void toCheckOrden(Session sesion) throws Exception {
 		try {
 			sesion.flush();
 			if(this.orden.getIdNotaTipo().equals(2L)) {
