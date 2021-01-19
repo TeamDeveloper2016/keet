@@ -199,7 +199,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       } // switch
 			this.attrs.put("ordenCompra", ordenCompra);
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
-			//this.doResetDataTable();
 			this.toLoadCatalog();
       this.toLoadProveedor();
       this.toLoadBancos();
@@ -225,44 +224,58 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     String regresar        = null;
     NotaEntradaProcess nota= null;
     try {			
-			// this.getAdminOrden().toCheckTotales();
+      if(!Cadena.isVacio((String)this.attrs.get("observaciones"))) {
+        if(this.getXml()!= null && Cadena.isVacio(this.getXml().getObservaciones()))
+          this.getXml().setObservaciones((String)this.attrs.get("observaciones")); 
+        if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
+          this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
+      } // if
 			((NotaEntrada)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			this.getAdminOrden().toAdjustArticulos();
-			// este ajuste fue para recuperar el importe total de la factura asociada para confrontarla con el importe total de la nota de entrada
-			//if(((NotaEntrada)this.getAdminOrden().getOrden()).getOriginal().equals(0D))
-			//	((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(((NotaEntrada)this.getAdminOrden().getOrden()).getTotal());
 			nota= new NotaEntradaProcess();
 			nota.setNotaEntrada((NotaEntrada)this.getAdminOrden().getOrden());
 			nota.setArticulos(this.getAdminOrden().getArticulos());
 			nota.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
 			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
       
-			transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
-			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
-					if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
-    			  JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
- 				    regresar=  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
-					} // if
-					else
-						regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-					if(this.accion.equals(EAccion.AGREGAR))
-    			  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					else
-   			    UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-				} // if	
-				else
-					this.getAdminOrden().toStartCalculate();
- 				if(!this.accion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
+      if(Cadena.isVacio(this.attrs.get("folio"))) {
+        if(!Cadena.isVacio(this.getXml())) {
+          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
+            transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
+            if (transaccion.ejecutar(this.accion)) {
+              if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
+                if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
+                  JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
+                  regresar=  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
+                } // if
+                else
+                  regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+                if(this.accion.equals(EAccion.AGREGAR))
+                  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+                else
+                  UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+              } // if	
+              else
+                this.getAdminOrden().toStartCalculate();
+              if(!this.accion.equals(EAccion.CONSULTAR)) 
+                JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
+              JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+            } // if
+            else 
+              JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
+          } // if  
+          else 
+            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
+        } // if
+        else 
+          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
+      } // if
+      else 
+        JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

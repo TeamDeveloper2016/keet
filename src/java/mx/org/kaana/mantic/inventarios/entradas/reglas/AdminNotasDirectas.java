@@ -50,6 +50,9 @@ public final class AdminNotasDirectas extends AdminNotas implements Serializable
       params.put("idNotaEntrada", this.orden.getIdNotaEntrada());      
       List<NotaProyecto> proyectos= (List<NotaProyecto>)DaoFactory.getInstance().toEntitySet(NotaProyecto.class, "VistaIngresosDto", "proyecto", params);
       for (NotaProyecto item: proyectos) {
+        item.setIkDesarrollo(new UISelectEntity(item.getIdDesarrollo()));
+        item.setIkCliente(new UISelectEntity(item.getIdCliente()));
+        item.setIkContrato(new UISelectEntity(item.getIdContrato()));
         ((NotaEntradaDirecta)this.orden).getProyectos().add(new Select(item));
         suma+= item.getImporte();
       } // for
@@ -57,6 +60,10 @@ public final class AdminNotasDirectas extends AdminNotas implements Serializable
       suma= 0D;
       List<NotaEmpleado> empleados= (List<NotaEmpleado>)DaoFactory.getInstance().toEntitySet(NotaEmpleado.class, "VistaIngresosDto", "empleado", params);
       for (NotaEmpleado item: empleados) {
+        item.setIkDesarrollo(new UISelectEntity(item.getIdDesarrollo()));
+        item.setIkCliente(new UISelectEntity(item.getIdCliente()));
+        item.setIkContrato(new UISelectEntity(item.getIdContrato()));
+        item.setIkEmpresaPersona(new UISelectEntity(item.getIdEmpresaPersona()));
         ((NotaEntradaDirecta)this.orden).getEmpleados().add(new Select(item));
         suma+= item.getImporte();
       } // for

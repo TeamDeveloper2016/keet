@@ -315,52 +315,70 @@
               </p:panelGrid>  
 							<p:remoteCommand name="loadArts" onstart="janal.bloquear();" process="@this familia contenedorGrupos" oncomplete="janal.desbloquear();"/>
               <p:separator/>
-							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">
-								<p:outputLabel for="factura" value="No factura:"/>
-								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:outputLabel for="deuda" value="Deuda:"/>
-								<p:inputText id="factura" styleClass="janal-wid-92 janal-color-blue involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-86" styleClass="janal-wid-100 janal-color-blue involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
-								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="#{manticInventariosEntradasAccion.adminOrden.orden.deuda}"/>
+              <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-35, janal-wid-35, janal-wid-30">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								<p:outputLabel for="factura" value="No factura:"/>
+  								<p:inputText id="factura" styleClass="janal-wid-92 janal-color-blue involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
+  								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-86" styleClass="janal-wid-100 janal-color-blue involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								<p:outputLabel for="deuda" value="Deuda:"/>
+  								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="#{manticInventariosEntradasAccion.adminOrden.orden.deuda}"/>
+                </p:panelGrid>  
               </p:panelGrid>               
 							<p:separator/>
-              <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">
-								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
-								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-86" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
-								<p:inputNumber id="diasPlazo" inputStyleClass="janal-wid-92 janal-color-blue" styleClass="involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.diasPlazo}" decimalPlaces="0">
-									<p:ajax event="keyup" listener="#{manticInventariosEntradasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
-								</p:inputNumber>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-86" styleClass="janal-wid-86 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es">
-									<p:ajax event="dateSelect" listener="#{manticInventariosEntradasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
-								</p:calendar>
+              <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-35, janal-wid-35, janal-wid-30">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
+    							<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-86" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
+                  <p:inputNumber id="diasPlazo" inputStyleClass="janal-wid-92 janal-color-blue" styleClass="involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.diasPlazo}" decimalPlaces="0">
+                    <p:ajax event="keyup" listener="#{manticInventariosEntradasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
+                  </p:inputNumber>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
+                  <p:calendar id="fechaPago" inputStyleClass="janal-wid-86" styleClass="janal-wid-86 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es">
+                    <p:ajax event="dateSelect" listener="#{manticInventariosEntradasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
+                  </p:calendar>
+	              </p:panelGrid>  
               </p:panelGrid>  
 							<p:separator/>
-              <p:panelGrid id="bancos" columns="3" layout="grid" styleClass="janal-wid-100">
-                <p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
-                <p:outputLabel for="idBanco" value="Banco:" styleClass="banco"/>
-                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco"/>
-                <p:selectOneMenu id="idTipoMedioPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-92" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">					
-                  <p:ajax event="change" process="@this" listener="#{manticInventariosEntradasAccion.doCheckTipoMedioPago}" update="@(.banco)"/>
-                  <f:selectItems value="#{manticInventariosEntradasAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                  <p:column headerText="Clave">
-                    <h:outputText value="#{item.clave}"/>
-                  </p:column>   
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                </p:selectOneMenu>
-                <p:selectOneMenu id="idBanco" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-92 janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not manticInventariosEntradasAccion.isDirecta and not manticInventariosEntradasAccion.attrs.isBanco}">
-                  <f:selectItems value="#{manticInventariosEntradasAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                  <p:column headerText="Razón social">
-                    <h:outputText value="#{item.razonSocial}"/>
-                  </p:column>   
-                </p:selectOneMenu>
-                <p:inputText id="referencia" value="#{manticInventariosEntradasAccion.adminOrden.orden.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not manticInventariosEntradasAccion.isDirecta and not manticInventariosEntradasAccion.attrs.isBanco}"/>
+              <p:panelGrid id="bancos" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-35, janal-wid-35, janal-wid-30">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
+                  <p:selectOneMenu id="idTipoMedioPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-92" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">					
+                    <p:ajax event="change" process="@this" listener="#{manticInventariosEntradasAccion.doCheckTipoMedioPago}" update="@(.banco)"/>
+                    <f:selectItems value="#{manticInventariosEntradasAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="idBanco" value="Banco:" styleClass="banco"/>
+                  <p:selectOneMenu id="idBanco" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-92 janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not manticInventariosEntradasAccion.isDirecta and not manticInventariosEntradasAccion.attrs.isBanco}">
+                    <f:selectItems value="#{manticInventariosEntradasAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                    <p:column headerText="Razón social">
+                      <h:outputText value="#{item.razonSocial}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="referencia" value="Referencia:" styleClass="banco"/>
+                  <p:inputText id="referencia" value="#{manticInventariosEntradasAccion.adminOrden.orden.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not manticInventariosEntradasAccion.isDirecta and not manticInventariosEntradasAccion.attrs.isBanco}"/>
+                </p:panelGrid>  
               </p:panelGrid>               
               <p:outputLabel for="idTipoPago" value="Método de pago:" rendered="false"/>												
               <p:selectOneMenu id="idTipoPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikTipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">					

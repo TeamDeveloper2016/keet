@@ -193,9 +193,9 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     String regresar        = null;
     try {			
       if(!Cadena.isVacio((String)this.attrs.get("observaciones"))) {
-        if(this.getXml()!= null)
+        if(this.getXml()!= null && Cadena.isVacio(this.getXml().getObservaciones()))
           this.getXml().setObservaciones((String)this.attrs.get("observaciones")); 
-        if(this.getPdf()!= null)
+        if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
           this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
       } // if
       if(this.getFactura()!= null) {
@@ -205,17 +205,14 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
       } // if  
-//      if(Cadena.isVacio(this.attrs.get("folio"))) {
-//        if(!Cadena.isVacio(this.getXml())) {
-//          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
+      if(Cadena.isVacio(this.attrs.get("folio"))) {
+        if(!Cadena.isVacio(this.getXml())) {
+          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
             transaccion = new Proceso((NotaEntradaDirecta)this.getAdminOrden().getOrden(), this.getXml(), this.getPdf());
             if (transaccion.ejecutar(this.accion)) {
               if(this.accion.equals(EAccion.AGREGAR)) {
                 regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-                if(this.accion.equals(EAccion.AGREGAR))
-                  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-                else
-                  UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+                UIBackingUtilities.execute("jsArticulos.back('"+ (this.accion.equals(EAccion.AGREGAR)? "gener": "aplic")+ "\\u00F3 la nota de entrada', '"+ ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
               } // if	
               else
                 this.getAdminOrden().toStartCalculate();
@@ -225,15 +222,15 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
             } // if
             else 
               JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
-//          } // if  
-//          else 
-//            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
-//        } // if
-//        else 
-//          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
-//      } // if
-//      else 
-//        JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
+          } // if  
+          else 
+            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
+        } // if
+        else 
+          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
+      } // if
+      else 
+        JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -9,7 +9,7 @@ package mx.org.kaana.mantic.compras.ordenes.enums;
  */
 public enum EOrdenes {
    
-	DIRECTA("normal"), ALMACEN("del almacen"), PROVEEDOR("por proveedor"), MANUAL("manual");
+	DIRECTA("directa"), ALMACEN("del almacen"), PROVEEDOR("por proveedor"), MANUAL("manual");
 	
 	private String titulo;
 	
