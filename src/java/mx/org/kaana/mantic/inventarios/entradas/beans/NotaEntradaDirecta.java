@@ -99,7 +99,11 @@ public class NotaEntradaDirecta extends NotaEntrada implements Serializable {
     return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.manoDeObra);
   }
 
-  public String getTotal$() {
+  public Double getGasto() {
+    return Numero.toRedondearSat(this.inDirectos+ this.directos+ this.manoDeObra);
+  }
+
+  public String getGasto$() {
     return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(this.inDirectos+ this.directos+ this.manoDeObra));
   }
 
@@ -107,22 +111,24 @@ public class NotaEntradaDirecta extends NotaEntrada implements Serializable {
     return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(this.getDeuda()- (this.inDirectos+ this.directos+ this.manoDeObra)));
   }
 
-  public boolean isEqualProyecto(NotaProyecto proyecto) {
-    boolean regresar= false;
+  public IActions isEqualProyecto(NotaProyecto proyecto) {
+    IActions regresar= null;
     for (IActions item: this.proyectos) {
-      regresar= ((NotaProyecto)item.getDto()).isEqual(proyecto);
-      if(regresar)
+      if(((NotaProyecto)item.getDto()).isEqual(proyecto)) {
+        regresar= item;
         break;
+      } // if  
     } // for
     return regresar;
   }
   
-  public boolean isEqualEmplado(NotaEmpleado empleado) {
-    boolean regresar= false;
+  public IActions isEqualEmplado(NotaEmpleado empleado) {
+    IActions regresar= null;
     for (IActions item: this.empleados) {
-      regresar= ((NotaEmpleado)item.getDto()).isEqual(empleado);
-      if(regresar)
+      if(((NotaEmpleado)item.getDto()).isEqual(empleado)) {
+        regresar= item;
         break;
+      } // if  
     } // for
     return regresar;
   }

@@ -78,6 +78,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(this.attrs.get("idNotaEntrada")!= null || this.attrs.get("ordenCompra")!= null) {
 			  this.doLoad();
         this.attrs.put("ordenCompra", null);
+        this.attrs.put("idNotaEntrada", null);
 			} // if	
     } // try
     catch (Exception e) {
@@ -89,7 +90,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.registro desc");
       columns = new ArrayList<>();
@@ -117,9 +118,9 @@ public class Filtro extends IBaseFilter implements Serializable {
     EAccion eaccion   = null;
 		Long idNotaEntrada= -1L;
 		Long idOrdenCompra= -1L;
-		Long idNotaTipo   = -1L;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
+  		Long idNotaTipo= eaccion.equals(EAccion.COMPLETO)? 1L: -1L;
 			if(this.attrs.get("seleccionado")!= null) {
 			  idNotaEntrada= ((Entity)this.attrs.get("seleccionado")).getKey();
 			  idOrdenCompra= ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra");
@@ -128,15 +129,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       switch(idNotaTipo.intValue()) {
         case 1: // DIRECTA
           regresar= "directa".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-          JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
+          JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.COMPLETO)? EAccion.AGREGAR: eaccion);
           break;
         case -1:// NORMAL
         case 2: // NORMAL
-          if(eaccion.equals(EAccion.COMPLETO)) 
-            JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
-          else 
-            JsfBase.setFlashAttribute("accion", eaccion);	
-          if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && idNotaTipo.equals(2L))) 
+          JsfBase.setFlashAttribute("accion", eaccion);	
+          if((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && idNotaTipo.equals(2L)) 
             regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
           else
             regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");

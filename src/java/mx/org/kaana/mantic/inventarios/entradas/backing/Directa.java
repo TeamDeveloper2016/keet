@@ -33,11 +33,9 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaDirecta;
-import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Proceso;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
@@ -46,6 +44,7 @@ import mx.org.kaana.kajool.db.comun.operation.Delete;
 import mx.org.kaana.kajool.db.comun.operation.IActions;
 import mx.org.kaana.kajool.db.comun.operation.Insert;
 import mx.org.kaana.kajool.db.comun.operation.Select;
+import mx.org.kaana.kajool.db.comun.operation.Update;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -57,6 +56,7 @@ import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEmpleado;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaProyecto;
 import mx.org.kaana.mantic.inventarios.entradas.enums.EGastos;
+import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotasDirectas;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -83,14 +83,6 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	private Calendar fechaEstimada;
   private NotaProyecto proyecto;
   private NotaEmpleado empleado;
-
-	public String getValidacion() {
-		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
-	}
-	
-	public Boolean getIsDirecta() {
-		return this.tipoOrden.equals(EOrdenes.NORMAL);
-	}
 
 	public Boolean getIsAplicar() {
 		Boolean regresar= true;
@@ -142,9 +134,9 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     try {
       this.proyecto= new NotaProyecto(new Long((int)(Math.random()*-10000)));
       this.empleado= new NotaEmpleado(new Long((int)(Math.random()*-10000)));
-			// if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
-			//	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-			this.tipoOrden= EOrdenes.NORMAL;
+			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			this.tipoOrden= EOrdenes.DIRECTA;
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
@@ -152,6 +144,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.fechaEstimada= Calendar.getInstance();
+      this.attrs.put("sinIva", false);
 			this.attrs.put("isBanco", Boolean.FALSE);
       this.attrs.put("folio", "");
 			this.doLoad();
@@ -164,39 +157,17 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 
 	@Override
   public void doLoad() {
-		TcManticOrdenesComprasDto ordenCompra= null;
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case AGREGAR:											
-          this.setAdminOrden(new AdminNotas(new NotaEntradaDirecta(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
-          ordenCompra= this.attrs.get("idOrdenCompra").equals(-1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
-					if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
-					} // if
-					else {
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIdEmpresa(ordenCompra.getIdEmpresa());
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkDesarrollo(new UISelectEntity(new Entity(ordenCompra.getIdDesarrollo())));
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(new Entity(ordenCompra.getIdCliente())));
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkContrato(new UISelectEntity(new Entity(ordenCompra.getIdContrato())));
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(ordenCompra.getIdProveedor())));
-						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkProveedorPago(new UISelectEntity(new Entity(ordenCompra.getIdProveedorPago())));
-            if(ordenCompra.getIdBanco()!= null) 
-  						((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkBanco(new UISelectEntity(new Entity(ordenCompra.getIdBanco())));
-            if(ordenCompra.getIdTipoMedioPago()!= null) 
-	  					((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkTipoMedioPago(new UISelectEntity(new Entity(ordenCompra.getIdTipoMedioPago())));
-            if(ordenCompra.getIdTipoPago()!= null) 
-						  ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkTipoPago(new UISelectEntity(new Entity(ordenCompra.getIdTipoPago())));
-						this.fechaEstimada.setTimeInMillis(ordenCompra.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-					} // else	
+          this.setAdminOrden(new AdminNotasDirectas(new NotaEntradaDirecta(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
+  				((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
           break;
         case MODIFICAR:					
         case CONSULTAR:					
 					NotaEntradaDirecta notaEntrada= (NotaEntradaDirecta)DaoFactory.getInstance().toEntity(NotaEntradaDirecta.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
-					ordenCompra   = (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, notaEntrada.getIdOrdenCompra());
-					this.tipoOrden= notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
-          this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
+          this.setAdminOrden(new AdminNotasDirectas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					
           // ESTO ES PARA CARGAR LOS ARTICULOS DE LA FACTURA CUANDO SE ENTRA POR LA OPCION DE MODIFICAR Y VUELVA A HACER LA COMPARACION DE LOS ARTICULOS
@@ -204,9 +175,6 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 					this.toPrepareDisponibles(false);
           break;
       } // switch
-			this.attrs.put("ordenCompra", ordenCompra);
-			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
-			//this.doResetDataTable();
 			this.toLoadCatalog();
       this.toLoadProveedor();
       this.toLoadBancos();
@@ -237,9 +205,9 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
       } // if  
-      if(Cadena.isVacio(this.attrs.get("folio"))) {
-        if(!Cadena.isVacio(this.getXml())) {
-          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
+//      if(Cadena.isVacio(this.attrs.get("folio"))) {
+//        if(!Cadena.isVacio(this.getXml())) {
+//          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
             transaccion = new Proceso((NotaEntradaDirecta)this.getAdminOrden().getOrden(), this.getXml(), this.getPdf());
             if (transaccion.ejecutar(this.accion)) {
               if(this.accion.equals(EAccion.AGREGAR)) {
@@ -257,15 +225,15 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
             } // if
             else 
               JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
-          } // if  
-          else 
-            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
-        } // if
-        else 
-          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
-      } // if
-      else 
-        JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
+//          } // if  
+//          else 
+//            JsfBase.addMessage("El RFC del proveedor no coincide con el RFC de la factura !", ETipoMensaje.ERROR);
+//        } // if
+//        else 
+//          JsfBase.addMessage("Se tiene que importar el documento XML de la factura !", ETipoMensaje.ERROR);
+//      } // if
+//      else 
+//        JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -276,7 +244,6 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
 		if(this.getAdminOrden()!= null && this.getAdminOrden().getOrden()!= null && ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdNotaEntrada()<= 0L) {
 			if(this.getXml()!= null && this.getXml().getRuta()!= null) {
 			  File oldNameFile= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
@@ -355,14 +322,14 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     try {
 			params= new HashMap<>();			
 			if(this.accion.equals(EAccion.AGREGAR))
-        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdEmpresa());
-			else
 				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			else
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdEmpresa());
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
-      if(desarrollo!= null && !desarrollos.isEmpty()) {
+      if(desarrollos!= null && !desarrollos.isEmpty()) {
         desarrollo = desarrollos.get(0);				
         this.attrs.put("desarrollosProyecto", desarrollos);			
         this.attrs.put("desarrollosEmpleado", desarrollos);			
@@ -539,8 +506,6 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 				} // if	
 				((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDiasPlazo(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIkProveedorPago().toLong("plazo")+ 1);
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDescuento(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
-				if(this.accion.equals(EAccion.AGREGAR))
-          this.doUpdatePorcentaje();
 			} // if
     } // try
     catch (Exception e) {
@@ -570,14 +535,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 				((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 				((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toLocalDateDefault(this.getFactura().getFecha()));
 				((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
-				if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
-					int count= 0;
-					while(count< this.getAdminOrden().getArticulos().size() && this.getAdminOrden().getArticulos().size()> 1) {
-//						if(this.getAdminOrden().getArticulos().get(count).getIdOrdenDetalle()== null)
-							this.getAdminOrden().getArticulos().remove(count);
-//						count++;
-					} // while 
-				} // if
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDeuda(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getOriginal());
 				this.toMoveSelectedProveedor();
 				this.toPrepareDisponibles(true);
 				this.doCheckFolio();
@@ -633,7 +591,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	public void doCalculateFechaPago() {
 		LocalDate fechaFactura= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getFechaFactura();
 		if(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo()== null)
-			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDiasPlazo(1L);
+			((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDiasPlazo(7L);
 		LocalDate calendar= fechaFactura.plusDays(((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
 		((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setFechaPago(calendar);
 	}
@@ -675,7 +633,6 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 		  	((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDiasPlazo(0L);
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).setDescuento("0");
 			} // else
-			this.doUpdatePorcentaje();
 		}
 	}	
 	
@@ -740,8 +697,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 	  Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
-			  this.getAdminOrden().toCalculate();
+			if(this.tipoOrden.equals(EOrdenes.DIRECTA)) {
 				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {
 					params.put("rfc", this.getEmisor().getRfc());
 					params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -917,21 +873,25 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     List<UISelectEntity> contratos= (List<UISelectEntity>) this.attrs.get("contratosProyecto");
     this.proyecto.setIkContrato(contratos.get(contratos.indexOf(this.proyecto.getIkContrato())));
     this.proyecto.setContrato(this.proyecto.getIkContrato().toString("clave")+ "-"+ this.proyecto.getIkContrato().toString("etapa"));
-    if(!((NotaEntradaDirecta)this.getAdminOrden().getOrden()).isEqualProyecto(this.proyecto)) {
-      NotaProyecto clon= this.proyecto;
+    IActions item= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).isEqualProyecto(this.proyecto);
+    NotaProyecto clon= this.proyecto;
+    if(item== null)
       ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().add(new Insert(this.proyecto));
-      this.proyecto= new NotaProyecto(new Long((int)(Math.random()*-10000)));
-      this.proyecto.setIkDesarrollo(clon.getIkDesarrollo());
-      this.proyecto.setDesarrollo(clon.getDesarrollo());
-      this.proyecto.setIkCliente(clon.getIkCliente());
-      this.proyecto.setCliente(clon.getCliente());
-      this.proyecto.setIkContrato(clon.getIkContrato());
-      this.proyecto.setContrato(clon.getContrato());
-      ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toAdd(EGastos.DIRECTOS, clon.getImporte());
-			UIBackingUtilities.execute("janal.restore();");
-    } // if
     else
-			JsfBase.addMessage("El proyecto ya se encuentra registrado en los gastos !", ETipoMensaje.INFORMACION);
+      if(item instanceof Delete) {
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().remove(item);
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().add(new Update(this.proyecto));
+      } // if
+    this.proyecto= new NotaProyecto(new Long((int)(Math.random()*-10000)));
+    this.proyecto.setIkDesarrollo(clon.getIkDesarrollo());
+    this.proyecto.setDesarrollo(clon.getDesarrollo());
+    this.proyecto.setIkCliente(clon.getIkCliente());
+    this.proyecto.setCliente(clon.getCliente());
+    this.proyecto.setIkContrato(clon.getIkContrato());
+    this.proyecto.setContrato(clon.getContrato());
+    ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toAdd(EGastos.DIRECTOS, clon.getImporte());
+    UIBackingUtilities.execute("janal.restore();");
+//			JsfBase.addMessage("El proyecto ya se encuentra registrado en los gastos !", ETipoMensaje.INFORMACION);
   }
             
   public void doEliminarProyecto() {
@@ -940,8 +900,13 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
       int index= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().indexOf(clon);
       if(index>= 0) {
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().remove(index);
-        if(clon instanceof Select)
+        if(clon instanceof Select || clon instanceof Update) {
           ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().add(new Delete(clon.getDto()));
+          this.proyecto= (NotaProyecto)clon.getDto();
+          this.proyecto.setIkDesarrollo(new UISelectEntity(this.proyecto.getIkDesarrollo()));
+          this.proyecto.setIkCliente(new UISelectEntity(this.proyecto.getIdCliente()));
+          this.proyecto.setIkContrato(new UISelectEntity(this.proyecto.getIdContrato()));
+        } // if  
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toRemove(EGastos.DIRECTOS, ((NotaProyecto)clon.getDto()).getImporte());
   			UIBackingUtilities.execute("janal.restore();");
       } // if  
@@ -952,21 +917,25 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     List<UISelectEntity> contratos= (List<UISelectEntity>) this.attrs.get("contratosEmpleado");
     this.empleado.setIkContrato(contratos.get(contratos.indexOf(this.empleado.getIkContrato())));
     this.empleado.setContrato(this.empleado.getIkContrato().toString("clave")+ "-"+ this.empleado.getIkContrato().toString("etapa"));
-    if(!((NotaEntradaDirecta)this.getAdminOrden().getOrden()).isEqualEmplado(this.empleado)) {
-      NotaEmpleado clon= this.empleado;
+    IActions item= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).isEqualEmplado(this.empleado);
+    NotaEmpleado clon= this.empleado;
+    if(item== null)
       ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Insert(this.empleado));
-      this.empleado= new NotaEmpleado(new Long((int)(Math.random()*-10000)));
-      this.empleado.setIkDesarrollo(clon.getIkDesarrollo());
-      this.empleado.setDesarrollo(clon.getDesarrollo());
-      this.empleado.setIkCliente(clon.getIkCliente());
-      this.empleado.setCliente(clon.getCliente());
-      this.empleado.setIkContrato(clon.getIkContrato());
-      this.empleado.setContrato(clon.getContrato());
-      ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toAdd(EGastos.MANO_DE_OBRA, clon.getImporte());
- 			UIBackingUtilities.execute("janal.restore();");
-    } // if
     else
-			JsfBase.addMessage("El empleado ya se encuentra registrado en los gastos !", ETipoMensaje.INFORMACION);
+      if(item instanceof Delete) {
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().remove(item);
+        ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Update(this.empleado));
+      } // if  
+    this.empleado= new NotaEmpleado(new Long((int)(Math.random()*-10000)));
+    this.empleado.setIkDesarrollo(clon.getIkDesarrollo());
+    this.empleado.setDesarrollo(clon.getDesarrollo());
+    this.empleado.setIkCliente(clon.getIkCliente());
+    this.empleado.setCliente(clon.getCliente());
+    this.empleado.setIkContrato(clon.getIkContrato());
+    this.empleado.setContrato(clon.getContrato());
+    ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toAdd(EGastos.MANO_DE_OBRA, clon.getImporte());
+    UIBackingUtilities.execute("janal.restore();");
+//			JsfBase.addMessage("El empleado ya se encuentra registrado en los gastos !", ETipoMensaje.INFORMACION);
  }
   
   public void doEliminarEmpleado() {
@@ -975,8 +944,15 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
       int index= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().indexOf(clon);
       if(index>= 0) {
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().remove(index);
-        if(clon instanceof Select)
+        if(clon instanceof Select || clon instanceof Update) {
           ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Delete(clon.getDto()));
+          this.empleado= (NotaEmpleado)clon.getDto();
+          this.empleado.setIkDesarrollo(new UISelectEntity(this.empleado.getIkDesarrollo()));
+          this.empleado.setIkCliente(new UISelectEntity(this.empleado.getIdCliente()));
+          this.empleado.setIkContrato(new UISelectEntity(this.empleado.getIdContrato()));
+          this.empleado.setIkEmpresaPersona(new UISelectEntity(this.empleado.getIdEmpresaPersona()));
+          UIBackingUtilities.execute("$('#contenedorGrupos\\\\:gasto\\\\:idEmpresaPersonaEmpleado_input').val('"+ this.empleado.getEmpleado().replaceAll(" ", "_")+ "');");
+        } // if  
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toRemove(EGastos.MANO_DE_OBRA, ((NotaEmpleado)clon.getDto()).getImporte());
   			UIBackingUtilities.execute("janal.restore();");
       } // if  

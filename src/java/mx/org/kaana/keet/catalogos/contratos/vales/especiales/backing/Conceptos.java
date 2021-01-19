@@ -93,7 +93,7 @@ public class Conceptos extends Accion implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			setPrecio(ETipoVenta.MENUDEO.getNombreCampo());
-			setTipoOrden(EOrdenes.NORMAL);						
+			setTipoOrden(EOrdenes.DIRECTA);						
 			this.attrs.put("idVenta", -1L);
       this.attrs.put("accion", EAccion.AGREGAR);      
       this.attrs.put("idCliente", -1L);			

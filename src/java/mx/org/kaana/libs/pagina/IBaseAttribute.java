@@ -130,27 +130,27 @@ public abstract class IBaseAttribute implements Serializable {
 	}
 
   public String doNumerico(Double numero) {
-		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero);
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, numero);
 	}
 
   public String doNumerico(Value numero) {
-		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero.toLong());
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, numero.toLong());
 	}
 	
   public String doMiles(Long numero) {
-		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero);
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero);
 	}
 
   public String doMiles(Value numero) {
-		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero.toLong());
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, numero.toLong());
 	}
 
   public String doMiles(BigDecimal numero) {
-		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
 	}
 
   public String doMiles(Double numero) {
-		return numero== null? "0": Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero);
+		return numero== null? "0": Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, numero);
 	}
 
   public String doRegistro(Timestamp registro) {

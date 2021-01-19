@@ -2,8 +2,12 @@ package mx.org.kaana.mantic.inventarios.entradas.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.operation.IActions;
+import mx.org.kaana.kajool.db.comun.operation.Insert;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetNotasDirectosDto;
@@ -49,9 +53,19 @@ public class Proceso extends Transaccion implements Serializable {
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar          = false;
 		TcManticNotasBitacoraDto bitacoraNota= null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		Siguiente consecutivo     = null;
 		try {
+  		this.orden.setIdOrdenCompra(null);
+  		this.orden.setIdDesarrollo(null);
+  		this.orden.setIdCliente(null);
+  		this.orden.setIdContrato(null);
+  		this.orden.setIdAlmacen(null);
+  		this.orden.setIdAlmacenista(null);
+      if(this.orden.getIdBanco()!= null && this.orden.getIdBanco()< 0)
+        this.orden.setIdBanco(null);
+      if(this.orden.getIdTipoPago()!= null && this.orden.getIdTipoPago()< 0)
+        this.orden.setIdTipoPago(null);
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada.");
 			switch(accion) {
 				case MOVIMIENTOS:
@@ -62,9 +76,8 @@ public class Proceso extends Transaccion implements Serializable {
 					  this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					  this.orden.setOrden(consecutivo.getOrden());
 					  this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					  if(this.orden.getIdNotaTipo().equals(1L))
-						  this.orden.setIdOrdenCompra(null);
 					  regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+            this.toFillProyectosEmpleados(sesion);
 					  bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
        	    this.toUpdateDeleteXml(sesion);	
@@ -77,6 +90,7 @@ public class Proceso extends Transaccion implements Serializable {
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					this.orden.setIdOrdenCompra(null);					
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+          this.toFillProyectosEmpleados(sesion);
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 	   	    this.toUpdateDeleteXml(sesion);	
@@ -86,9 +100,8 @@ public class Proceso extends Transaccion implements Serializable {
 					this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					if(this.orden.getIdNotaTipo().equals(1L))
-						this.orden.setIdOrdenCompra(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+          this.toFillProyectosEmpleados(sesion);
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					this.toCheckOrden(sesion);
@@ -96,6 +109,7 @@ public class Proceso extends Transaccion implements Serializable {
 					break;
 				case COMPLEMENTAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+          this.toFillProyectosEmpleados(sesion);
 	   	    this.toUpdateDeleteXml(sesion);	
 					break;				
 				case MODIFICAR:
@@ -105,10 +119,12 @@ public class Proceso extends Transaccion implements Serializable {
 	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					} // if	
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+          this.toFillProyectosEmpleados(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
 					break;				
 				case ELIMINAR:
+          params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
           DaoFactory.getInstance().deleteAll(sesion, TcManticNotasArchivosDto.class, params);
 					DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasDirectosDto.class, params);
 				  DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasManosObrasDto.class, params);
@@ -124,6 +140,7 @@ public class Proceso extends Transaccion implements Serializable {
 						this.orden.setIdNotaEstatus(this.bitacora.getIdNotaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						if(this.bitacora.getIdNotaEstatus().equals(2L)) {
+              params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
               DaoFactory.getInstance().deleteAll(sesion, TcManticNotasArchivosDto.class, params);
 							DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasDirectosDto.class, params);
 							DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasManosObrasDto.class, params);
@@ -137,23 +154,27 @@ public class Proceso extends Transaccion implements Serializable {
 					break;
 			} // switch
   		LOG.info("Se genero de forma correcta la nota de entrada: "+ this.orden.getConsecutivo());
-      throw new RuntimeException("ESTO ES UN ERROR PROBOCADO POR LA APLICACION"); 
-//      if(!regresar)
-//        throw new Exception("");
+//      throw new RuntimeException("ESTO ES UN ERROR PROBOCADO POR LA APLICACION"); 
+      if(!regresar)
+        throw new Exception("");
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);			
 			throw new Exception(this.messageError.concat("<br/>")+ e);
 		} // catch		
-//    return regresar;
+    return regresar;
   }
 
   @Override
   protected void toCheckOrden(Session sesion) throws Exception {
 		try {
 			sesion.flush();
-			if(this.orden.getIdNotaTipo().equals(2L)) {
-        
+			if(Objects.equals(this.orden.getDeuda(), 0D)) {
+        // SI EL SALDO ES CERO ENTONCES CAMBIAR EL ESTATUS DE LA NOTA DE ENTRADA A TERMINADO
+  			this.orden.setIdNotaEstatus(3L);
+			  TcManticNotasBitacoraDto bitacoraNota= new TcManticNotasBitacoraDto(-1L, "LA NOTA SE SALDO DE FORMA AUTOMATICA", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
+				DaoFactory.getInstance().insert(sesion, bitacoraNota);
+				DaoFactory.getInstance().update(sesion, this.orden);
       } // if
 		} // try
 		catch (Exception e) {
@@ -161,4 +182,26 @@ public class Proceso extends Transaccion implements Serializable {
 		} // catch
 	} 
 
+  public void toFillProyectosEmpleados(Session sesion) throws Exception {
+    try {  
+      for (IActions item: this.directa.getProyectos()) {
+        if(item instanceof Insert) {
+          ((TcKeetNotasDirectosDto)item.getDto()).setIdNotaEntrada(this.orden.getIdNotaEntrada());
+          ((TcKeetNotasDirectosDto)item.getDto()).setIdUsuario(JsfBase.getIdUsuario());
+        } // if  
+        item.ejecutar(sesion);
+      } // if
+      for (IActions item: this.directa.getEmpleados()) {
+        if(item instanceof Insert) {
+          ((TcKeetNotasManosObrasDto)item.getDto()).setIdNotaEntrada(this.orden.getIdNotaEntrada());
+          ((TcKeetNotasManosObrasDto)item.getDto()).setIdUsuario(JsfBase.getIdUsuario());
+        } // if  
+        item.ejecutar(sesion);
+      } // if  
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
 }

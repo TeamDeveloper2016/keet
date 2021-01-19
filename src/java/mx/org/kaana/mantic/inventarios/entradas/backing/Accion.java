@@ -84,15 +84,15 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private Calendar fechaEstimada;
 
 	public String getValidacion() {
-		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
+		return this.tipoOrden.equals(EOrdenes.DIRECTA)? "libre": "requerido";
 	}
 	
 	public String getTitulo() {
-		return this.tipoOrden.equals(EOrdenes.NORMAL)? "(DIRECTA)": "";
+		return this.tipoOrden.equals(EOrdenes.DIRECTA)? "(DIRECTA)": "";
 	}
 
 	public Boolean getIsDirecta() {
-		return this.tipoOrden.equals(EOrdenes.NORMAL);
+		return this.tipoOrden.equals(EOrdenes.DIRECTA);
 	}
 
 	public Boolean getIsAplicar() {
@@ -132,7 +132,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
+			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.DIRECTA: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
@@ -162,7 +162,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         case AGREGAR:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
           ordenCompra= this.attrs.get("idOrdenCompra").equals(-1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
-					if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+					if(this.tipoOrden.equals(EOrdenes.DIRECTA)) {
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
 					} // if
@@ -188,7 +188,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
 					ordenCompra   = (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, notaEntrada.getIdOrdenCompra());
-					this.tipoOrden= notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
+					this.tipoOrden= notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.DIRECTA: EOrdenes.PROVEEDOR;
           this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					
@@ -673,7 +673,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toLocalDateDefault(this.getFactura().getFecha()));
 				((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
-				if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+				if(this.tipoOrden.equals(EOrdenes.DIRECTA)) {
 					int count= 0;
 					while(count< this.getAdminOrden().getArticulos().size() && this.getAdminOrden().getArticulos().size()> 1) {
 //						if(this.getAdminOrden().getArticulos().get(count).getIdOrdenDetalle()== null)
@@ -1154,7 +1154,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	  Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+			if(this.tipoOrden.equals(EOrdenes.DIRECTA)) {
 			  this.getAdminOrden().toCalculate();
 				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {
 					params.put("rfc", this.getEmisor().getRfc());

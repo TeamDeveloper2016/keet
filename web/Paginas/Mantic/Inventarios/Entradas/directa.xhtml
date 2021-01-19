@@ -29,7 +29,6 @@
 				'contenedorGrupos\\:fechaRecepcion'   : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaFactura"})|requerido', mascara: 'fecha', grupo: 'general', individual: true},
 				'contenedorGrupos\\:diasPlazo'        : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:fechaPago'        : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaRecepcion"})|requerido', mascara: 'fecha', grupo: 'general', individual: true},
-				'contenedorGrupos\\:deuda'            : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', individual: true, grupo: 'general'},			
 				'contenedorGrupos\\:idTipoMedioPago'  : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idBanco'          : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:referencia'       : {validaciones: 'libre', mascara: 'libre'},
@@ -39,13 +38,17 @@
 				'contenedorGrupos\\:gasto\\:idDesarrolloProyecto': {validaciones: 'requerido', mascara: 'libre', grupo:'proyecto'},
 				'contenedorGrupos\\:gasto\\:idClienteProyecto'   : {validaciones: 'requerido', mascara: 'libre', grupo:'proyecto'},
 				'contenedorGrupos\\:gasto\\:idContratoProyecto'  : {validaciones: 'requerido', mascara: 'libre', grupo:'proyecto'},
+				'contenedorGrupos\\:gasto\\:descripcionProyecto' : {validaciones: 'libre|texto', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo:'proyecto'},
 				'contenedorGrupos\\:gasto\\:importeProyecto'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo:'proyecto'},
 				'contenedorGrupos\\:gasto\\:idDesarrolloEmpleado': {validaciones: 'requerido', mascara: 'libre', grupo:'empleado'},
 				'contenedorGrupos\\:gasto\\:idClienteEmpleado'   : {validaciones: 'requerido', mascara: 'libre', grupo:'empleado'},
 				'contenedorGrupos\\:gasto\\:idContratoEmpleado'  : {validaciones: 'requerido', mascara: 'libre', grupo:'empleado'},
 				'contenedorGrupos\\:gasto\\:idEmpresaPersonaEmpleado': {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas', grupo:'empleado'},
+				'contenedorGrupos\\:gasto\\:descripcionEmpleado' : {validaciones: 'libre|texto', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo:'empleado'},
 				'contenedorGrupos\\:gasto\\:importeEmpleado'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo:'empleado'},
-				'contenedorGrupos\\:total'                       : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'}
+				'contenedorGrupos\\:gastodo'                     : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},			
+				'contenedorGrupos\\:saldo'                       : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:total'                       : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
 			};
 			
     	$(document).ready(function() {
@@ -56,19 +59,22 @@
 			
 			function execute() {
 				var index= jsArticulos.cursor.index;
+        janal.bloquear();
 				jsArticulos.cursor.index= jsArticulos.cursor.top;
-				var ok= janal.execute();
+				var ok= janal.partial("general");
 				if(ok) {
-					var deuda= parseFloat($('#contenedorGrupos\\:deuda').val(), 10);
+					var saldo= parseFloat($('#contenedorGrupos\\:saldo').val(), 10);
+					var deuda= parseFloat($('#contenedorGrupos\\:gastado').val(), 10);
 					var total= parseFloat($('#contenedorGrupos\\:total').val(), 10);
 					var diferencia= (deuda* 100/ total)- 100;
-					if(!((diferencia&gt;= -5.0) &amp;&amp; (diferencia&lt;= 5.0))) 
-						ok= confirm('\u00BF La diferencia del total de la Nota de entrada directa con respecto a la deuda capturada es del '+ diferencia.toFixed(4)+ '% desea continuar con el registro ?');
+					if(!((diferencia&gt;= -5.0) &amp;&amp; (diferencia&lt;= 5.0))) {
+						ok= confirm('\u00BF La diferencia del total de la Nota de entrada directa [$ '+ deuda+'] con respecto a la factura [$ '+ total+ '] importada es del '+ diferencia.toFixed(4)+ '% [$ '+ saldo+ '] desea continuar con el registro ?');
+          } // if   
 				} // if	
 				else {
 					jsArticulos.cursor.index= index;
-					janal.desbloquear();
 				} // else	
+  			janal.desbloquear();
 				return ok;
 			}
 			
@@ -134,6 +140,7 @@
 		<p:remoteCommand name="viewDocument" actionListener="#{manticInventariosEntradasDirecta.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
 		<p:remoteCommand name="viewFile" actionListener="#{manticInventariosEntradasDirecta.doViewFile}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
 		<p:remoteCommand name="temporal" process="@this @(.key-event-before)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+    <p:remoteCommand name="reloadContratoDesarrollo" onstart="return janal.bloquear();" process="@this" update="contenedorGrupos:gasto:idDesarrolloProyecto contenedorGrupos:gasto:idDesarrolloEmpleado" oncomplete="janal.desbloquear();"/>
     <p:remoteCommand name="reloadContratoDirecto" onstart="return janal.bloquear();" process="@this" update="contenedorGrupos:gasto:idContratoProyecto" oncomplete="janal.desbloquear();"/>
     <p:remoteCommand name="reloadContratoManodeObra" onstart="return janal.bloquear();" process="@this" update="contenedorGrupos:gasto:idContratoEmpleado" oncomplete="janal.desbloquear();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -146,7 +153,7 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticInventariosEntradasDirecta.doTabChange}" process="@this" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle(); disabledComponent();"/>						
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
+							<p:panelGrid id="general" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{manticInventariosEntradasDirecta.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) contenedorGrupos:gasto:idDesarrolloProyecto contenedorGrupos:gasto:idDesarrolloEmpleado" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
@@ -159,9 +166,9 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
-								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt faltantes proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasDirecta.isDirecta}">
-									<p:ajax event="change" listener="#{manticInventariosEntradasDirecta.doUpdateProveedor}" process="@this" update="idProveedorPago diasPlazo fechaPago datosProveedor tabla @(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{manticInventariosEntradasDirecta.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.clave or element.clave eq ''? '': '-'} #{element.razonSocial}"/>
+								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt faltantes proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticInventariosEntradasDirecta.doUpdateProveedor}" process="@this" update="diasPlazo fechaPago tabla @(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{manticInventariosEntradasDirecta.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.clave or element.clave eq ''? '': '-'} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -184,8 +191,9 @@
                   <p:calendar id="fechaFactura" inputStyleClass="janal-wid-86 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasDirecta.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                  <p:outputLabel for="deuda" value="Deuda:"/>
-                  <p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="#{manticInventariosEntradasDirecta.adminOrden.orden.deuda}"/>
+                  <p:outputLabel for="total" value="Deuda:"/>
+                  <p:inputText styleClass="recalculo janal-wid-100-txt janal-color-blue" value="$ #{manticInventariosEntradasDirecta.doMiles(manticInventariosEntradasDirecta.adminOrden.orden.original)}"/>
+                  <p:inputText id="total" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="#{manticInventariosEntradasDirecta.adminOrden.orden.original}" style="display:none"/>
                 </p:panelGrid>  
               </p:panelGrid>  
               <p:separator/>
@@ -211,7 +219,7 @@
               <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100-txt">
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="idTipoMedioPago" value="Forma de pago:"/>
-                  <p:selectOneMenu id="idTipoMedioPago" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-92" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasDirecta.isDirecta}">					
+                  <p:selectOneMenu id="idTipoMedioPago" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-92" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <p:ajax event="change" process="@this" listener="#{manticInventariosEntradasDirecta.doCheckTipoMedioPago}" update="@(.banco)"/>
                     <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                     <p:column headerText="Clave">
@@ -224,7 +232,7 @@
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="idBanco" value="Banco:" styleClass="banco"/>
-                  <p:selectOneMenu id="idBanco" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-92 janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not manticInventariosEntradasDirecta.isDirecta and not manticInventariosEntradasDirecta.attrs.isBanco}">
+                  <p:selectOneMenu id="idBanco" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-92 janal-select-referencia banco" converter="janal.convertidor.Entity" disabled="#{not manticInventariosEntradasDirecta.attrs.isBanco}">
                     <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
                     <p:column headerText="Nombre">
                       <h:outputText value="#{item.nombre}"/>
@@ -236,57 +244,13 @@
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="referencia" value="Referencia:" styleClass="banco"/>
-                  <p:inputText id="referencia" value="#{manticInventariosEntradasDirecta.adminOrden.orden.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not manticInventariosEntradasDirecta.isDirecta and not manticInventariosEntradasDirecta.attrs.isBanco}"/>
+                  <p:inputText id="referencia" value="#{manticInventariosEntradasDirecta.adminOrden.orden.referencia}" styleClass="janal-wid-100-txt banco" placeholder="Ej. Referencia o cuenta 4564" disabled="#{not manticInventariosEntradasDirecta.attrs.isBanco}"/>
                 </p:panelGrid>  
               </p:panelGrid>        
               <p:outputLabel for="idEmpresaTipoContacto" value="Correo contacto:"/>
-              <p:selectOneMenu id="idEmpresaTipoContacto" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikEmpresaTipoContacto}" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasDirecta.isDirecta}">
+              <p:selectOneMenu id="idEmpresaTipoContacto" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikEmpresaTipoContacto}" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.empresaTiposContactos}" var="next" itemValue="#{next}" itemLabel="#{next.valor}"/>
               </p:selectOneMenu>              
-              <p:outputLabel for="idProveedorPago" value="Condición de pago:" rendered="false"/>
-              <p:selectOneMenu id="idProveedorPago" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
-                <p:ajax event="change" listener="#{manticInventariosEntradasDirecta.doUpdatePlazo}" update="datosProveedor datosArticulos diasPlazo fechaPago familia tabla @(.recalculo)" process="@this"/>
-                <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
-                <p:column headerText="Clave">
-                  <h:outputText value="#{item.clave}"/>
-                </p:column>   
-                <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
-                </p:column>   
-                <p:column styleClass="janal-column-right" headerText="Descuento otorgado">
-                  <h:outputText value="#{item.descuento}"/>
-                </p:column>   
-                <p:column styleClass="janal-column-right" headerText="Plazo en día para pagar">
-                  <h:outputText value="#{item.plazo}"/>
-                </p:column>   
-              </p:selectOneMenu>
-              <p:separator rendered="false"/>
-              <p:panelGrid id="datosProveedor" columns="6" layout="grid" styleClass="janal-wid-100" rendered="false">		
-                <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
-                  <p:outputLabel for="moneda" value="Tipo de moneda:"/>
-                  <p:inputText id="moneda" styleClass="janal-wid-100-txt proveedor" value="#{manticInventariosEntradasDirecta.attrs.proveedor.moneda}" readonly="true"/>
-                </p:panelGrid>	
-                <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
-                  <p:outputLabel for="tipoProveedor" value="Tipo proveedor:"/>
-                  <p:inputText id="tipoProveedor" styleClass="janal-wid-100-txt proveedor" value="#{manticInventariosEntradasDirecta.attrs.proveedor.tipoProveedor}" readonly="true"/>
-                </p:panelGrid>
-                <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
-                  <p:outputLabel for="tipoDia" value="Dias plazo entrega: "/>
-                  <p:inputText id="tipoDia" styleClass="janal-wid-100-txt janal-column-right proveedor" value="#{manticInventariosEntradasDirecta.attrs.proveedor.dias}" readonly="true"/>
-                </p:panelGrid>
-                <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
-                  <p:outputLabel for="dias" value="Entrega estimada: "/>
-                  <p:inputText id="dias" styleClass="janal-wid-100-txt janal-column-center proveedor" value="#{manticInventariosEntradasDirecta.attrs.proveedor.fechaEstimada}" readonly="true"/>
-                </p:panelGrid>
-                <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
-                  <p:outputLabel for="excedente" value="Descuento otorgado: "/>
-                  <p:inputText id="excedente" styleClass="janal-wid-100-txt janal-column-right proveedor" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikProveedorPago.descuento}%" readonly="true"/>
-                </p:panelGrid>
-                <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
-                  <p:outputLabel for="plazo" value="Dias plazo para pagar: "/>
-                  <p:inputText id="plazo" styleClass="janal-wid-100-txt janal-column-right proveedor" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikProveedorPago.plazo}" readonly="true"/>
-                </p:panelGrid>                
-              </p:panelGrid>  
 						</p:tab>
 						<p:tab title="Importar">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticInventariosEntradasDirecta.diferente? '': 'none'}">
@@ -403,16 +367,16 @@
                   </div>
                   <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                      <h:outputText value="No factura:"/>
-                      <p:inputText styleClass="janal-wid-96 calculos janal-color-blue" value="#{manticInventariosEntradasDirecta.adminOrden.orden.factura}" readonly="true"/>
+                      <p:outputLabel value="No factura:"/>
+                      <p:inputText styleClass="janal-wid-96 importado janal-color-blue" value="#{manticInventariosEntradasDirecta.adminOrden.orden.factura}" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                       <h:outputText value="Fecha factura:"/>
-                      <p:inputText styleClass="janal-wid-96 calculos janal-color-blue" value="#{manticInventariosEntradasDirecta.doFechaEstandar(manticInventariosEntradasDirecta.adminOrden.orden.fechaFactura)}" readonly="true"/>
+                      <p:inputText styleClass="janal-wid-96 importado janal-color-blue" value="#{manticInventariosEntradasDirecta.doFechaEstandar(manticInventariosEntradasDirecta.adminOrden.orden.fechaFactura)}" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                       <h:outputText value="Deuda:"/>
-                      <p:inputText styleClass="janal-wid-100-txt calculos janal-color-blue" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.deuda}" readonly="true"/>
+                      <p:inputText styleClass="janal-wid-100-txt importado janal-color-blue" value="$ #{manticInventariosEntradasDirecta.doMiles(manticInventariosEntradasDirecta.adminOrden.orden.original)}" readonly="true"/>
                     </p:panelGrid>  
                   </p:panelGrid>  
                 </p:panelGrid>
@@ -420,23 +384,25 @@
                   <p:panelGrid id="gastosRegistrados" columns="5" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-20">		
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                       <h:outputText value="Indirectos:"/>
-                      <p:inputText styleClass="janal-wid-92 calculos" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.inDirectos$}" readonly="true"/>
+                      <p:inputText styleClass="janal-wid-92 importado" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.inDirectos$}" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                       <h:outputText value="Directos:"/>
-                      <p:inputText styleClass="janal-wid-92 calculos" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.directos$}" readonly="true"/>
+                      <p:inputText styleClass="janal-wid-92 importado" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.directos$}" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                       <h:outputText value="Mano de obra:"/>
-                      <p:inputText styleClass="janal-wid-92 calculos" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.manoDeObra$}" readonly="true"/>
+                      <p:inputText styleClass="janal-wid-92 importado" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.manoDeObra$}" readonly="true"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                      <p:outputLabel for="total" value="Gastos:"/>
-                      <p:inputText id="total" styleClass="janal-wid-92 calculos janal-color-blue janal-font-bold" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.total$}" readonly="true"/>
+                      <p:outputLabel for="gastado" value="Gastos:"/>
+                      <p:inputText styleClass="janal-wid-92 importado janal-color-blue janal-font-bold" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.gasto$}" readonly="true"/>
+                      <p:inputText id="gastado" styleClass="janal-wid-92 importado janal-color-blue janal-font-bold" value="#{manticInventariosEntradasDirecta.adminOrden.orden.gasto}" readonly="true" style="display:none"/>
                     </p:panelGrid>  
                     <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                      <p:outputLabel value="Saldo:"/>
-                      <p:inputText styleClass="janal-wid-100-txt calculos janal-color-orange janal-font-bold" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.saldo$}" readonly="true"/>
+                      <p:outputLabel for="saldo" value="Saldo:"/>
+                      <p:inputText styleClass="janal-wid-100-txt importado janal-color-orange janal-font-bold" value="$ #{manticInventariosEntradasDirecta.adminOrden.orden.saldo$}" readonly="true"/>
+                      <p:inputText id="saldo" styleClass="janal-wid-100-txt importado janal-color-orange janal-font-bold" value="#{manticInventariosEntradasDirecta.adminOrden.orden.saldo}" readonly="true" style="display:none"/>
                     </p:panelGrid>  
                   </p:panelGrid>  
                 </p:panel>  
@@ -455,10 +421,10 @@
                     <div class="janal-column-center">
                       <i class="fa fa-file-invoice-dollar Fs60 janal-color-green"/>
                     </div>
-      							<p:panelGrid id="datosProyecto" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-36, janal-wid-30, janal-wid-10, janal-wid-4 janal-column-right">
+      							<p:panelGrid id="datosProyecto" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-25, janal-wid-25, janal-wid-20, janal-wid-10, janal-wid-5 janal-column-right">
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                         <p:outputLabel for="idDesarrolloProyecto" value="Desarrollo:"/>
-                        <p:selectOneMenu id="idDesarrolloProyecto" value="#{manticInventariosEntradasDirecta.proyecto.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasDirecta.isDirecta}">
+                        <p:selectOneMenu id="idDesarrolloProyecto" value="#{manticInventariosEntradasDirecta.proyecto.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-88" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                           <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticInventariosEntradasDirecta.doUpdateClienteProyecto}" update="@(.directos)" oncomplete="janal.desbloquear();reloadContratoDirecto();"/>
                           <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.desarrollosProyecto}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
                           <p:column headerText="Clave">
@@ -471,11 +437,11 @@
                       </p:panelGrid>
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                         <p:outputLabel for="clienteDirecto" value="Cliente:"/>
-                        <p:inputText id="clienteDirecto" value="#{manticInventariosEntradasDirecta.proyecto.cliente}" styleClass="janal-wid-96 directos" readonly="true"/>
+                        <p:inputText id="clienteDirecto" value="#{manticInventariosEntradasDirecta.proyecto.cliente}" styleClass="janal-wid-92 directos" readonly="true"/>
                       </p:panelGrid>
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                         <p:outputLabel for="idContratoProyecto" value="Contrato:"/>
-                        <p:selectOneMenu id="idContratoProyecto" value="#{manticInventariosEntradasDirecta.proyecto.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="janal-wid-94 directos" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasDirecta.isDirecta}">
+                        <p:selectOneMenu id="idContratoProyecto" value="#{manticInventariosEntradasDirecta.proyecto.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="janal-wid-92 directos" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                           <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.contratosProyecto}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '-'} #{one.etapa}"/>
                           <p:column headerText="Clave">
                             <p:outputLabel value="#{list.clave}"/>
@@ -489,10 +455,15 @@
                         </p:selectOneMenu>		
                       </p:panelGrid>
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                        <p:outputLabel for="importeProyecto" value="Importe:"/>
-                        <p:inputNumber id="importeProyecto" value="#{manticInventariosEntradasDirecta.proyecto.importe}" inputStyleClass="janal-wid-95" converter="javax.faces.Double" decimalPlaces="2"/>
+                        <p:outputLabel for="descripcionProyecto" value="Concepto:"/>
+                        <p:inputText id="descripcionProyecto" placeholder="ejemplo: PIPA DE AGUA" value="#{manticInventariosEntradasDirecta.proyecto.descripcion}" styleClass="janal-wid-92"/>
                       </p:panelGrid>
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                        <p:outputLabel for="importeProyecto" value="Importe:"/>
+                        <p:inputNumber id="importeProyecto" value="#{manticInventariosEntradasDirecta.proyecto.importe}" inputStyleClass="janal-wid-85" converter="javax.faces.Double" decimalPlaces="2"/>
+                      </p:panelGrid>
+                      <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                        <p:spacer/>
                         <p:commandButton action="#{manticInventariosEntradasDirecta.doAgregarProyecto}" process="@this datosProyecto" update="tablaProyectos datosProyecto contenedorGrupos:gastosRegistrados" icon="fa fa-plus" title="Agregar" onstart="return janal.partial('proyecto')" oncomplete="return janal.desbloquear();"/>
                       </p:panelGrid>
                     </p:panelGrid>  
@@ -532,7 +503,7 @@
                       <f:facet name="header">
                         <h:outputText value=""/>
                       </f:facet>
-                      <p:commandButton action="#{manticInventariosEntradasDirecta.doEliminarProyecto}" process="@this" update="tablaProyectos contenedorGrupos:gastosRegistrados" icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();">
+                      <p:commandButton action="#{manticInventariosEntradasDirecta.doEliminarProyecto}" process="@this" update="tablaProyectos contenedorGrupos:gasto:datosProyecto contenedorGrupos:gastosRegistrados" icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();">
         								<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasDirecta.attrs.proyecto}" />
                       </p:commandButton>  
                     </p:column>
@@ -546,10 +517,10 @@
                     <div class="janal-column-center">
                       <i class="fa fa-hand-holding-usd Fs60 janal-color-purple"/>
                     </div>
-                    <p:panelGrid id="datosEmpleado" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-25, janal-wid-25, janal-wid-36, janal-wid-10, janal-wid-4 janal-column-right">
+                    <p:panelGrid id="datosEmpleado" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-15, janal-wid-35, janal-wid-20, janal-wid-10, janal-wid-5 janal-column-right">
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                         <p:outputLabel for="idDesarrolloEmpleado" value="Desarrollo:"/>
-                        <p:selectOneMenu id="idDesarrolloEmpleado" value="#{manticInventariosEntradasDirecta.empleado.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-92" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasDirecta.isDirecta}">
+                        <p:selectOneMenu id="idDesarrolloEmpleado" value="#{manticInventariosEntradasDirecta.empleado.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-88" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                           <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticInventariosEntradasDirecta.doUpdateClienteEmpleado}" update="@(.manodeobra)" oncomplete="janal.desbloquear();reloadContratoManodeObra();"/>
                           <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.desarrollosEmpleado}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
                           <p:column headerText="Clave">
@@ -566,7 +537,7 @@
                       </p:panelGrid>
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                         <p:outputLabel for="idContratoEmpleado" value="Contrato:"/>
-                        <p:selectOneMenu id="idContratoEmpleado" value="#{manticInventariosEntradasDirecta.empleado.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="janal-wid-92 manodeobra" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasDirecta.isDirecta}">
+                        <p:selectOneMenu id="idContratoEmpleado" value="#{manticInventariosEntradasDirecta.empleado.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="janal-wid-88 manodeobra" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                           <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.contratosEmpleado}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '- '} #{one.etapa}"/>
                           <p:column headerText="Clave">
                             <p:outputLabel value="#{list.clave}"/>
@@ -598,10 +569,15 @@
                         </p:autoComplete>
                       </p:panelGrid>
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                        <p:outputLabel for="importeEmpleado" value="Importe:"/>
-                        <p:inputNumber id="importeEmpleado" value="#{manticInventariosEntradasDirecta.empleado.importe}" inputStyleClass="janal-wid-95" converter="javax.faces.Double" decimalPlaces="2"/>
+                        <p:outputLabel for="descripcionEmpleado" value="Concepto:"/>
+                        <p:inputText id="descripcionEmpleado" placeholder="ejemplo: TIRAR MURO" value="#{manticInventariosEntradasDirecta.empleado.descripcion}" styleClass="janal-wid-92"/>
                       </p:panelGrid>
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                        <p:outputLabel for="importeEmpleado" value="Importe:"/>
+                        <p:inputNumber id="importeEmpleado" value="#{manticInventariosEntradasDirecta.empleado.importe}" inputStyleClass="janal-wid-85" converter="javax.faces.Double" decimalPlaces="2"/>
+                      </p:panelGrid>
+                      <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                        <p:spacer/>
                         <p:commandButton action="#{manticInventariosEntradasDirecta.doAgregarEmpleado}" process="@this datosEmpleado" update="tablaEmpleados datosEmpleado contenedorGrupos:gastosRegistrados" icon="fa fa-plus" title="Agregar" onstart="return janal.partial('empleado');" oncomplete="return janal.desbloquear();"/>
                       </p:panelGrid>
                     </p:panelGrid>  
@@ -619,12 +595,6 @@
                       </f:facet>
                       <p:outputLabel value="#{row.dto.desarrollo}"/> 
                     </p:column>
-                    <p:column class="MarAuto Responsive janal-wid-35">
-                      <f:facet name="header">
-                        <h:outputText value="Cliente"/>
-                      </f:facet>
-                      <p:outputLabel value="#{row.dto.cliente}"/> 
-                    </p:column>
                     <p:column class="MarAuto Responsive janal-wid-15">
                       <f:facet name="header">
                         <h:outputText value="Contrato"/>
@@ -637,6 +607,12 @@
                       </f:facet>
                       <p:outputLabel value="#{row.dto.empleado}"/> 
                     </p:column>
+                    <p:column class="MarAuto Responsive janal-wid-30">
+                      <f:facet name="header">
+                        <h:outputText value="Concepto"/>
+                      </f:facet>
+                      <p:outputLabel value="#{row.dto.descripcion}"/> 
+                    </p:column>
                     <p:column class="MarAuto Responsive janal-column-right janal-wid-10">
                       <f:facet name="header">
                         <h:outputText value="Importe"/>
@@ -647,7 +623,7 @@
                       <f:facet name="header">
                         <h:outputText value=""/>
                       </f:facet>
-                      <p:commandButton action="#{manticInventariosEntradasDirecta.doEliminarEmpleado}" process="@this" update="tablaEmpleados contenedorGrupos:gastosRegistrados" icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();">
+                      <p:commandButton action="#{manticInventariosEntradasDirecta.doEliminarEmpleado}" process="@this" update="tablaEmpleados contenedorGrupos:gasto:datosEmpleado contenedorGrupos:gastosRegistrados" icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();">
         								<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasDirecta.attrs.empleado}" />
                       </p:commandButton>  
                     </p:column>
@@ -668,11 +644,11 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticInventariosEntradasDirecta.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" />
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@this contenedorGrupos:general contenedorGrupos:comentarios contenedorGrupos:observaciones" action="#{manticInventariosEntradasDirecta.doAceptar()}" onstart="return execute();" oncomplete="janal.desbloquear();" />
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosEntradasDirecta.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasDirecta.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this contenedorGrupos:general contenedorGrupos:comentarios contenedorGrupos:observaciones" action="#{manticInventariosEntradasDirecta.doAceptar()}" onstart="return execute();" oncomplete="janal.desbloquear();"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosEntradasDirecta.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

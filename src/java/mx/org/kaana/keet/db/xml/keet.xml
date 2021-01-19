@@ -24,6 +24,12 @@
         where      
           id_cliente = {idCliente} and id_desarrollo = {idDesarrollo} and id_contrato = {idContrato} and id_nota_entrada = {idNotaEntrada}
       </select>
+      <delete id="rows">
+         delete from 
+           tc_keet_notas_directos
+         where
+           id_nota_entrada= {idNotaEntrada}
+      </delete>
     </unit>    
     <unit id="TcKeetNotasManosObrasDto">
       <select id="row">
@@ -42,6 +48,12 @@
         where      
           id_cliente = {idCliente} and id_desarrollo = {idDesarrollo} and id_empresa_persona = {idEmpresaPersona} and id_contrato = {idContrato} and id_nota_entrada = {idNotaEntrada}
       </select>
+      <delete id="rows">
+         delete from 
+           tc_keet_notas_manos_obras
+         where
+           id_nota_entrada= {idNotaEntrada}
+      </delete>
     </unit>    
     <unit id="TcKeetIngresosDto">
       <select id="row">

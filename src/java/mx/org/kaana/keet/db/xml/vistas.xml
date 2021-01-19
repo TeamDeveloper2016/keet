@@ -39,6 +39,51 @@
 				  and {condicion}
         {sortOrder}
       </select>
+      <select id="proyecto">
+				select
+					tc_keet_notas_directos.id_nota_directo as id_key,
+					tc_keet_desarrollos.nombres as desarrollo,
+					tc_mantic_clientes.razon_social as cliente,
+					concat(tc_keet_contratos.clave, '-', tc_keet_contratos.etapa) as contrato,
+					tc_keet_notas_directos.*
+				from
+				  tc_keet_notas_directos
+				inner join  
+					tc_keet_desarrollos on tc_keet_notas_directos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join 
+					tc_mantic_clientes on tc_keet_notas_directos.id_cliente= tc_mantic_clientes.id_cliente
+				inner join 
+					tc_keet_contratos on tc_keet_contratos.id_contrato= tc_keet_notas_directos.id_contrato
+				where
+					tc_keet_notas_directos.id_nota_entrada= {idNotaEntrada}
+				order by
+					tc_keet_notas_directos.registro      
+      </select>      
+      <select id="empleado">
+				select
+					tc_keet_notas_manos_obras.id_nota_mano_obra as id_key,
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as empleado,
+					tc_keet_desarrollos.nombres as desarrollo,
+					tc_mantic_clientes.razon_social as cliente,
+					concat(tc_keet_contratos.clave, '-', tc_keet_contratos.etapa) as contrato,
+					tc_keet_notas_manos_obras.*
+				from
+				  tc_keet_notas_manos_obras
+				inner join  
+					tc_keet_desarrollos on tc_keet_notas_manos_obras.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join 
+					tc_mantic_clientes on tc_keet_notas_manos_obras.id_cliente= tc_mantic_clientes.id_cliente
+				left join 
+					tc_keet_contratos on tc_keet_notas_manos_obras.id_contrato= tc_keet_contratos.id_contrato
+				inner join  
+					tr_mantic_empresa_personal on tc_keet_notas_manos_obras.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_keet_notas_manos_obras.id_nota_entrada= {idNotaEntrada}
+				order by
+					tc_keet_notas_manos_obras.registro 
+      </select>
 			<select id="persona">
 				select
 					tr_mantic_empresa_personal.id_empresa_persona as id_key,

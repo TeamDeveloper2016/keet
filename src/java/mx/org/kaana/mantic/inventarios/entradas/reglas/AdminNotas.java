@@ -29,12 +29,12 @@ import org.apache.commons.logging.LogFactory;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public final class AdminNotas extends IAdminArticulos implements Serializable {
+public class AdminNotas extends IAdminArticulos implements Serializable {
 
 	private static final long serialVersionUID=-5550539230224591510L;
 	private static final Log LOG=LogFactory.getLog(AdminNotas.class);
 
-	private NotaEntrada orden;
+	protected NotaEntrada orden;
 	
 	public AdminNotas(NotaEntrada orden) throws Exception {
 		this.orden= orden;
@@ -66,7 +66,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
       this.orden.setIkEmpresaTipoContacto(new UISelectEntity(new Entity(this.orden.getIdEmpresaTipoContacto())));
 		}	// if
 		else {
-  		this.orden.setIdNotaTipo(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
+  		this.orden.setIdNotaTipo(tipoOrden.equals(EOrdenes.DIRECTA)? 1L: 2L);
 			if(this.orden.getIdNotaTipo().equals(1L)) {
 		    this.setArticulos(new ArrayList<>());
 				this.orden.setDiasPlazo(1L);
