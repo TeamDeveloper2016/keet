@@ -1,10 +1,9 @@
-package mx.org.kaana.mantic.db.dto;
+package mx.org.kaana.keet.db.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -24,52 +23,40 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_clientes_deudas")
-public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_clientes_deudas_bitacora")
+public class TcManticClientesDeudasBitacoraDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="id_cliente_deuda_estatus")
   private Long idClienteDeudaEstatus;
-  @Column (name="id_cliente")
-  private Long idCliente;
+  @Column (name="justificacion")
+  private String justificacion;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="id_cliente_deuda")
+  private Long idClienteDeuda;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_cliente_deuda")
-  private Long idClienteDeuda;
-  @Column (name="observaciones")
-  private String observaciones;
-  @Column (name="saldo")
-  private Double saldo;
-  @Column (name="limite")
-  private LocalDate limite;
-  @Column (name="id_ingreso")
-  private Long idIngreso;
-  @Column (name="importe")
-  private Double importe;
+	@Column (name="id_cliente_deuda_bitacora")
+  private Long idClienteDeudaBitacora;
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcManticClientesDeudasDto() {
+  public TcManticClientesDeudasBitacoraDto() {
     this(new Long(-1L));
   }
 
-  public TcManticClientesDeudasDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, LocalDate.now(), null, null);
+  public TcManticClientesDeudasBitacoraDto(Long key) {
+    this(null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticClientesDeudasDto(Long idClienteEstatus, Long idCliente, Long idUsuario, Long idClienteDeuda, String observaciones, Double saldo, LocalDate limite, Long idIngreso, Double importe) {
-    setIdClienteDeudaEstatus(idClienteEstatus);
-    setIdCliente(idCliente);
+  public TcManticClientesDeudasBitacoraDto(Long idClienteDeudaEstatus, String justificacion, Long idUsuario, Long idClienteDeuda, Long idClienteDeudaBitacora) {
+    setIdClienteDeudaEstatus(idClienteDeudaEstatus);
+    setJustificacion(justificacion);
     setIdUsuario(idUsuario);
     setIdClienteDeuda(idClienteDeuda);
-    setObservaciones(observaciones);
-    setSaldo(saldo);
-    setLimite(limite);
-    setIdIngreso(idIngreso);
-    setImporte(importe);
+    setIdClienteDeudaBitacora(idClienteDeudaBitacora);
     setRegistro(LocalDateTime.now());
   }
 	
@@ -81,12 +68,12 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     return idClienteDeudaEstatus;
   }
 
-  public void setIdCliente(Long idCliente) {
-    this.idCliente = idCliente;
+  public void setJustificacion(String justificacion) {
+    this.justificacion = justificacion;
   }
 
-  public Long getIdCliente() {
-    return idCliente;
+  public String getJustificacion() {
+    return justificacion;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -105,44 +92,12 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     return idClienteDeuda;
   }
 
-  public void setObservaciones(String observaciones) {
-    this.observaciones = observaciones;
+  public void setIdClienteDeudaBitacora(Long idClienteDeudaBitacora) {
+    this.idClienteDeudaBitacora = idClienteDeudaBitacora;
   }
 
-  public String getObservaciones() {
-    return observaciones;
-  }
-
-  public void setSaldo(Double saldo) {
-    this.saldo = saldo;
-  }
-
-  public Double getSaldo() {
-    return saldo;
-  }
-
-  public void setLimite(LocalDate limite) {
-    this.limite = limite;
-  }
-
-  public LocalDate getLimite() {
-    return limite;
-  }
-
-  public void setIdIngreso(Long idIngreso) {
-    this.idIngreso = idIngreso;
-  }
-
-  public Long getIdIngreso() {
-    return idIngreso;
-  }
-
-  public void setImporte(Double importe) {
-    this.importe = importe;
-  }
-
-  public Double getImporte() {
-    return importe;
+  public Long getIdClienteDeudaBitacora() {
+    return idClienteDeudaBitacora;
   }
 
   public void setRegistro(LocalDateTime registro) {
@@ -156,12 +111,12 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdClienteDeuda();
+  	return getIdClienteDeudaBitacora();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idClienteDeuda = key;
+  	this.idClienteDeudaBitacora = key;
   }
 
   @Override
@@ -170,21 +125,13 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getIdClienteDeudaEstatus());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCliente());
+		regresar.append(getJustificacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdClienteDeuda());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservaciones());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getSaldo());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getLimite());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdIngreso());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getImporte());
+		regresar.append(getIdClienteDeudaBitacora());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -194,15 +141,11 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idClienteEstatus", getIdClienteDeudaEstatus());
-		regresar.put("idCliente", getIdCliente());
+		regresar.put("idClienteDeudaEstatus", getIdClienteDeudaEstatus());
+		regresar.put("justificacion", getJustificacion());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idClienteDeuda", getIdClienteDeuda());
-		regresar.put("observaciones", getObservaciones());
-		regresar.put("saldo", getSaldo());
-		regresar.put("limite", getLimite());
-		regresar.put("idIngreso", getIdIngreso());
-		regresar.put("importe", getImporte());
+		regresar.put("idClienteDeudaBitacora", getIdClienteDeudaBitacora());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -210,7 +153,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdClienteDeudaEstatus(), getIdCliente(), getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getSaldo(), getLimite(), getIdIngreso(), getImporte(), getRegistro()
+    getIdClienteDeudaEstatus(), getJustificacion(), getIdUsuario(), getIdClienteDeuda(), getIdClienteDeudaBitacora(), getRegistro()
     };
     return regresar;
   }
@@ -224,8 +167,8 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idClienteDeuda~");
-    regresar.append(getIdClienteDeuda());
+    regresar.append("idClienteDeudaBitacora~");
+    regresar.append(getIdClienteDeudaBitacora());
     regresar.append("|");
     return regresar.toString();
   }
@@ -233,18 +176,18 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdClienteDeuda());
+    regresar.append(getIdClienteDeudaBitacora());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticClientesDeudasDto.class;
+    return TcManticClientesDeudasBitacoraDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdClienteDeuda()!= null && getIdClienteDeuda()!=-1L;
+  	return getIdClienteDeudaBitacora()!= null && getIdClienteDeudaBitacora()!=-1L;
   }
 
   @Override
@@ -255,8 +198,8 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticClientesDeudasDto other = (TcManticClientesDeudasDto) obj;
-    if (getIdClienteDeuda() != other.idClienteDeuda && (getIdClienteDeuda() == null || !getIdClienteDeuda().equals(other.idClienteDeuda))) {
+    final TcManticClientesDeudasBitacoraDto other = (TcManticClientesDeudasBitacoraDto) obj;
+    if (getIdClienteDeudaBitacora() != other.idClienteDeudaBitacora && (getIdClienteDeudaBitacora() == null || !getIdClienteDeudaBitacora().equals(other.idClienteDeudaBitacora))) {
       return false;
     }
     return true;
@@ -265,7 +208,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdClienteDeuda() != null ? getIdClienteDeuda().hashCode() : 0);
+    hash = 67 * hash + (getIdClienteDeudaBitacora() != null ? getIdClienteDeudaBitacora().hashCode() : 0);
     return hash;
   }
 

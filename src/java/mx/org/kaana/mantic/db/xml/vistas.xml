@@ -3800,7 +3800,7 @@
 					tc_mantic_clientes_deudas.registro,
 					(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
 					tc_mantic_clientes.razon_social,
-					tc_mantic_clientes_deudas.id_cliente_estatus,
+					tc_mantic_clientes_deudas.id_cliente_deuda_estatus,
 					tc_keet_ingresos.id_ingreso,
 					tc_mantic_clientes_estatus.nombre as estatus
 				from
@@ -3818,7 +3818,7 @@
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente}
 				  and {condicion}
@@ -3843,7 +3843,7 @@
 				inner join
 					tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus
 				inner join 
 					tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
 				inner join 
@@ -3889,7 +3889,7 @@
 				left join 
 					tc_keet_contratos on tc_keet_ingresos.id_contrato= tc_keet_contratos.id_contrato
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus
 				inner join 
 					tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente = tc_mantic_clientes.id_cliente
 				inner join
@@ -3914,7 +3914,7 @@
 					tc_mantic_clientes_deudas.registro,
 					datediff(tc_mantic_clientes_deudas.limite, now()) as dias,
 					tc_mantic_clientes.razon_social,
-					tc_mantic_clientes_deudas.id_cliente_estatus,
+					tc_mantic_clientes_deudas.id_cliente_deuda_estatus,
 					tc_mantic_ventas.id_venta,
 					tc_mantic_clientes_estatus.nombre as estatus
 				from
@@ -3928,11 +3928,11 @@
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente}
 				  and tc_mantic_clientes_deudas.id_ingreso not in ({idIngreso})
-				  and tc_mantic_clientes_deudas.id_cliente_estatus not in ({estatus})
+				  and tc_mantic_clientes_deudas.id_cliente_deuda_estatus not in ({estatus})
 				and 
 					{condicion}
 				{sortOrder}								
@@ -3957,7 +3957,7 @@
 				inner join
 					tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus
 				inner join 
 					tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente = tc_mantic_clientes.id_cliente
 				inner join

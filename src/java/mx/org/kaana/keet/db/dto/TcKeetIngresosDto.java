@@ -30,77 +30,98 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="descuentos")
   private Double descuentos;
+  @Column (name="id_factura")
+  private Long idFactura;
+  @Column (name="id_desarrollo")
+  private Long idDesarrollo;
+  @Column (name="id_tipo_pago")
+  private Long idTipoPago;
+  @Column (name="fecha_recepcion")
+  private LocalDate fechaRecepcion;
+  @Column (name="fecha_factura")
+  private LocalDate fechaFactura;
+  @Column (name="total")
+  private Double total;
+  @Column (name="factura")
+  private String factura;
+  @Column (name="id_contrato")
+  private Long idContrato;
+  @Column (name="orden")
+  private Long orden;
   @Column (name="id_ingreso_estatus")
   private Long idIngresoEstatus;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_ingreso")
   private Long idIngreso;
   @Column (name="id_cliente")
   private Long idCliente;
-  @Column (name="id_desarrollo")
-  private Long idDesarrollo;
-  @Column (name="fecha_recepcion")
-  private LocalDate fechaRecepcion;
-  @Column (name="fecha_factura")
-  private LocalDate fechaFactura;
+  @Column (name="id_sincronizado")
+  private Long idSincronizado;
+  @Column (name="id_banco")
+  private Long idBanco;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
   private LocalDateTime registro;
   @Column (name="consecutivo")
   private String consecutivo;
-  @Column (name="total")
-  private Double total;
-  @Column (name="factura")
-  private String factura;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="impuestos")
   private Double impuestos;
-  @Column (name="id_contrato")
-  private Long idContrato;
+  @Column (name="id_normal")
+  private Long idNormal;
+  @Column (name="id_uso_cfdi")
+  private Long idUsoCfdi;
   @Column (name="sub_total")
   private Double subTotal;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="id_empresa")
   private Long idEmpresa;
-  @Column (name="orden")
-  private Long orden;
-  @Column (name="id_normal")
-  private Long idNormal;
+  @Column (name="referencia")
+  private String referencia;
 
   public TcKeetIngresosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetIngresosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, LocalDate.now(), LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, LocalDate.now(), LocalDate.now(), null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
-  
-  public TcKeetIngresosDto(Double descuentos, Long idIngresoEstatus, Long idIngreso, Long idCliente, Long idDesarrollo, LocalDate fechaRecepcion, LocalDate fechaFactura, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Double impuestos, Long idContrato, Double subTotal, String observaciones, Long idEmpresa, Long orden, Long idNormal) {
+
+  public TcKeetIngresosDto(Double descuentos, Long idFactura, Long idDesarrollo, Long idTipoPago, LocalDate fechaRecepcion, LocalDate fechaFactura, Double total, String factura, Long idContrato, Long orden, Long idIngresoEstatus, Long idTipoMedioPago, Long idIngreso, Long idCliente, Long idSincronizado, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idNormal, Long idUsoCfdi, Double subTotal, String observaciones, Long idEmpresa, String referencia) {
     setDescuentos(descuentos);
-    setIdIngresoEstatus(idIngresoEstatus);
-    setIdIngreso(idIngreso);
-    setIdCliente(idCliente);
+    setIdFactura(idFactura);
     setIdDesarrollo(idDesarrollo);
+    setIdTipoPago(idTipoPago);
     setFechaRecepcion(fechaRecepcion);
     setFechaFactura(fechaFactura);
+    setTotal(total);
+    setFactura(factura);
+    setIdContrato(idContrato);
+    setOrden(orden);
+    setIdIngresoEstatus(idIngresoEstatus);
+    setIdTipoMedioPago(idTipoMedioPago);
+    setIdIngreso(idIngreso);
+    setIdCliente(idCliente);
+    setIdSincronizado(idSincronizado);
+    setIdBanco(idBanco);
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
     setConsecutivo(consecutivo);
-    setTotal(total);
-    setFactura(factura);
     setIdUsuario(idUsuario);
     setImpuestos(impuestos);
-    setIdContrato(idContrato);
+    setIdNormal(idNormal);
+    setIdUsoCfdi(idUsoCfdi);
     setSubTotal(subTotal);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
-    setOrden(orden);
-    this.idNormal= idNormal;
+    setReferencia(referencia);
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -111,12 +132,92 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     return descuentos;
   }
 
+  public void setIdFactura(Long idFactura) {
+    this.idFactura = idFactura;
+  }
+
+  public Long getIdFactura() {
+    return idFactura;
+  }
+
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
+  }
+
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
+  }
+
+  public void setIdTipoPago(Long idTipoPago) {
+    this.idTipoPago = idTipoPago;
+  }
+
+  public Long getIdTipoPago() {
+    return idTipoPago;
+  }
+
+  public void setFechaRecepcion(LocalDate fechaRecepcion) {
+    this.fechaRecepcion = fechaRecepcion;
+  }
+
+  public LocalDate getFechaRecepcion() {
+    return fechaRecepcion;
+  }
+
+  public void setFechaFactura(LocalDate fechaFactura) {
+    this.fechaFactura = fechaFactura;
+  }
+
+  public LocalDate getFechaFactura() {
+    return fechaFactura;
+  }
+
+  public void setTotal(Double total) {
+    this.total = total;
+  }
+
+  public Double getTotal() {
+    return total;
+  }
+
+  public void setFactura(String factura) {
+    this.factura = factura;
+  }
+
+  public String getFactura() {
+    return factura;
+  }
+
+  public void setIdContrato(Long idContrato) {
+    this.idContrato = idContrato;
+  }
+
+  public Long getIdContrato() {
+    return idContrato;
+  }
+
+  public void setOrden(Long orden) {
+    this.orden = orden;
+  }
+
+  public Long getOrden() {
+    return orden;
+  }
+
   public void setIdIngresoEstatus(Long idIngresoEstatus) {
     this.idIngresoEstatus = idIngresoEstatus;
   }
 
   public Long getIdIngresoEstatus() {
     return idIngresoEstatus;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
   }
 
   public void setIdIngreso(Long idIngreso) {
@@ -135,28 +236,20 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     return idCliente;
   }
 
-  public void setIdDesarrollo(Long idDesarrollo) {
-    this.idDesarrollo = idDesarrollo;
+  public void setIdSincronizado(Long idSincronizado) {
+    this.idSincronizado = idSincronizado;
   }
 
-  public Long getIdDesarrollo() {
-    return idDesarrollo;
+  public Long getIdSincronizado() {
+    return idSincronizado;
   }
 
-  public void setFechaRecepcion(LocalDate fechaRecepcion) {
-    this.fechaRecepcion = fechaRecepcion;
+  public void setIdBanco(Long idBanco) {
+    this.idBanco = idBanco;
   }
 
-  public LocalDate getFechaRecepcion() {
-    return fechaRecepcion;
-  }
-
-  public void setFechaFactura(LocalDate fechaFactura) {
-    this.fechaFactura = fechaFactura;
-  }
-
-  public LocalDate getFechaFactura() {
-    return fechaFactura;
+  public Long getIdBanco() {
+    return idBanco;
   }
 
   public void setEjercicio(Long ejercicio) {
@@ -183,22 +276,6 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     return consecutivo;
   }
 
-  public void setTotal(Double total) {
-    this.total = total;
-  }
-
-  public Double getTotal() {
-    return total;
-  }
-
-  public void setFactura(String factura) {
-    this.factura = factura;
-  }
-
-  public String getFactura() {
-    return factura;
-  }
-
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
@@ -215,12 +292,20 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     return impuestos;
   }
 
-  public void setIdContrato(Long idContrato) {
-    this.idContrato = idContrato;
+  public void setIdNormal(Long idNormal) {
+    this.idNormal = idNormal;
   }
 
-  public Long getIdContrato() {
-    return idContrato;
+  public Long getIdNormal() {
+    return idNormal;
+  }
+
+  public void setIdUsoCfdi(Long idUsoCfdi) {
+    this.idUsoCfdi = idUsoCfdi;
+  }
+
+  public Long getIdUsoCfdi() {
+    return idUsoCfdi;
   }
 
   public void setSubTotal(Double subTotal) {
@@ -247,20 +332,12 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
-  public void setOrden(Long orden) {
-    this.orden = orden;
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
   }
 
-  public Long getOrden() {
-    return orden;
-  }
-
-  public Long getIdNormal() {
-    return idNormal;
-  }
-
-  public void setIdNormal(Long idNormal) {
-    this.idNormal = idNormal;
+  public String getReferencia() {
+    return referencia;
   }
 
   @Transient
@@ -280,17 +357,35 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdFactura());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDesarrollo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaRecepcion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaFactura());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTotal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFactura());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdContrato());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdIngresoEstatus());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdIngreso());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDesarrollo());
+		regresar.append(getIdSincronizado());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaRecepcion());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaFactura());
+		regresar.append(getIdBanco());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
@@ -298,15 +393,13 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTotal());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFactura());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImpuestos());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdContrato());
+		regresar.append(getIdNormal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsoCfdi());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSubTotal());
 		regresar.append(Constantes.SEPARADOR);
@@ -314,9 +407,7 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNormal());
+		regresar.append(getReferencia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -325,32 +416,39 @@ public class TcKeetIngresosDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descuentos", getDescuentos());
-		regresar.put("idIngresoEstatus", getIdIngresoEstatus());
-		regresar.put("idIngreso", getIdIngreso());
-		regresar.put("idCliente", getIdCliente());
+		regresar.put("idFactura", getIdFactura());
 		regresar.put("idDesarrollo", getIdDesarrollo());
+		regresar.put("idTipoPago", getIdTipoPago());
 		regresar.put("fechaRecepcion", getFechaRecepcion());
 		regresar.put("fechaFactura", getFechaFactura());
+		regresar.put("total", getTotal());
+		regresar.put("factura", getFactura());
+		regresar.put("idContrato", getIdContrato());
+		regresar.put("orden", getOrden());
+		regresar.put("idIngresoEstatus", getIdIngresoEstatus());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idIngreso", getIdIngreso());
+		regresar.put("idCliente", getIdCliente());
+		regresar.put("idSincronizado", getIdSincronizado());
+		regresar.put("idBanco", getIdBanco());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
-		regresar.put("total", getTotal());
-		regresar.put("factura", getFactura());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("impuestos", getImpuestos());
-		regresar.put("idContrato", getIdContrato());
+		regresar.put("idNormal", getIdNormal());
+		regresar.put("idUsoCfdi", getIdUsoCfdi());
 		regresar.put("subTotal", getSubTotal());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("orden", getOrden());
-		regresar.put("idNormal", getIdNormal());
+		regresar.put("referencia", getReferencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescuentos(), getIdIngresoEstatus(), getIdIngreso(), getIdCliente(), getIdDesarrollo(), getFechaRecepcion(), getFechaFactura(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getImpuestos(), getIdContrato(), getSubTotal(), getObservaciones(), getIdEmpresa(), getOrden(), getIdNormal()
+    getDescuentos(), getIdFactura(), getIdDesarrollo(), getIdTipoPago(), getFechaRecepcion(), getFechaFactura(), getTotal(), getFactura(), getIdContrato(), getOrden(), getIdIngresoEstatus(), getIdTipoMedioPago(), getIdIngreso(), getIdCliente(), getIdSincronizado(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdNormal(), getIdUsoCfdi(), getSubTotal(), getObservaciones(), getIdEmpresa(), getReferencia()
     };
     return regresar;
   }

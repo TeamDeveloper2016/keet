@@ -116,8 +116,8 @@ public class Transaccion extends TransaccionFactura {
 				if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L){
 					deuda= (TcManticClientesDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.pago.getIdClienteDeuda());
 					saldo= deuda.getSaldo() - this.pago.getPago();
-					deuda.setSaldo(saldo);
-					deuda.setIdClienteEstatus(saldo.equals(0D) || this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
+					deuda.setSaldo(saldo); /*FALTA*/
+					deuda.setIdClienteDeudaEstatus(saldo.equals(0D) || this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
 					this.actualizarSaldoCatalogoCliente(sesion, deuda.getIdCliente(), this.pago.getPago(), false);
 				} // if

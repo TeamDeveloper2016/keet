@@ -138,9 +138,9 @@
                 <p:outputLabel for="factura" value="No factura:"/>
 								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ingreso.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{keetIngresosAccion.ingreso.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{keetIngresosAccion.ingreso.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" readonly="true"/>
 								<p:outputLabel for="importe" value="Importe:"/>
-								<p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="#{keetIngresosAccion.ingreso.total}"/>
+                <p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="$ #{keetIngresosAccion.doMiles(keetIngresosAccion.ingreso.total)}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha pago:"/>
 								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{keetIngresosAccion.ingreso.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
@@ -159,9 +159,9 @@
 								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{keetIngresosAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetIngresosAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
-							<p:commandLink value="XML importado: #{keetIngresosAccion.xml.ruta}#{keetIngresosAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty keetIngresosAccion.xml)? 'display: none': ''}"/>
+							<p:commandLink value="XML importado: #{keetIngresosAccion.xml.ruta}#{keetIngresosAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver documento XML" style="#{(empty keetIngresosAccion.xml)? 'display: none': ''}"/>
 							<br/>
-							<p:commandLink value="PDF importado: #{keetIngresosAccion.pdf.ruta}#{keetIngresosAccion.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty keetIngresosAccion.pdf)? 'display: none': ''}"/>
+							<p:commandLink value="PDF importado: #{keetIngresosAccion.pdf.ruta}#{keetIngresosAccion.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver documento" style="#{(empty keetIngresosAccion.pdf)? 'display: none': ''}"/>
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                 <p:dataTable id="faltante" var="row" styleClass="importado janal-wid-100-txt" value="#{keetIngresosAccion.attrs.faltantes}" selection="#{keetIngresosAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom" selectionMode="single">
                   <f:facet name="header">
@@ -230,7 +230,7 @@
                     <h:outputText value="#{row['importe']}"/>
                   </p:column>		
                   <f:facet name="footer">
-                    <p:outputLabel value="Facturado: $ #{keetIngresosAccion.ingreso.total}" styleClass="importado janal-color-blue janal-font-bold"/>
+                    <p:outputLabel value="Facturado: $ #{keetIngresosAccion.doMiles(keetIngresosAccion.ingreso.total)}" styleClass="importado janal-color-blue janal-font-bold"/>
                   </f:facet>
                 </p:dataTable>
 							</p:panelGrid>	

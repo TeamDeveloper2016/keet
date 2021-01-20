@@ -30,8 +30,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_clientes_estatus")
-public class TcManticClientesEstatusDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_clientes_deudas_estatus")
+public class TcManticClientesDeudasEstatusDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Id
@@ -49,16 +49,16 @@ public class TcManticClientesEstatusDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private LocalDateTime registro;
 
-  public TcManticClientesEstatusDto() {
+  public TcManticClientesDeudasEstatusDto() {
     this(new Long(-1L));
   }
 
-  public TcManticClientesEstatusDto(Long key) {
+  public TcManticClientesDeudasEstatusDto(Long key) {
     this(new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticClientesEstatusDto(Long idClienteEstatus, Long idJustificacion, String estatusAsociados, String decripcion, String nombre) {
+  public TcManticClientesDeudasEstatusDto(Long idClienteEstatus, Long idJustificacion, String estatusAsociados, String decripcion, String nombre) {
     setIdClienteEstatus(idClienteEstatus);
     setIdJustificacion(idJustificacion);
     setEstatusAsociados(estatusAsociados);
@@ -189,7 +189,7 @@ public class TcManticClientesEstatusDto implements IBaseDto, Serializable {
 
   @Override
   public Class toHbmClass() {
-    return TcManticClientesEstatusDto.class;
+    return TcManticClientesDeudasEstatusDto.class;
   }
 
   @Override
@@ -205,7 +205,7 @@ public class TcManticClientesEstatusDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticClientesEstatusDto other = (TcManticClientesEstatusDto) obj;
+    final TcManticClientesDeudasEstatusDto other = (TcManticClientesDeudasEstatusDto) obj;
     if (getIdClienteEstatus() != other.idClienteEstatus && (getIdClienteEstatus() == null || !getIdClienteEstatus().equals(other.idClienteEstatus))) {
       return false;
     }

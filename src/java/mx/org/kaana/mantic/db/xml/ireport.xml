@@ -1175,8 +1175,8 @@
           tc_keet_contratos.clave,
           tc_keet_contratos.nombre as contrato,
           if(tc_keet_contratos.id_contrato is null, 'EXTRA', 'NORMAL') as tipo,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , '1', '2') grupo_a,
 					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
 					'1' grupo_c,
 					tc_mantic_clientes_deudas.importe monto,
@@ -1194,7 +1194,7 @@
 				from
 					tc_mantic_clientes_deudas
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus 
         inner join
           tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
         inner join 
@@ -1221,8 +1221,8 @@
           tc_keet_contratos.clave,
           tc_keet_contratos.nombre as contrato,
           if(tc_keet_contratos.id_contrato is null, 'EXTRA', 'NORMAL') as tipo,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , '1', '2') grupo_a,
 					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
 					'2' grupo_c,
 					tc_mantic_clientes_pagos.pago monto,
@@ -1240,7 +1240,7 @@
 				from
 					tc_mantic_clientes_deudas
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus 
 				left join
 					tc_mantic_clientes_pagos on tc_mantic_clientes_deudas.id_cliente_deuda= tc_mantic_clientes_pagos.id_cliente_deuda
         inner join
@@ -1255,7 +1255,7 @@
 					tc_mantic_personas persona_pago on usuarios_pago.id_persona= persona_pago.id_persona
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
-          and tc_mantic_clientes_estatus.id_cliente_estatus not in (3,4) 
+          and tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus not in (3,4) 
           and tc_mantic_clientes_pagos.id_cliente_pago is not null
           and (tc_mantic_clientes_deudas.registro between '{fechaInicio}' and '{fechaFin}') ) abonos
         ) deudas_cliente
@@ -1281,8 +1281,8 @@
                 tc_keet_contratos.clave,
                 tc_keet_contratos.nombre as contrato,
       					if(tc_keet_contratos.id_contrato is null, 'EXTRA', 'NORMAL') as tipo,
-                if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
-                if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+                if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+                if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , '1', '2') grupo_a,
                 tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
                 '1' grupo_c,
                 tc_mantic_clientes_deudas.importe monto,
@@ -1299,7 +1299,7 @@
               from
                 tc_mantic_clientes_deudas
               inner join 
-                tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+                tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus 
               inner join
                 tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
               inner join 
@@ -1326,8 +1326,8 @@
 					tc_keet_contratos.clave,
 					tc_keet_contratos.nombre as contrato,
 					if(tc_keet_contratos.id_contrato is null, 'EXTRA', 'NORMAL') as tipo,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , '1', '2') grupo_a,
 					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
 					'2' grupo_c,
 					tc_mantic_clientes_pagos.pago monto,
@@ -1344,7 +1344,7 @@
 				from
 					tc_mantic_clientes_deudas
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus 
 				left join
 					tc_mantic_clientes_pagos on tc_mantic_clientes_deudas.id_cliente_deuda= tc_mantic_clientes_pagos.id_cliente_deuda
 				inner join
@@ -1372,8 +1372,8 @@
 					tc_mantic_ventas.ticket consecutivo,
 					tc_mantic_ventas.ticket,
 					tc_mantic_facturas.folio factura,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , '1', '2') grupo_a,
 					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
 					'1' grupo_c,
 					tc_mantic_clientes_deudas.importe monto,
@@ -1391,7 +1391,7 @@
 				from
 					tc_mantic_clientes_deudas
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus 
 				left join
 					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
 				left join
@@ -1402,7 +1402,7 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
-          and tc_mantic_clientes_estatus.id_cliente_estatus not in (3,4)) deudas
+          and tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus not in (3,4)) deudas
 				union all
 				select * from (select distinct
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
@@ -1410,8 +1410,8 @@
 					tc_mantic_clientes_pagos.consecutivo consecutivo,
 					tc_mantic_ventas.ticket,
 					null as factura,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , '1', '2') grupo_a,
 					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
 					'2' grupo_c,
 					tc_mantic_clientes_pagos.pago monto,
@@ -1429,7 +1429,7 @@
 				from
 					tc_mantic_clientes_deudas
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus 
 				left join
 					tc_mantic_clientes_pagos on tc_mantic_clientes_deudas.id_cliente_deuda= tc_mantic_clientes_pagos.id_cliente_deuda
 				left join
@@ -1442,7 +1442,7 @@
 					tc_mantic_personas persona_pago on usuarios_pago.id_persona= persona_pago.id_persona
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
-          and tc_mantic_clientes_estatus.id_cliente_estatus not in (3,4) 
+          and tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus not in (3,4) 
           and tc_mantic_clientes_pagos.id_cliente_pago is not null ) abonos
 				union all
 				select * from (select distinct
@@ -1451,8 +1451,8 @@
 					tc_mantic_garantias.consecutivo,
 					tc_mantic_ventas.ticket,
 					null as factura,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
-					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
+					if(tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus =3 , '1', '2') grupo_a,
 					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
 					'3' grupo_c,
 					tc_mantic_garantias.total monto,
@@ -1470,7 +1470,7 @@
 				from
 					tc_mantic_clientes_deudas
 				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus 
+					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus 
 				left join
 					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
 				left join
@@ -1483,7 +1483,7 @@
 					tc_mantic_personas persona_garantia on usuarios_garantia.id_persona= persona_garantia.id_persona
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
-          and tc_mantic_clientes_estatus.id_cliente_estatus not in (3,4) 
+          and tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus not in (3,4) 
           and tc_mantic_garantias.consecutivo is not null) garantias
         ) deudas_cliente
 				inner join 

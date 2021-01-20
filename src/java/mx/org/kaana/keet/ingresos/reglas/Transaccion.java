@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetIngresosArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetIngresosBitacoraDto;
 import mx.org.kaana.keet.db.dto.TcKeetIngresosDto;
+import mx.org.kaana.keet.db.dto.TcManticClientesDeudasBitacoraDto;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -89,10 +90,12 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					this.orden.setIdIngresoEstatus(1L);
+					this.orden.setIdIngresoEstatus(3L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 				  bitacoraNota= new TcKeetIngresosBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdIngreso(), this.orden.getIdIngresoEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+					// AGREGAR UNA CUENTA POR COBRAR 
+          this.toRecordDeuda(sesion, this.orden.getTotal());
      	    this.toUpdateDeleteXml(sesion);	
 					break;
 				case MODIFICAR:
@@ -112,9 +115,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdIngresoEstatus(this.bitacora.getIdIngresoEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.bitacora.getIdIngresoEstatus().equals(3L)) {
-  						// AGREGAR UNA CUENTA POR COBRAR 
-              this.toRecordDeuda(sesion, this.orden.getTotal());
+						// SI ES CANCELAR LA CUENTA FACTURA QUE SE INGRESO
+						if(this.bitacora.getIdIngresoEstatus().equals(4L)) {
+  						// CANCELAR LA CUENTA POR COBRAR
+              this.toCancelDeuda(sesion);
 						} // if	
 					} // if
 					break;
@@ -279,6 +283,18 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		return regresar;
 	} // toSaveFile  
   
+  protected void toCancelDeuda(Session sesion) throws Exception {
+		TcManticClientesDeudasDto deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, "TcManticClientesDeudasDto", "detalle", this.orden.toMap());		
+    if(deuda!= null) {
+      deuda.setIdClienteDeudaEstatus(5L); // CANCELADA
+		  DaoFactory.getInstance().update(sesion, deuda);		
+      TcManticClientesDeudasBitacoraDto registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
+      DaoFactory.getInstance().insert(sesion, registro);		
+    } // if
+    else
+      LOG.error("NO EXISTE LA CUENTA POR COBRAR DE LA FACTURA ["+ this.orden.getConsecutivo()+ "]");
+  }
+  
   protected void toRecordDeuda(Session sesion, Double importe) throws Exception {
 		TcManticClientesDeudasDto deuda= null;		
 		deuda= new TcManticClientesDeudasDto();
@@ -288,8 +304,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		deuda.setImporte(importe);
 		deuda.setSaldo(importe);
 		deuda.setLimite(this.toLimiteCredito(sesion));
-		deuda.setIdClienteEstatus(1L);
+		deuda.setIdClienteDeudaEstatus(1L);
 		DaoFactory.getInstance().insert(sesion, deuda);		
+    TcManticClientesDeudasBitacoraDto registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
+    DaoFactory.getInstance().insert(sesion, registro);		
 	} // registrarDeuda  
   
 	public LocalDate toLimiteCredito(Session sesion) throws Exception {

@@ -400,7 +400,7 @@ public class Transaccion extends IBaseTnx{
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta=" + this.detalleGarantia.getIdVenta());
 			deudaCliente= (TcManticClientesDeudasDto) DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, params);			
-			deudaCliente.setIdClienteEstatus(EEstatusClientes.FINALIZADA.getIdEstatus());
+			deudaCliente.setIdClienteDeudaEstatus(EEstatusClientes.FINALIZADA.getIdEstatus());
 			observaciones= (Cadena.isVacio(deudaCliente.getObservaciones()) ? "" : deudaCliente.getObservaciones()).concat(". Deuda finalizada por devolución. Fecha ").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA));
 			deudaCliente.setObservaciones(observaciones);
 			regresar= DaoFactory.getInstance().update(sesion, deudaCliente)>= 1L;
@@ -478,11 +478,11 @@ public class Transaccion extends IBaseTnx{
 			deudaCliente= (TcManticClientesDeudasDto) DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, params);			
 			devolucionEfectivo= this.detalleGarantia.getPagoGarantia().getTipoDevolucion().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 			if(devolucionEfectivo){
-				deudaCliente.setIdClienteEstatus(EEstatusClientes.FINALIZADA.getIdEstatus());
+				deudaCliente.setIdClienteDeudaEstatus(EEstatusClientes.FINALIZADA.getIdEstatus());
 				observaciones= (Cadena.isVacio(deudaCliente.getObservaciones()) ? "" : deudaCliente.getObservaciones()).concat(". Deuda finalizada por devolución. Fecha ").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA));
 			} // if
 			else{
-				deudaCliente.setIdClienteEstatus(EEstatusClientes.PARCIALIZADA.getIdEstatus());
+				deudaCliente.setIdClienteDeudaEstatus(EEstatusClientes.PARCIALIZADA.getIdEstatus());
 				observaciones= (Cadena.isVacio(deudaCliente.getObservaciones()) ? "" : deudaCliente.getObservaciones()).concat(". Deuda parcializada con saldo a favor por devolución. Fecha ").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA));
 			} // else
 			deudaCliente.setObservaciones(observaciones);
@@ -535,7 +535,7 @@ public class Transaccion extends IBaseTnx{
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta=" + this.detalleGarantia.getIdVenta());
 			deudaCliente= (TcManticClientesDeudasDto) DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, params);			
-			deudaCliente.setIdClienteEstatus(EEstatusClientes.FINALIZADA.getIdEstatus());
+			deudaCliente.setIdClienteDeudaEstatus(EEstatusClientes.FINALIZADA.getIdEstatus());
 			observaciones= (Cadena.isVacio(deudaCliente.getObservaciones()) ? "" : deudaCliente.getObservaciones()).concat(". Deuda finalizada por devolución. Fecha ").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA));
 			deudaCliente.setObservaciones(observaciones);
 			deudaCliente.setSaldo(deudaCliente.getSaldo() - this.detalleGarantia.getPagoCredito());
@@ -609,7 +609,7 @@ public class Transaccion extends IBaseTnx{
 		deuda.setImporte(importe);
 		deuda.setSaldo(importe);
 		deuda.setLimite(toLimiteCredito(sesion));
-		deuda.setIdClienteEstatus(1L);
+		deuda.setIdClienteDeudaEstatus(1L);
 		DaoFactory.getInstance().insert(sesion, deuda);		
 	} // registrarDeuda
 	

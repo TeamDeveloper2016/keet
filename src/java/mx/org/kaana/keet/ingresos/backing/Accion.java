@@ -149,6 +149,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.ingreso= new TcKeetIngresosDto();
  					this.ingreso.setIdUsuario(JsfBase.getIdUsuario());
  					this.ingreso.setFechaRecepcion(this.ingreso.getFechaRecepcion().plusDays(7));
+          this.ingreso.setTotal(0D);
     			this.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
           this.setIkDesarrollo(new UISelectEntity(-1L));
           this.setIkCliente(new UISelectEntity(-1L));

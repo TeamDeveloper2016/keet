@@ -1309,7 +1309,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.7.0';
+      return '0.3.7.2';
     }, // version
     align: function(pixels) {
       try {
@@ -1365,7 +1365,7 @@
 			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-selectcheckboxmenu,div.ui-chkbox,span.ui-button,div.ui-inputswitch').each(function(index) {  
 				if(actionValidate=== 'CONSULTAR') {
 					if(this.id!== 'verificadorValue' && this.id!== 'verificadorBuscarPor') {
-						if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon"))) {
+						if(!(this.tagName=== 'BUTTON' && (this.id=== 'cancelar' || this.id=== 'cancelarIcon')) && !($(this).hasClass('janal-no-lock'))) {
 							if(this.tagName=== 'A') {
 								$(this).attr('iktan', $(this).attr('href'));
 								$(this).removeAttr('href').addClass('ui-state-disabled'); 

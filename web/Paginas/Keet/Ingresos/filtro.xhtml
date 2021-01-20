@@ -208,7 +208,7 @@
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus eq '1'}"/>					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetIngresosFiltro.doMovimientos}"/>
             <p:separator/>
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetIngresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetIngresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
             <p:menuitem id="pagos" icon="fa fa-funnel-dollar" value="Pagos" onstart="return janal.bloquear()" process="@this tabla" action="#{keetIngresosFiltro.doRecordPagos}" rendered="#{fn:contains('|3|', keetIngresosFiltro.attrs.seleccionado.idIngresoEstatus)}"/>
           </p:contextMenu>						
         </div>

@@ -645,7 +645,7 @@ public class Transaccion extends TransaccionFactura {
 		deuda.setImporte(importe);
 		deuda.setSaldo(importe);
 		deuda.setLimite(toLimiteCredito(sesion));
-		deuda.setIdClienteEstatus(1L);
+		deuda.setIdClienteDeudaEstatus(1L);
 		DaoFactory.getInstance().insert(sesion, deuda);		
 	} // registrarDeuda
 	
