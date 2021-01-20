@@ -97,12 +97,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			if(eaccion.equals(EAccion.COMPLETO)) 
 			  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
-			else 
+			else
 			  JsfBase.setFlashAttribute("accion", eaccion);		
 			if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && ((Entity)this.attrs.get("seleccionado")).toLong("idDirecta").equals(2L))) 
 				regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
 			else
-				regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+				regresar= regresar.concat("?zOyOxDwIvGuCt=zAyIxRwEvCuTtDs'");
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");		
 			JsfBase.setFlashAttribute("idDevolucion", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).toLong("idNotaEntrada") : -1L);

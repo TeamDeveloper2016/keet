@@ -128,7 +128,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			} // if
       switch(idNotaTipo.intValue()) {
         case 1: // DIRECTA
-          regresar= "directa".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+          regresar= "directa".concat("?zOyOxDwIvGuCt=zAyIxRwEvCuTtDs");
           JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.COMPLETO)? EAccion.AGREGAR: eaccion);
           break;
         case -1:// NORMAL
@@ -137,11 +137,11 @@ public class Filtro extends IBaseFilter implements Serializable {
           if((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && idNotaTipo.equals(2L)) 
             regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
           else
-            regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+            regresar= regresar.concat("?zOyOxDwIvGuCt=zAyIxRwEvCuTtDs");
           JsfBase.setFlashAttribute("idOrdenCompra", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || idNotaTipo.equals(2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
           break;
         case 3: // MANUAL
-          regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+          regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zAyIxRwEvCuTtDs");
           JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
           break;
       } // switch     

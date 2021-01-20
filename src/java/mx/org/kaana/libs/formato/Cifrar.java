@@ -77,7 +77,8 @@ public final class Cifrar {
 	}
 
   public static void main(String ... args) throws Exception {
-		System.out.println(Cifrar.cifrar("CODIGO")); // zOyOxDwIvGuCt
+		System.out.println(Cifrar.cifrar("DIRECTA")); // zAyIxRwEvCuTtDs
+		System.out.println(Cifrar.cifrar("CODIGO")); // zOyOxDwIvGuCt'
 		System.out.println(Cifrar.cifrar("NORMAL")); // zLyOxRwMvAuNt
 		System.out.println(Cifrar.cifrar("ALMACEN")); // zNyLxMwAvCuEtAs
 		System.out.println(Cifrar.cifrar("PROVEEDOR")); // zRyRxOwVvEuEtDsOrPq

@@ -128,7 +128,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   protected void init() {		
     try {
 			this.attrs.put("idTipoComparacion", 1);
-			this.aplicar  =  false;
+			this.aplicar=  false;
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
