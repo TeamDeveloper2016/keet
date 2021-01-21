@@ -2,6 +2,7 @@ package mx.org.kaana.keet.ingresos.backing;
 
 import java.io.File;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.db.dto.TcKeetIngresosDto;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
@@ -38,6 +38,8 @@ import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.keet.ingresos.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
@@ -58,15 +60,20 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   private static final long serialVersionUID= 327393488565639367L;
 	
 	private EAccion accion;	
-  private TcKeetIngresosDto ingreso;
+  private TcManticVentasDto ingreso;
+  private TcManticFacturasDto comprobante;
   private TcManticClientesDto cliente;
 	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
 
-  public TcKeetIngresosDto getIngreso() {
+  public TcManticVentasDto getIngreso() {
     return ingreso;
+  }
+
+  public TcManticFacturasDto getComprobante() {
+    return comprobante;
   }
 
   public TcManticClientesDto getCliente() {
@@ -128,7 +135,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 //			if(JsfBase.getFlashAttribute("accion")== null)
 //				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso")== null? -1L: JsfBase.getFlashAttribute("idIngreso"));
+      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.attrs.put("folio", "");
@@ -146,9 +153,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case AGREGAR:								
-          this.ingreso= new TcKeetIngresosDto();
+          this.comprobante= new TcManticFacturasDto();
+          this.ingreso= new TcManticVentasDto();
  					this.ingreso.setIdUsuario(JsfBase.getIdUsuario());
- 					this.ingreso.setFechaRecepcion(this.ingreso.getFechaRecepcion().plusDays(7));
+ 					// this.ingreso.setFechaRecepcion(this.ingreso.getVigencia().plusDays(7));
           this.ingreso.setTotal(0D);
     			this.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
           this.setIkDesarrollo(new UISelectEntity(-1L));
@@ -157,7 +165,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-          this.ingreso= (TcKeetIngresosDto)DaoFactory.getInstance().findById(TcKeetIngresosDto.class, (Long)this.attrs.get("idIngreso"));
+          this.ingreso= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, (Long)this.attrs.get("idVenta"));
           this.setIkEmpresa(new UISelectEntity(new Entity(this.ingreso.getIdEmpresa())));
           this.setIkDesarrollo(new UISelectEntity(new Entity(this.ingreso.getIdDesarrollo())));
           this.setIkCliente(new UISelectEntity(new Entity(this.ingreso.getIdCliente())));
@@ -169,7 +177,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           break;
       } // switch
       this.toLoadCatalog();
-    } // try
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -177,7 +185,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   } // doLoad
 
   public String doAceptar() { 
-    this.ingreso.setIdNormal(this.ingreso.getIdContrato()<= 0? 2L: 1L);
+    this.ingreso.setIdExtra(this.ingreso.getIdContrato()<= 0? 1L: 2L);
     Transaccion transaccion= null;
     String regresar        = null;
     try {
@@ -207,17 +215,17 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       } // if
       else 
         JsfBase.addMessage((String)this.attrs.get("folio"), ETipoMensaje.ERROR);
-    } // try
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    JsfBase.setFlashAttribute("idIngreso", this.ingreso.getIdIngreso());
+    JsfBase.setFlashAttribute("idVenta", this.ingreso.getIdVenta());
     return regresar;
   } // doAccion
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idIngreso", this.attrs.get("idIngreso"));
+  	JsfBase.setFlashAttribute("idVenta", this.attrs.get("idVenta"));
 		if(this.ingreso== null || !this.ingreso.isValid()) {
 			if(this.getXml()!= null && this.getXml().getRuta()!= null) {
 			  File oldNameFile= new File(Configuracion.getInstance().getPropiedadSistemaServidor("ingresos").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
@@ -319,7 +327,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.setIkContrato(contratos.get(0));
         else  
           this.setIkContrato(contratos.get(contratos.indexOf(this.getIkContrato())));
-		} // try
+		} // try // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
 		} // catch
@@ -341,7 +349,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.setIkCliente(new UISelectEntity(item.toLong("idCliente")));
       this.cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, this.ingreso.getIdCliente());
 			this.doLoadContratos();
-		} // try
+		} // try // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
@@ -356,7 +364,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       case "Importar":
         if(this.ingreso.getIdDesarrollo()!= null && this.ingreso.getIdDesarrollo()> 0L) {
      		  if(this.attrs.get("faltantes")== null)
-		  	    this.doLoadFiles("TcKeetIngresosArchivosDto", this.ingreso.getIdIngreso(), "idIngreso", false, 1D);
+		  	    this.doLoadFiles("TcManticVentasArchivosDto", this.ingreso.getIdVenta(), "idVenta", false, 1D);
         } // if
         else
     			JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero.", ETipoMensaje.ALERTA);      			
@@ -366,14 +374,14 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 	  
 	public void doFileUpload(FileUploadEvent event) {
 		if(this.ingreso.getIdDesarrollo()!= null && this.ingreso.getIdDesarrollo()> 0L) {
-			this.doFileUpload(event, this.ingreso.getFechaFactura().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("ingresos"), this.cliente.getRfc(), false, 1D);
+			this.doFileUpload(event, this.ingreso.getVigencia().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("ingresos"), this.cliente.getRfc(), false, 1D);
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
         this.ingreso.setDescuentos(0D);
         this.ingreso.setImpuestos(Numero.getDouble(this.getFactura().getImpuesto().getTraslado().getImporte(), 0D));
         this.ingreso.setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
         this.ingreso.setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
-        this.ingreso.setFactura(this.getFactura().getFolio());
-        this.ingreso.setFechaFactura(Fecha.toLocalDate(this.getFactura().getFecha()));
+        this.comprobante.setFolio(this.getFactura().getFolio());
+        this.comprobante.setTimbrado(Fecha.toLocalDateTime(this.getFactura().getFecha(), "00:00:00"));
 				this.doCheckFolio();
 			} // if
 		} // if
@@ -386,9 +394,9 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		try {
 			this.attrs.put("folio", "");
 			params=new HashMap<>();
-			params.put("factura", this.ingreso.getFactura());
+			params.put("factura", this.comprobante.getFolio());
 			params.put("idCliente", this.ingreso.getIdCliente());
-			params.put("idIngreso", this.ingreso.getIdIngreso());
+			params.put("idVenta", this.ingreso.getIdVenta());
 			int month= Calendar.getInstance().get(Calendar.MONTH);
 			if(month<= 5) {
 				params.put("inicio", Calendar.getInstance().get(Calendar.YEAR)+ "0101");
@@ -398,10 +406,10 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 				params.put("inicio", Calendar.getInstance().get(Calendar.YEAR)+ "0701");
 				params.put("termino", Calendar.getInstance().get(Calendar.YEAR)+ "1231");
 			} // else
-			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcKeetIngresosDto", "folio", params);
+			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticVentasDto", "folio", params);
 			if(entity!= null && entity.size()> 0) {
-				UIBackingUtilities.execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ this.ingreso.getFactura()+ "] se registró en la factura con consecutivo "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
-   			this.attrs.put("folio", "El folio ["+ this.ingreso.getFactura()+ "] se registró en la factura con consecutivo "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.");
+				UIBackingUtilities.execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ this.comprobante.getFolio()+ "] se registró en la factura con consecutivo "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
+   			this.attrs.put("folio", "El folio ["+ this.comprobante.getFolio()+ "] se registró en la factura con consecutivo "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.");
       } // if  
 		} // try
 		catch (Exception e) {

@@ -32,6 +32,8 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.ingresos.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 
 @Named(value = "keetIngresosFiltro")
@@ -126,7 +128,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado     = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion((TcKeetIngresosDto)DaoFactory.getInstance().findById(TcKeetIngresosDto.class, seleccionado.getKey()));
+			transaccion= new Transaccion((TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La factura se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
@@ -293,12 +295,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion           = null;
-		TcKeetIngresosBitacoraDto bitacora= null;
+		TcManticVentasBitacoraDto bitacora= null;
 		Entity seleccionado               = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			TcKeetIngresosDto orden= (TcKeetIngresosDto)DaoFactory.getInstance().findById(TcKeetIngresosDto.class, seleccionado.getKey());
-			bitacora   = new TcKeetIngresosBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()));
+			TcManticVentasDto orden= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, seleccionado.getKey());
+			bitacora   = new TcManticVentasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getCticket(), orden.getTotal());
 			transaccion= new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);

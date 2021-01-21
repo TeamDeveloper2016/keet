@@ -135,67 +135,6 @@
           nombre = '{nombre}'
       </select>
     </unit>    
-    <unit id="TcKeetIngresosArchivosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_keet_ingresos_archivos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_keet_ingresos_archivos
-        where      
-          id_ingreso = {idIngreso} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
-      </select>
-      <select id="exists">
-        select      
-          *
-        from      
-          tc_keet_ingresos_archivos
-        where      
-          id_tipo_archivo = {idTipoArchivo} and id_ingreso = {idIngreso}
-				order by
-				  registro desc
-      </select>
-      <select id="all">
-        select      
-          *
-        from      
-          tc_keet_ingresos_archivos
-        where      
-          id_ingreso = {idIngreso}
-      </select>
-      <select id="listado">
-        select      
-          *
-        from      
-          tc_keet_ingresos_archivos
-        where      
-          ruta = '{ruta}'
-				  and id_principal= 1
-				order by
-				  ruta
-      </select>
-			<select id="ejercicios">
-        select      
-          distinct(ejercicio) as id_key
-        from      
-          tc_keet_ingresos_archivos
- 				order by
-				  ejercicio
-			</select>
-			<update id="rows">
-				update tc_keet_ingresos_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_ingreso = {idIngreso}
-			</update>
-			<delete id="rows">
-				delete from tc_keet_ingresos_archivos where id_ingreso = {idIngreso}
-			</delete>      
-    </unit>    
     <unit id="TcKeetIngresosBitacoraDto">
       <select id="row">
         select      
