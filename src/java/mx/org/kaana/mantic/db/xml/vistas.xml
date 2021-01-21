@@ -2144,6 +2144,21 @@
 			</select>
 		</unit>
 		<unit id="VistaVentasDto">
+			<select id="folio">
+				select
+				  tc_mantic_ventas.ticket as consecutivo, tc_mantic_facturas.registro
+				from
+				  tc_mantic_ventas
+        left join
+          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+				where
+				  tc_mantic_facturas.folio = '{factura}'
+				  and tc_mantic_ventas.id_cliente= {idCliente}
+				  and date_format(tc_mantic_facturas.registro, '%Y%m%d')&gt;= '{inicio}' and date_format(tc_mantic_facturas.registro, '%Y%m%d')&lt;= '{termino}'
+					and tc_mantic_ventas.id_venta&lt;&gt; {idVenta}
+				order by
+				  tc_mantic_facturas.registro desc				
+			</select>        
 			<select id="pagosVenta">
 				select 					
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago as id_key,

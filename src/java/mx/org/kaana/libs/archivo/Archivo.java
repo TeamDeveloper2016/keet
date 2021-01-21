@@ -191,13 +191,22 @@ public final class Archivo {
     return regresar;
   }
 	
-	public static String toFormatNameFile(String nameFile, String prefijo) {
+	public static String toFormatName(String prefijo, String sufijo) {
+    StringBuilder regresar = new StringBuilder();
+    regresar.append(Cadena.isVacio(prefijo)? Constantes.ARCHIVO_PATRON_NOMBRE: prefijo.toUpperCase());
+    regresar.append(Constantes.ARCHIVO_GUION_SEPARADOR);
+    regresar.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
+    regresar.append(sufijo);
+    return regresar.toString();    
+  }
+
+	public static String toFormatNameFile(String sufijo, String prefijo) {
     StringBuilder regresar = new StringBuilder();
     regresar.append(Cadena.isVacio(prefijo)? Constantes.ARCHIVO_PATRON_NOMBRE: prefijo.toUpperCase());
     regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     regresar.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
     regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
-    regresar.append(nameFile);
+    regresar.append(sufijo);
     return regresar.toString();    
   }
 

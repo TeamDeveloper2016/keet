@@ -108,9 +108,12 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	}
 	
 	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, Boolean sinIva, Double tipoDeCambio) {
+    this.doFileUpload(event, fechaFactura, carpeta, clave, sinIva, tipoDeCambio, Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase()));
+  }
+  
+	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, Boolean sinIva, Double tipoDeCambio, String nameFile) {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
-		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result       = null;		
 		Long fileSize     = 0L;
 		boolean isXml     = false;

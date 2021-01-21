@@ -706,6 +706,39 @@
         where 
           id_factura = {idFactura}
       </select>
+      <select id="all">
+        select      
+          *
+        from      
+          tc_mantic_facturas_archivos
+        where      
+          id_factura= {idFactura}
+      </select>
+      <select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_facturas_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+			<select id="ejercicios">
+        select      
+          distinct(ejercicio) as id_key
+        from      
+          tc_mantic_facturas_archivos
+ 				order by
+				  ejercicio
+			</select>
+			<update id="rows">
+				update tc_mantic_facturas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_factura= {idFactura}
+			</update>
+			<delete id="rows">
+				delete from tc_mantic_facturas_archivos where id_factura= {idFactura}
+			</delete>      
     </unit>		
 		<unit id="TrManticGarantiaMedioPagoDto">
       <select id="row">
@@ -4330,6 +4363,15 @@
         where      
           nombre = '{nombre}'
       </select>
+      <select id="clave">
+        select      
+          tc_mantic_tipos_medios_pagos.id_tipo_medio_pago as id_key,
+          tc_mantic_tipos_medios_pagos.*
+        from      
+          tc_mantic_tipos_medios_pagos
+        where      
+          clave = '{clave}'
+      </select>
       <select id="caja">
         select      
           *
@@ -4376,6 +4418,15 @@
           tc_mantic_tipos_pagos
         where      
           id_tipo_medio_pago = {idTipoMedioPago} and nombre = '{nombre}'
+      </select>
+      <select id="clave">
+        select      
+          tc_mantic_tipos_pagos.id_tipo_pago as id_key,
+          tc_mantic_tipos_pagos.*
+        from      
+          tc_mantic_tipos_pagos
+        where      
+          clave = '{clave}'
       </select>
     </unit>
 	    <unit id="TcManticTiposPersonasDto">
@@ -4486,7 +4537,8 @@
       </select>
       <select id="identically">
         select      
-          *
+          tc_mantic_usos_cfdi.id_uso_cfdi as id_key,
+          tc_mantic_usos_cfdi.*
         from      
           tc_mantic_usos_cfdi
         where      

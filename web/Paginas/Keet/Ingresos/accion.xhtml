@@ -136,14 +136,14 @@
 								</p:selectOneMenu>																						
 								<p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="factura" value="No factura:"/>
-								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ingreso.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.comprobante.folio}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{keetIngresosAccion.ingreso.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" readonly="true"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" readonly="true"/>
 								<p:outputLabel for="importe" value="Importe:"/>
                 <p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="$ #{keetIngresosAccion.doMiles(keetIngresosAccion.ingreso.total)}" readonly="true"/>
-								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="fechaRecepcion" value="Fecha pago:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{keetIngresosAccion.ingreso.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+								<p:spacer width="1px"/><p:separator rendered="false"/>
+                <p:outputLabel for="fechaRecepcion" value="Fecha pago:" rendered="false"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" rendered="false"/>
               </p:panelGrid>
               <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
               <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="desarrollo" oncomplete="janal.desbloquear();"/>

@@ -1,11 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -13,9 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -68,6 +61,8 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
   private Long mes;
   @Column (name="comentarios")
   private String comentarios;
+  @Column (name="archivo")
+  private String archivo;
 
   public TcManticFacturasArchivosDto() {
     this(new Long(-1L));
@@ -79,6 +74,10 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
   }
 
   public TcManticFacturasArchivosDto(Long idFactura, String ruta, LocalDateTime cancelacion, String nombre, Long ejercicio, String folioCancelacion, Long idFacturaArchivo, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String comentarios) {
+    this(idFactura, ruta, cancelacion, nombre, ejercicio, folioCancelacion, idFacturaArchivo, tamanio, idUsuario, idTipoArchivo, idPrincipal, observaciones, alias, mes, comentarios, nombre);
+  }
+  
+  public TcManticFacturasArchivosDto(Long idFactura, String ruta, LocalDateTime cancelacion, String nombre, Long ejercicio, String folioCancelacion, Long idFacturaArchivo, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String comentarios, String archivo) {
     setIdFactura(idFactura);
     setRuta(ruta);
     setCancelacion(cancelacion);
@@ -95,6 +94,7 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
     setAlias(alias);
     setMes(mes);
     setComentarios(comentarios);
+    this.archivo= archivo;
   }
 	
   public void setIdFactura(Long idFactura) {
@@ -225,6 +225,14 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
     return comentarios;
   }
 
+  public String getArchivo() {
+    return archivo;
+  }
+
+  public void setArchivo(String archivo) {
+    this.archivo = archivo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -271,6 +279,8 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
 		regresar.append(getMes());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getComentarios());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getArchivo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -294,13 +304,14 @@ public class TcManticFacturasArchivosDto implements IBaseDto, Serializable {
 		regresar.put("alias", getAlias());
 		regresar.put("mes", getMes());
 		regresar.put("comentarios", getComentarios());
+		regresar.put("archivo", getArchivo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdFactura(), getRuta(), getCancelacion(), getNombre(), getEjercicio(), getFolioCancelacion(), getRegistro(), getIdFacturaArchivo(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getComentarios()
+      getIdFactura(), getRuta(), getCancelacion(), getNombre(), getEjercicio(), getFolioCancelacion(), getRegistro(), getIdFacturaArchivo(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getComentarios(), getArchivo()
     };
     return regresar;
   }

@@ -72,19 +72,6 @@
         where      
           consecutivo = '{consecutivo}'
       </select>
-			<select id="folio">
-				select
-				  consecutivo, registro
-				from
-				  tc_keet_ingresos
-				where
-				  factura = '{factura}'
-				  and id_cliente= {idCliente}
-				  and date_format(registro, '%Y%m%d')&gt;= '{inicio}' and date_format(registro, '%Y%m%d')&lt;= '{termino}'
-					and id_ingreso&lt;&gt; {idIngreso}
-				order by
-				  registro desc				
-			</select>      
       <select id="siguiente">
         select
 					max(orden)+ 1 as siguiente

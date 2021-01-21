@@ -32,6 +32,7 @@ public final class Constantes {
   public static final String BR = "<br>";
   public static final String EOL = "\r\n";
   public static final String ENTER = "\n";
+  public static final String ARCHIVO_GUION_SEPARADOR = "-";
   public static final String ARCHIVO_PATRON_SEPARADOR = "_";
   public static final String ARCHIVO_PATRON_NOMBRE = "CAFU";
   public static final String NOMBRE_ARCHIVO_DEFAULT = "SinNombre";

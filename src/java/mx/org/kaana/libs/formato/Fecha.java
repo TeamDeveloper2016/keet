@@ -639,6 +639,20 @@ public  class Fecha {
 		return regresar;
 	}
 
+	public static LocalDateTime toLocalDateTime(String date) {
+    // date equals 2019-12-10T18:24:31
+    //             0123456789012345678
+		LocalDateTime regresar= LocalDateTime.of(
+			Integer.parseInt(date.substring(0, 4)),
+			Integer.parseInt(date.substring(5, 7)),
+			Integer.parseInt(date.substring(8, 10)),
+			Integer.parseInt(date.substring(11, 13)),
+			Integer.parseInt(date.substring(14, 16)),
+			Integer.parseInt(date.substring(17, 19))
+		);
+		return regresar;
+  }
+  
 	public static LocalDate toLocalDate(String date) {
 		//             0123456789
 		// date equals 01-01-2018
