@@ -63,11 +63,11 @@ public class Filtro extends FiltroFactura implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia"));
+      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
 			this.toLoadCatalog();
-      if(this.attrs.get("idFicticia")!= null) 
+      if(this.attrs.get("idVenta")!= null) 
 			  this.doLoad();			
-      this.attrs.remove("idFicticia"); 			
+      this.attrs.remove("idVenta"); 			
 			super.initBase();
     } // try
     catch (Exception e) {
@@ -112,8 +112,8 @@ public class Filtro extends FiltroFactura implements Serializable {
 			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
 			 	 sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
-		if(!Cadena.isVacio(this.attrs.get("idFicticia")) && !this.attrs.get("idFicticia").toString().equals("-1"))
-  		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idFicticia")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
+  		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("consecutivo")).append("%') and ");		
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
@@ -143,7 +143,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Cotizaciones/filtro");		
-			JsfBase.setFlashAttribute("idFicticia", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 			if(eaccion.equals(EAccion.AGREGAR)){
 				JsfBase.setFlashAttribute("observaciones", null);		
 				JsfBase.setFlashAttribute("idCliente", null);		

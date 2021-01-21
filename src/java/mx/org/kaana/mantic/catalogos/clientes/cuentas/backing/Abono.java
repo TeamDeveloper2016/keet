@@ -71,10 +71,10 @@ public class Abono extends IBasePagos implements Serializable {
 			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.id_cliente_deuda=" + this.attrs.get("idClienteDeuda"));
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "cuentas", params);
-			this.attrs.put("permitirPago", deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus()));
+			this.attrs.put("permitirPago", deuda.toLong("idClienteDeudaEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus()));
 			this.attrs.put("deuda", deuda);
 			this.attrs.put("pago", deuda.toDouble("saldo"));			
-      if(!deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())) 
+      if(!deuda.toLong("idClienteDeudaEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())) 
         UIBackingUtilities.execute("janal.bloquear(); PF('dlgPago').show();");
 		} // try
 		catch (Exception e) {

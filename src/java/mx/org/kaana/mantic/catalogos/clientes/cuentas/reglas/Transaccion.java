@@ -162,7 +162,7 @@ public class Transaccion extends TransaccionFactura {
 					if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
 						params= new HashMap<>();
 						params.put("saldo", abono);
-						params.put("idClienteEstatus", idEstatus);
+						params.put("idClienteDeudaEstatus", idEstatus);
 						DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
 						this.actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
 					}	// if				
@@ -279,7 +279,7 @@ public class Transaccion extends TransaccionFactura {
 							if(this.registrarPago(sesion, deuda.getKey(), pagoParcial)){
 								params= new HashMap<>();
 								params.put("saldo", abono);
-								params.put("idClienteEstatus", idEstatus);
+								params.put("idClienteDeudaEstatus", idEstatus);
 								DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
 								actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
 							}	// if				
@@ -288,7 +288,7 @@ public class Transaccion extends TransaccionFactura {
 							if(registrarPago(sesion, deuda.getKey(), 0D)) {
 								params= new HashMap<>();
 								params.put("saldo", 0);
-								params.put("idClienteEstatus", EEstatusClientes.FINALIZADA.getIdEstatus());
+								params.put("idClienteDeudaEstatus", EEstatusClientes.FINALIZADA.getIdEstatus());
 								DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
 							}	// if				
 						} // else if

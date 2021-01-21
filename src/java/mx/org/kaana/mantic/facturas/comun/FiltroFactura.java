@@ -275,8 +275,8 @@ public abstract class FiltroFactura extends IBaseTicket {
 			else
   		  sb.append("(tc_mantic_ventas.id_venta is null) and ");
 		} // if
-		if(!Cadena.isVacio(this.attrs.get("idFicticia")) && !this.attrs.get("idFicticia").toString().equals("-1"))
-  		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idFicticia")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
+  		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("folio")))
@@ -290,7 +290,7 @@ public abstract class FiltroFactura extends IBaseTicket {
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
 		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("idTipoDocumento")) && !this.attrs.get("idTipoDocumento").toString().equals("-1"))
-  		sb.append("(tc_mantic_ventas.id_tipo_documento=").append(this.attrs.get("idTipoDocumento")).append(") and ");
+  		sb.append("(tc_mantic_ventas.id_manual=").append(this.attrs.get("idTipoDocumento")).append(") and ");
 		if(this.attrs.get("idVentaEstatus")!= null && !((UISelectEntity) this.attrs.get("idVentaEstatus")).getKey().equals(-1L))
   		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(((UISelectEntity) this.attrs.get("idVentaEstatus")).getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))

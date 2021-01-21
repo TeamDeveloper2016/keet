@@ -173,7 +173,7 @@
 						</f:facet>
 					</p:dataTable>	
 					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
-            <p:menuitem id="pagoVenta" process="@this tabla" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" actionListener="#{manticCatalogosClientesCuentasDeuda.doActualizaPago}" update="dialogoPago" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasDeuda.attrs.seleccionado.idClienteEstatus eq '3'}"/>					            
+            <p:menuitem id="pagoVenta" process="@this tabla" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" actionListener="#{manticCatalogosClientesCuentasDeuda.doActualizaPago}" update="dialogoPago" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasDeuda.attrs.seleccionado.idClienteDeudaEstatus eq '3'}"/>					            
           </p:contextMenu>
 				</div>
 			</div>	

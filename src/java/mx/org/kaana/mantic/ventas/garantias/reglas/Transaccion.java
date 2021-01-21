@@ -584,7 +584,7 @@ public class Transaccion extends IBaseTnx{
 					if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
 						params= new HashMap<>();
 						params.put("saldo", abono);
-						params.put("idClienteEstatus", idEstatus);
+						params.put("idClienteDeudaEstatus", idEstatus);
 						DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
 					}	// if				
 				} // if

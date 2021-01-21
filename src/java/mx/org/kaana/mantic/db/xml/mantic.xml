@@ -5383,13 +5383,13 @@
 				  tc_mantic_clientes_pagos.registro
       </select>
     </unit>
-    <unit id="TcManticClientesEstatusDto">
+    <unit id="TcManticClientesDeudasEstatusDto">
       <select id="row">
         select      
-          tc_mantic_clientes_estatus.id_cliente_estatus as id_key,
-          tc_mantic_clientes_estatus.*
+          tc_mantic_clientes_deudas_estatus.id_cliente_estatus as id_key,
+          tc_mantic_clientes_deudas_estatus.*
         from      
-          tc_mantic_clientes_estatus
+          tc_mantic_clientes_deudas_estatus
         where 
           {condicion} 
       </select>
@@ -5397,7 +5397,7 @@
         select      
           *
         from      
-          tc_mantic_clientes_estatus
+          tc_mantic_clientes_deudas_estatus
         where      
           nombre = '{nombre}'
       </select>

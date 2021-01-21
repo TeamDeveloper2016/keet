@@ -255,7 +255,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		int count= 0;
 		try {
 			for(Entity cuenta: cuentas){
-				if(!(cuenta.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())))
+				if(!(cuenta.toLong("idClienteDeudaEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())))
 					count++;
 			} // for
 			this.attrs.put("activePagoGeneral", count>0);
@@ -340,7 +340,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		try {
 			pago= Double.valueOf(this.attrs.get("pago").toString());
 			deuda= (Entity) this.attrs.get("seleccionado");
-			if(pago > 0D && !deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())){				
+			if(pago > 0D && !deuda.toLong("idClienteDeudaEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())){				
 				saldo= Double.valueOf(deuda.toString("saldo"));
 				regresar= pago<= saldo;
 			} // if

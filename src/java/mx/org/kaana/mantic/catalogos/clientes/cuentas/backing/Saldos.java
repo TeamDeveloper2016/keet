@@ -227,10 +227,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
 		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-    UISelectEntity estatus= (UISelectEntity) this.attrs.get("idClienteEstatus");
+    UISelectEntity estatus= (UISelectEntity) this.attrs.get("idClienteDeudaEstatus");
     if(estatus!= null)
       if(Objects.equals(0L, estatus.getKey()))
-        sb.append("tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2) and ");
+        sb.append("tc_mantic_clientes_deudas.id_cliente_deuda_estatus in (1, 2) and ");
       else
         if(!Objects.equals(-1L, estatus.getKey()))
           sb.append("(tc_mantic_clientes_deudas.id_cliente_estatus= ").append(estatus.getKey()).append(") and ");
@@ -252,7 +252,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      List<UISelectEntity> estatus= (List<UISelectEntity>) UIEntity.seleccione("TcManticClientesEstatusDto", "row", params, columns, "nombre");
+      List<UISelectEntity> estatus= (List<UISelectEntity>) UIEntity.seleccione("TcManticClientesDeudasEstatusDto", "row", params, columns, "nombre");
       if(estatus!= null) {
         Entity entity= new Entity(0L);
         entity.put("nombre", new Value("nombre", "PENDIENTES"));
@@ -260,7 +260,7 @@ public class Saldos extends IBaseFilter implements Serializable {
         estatus.add(1, pendientes);
       } // if
       this.attrs.put("allEstatus", estatus);
-			this.attrs.put("idClienteEstatus", new UISelectEntity("0"));
+			this.attrs.put("idClienteDeudaEstatus", new UISelectEntity("0"));
 			this.doLoadDesarrollos();
 			this.doLoadContratos();
     } // try

@@ -1187,7 +1187,7 @@
 					'0.00' total_garantia,
 					tc_mantic_clientes_deudas.registro,
 					datediff(tc_mantic_clientes_deudas.limite, now()) as dias_restantes,
-					tc_mantic_clientes_estatus.nombre estatus_deuda,
+					tc_mantic_clientes_deudas_estatus.nombre estatus_deuda,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					(select max(registro) from tc_mantic_clientes_pagos where tc_mantic_clientes_pagos.id_cliente_deuda=tc_mantic_clientes_deudas.id_cliente_deuda) as ultimo_pago,
           datediff('{fechaFin}','{fechaInicio}') as plazo
@@ -1297,7 +1297,7 @@
                 '0.00' total_garantia,
                 tc_mantic_clientes_deudas.registro,
                 datediff(tc_mantic_clientes_deudas.limite, now()) as dias_restantes,
-                tc_mantic_clientes_estatus.nombre estatus_deuda,
+                tc_mantic_clientes_deudas_estatus.nombre estatus_deuda,
                 concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
                 (select max(registro) from tc_mantic_clientes_pagos where tc_mantic_clientes_pagos.id_cliente_deuda=tc_mantic_clientes_deudas.id_cliente_deuda) as ultimo_pago
               from
@@ -1392,7 +1392,7 @@
 					'0.00' total_garantia,
 					tc_mantic_clientes_deudas.registro,
 					datediff(tc_mantic_clientes_deudas.limite, now()) as dias_restantes,
-					tc_mantic_clientes_estatus.nombre estatus_deuda,
+					tc_mantic_clientes_deudas_estatus.nombre estatus_deuda,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					(select max(registro) from tc_mantic_clientes_pagos where tc_mantic_clientes_pagos.id_cliente_deuda=tc_mantic_clientes_deudas.id_cliente_deuda) as ultimo_pago,
           'N/A' as plazo

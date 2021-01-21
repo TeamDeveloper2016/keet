@@ -21,7 +21,7 @@
         fechaTermino: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         montoInicio : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
         montoTermino: {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-        idClienteEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+        idClienteDeudaEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };
 			
 			fieldsDialog = {
@@ -128,8 +128,8 @@
 							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasSaldos.attrs.montoTermino}" converter="javax.faces.Double">							
 								<p:ajax event="blur" listener="#{manticCatalogosClientesCuentasSaldos.doMontoUpdate}" process="@this" update="montoInicio"/>
 							</p:inputText>	
-							<p:outputLabel for="idClienteEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idClienteEstatus" value="#{manticCatalogosClientesCuentasSaldos.attrs.idClienteEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:outputLabel for="idClienteDeudaEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idClienteDeudaEstatus" value="#{manticCatalogosClientesCuentasSaldos.attrs.idClienteDeudaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticCatalogosClientesCuentasSaldos.attrs.allEstatus}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>

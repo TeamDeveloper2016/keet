@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -61,12 +62,12 @@ public class Filtro extends FiltroFactura implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
-      this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia"));
+      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
 			this.toLoadCatalog();
-      if(this.attrs.get("idFicticia")!= null) 
+      if(this.attrs.get("idVenta")!= null) 
 			  this.doLoad();			
-      this.attrs.remove("idFicticia"); 
-      this.attrs.put("facturama", 1L);
+      this.attrs.remove("idVenta"); 
+      this.attrs.put("facturama", -1L);
 			super.initBase();
     } // try
     catch (Exception e) {
@@ -103,12 +104,20 @@ public class Filtro extends FiltroFactura implements Serializable {
 
   public String doAccion(String accion) {
     EAccion eaccion= null;
+    String pagina  = "/Paginas/Mantic/Facturas/accion";
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
+      if(EAccion.COMPLETO.equals(eaccion)) {
+        eaccion= EAccion.AGREGAR;
+        pagina = "/Paginas/Keet/Ingresos/accion";
+      } // if  
+      else
+        if(!Cadena.isVacio(this.attrs.get("seleccionado")) && Objects.equals(1L, ((Entity)this.attrs.get("seleccionado")).toLong("idManual")))
+          pagina = "/Paginas/Keet/Ingresos/accion";
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/filtro");		
-			JsfBase.setFlashAttribute("idFicticia", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-			if(eaccion.equals(EAccion.AGREGAR)){
+			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			if(eaccion.equals(EAccion.AGREGAR)) {
 				JsfBase.setFlashAttribute("observaciones", null);		
 				JsfBase.setFlashAttribute("idCliente", null);		
 			} // if
@@ -117,7 +126,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Mantic/Facturas/accion".concat(Constantes.REDIRECIONAR);
+		return pagina.concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar() {
@@ -328,11 +337,12 @@ public class Filtro extends FiltroFactura implements Serializable {
 			params= new HashMap<>();
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+		  params.put("idTipoDocumento", "1");
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			if(this.attrs.get("idTipoDocumento")== null || (Long)this.attrs.get("idTipoDocumento")== -1L)
-			  params.put("idTipoDocumento", "1, 2");
-			else
-			  params.put("idTipoDocumento", this.attrs.get("idTipoDocumento"));
+//			if(this.attrs.get("idTipoDocumento")== null || (Long)this.attrs.get("idTipoDocumento")== -1L)
+//			  params.put("idTipoDocumento", "1, 2");
+//			else
+//			  params.put("idTipoDocumento", this.attrs.get("idTipoDocumento"));
       this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.seleccione("TcManticVentasEstatusDto", "rows", params, columns, "nombre"));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
 		} // try
@@ -450,7 +460,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 
 	public String doImportar() {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/filtro");		
-		JsfBase.setFlashAttribute("idFicticia", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("idFactura", ((Entity)this.attrs.get("seleccionado")).toLong("idFactura"));
 		return "importar".concat(Constantes.REDIRECIONAR);
 	} // doImportar

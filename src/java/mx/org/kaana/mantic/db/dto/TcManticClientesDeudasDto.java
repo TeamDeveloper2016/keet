@@ -60,8 +60,8 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticClientesDeudasDto(Long idClienteEstatus, Long idCliente, Long idUsuario, Long idClienteDeuda, String observaciones, Double saldo, LocalDate limite, Long idVenta, Double importe) {
-    setIdClienteDeudaEstatus(idClienteEstatus);
+  public TcManticClientesDeudasDto(Long idClienteDeudaEstatus, Long idCliente, Long idUsuario, Long idClienteDeuda, String observaciones, Double saldo, LocalDate limite, Long idVenta, Double importe) {
+    setIdClienteDeudaEstatus(idClienteDeudaEstatus);
     setIdCliente(idCliente);
     setIdUsuario(idUsuario);
     setIdClienteDeuda(idClienteDeuda);
@@ -194,7 +194,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idClienteEstatus", getIdClienteDeudaEstatus());
+		regresar.put("idClienteDeudaEstatus", getIdClienteDeudaEstatus());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idClienteDeuda", getIdClienteDeuda());
