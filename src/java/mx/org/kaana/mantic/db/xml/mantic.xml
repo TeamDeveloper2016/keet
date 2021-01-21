@@ -5303,7 +5303,7 @@
         from      
           tc_mantic_clientes_deudas
         where      
-          id_cliente = {idCliente} and id_ingreso = {idIngreso} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+          id_cliente = {idCliente} and id_venta = {idVenta} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
       <select id="saldoCliente">
 				select 
@@ -5320,7 +5320,7 @@
 					tc_mantic_clientes_deudas 
 				where 
 					id_cliente= {idCliente} and id_cliente_estatus in (1, 2)
-				  and id_ingreso not in ({idIngreso})
+				  and id_venta not in ({idVenta})
 			</select>
 			<select id="deudaVenta">
 				select      
@@ -5329,7 +5329,7 @@
         from      
           tc_mantic_clientes_deudas
         where 
-          id_ingreso = {idIngreso} 
+          id_venta = {idVenta}
 				  and id_cliente= {idCliente}
 			</select>
       <select id="detalle">
@@ -5339,7 +5339,7 @@
         from      
           tc_mantic_clientes_deudas
         where      
-          id_ingreso = {idIngreso} 
+          id_venta = {idVenta} 
 				order by
 				  tc_mantic_clientes_deudas.registro
       </select>

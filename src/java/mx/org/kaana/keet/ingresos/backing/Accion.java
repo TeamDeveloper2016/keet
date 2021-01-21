@@ -417,7 +417,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       case "Importar":
         if(this.ingreso.getIdDesarrollo()!= null && this.ingreso.getIdDesarrollo()> 0L) {
      		  if(this.attrs.get("faltantes")== null)
-		  	    this.doLoadFiles("TcManticVentasArchivosDto", this.ingreso.getIdVenta(), "idVenta", false, 1D);
+		  	    this.doLoadFiles("TcManticFacturasArchivosDto", this.ingreso.getIdFactura(), "idFactura", false, 1D);
         } // if
         else
     			JsfBase.addMessage("Se tiene que seleccionar un desarrollo primero.", ETipoMensaje.ALERTA);      			

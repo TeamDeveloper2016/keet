@@ -66,9 +66,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-      this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso"));
+      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
 			this.toLoadCatalog();
-      if(this.attrs.get("idIngreso")!= null) 
+      if(this.attrs.get("idVenta")!= null) 
 			  this.doLoad();
     } // try
     catch (Exception e) {
@@ -82,7 +82,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_keet_ingresos.id_empresa, tc_keet_ingresos.registro desc");
+      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_ventas.registro desc");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("desarrollo", EFormatoDinamicos.MAYUSCULAS));
@@ -92,7 +92,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaIngresosDto", params, columns);
       UIBackingUtilities.resetDataTable();
-			this.attrs.put("idIngreso", null);
+			this.attrs.put("idVenta", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -107,14 +107,14 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String doAccion(String accion) {
 		String regresar= "accion";
     EAccion eaccion= null;
-		Long idIngreso = -1L;
+		Long idVenta   = -1L;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
       if(!EAccion.AGREGAR.equals(eaccion))
-        idIngreso= ((Entity)this.attrs.get("seleccionado")).getKey();
+        idVenta= ((Entity)this.attrs.get("seleccionado")).getKey();
 		  JsfBase.setFlashAttribute("accion", eaccion);
 			JsfBase.setFlashAttribute("retorno", "filtro");
-			JsfBase.setFlashAttribute("idIngreso", eaccion.equals(EAccion.AGREGAR)? -1L: idIngreso);
+			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.AGREGAR)? -1L: idVenta);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -143,26 +143,26 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idIngreso")) && !this.attrs.get("idIngreso").toString().equals("-1"))
-  		sb.append("(tc_keet_ingresos.id_ingreso=").append(this.attrs.get("idIngreso")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
+  		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1"))
-  		sb.append("(tc_keet_ingresos.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
+  		sb.append("(tc_mantic_ventas.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
-  		sb.append("(tc_keet_ingresos.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
+  		sb.append("(tc_mantic_ventas.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_keet_ingresos.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
+  		sb.append("(tc_mantic_ventas.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
 		if(!Cadena.isVacio(this.attrs.get("factura")))
-  		sb.append("(tc_keet_ingresos.factura like '%").append(this.attrs.get("factura")).append("%') and ");
+  		sb.append("(tc_mantic_facturas.folio like '%").append(this.attrs.get("factura")).append("%') and ");
 		if(!Cadena.isVacio(this.fechaInicio))
-		  sb.append("(date_format(tc_keet_ingresos.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))
-		  sb.append("(date_format(tc_keet_ingresos.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(this.fechaTermino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
-		  sb.append("(tc_keet_ingresos.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
-		  sb.append("(tc_keet_ingresos.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("idIngresoEstatus")) && !this.attrs.get("idIngresoEstatus").toString().equals("-1"))
-  		sb.append("(tc_keet_ingresos.id_ingreso_estatus= ").append(this.attrs.get("idIngresoEstatus")).append(") and ");
+		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
+		if(!Cadena.isVacio(this.attrs.get("idVentaEstatus")) && !this.attrs.get("idVentaEstatus").toString().equals("-1"))
+  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(this.attrs.get("idVentaEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -190,8 +190,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
       columns.remove(0);
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcKeetIngresosEstatusDto", "row", params, columns, "nombre"));
-			this.attrs.put("idIngresoEstatus", new UISelectEntity("-1"));
+			params.put("idTipoDocumento", 1L);
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.seleccione("TcManticVentasEstatusDto", "rows", params, columns, "nombre"));
+			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
 			this.doLoadDesarrollos();
 			this.doLoadContratos();
     } // try
@@ -279,8 +280,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_ingreso_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
-			allEstatus= UISelect.build("TcKeetIngresosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			params.put("idTipoDocumento", 1L);
+			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
+			allEstatus= UISelect.build("TcManticVentasEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0));
 		} // try
@@ -318,7 +320,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public String doImportar() {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Ingresos/filtro");		
-		JsfBase.setFlashAttribute("idIngreso",((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("idVenta",((Entity)this.attrs.get("seleccionado")).getKey());
 		return "importar".concat(Constantes.REDIRECIONAR);
 	}
 	
@@ -330,7 +332,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 
 	public String doRecordPagos() {
-		JsfBase.setFlashAttribute("idIngreso", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("idCliente", ((Entity)this.attrs.get("seleccionado")).toLong("idCliente"));
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Ingresos/filtro");
 		return "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos".concat(Constantes.REDIRECIONAR);
