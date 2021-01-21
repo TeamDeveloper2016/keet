@@ -1170,7 +1170,7 @@
           tc_keet_desarrollos.nombres as desarrollo,
           tc_mantic_ventas.ticket,
           tc_mantic_ventas.ticket as consecutivo,
-          tc_mantic_factuas.folio as factura,
+          tc_mantic_facturas.folio as factura,
           tc_keet_contratos.id_contrato,
           tc_keet_contratos.clave,
           tc_keet_contratos.nombre as contrato,
