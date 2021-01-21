@@ -12,18 +12,21 @@
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
     <script type="text/javascript">
       Janal.Control.fields = {
-        idEmpresa      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},
-        facturama      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},
+        idEmpresa      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idDesarrollo   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idCliente      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idContrato     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        facturama      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         folio          : {validaciones: 'entero', mascara: 'numero', grupo: 'general'},
-        consecutivo    : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
-        fechaInicio    : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
-        fechaTermino   : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
-        montoInicio    : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-        montoTermino   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-				articulo       : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-				razonSocial    : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        idTipoDocumento: {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},   
-        idVentaEstatus : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'}        
+        consecutivo    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
+        fechaInicio    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        montoInicio    : {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
+        montoTermino   : {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
+				articulo       : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				razonSocial    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        idTipoDocumento: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},   
+        idVentaEstatus : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };
 			
 			fieldsDialog= {
@@ -73,7 +76,8 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticFacturasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticFacturasFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+								<p:ajax event="change" listener="#{manticFacturasFiltro.doLoadDesarrollos}" process="@this" update="idDesarrollo"/>
+                <f:selectItems value="#{manticFacturasFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -81,6 +85,37 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+							<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+              <p:selectOneMenu id="idDesarrollo" value="#{manticFacturasFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" listener="#{manticFacturasFiltro.doLoadContratos}" process="@this" update="idCliente idContrato"/>
+                <f:selectItems value="#{manticFacturasFiltro.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombres}"/>
+                </p:column>                   
+              </p:selectOneMenu>
+              <p:outputLabel for="idCliente" value="Cliente:"/>
+              <p:selectOneMenu id="idCliente" value="#{manticFacturasFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticFacturasFiltro.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.razonSocial}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="idContrato" value="Contrato:"/>
+              <p:selectOneMenu id="idContrato" value="#{manticFacturasFiltro.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticFacturasFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>                   
+              </p:selectOneMenu>              
               <p:outputLabel for="facturama" value="Documentos:"/>
               <p:selectOneMenu id="facturama" value="#{manticFacturasFiltro.attrs.facturama}" var="item" converter="javax.faces.Long" styleClass="janal-wid-96"  effect="fade" filter="true">
 								<f:selectItem itemLabel="TODAS" itemValue="-1"/>

@@ -18,8 +18,6 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.keet.db.dto.TcKeetIngresosBitacoraDto;
-import mx.org.kaana.keet.db.dto.TcKeetIngresosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -325,8 +323,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	public String doMovimientos() {
-		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.INGRESOS);
-		JsfBase.setFlashAttribute(ETipoMovimiento.INGRESOS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.VENTAS);
+		JsfBase.setFlashAttribute(ETipoMovimiento.VENTAS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Keet/Ingresos/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}

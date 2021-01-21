@@ -626,7 +626,7 @@ public class Transaccion extends IBaseTnx{
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.detalleGarantia.getIdCliente());
-			params.put("idIngreso", this.detalleGarantia.getIdVenta());			
+			params.put("idVenta", this.detalleGarantia.getIdVenta());			
 			params.put("estatus", EEstatusClientes.FINALIZADA.getIdEstatus());			
 			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro desc");
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 ");			

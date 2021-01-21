@@ -3,7 +3,6 @@ package mx.org.kaana.keet.ingresos.reglas;
 import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.mantic.db.dto.TcManticVentasArchivosDto;
 import mx.org.kaana.keet.db.dto.TcManticClientesDeudasBitacoraDto;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -117,8 +115,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
      	    this.toUpdateDeleteXml(sesion);	
 					break;				
 				case ELIMINAR:
-  				params.put("idIngreso", this.orden.getIdVenta());
-          regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasArchivosDto.class, params)>= 1L;
+  				params.put("idFactura", this.orden.getIdFactura());
+          regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFacturasArchivosDto.class, params)>= 1L;
           regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
           this.orden.setIdVentaEstatus(13L);
           bitacoraNota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), 2L, this.orden.getCticket(), this.orden.getTotal());
@@ -318,9 +316,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	}
 
 	public void toDeleteXmlPdf() throws Exception {
-		List<TcManticVentasArchivosDto> list= (List<TcManticVentasArchivosDto>)DaoFactory.getInstance().findViewCriteria(TcManticVentasArchivosDto.class, this.orden.toMap(), "all");
+		List<TcManticFacturasArchivosDto> list= (List<TcManticFacturasArchivosDto>)DaoFactory.getInstance().findViewCriteria(TcManticFacturasArchivosDto.class, this.orden.toMap(), "all");
 		if(list!= null)
-			for (TcManticVentasArchivosDto item: list) {
+			for (TcManticFacturasArchivosDto item: list) {
 				LOG.info("Factura: "+ this.orden.getConsecutivo()+ " delete file: "+ item.getAlias());
 				File file= new File(item.getAlias());
 				file.delete();

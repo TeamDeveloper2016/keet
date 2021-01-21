@@ -769,7 +769,7 @@
 					tc_keet_desarrollos.id_desarrollo,
 					tc_mantic_clientes_deudas.id_cliente,
 					tc_keet_desarrollos.nombres as desarrollo,
-					tc_keet_ingresos.consecutivo,
+					tc_mantic_ventas.ticket as consecutivo,
 					tc_keet_contratos.id_contrato,
 					tc_keet_contratos.clave,
 					tc_keet_contratos.nombre as contrato,
@@ -785,7 +785,7 @@
 					tc_mantic_clientes_pagos.observaciones,
           tc_mantic_tipos_medios_pagos.nombre tipo_medio_pago,
 					tc_mantic_clientes_deudas.observaciones observaciones_deuda,
-          tc_mantic_clientes_deudas.id_ingreso
+          tc_mantic_clientes_deudas.id_venta
 				from
 					tc_mantic_clientes_pagos
 				inner join
@@ -795,11 +795,11 @@
 				inner join 
 					tc_mantic_tipos_medios_pagos on tc_mantic_clientes_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
         inner join
-					tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
 				inner join 
-					tc_keet_desarrollos on tc_keet_ingresos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+					tc_keet_desarrollos on tc_mantic_ventas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				left join 
-					tc_keet_contratos on tc_keet_ingresos.id_contrato= tc_keet_contratos.id_contrato
+					tc_keet_contratos on tc_mantic_ventas.id_contrato= tc_keet_contratos.id_contrato
 				inner join
 					tc_janal_usuarios on tc_mantic_clientes_pagos.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
@@ -807,7 +807,7 @@
 				where
 					tc_mantic_clientes_deudas.id_cliente_deuda= {idClienteDeuda}						
 				order by
-					tc_keet_ingresos.consecutivo, 
+					tc_mantic_ventas.ticket, 
 					tc_mantic_clientes_deudas.registro desc					
 			</select>
       <select id="detalleGarantias">
@@ -1168,9 +1168,9 @@
           tc_keet_desarrollos.id_desarrollo,
           tc_mantic_clientes_deudas.id_cliente,
           tc_keet_desarrollos.nombres as desarrollo,
-          tc_keet_ingresos.consecutivo as ticket,
-          tc_keet_ingresos.consecutivo,
-          tc_keet_ingresos.factura,
+          tc_mantic_ventas.ticket,
+          tc_mantic_ventas.ticket as consecutivo,
+          tc_mantic_factuas.folio as factura,
           tc_keet_contratos.id_contrato,
           tc_keet_contratos.clave,
           tc_keet_contratos.nombre as contrato,
@@ -1196,15 +1196,17 @@
 				inner join 
 					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus 
         inner join
-          tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
+          tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
         inner join 
-          tc_keet_desarrollos on tc_keet_ingresos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+          tc_keet_desarrollos on tc_mantic_ventas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         left join 
-          tc_keet_contratos on tc_keet_ingresos.id_contrato= tc_keet_contratos.id_contrato
+          tc_keet_contratos on tc_mantic_ventas.id_contrato= tc_keet_contratos.id_contrato
 				inner join
 					tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        left join
+          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
           and (tc_mantic_clientes_deudas.registro between '{fechaInicio}' and '{fechaFin}') ) deudas
@@ -1214,9 +1216,9 @@
           tc_keet_desarrollos.id_desarrollo,
           tc_mantic_clientes_deudas.id_cliente,
           tc_keet_desarrollos.nombres as desarrollo,
-          tc_keet_ingresos.consecutivo as ticket,
+          tc_mantic_ventas.ticket,
 					tc_mantic_clientes_pagos.consecutivo consecutivo,
-          tc_keet_ingresos.factura,
+          tc_mantic_facturas.folio as factura,
           tc_keet_contratos.id_contrato,
           tc_keet_contratos.clave,
           tc_keet_contratos.nombre as contrato,
@@ -1244,15 +1246,17 @@
 				left join
 					tc_mantic_clientes_pagos on tc_mantic_clientes_deudas.id_cliente_deuda= tc_mantic_clientes_pagos.id_cliente_deuda
         inner join
-          tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
+          tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
         inner join 
-          tc_keet_desarrollos on tc_keet_ingresos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+          tc_keet_desarrollos on tc_mantic_ventas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         left join 
-          tc_keet_contratos on tc_keet_ingresos.id_contrato= tc_keet_contratos.id_contrato
+          tc_keet_contratos on tc_mantic_ventas.id_contrato= tc_keet_contratos.id_contrato
 				left join
 					tc_janal_usuarios usuarios_pago on tc_mantic_clientes_pagos.id_usuario= usuarios_pago.id_usuario
 				left join
 					tc_mantic_personas persona_pago on usuarios_pago.id_persona= persona_pago.id_persona
+        left join
+          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente} 
           and tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus not in (3,4) 
@@ -1274,9 +1278,9 @@
                 tc_keet_desarrollos.id_desarrollo,
                 tc_mantic_clientes_deudas.id_cliente,
                 tc_keet_desarrollos.nombres as desarrollo,
-                tc_keet_ingresos.consecutivo as ticket,
-                tc_keet_ingresos.consecutivo,
-                tc_keet_ingresos.factura,
+                tc_mantic_ventas.ticket,
+                tc_mantic_ventas.ticket as consecutivo,
+                tc_mantic_facturas.folio as factura,
                 tc_keet_contratos.id_contrato,
                 tc_keet_contratos.clave,
                 tc_keet_contratos.nombre as contrato,
@@ -1301,15 +1305,17 @@
               inner join 
                 tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus 
               inner join
-                tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
+                tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
               inner join 
-                tc_keet_desarrollos on tc_keet_ingresos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+                tc_keet_desarrollos on tc_mantic_ventas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
               left join 
-                tc_keet_contratos on tc_keet_ingresos.id_contrato= tc_keet_contratos.id_contrato
+                tc_keet_contratos on tc_mantic_ventas.id_contrato= tc_keet_contratos.id_contrato
               inner join
                 tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
               inner join
                 tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+              left join
+                tc_mantic_facturas on tc_mantic_ventas.id_venta= tc_mantic_facturas.id_factura
               where
                 tc_mantic_clientes_deudas.id_cliente_deuda= {idClienteDeuda}
         ) deudas
@@ -1320,8 +1326,8 @@
 					tc_keet_desarrollos.id_desarrollo,
 					tc_mantic_clientes_deudas.id_cliente,
 					tc_keet_desarrollos.nombres as desarrollo,
-					tc_keet_ingresos.consecutivo as ticket,
-					tc_keet_ingresos.factura,
+					tc_mantic_ventas.ticket,
+					tc_mantic_facturas.folio as factura,
 					tc_keet_contratos.id_contrato,
 					tc_keet_contratos.clave,
 					tc_keet_contratos.nombre as contrato,
@@ -1348,15 +1354,17 @@
 				left join
 					tc_mantic_clientes_pagos on tc_mantic_clientes_deudas.id_cliente_deuda= tc_mantic_clientes_pagos.id_cliente_deuda
 				inner join
-					tc_keet_ingresos on tc_mantic_clientes_deudas.id_ingreso= tc_keet_ingresos.id_ingreso
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
 				inner join 
-					tc_keet_desarrollos on tc_keet_ingresos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+					tc_keet_desarrollos on tc_mantic_ventas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				left join 
-					tc_keet_contratos on tc_keet_ingresos.id_contrato= tc_keet_contratos.id_contrato
+					tc_keet_contratos on tc_mantic_ventas.id_contrato= tc_keet_contratos.id_contrato
 				left join
 					tc_janal_usuarios usuarios_pago on tc_mantic_clientes_pagos.id_usuario= usuarios_pago.id_usuario
 				left join
 					tc_mantic_personas persona_pago on usuarios_pago.id_persona= persona_pago.id_persona
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
 				where
 					tc_mantic_clientes_deudas.id_cliente_deuda= {idClienteDeuda}  
           and tc_mantic_clientes_pagos.id_cliente_pago is not null) abonos

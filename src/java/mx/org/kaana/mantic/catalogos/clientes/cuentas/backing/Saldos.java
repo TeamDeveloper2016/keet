@@ -142,7 +142,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-			this.attrs.put("idIngreso", JsfBase.getFlashAttribute("idIngreso"));			
+			this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));			
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));			
 			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");
 			this.filtro = this.idCliente.equals(-1L);
@@ -151,9 +151,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				this.loadSucursales();
       this.toLoadCatalog();
-			if(!this.idCliente.equals(-1L) || !Cadena.isVacio(this.attrs.get("idIngreso"))) {
+			if(!this.idCliente.equals(-1L) || !Cadena.isVacio(this.attrs.get("idVenta"))) {
 				this.doLoad();
-        this.attrs.put("idIngreso", null);
+        this.attrs.put("idVenta", null);
 				this.idCliente= -1L;
 			} // if
       this.attrs.put("plazo", 1);
@@ -173,7 +173,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();	
-      params.put("sortOrder", "order by	tc_keet_ingresos.consecutivo desc");
+      params.put("sortOrder", "order by	tc_mantic_ventas.ticket desc");
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
@@ -201,20 +201,20 @@ public class Saldos extends IBaseFilter implements Serializable {
 		List<UISelectEntity>clientes= (List<UISelectEntity>)this.attrs.get("clientes");
     if(!this.idCliente.equals(-1L))
       sb.append("tc_mantic_clientes_deudas.id_cliente= ").append(this.idCliente).append(" and ");
-  	if(!Cadena.isVacio(this.attrs.get("idIngreso")))
-  		sb.append("(tc_keet_ingresos.id_ingreso = ").append(this.attrs.get("idIngreso")).append(") and ");
+  	if(!Cadena.isVacio(this.attrs.get("idVenta")))
+  		sb.append("(tc_mantic_ventas.id_venta = ").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1"))
-  		sb.append("(tc_keet_ingresos.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
+  		sb.append("(tc_mantic_ventas.id_desarrollo= ").append(this.attrs.get("idDesarrollo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
-  		sb.append("(tc_keet_ingresos.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
+  		sb.append("(tc_mantic_ventas.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
 		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
 			sb.append("tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%' and ");			
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
   		sb.append("tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%' and ");						
   	if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_keet_ingresos.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
   	if(!Cadena.isVacio(this.attrs.get("folio")))
-  		sb.append("(tc_keet_ingresos.folio like '%").append(this.attrs.get("folio")).append("%') and ");
+  		sb.append("(tc_mantic_ventas.folio like '%").append(this.attrs.get("folio")).append("%') and ");
 		if(!Cadena.isVacio(this.fechaInicio))
 		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))
@@ -224,9 +224,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("dias")))
   		sb.append("((datediff(tc_mantic_clientes_deudas.limite, now())* -1)>= ").append(this.attrs.get("dias")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
-		  sb.append("(tc_keet_ingresos.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
-		  sb.append("(tc_keet_ingresos.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
+		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
     UISelectEntity estatus= (UISelectEntity) this.attrs.get("idClienteEstatus");
     if(estatus!= null)
       if(Objects.equals(0L, estatus.getKey()))
@@ -426,7 +426,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // doVerificarReporte	
 	
 	public String doImportar() {
-		JsfBase.setFlashAttribute("idIngreso", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idIngreso"));
+		JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idVenta"));
 		JsfBase.setFlashAttribute("idCliente", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idCliente"));
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");		
 		JsfBase.setFlashAttribute("idClienteDeuda", ((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
@@ -490,7 +490,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		try {
 			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");					
-			JsfBase.setFlashAttribute("idIngreso", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idIngreso"));			
+			JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idVenta"));			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

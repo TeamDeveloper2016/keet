@@ -127,30 +127,6 @@
           tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
           and tc_mantic_clientes.id_cliente> 0
       </select>  
-			<select id="movimientos">
-				select
-					tc_keet_ingresos_bitacora.id_ingreso_bitacora as id_key,
-					tc_keet_ingresos.consecutivo,
-					0 as importe,
-					tc_keet_ingresos_bitacora.justificacion,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
-				  tc_keet_ingresos_estatus.nombre as estatus,
-					tc_keet_ingresos_bitacora.registro
-				from 
-					tc_keet_ingresos_bitacora
-				inner join
-					tc_keet_ingresos on tc_keet_ingresos_bitacora.id_ingreso= tc_keet_ingresos.id_ingreso
-				inner join
-					tc_keet_ingresos_estatus on tc_keet_ingresos_bitacora.id_ingreso_estatus= tc_keet_ingresos_estatus.id_ingreso_estatus
-				inner join
-					tc_janal_usuarios on tc_keet_ingresos_bitacora.id_usuario= tc_janal_usuarios.id_usuario
-				inner join
-					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
-				where
-					tc_keet_ingresos_bitacora.id_ingreso= {idIngreso}
-				order by
-					tc_keet_ingresos_bitacora.registro desc		
-			</select>	
     </unit>    
 		<unit id="VistaControlesLotesDto">
 			<select id="detalle">

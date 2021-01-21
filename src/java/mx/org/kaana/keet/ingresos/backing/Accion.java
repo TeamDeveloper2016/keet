@@ -200,6 +200,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
             LocalDateTime.now() // LocalDateTime cobro 
           );
           this.ingreso.setIdTipoDocumento(1L);
+          this.ingreso.setIdFactura(-1L);
     			this.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
           this.setIkDesarrollo(new UISelectEntity(-1L));
           this.setIkCliente(new UISelectEntity(-1L));

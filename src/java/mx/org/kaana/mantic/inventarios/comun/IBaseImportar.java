@@ -303,7 +303,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	
 	protected void doLoadFiles(String proceso, Long idSelected, String idNombre, Boolean sinIva, Double tipoDeCambio) {
 		Entity tmp= null;
-		if(idSelected> 0) {
+		if(idSelected!=null && idSelected> 0) {
 			Map<String, Object> params=null;
 			try {
 				params=new HashMap<>();

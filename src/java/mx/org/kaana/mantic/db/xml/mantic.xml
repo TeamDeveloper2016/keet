@@ -706,6 +706,16 @@
         where 
           id_factura = {idFactura}
       </select>
+      <select id="exists">
+        select      
+          *
+        from      
+          tc_mantic_facturas_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_factura = {idFactura}
+				order by
+				  registro desc
+      </select>
       <select id="all">
         select      
           *

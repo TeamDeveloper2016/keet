@@ -70,7 +70,7 @@ public class Pagos extends IBaseFilter implements Serializable {
   protected void init() {
     try {
 			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null ? -1L: Long.valueOf(JsfBase.getFlashAttribute("idCliente").toString());			
-      this.attrs.put("sortOrder", "order by tc_keet_ingresos.consecutivo, tc_mantic_clientes_deudas.registro desc");
+      this.attrs.put("sortOrder", "order by tc_mantic_ventas.ticket, tc_mantic_clientes_deudas.registro desc");
       this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -118,7 +118,7 @@ public class Pagos extends IBaseFilter implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_keet_ingresos.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
+  		sb.append("(tc_mantic_ventas.ticket= ").append(this.attrs.get("consecutivo")).append(") and ");
 		if(!Cadena.isVacio(this.fechaInicio))
 		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(this.fechaInicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("') and ");	
 		if(!Cadena.isVacio(this.fechaTermino))

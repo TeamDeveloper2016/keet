@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.facturas.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class Filtro extends FiltroFactura implements Serializable {
   protected void init() {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia"));
 			this.toLoadCatalog();
       if(this.attrs.get("idFicticia")!= null) 
@@ -153,6 +154,8 @@ public class Filtro extends FiltroFactura implements Serializable {
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
 			this.doLoadDocumentoEstatus();
+			this.doLoadDesarrollos();
+			this.doLoadContratos();
     } // try
     catch (Exception e) {
       throw e;
@@ -163,6 +166,74 @@ public class Filtro extends FiltroFactura implements Serializable {
     }// finally
 	} // toLoadCatalog
 	
+	public void doLoadDesarrollos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+		UISelectEntity empresa    = null;
+    try {
+			params= new HashMap<>();			
+			empresa= (UISelectEntity) this.attrs.get("idEmpresa");
+			if(empresa.getKey()>= 1L)
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
+			else
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "nombres"));			
+			this.attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("desarrollos")));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	} // doLoadDesarrollos
+	
+	public void doLoadContratos() {
+		List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
+		UISelectEntity empresa   = null;
+    List<UISelectEntity> clientes = null;
+    List<UISelectEntity> contratos= null;
+	  try {
+			columns= new ArrayList<>();
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			empresa= (UISelectEntity)this.attrs.get("idEmpresa");
+			if(empresa!= null && empresa.getKey()> 0L) 
+			  params.put("sucursales", empresa.getKey());
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !this.attrs.get("idDesarrollo").toString().equals("-1")) {
+			  contratos= UIEntity.build("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS);
+        clientes = UIEntity.build("VistaIngresosDto", "clientes", params, columns, Constantes.SQL_TODOS_REGISTROS);
+      } // if  
+      else {
+        contratos= UIEntity.seleccione("VistaContratosDto", "byEmpresa", params, "clave");
+        clientes = UIEntity.seleccione("TcManticClientesDto", "sucursales", params, columns, "razonSocial");
+      } // else   
+      this.attrs.put("clientes", clientes);
+      if(clientes!= null && !clientes.isEmpty())
+        this.attrs.put("idCliente", clientes.get(0));
+      this.attrs.put("contratos", contratos);
+      if(contratos!= null && !contratos.isEmpty())
+        this.attrs.put("idContrato", contratos.get(0));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	} // doLoadContratos
+  
 	public List<UISelectEntity> doCompleteCliente(String query) {
 		this.attrs.put("codigoCliente", query);
     this.doUpdateClientes();		
