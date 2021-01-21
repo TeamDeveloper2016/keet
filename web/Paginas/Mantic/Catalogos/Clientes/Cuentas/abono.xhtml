@@ -58,27 +58,47 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:panelGrid id="panelDetalle" columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-10, , janal-wid-12, janal-wid-12, janal-wid-12">
- 						<p:outputLabel value="Desarrollo:"/>						
-  					<p:outputLabel value="Cliente:"/>						
- 						<p:outputLabel value="Consecutivo:"/>						
-            <p:outputLabel value="Estatus:"/>						
-            <p:outputLabel value="Fecha limite:"/>
-            <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
-            <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
- 						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.ticket}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
-						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>
-					  <p:inputText value="#{manticCatalogosClientesCuentasAbono.doFecha(manticCatalogosClientesCuentasAbono.attrs.deuda.limite)}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
- 						<p:outputLabel value="Contrato:"/>
-						<p:outputLabel value="Registró factura:"/>						
-						<p:outputLabel value="Tipo:"/>
-						<p:outputLabel value="Importe:"/>						
-						<p:outputLabel value="Saldo:"/>						
-						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.clave}" styleClass="janal-wid-100-txt" readonly="true"/>
-						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.persona}" styleClass="janal-wid-100-txt" readonly="true"/>
-						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.tipo}" styleClass="janal-wid-100-txt" readonly="true"/>
-						<p:inputText value="$ #{manticCatalogosClientesCuentasAbono.attrs.deuda.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
-						<p:inputText value="$ #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>						
+          <p:panelGrid id="panelDetalle" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-9, janal-wid-55, janal-wid-12, janal-wid-12, janal-wid-12">
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+   						<p:outputLabel value="Desarrollo:"/>						
+              <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+    					<p:outputLabel value="Cliente:"/>						
+              <p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+   						<p:outputLabel value="Consecutivo:"/>						
+   						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.ticket}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel value="Estatus:"/>						
+  						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel value="Fecha limite:"/>
+  					  <p:inputText value="#{manticCatalogosClientesCuentasAbono.doFecha(manticCatalogosClientesCuentasAbono.attrs.deuda.limite)}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+   						<p:outputLabel value="Contrato:"/>
+  						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.clave}" styleClass="janal-wid-100-txt" readonly="true"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:outputLabel value="Registró factura:"/>						
+  						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.persona}" styleClass="janal-wid-100-txt" readonly="true"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:outputLabel value="Tipo:"/>
+  						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.tipo}" styleClass="janal-wid-100-txt" readonly="true"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:outputLabel value="Importe:"/>						
+  						<p:inputText value="$ #{manticCatalogosClientesCuentasAbono.doMiles(manticCatalogosClientesCuentasAbono.attrs.deuda.importe)}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:outputLabel value="Saldo:"/>						
+  						<p:inputText value="$ #{manticCatalogosClientesCuentasAbono.doMiles(manticCatalogosClientesCuentasAbono.attrs.deuda.saldo)}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>						
+            </p:panelGrid>  
 						<p:spacer/>
 					</p:panelGrid>					
 				</div>
@@ -129,7 +149,7 @@
 									</f:facet>
 									<h:outputText value="#{filtro['observaciones']}"/>
 								</p:column>																							
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-col-130" sortBy="#{filtro.regitro}">
 									<f:facet name="header">
 										<h:outputText value="Fecha"/>
 									</f:facet>
@@ -215,7 +235,7 @@
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="contenedorGrupos" />
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="70%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
+		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="45%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoPago" prependId="false">
 				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-12, janal-wid-86">
 					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="false and #{manticCatalogosClientesCuentasAbono.attrs.isMatriz}"/>
@@ -250,7 +270,7 @@
 						<f:selectItem itemLabel="NO" itemValue="2"/>
 					</p:selectOneRadio>
 					<p:outputLabel for="tipoPago" value="Tipo:"/>
-					<p:selectOneMenu id="tipoPago" value="#{manticCatalogosClientesCuentasAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+					<p:selectOneMenu id="tipoPago" value="#{manticCatalogosClientesCuentasAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pago" listener="#{manticCatalogosClientesCuentasAbono.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>
 						<f:selectItems value="#{manticCatalogosClientesCuentasAbono.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 						<p:column headerText="Clave">
