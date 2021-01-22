@@ -58,32 +58,50 @@
             <p:ajax event="tabChange" listener="#{manticCatalogosClientesCuentasImportar.doTabChange}" process="@this" update="@(.importado)"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-20, janal-wid-15, janal-wid-15, janal-wid-15, janal-wid-15">
-    						<p:outputLabel value="Desarrollo:"/>						
-    						<p:outputLabel value="Contrato:"/>
-     						<p:outputLabel value="Tipo:"/>
-    						<p:outputLabel value="Consecutivo:"/>						
-                <p:outputLabel value="Estatus:"/>						
-                <p:outputLabel value="Fecha limite:"/>
-                <p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
-    						<p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.clave}" styleClass="janal-wid-100-txt" readonly="true"/>
-				     		<p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.tipo}" styleClass="janal-wid-100-txt" readonly="true"/>
-                <p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.ticket}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
-                <p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>
-					      <p:inputText value="#{manticCatalogosClientesCuentasImportar.doFecha(manticCatalogosClientesCuentasImportar.attrs.deuda.limite)}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+      						<p:outputLabel value="Desarrollo:"/>						
+                  <p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.desarrollo}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+      						<p:outputLabel value="Contrato:"/>
+      						<p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.clave}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+       						<p:outputLabel value="Tipo:"/>
+  				     		<p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.tipo}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+      						<p:outputLabel value="Consecutivo:"/>						
+                  <p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.ticket}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel value="Estatus:"/>						
+                  <p:inputText value="#{manticCatalogosClientesCuentasImportar.attrs.deuda.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel value="Fecha limite:"/>
+  					      <p:inputText value="#{manticCatalogosClientesCuentasImportar.doFecha(manticCatalogosClientesCuentasImportar.attrs.deuda.limite)}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+                </p:panelGrid>  
               </p:panelGrid> 
 							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-10, janal-wid-80">
-								<p:outputLabel for="clave" value="Clave:"/>
-								<p:outputLabel for="rfc" value="RFC:"/>
-								<p:outputLabel for="razonSocial" value="Razón social:"/>
-								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasImportar.cliente.clave}" readonly="true"/>
-								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasImportar.cliente.rfc}" readonly="true"/>
-								<p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasImportar.cliente.razonSocial}" readonly="true"/>																								
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								<p:outputLabel for="clave" value="Clave:"/>
+  								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasImportar.cliente.clave}" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								<p:outputLabel for="rfc" value="RFC:"/>
+  								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasImportar.cliente.rfc}" readonly="true"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  								<p:outputLabel for="razonSocial" value="Razón social:"/>
+  								<p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasImportar.cliente.razonSocial}" readonly="true"/>																								
+                </p:panelGrid>  
               </p:panelGrid>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								<p:outputLabel for="importe" value="Importe:"/>
-								<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesCuentasImportar.clienteDeuda.importe}" readonly="true"/>								
+								<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="$ #{manticCatalogosClientesCuentasImportar.doMiles(manticCatalogosClientesCuentasImportar.clienteDeuda.importe)}" readonly="true"/>
 								<p:outputLabel for="saldo" value="Saldo:"/>
-								<p:inputText id="saldo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesCuentasImportar.clienteDeuda.saldo}" readonly="true"/>								
+								<p:inputText id="saldo" styleClass="janal-wid-100-txt janal-column-right" value="$ #{manticCatalogosClientesCuentasImportar.doMiles(manticCatalogosClientesCuentasImportar.clienteDeuda.saldo)}" readonly="true"/>
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">
