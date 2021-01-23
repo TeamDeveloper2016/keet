@@ -326,6 +326,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
+      params.put("idArticuloTipo", "1");	      
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
 			else
@@ -426,6 +427,7 @@ public class Conteos extends IBaseFilter implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			params.put("codigo", "WXYZ");
+      params.put("idArticuloTipo", "1");	      
       this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porLikeNombre", params, columns));
 		} // try
 	  catch (Exception e) {
@@ -477,6 +479,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			else
 				codigo= "WXYZ";
 			params.put("codigo", codigo.toUpperCase());
+      params.put("idArticuloTipo", "1");	      
 			if(buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
 			else

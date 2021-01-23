@@ -82,7 +82,7 @@ public class Movimientos extends IBaseFilter implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("justificacion", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       this.attrs.put("sortOrder", "order by ".concat(this.tipo.getTable()).concat(".registro desc"));
       this.lazyModel = new FormatCustomLazy(this.tipo.getProceso(), "movimientos", this.attrs, columns);

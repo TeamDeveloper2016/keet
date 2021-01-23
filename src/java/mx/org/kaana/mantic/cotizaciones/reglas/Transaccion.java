@@ -132,7 +132,7 @@ public class Transaccion extends TransaccionFactura {
 			this.orden.setTicket(consecutivo.getConsecutivo());			
 			this.orden.setCticket(consecutivo.getOrden());			
 			cuenta= this.toSiguienteCuenta(sesion);			
-			this.orden.setConsecutivo(cuenta.toConsecutivo());			
+			this.orden.setTicket(cuenta.toConsecutivo());			
 			this.orden.setOrden(cuenta.getOrden());
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));									

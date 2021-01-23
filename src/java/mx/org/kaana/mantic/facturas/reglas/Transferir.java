@@ -615,7 +615,7 @@ public class Transferir extends IBaseTnx {
 				DaoFactory.getInstance().insert(sesion, ficticia);
 				this.toSaveFiles(sesion, cfdi, detail, factura.getIdFactura(), calendar, path);
 				this.toDetail(sesion, ficticia.getIdFicticia(), detail);
-				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getConsecutivo(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());
+				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getTicket(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());
 				DaoFactory.getInstance().insert(sesion, bitacora);
 				// sesion.flush();
 			} // if

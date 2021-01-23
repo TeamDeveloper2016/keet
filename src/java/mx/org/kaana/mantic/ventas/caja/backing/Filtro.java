@@ -282,6 +282,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        
+      params.put("idArticuloTipo", "1");	      
       articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
       this.attrs.put("articulosFiltro", articulos);
 		} // try

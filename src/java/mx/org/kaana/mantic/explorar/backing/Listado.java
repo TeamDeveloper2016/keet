@@ -219,6 +219,7 @@ public class Listado extends Pedido implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);	
+      params.put("idArticuloTipo", "1");	      
 			if(buscaPorCodigo)        
         this.attrs.put("articulosProducto", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 			else

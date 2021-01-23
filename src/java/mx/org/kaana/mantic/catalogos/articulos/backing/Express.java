@@ -347,6 +347,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search);			
+      params.put("idArticuloTipo", "1");	      
       this.attrs.put("codigosExpress", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
@@ -391,6 +392,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search);		
+      params.put("idArticuloTipo", "1");	      
 			if(buscaPorCodigo) 
         this.attrs.put("nombresExpress", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porLikeNombre", params, columns, 20L));
 			else

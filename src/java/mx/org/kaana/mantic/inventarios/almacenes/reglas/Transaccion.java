@@ -229,6 +229,7 @@ public class Transaccion extends IBaseTnx {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			params.put("idArticulo", idArticulo);
 			params.put("codigo", "WXYZ");
+      params.put("idArticuloTipo", "1");	      
 			articuloPedido= (ArticuloVenta) DaoFactory.getInstance().toEntity(sesion, ArticuloVenta.class, "VistaOrdenesComprasDto", "porNombre", params);					
 			articuloPedido.setCantidad(cantidad);
 			articuloPedido.setCosto(toCalculateCostoPorCantidad(sesion, idArticulo, cantidad));

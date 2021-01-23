@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.facturas.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private static final String INDIVIDUAL     = "1";
 	private static final Long ESTATUS_ELABORADA= 11L;
 	
+	private EAccion accion;	
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
 	private FormatLazyModel almacenes;
@@ -82,9 +84,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   @Override
   protected void init() {		
     try {
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("accionInicial", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia")== null? -1L: JsfBase.getFlashAttribute("idFicticia"));
+      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
@@ -97,7 +99,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
-			doActivarDescuento();
+			this.doActivarDescuento();
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("mostrarBanco", false);
 			this.attrs.put("decuentoAutorizadoActivo", false);
@@ -124,15 +126,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 
 	@Override
   public void doLoad() {
-    EAccion eaccion            = null;
 		Long idCliente             = -1L;
 		Long idClienteDomicilio    = -1L;
 		TcManticFacturasDto factura= null;
 		this.saldoCliente          = new SaldoCliente();
     try {
-      eaccion= (EAccion) this.attrs.get("accion");
-      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
-      switch (eaccion) {
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminFacturas(new FacturaFicticia(-1L)));
 					this.attrs.put("consecutivo", "");		
@@ -238,19 +238,17 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;		
     try {			
 			this.loadOrdenVenta();
-			eaccion= (EAccion) this.attrs.get("accion");						
 			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 			this.getAdminOrden().toAdjustArticulos();
-			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR)) { 				  
+			if (transaccion.ejecutar(this.accion)) {
+				if(this.accion.equals(EAccion.AGREGAR)) { 				  
     			// UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "');");
-    			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
+    			JsfBase.setFlashAttribute("idVenta", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdVenta());
 					this.init();
 				} // if	
-				if(eaccion.equals(EAccion.MODIFICAR))
+				if(this.accion.equals(EAccion.MODIFICAR))
 				  JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
 				regresar= (this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString() : "filtro").concat(Constantes.REDIRECIONAR);
 			} // if
@@ -531,6 +529,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			
+      params.put("idArticuloTipo", "3");	      
 			if(buscaPorCodigo)
         this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 			else
@@ -638,8 +637,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	public void doUpdateForEmpresa(){
 		try {
-			loadClienteDefault();
-			doActualizaPrecioCliente();
+			this.loadClienteDefault();
+      this.doLoadDesarrollos();
+			this.doActualizaPrecioCliente();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -647,6 +647,64 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch		
 	} // doUpdateForEmpresa	
 	
+	public void doLoadDesarrollos() {
+		List<Columna> columns           = null;
+    Map<String, Object> params      = null;		
+		List<UISelectEntity> desarrollos= null;
+    try {
+			params= new HashMap<>();						
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((FacturaFicticia)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");
+			if(!desarrollos.isEmpty()) {
+				this.attrs.put("desarrollos", desarrollos);			
+				if(this.accion.equals(EAccion.AGREGAR)) 
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkDesarrollo(desarrollos.get(0));
+        else
+				  ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkDesarrollo(desarrollos.get(desarrollos.indexOf(((FacturaFicticia)this.getAdminOrden().getOrden()).getIkDesarrollo())));
+        ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(((FacturaFicticia)this.getAdminOrden().getOrden()).getIkDesarrollo().toLong("idCliente")));
+			  this.attrs.put("cliente", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIkDesarrollo().toString("razonSocial"));
+			} // if
+      else {
+				this.attrs.put("desarrollos", new ArrayList<>());
+				((FacturaFicticia)this.getAdminOrden().getOrden()).setIkDesarrollo(new UISelectEntity(-1L));
+				this.attrs.put("cliente", "");
+			} // else
+			this.doLoadContratos();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doLoadDesarrollos
+  
+	public void doLoadContratos() {
+		List<UISelectEntity> contratos= null;
+		Map<String, Object>params     = null;
+		try {
+			params= new HashMap<>();
+			params.put("idDesarrollo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdDesarrollo());
+			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+			this.attrs.put("contratos", contratos);
+      if(!contratos.isEmpty()) 
+        if(this.accion.equals(EAccion.AGREGAR))
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(0));
+        else  
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(contratos.indexOf(((FacturaFicticia)this.getAdminOrden().getOrden()).getIkContrato())));
+		} // try // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadContratos
+  
 	private void loadClienteDefault(){
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
@@ -772,7 +830,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		try {
 			if(this.attrs.get("clienteSeleccion")!= null && !((Entity)this.attrs.get("clienteSeleccion")).getKey().equals(-1L)){
 				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
-					((FacturaFicticia)this.getAdminOrden().getOrden()).setIdFicticiaEstatus(ESTATUS_ELABORADA);
+					((FacturaFicticia)this.getAdminOrden().getOrden()).setIdVentaEstatus(ESTATUS_ELABORADA);
 					this.loadOrdenVenta();
 					transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 					this.getAdminOrden().toAdjustArticulos();
@@ -921,4 +979,5 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		  this.toSaveRecord();
     //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	} // doGlobalEvent
+  
 }

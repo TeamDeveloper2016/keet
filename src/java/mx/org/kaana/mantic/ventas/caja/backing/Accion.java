@@ -1693,6 +1693,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);	
+      params.put("idArticuloTipo", "1");	      
 			if(buscaPorCodigo)        
         this.attrs.put("articulosProductoTicket", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 			else

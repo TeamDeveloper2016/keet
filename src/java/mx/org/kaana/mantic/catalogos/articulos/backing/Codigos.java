@@ -123,6 +123,7 @@ public class Codigos extends IBaseAttribute implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
+      params.put("idArticuloTipo", "1");	      
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L));
 			else

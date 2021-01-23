@@ -522,6 +522,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			
+      params.put("idArticuloTipo", "1");	      
 			if(buscaPorCodigo)
         this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 			else
@@ -792,7 +793,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		try {
 			if(this.attrs.get("clienteSeleccion")!= null && !((Entity)this.attrs.get("clienteSeleccion")).getKey().equals(-1L)){
 				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
-					((FacturaFicticia)this.getAdminOrden().getOrden()).setIdFicticiaEstatus(ESTATUS_ELABORADA);
+					((FacturaFicticia)this.getAdminOrden().getOrden()).setIdVentaEstatus(ESTATUS_ELABORADA);
 					this.loadOrdenVenta();
 					transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 					this.getAdminOrden().toAdjustArticulos();

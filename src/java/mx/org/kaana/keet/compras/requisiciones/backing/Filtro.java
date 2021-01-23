@@ -254,6 +254,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        
+      params.put("idArticuloTipo", "1");	      
       articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
       this.attrs.put("articulosFiltro", articulos);
 		} // try

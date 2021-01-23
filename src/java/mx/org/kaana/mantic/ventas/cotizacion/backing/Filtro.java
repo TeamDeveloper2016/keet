@@ -501,6 +501,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search);			
+      params.put("idArticuloTipo", "1");	      
       this.attrs.put("codigos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 		} // try
 	  catch (Exception e) {

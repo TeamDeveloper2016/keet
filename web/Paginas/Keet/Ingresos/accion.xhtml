@@ -99,7 +99,7 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{keetIngresosAccion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" listener="#{keetIngresosAccion.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) desarrollo idCliente idContrato" oncomplete="reloadDesarrollo();"/>
+                  <p:ajax event="change" listener="#{keetIngresosAccion.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) idDesarrollo idCliente idContrato" oncomplete="reloadDesarrollo();"/>
 									<f:selectItems value="#{keetIngresosAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -108,8 +108,8 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel for="desarrollo" value="Desarrollo:"/>
-								<p:selectOneMenu id="desarrollo" value="#{keetIngresosAccion.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+								<p:selectOneMenu id="idDesarrollo" value="#{keetIngresosAccion.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetIngresosAccion.doUpdateCliente}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();"/>
 									<f:selectItems value="#{keetIngresosAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '- '} #{element.nombres}"/>
 									<p:column headerText="Clave">
@@ -146,7 +146,7 @@
 								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" rendered="false"/>
               </p:panelGrid>
               <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
-              <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="desarrollo" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 						<p:tab title="Importar">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{keetIngresosAccion.diferente? '': 'none'}">

@@ -266,6 +266,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				codigo= codigo.trim().substring(1);
 			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
 			params.put("codigo", codigo);
+      params.put("idArticuloTipo", "1");	      
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L);
 			else
@@ -479,6 +480,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else
 				search= "WXYZ";
   		params.put("codigo", search);	
+  		params.put("idArticuloTipo", Cadena.isVacio(this.attrs.get("idArticuloTipo"))? "1": this.attrs.get("idArticuloTipo"));	
 			switch(buscarCodigoPor) {      
 				case 0: 
 					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigoIgual", params, columns, 20L));
@@ -571,6 +573,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else
 				codigo= "WXYZ";
 			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
+      params.put("idArticuloTipo", "1");	      
 			if(buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
 			else
@@ -594,6 +597,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			params.put("codigo", "WXYZ");
+      params.put("idArticuloTipo", "1");	      
       this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porLikeNombre", params, columns));
 		} // try
 	  catch (Exception e) {
@@ -627,6 +631,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else
 				codigo= "WXYZ";
 			params.put("codigo", codigo.toUpperCase());
+      params.put("idArticuloTipo", "1");	      
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
 			else

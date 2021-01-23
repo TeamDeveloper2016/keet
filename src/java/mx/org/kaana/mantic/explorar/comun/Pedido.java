@@ -56,6 +56,7 @@ public abstract class Pedido extends IBaseAttribute implements Serializable{
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        
+      params.put("idArticuloTipo", "1");	      
       articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 20L);
       this.attrs.put("articulosFiltro", articulos);
 		} // try

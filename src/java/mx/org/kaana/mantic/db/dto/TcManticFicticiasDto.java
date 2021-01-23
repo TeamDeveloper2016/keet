@@ -31,40 +31,50 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="descuentos")
   private Double descuentos;
-  @Column (name="id_tipo_pago")
-  private Long idTipoPago;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_venta")
-  private Long idFicticia;
+  @Column (name="id_factura")
+  private Long idFactura;
+  @Column (name="id_facturar")
+  private Long idFacturar;
+  @Column (name="id_credito")
+  private Long idCredito;
   @Column (name="extras")
   private String extras;
   @Column (name="global")
   private Double global;
+  @Column (name="utilidad")
+  private Double utilidad;
   @Column (name="total")
   private Double total;
-  @Column (name="id_venta_estatus")
-  private Long idFicticiaEstatus;
+  @Column (name="id_almacen")
+  private Long idAlmacen;
   @Column (name="tipo_de_cambio")
   private Double tipoDeCambio;
   @Column (name="orden")
   private Long orden;
-  @Column (name="id_tipo_medio_pago")
-  private Long idTipoMedioPago;
+  @Column (name="cticket")
+  private Long cticket;
+  @Column (name="ccotizacion")
+  private Long ccotizacion;
+  @Column (name="vigencia")
+  private LocalDate vigencia;
+  @Column (name="id_autorizar")
+  private Long idAutorizar;
   @Column (name="id_cliente")
   private Long idCliente;
-  @Column (name="id_cliente_domicilio")
-  private Long idClienteDomicilio;
+  @Column (name="ticket")
+  private String ticket;
   @Column (name="descuento")
   private String descuento;
-  @Column (name="id_banco")
-  private Long idBanco;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="cobro")
+  private LocalDateTime cobro;
   @Column (name="consecutivo")
-  private String consecutivo;
+  private Long consecutivo;
+  @Column (name="cotizacion")
+  private String cotizacion;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="impuestos")
@@ -79,30 +89,38 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private String observaciones;
   @Column (name="id_empresa")
   private Long idEmpresa;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_venta")
+  private Long idVenta;
   @Column (name="dia")
   private LocalDate dia;
+  @Column (name="id_venta_estatus")
+  private Long idVentaEstatus;
+	@Column (name="id_manual")
+  private Long idManual;
+	@Column (name="id_cliente_domicilio")
+  private Long idClienteDomicilio;
+	@Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
+	@Column (name="id_tipo_pago")
+  private Long idTipoPago;
+	@Column (name="id_banco")
+  private Long idBanco;
   @Column (name="referencia")
   private String referencia;
-  @Column (name="id_factura")
-  private Long idFactura;
-  @Column (name="id_tipo_documento")
+	@Column (name="id_tipo_documento")
   private Long idTipoDocumento;
-  @Column (name="id_almacen")
-  private Long idAlmacen;
-  @Column (name="id_facturar")
-  private Long idFacturar;
-  @Column (name="ticket")
-  private String ticket;
-  @Column (name="cticket")
-  private Long cticket;
-  @Column (name="utilidad")
-  private Double utilidad;
-	@Column (name="vigencia")
-  private LocalDate vigencia;
-	@Column (name="ccotizacion")
-  private Long ccotizacion;
-	@Column (name="cotizacion")
-  private String cotizacion;
+	@Column (name="candado")
+  private Long candado;
+	@Column (name="id_sincronizado")
+  private Long idSincronizado;
+  @Column (name="id_desarrollo")
+  private Long idDesarrollo;
+  @Column (name="id_contrato")
+  private Long idContrato;
+  @Column (name="id_extra")
+  private Long idExtra;
 
   public TcManticFicticiasDto() {
     this(new Long(-1L));
@@ -128,8 +146,9 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setExtras(extras);
     setGlobal(global);
     setTotal(total);
-    setIdFicticiaEstatus(idFicticiaEstatus);
+    setIdVentaEstatus(idFicticiaEstatus);
     setTipoDeCambio(tipoDeCambio);
+    setCticket(orden);
     setOrden(orden);
     setIdTipoMedioPago(idTipoMedioPago);
     setIdCliente(idCliente);
@@ -138,7 +157,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setEjercicio(ejercicio);
     setRegistro(LocalDateTime.now());
     setVigencia(LocalDate.now());
-    setConsecutivo(consecutivo);
+    setTicket(consecutivo);
     setIdUsuario(idUsuario);
     setImpuestos(impuestos);
     setIdUsoCfdi(idUsoCfdi);
@@ -148,6 +167,8 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setDia(dia);
     setReferencia(referencia);
+		setCotizacion(cotizacion);
+		setCcotizacion(ccotizacion);
 		this.idClienteDomicilio= idClienteDomicilio;
 		this.idFactura  = idFactura;
 		this.idTipoDocumento= idTipoDocumento;
@@ -156,9 +177,31 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		this.ticket     = consecutivo;
 		this.cticket    = orden;
 		this.utilidad   = 0D;
-		setCotizacion(cotizacion);
-		setCcotizacion(ccotizacion);
   }
+	
+  public void setIdFicticia(Long idFicticia) {
+    this.idVenta = idFicticia;
+  }
+
+  public Long getIdFicticia() {
+    return idVenta;
+  }
+
+  public void setIdVenta(Long idFicticia) {
+    this.idVenta = idFicticia;
+  }
+
+  public Long getIdVenta() {
+    return idVenta;
+  }
+	
+	public Long getIdManual() {
+		return idManual;
+	}
+
+	public void setIdManual(Long idManual) {
+		this.idManual = idManual;
+	}	
 	
   public void setDescuentos(Double descuentos) {
     this.descuentos = descuentos;
@@ -168,28 +211,28 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return descuentos;
   }
 
-  public void setIdTipoPago(Long idTipoPago) {
-    this.idTipoPago = idTipoPago;
+  public void setIdFactura(Long idFactura) {
+    this.idFactura = idFactura;
   }
 
-  public Long getIdTipoPago() {
-    return idTipoPago;
+  public Long getIdFactura() {
+    return idFactura;
   }
 
-  public void setIdFicticia(Long idFicticia) {
-    this.idFicticia = idFicticia;
+	public Long getIdFacturar() {
+		return idFacturar;
+	}
+
+	public void setIdFacturar(Long idFacturar) {
+		this.idFacturar=idFacturar;
+	}
+
+  public void setIdCredito(Long idCredito) {
+    this.idCredito = idCredito;
   }
 
-  public Long getIdFicticia() {
-    return idFicticia;
-  }
-
-  public void setIdVenta(Long idFicticia) {
-    this.idFicticia = idFicticia;
-  }
-
-  public Long getIdVenta() {
-    return idFicticia;
+  public Long getIdCredito() {
+    return idCredito;
   }
 
   public void setExtras(String extras) {
@@ -208,6 +251,14 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return global;
   }
 
+  public void setUtilidad(Double utilidad) {
+    this.utilidad = utilidad;
+  }
+
+  public Double getUtilidad() {
+    return utilidad;
+  }
+
   public void setTotal(Double total) {
     this.total = total;
   }
@@ -216,12 +267,12 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return total;
   }
 
-  public void setIdFicticiaEstatus(Long idFicticiaEstatus) {
-    this.idFicticiaEstatus = idFicticiaEstatus;
+  public void setIdAlmacen(Long idAlmacen) {
+    this.idAlmacen = idAlmacen;
   }
 
-  public Long getIdFicticiaEstatus() {
-    return idFicticiaEstatus;
+  public Long getIdAlmacen() {
+    return idAlmacen;
   }
 
   public void setTipoDeCambio(Double tipoDeCambio) {
@@ -240,12 +291,12 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return orden;
   }
 
-  public void setIdTipoMedioPago(Long idTipoMedioPago) {
-    this.idTipoMedioPago = idTipoMedioPago;
+  public void setIdAutorizar(Long idAutorizar) {
+    this.idAutorizar = idAutorizar;
   }
 
-  public Long getIdTipoMedioPago() {
-    return idTipoMedioPago;
+  public Long getIdAutorizar() {
+    return idAutorizar;
   }
 
   public void setIdCliente(Long idCliente) {
@@ -255,14 +306,6 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   public Long getIdCliente() {
     return idCliente;
   }
-  
-	public void setIdClienteDomicilio(Long idClienteDomicilio) {
-    this.idClienteDomicilio = idClienteDomicilio;
-  }
-
-  public Long getIdClienteDomicilio() {
-    return idClienteDomicilio;
-  }
 
   public void setDescuento(String descuento) {
     this.descuento = descuento;
@@ -270,14 +313,6 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 
   public String getDescuento() {
     return descuento;
-  }
-
-  public void setIdBanco(Long idBanco) {
-    this.idBanco = idBanco;
-  }
-
-  public Long getIdBanco() {
-    return idBanco;
   }
 
   public void setEjercicio(Long ejercicio) {
@@ -296,11 +331,11 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return registro;
   }
 
-  public void setConsecutivo(String consecutivo) {
+  public void setConsecutivo(Long consecutivo) {
     this.consecutivo = consecutivo;
   }
 
-  public String getConsecutivo() {
+  public Long getConsecutivo() {
     return consecutivo;
   }
 
@@ -368,20 +403,108 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return dia;
   }
 
-  public void setReferencia(String referencia) {
-    this.referencia = referencia;
+  public void setIdVentaEstatus(Long idVentaEstatus) {
+    this.idVentaEstatus = idVentaEstatus;
   }
 
-  public String getReferencia() {
-    return referencia;
+  public Long getIdVentaEstatus() {
+    return idVentaEstatus;
   }
 
-	public Long getIdFactura() {
-		return idFactura;
+  public void setIdFicticiaEstatus(Long idVentaEstatus) {
+    this.idVentaEstatus = idVentaEstatus;
+  }
+
+  public Long getIdFicticiaEstatus() {
+    return idVentaEstatus;
+  }
+
+	public Long getCticket() {
+		return cticket;
 	}
 
-	public void setIdFactura(Long idFactura) {
-		this.idFactura=idFactura;
+	public void setCticket(Long cticket) {
+		this.cticket = cticket;
+	}
+
+	public Long getCcotizacion() {
+		return ccotizacion;
+	}
+
+	public void setCcotizacion(Long ccotizacion) {
+		this.ccotizacion = ccotizacion;
+	}
+
+	public LocalDate getVigencia() {
+		return vigencia;
+	}
+
+	public void setVigencia(LocalDate vigencia) {
+		this.vigencia = vigencia;
+	}
+
+	public String getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
+	}
+
+	public String getCotizacion() {
+		return cotizacion;
+	}
+
+	public void setCotizacion(String cotizacion) {
+		this.cotizacion = cotizacion;
+	}	
+
+	public LocalDateTime getCobro() {
+		return cobro;
+	}
+
+	public void setCobro(LocalDateTime cobro) {
+		this.cobro = cobro;
+	}	
+
+	public Long getIdClienteDomicilio() {
+		return idClienteDomicilio;
+	}
+
+	public void setIdClienteDomicilio(Long idClienteDomicilio) {
+		this.idClienteDomicilio=idClienteDomicilio;
+	}
+
+	public Long getIdTipoMedioPago() {
+		return idTipoMedioPago;
+	}
+
+	public void setIdTipoMedioPago(Long idTipoMedioPago) {
+		this.idTipoMedioPago=idTipoMedioPago;
+	}
+
+	public Long getIdTipoPago() {
+		return idTipoPago;
+	}
+
+	public void setIdTipoPago(Long idTipoPago) {
+		this.idTipoPago=idTipoPago;
+	}
+
+	public Long getIdBanco() {
+		return idBanco;
+	}
+
+	public void setIdBanco(Long idBanco) {
+		this.idBanco=idBanco;
+	}
+
+	public String getReferencia() {
+		return referencia;
+	}
+
+	public void setReferencia(String referencia) {
+		this.referencia=referencia;
 	}
 
 	public Long getIdTipoDocumento() {
@@ -392,112 +515,88 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		this.idTipoDocumento=idTipoDocumento;
 	}
 
-	public Long getIdAlmacen() {
-		return idAlmacen;
+	public Long getCandado() {
+		return candado;
 	}
 
-	public void setIdAlmacen(Long idAlmacen) {
-		this.idAlmacen=idAlmacen;
-	}
-
-	public Long getIdFacturar() {
-		return idFacturar;
-	}
-
-	public void setIdFacturar(Long idFacturar) {
-		this.idFacturar=idFacturar;
-	}
-
-	public String getTicket() {
-		return ticket;
-	}
-
-	public void setTicket(String ticket) {
-		this.ticket=ticket;
-	}
-
-	public Long getCticket() {
-		return cticket;
-	}
-
-	public void setCticket(Long cticket) {
-		this.cticket=cticket;
-	}
-
-	public Double getUtilidad() {
-		return utilidad;
-	}
-
-	public void setUtilidad(Double utilidad) {
-		this.utilidad=utilidad;
-	}
-
-		public LocalDate getVigencia() {
-		return vigencia;
-	}
-
-	public void setVigencia(LocalDate vigencia) {
-		this.vigencia = vigencia;
-	}
-	
-	public Long getCcotizacion() {
-		return ccotizacion;
-	}
-
-	public void setCcotizacion(Long ccotizacion) {
-		this.ccotizacion = ccotizacion;
-	}
-	
-	public String getCotizacion() {
-		return cotizacion;
-	}
-
-	public void setCotizacion(String cotizacion) {
-		this.cotizacion = cotizacion;
+	public void setCandado(Long candado) {
+		this.candado = candado;
 	}	
+
+	public Long getIdSincronizado() {
+		return idSincronizado;
+	}
+
+	public void setIdSincronizado(Long idSincronizado) {
+		this.idSincronizado=idSincronizado;
+	}
+
+  public Long getIdDesarrollo() {
+    return idDesarrollo;
+  }
+
+  public void setIdDesarrollo(Long idDesarrollo) {
+    this.idDesarrollo = idDesarrollo;
+  }
+
+  public Long getIdContrato() {
+    return idContrato;
+  }
+
+  public void setIdContrato(Long idContrato) {
+    this.idContrato = idContrato;
+  }
+
+  public Long getIdExtra() {
+    return idExtra;
+  }
+
+  public void setIdExtra(Long idExtra) {
+    this.idExtra = idExtra;
+  }
 	
   @Transient
   @Override
   public Long getKey() {
-  	return getIdFicticia();
+  	return getIdVenta();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idFicticia = key;
+  	this.idVenta = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getIdVenta());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoPago());
+		regresar.append(getIdFactura());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdFicticia());
+		regresar.append(getIdCredito());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getExtras());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getGlobal());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getUtilidad());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTotal());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdFicticiaEstatus());
+		regresar.append(getIdAlmacen());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTipoDeCambio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoMedioPago());
+		regresar.append(getIdAutorizar());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdClienteDomicilio());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuento());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdBanco());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
@@ -521,27 +620,45 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDia());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getReferencia());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdFactura());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoDocumento());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAlmacen());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdFacturar());
+		regresar.append(getIdVentaEstatus());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTicket());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getCticket());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getUtilidad());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getVigencia());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCotizacion());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCticket());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCcotizacion());
+		regresar.append(Constantes.SEPARADOR);		
+		regresar.append(getVigencia());
+		regresar.append(Constantes.SEPARADOR);		
+		regresar.append(getIdManual());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdFacturar());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCobro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdClienteDomicilio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdBanco());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getReferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoDocumento());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCandado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdSincronizado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDesarrollo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdContrato());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdExtra());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -549,20 +666,21 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("idFicticia", getIdVenta());
+		regresar.put("idVenta", getIdVenta());
 		regresar.put("descuentos", getDescuentos());
-		regresar.put("idTipoPago", getIdTipoPago());
-		regresar.put("idFicticia", getIdFicticia());
+		regresar.put("idFactura", getIdFactura());
+		regresar.put("idCredito", getIdCredito());
 		regresar.put("extras", getExtras());
 		regresar.put("global", getGlobal());
+		regresar.put("utilidad", getUtilidad());
 		regresar.put("total", getTotal());
-		regresar.put("idFicticiaEstatus", getIdFicticiaEstatus());
+		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("tipoDeCambio", getTipoDeCambio());
 		regresar.put("orden", getOrden());
-		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idAutorizar", getIdAutorizar());
 		regresar.put("idCliente", getIdCliente());
-		regresar.put("idClienteDomicilio", getIdClienteDomicilio());
 		regresar.put("descuento", getDescuento());
-		regresar.put("idBanco", getIdBanco());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
@@ -574,25 +692,33 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("dia", getDia());
-		regresar.put("referencia", getReferencia());
-		regresar.put("idFactura", getIdFactura());
-		regresar.put("idTipoDocumento", getIdTipoDocumento());
-		regresar.put("idAlmacen", getIdAlmacen());
-		regresar.put("idFacturar", getIdFacturar());
+		regresar.put("idVentaEstatus", getIdVentaEstatus());
 		regresar.put("ticket", getTicket());
-		regresar.put("cticket", getCticket());
-		regresar.put("utilidad", getUtilidad());
-		regresar.put("idVenta", getIdVenta());
-		regresar.put("vigencia", getVigencia());
 		regresar.put("cotizacion", getCotizacion());
+		regresar.put("cticket", getCticket());
 		regresar.put("ccotizacion", getCcotizacion());
+		regresar.put("vigencia", getVigencia());
+		regresar.put("idManual", getIdManual());
+		regresar.put("idFacturar", getIdFacturar());
+		regresar.put("cobro", getCobro());
+		regresar.put("idClienteDomicilio", getIdClienteDomicilio());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idTipoPago", getIdTipoPago());
+		regresar.put("idBanco", getIdBanco());
+		regresar.put("referencia", getReferencia());
+		regresar.put("idTipoDocumento", getIdTipoDocumento());
+		regresar.put("candado", getCandado());
+		regresar.put("idSincronizado", getIdSincronizado());
+		regresar.put("idDesarrollo", getIdDesarrollo());
+		regresar.put("idContrato", getIdContrato());
+		regresar.put("idExtra", getIdExtra());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia(), getIdFactura(), getIdTipoDocumento(), getIdAlmacen(), getIdFacturar(), getTicket(), getCticket(), getUtilidad(), getVigencia(), getCotizacion(), getCcotizacion()
+			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar(), getCobro(), getIdClienteDomicilio(), getIdTipoMedioPago(), getIdTipoPago(), getIdBanco(), getReferencia(), getIdTipoDocumento(), getCandado(), getIdSincronizado(), getIdDesarrollo(), getIdContrato(), getIdExtra()
     };
     return regresar;
   }
@@ -606,8 +732,8 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idFicticia~");
-    regresar.append(getIdFicticia());
+    regresar.append("idVenta~");
+    regresar.append(getIdVenta());
     regresar.append("|");
     return regresar.toString();
   }
@@ -615,32 +741,29 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdFicticia());
+    regresar.append(getIdVenta());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticFicticiasDto.class;
+    return TcManticVentasDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdFicticia()!= null && getIdFicticia()!=-1L;
+  	return getIdVenta()!= null && getIdVenta()!=-1L;
   }
-
+  
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) {
+    if (obj == null) 
       return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (getClass() != obj.getClass()) 
       return false;
-    }
     final TcManticFicticiasDto other = (TcManticFicticiasDto) obj;
-    if (getIdFicticia() != other.idFicticia && (getIdFicticia() == null || !getIdFicticia().equals(other.idFicticia))) {
+    if (getIdFicticia() != other.idVenta && (getIdFicticia() == null || !getIdFicticia().equals(other.idVenta))) 
       return false;
-    }
     return true;
   }
 
@@ -650,4 +773,5 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdFicticia() != null ? getIdFicticia().hashCode() : 0);
     return hash;
   }
+  
 }

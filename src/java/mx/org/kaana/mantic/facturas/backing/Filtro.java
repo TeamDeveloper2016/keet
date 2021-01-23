@@ -405,7 +405,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			orden= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, seleccionado.getKey());
-			bitacora= new TcManticFicticiasBitacoraDto(orden.getConsecutivo(), (String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getTotal());
+			bitacora= new TcManticFicticiasBitacoraDto(orden.getTicket(), (String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getTotal());
 			emails= new StringBuilder("");
 			if(this.getSelectedCorreos()!= null && !this.getSelectedCorreos().isEmpty()){
 				for(Correo mail: this.getSelectedCorreos())
@@ -522,6 +522,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search);			
+      params.put("idArticuloTipo", "1");	      
       this.attrs.put("codigos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
@@ -571,6 +572,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search.replaceAll("[ ]", "*.*"));			
+      params.put("idArticuloTipo", "1");	      
       this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
 		} // try
 	  catch (Exception e) {

@@ -530,6 +530,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			
+      params.put("idArticuloTipo", "1");	      
 			if(buscaPorCodigo)
         this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 			else

@@ -138,7 +138,7 @@ public class UnirFacturas extends TransaccionFactura {
 				this.orden.setTicket(consecutivo.getConsecutivo());			
 				this.orden.setCticket(consecutivo.getOrden());			
 				cuenta= this.toSiguienteCuenta(sesion);			
-				this.orden.setConsecutivo(cuenta.toConsecutivo());			
+				this.orden.setTicket(cuenta.toConsecutivo());			
 				this.orden.setOrden(cuenta.getOrden());				
 				this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
@@ -161,7 +161,7 @@ public class UnirFacturas extends TransaccionFactura {
 	} // registrarFicticia
 	
 	protected boolean registraBitacora(Session sesion, Long idFicticia, Long idFicticaEstatus, String justificacion) throws Exception {
-		TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(this.orden.getConsecutivo(), justificacion, idFicticaEstatus, JsfBase.getIdUsuario(), idFicticia, -1L, this.orden.getTotal());
+		TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(this.orden.getTicket(), justificacion, idFicticaEstatus, JsfBase.getIdUsuario(), idFicticia, -1L, this.orden.getTotal());
 		return DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
 	} // registrarBitacora
 	

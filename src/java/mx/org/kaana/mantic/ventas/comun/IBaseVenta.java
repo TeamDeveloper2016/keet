@@ -1077,6 +1077,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);						
+      params.put("idArticuloTipo", "1");	      
 			switch(buscarCodigoPor) {      
 				case 0: 
 					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));

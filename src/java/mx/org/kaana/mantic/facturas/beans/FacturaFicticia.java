@@ -2,14 +2,59 @@ package mx.org.kaana.mantic.facturas.beans;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Calendar;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 
 public class FacturaFicticia extends TcManticFicticiasDto implements Serializable {
 
 	private static final long serialVersionUID = -4493162062949623588L;	
 	
+	private UISelectEntity ikEmpresa;
+	private UISelectEntity ikDesarrollo;
+	private UISelectEntity ikCliente;
+	private UISelectEntity ikContrato;
+
+	public UISelectEntity getIkEmpresa() {
+		return ikEmpresa;
+	}
+
+	public void setIkEmpresa(UISelectEntity ikEmpresa) {
+		this.ikEmpresa=ikEmpresa;
+		if(this.ikEmpresa!= null)
+		  this.setIdEmpresa(this.ikEmpresa.getKey());
+	}
+
+  public UISelectEntity getIkDesarrollo() {
+    return ikDesarrollo;
+  }
+
+  public void setIkDesarrollo(UISelectEntity ikDesarrollo) {
+    this.ikDesarrollo = ikDesarrollo;
+		if(this.ikDesarrollo!= null)
+		  this.setIdDesarrollo(this.ikDesarrollo.getKey());
+  }
+
+	public UISelectEntity getIkCliente() {
+		return ikCliente;
+	}
+
+	public void setIkCliente(UISelectEntity ikCliente) {
+		this.ikCliente=ikCliente;
+		if(this.ikCliente!= null)
+		  this.setIdCliente(this.ikCliente.getKey());
+	}
+
+  public UISelectEntity getIkContrato() {
+    return ikContrato;
+  }
+
+  public void setIkContrato(UISelectEntity ikContrato) {
+    this.ikContrato = ikContrato;
+		if(this.ikContrato!= null)
+		  this.setIdContrato(this.ikContrato.getKey());
+  }
+  
 	public FacturaFicticia() {
 		this(-1L);
 	}
