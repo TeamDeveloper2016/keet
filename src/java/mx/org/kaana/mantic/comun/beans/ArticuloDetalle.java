@@ -1,9 +1,7 @@
 package mx.org.kaana.mantic.comun.beans;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

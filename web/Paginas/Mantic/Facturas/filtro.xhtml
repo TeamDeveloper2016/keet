@@ -390,12 +390,12 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
+		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1200px" height="480px" resizable="false" appendTo="@(body)">
 			<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-col-80 janal-column-center, janal-wid-60 janal-column-center, janal-wid-10 janal-column-center, janal-wid-col-60 janal-column-center, janal-wid-10 janal-column-center">
 				<p:outputLabel value="Consecutivo"/>
 				<p:outputLabel value="Razón social"/>
 				<p:outputLabel value="Fecha"/>
-				<p:outputLabel value="Articulos"/>
+				<p:outputLabel value="Conceptos"/>
 				<p:outputLabel value="Total"/>
 				<p:inputText value="#{manticFacturasFiltro.attrs.documento.consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
 				<p:inputText value="#{manticFacturasFiltro.attrs.documento.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
@@ -408,7 +408,7 @@
 					<p:column headerText="No" styleClass="janal-wid-3">
 						<p:outputLabel value="#{index+ 1}.-"/>
 					</p:column>   
-					<p:column headerText="Código" styleClass="janal-wid-col-100">
+					<p:column headerText="Código" styleClass="janal-wid-col-80">
 						<p:outputLabel value="#{item.propio}"/>
 					</p:column>   
 					<p:column headerText="Nombre">

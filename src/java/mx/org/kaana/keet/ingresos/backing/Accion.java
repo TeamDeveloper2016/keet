@@ -46,8 +46,10 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.keet.ingresos.reglas.Transaccion;
 import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
+import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
@@ -71,6 +73,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   private TcManticVentasDto ingreso;
   private TcManticFacturasDto comprobante;
   private TcManticClientesDto cliente;
+  private List<Articulo> articulos;
 	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
@@ -140,11 +143,11 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   @Override
   protected void init() {		
     try {
-//			if(JsfBase.getFlashAttribute("accion")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			if(JsfBase.getFlashAttribute("accion")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Facturas/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.attrs.put("folio", "");
 			this.doLoad();
@@ -205,6 +208,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.setIkDesarrollo(new UISelectEntity(-1L));
           this.setIkCliente(new UISelectEntity(-1L));
           this.setIkContrato(new UISelectEntity(-1L));
+          this.articulos= new ArrayList<>();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -245,7 +249,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       if(Cadena.isVacio(this.attrs.get("folio"))) {
         if(!Cadena.isVacio(this.getXml())) {
           if(this.getReceptor().getRfc().equals(this.cliente.getRfc())) {
-            transaccion = new Transaccion(this.ingreso, this.comprobante, this.getXml(), this.getPdf());
+            transaccion = new Transaccion(this.ingreso, this.comprobante, this.articulos, this.getXml(), this.getPdf());
             if (transaccion.ejecutar(this.accion)) {
               regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
               if(!this.accion.equals(EAccion.CONSULTAR)) 
@@ -417,7 +421,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     switch (event.getTab().getTitle()) {
       case "Importar":
         if(this.ingreso.getIdDesarrollo()!= null && this.ingreso.getIdDesarrollo()> 0L) {
-     		  if(this.attrs.get("faltantes")== null)
+     		  if(this.attrs.get("faltantes")== null) 
 		  	    this.doLoadFiles("TcManticFacturasArchivosDto", this.ingreso.getIdFactura(), "idFactura", false, 1D);
         } // if
         else
@@ -450,6 +454,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.comprobante.setRegistro(Fecha.toLocalDateTime(this.getFactura().getFecha()));
           this.comprobante.setCadenaOriginal(this.toCadenaOriginal(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.getXml().getRuta()).concat(this.getXml().getName())));
           this.doCheckFolio();
+          this.toReadArticulos();
         } // if
       } // if
       else 
@@ -532,16 +537,6 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	}
 	
-	@Override
-	protected void finalize() throws Throwable {
-		try {
-			this.doCancelar();
-		} // try
-		finally {
-			super.finalize();
-		} // finally	
-	}
- 
 	private String toCadenaOriginal(String xml) throws Exception {
 		StreamSource source       = new StreamSource(new File(xml));
 		StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/cadenaoriginal_3_3.xslt"));
@@ -582,5 +577,64 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // finally
     return regresar;
   }
+
+  private void toReadArticulos() throws Exception {
+    Map<String, Object> params = null;
+    List<Articulo> conceptos   = null;
+    try {
+      params = new HashMap<>();
+      params.put("idArticuloTipo", 3);
+      this.articulos.clear();
+      if(this.getFactura()!= null && !this.getFactura().getConceptos().isEmpty()) {
+        // int size= this.getFactura().getConceptos().size();
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_unidades_medidas.clave = '".concat(this.getFactura().getConceptos().get(0).getClaveUnidad()).concat("'"));
+        conceptos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaIngresosDto", "articulos", params);
+        if(conceptos== null || conceptos.isEmpty()) {
+          params.put(Constantes.SQL_CONDICION, "tc_mantic_unidades_medidas.clave is not null");
+          conceptos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaIngresosDto", "articulos", params);
+        } // if
+        if(conceptos!= null) {
+          int count= 0;
+          for (Concepto concepto: this.getFactura().getConceptos()) {
+            Articulo item= conceptos.get(count);
+            item.setNombre(concepto.getDescripcion());
+            item.setDescuento(concepto.getDescuento());
+            item.setCodigo(concepto.getNoIdentificacion());
+            item.setSat(concepto.getClaveProdServ());
+            item.setCantidad(Numero.getDouble(concepto.getCantidad(), 0D));
+            item.setPrecio(Numero.getDouble(concepto.getValorUnitario(), 0D));
+            item.setCosto(item.getPrecio());
+            item.setIva(Numero.getDouble(concepto.getTraslado().getTasaCuota(), 0D));
+            item.setSubTotal(Numero.getDouble(concepto.getTraslado().getBase(), 0D));
+            item.setImpuestos(Numero.getDouble(concepto.getTraslado().getImporte(), 0D));
+            item.setImporte(Numero.getDouble(concepto.getImporte(), 0D));
+            item.setUnidadMedida(concepto.getUnidad());
+            count++;
+            this.articulos.add(item);
+            if(count>= this.getFactura().getConceptos().size())
+              break;
+          } // for
+        } // if
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(conceptos);
+    } // finally
+  }
+ 
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			this.doCancelar();
+      Methods.clean(this.articulos);
+		} // try
+		finally {
+			super.finalize();
+		} // finally	
+	}
   
 }

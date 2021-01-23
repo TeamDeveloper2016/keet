@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +23,14 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
+import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusFacturas;
@@ -49,13 +52,14 @@ public class Transaccion extends IBaseTnx implements Serializable {
  
 	private TcManticVentasDto orden;	
 	private TcManticFacturasDto comprobante;	
+  private List<Articulo> articulos;
 	private Importado xml;
 	private Importado pdf;
 	private String messageError;
 	private TcManticVentasBitacoraDto bitacora;
 
 	public Transaccion(TcManticVentasDto orden) {
-		this(orden, null, null, null);
+		this(orden, null, Collections.EMPTY_LIST, null, null);
 	}
 
 	public Transaccion(TcManticVentasDto orden, TcManticVentasBitacoraDto bitacora) {
@@ -63,9 +67,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		this.bitacora= bitacora;
 	}
 	
-	public Transaccion(TcManticVentasDto orden, TcManticFacturasDto comprobante, Importado xml, Importado pdf) {
+	public Transaccion(TcManticVentasDto orden, TcManticFacturasDto comprobante, List<Articulo> articulos, Importado xml, Importado pdf) {
 		this.orden      = orden;		
 		this.comprobante= comprobante;		
+    this.articulos  = articulos;
 		this.xml        = xml;
 		this.pdf        = pdf;
 	} // Transaccion
@@ -105,6 +110,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
             regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
             bitacoraNota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), this.orden.getCticket(), this.orden.getTotal());
             regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+            this.toFillArticulos(sesion);
             // AGREGAR UNA CUENTA POR COBRAR 
             this.toRecordDeuda(sesion, this.orden.getTotal());
             this.toUpdateDeleteXml(sesion);	
@@ -112,6 +118,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+          this.toFillArticulos(sesion);
      	    this.toUpdateDeleteXml(sesion);	
 					break;				
 				case ELIMINAR:
@@ -225,15 +232,15 @@ public class Transaccion extends IBaseTnx implements Serializable {
       } // for
 	}
 	
-	private List<Nombres> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
+	private List<Nombres> toListFile(Session sesion, String path, String name, Long idTipoArchivo) throws Exception {
 		List<Nombres> regresar= null;
 		Map<String, Object> params=null;
 		try {
 			params  = new HashMap<>();
 			params.put("idTipoArchivo", idTipoArchivo);
-			params.put("ruta", tmp.getRuta());
-			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticVentasArchivosDto", "listado", params);
-			regresar.add(new Nombres(tmp.getName()));
+			params.put("ruta", path);
+			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticFacturasArchivosDto", "listado", params);
+			regresar.add(new Nombres(name));
 		} // try 
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -278,7 +285,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				  if(!file.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.xml.getRuta()), this.xml.getName(), 1L));
 			} // if	
 			if(this.pdf!= null) {
         tmp= new TcManticFacturasArchivosDto(
@@ -310,7 +317,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				  if(!file.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.pdf.getRuta()), this.pdf.getName(), 2L));
 			} // if	
   	} // if	
 	}
@@ -377,5 +384,21 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		return regresar;
 	} // toLimiteCredito
   
-
+	private void toFillArticulos(Session sesion) throws Exception {
+		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticFicticiasDetallesDto", "detalle", this.orden.toMap());
+		for (Articulo item: todos) 
+			if(this.articulos.indexOf(item)< 0)
+				DaoFactory.getInstance().delete(sesion, item);
+		for (Articulo articulo: this.articulos) {
+			if(articulo.isValid()) {
+				TcManticFicticiasDetallesDto item= articulo.toFicticiaDetalle();
+				item.setIdFicticia(this.orden.getIdVenta());
+				if(DaoFactory.getInstance().findIdentically(sesion, TcManticFicticiasDetallesDto.class, item.toMap())== null) 
+					DaoFactory.getInstance().insert(sesion, item);
+				else
+					DaoFactory.getInstance().update(sesion, item);
+			} // if
+		} // for
+	} // toFillArticulos
+  
 } 

@@ -175,13 +175,13 @@
                     </f:facet>
                     <h:outputText value="#{index+ 1}.-"/>
                   </p:column>		
-                  <p:column class="MarAuto Responsive janal-wid-12">
+                  <p:column class="MarAuto Responsive janal-wid-8">
                     <f:facet name="header">
                       <h:outputText value="SAT"/>
                     </f:facet>
                     <h:outputText value="#{row['sat']}"/>
                   </p:column>		
-                  <p:column  class="MarAuto Responsive janal-wid-13">
+                  <p:column  class="MarAuto Responsive janal-wid-6">
                     <f:facet name="header">
                       <h:outputText value="Código"/>
                     </f:facet>
@@ -197,7 +197,7 @@
                     <f:facet name="header">
                       <h:outputText value="Costo"/>
                     </f:facet>
-                    <h:outputText value="#{row['costo']}"/>
+                    <h:outputText value="#{keetIngresosAccion.doMiles(row['costo'])}"/>
                   </p:column>		
                   <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
                     <f:facet name="header">
@@ -227,7 +227,7 @@
                     <f:facet name="header">
                       <h:outputText value="Total"/>
                     </f:facet>
-                    <h:outputText value="#{row['importe']}"/>
+                    <h:outputText value="#{keetIngresosAccion.doMiles(row['importe'])}"/>
                   </p:column>		
                   <f:facet name="footer">
                     <p:outputLabel value="Facturado: $ #{keetIngresosAccion.doMiles(keetIngresosAccion.ingreso.total)}" styleClass="importado janal-color-blue janal-font-bold"/>
