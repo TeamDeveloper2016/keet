@@ -84,7 +84,7 @@ public class Filtro extends FiltroFactura implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
       columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_HORA_CORTA));   
       columns.add(new Columna("cancelada", EFormatoDinamicos.FECHA_CORTA));   
@@ -605,10 +605,11 @@ public class Filtro extends FiltroFactura implements Serializable {
 
 	public String doFacturaColor(Entity row) {
 		String regresar= "";
-		if(row.toLong("idFacturaEstatus").equals(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura()))
-			regresar= "janal-tr-nuevo";
-		else if(row.toLong("idTipoDocumento").equals(1L))
-			regresar= "janal-tr-diferencias";
+//		if(row.toLong("idFacturaEstatus").equals(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura()))
+//			regresar= "janal-tr-nuevo";
+//		else 
+//      if(row.toLong("idTipoDocumento").equals(1L))
+//			  regresar= "janal-tr-diferencias";
 		return regresar;
 	}  // doFacturaColor
 

@@ -45,7 +45,7 @@ public class Importar extends IBaseImportar implements Serializable {
   private static final long serialVersionUID= 327353488565639367L;
 	
 	private Long idFactura;
-	private Long idFicticia;
+	private Long idVenta;
 	private List<Correo> correos;
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
@@ -75,13 +75,13 @@ public class Importar extends IBaseImportar implements Serializable {
   @Override
   protected void init() {		
     try {
-			if(JsfBase.getFlashAttribute("idFactura")== null || JsfBase.getFlashAttribute("idFicticia")== null)
+			if(JsfBase.getFlashAttribute("idFactura")== null || JsfBase.getFlashAttribute("idVenta")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			else {
         this.idFactura = JsfBase.getFlashAttribute("idFactura")== null? -1L: (Long)JsfBase.getFlashAttribute("idFactura");
-        this.idFicticia= JsfBase.getFlashAttribute("idFicticia")== null? -1L: (Long)JsfBase.getFlashAttribute("idFicticia");
+        this.idVenta= JsfBase.getFlashAttribute("idVenta")== null? -1L: (Long)JsfBase.getFlashAttribute("idVenta");
 				this.attrs.put("factura", DaoFactory.getInstance().findById(TcManticFacturasDto.class, this.idFactura));
-				this.attrs.put("ficticia", DaoFactory.getInstance().findById(TcManticFicticiasDto.class, this.idFicticia));
+				this.attrs.put("ficticia", DaoFactory.getInstance().findById(TcManticFicticiasDto.class, this.idVenta));
 				this.attrs.put("cliente", DaoFactory.getInstance().findById(TcManticClientesDto.class, ((TcManticFicticiasDto)this.attrs.get("ficticia")).getIdCliente()));
 			} // if
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -116,6 +116,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idFactura", this.idFactura);
+  	JsfBase.setFlashAttribute("idVenta", this.idVenta);
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
@@ -173,4 +174,5 @@ public class Importar extends IBaseImportar implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 	}	
+  
 }

@@ -30,7 +30,7 @@ public class NotaEntradaDetalle extends BarraProgreso implements Serializable {
       hints.put(EncodeHintType.MARGIN, 0); /* default = 4 */
       if(!getFieldValue("TOTAL_FINAL").toString().isEmpty())
         setVariableValue("LETRAS", letras.getMoneda(getFieldValue("TOTAL_FINAL").toString(), Boolean.FALSE));
-      matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).concat("-").concat("http://bonanzaj.jvmhost.net/MANTIC/"), BarcodeFormat.QR_CODE, 400, 400, hints);
+      matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).concat("-").concat("http://cafu.jvmhost.net/"), BarcodeFormat.QR_CODE, 400, 400, hints);
       setVariableValue("CODE_QR", MatrixToImageWriter.toBufferedImage(matrix));
     } // try
     catch (Exception e) {
