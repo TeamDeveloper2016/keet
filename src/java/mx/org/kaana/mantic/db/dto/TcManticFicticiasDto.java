@@ -177,6 +177,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		this.ticket     = consecutivo;
 		this.cticket    = orden;
 		this.utilidad   = 0D;
+		this.candado    = 1L;
   }
 	
   public void setIdFicticia(Long idFicticia) {

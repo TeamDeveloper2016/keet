@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
@@ -44,17 +45,27 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		if(this.orden.isValid()) {
 			articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "detalle", orden.toMap());
   	  this.setArticulos(articulos);    
-			validatePrecioArticulo();
+			this.validatePrecioArticulo();
+      this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
+      this.orden.setIkDesarrollo(new UISelectEntity(new Entity(this.orden.getIdDesarrollo())));
+      this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
+      if(this.orden.getIdContrato()== null)
+        this.orden.setIkContrato(new UISelectEntity(-1L));
+      else
+        this.orden.setIkContrato(new UISelectEntity(new Entity(this.orden.getIdContrato())));
 		}	// if
 		else	{
 		  articulos= new ArrayList<>();
 		  this.setArticulos(articulos);			
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
-			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.orden.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
+      this.orden.setIkDesarrollo(new UISelectEntity(-1L));
+      this.orden.setIkCliente(new UISelectEntity(-1L));
+      this.orden.setIkContrato(new UISelectEntity(-1L));
 		} // else	
 		if(loadDefault)
 			this.getArticulos().add(new ArticuloVenta(-1L, true));
-		this.setIdSinIva(1L);
+		this.setIdSinIva(2L);
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
