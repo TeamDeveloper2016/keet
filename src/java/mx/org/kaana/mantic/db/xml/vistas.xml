@@ -8648,7 +8648,7 @@
         from      
           tc_mantic_ventas				
         where 
-          tc_mantic_ventas.id_venta = {idFicticia} 
+          tc_mantic_ventas.id_venta = {idVenta} 
 			</select>
 		</unit>		
     <unit id="VistaTcManticApartadosDto">

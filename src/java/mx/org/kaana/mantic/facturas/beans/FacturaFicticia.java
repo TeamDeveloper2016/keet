@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.facturas.beans;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
@@ -65,7 +66,13 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 	
 	public FacturaFicticia(Double descuentos, Long idFactura, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, LocalDate dia, String referencia) {		
 		super(descuentos, idTipoPago, idFicticia, extras, global, total, idFicticiaEstatus, tipoDeCambio, orden, idTipoMedioPago, idCliente, idClienteDomicilio, descuento, idBanco, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, dia, referencia, idFactura);		
-    
+    this.setCandado(2L);			
+    this.setIdAutorizar(2L);			
+    this.setIdCredito(1L);			
+    this.setIdFacturar(1L);			
+    this.setIdManual(2L);			
+    this.setCobro(LocalDateTime.now());			
+    this.setIdSincronizado(2L);			
 	}	
 	
 	@Override

@@ -229,6 +229,7 @@
           tc_mantic_ordenes_compras.descuentos descuentos_orden,
           tc_mantic_ordenes_compras.observaciones,
           tc_keet_contratos.etapa,
+          tc_mantic_ordenes_detalles.sub_total as subtotal,
           tc_mantic_ordenes_detalles.*,
           concat('(',
             ifnull((select

@@ -259,10 +259,13 @@ public class Transaccion extends TransaccionFactura {
 			idFactura= registrarFactura(sesion);										
 			if(idFactura>= 1L){
 				consecutivo= this.toSiguiente(sesion);			
+        if(this.getOrden().getIdContrato()!= null && this.getOrden().getIdContrato()<= 0)
+          this.getOrden().setIdContrato(null);
+				this.orden.setIdExtra(this.getOrden().getIdContrato()== null? 1L: 2L);			
 				this.orden.setTicket(consecutivo.getConsecutivo());			
 				this.orden.setCticket(consecutivo.getOrden());			
+				this.orden.setConsecutivo(consecutivo.getOrden());			
 				cuenta= this.toSiguienteCuenta(sesion);			
-				this.orden.setTicket(cuenta.toConsecutivo());			
 				this.orden.setOrden(cuenta.getOrden());
 				this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						

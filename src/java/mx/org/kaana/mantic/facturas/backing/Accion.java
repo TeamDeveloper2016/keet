@@ -136,8 +136,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
           this.setAdminOrden(new AdminFacturas(new FacturaFicticia(-1L)));
 					this.attrs.put("consecutivo", "");		
 					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
-					if(idCliente!= null && !idCliente.equals(-1L))
-						doAsignaClienteInicial(idCliente);
           break;
         case MODIFICAR:			
         case CONSULTAR:			
@@ -150,18 +148,18 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					} // if
 					else
 						this.attrs.put("observaciones", "");									
-					idCliente= ((FacturaFicticia)getAdminOrden().getOrden()).getIdCliente();
-					if(idCliente!= null && !idCliente.equals(-1L)) {
-						this.doAsignaClienteInicial(idCliente);
-						this.loadDomicilios(idCliente);
-						idClienteDomicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getIdClienteDomicilio();
-						if(idClienteDomicilio!= null && !idClienteDomicilio.equals(-1L))
-							this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
-					} // if
           break;
       } // switch		
    		this.loadCatalogs();					
       this.doUpdateDesarrollos();      
+      idCliente= ((FacturaFicticia)getAdminOrden().getOrden()).getIdCliente();
+      if(idCliente!= null && !idCliente.equals(-1L)) {
+        this.doAsignaClienteInicial(idCliente);
+        this.loadDomicilios(idCliente);
+        idClienteDomicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getIdClienteDomicilio();
+        if(idClienteDomicilio!= null && !idClienteDomicilio.equals(-1L))
+          this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -251,13 +249,12 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR)) { 				  
-    			// UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "');");
-    			JsfBase.setFlashAttribute("idVenta", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdVenta());
-					this.init();
-				} // if	
-				if(this.accion.equals(EAccion.MODIFICAR))
-				  JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
+				if(this.accion.equals(EAccion.AGREGAR))				  
+    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "');");
+        else
+				  if(this.accion.equals(EAccion.MODIFICAR))
+				    JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
+     		JsfBase.setFlashAttribute("idVenta", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdVenta());
 				regresar= (this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString() : "filtro").concat(Constantes.REDIRECIONAR);
 			} // if
 			else 

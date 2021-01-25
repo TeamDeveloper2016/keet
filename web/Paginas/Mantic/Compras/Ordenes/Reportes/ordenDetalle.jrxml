@@ -78,13 +78,13 @@
 	<field name="CONSECUTIVO" class="java.lang.String"/>
 	<field name="REGISTRO_ORDEN_COMPRA" class="java.util.Date"/>
 	<field name="CANTIDAD" class="java.lang.String"/>
-	<field name="IMPORTE" class="java.math.BigDecimal"/>
+	<field name="IMPORTE" class="java.lang.Double"/>
 	<field name="NOMBRE_EMPRESA" class="java.lang.String"/>
 	<field name="ENTREGA_ESTIMADA" class="java.util.Date"/>
 	<field name="DESCUENTO" class="java.lang.String"/>
 	<field name="EXTRAS" class="java.lang.String"/>
-	<field name="IMPUESTOS" class="java.lang.String"/>
-	<field name="SUB_TOTAL" class="java.lang.String"/>
+	<field name="IMPUESTOS" class="java.lang.Double"/>
+	<field name="SUBTOTAL" class="java.math.BigDecimal"/>
 	<field name="TOTAL" class="java.math.BigDecimal"/>
 	<field name="OBSERVACIONES" class="java.lang.String"/>
 	<field name="PRECIO" class="java.lang.String"/>
@@ -523,7 +523,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="8" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{SUB_TOTAL}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{SUBTOTAL}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="506" y="0" width="56" height="14" uuid="8f9028bb-c115-4987-816f-6b566c5d3008"/>
