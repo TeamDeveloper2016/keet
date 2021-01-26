@@ -11,10 +11,32 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 
 	private static final long serialVersionUID = -4493162062949623588L;	
 	
+  private UISelectEntity ikSerie;
+  private UISelectEntity ikTipoComprobante;
 	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
+
+  public UISelectEntity getIkSerie() {
+    return ikSerie;
+  }
+
+  public void setIkSerie(UISelectEntity ikSerie) {
+    this.ikSerie = ikSerie;
+		if(this.ikSerie!= null)
+      this.setIdSerie(ikSerie.getKey());
+  }
+
+  public UISelectEntity getIkTipoComprobante() {
+    return ikTipoComprobante;
+  }
+
+  public void setIkTipoComprobante(UISelectEntity ikTipoComprobante) {
+    this.ikTipoComprobante = ikTipoComprobante;
+		if(this.ikTipoComprobante!= null)
+      this.setIdTipoComprobante(ikTipoComprobante.getKey());
+  }
 
 	public UISelectEntity getIkEmpresa() {
 		return ikEmpresa;

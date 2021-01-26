@@ -610,8 +610,8 @@ public class Filtro extends FiltroFactura implements Serializable {
 //		if(row.toLong("idFacturaEstatus").equals(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura()))
 //			regresar= "janal-tr-nuevo";
 //		else 
-//      if(row.toLong("idTipoDocumento").equals(1L))
-//			  regresar= "janal-tr-diferencias";
+     if(row.toLong("idTipoComprobante").equals(1L))
+			  regresar= "janal-tr-diferencias";
 		return regresar;
 	}  // doFacturaColor
 
@@ -666,11 +666,6 @@ public class Filtro extends FiltroFactura implements Serializable {
     } // finally
 	}
 		
-	@Override
-	protected void finalize() throws Throwable {
-    super.finalize();		
-	}	// finalize
-	
 	public void doCancelarFacturacion() {
 		Transaccion transaccion         = null;
 		Entity seleccionado             = null;		
@@ -712,4 +707,24 @@ public class Filtro extends FiltroFactura implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAutomatico
+  
+	public String doRecordPagos() {
+    try {
+      Entity seleccionado= (Entity)this.attrs.get("seleccionado");						
+      JsfBase.setFlashAttribute("idVenta", seleccionado.getKey());
+      JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/filtro");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos".concat(Constantes.REDIRECIONAR);
+	}
+ 
+	@Override
+	protected void finalize() throws Throwable {
+    super.finalize();		
+	}	// finalize
+  
 }

@@ -110,6 +110,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("observaciones", JsfBase.getFlashAttribute("observaciones")== null? "" : JsfBase.getFlashAttribute("observaciones"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
+      this.loadSeries();
 			this.loadSucursales();
 			this.loadBancos();
 			this.loadCfdis();
@@ -547,6 +548,27 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     } // finally
 	} // doUpdateArticulos	
 	
+	protected void loadSeries() {
+		List<UISelectEntity> series= null;
+		Map<String, Object>params  = null;
+		List<Columna> columns      = null;
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+			series=(List<UISelectEntity>) UIEntity.build("TcKeetSeriesDto", params, columns);
+			this.attrs.put("series", series);
+			series=(List<UISelectEntity>) UIEntity.build("TcKeetTiposComprobantesDto", params, columns);
+			this.attrs.put("comprobantes", series);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // loadSeries
+  
 	@Override
 	protected void loadSucursales() {
 		List<UISelectEntity> sucursales= null;

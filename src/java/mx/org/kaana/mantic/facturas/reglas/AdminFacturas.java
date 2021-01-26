@@ -46,6 +46,8 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 			articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "detalle", orden.toMap());
   	  this.setArticulos(articulos);    
 			this.validatePrecioArticulo();
+      this.orden.setIkSerie(new UISelectEntity(new Entity(this.orden.getIdSerie())));
+      this.orden.setIkTipoComprobante(new UISelectEntity(new Entity(this.orden.getIdTipoComprobante())));
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
       this.orden.setIkDesarrollo(new UISelectEntity(new Entity(this.orden.getIdDesarrollo())));
       this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
@@ -58,6 +60,8 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		  articulos= new ArrayList<>();
 		  this.setArticulos(articulos);			
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+      this.orden.setIkSerie(new UISelectEntity(1L));
+      this.orden.setIkTipoComprobante(new UISelectEntity(1L));
       this.orden.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.orden.setIkDesarrollo(new UISelectEntity(-1L));
       this.orden.setIkCliente(new UISelectEntity(-1L));

@@ -7,6 +7,44 @@
   </model>
 
   <dml>
+    <unit id="TcKeetSeriesDto">
+      <select id="row">
+        select      
+          tc_keet_series.id_serie as id_key,
+          tc_keet_series.*
+        from      
+          tc_keet_series
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_series
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKeetTiposComprobantesDto">
+      <select id="row">
+        select      
+          tc_keet_tipos_comprobantes.id_tipo_comprobante as id_key,
+          tc_keet_tipos_comprobantes.*
+        from      
+          tc_keet_tipos_comprobantes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_comprobantes
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcKeetNotasDirectosDto">
       <select id="row">
         select      
