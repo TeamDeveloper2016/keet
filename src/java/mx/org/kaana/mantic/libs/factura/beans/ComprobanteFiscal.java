@@ -15,6 +15,7 @@ public class ComprobanteFiscal implements Serializable{
 	private String xsi;
 	private String schemaLocation;
 	private String version;
+	private String serie;
 	private String folio;
 	private String fecha;
 	private String sello;
@@ -31,10 +32,10 @@ public class ComprobanteFiscal implements Serializable{
 	private String cfdi;
 
 	public ComprobanteFiscal() {
-		this(new Emisor(), new Receptor(), new ArrayList<Concepto>(), new Impuesto(), new TimbreFiscalDigital(), null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+		this(new Emisor(), new Receptor(), new ArrayList<Concepto>(), new Impuesto(), new TimbreFiscalDigital(), null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 	}
 
-	public ComprobanteFiscal(Emisor emisor, Receptor receptor, List<Concepto> conceptos, Impuesto impuesto, TimbreFiscalDigital timbreFiscalDigital, String xsi, String schemaLocation, String version, String folio, String fecha, String sello, String formaPago, String noCertificado, String certificado, String subTotal, String moneda, String tipoCambio, String total, String tipoDeComprobante, String metodoPago, String lugarExpedicion, String cfdi) {
+	public ComprobanteFiscal(Emisor emisor, Receptor receptor, List<Concepto> conceptos, Impuesto impuesto, TimbreFiscalDigital timbreFiscalDigital, String xsi, String schemaLocation, String version, String folio, String fecha, String sello, String formaPago, String noCertificado, String certificado, String subTotal, String moneda, String tipoCambio, String total, String tipoDeComprobante, String metodoPago, String lugarExpedicion, String cfdi, String serie) {
 		this.emisor           = emisor;
 		this.receptor         = receptor;
 		this.conceptos        = conceptos;
@@ -57,6 +58,7 @@ public class ComprobanteFiscal implements Serializable{
 		this.metodoPago       = metodoPago;
 		this.lugarExpedicion  = lugarExpedicion;
 		this.cfdi             = cfdi;
+		this.serie             = serie;
 	}
 
 	public String getXsi() {
@@ -82,6 +84,14 @@ public class ComprobanteFiscal implements Serializable{
 	public void setVersion(String version) {
 		this.version = version;
 	}
+
+  public String getSerie() {
+    return serie;
+  }
+
+  public void setSerie(String serie) {
+    this.serie = serie;
+  }
 
 	public String getFolio() {
 		return folio;

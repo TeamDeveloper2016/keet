@@ -25,6 +25,15 @@
         where      
           nombre = '{nombre}'
       </select>
+      <select id="clave">
+        select      
+          tc_keet_series.id_serie as id_key,
+          tc_keet_series.*
+        from      
+          tc_keet_series
+        where      
+          clave = '{clave}'
+      </select>
     </unit>    
     <unit id="TcKeetTiposComprobantesDto">
       <select id="row">
@@ -43,6 +52,15 @@
           tc_keet_tipos_comprobantes
         where      
           nombre = '{nombre}'
+      </select>
+      <select id="clave">
+        select      
+          tc_keet_tipos_comprobantes.id_tipo_comprobante as id_key,
+          tc_keet_tipos_comprobantes.*
+        from      
+          tc_keet_tipos_comprobantes
+        where      
+          clave = '{clave}'
       </select>
     </unit>    
     <unit id="TcKeetNotasDirectosDto">

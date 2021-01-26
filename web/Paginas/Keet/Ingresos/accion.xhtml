@@ -136,7 +136,11 @@
 								</p:selectOneMenu>																						
 								<p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="factura" value="No factura:"/>
-								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.comprobante.folio}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-40, janal-wid-30">
+  								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.comprobante.folio}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+    							<p:inputText id="idSerie" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ikSerie.clave}" readonly="true"/>
+                  <p:inputText id="idTipoComprobante" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ikTipoComprobante.nombre}" readonly="true"/>
+                </p:panelGrid>
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
 								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" readonly="true"/>
 								<p:outputLabel for="importe" value="Importe:"/>

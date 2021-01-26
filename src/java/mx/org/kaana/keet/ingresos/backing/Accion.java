@@ -68,12 +68,16 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 
 	private static final Log LOG              = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
+  
+  private enum EClaveCatalogo {MEDIOS_PAGO, TIPOS_PAGOS, USOS_CFDI, SERIES, COMPROBANTES};
 	
 	private EAccion accion;	
   private TcManticVentasDto ingreso;
   private TcManticFacturasDto comprobante;
   private TcManticClientesDto cliente;
   private List<Articulo> articulos;
+	private UISelectEntity ikSerie;
+	private UISelectEntity ikTipoComprobante;
 	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
@@ -91,6 +95,24 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     return cliente;
   }
   
+	public UISelectEntity getIkSerie() {
+		return ikSerie;
+	}
+
+	public void setIkSerie(UISelectEntity ikSerie) {
+		this.ikSerie=ikSerie;
+		if(this.ikSerie!= null)
+		  this.ingreso.setIdSerie(this.ikSerie.getKey());
+	}
+	public UISelectEntity getIkTipoComprobante() {
+		return ikTipoComprobante;
+	}
+
+	public void setIkTipoComprobante(UISelectEntity ikTipoComprobante) {
+		this.ikTipoComprobante=ikTipoComprobante;
+		if(this.ikTipoComprobante!= null)
+		  this.ingreso.setIdTipoComprobante(this.ikTipoComprobante.getKey());
+	}
 	public UISelectEntity getIkEmpresa() {
 		return ikEmpresa;
 	}
@@ -204,6 +226,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           );
           this.ingreso.setIdTipoDocumento(1L);
           this.ingreso.setIdFactura(-1L);
+    			this.setIkSerie(new UISelectEntity(1L));
+    			this.setIkTipoComprobante(new UISelectEntity(1L));
     			this.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
           this.setIkDesarrollo(new UISelectEntity(-1L));
           this.setIkCliente(new UISelectEntity(-1L));
@@ -217,13 +241,12 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
             this.comprobante= (TcManticFacturasDto)DaoFactory.getInstance().findById(TcManticFacturasDto.class, this.ingreso.getIdFactura());
           else
             this.comprobante= new TcManticFacturasDto();
+          this.setIkSerie(this.toLeyendas(EClaveCatalogo.SERIES, this.ingreso.getIdSerie()));
+          this.setIkTipoComprobante(this.toLeyendas(EClaveCatalogo.COMPROBANTES, this.ingreso.getIdTipoComprobante()));
           this.setIkEmpresa(new UISelectEntity(new Entity(this.ingreso.getIdEmpresa())));
           this.setIkDesarrollo(new UISelectEntity(new Entity(this.ingreso.getIdDesarrollo())));
           this.setIkCliente(new UISelectEntity(new Entity(this.ingreso.getIdCliente())));
-          if(this.ingreso.getIdContrato()== null)
-            this.setIkContrato(new UISelectEntity(-1L));
-          else
-            this.setIkContrato(new UISelectEntity(new Entity(this.ingreso.getIdContrato())));
+          this.setIkContrato(this.ingreso.getIdContrato()== null? new UISelectEntity(-1L): new UISelectEntity(new Entity(this.ingreso.getIdContrato())));
           this.cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, this.ingreso.getIdCliente());
           break;
       } // switch
@@ -440,9 +463,11 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.ingreso.setImpuestos(Numero.getDouble(this.getFactura().getImpuesto().getTraslado().getImporte(), 0D));
           this.ingreso.setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
           this.ingreso.setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
-          this.ingreso.setIdTipoMedioPago(this.toClaveCatalogo(0, this.getFactura().getFormaPago())); // EFECTIVO, CHEQUE, TRANSFERENCIA getFormaPago(30) 
-          this.ingreso.setIdTipoPago(this.toClaveCatalogo(1, this.getFactura().getMetodoPago())); // PUE, PPD, PUE getMetodoPago(PUE)
-          this.ingreso.setIdUsoCfdi(this.toClaveCatalogo(2, this.getFactura().getReceptor().getUsoCfdi())); // GO3 getReceptor.getUsoCfi(G02)
+          this.ingreso.setIdTipoMedioPago(this.toClaveCatalogo(EClaveCatalogo.MEDIOS_PAGO, this.getFactura().getFormaPago())); // EFECTIVO, CHEQUE, TRANSFERENCIA getFormaPago(30) 
+          this.ingreso.setIdTipoPago(this.toClaveCatalogo(EClaveCatalogo.TIPOS_PAGOS, this.getFactura().getMetodoPago())); // PUE, PPD, PUE getMetodoPago(PUE)
+          this.ingreso.setIdUsoCfdi(this.toClaveCatalogo(EClaveCatalogo.USOS_CFDI, this.getFactura().getReceptor().getUsoCfdi())); // GO3 getReceptor.getUsoCfi(G02)
+          this.ingreso.setIdSerie(this.toClaveCatalogo(EClaveCatalogo.SERIES, this.getFactura().getSerie())); // A o B
+          this.ingreso.setIdTipoComprobante(this.toClaveCatalogo(EClaveCatalogo.COMPROBANTES, this.getFactura().getTipoDeComprobante())); // I o E
           this.comprobante.setFolio(this.getFactura().getFolio());
 				  this.comprobante.setSelloCfdi(this.getFactura().getTimbreFiscalDigital().getSelloCfd());
 				  this.comprobante.setSelloSat(this.getFactura().getTimbreFiscalDigital().getSelloSat());
@@ -453,6 +478,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.comprobante.setTimbrado(Fecha.toLocalDateTime(this.getFactura().getTimbreFiscalDigital().getFechaTimbrado()));
           this.comprobante.setRegistro(Fecha.toLocalDateTime(this.getFactura().getFecha()));
           this.comprobante.setCadenaOriginal(this.toCadenaOriginal(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.getXml().getRuta()).concat(this.getXml().getName())));
+          this.setIkSerie(this.toLeyendas(EClaveCatalogo.SERIES, this.ingreso.getIdSerie()));
+          this.setIkTipoComprobante(this.toLeyendas(EClaveCatalogo.COMPROBANTES, this.ingreso.getIdTipoComprobante()));
           this.doCheckFolio();
           this.toReadArticulos();
         } // if
@@ -547,7 +574,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		return result.getWriter().toString();
 	} // toCadenaOriginal
  
-  private Long toClaveCatalogo(int tipo, String clave) {
+  private Long toClaveCatalogo(EClaveCatalogo tipo, String clave) {
     Long regresar= null;
     Map<String, Object> params = null;
     try {      
@@ -555,18 +582,55 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       params.put("clave", clave);      
       Value value= null;
       switch(tipo) {
-        case 0:  
+        case MEDIOS_PAGO:  
           value= DaoFactory.getInstance().toField("TcManticTiposMediosPagosDto", "clave", params, "idKey");
           break;
-        case 1:  
+        case TIPOS_PAGOS:  
           value= DaoFactory.getInstance().toField("TcManticTiposPagosDto", "clave", params, "idKey");
           break;
-        case 2:  
+        case USOS_CFDI:  
           value= DaoFactory.getInstance().toField("TcManticUsosCfdiDto", "identically", params, "idKey");
+          break;
+        case SERIES:  
+          value= DaoFactory.getInstance().toField("TcKeetSeriesDto", "clave", params, "idKey");
+          break;
+        case COMPROBANTES:  
+          value= DaoFactory.getInstance().toField("TcKeetTiposComprobantesDto", "clave", params, "idKey");
           break;
       } // switch
       if(value!= null && value.getData()!= null)
         regresar= value.toLong();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
+  private UISelectEntity toLeyendas(EClaveCatalogo tipo, Long idKey) {
+    UISelectEntity regresar   = null;
+    List<UISelectEntity> items= null;
+    Map<String, Object> params= null;
+    try {      
+      params = new HashMap<>();      
+      switch(tipo) {
+        case SERIES:  
+          params.put(Constantes.SQL_CONDICION, "id_serie="+ (idKey== null? -1L: idKey));
+          items= UIEntity.build("TcKeetSeriesDto", "row", params, Collections.EMPTY_LIST);
+          break;
+        case COMPROBANTES:  
+          params.put(Constantes.SQL_CONDICION, "id_tipo_comprobante="+ (idKey== null? -1L: idKey));
+          items= UIEntity.build("TcKeetTiposComprobantesDto", "row", params, Collections.EMPTY_LIST);
+          break;
+      } // switch
+      if(items!= null && !items.isEmpty())
+        regresar= items.get(0);
+      else
+        regresar= new UISelectEntity(-1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

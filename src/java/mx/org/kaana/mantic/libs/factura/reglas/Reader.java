@@ -79,6 +79,9 @@ public class Reader implements Serializable{
 					case "xsi:schemaLocation":
 						regresar.setSchemaLocation(valAttr);
 						break;
+					case "Serie":
+						regresar.setSerie(valAttr);
+						break;
 					case "Version":
 						regresar.setVersion(valAttr);
 						break;
