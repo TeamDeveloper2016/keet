@@ -49,6 +49,7 @@ import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
+import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -275,8 +276,11 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
             transaccion = new Transaccion(this.ingreso, this.comprobante, this.articulos, this.getXml(), this.getPdf());
             if (transaccion.ejecutar(this.accion)) {
               regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-              if(!this.accion.equals(EAccion.CONSULTAR)) 
-                JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
+              if(this.accion.equals(EAccion.AGREGAR)) 
+                UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ this.ingreso.getTicket()+ "');");
+              else
+                if(!this.accion.equals(EAccion.CONSULTAR)) 
+                  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
             } // if
             else 
               JsfBase.addMessage("Ocurrió un error al registrar la factura !", ETipoMensaje.ERROR);      			
