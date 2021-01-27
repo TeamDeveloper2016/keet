@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TrKeetContratoDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_keet_contrato_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_keet_contrato_domicilio
+        where      
+          id_contrato = {idContrato} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+    </unit>    
     <unit id="TcKeetSeriesDto">
       <select id="row">
         select      

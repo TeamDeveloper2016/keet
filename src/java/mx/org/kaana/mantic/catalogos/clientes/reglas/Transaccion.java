@@ -752,4 +752,5 @@ public class Transaccion extends TransaccionFactura {
     } // finally
     return regresar;
   } // registraProveedoresTransferencia
+  
 }

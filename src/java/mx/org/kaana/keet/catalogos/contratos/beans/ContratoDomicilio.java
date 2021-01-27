@@ -2,11 +2,11 @@ package mx.org.kaana.keet.catalogos.contratos.beans;
 
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
+import mx.org.kaana.keet.db.dto.TrKeetContratoDomicilioDto;
 
-public class ContratoDomicilio extends TrManticClienteDomicilioDto{
+public class ContratoDomicilio extends TrKeetContratoDomicilioDto {
 	
-	private static final long serialVersionUID = 731679150148040999L;	
+	private static final long serialVersionUID = 731679150148040995L;	
 	private ESql sqlAccion;
 	private Boolean nuevo;	
 	private Long consecutivo;
@@ -186,4 +186,10 @@ public class ContratoDomicilio extends TrManticClienteDomicilioDto{
 	public void setNuevoCp(boolean nuevoCp) {
 		this.nuevoCp = nuevoCp;
 	}
+
+  @Override
+  public Class toHbmClass() {
+    return TrKeetContratoDomicilioDto.class;
+  }
+  
 }

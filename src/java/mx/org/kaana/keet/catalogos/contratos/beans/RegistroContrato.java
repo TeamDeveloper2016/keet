@@ -34,11 +34,11 @@ public class RegistroContrato implements Serializable {
 
 
 	public RegistroContrato() {
-		this(-1L, new Contrato(), new ArrayList<ContratoPersonal>(), new ContratoPersonal(),  new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+		this(-1L, new Contrato(), new Domicilio(), new ArrayList<ContratoDomicilio>(), new ArrayList<ContratoPersonal>(), new ContratoPersonal(),  new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	} // RegistroProveedor
 
 	public RegistroContrato(Contrato contrato) {
-		this(contrato.getIdContrato(), contrato, new ArrayList<ContratoPersonal>(), new ContratoPersonal(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+		this(contrato.getIdContrato(), contrato, new Domicilio(), new ArrayList<ContratoDomicilio>(), new ArrayList<ContratoPersonal>(), new ContratoPersonal(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	}	
 	
 	public RegistroContrato(Long idContrato) {
@@ -49,11 +49,12 @@ public class RegistroContrato implements Serializable {
 		this.presupuestos= new ArrayList<>();
 		this.generadores = new ArrayList<>();
 		this.domicilio   = new Domicilio();
-		this.domicilioPivote= new Domicilio();
+		this.domicilioPivote   = new Domicilio();
+    this.contratoDomicilios= new ArrayList<>();
 		this.init();
 	} // RegistroProveedor
 
-	public RegistroContrato(Long idContrato, Contrato contrato, List<ContratoPersonal> contratoPersonas, ContratoPersonal contratoPersona, List<Documento> documentos, List<Presupuesto> presupuestos, List<Generador> generadores) {
+	public RegistroContrato(Long idContrato, Contrato contrato, Domicilio domicilio, List<ContratoDomicilio> contratoDomicilios, List<ContratoPersonal> contratoPersonas, ContratoPersonal contratoPersona, List<Documento> documentos, List<Presupuesto> presupuestos, List<Generador> generadores) {
 		this.idContrato      = idContrato;
 		this.contrato        = contrato;				
 		this.contadores      = new ContadoresListas(); 
@@ -63,6 +64,9 @@ public class RegistroContrato implements Serializable {
 		this.documentos      = documentos;
 		this.presupuestos    = presupuestos;
 		this.generadores     = generadores;
+    this.domicilio       = domicilio;
+		this.domicilioPivote = domicilio;
+    this.contratoDomicilios= contratoDomicilios;
 	} // RegistroProveedor			
 
 	public Long getIdContrato() {

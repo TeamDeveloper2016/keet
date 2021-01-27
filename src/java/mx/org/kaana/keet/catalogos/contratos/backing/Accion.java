@@ -152,6 +152,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case AGREGAR:											
           this.contrato= new RegistroContrato();
           this.toLoadCollections();
+          this.toAgregarContrato();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -161,7 +162,9 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.toLoadCollections();
 					this.doCompleteCodigoPostal(this.contrato.getDomicilio().getCodigoPostal());
 					this.asignaCodigoPostal();
-					if(!this.contrato.getContratoDomicilios().isEmpty()) {
+					if(this.contrato.getContratoDomicilios().isEmpty())
+            this.toAgregarContrato();
+          else {
 						this.contrato.setContratoDomicilioSelecion(this.contrato.getContratoDomicilios().get(0));
 						this.doConsultarContratoDomicilios();
 					} // if
@@ -763,5 +766,40 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);		
 		} // catch		
 	} // doInicializaCodigo
+ 
+  private void updateCodigoPostal() {
+    List<UISelectItem> codigosPostales = null;
+    try {
+      if (this.contrato.getDomicilio().getIdCodigoPostal().equals(-1L)) {
+        this.contrato.getDomicilio().setCodigoPostal("");
+        this.contrato.getDomicilio().setNuevoCp(false);
+      } // if
+      else {
+        codigosPostales = (List<UISelectItem>) this.attrs.get("codigosPostales");
+        for (UISelectItem codigo : codigosPostales) {
+          if (codigo.getValue().equals(this.contrato.getDomicilio().getIdCodigoPostal())) {
+            this.contrato.getDomicilio().setCodigoPostal(codigo.getLabel());
+            this.contrato.getDomicilio().setNuevoCp(true);
+          } // if
+        } // for
+      } // else
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+  } // updateCodigoPostal
+  
+  private void toAgregarContrato() {
+    try {
+      this.contrato.doAgregarContratoDomicilio();
+      this.contrato.setDomicilio(new Domicilio());
+      this.updateCodigoPostal();
+      this.doLoadAtributos(true);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // toAgregarContrato
   
 }

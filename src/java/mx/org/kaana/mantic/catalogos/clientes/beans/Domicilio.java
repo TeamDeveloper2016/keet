@@ -3,7 +3,7 @@ package mx.org.kaana.mantic.catalogos.clientes.beans;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 
-public class Domicilio extends TcManticDomiciliosDto{
+public class Domicilio extends TcManticDomiciliosDto {
 	
 	private static final long serialVersionUID = -3112775965972427532L;
 	private Entity idEntidad;

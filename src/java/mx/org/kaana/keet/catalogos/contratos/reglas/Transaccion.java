@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.keet.catalogos.contratos.beans.Documento;
 import mx.org.kaana.keet.catalogos.contratos.beans.Generador;
 import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
@@ -28,12 +29,14 @@ import mx.org.kaana.keet.enums.EArchivosContratos;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import org.hibernate.Session;
 import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Collections;
 
 public class Transaccion extends IBaseTnx {
 
 	private RegistroContrato contrato;	
+  private String messageError;
 	private IBaseDto dtoDelete;
 	private EArchivosContratos tipoArchivo;
 	private TcKeetContratosBitacoraDto bitacora;
@@ -60,6 +63,7 @@ public class Transaccion extends IBaseTnx {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar   = false;
 		Siguiente siguiente= null;
+		this.messageError  = "";
 		try {
 			switch(accion){
 				case AGREGAR:					
@@ -73,15 +77,15 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
 					for(Lote item:this.contrato.getContrato().getLotes())
 						actualizarLote(sesion, item);
+          this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
 					break;
 				case MODIFICAR:
-					siguiente= toSiguiente(sesion);
 					regresar= DaoFactory.getInstance().update(sesion, this.contrato.getContrato())>= 1L;
 					Collections.sort(this.contrato.getContrato().getLotes());
 					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
-					for(Lote item:this.contrato.getContrato().getLotes()){
+					for(Lote item:this.contrato.getContrato().getLotes())
 						actualizarLote(sesion, item);
-					} // for
+          this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
 					break;				
 				case ELIMINAR:
 					for(Lote item:this.contrato.getContrato().getLotes()){
@@ -124,7 +128,7 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception(e);
+      throw new Exception(this.messageError.concat("<br/>")+ e);
 		} // catch		
 		return regresar;
 	}	// ejecutar
@@ -217,4 +221,102 @@ public class Transaccion extends IBaseTnx {
 			throw new Exception(e);
 		} // catch	
 	} // cargarPlanos
+  
+  private boolean registraContratoDomicilios(Session sesion, Long idContrato) throws Exception {
+    ESql sqlAccion    = null;
+    int count         = 0;
+    int countPrincipal= 0;
+    boolean validate  = false;
+    boolean regresar  = false;
+    try {
+			if(this.contrato.getContratoDomicilios().size()== 1)
+				this.contrato.getContratoDomicilios().get(0).setIdPrincipal(1L);
+      for (ContratoDomicilio item: this.contrato.getContratoDomicilios()) {								
+				if(item.getIdPrincipal().equals(1L))
+					countPrincipal++;
+				if(countPrincipal== 0 && this.contrato.getContratoDomicilios().size()-1 == count)
+					item.setIdPrincipal(1L);
+        item.setIdContrato(idContrato);
+        item.setIdUsuario(JsfBase.getIdUsuario());
+				item.setIdDomicilio(toIdDomicilio(sesion, item));		
+        sqlAccion = item.getSqlAccion();
+        switch (sqlAccion) {
+          case INSERT:
+						item.setIdPrincipal(item.getIdPrincipal().equals(1L)? item.getIdPrincipal(): 2L);
+            item.setIdContratoDomicilio(-1L);
+            validate = this.registrar(sesion, item);
+            break;
+          case UPDATE:
+            validate = this.actualizar(sesion, item);
+            break;
+        } // switch
+        if (validate) {
+          count++;
+        }
+      } // for		
+      regresar = count == this.contrato.getContratoDomicilios().size();
+    } // try    
+    finally {
+      this.messageError = "Error al registrar los domicilios, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraContratoDomicilios
+ 
+	private Long toIdDomicilio(Session sesion, ContratoDomicilio contratoDomicilio) throws Exception{		
+		Entity entityDomicilio= null;
+		Long regresar         = -1L;		
+		entityDomicilio= toDomicilio(sesion, contratoDomicilio);
+		if(entityDomicilio!= null)
+			regresar= entityDomicilio.getKey();
+		else
+			regresar= insertDomicilio(sesion, contratoDomicilio);									
+		return regresar;
+	} // registrarDomicilio	
+ 
+	private Long insertDomicilio(Session sesion, ContratoDomicilio contratoDomicilio) throws Exception{
+		TcManticDomiciliosDto domicilio= null;
+		Long regresar= -1L;		
+		domicilio= new TcManticDomiciliosDto();
+		domicilio.setIdLocalidad(contratoDomicilio.getIdLocalidad().getKey());
+		domicilio.setAsentamiento(contratoDomicilio.getColonia());
+		domicilio.setCalle(contratoDomicilio.getCalle());
+		domicilio.setCodigoPostal(contratoDomicilio.getCodigoPostal());
+		domicilio.setEntreCalle(contratoDomicilio.getEntreCalle());
+		domicilio.setIdUsuario(JsfBase.getIdUsuario());
+		domicilio.setNumeroExterior(contratoDomicilio.getExterior());
+		domicilio.setNumeroInterior(contratoDomicilio.getInterior());
+		domicilio.setYcalle(contratoDomicilio.getyCalle());
+		regresar= DaoFactory.getInstance().insert(sesion, domicilio);		
+		return regresar;
+	} // insertDomicilio
+	
+	private Entity toDomicilio(Session sesion, ContratoDomicilio contratoDomicilio) throws Exception{
+		Entity regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idLocalidad", contratoDomicilio.getIdLocalidad().getKey());
+			params.put("codigoPostal", contratoDomicilio.getCodigoPostal());
+			params.put("calle", contratoDomicilio.getCalle());
+			params.put("numeroExterior", contratoDomicilio.getExterior());
+			params.put("numeroInterior", contratoDomicilio.getInterior());
+			params.put("asentamiento", contratoDomicilio.getColonia());
+			params.put("entreCalle", contratoDomicilio.getEntreCalle());
+			params.put("yCalle", contratoDomicilio.getyCalle());
+			regresar= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticDomiciliosDto", "domicilioExiste", params);
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDomicilio
+ 
+  private boolean registrar(Session sesion, IBaseDto dto) throws Exception {
+    return DaoFactory.getInstance().insert(sesion, dto)>= 1L;
+  } // registrar
+  
+  private boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
+    return DaoFactory.getInstance().update(sesion, dto) >= 1L;
+  } // actualizar
+  
 }
