@@ -2,15 +2,22 @@ package mx.org.kaana.keet.catalogos.contratos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -22,7 +29,13 @@ import mx.org.kaana.keet.catalogos.contratos.beans.RegistroContrato;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosDto;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.keet.catalogos.contratos.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.map.PointSelectEvent;
 import org.primefaces.model.map.LatLng;
@@ -37,7 +50,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private List<Lote> lotesOrden;
 	private List<UISelectItem> fachadas;
 	private List<UISelectItem> prototipos;
-
+  private UISelectEntity domicilioBusqueda;
+  
 	public RegistroContrato getContrato() {
 		return contrato;
 	}
@@ -61,6 +75,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void setPrototipos(List<UISelectItem> prototipos) {
 		this.prototipos = prototipos;
 	}	
+
+  public UISelectEntity getDomicilioBusqueda() {
+    return domicilioBusqueda;
+  }
+
+  public void setDomicilioBusqueda(UISelectEntity domicilioBusqueda) {
+    this.domicilioBusqueda = domicilioBusqueda;
+  }
 	
 	@PostConstruct
   @Override
@@ -73,8 +95,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("mostrarGeo", false);
-      loadCombos();
-			doLoad();
+ 			this.attrs.put("cpNuevo", false);						
+      this.toLoadCombos();
+			this.doLoad();
+      this.doLoadItemsDomicilio();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -82,7 +106,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 	
-	private void loadCombos() {
+	private void toLoadCombos() {
 		try {
 			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
@@ -98,7 +122,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void doLoadPrototipos() {
 		try {
-			loadPrototipos();
+			this.loadPrototipos();
 			this.contrato.getContrato().validaPrototipos((List<UISelectItem>)this.attrs.get("prototipos"));
     } // try
     catch (Exception e) {
@@ -127,12 +151,20 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.contrato= new RegistroContrato();
+          this.toLoadCollections();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-        case SUBIR:					
+        case SUBIR:				
+          this.attrs.put("cpNuevo", true);
           this.contrato= new RegistroContrato(Long.valueOf(this.attrs.get("idContrato").toString()));
-					loadPrototipos();          
+          this.toLoadCollections();
+					this.doCompleteCodigoPostal(this.contrato.getDomicilio().getCodigoPostal());
+					this.asignaCodigoPostal();
+					if(!this.contrato.getContratoDomicilios().isEmpty()) {
+						this.contrato.setContratoDomicilioSelecion(this.contrato.getContratoDomicilios().get(0));
+						this.doConsultarContratoDomicilios();
+					} // if
           break;
       } // switch
     } // try
@@ -142,6 +174,32 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doLoad
 
+	private void toLoadCollections() {
+		this.loadPrototipos();          
+		this.toLoadTiposDomicilios();	
+		this.toLoadDomicilios();
+		this.doLoadEntidades();		
+  }
+  
+	public void doLoadItemsDomicilio() {		
+		int count= 0;
+		try {
+			this.attrs.put("renderedDomicilio", true);
+			for(ContratoDomicilio item: this.contrato.getContratoDomicilios()) {
+				if(item.getKey()>= 0L)
+					count++;
+			} // for
+			if(count== 0) {
+				this.attrs.put("renderedDomicilio", false);
+				this.attrs.put("mensajeDomicilio", "Un DOMICILIO registrado.");								
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doCreateMessage
+  
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
@@ -194,7 +252,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch			
 	}
 
-	public void doGeoreferencia(Lote lote){
+	public void doGeoreferencia(Lote lote) {
 		try {
 			this.attrs.put("loteGeoreferencia", lote);			
 			this.attrs.put("mostrarGeo", true);						
@@ -222,7 +280,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doExistGeo
 	
-	public void doInitGeo(String latitud, String longitud){		
+	public void doInitGeo(String latitud, String longitud) {		
 		try {
 			this.attrs.put("latitud", latitud);
 			this.attrs.put("longitud", longitud);			
@@ -277,7 +335,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		Lote lote= null;
 		try {
 			lote= (Lote) this.attrs.get("loteGeoreferencia");		
-			if(Cadena.isVacio(lote.getLatitud()) || Cadena.isVacio(lote.getLongitud())){
+			if(Cadena.isVacio(lote.getLatitud()) || Cadena.isVacio(lote.getLongitud())) {
 				FacesContext.getCurrentInstance().getExternalContext();
 				this.contrato.getContrato().getLotes().get(this.contrato.getContrato().getLotes().indexOf(lote)).setLatitud(this.attrs.get("latitud").toString());
 				this.contrato.getContrato().getLotes().get(this.contrato.getContrato().getLotes().indexOf(lote)).setLongitud(this.attrs.get("longitud").toString());
@@ -297,7 +355,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void doCancelarGeo() {		
 		Lote lote= null;
 		try {
-			if(this.attrs.get("latitudAnterior")!= null && this.attrs.get("longitudAnterior")!= null){
+			if(this.attrs.get("latitudAnterior")!= null && this.attrs.get("longitudAnterior")!= null) {
 				lote= (Lote) this.attrs.get("loteGeoreferencia");		
 				this.contrato.getContrato().getLotes().get(this.contrato.getContrato().getLotes().indexOf(lote)).setLatitud(this.attrs.get("latitudAnterior").toString());
 				this.contrato.getContrato().getLotes().get(this.contrato.getContrato().getLotes().indexOf(lote)).setLongitud(this.attrs.get("longitudAnterior").toString());			
@@ -309,4 +367,401 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doCancelarGeo
+  
+  public void doBusquedaDomicilios() {
+    List<UISelectEntity> domicilios= null;
+    Map<String, Object> params= null;
+		List<Columna>campos= null;
+    try {
+      params = new HashMap<>();      
+      params.put(Constantes.SQL_CONDICION, "upper(calle) like upper('%".concat(this.attrs.get("calle").toString()).concat("%')"));
+			campos= new ArrayList<>();
+			campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("numeroExterior", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("numeroInterior", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("entidad", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
+      domicilios = UIEntity.build("VistaDomiciliosCatalogosDto", "domicilios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+      this.contrato.getDomicilio().setDomicilio(new Entity(-1L));
+      this.contrato.getDomicilio().setIdDomicilio(-1L);
+			this.attrs.put("domiciliosBusqueda", domicilios);      
+			this.attrs.put("resultados", domicilios.size());      
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doLoadDomicilios
+  
+	public void doAsignaDomicilio() {
+		List<UISelectEntity> domicilios        = null;
+		List<UISelectEntity> domiciliosBusqueda= null;
+		UISelectEntity domicilio               = null;
+		try {
+			domiciliosBusqueda=(List<UISelectEntity>) this.attrs.get("domiciliosBusqueda");
+			domicilio= domiciliosBusqueda.get(domiciliosBusqueda.indexOf(this.domicilioBusqueda));
+			domicilios= new ArrayList<>();
+			domicilios.add(domicilio);
+			this.attrs.put("domicilios", domicilios);			
+			this.contrato.getDomicilio().setDomicilio(domicilio);
+      this.contrato.getDomicilio().setIdDomicilio(domicilio.getKey());
+			this.toAsignaEntidad();
+			this.doLoadMunicipios();
+			this.toAsignaMunicipio();
+			this.toAsignaLocalidad();			
+			this.toLoadComplementos();			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaDomicilio
+ 
+	public List<UISelectEntity> doCompleteCodigoPostal(String query) {		
+		if(this.contrato.getDomicilio().getIdEntidad().getKey()>= 1L && !Cadena.isVacio(query)) {
+			this.attrs.put("condicionCodigoPostal", query);
+			this.doLoadCodigosPostales();		
+			return (List<UISelectEntity>)this.attrs.get("allCodigosPostales");
+		} // if
+		else{
+			this.contrato.getDomicilio().setNuevoCp(false);
+			this.contrato.getDomicilio().setIdCodigoPostal(-1L);
+			this.contrato.getDomicilio().setCodigoPostal("");
+			return new ArrayList<>();
+		} // else		
+	}	// doCompleteCliente
+  
+	public void asignaCodigoPostal() {
+		List<UISelectEntity> codigosPostales= null;
+		try {
+			codigosPostales= (List<UISelectEntity>) this.attrs.get("allCodigosPostales");
+			if(codigosPostales!= null && !codigosPostales.isEmpty()) {
+				this.contrato.getDomicilio().setCodigoPostal(codigosPostales.get(0).toString("codigo"));
+				this.contrato.getDomicilio().setNuevoCp(true);
+				this.contrato.getDomicilio().setIdCodigoPostal(codigosPostales.get(0).getKey());
+				this.attrs.put("codigoSeleccionado", codigosPostales.get(0));
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // asignaCodigoPostal
+  
+  public void doLoadCodigosPostales() {
+    List<UISelectItem> codigosPostales = null;
+    Map<String, Object> params = null;
+    try {
+			if(!this.contrato.getDomicilio().getIdEntidad().getKey().equals(-1L)) {
+				params = new HashMap<>();
+				params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.contrato.getDomicilio().getIdEntidad().getKey());
+				codigosPostales = UISelect.build("TcManticCodigosPostalesDto", "row", params, "codigo", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+				this.attrs.put("codigosPostales", codigosPostales);
+				if (!codigosPostales.isEmpty()) {
+					this.contrato.getDomicilio().setCodigoPostal(codigosPostales.get(0).getLabel());
+					this.contrato.getDomicilio().setIdCodigoPostal((Long) codigosPostales.get(0).getValue());
+					this.contrato.getDomicilio().setNuevoCp(true);
+				} // if
+				else 
+					this.contrato.getDomicilio().setNuevoCp(false);				
+			} // if
+			else
+				this.contrato.getDomicilio().setNuevoCp(false);				
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doLoadCodigosPostales  
+  
+  public void doLoadEntidades() {
+    List<UISelectEntity> entidades= null;
+		List<Columna>campos           = null;
+    Map<String, Object> params    = null;
+    try {
+      params = new HashMap<>();
+      params.put("idPais", 1);
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos= new ArrayList<>();
+			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      entidades= UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("entidades", entidades);
+      this.contrato.getDomicilio().setIdEntidad(entidades.get(0));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    this.doLoadMunicipios();
+  } // doLoadEntidades
+  
+	private void toAsignaEntidad() {
+		Entity domicilio     = null;
+		List<Entity>entidades= null;
+		try {
+			if(!this.contrato.getDomicilio().getIdDomicilio().equals(-1L)) {
+				domicilio= this.contrato.getDomicilio().getDomicilio();
+				entidades= (List<Entity>) this.attrs.get("entidades");
+				for(Entity entidad: entidades) {
+					if(entidad.getKey().equals(domicilio.toLong("idEntidad"))) {
+						this.contrato.getDomicilio().setIdEntidad(entidad);
+            break;
+          } // if  
+				} // for
+			} // if
+			else
+				this.contrato.getDomicilio().setIdEntidad(new Entity(-1L));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toAsignaEntidad
+
+  public void doLoadMunicipios() {
+    List<UISelectEntity> municipios= null;
+    Map<String, Object> params= null;
+		List<Columna>campos= null;
+    try {
+			if(!this.contrato.getDomicilio().getIdEntidad().getKey().equals(-1L)) {
+				params = new HashMap<>();
+				params.put("idEntidad", this.contrato.getDomicilio().getIdEntidad().getKey());
+				campos= new ArrayList<>();
+				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				this.attrs.put("municipios", municipios);
+				this.contrato.getDomicilio().setIdMunicipio(municipios.get(0));
+			} // if
+			else
+				this.contrato.getDomicilio().setIdMunicipio(new Entity(-1L));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    this.doLoadLocalidades();
+  } // doLoadMunicipios
+	
+	private void toAsignaMunicipio() {
+		Entity domicilio= null;
+		List<Entity>municipios= null;
+		try {
+			if(!this.contrato.getDomicilio().getIdMunicipio().getKey().equals(-1L)) {
+				domicilio= this.contrato.getDomicilio().getDomicilio();
+				municipios= (List<Entity>) this.attrs.get("municipios");
+				for(Entity municipio: municipios) {
+					if(municipio.getKey().equals(domicilio.toLong("idMunicipio"))) {
+						this.contrato.getDomicilio().setIdMunicipio(municipio);
+            break;
+          } // if  
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toAsignaMunicipio
+
+  public void doLoadLocalidades() {
+    List<UISelectEntity> localidades= null;
+    Map<String, Object> params= null;
+		List<Columna>campos= null;
+    try {
+			if(!this.contrato.getDomicilio().getIdMunicipio().getKey().equals(-1L)) {
+				params = new HashMap<>();
+				params.put("idMunicipio", this.contrato.getDomicilio().getIdMunicipio().getKey());
+				campos= new ArrayList<>();
+				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+				localidades = UIEntity.build("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				this.attrs.put("localidades", localidades);
+				this.contrato.getDomicilio().setLocalidad(localidades.get(0));
+				this.contrato.getDomicilio().setIdLocalidad(localidades.get(0).getKey());
+			} // if
+			else{
+				this.contrato.getDomicilio().setLocalidad(new Entity(-1L));
+				this.contrato.getDomicilio().setIdLocalidad(-1L);
+			} // else
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doLoadLocalidades
+	
+	private void toAsignaLocalidad() {
+		Entity domicilio       = null;
+		List<Entity>localidades= null;
+		try {
+			if(!this.contrato.getDomicilio().getIdDomicilio().equals(-1L)) {
+				domicilio= this.contrato.getDomicilio().getDomicilio();
+				localidades= (List<Entity>) this.attrs.get("localidades");
+				for(Entity localidad: localidades) {
+					if(localidad.getKey().equals(domicilio.toLong("idLocalidad"))) {
+						this.contrato.getDomicilio().setIdLocalidad(localidad.getKey());
+						this.contrato.getDomicilio().setLocalidad(localidad);
+            break;
+					} // if
+				} // for
+			} // if			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toAsignaLocalidad
+ 
+	private void toLoadComplementos() throws Exception {
+		MotorBusqueda motor            = null;
+		TcManticDomiciliosDto domicilio= null;
+		try {
+			if (!this.contrato.getDomicilio().getIdDomicilio().equals(-1L)) {
+        motor = new MotorBusqueda(this.contrato.getIdContrato());
+        domicilio = motor.toDomicilio(this.contrato.getDomicilio().getIdDomicilio());
+        this.contrato.getDomicilio().setCodigoPostal(domicilio.getCodigoPostal());
+        this.contrato.getDomicilio().setNumeroExterior(domicilio.getNumeroExterior());
+        this.contrato.getDomicilio().setNumeroInterior(domicilio.getNumeroInterior());
+        this.contrato.getDomicilio().setCalle(domicilio.getCalle());
+        this.contrato.getDomicilio().setAsentamiento(domicilio.getAsentamiento());
+        this.contrato.getDomicilio().setEntreCalle(domicilio.getEntreCalle());
+        this.contrato.getDomicilio().setYcalle(domicilio.getYcalle());
+        this.contrato.getDomicilio().setPrincipal(true);
+      } // if
+      else {
+        this.clearAtributos();
+      } // else
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+	} // toLoadComplementos  
+ 
+  public void clearAtributos() {
+    try {
+      this.contrato.getDomicilio().setNumeroExterior("");
+      this.contrato.getDomicilio().setNumeroInterior("");
+      this.contrato.getDomicilio().setCalle("");
+      this.contrato.getDomicilio().setAsentamiento("");
+      this.contrato.getDomicilio().setEntreCalle("");
+      this.contrato.getDomicilio().setYcalle("");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } // clearAtributos
+ 
+  public void doLoadAtributos(boolean all) {    
+		List<Entity> domicilios= null;
+    try {
+			if(all){
+				if(!this.contrato.getDomicilio().getDomicilio().getKey().equals(-1L)){
+					domicilios= (List<Entity>) this.attrs.get("domicilios");
+					this.contrato.getDomicilio().setDomicilio(domicilios.get(domicilios.indexOf(this.contrato.getDomicilio().getDomicilio())));
+					this.contrato.getDomicilio().setIdDomicilio(domicilios.get(domicilios.indexOf(this.contrato.getDomicilio().getDomicilio())).getKey());
+				} // if
+				else{
+					this.contrato.getDomicilio().setDomicilio(new Entity(-1L));
+					this.contrato.getDomicilio().setIdDomicilio(-1L);
+				} // else		
+				this.doLoadEntidades();				
+			} // if
+      this.toLoadComplementos();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } // doLoadAtributos
+ 
+  private void toLoadDomicilios() {
+		List<UISelectEntity> domicilios= null;
+		try {
+			domicilios= new ArrayList<>();
+			this.attrs.put("domicilios", domicilios);     
+			this.contrato.getDomicilio().setDomicilio(new Entity(-1L, "SELECCIONE"));
+      this.contrato.getDomicilio().setIdDomicilio(-1L);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+	} // loadDomicilios
+ 
+  private void toLoadTiposDomicilios() {
+    List<UISelectItem> tiposDomicilios = null;
+    try {
+      tiposDomicilios = new ArrayList<>();
+      for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) {
+        tiposDomicilios.add(new UISelectItem(tipoDomicilio.getKey(), Cadena.reemplazarCaracter(tipoDomicilio.name(), '_', ' ')));
+      } // for
+      this.attrs.put("tiposDomicilios", tiposDomicilios);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		    
+  } // toLoadTiposDomicilios
+ 
+  public void doConsultarContratoDomicilios() {
+    Domicilio domicilio= null;    
+    try {
+      this.contrato.doConsultarContratoDomicilios();
+			domicilio = this.contrato.getDomicilioPivote();
+      this.contrato.getDomicilio().setIdDomicilio(domicilio.getIdDomicilio());
+      if(domicilio.getDomicilio()!= null)
+				this.contrato.getDomicilio().setDomicilio(domicilio.getDomicilio());    
+			else
+				this.contrato.getDomicilio().setDomicilio(new Entity());
+      this.contrato.getDomicilio().setIdEntidad(domicilio.getIdEntidad());	
+			this.contrato.getDomicilio().getDomicilio().put("idEntidad", new Value("idEntidad", domicilio.getIdEntidad().getKey()));
+      this.toAsignaEntidad();
+			this.doLoadMunicipios();
+      this.contrato.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());			
+			this.contrato.getDomicilio().getDomicilio().put("idMunicipio", new Value("idMunicipio", domicilio.getIdMunicipio().getKey()));
+      this.toAsignaMunicipio();
+      this.contrato.getDomicilio().setLocalidad(domicilio.getLocalidad());			
+      this.contrato.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());			
+			this.contrato.getDomicilio().getDomicilio().put("idLocalidad", new Value("idLocalidad", domicilio.getLocalidad().getKey()));
+      this.toAsignaLocalidad();		
+      this.contrato.getDomicilio().setCalle(domicilio.getCalle());
+      this.contrato.getDomicilio().setNumeroExterior(domicilio.getNumeroExterior());
+      this.contrato.getDomicilio().setNumeroInterior(domicilio.getNumeroInterior());
+      this.contrato.getDomicilio().setAsentamiento(domicilio.getAsentamiento());
+      this.contrato.getDomicilio().setEntreCalle(domicilio.getEntreCalle());
+      this.contrato.getDomicilio().setYcalle(domicilio.getYcalle());
+      this.contrato.getDomicilio().setIdTipoDomicilio(domicilio.getIdTipoDomicilio());
+      this.contrato.getDomicilio().setPrincipal(domicilio.getPrincipal());
+			this.contrato.getDomicilio().setCodigoPostal(domicilio.getCodigoPostal());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // doConsultarContratoDomicilio	  
+ 
+	public void doInicializaCodigo() {
+		try {
+			this.contrato.getDomicilio().setIdCodigoPostal(-1L);
+			this.contrato.getDomicilio().setCodigoPostal("");
+			if((Boolean)this.attrs.get("cpNuevo")) {
+				this.contrato.getDomicilio().setNuevoCp(true);		
+				this.attrs.put("codigoSeleccionado", new UISelectEntity(-1L));
+			} // 				
+			else
+				this.contrato.getDomicilio().setNuevoCp(false);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);		
+		} // catch		
+	} // doInicializaCodigo
+  
 }

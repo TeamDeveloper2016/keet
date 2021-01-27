@@ -70,6 +70,8 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   private Long idEstacion;
 	@Column (name="costo")
   private Double costo;
+	@Column (name="calle")
+  private String calle;
 
   public TcKeetContratosLotesDto() {
     this(new Long(-1L));
@@ -81,6 +83,10 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, Long lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo) {
+    this(manzana, clave, inicio, lote, termino, idUsuario, idContrato, idContratoLoteEstatus, idContratoLote, idTipoFachada, diasConstruccion, idPrototipo, orden, atributos, latitud, longitud, arranque, idEstacion, costo, null);
+  }
+  
+  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, Long lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo, String calle) {
     setManzana(manzana);
     setClave(clave);
     setInicio(inicio);
@@ -101,6 +107,7 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
 		setArranque(arranque);
 		setIdEstacion(idEstacion);
 		setCosto(costo);
+    this.calle= calle;
   }
 	
   public void setManzana(String manzana) {
@@ -262,6 +269,14 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
 	public void setCosto(Double costo) {
 		this.costo = costo;
 	}	
+
+  public String getCalle() {
+    return calle;
+  }
+
+  public void setCalle(String calle) {
+    this.calle = calle;
+  }
 	
   @Transient
   @Override
@@ -317,6 +332,8 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
 		regresar.append(getIdEstacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCosto());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCalle());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -344,13 +361,14 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
 		regresar.put("arranque", getArranque());
 		regresar.put("idEstacion", getIdEstacion());
 		regresar.put("costo", getCosto());
+		regresar.put("calle", getCalle());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getManzana(), getClave(), getInicio(), getLote(), getTermino(), getRegistro(), getIdUsuario(), getIdContrato(), getIdContratoLoteEstatus(), getIdContratoLote(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos(), getLatitud(), getLongitud(), getArranque(), getIdEstacion(), getCosto()
+			getManzana(), getClave(), getInicio(), getLote(), getTermino(), getRegistro(), getIdUsuario(), getIdContrato(), getIdContratoLoteEstatus(), getIdContratoLote(), getIdTipoFachada(), getDiasConstruccion(), getIdPrototipo(), getOrden(), getAtributos(), getLatitud(), getLongitud(), getArranque(), getIdEstacion(), getCosto(), getCalle()
     };
     return regresar;
   }

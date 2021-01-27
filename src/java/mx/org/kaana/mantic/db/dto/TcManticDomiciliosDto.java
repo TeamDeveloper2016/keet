@@ -58,6 +58,8 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
   private Long idUsuario;
   @Column (name="observaciones")
   private String observaciones;  
+  @Column (name="referencia")
+  private String referencia;  
 
   public TcManticDomiciliosDto() {
     this(new Long(-1L));
@@ -69,6 +71,10 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
   }
 
   public TcManticDomiciliosDto(String asentamiento, Long idLocalidad, String codigoPostal, String latitud, String entreCalle, String calle, Long idDomicilio, String numeroInterior,  String ycalle, String longitud, String numeroExterior, Long idUsuario, String observaciones) {
+    this(asentamiento, idLocalidad, codigoPostal, latitud, entreCalle, calle, idDomicilio, numeroInterior, ycalle, longitud, numeroExterior, idUsuario, observaciones, null);
+  }
+  
+  public TcManticDomiciliosDto(String asentamiento, Long idLocalidad, String codigoPostal, String latitud, String entreCalle, String calle, Long idDomicilio, String numeroInterior,  String ycalle, String longitud, String numeroExterior, Long idUsuario, String observaciones, String referencia) {
     setAsentamiento(asentamiento);
     setIdLocalidad(idLocalidad);
     setCodigoPostal(codigoPostal);
@@ -83,6 +89,7 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
     setNumeroExterior(numeroExterior);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
+    this.referencia= referencia;
   }
 	
   public void setAsentamiento(String asentamiento) {
@@ -197,6 +204,14 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
     return observaciones;
   }
 
+  public String getReferencia() {
+    return referencia;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -239,6 +254,8 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());		
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getReferencia());		
     regresar.append("]");
   	return regresar.toString();
   }
@@ -260,13 +277,14 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
 		regresar.put("numeroExterior", getNumeroExterior());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
+		regresar.put("referencia", getReferencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getAsentamiento(), getIdLocalidad(), getCodigoPostal(), getLatitud(), getEntreCalle(), getCalle(), getIdDomicilio(), getNumeroInterior(), getYcalle(), getRegistro(), getLongitud(), getNumeroExterior(), getIdUsuario(), getObservaciones()
+      getAsentamiento(), getIdLocalidad(), getCodigoPostal(), getLatitud(), getEntreCalle(), getCalle(), getIdDomicilio(), getNumeroInterior(), getYcalle(), getRegistro(), getLongitud(), getNumeroExterior(), getIdUsuario(), getObservaciones(), getReferencia()
     };
     return regresar;
   }

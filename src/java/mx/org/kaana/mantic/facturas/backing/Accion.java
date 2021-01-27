@@ -42,6 +42,7 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.TabChangeEvent;
 
 @Named(value= "manticFacturasAccion")
 @ViewScoped
@@ -749,7 +750,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
         ((FacturaFicticia)this.getAdminOrden().getOrden()).setIdClienteDomicilio(domicilio.getKey());
       } // if  
       else
-        JsfBase.addMessage("El cliente no tiene un domicilio registrado !", ETipoMensaje.ERROR);
+        if(idCliente!= null && idCliente> 0)
+          JsfBase.addMessage("El cliente no tiene un domicilio registrado !", ETipoMensaje.ERROR);
 		} // try		
 		finally {
 			Methods.clean(params);
@@ -996,5 +998,15 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		  this.toSaveRecord();
     //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	} // doGlobalEvent
+
+	public void doTabChange(TabChangeEvent event) {
+		switch(event.getTab().getTitle()) {
+      case "Generales":
+        
+        break;
+      case "Lotes":
+        break;
+    } // switch
+	}	// doTabChange	
   
 }

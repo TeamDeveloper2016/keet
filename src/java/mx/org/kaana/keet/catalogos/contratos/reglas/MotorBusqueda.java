@@ -1,14 +1,16 @@
 package mx.org.kaana.keet.catalogos.contratos.reglas;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.catalogos.contratos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.beans.Contrato;
+import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoPersonal;
 import mx.org.kaana.keet.catalogos.contratos.contratistas.beans.ContratistaLote;
 import mx.org.kaana.keet.db.dto.TcKeetDiasFestivosDto;
@@ -17,14 +19,17 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
 
-public class MotorBusqueda implements Serializable{
+public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 	
 	private static final long serialVersionUID = -2951697223110542896L;
 	private Long idPivote;
 
 	public MotorBusqueda(Long idPivote) {
+    super(idPivote);
 		this.idPivote= idPivote;
 	}
 	
@@ -262,5 +267,55 @@ public class MotorBusqueda implements Serializable{
 		} // finally
 		return regresar;
 	} // toResidentesAsignados
-  
+ 
+	public TcManticDomiciliosDto toDomicilio(Long idDomicilio) throws Exception {
+		TcManticDomiciliosDto regresar= null;
+		try {
+			regresar= (TcManticDomiciliosDto) DaoFactory.getInstance().findById(TcManticDomiciliosDto.class, idDomicilio);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toDomicilio  
+ 
+	public List<ContratoDomicilio> toContratoDomicilios(boolean update) throws Exception {
+		List<ContratoDomicilio> regresar= null;
+		TcManticDomiciliosDto domicilio= null;
+		Map<String, Object>params      = null;
+		Entity entityDomicilio         = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_contrato=" + this.idPivote);
+			regresar= DaoFactory.getInstance().toEntitySet(ContratoDomicilio.class, "TrKeetContratoDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			for(ContratoDomicilio item: regresar) {
+				item.setIdLocalidad(toLocalidad(item.getIdDomicilio()));
+				item.setIdMunicipio(toMunicipio(item.getIdLocalidad().getKey()));
+				item.setIdEntidad(toEntidad(item.getIdMunicipio().getKey()));
+				if(update) {
+					domicilio= toDomicilio(item.getIdDomicilio());
+					item.setCalle(domicilio.getCalle());
+					item.setCodigoPostal(domicilio.getCodigoPostal());
+					item.setColonia(domicilio.getAsentamiento());
+					item.setEntreCalle(domicilio.getEntreCalle());
+					item.setyCalle(domicilio.getYcalle());
+					item.setExterior(domicilio.getNumeroExterior());
+					item.setInterior(domicilio.getNumeroInterior());
+					entityDomicilio= new Entity(item.getIdDomicilio());
+					entityDomicilio.put("idEntidad", new Value("idEntidad", item.getIdEntidad().getKey()));
+					entityDomicilio.put("idMunicipio", new Value("idMunicipio", item.getIdMunicipio().getKey()));
+					entityDomicilio.put("idLocalidad", new Value("idLocalidad", item.getIdLocalidad().getKey()));
+					item.setDomicilio(entityDomicilio);
+				} // if				
+			} // for
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toContratoDomicilio
+    
 }

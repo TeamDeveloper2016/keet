@@ -350,7 +350,7 @@ public class RegistroCliente implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-		finally{			
+		finally {			
 			this.countIndice++;
 		} // finally
 	} // doAgregarClienteDomicilio
@@ -457,7 +457,7 @@ public class RegistroCliente implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-		finally{			
+		finally {			
 			this.countIndice++;
 		} // finally
 	} // doAgregarClienteRepresentante
@@ -489,7 +489,7 @@ public class RegistroCliente implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-		finally{			
+		finally {			
 			this.countIndice++;
 		} // finally
 	} // doAgregarClienteTipoContacto
@@ -581,7 +581,7 @@ public class RegistroCliente implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-		finally{			
+		finally {			
 			this.countIndice++;
 		} // finally
 	} // doAgregarClienteDomicilio
@@ -646,7 +646,7 @@ public class RegistroCliente implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-		finally{			
+		finally {			
 			this.countIndice++;
 		} // finally
 	} // doAgregarProveedorTipoContacto
@@ -662,7 +662,7 @@ public class RegistroCliente implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-		finally{			
+		finally {			
 			this.countIndice++;
 		} // finally
 	} // doAgregarProveedorTipoContacto
@@ -709,7 +709,7 @@ public class RegistroCliente implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-		finally{			
+		finally {			
 			this.countIndice++;
 		} // finally
 	} // doAgregarClienteVivienda
@@ -740,7 +740,7 @@ public class RegistroCliente implements Serializable{
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-		finally{			
+		finally {			
 			this.countIndice++;
 		} // finally
 	} // doAgregarClienteInfraestructura
