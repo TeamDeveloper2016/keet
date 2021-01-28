@@ -21,13 +21,13 @@
         'contenedorGrupos\\:entidad'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp'          : {validaciones: 'requerido', mascara: 'numero', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:cp'          : {validaciones: 'requerido', mascara: 'cinco-digitos', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:calle'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:exterior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:interior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:asentamiento': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:entreCalle'  : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:ycalle'      : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'}
+        'contenedorGrupos\\:otraCalle'   : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'}
 			};
 
 			fieldsDialog ={
@@ -303,8 +303,8 @@
                 <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.domicilio.asentamiento}"/>	
                 <p:outputLabel for="entreCalle" value="Entre calle:"/>
                 <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.domicilio.entreCalle}"/>	
-                <p:outputLabel for="ycalle" value="Y calle:"/>
-                <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.domicilio.ycalle}"/>	
+                <p:outputLabel for="otraCalle" value="Y calle:"/>
+                <p:inputText id="otraCalle" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.domicilio.ycalle}"/>	
                 <p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
                 <p:selectOneMenu id="tipoDomicilio" value="#{keetCatalogosContratosAccion.contrato.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
                   <f:selectItems value="#{keetCatalogosContratosAccion.attrs.tiposDomicilios}"/>

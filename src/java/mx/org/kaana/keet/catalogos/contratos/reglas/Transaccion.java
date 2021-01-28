@@ -238,7 +238,7 @@ public class Transaccion extends IBaseTnx {
 					item.setIdPrincipal(1L);
         item.setIdContrato(idContrato);
         item.setIdUsuario(JsfBase.getIdUsuario());
-				item.setIdDomicilio(toIdDomicilio(sesion, item));		
+				item.setIdDomicilio(this.toIdDomicilio(sesion, item));		
         sqlAccion = item.getSqlAccion();
         switch (sqlAccion) {
           case INSERT:
@@ -250,9 +250,8 @@ public class Transaccion extends IBaseTnx {
             validate = this.actualizar(sesion, item);
             break;
         } // switch
-        if (validate) {
+        if (validate) 
           count++;
-        }
       } // for		
       regresar = count == this.contrato.getContratoDomicilios().size();
     } // try    
@@ -263,13 +262,12 @@ public class Transaccion extends IBaseTnx {
   } // registraContratoDomicilios
  
 	private Long toIdDomicilio(Session sesion, ContratoDomicilio contratoDomicilio) throws Exception{		
-		Entity entityDomicilio= null;
 		Long regresar         = -1L;		
-		entityDomicilio= toDomicilio(sesion, contratoDomicilio);
+		Entity entityDomicilio= this.toDomicilio(sesion, contratoDomicilio);
 		if(entityDomicilio!= null)
 			regresar= entityDomicilio.getKey();
 		else
-			regresar= insertDomicilio(sesion, contratoDomicilio);									
+			regresar= this.insertDomicilio(sesion, contratoDomicilio);									
 		return regresar;
 	} // registrarDomicilio	
  

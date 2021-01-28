@@ -268,11 +268,10 @@ public class RegistroContrato implements Serializable {
 	} // doConsultarConstrtoDomicilios
 
   public void doAgregarContratoDomicilio() {
-		ContratoDomicilio contratoDomicilio= null;
 		try {								
-			contratoDomicilio= new ContratoDomicilio(this.countIndice, ESql.INSERT, true);	
-			setValuesContratoDomicilio(contratoDomicilio, false);			
-			this.contratoDomicilios.add(contratoDomicilio);			
+			this.contratoDomicilioSelecion= new ContratoDomicilio(this.countIndice, ESql.INSERT, true);	
+			setValuesContratoDomicilio(this.contratoDomicilioSelecion, false);			
+			this.contratoDomicilios.add(this.contratoDomicilioSelecion);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

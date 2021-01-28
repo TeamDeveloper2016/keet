@@ -17,11 +17,11 @@ public class Domicilio extends TcManticDomiciliosDto {
 	private Long idClienteDomicilio;
 	
 	public Domicilio() {
-		this(null, null, null, null, -1L, false, false, -1L);
+		this(new Entity(-1L), new Entity(-1L), new Entity(-1L), new Entity(-1L), -1L, false, false, -1L);
 	}
 
 	public Domicilio(Entity idEntidad, Entity idMunicipio, Entity localidad, Entity domicilio, Long idCodigoPostal, boolean nuevoCp, Boolean principal, Long idTipoDomicilio) {
-		this(null, null, null, null, -1L, false, false, -1L, null);
+		this(idEntidad, idMunicipio, localidad, domicilio, idCodigoPostal, nuevoCp, principal, idTipoDomicilio, -1L);
 	}
 		
 	public Domicilio(Entity idEntidad, Entity idMunicipio, Entity localidad, Entity domicilio, Long idCodigoPostal, boolean nuevoCp, Boolean principal, Long idTipoDomicilio, Long idClienteDomicilio) {

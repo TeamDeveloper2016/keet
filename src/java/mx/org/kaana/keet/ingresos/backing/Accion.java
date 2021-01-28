@@ -49,7 +49,6 @@ import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
-import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;

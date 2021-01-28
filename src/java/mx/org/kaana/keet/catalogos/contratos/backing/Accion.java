@@ -158,7 +158,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:					
         case SUBIR:				
           this.attrs.put("cpNuevo", true);
-          this.contrato= new RegistroContrato(Long.valueOf(this.attrs.get("idContrato").toString()));
+          this.contrato= new RegistroContrato((Long)this.attrs.get("idContrato"));
           this.toLoadCollections();
 					this.doCompleteCodigoPostal(this.contrato.getDomicilio().getCodigoPostal());
 					this.asignaCodigoPostal();
@@ -210,6 +210,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
       this.contrato.getContrato().setIdUsuario(JsfBase.getIdUsuario());
+      this.contrato.doActualizarContratoDomicilio();
 			transaccion= new Transaccion(this.contrato);
 			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.setFlashAttribute("idContratoProcess", this.contrato.getContrato().getIdContrato());
