@@ -10,12 +10,17 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
+import mx.org.kaana.keet.catalogos.contratos.reglas.MotorBusqueda;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
+import mx.org.kaana.mantic.facturas.beans.Parcial;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +39,9 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	private static final Log LOG              = LogFactory.getLog(AdminFacturas.class);
 
 	private FacturaFicticia orden;
+  private Parcial lote;
+  private List<Parcial> parciales;
+  private List<Parcial> disponibles;
 
 	public AdminFacturas(FacturaFicticia orden) throws Exception {
 		this(orden, true);
@@ -51,10 +59,8 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
       this.orden.setIkDesarrollo(new UISelectEntity(new Entity(this.orden.getIdDesarrollo())));
       this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
-      if(this.orden.getIdContrato()== null)
-        this.orden.setIkContrato(new UISelectEntity(-1L));
-      else
-        this.orden.setIkContrato(new UISelectEntity(new Entity(this.orden.getIdContrato())));
+      this.parciales  = new ArrayList<>();
+      this.disponibles= new ArrayList<>();
 		}	// if
 		else	{
 		  articulos= new ArrayList<>();
@@ -65,8 +71,17 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
       this.orden.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.orden.setIkDesarrollo(new UISelectEntity(-1L));
       this.orden.setIkCliente(new UISelectEntity(-1L));
-      this.orden.setIkContrato(new UISelectEntity(-1L));
+      this.parciales  = new ArrayList<>();
+      this.disponibles= new ArrayList<>();
 		} // else	
+    if(this.orden.getIdContrato()== null) {
+      this.orden.setIkContrato(new UISelectEntity(-1L));
+      this.orden.setDomicilioContrato(new ContratoDomicilio(-1L, ESql.INSERT));
+    } // if
+    else {
+      this.orden.setIkContrato(new UISelectEntity(new Entity(this.orden.getIdContrato())));
+      this.orden.setDomicilioContrato(this.toContratoDomicilios(this.orden.getIdContrato()));
+    } // else  
 		if(loadDefault)
 			this.getArticulos().add(new ArticuloVenta(-1L, true));
 		this.setIdSinIva(2L);
@@ -85,7 +100,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		} // finally
 		LOG.warn("Forzar que todos los precios capturados ya son netos, por lo tanto se les descuenta el IVA");
 		this.toCalculate();
-		cleanPrecioDescuentoArticulo();
+		this.cleanPrecioDescuentoArticulo();
 	}
 	
 	public AdminFacturas(FacturaFicticia orden, List<Entity> tickets) throws Exception {
@@ -142,7 +157,6 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 								pivote.setImporte(pivote.getImporte()+ articulo.getImporte());
 								pivote.setTotal(pivote.getTotal()+ articulo.getTotal());
 							} // else
-
 						} // if
 					} // if	
 				} // for
@@ -164,6 +178,8 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 			else
 				this.orden.setIdAlmacen(1L);
 			this.toCalculate();
+      this.parciales  = new ArrayList<>();
+      this.disponibles= new ArrayList<>();
 		} // try
 		finally {
 			Methods.clean(params);
@@ -179,6 +195,22 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	public void setOrden(IBaseDto orden) {
 		this.orden= (FacturaFicticia)orden;
 	}
+
+  public Parcial getLote() {
+    return lote;
+  }
+
+  public void setLote(Parcial lote) {
+    this.lote = lote;
+  }
+
+  public List<Parcial> getParciales() {
+    return parciales;
+  }
+
+  public List<Parcial> getDisponibles() {
+    return disponibles;
+  }
 
 	@Override
 	public Double getTipoDeCambio() {
@@ -219,5 +251,56 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	public Long getIdAlmacen() {
 		return this.orden.getIdAlmacen();
 	}
-	
+
+	public void toContratoDomicilios() throws Exception {
+    this.orden.setDomicilioContrato(this.toContratoDomicilios(this.orden.getIdContrato()));
+  }
+  
+	public ContratoDomicilio toContratoDomicilios(Long idContrato) throws Exception {
+		ContratoDomicilio regresar= null;
+		try {
+      MotorBusqueda motor= new MotorBusqueda(idContrato);
+      List<ContratoDomicilio> domicilios= motor.toContratoDomicilios(true);
+      if(domicilios!= null && !domicilios.isEmpty()) {
+        regresar= domicilios.get(0);
+        regresar.setNuevoCp(regresar.getCodigoPostal()!= null && !Cadena.isVacio(regresar.getCodigoPostal()));
+      } // if  
+      else
+        regresar= this.orden.getDomicilioContrato();
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		return regresar;
+	} // toContratoDomicilio
+
+  public void toLoadContratoLotes() throws Exception {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idContrato", this.orden.getIdContrato());      
+      this.disponibles = (List<Parcial>)DaoFactory.getInstance().toEntitySet(Parcial.class, "VistaIngresosDto", "lotes", params);
+      if(this.disponibles!= null && !this.disponibles.isEmpty()) 
+        for (Parcial item : disponibles) {
+          if(this.parciales.indexOf(item)>= 0)
+            this.disponibles.remove(item);
+          else {
+            item.setSqlAccion(ESql.INSERT);
+            item.setCodigoPostal(this.orden.getDomicilioContrato().getCodigoPostal());
+            item.setCalle(this.orden.getDomicilioContrato().getCalle());
+            item.setColonia(this.orden.getDomicilioContrato().getColonia());
+            item.setNumeroExterior(this.orden.getDomicilioContrato().getExterior());
+            item.setNumeroInterior(this.orden.getDomicilioContrato().getInterior());
+            item.setIdLocalidad(this.orden.getDomicilioContrato().getIdLocalidad().getKey());
+            item.setPermiso(this.orden.getIkContrato().toString("permiso"));
+          } // else
+        } // for
+      else
+        this.parciales= new ArrayList<>();
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+  } // toLoadContratoLotes
+  
 }

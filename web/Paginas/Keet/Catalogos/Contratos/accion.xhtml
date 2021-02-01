@@ -30,7 +30,7 @@
         'contenedorGrupos\\:otraCalle'   : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'}
 			};
 
-			fieldsDialog ={
+			fieldsDomicilio ={
 				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 
@@ -330,7 +330,7 @@
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDialog);janal.refresh();">
+		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDomicilio);janal.refresh();">
 			<h:form id="formDialogoDomicilios" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-130, janal-wid-98 janal-column-right">
 					<p:outputLabel for="calleBusqueda" value="Calle:"/>

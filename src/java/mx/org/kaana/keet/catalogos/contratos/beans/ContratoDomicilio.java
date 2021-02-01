@@ -23,6 +23,10 @@ public class ContratoDomicilio extends TrKeetContratoDomicilioDto {
 	private String entreCalle;
 	private String yCalle;
 	private boolean nuevoCp;
+	private Long idCodigoPostal;	
+	private Boolean principal;	
+	private Long idTipoDomicilio;
+  
 	
 	public ContratoDomicilio() {
 		this(-1L);
@@ -57,6 +61,9 @@ public class ContratoDomicilio extends TrKeetContratoDomicilioDto {
 		this.entreCalle  = entreCalle;
 		this.yCalle      = yCalle;		
 		this.nuevoCp     = nuevoCp;
+    this.principal   = true;
+    this.idCodigoPostal = -1L;
+    this.idTipoDomicilio= -1L;
 	}
 
 	public ESql getSqlAccion() {
@@ -186,6 +193,30 @@ public class ContratoDomicilio extends TrKeetContratoDomicilioDto {
 	public void setNuevoCp(boolean nuevoCp) {
 		this.nuevoCp = nuevoCp;
 	}
+
+  public Long getIdCodigoPostal() {
+    return idCodigoPostal;
+  }
+
+  public void setIdCodigoPostal(Long idCodigoPostal) {
+    this.idCodigoPostal = idCodigoPostal;
+  }
+
+  public Boolean getPrincipal() {
+    return principal;
+  }
+
+  public void setPrincipal(Boolean principal) {
+    this.principal = principal;
+  }
+
+  public Long getIdTipoDomicilio() {
+    return idTipoDomicilio;
+  }
+
+  public void setIdTipoDomicilio(Long idTipoDomicilio) {
+    this.idTipoDomicilio = idTipoDomicilio;
+  }
 
   @Override
   public Class toHbmClass() {

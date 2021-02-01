@@ -981,6 +981,8 @@
 			var start= id.indexOf(this.joker)>= 0? this.joker.length: -1;
 			if(start> 0)
 				this.cursor.index= parseInt(id.substring(start, id.lastIndexOf('\\:')), 10);
+      if(isNaN(this.cursor.index))
+        this.cursor.index= 0;
 		},
 		move: function() {
 			var id= this.name();

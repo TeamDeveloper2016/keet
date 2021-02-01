@@ -51,6 +51,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private List<UISelectItem> fachadas;
 	private List<UISelectItem> prototipos;
   private UISelectEntity domicilioBusqueda;
+  private EAccion accion;
   
 	public RegistroContrato getContrato() {
 		return contrato;
@@ -88,9 +89,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {		
     try {
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       if(JsfBase.getFlashAttribute("accion")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idContrato", JsfBase.getFlashAttribute("idContrato"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -144,11 +145,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // doLoadPrototipos
 
   public void doLoad() {
-    EAccion eaccion= null;
     try {
-      eaccion= (EAccion) this.attrs.get("accion");
-      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
-      switch (eaccion) {
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      switch (this.accion) {
         case AGREGAR:											
           this.contrato= new RegistroContrato();
           this.toLoadCollections();
@@ -206,16 +205,14 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;
     try {			
-			eaccion= (EAccion) this.attrs.get("accion");
       this.contrato.getContrato().setIdUsuario(JsfBase.getIdUsuario());
       this.contrato.doActualizarContratoDomicilio();
 			transaccion= new Transaccion(this.contrato);
-			if (transaccion.ejecutar(eaccion)) {
+			if (transaccion.ejecutar(this.accion)) {
 				JsfBase.setFlashAttribute("idContratoProcess", this.contrato.getContrato().getIdContrato());
 				regresar =  "filtro".concat(Constantes.REDIRECIONAR);//this.attrs.get("retorno")!=null? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el contrato de forma correcta."), ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el contrato de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar el contrato.", ETipoMensaje.ERROR);      			

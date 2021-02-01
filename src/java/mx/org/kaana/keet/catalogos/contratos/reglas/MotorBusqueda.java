@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -268,6 +269,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toResidentesAsignados
  
+  @Override
 	public TcManticDomiciliosDto toDomicilio(Long idDomicilio) throws Exception {
 		TcManticDomiciliosDto regresar= null;
 		try {
@@ -281,9 +283,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
  
 	public List<ContratoDomicilio> toContratoDomicilios(boolean update) throws Exception {
 		List<ContratoDomicilio> regresar= null;
-		TcManticDomiciliosDto domicilio= null;
-		Map<String, Object>params      = null;
-		Entity entityDomicilio         = null;
+		TcManticDomiciliosDto domicilio = null;
+		Map<String, Object>params       = null;
+		Entity entity                   = null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_contrato=" + this.idPivote);
@@ -293,7 +295,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 				item.setIdMunicipio(toMunicipio(item.getIdLocalidad().getKey()));
 				item.setIdEntidad(toEntidad(item.getIdMunicipio().getKey()));
 				if(update) {
-					domicilio= toDomicilio(item.getIdDomicilio());
+					domicilio= this.toDomicilio(item.getIdDomicilio());
 					item.setCalle(domicilio.getCalle());
 					item.setCodigoPostal(domicilio.getCodigoPostal());
 					item.setColonia(domicilio.getAsentamiento());
@@ -301,11 +303,16 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 					item.setyCalle(domicilio.getYcalle());
 					item.setExterior(domicilio.getNumeroExterior());
 					item.setInterior(domicilio.getNumeroInterior());
-					entityDomicilio= new Entity(item.getIdDomicilio());
-					entityDomicilio.put("idEntidad", new Value("idEntidad", item.getIdEntidad().getKey()));
-					entityDomicilio.put("idMunicipio", new Value("idMunicipio", item.getIdMunicipio().getKey()));
-					entityDomicilio.put("idLocalidad", new Value("idLocalidad", item.getIdLocalidad().getKey()));
-					item.setDomicilio(entityDomicilio);
+					item.setPrincipal(Objects.equals(item.getIdPrincipal(), 1L));
+					entity= new Entity(item.getIdDomicilio());
+					entity.put("idEntidad", new Value("idEntidad", item.getIdEntidad().getKey()));
+					entity.put("idMunicipio", new Value("idMunicipio", item.getIdMunicipio().getKey()));
+					entity.put("idLocalidad", new Value("idLocalidad", item.getIdLocalidad().getKey()));
+          Map<String, Object> items= domicilio.toMap();
+          for (String value: items.keySet()) {
+            entity.put(value, new Value(value, items.get(value)));
+          } // for
+					item.setDomicilio(entity);
 				} // if				
 			} // for
 		} // try

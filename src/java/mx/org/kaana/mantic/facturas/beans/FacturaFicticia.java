@@ -3,6 +3,8 @@ package mx.org.kaana.mantic.facturas.beans;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
@@ -17,6 +19,7 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
+  private ContratoDomicilio domicilioContrato;
 
   public UISelectEntity getIkSerie() {
     return ikSerie;
@@ -78,6 +81,14 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 		  this.setIdContrato(this.ikContrato.getKey());
   }
   
+  public ContratoDomicilio getDomicilioContrato() {
+    return domicilioContrato;
+  }
+
+  public void setDomicilioContrato(ContratoDomicilio domicilioContrato) {
+    this.domicilioContrato = domicilioContrato;
+  }
+
 	public FacturaFicticia() {
 		this(-1L);
 	}

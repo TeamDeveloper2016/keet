@@ -1309,7 +1309,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.7.2';
+      return '0.3.7.5';
     }, // version
     align: function(pixels) {
       try {
@@ -1615,6 +1615,9 @@
 		html: function(id) {
 			$(id).html(this.escape($(id).html()));
 		},
+    resize: function() {
+      setTimeout(function(){$('div.ui-selectonemenu-items-wrapper').attr('style', 'padding-left: 3px !important; padding-right: 3px !important; max-height: 300px !important;');}, 1000);
+    },  
 		toAndroidKeyCode: function (item) {
 			var key= item.value.charCodeAt(item.value.length- 1);
 			var press= item.value.substring(item.value.length- 1, item.value.length);

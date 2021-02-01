@@ -122,7 +122,7 @@ public class NotaEntradaDirecta extends NotaEntrada implements Serializable {
     return regresar;
   }
   
-  public IActions isEqualEmplado(NotaEmpleado empleado) {
+  public IActions isEqualEmpleado(NotaEmpleado empleado) {
     IActions regresar= null;
     for (IActions item: this.empleados) {
       if(((NotaEmpleado)item.getDto()).isEqual(empleado)) {

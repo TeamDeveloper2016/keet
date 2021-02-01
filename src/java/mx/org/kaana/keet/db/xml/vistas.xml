@@ -5,6 +5,36 @@
 <process>
 	<dml> 
 		<unit id="VistaIngresosDto">
+			<select id="lotes">
+        select      
+          ifnull(tc_keet_ventas_parciales.id_venta_parcial, cast(tc_keet_contratos_lotes.id_contrato_lote as int)* -1) as id_key,
+          tc_keet_ventas_parciales.*,
+          tc_keet_contratos_lotes.clave as clave_lote,
+          tc_keet_prototipos.nombre as prototipo,
+          tc_keet_contratos_lotes.manzana,
+          tc_keet_contratos_lotes.lote,
+          tc_keet_contratos_lotes.calle as calle_lote,
+          tc_keet_contratos_lotes.numero as numero_lote,
+          tc_janal_entidades.descripcion as entidad,
+          tc_janal_municipios.descripcion as municipio,
+          tc_janal_localidades.descripcion as localidad         
+        from
+          tc_keet_contratos_lotes          
+        left join
+          tc_keet_ventas_parciales on tc_keet_contratos_lotes.id_contrato_lote= tc_keet_ventas_parciales.id_contrato_lote
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo         
+        left join
+          tc_janal_localidades on tc_keet_ventas_parciales.id_localidad = tc_janal_localidades.id_localidad         
+        left join
+          tc_janal_municipios on tc_janal_localidades.id_municipio = tc_janal_municipios.id_municipio         
+        left join
+          tc_janal_entidades on tc_janal_municipios.id_entidad = tc_janal_entidades.id_entidad         
+        where
+          tc_keet_contratos_lotes.id_contrato= {idContrato}  
+        order by
+          tc_keet_ventas_parciales.registro
+      </select>  
 			<select id="lazy">
         select
           tc_mantic_ventas.id_venta as id_key,
@@ -16,7 +46,7 @@
           tc_mantic_ventas.consecutivo,
           tc_mantic_facturas.folio as factura,
           tc_mantic_ventas.id_extra,
-          if(tc_mantic_ventas.id_extra= 1, "EXTRA", "NORMAL") as tipo,
+          if(tc_mantic_ventas.id_extra= 1, "ADITIVAS", "NORMAL") as tipo,
           tc_mantic_ventas.total,
           tc_mantic_ventas.id_venta_estatus,
           tc_mantic_empresas.nombre as empresa,

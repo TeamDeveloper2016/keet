@@ -914,7 +914,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     List<UISelectEntity> contratos= (List<UISelectEntity>) this.attrs.get("contratosEmpleado");
     this.empleado.setIkContrato(contratos.get(contratos.indexOf(this.empleado.getIkContrato())));
     this.empleado.setContrato(this.empleado.getIkContrato().toString("clave")+ "-"+ this.empleado.getIkContrato().toString("etapa"));
-    IActions item= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).isEqualEmplado(this.empleado);
+    IActions item= ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).isEqualEmpleado(this.empleado);
     NotaEmpleado clon= this.empleado;
     if(item== null)
       ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Insert(this.empleado));
@@ -933,7 +933,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
     ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toAdd(EGastos.MANO_DE_OBRA, clon.getImporte());
     UIBackingUtilities.execute("janal.restore();");
 //			JsfBase.addMessage("El empleado ya se encuentra registrado en los gastos !", ETipoMensaje.INFORMACION);
- }
+  }
   
   public void doEliminarEmpleado() {
     IActions clon= (IActions)this.attrs.get("empleado");
@@ -951,52 +951,52 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
           UIBackingUtilities.execute("$('#contenedorGrupos\\\\:gasto\\\\:idEmpresaPersonaEmpleado_input').val('"+ this.empleado.getEmpleado().replaceAll(" ", "_")+ "');");
         } // if  
         ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).toRemove(EGastos.MANO_DE_OBRA, ((NotaEmpleado)clon.getDto()).getImporte());
-  			UIBackingUtilities.execute("janal.restore();");
+        UIBackingUtilities.execute("janal.restore();");
       } // if  
     } // if
   }
-         
+
   public String doColorRow(IActions row) {
     return row instanceof Delete? "janal-table-tr-hide": ""; 
   }
- 
+
   public void doLoadEmpleadoDisponible(SelectEvent event) {  
-		UISelectEntity seleccion      = null;
-		List<UISelectEntity> empleados= null;
-		try {
-			empleados= (List<UISelectEntity>) this.attrs.get("empleados");
-			seleccion= empleados.get(empleados.indexOf((UISelectEntity)event.getObject()));
+    UISelectEntity seleccion      = null;
+    List<UISelectEntity> empleados= null;
+    try {
+      empleados= (List<UISelectEntity>) this.attrs.get("empleados");
+      seleccion= empleados.get(empleados.indexOf((UISelectEntity)event.getObject()));
       this.empleado.setIkEmpresaPersona(seleccion);
       this.empleado.setEmpleado(seleccion.toString("empleado"));
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
   } // doLoadEmpleadoDisponible
-  
- 	public List<UISelectEntity> doCompleteEmpleado(String text) {
- 		List<Columna> campos      = null;
+
+  public List<UISelectEntity> doCompleteEmpleado(String text) {
+    List<Columna> campos      = null;
     Map<String, Object> params= new HashMap<>();
     try {
-			campos= new ArrayList<>();
-			campos.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("apodo", EFormatoDinamicos.MAYUSCULAS));
-  	  params.put("sucursales", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdEmpresa());
-			params.put("nombre", text.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"));
+      campos= new ArrayList<>();
+      campos.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("departamento", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("apodo", EFormatoDinamicos.MAYUSCULAS));
+      params.put("sucursales", ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdEmpresa());
+      params.put("nombre", text.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"));
       this.attrs.put("empleados", UIEntity.build("VistaIngresosDto", "persona", params));
-		} // try
-	  catch (Exception e) {
+    } // try
+    catch (Exception e) {
       Error.mensaje(e);
-			JsfBase.addMessageError(e);
+      JsfBase.addMessageError(e);
     } // catch   
     finally {
       Methods.clean(campos);
       Methods.clean(params);
     }// finally
-		return (List<UISelectEntity>)this.attrs.get("empleados");
-	}	// doCompleteEmpleado
+    return (List<UISelectEntity>)this.attrs.get("empleados");
+  }	// doCompleteEmpleado
           
 }

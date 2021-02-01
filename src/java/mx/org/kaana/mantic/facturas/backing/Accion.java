@@ -12,9 +12,11 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -23,7 +25,9 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
@@ -33,7 +37,9 @@ import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
+import mx.org.kaana.mantic.facturas.beans.Parcial;
 import mx.org.kaana.mantic.facturas.reglas.AdminFacturas;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
@@ -58,6 +64,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
 	private FormatLazyModel almacenes;
+  private UISelectEntity domicilioBusqueda;
 
 	public Accion() {
 		super("menudeo", true);
@@ -81,8 +88,16 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	public FormatLazyModel getAlmacenes() {
 		return almacenes;
 	}	
-	
-	@PostConstruct
+
+	public UISelectEntity getDomicilioBusqueda() {
+    return domicilioBusqueda;
+  }
+
+  public void setDomicilioBusqueda(UISelectEntity domicilioBusqueda) {
+    this.domicilioBusqueda = domicilioBusqueda;
+  }
+  
+  @PostConstruct
   @Override
   protected void init() {		
     try {
@@ -136,8 +151,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
       switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminFacturas(new FacturaFicticia(-1L)));
+          this.toLoadCollections();
+          this.doLoadDomicilio(true);
 					this.attrs.put("consecutivo", "");		
-					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
           break;
         case MODIFICAR:			
         case CONSULTAR:			
@@ -149,7 +165,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 						this.attrs.put("observaciones", factura.getObservaciones());					
 					} // if
 					else
-						this.attrs.put("observaciones", "");									
+						this.attrs.put("observaciones", "");			
+          this.toLoadCollections();
           break;
       } // switch		
    		this.loadCatalogs();					
@@ -162,6 +179,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
         if(idClienteDomicilio!= null && !idClienteDomicilio.equals(-1L))
           this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
       } // if
+      this.toContratoDomicilio();
+      this.doUpdateDomicilio(null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1002,11 +1021,363 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		switch(event.getTab().getTitle()) {
       case "Generales":
-        
         break;
       case "Lotes":
         break;
     } // switch
 	}	// doTabChange	
+
+	private void toLoadCollections() {
+		this.toLoadTiposDomicilios();	
+		this.toLoadDomicilios();
+		this.doLoadEntidades();		
+		this.doCompleteCodigoPostal(((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getCodigoPostal());
+  }
+
+  private void toLoadTiposDomicilios() {
+    List<UISelectItem> tiposDomicilios = null;
+    try {
+      tiposDomicilios = new ArrayList<>();
+      for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) {
+        tiposDomicilios.add(new UISelectItem(tipoDomicilio.getKey(), Cadena.reemplazarCaracter(tipoDomicilio.name(), '_', ' ')));
+      } // for
+      this.attrs.put("tiposDomicilios", tiposDomicilios);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		    
+  } // toLoadTiposDomicilios
+  
+  public void doLoadDomicilio(boolean all) {    
+		List<Entity> domicilios= null;
+    try {
+			if(all){
+				if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getDomicilio().getKey().equals(-1L)) {
+					domicilios= (List<Entity>)this.attrs.get("domicilios");
+					((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setDomicilio(domicilios.get(domicilios.indexOf(((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getDomicilio())));
+					((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdDomicilio(domicilios.get(domicilios.indexOf(((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getDomicilio())).getKey());
+				} // if
+				else{
+					((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setDomicilio(new Entity(-1L));
+					((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdDomicilio(-1L);
+				} // else		
+				this.doLoadEntidades();				
+			} // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } // doLoadDomicilio  
+ 
+  private void toLoadDomicilios() {
+		List<UISelectEntity> domicilios= null;
+		try {
+			domicilios= new ArrayList<>();
+			this.attrs.put("domicilios", domicilios);     
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setDomicilio(new Entity(-1L, "SELECCIONE"));
+      ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdDomicilio(-1L);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+	} // toLoadDomicilios
+
+  public void doLoadEntidades() {
+    List<UISelectEntity> entidades= null;
+		List<Columna>campos           = null;
+    Map<String, Object> params    = null;
+    try {
+      params = new HashMap<>();
+      params.put("idPais", 1);
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos= new ArrayList<>();
+			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      entidades= UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("entidades", entidades);
+      ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdEntidad(entidades.get(0));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    this.doLoadMunicipios();
+  } // doLoadEntidades
+  
+  public void doLoadMunicipios() {
+    List<UISelectEntity> municipios= null;
+    Map<String, Object> params= null;
+		List<Columna>campos= null;
+    try {
+			if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().getKey().equals(-1L)) {
+				params = new HashMap<>();
+				params.put("idEntidad", ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().getKey());
+				campos= new ArrayList<>();
+				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				this.attrs.put("municipios", municipios);
+				((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdMunicipio(municipios.get(0));
+			} // if
+			else
+				((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdMunicipio(new Entity(-1L));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    this.doLoadLocalidades();
+  } // doLoadMunicipios
+  
+  public void doLoadLocalidades() {
+    List<UISelectEntity> localidades= null;
+    Map<String, Object> params= null;
+		List<Columna>campos= null;
+    try {
+			if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio().getKey().equals(-1L)) {
+				params = new HashMap<>();
+				params.put("idMunicipio", ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio().getKey());
+				campos= new ArrayList<>();
+				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+				localidades = UIEntity.build("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				this.attrs.put("localidades", localidades);
+				((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdLocalidad(localidades.get(0));
+			} // if
+      else 
+				((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdLocalidad(new Entity(-1L));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doLoadLocalidades
+
+  public void doLoadCodigosPostales() {
+    List<UISelectItem> codigosPostales = null;
+    Map<String, Object> params = null;
+    try {
+			if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().getKey().equals(-1L)) {
+				params = new HashMap<>();
+				params.put(Constantes.SQL_CONDICION, "id_entidad=" + ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().getKey());
+				codigosPostales = UISelect.build("TcManticCodigosPostalesDto", "row", params, "codigo", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+				this.attrs.put("codigosPostales", codigosPostales);
+				if (!codigosPostales.isEmpty()) {
+					((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setCodigoPostal(codigosPostales.get(0).getLabel());
+					((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdCodigoPostal((Long) codigosPostales.get(0).getValue());
+					((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setNuevoCp(true);
+          this.attrs.put("codigoSeleccionado", codigosPostales.get(0));
+				} // if
+				else 
+					((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setNuevoCp(false);				
+			} // if
+			else
+				((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setNuevoCp(false);				
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doLoadCodigosPostales  
+  
+	private void toAsignaEntidad() {
+		Entity domicilio     = null;
+		List<Entity>entidades= null;
+		try {
+			if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdDomicilio().equals(-1L)) {
+				domicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getDomicilio();
+				entidades= (List<Entity>) this.attrs.get("entidades");
+				for(Entity entidad: entidades) {
+					if(entidad.getKey().equals(domicilio.toLong("idEntidad"))) {
+						((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdEntidad(entidad);
+            break;
+          } // if  
+				} // for
+			} // if
+			else
+				((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdEntidad(new Entity(-1L));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toAsignaEntidad
+
+	private void toAsignaMunicipio() {
+		Entity domicilio= null;
+		List<Entity>municipios= null;
+		try {
+			if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio().getKey().equals(-1L)) {
+				domicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getDomicilio();
+				municipios= (List<Entity>) this.attrs.get("municipios");
+				for(Entity municipio: municipios) {
+					if(municipio.getKey().equals(domicilio.toLong("idMunicipio"))) {
+						((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdMunicipio(municipio);
+            break;
+          } // if  
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toAsignaMunicipio
+  
+	private void toAsignaLocalidad() {
+		Entity domicilio       = null;
+		List<Entity>localidades= null;
+		try {
+			if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdDomicilio().equals(-1L)) {
+				domicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getDomicilio();
+				localidades= (List<Entity>) this.attrs.get("localidades");
+				for(Entity localidad: localidades) {
+					if(localidad.getKey().equals(domicilio.toLong("idLocalidad"))) {
+						((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdLocalidad(localidad);
+            break;
+					} // if
+				} // for
+			} // if			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toAsignaLocalidad
+
+	public List<UISelectEntity> doCompleteCodigoPostal(String query) {		
+		if(((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().getKey()>= 1L && !Cadena.isVacio(query)) {
+			this.attrs.put("condicionCodigoPostal", query);
+			this.doLoadCodigosPostales();		
+			return (List<UISelectEntity>)this.attrs.get("allCodigosPostales");
+		} // if
+    else {
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setNuevoCp(false);
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdCodigoPostal(-1L);
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setCodigoPostal("");
+	  	return new ArrayList<>();
+		} // else		
+	}	// doCompleteCliente
+
+  private void toContratoDomicilio() {
+    try {
+      this.toAsignaEntidad();
+			this.doLoadMunicipios();
+      this.toAsignaMunicipio();
+      this.toAsignaLocalidad();		
+    } // try
+    catch (Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // toContratoDomicilio
+
+	public void doAsignaContratoDomicilio() {
+		List<UISelectEntity> domiciliosBusqueda= null;
+		UISelectEntity domicilio               = null;
+		try {
+			domiciliosBusqueda=(List<UISelectEntity>)this.attrs.get("contratoDomiciliosBusqueda");
+			domicilio         = domiciliosBusqueda.get(domiciliosBusqueda.indexOf(this.domicilioBusqueda));
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setDomicilio(domicilio);
+      ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdDomicilio(domicilio.getKey());
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setCalle(domicilio.toString("calle"));
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setCodigoPostal(domicilio.toString("codigoPostal"));
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setColonia(domicilio.toString("asentamiento"));
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setEntreCalle(domicilio.toString("entreCalle"));
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setyCalle(domicilio.toString("ycalle"));
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setExterior(domicilio.toString("numeroExterior"));
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setInterior(domicilio.toString("numeroInterior"));
+			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setPrincipal(true);
+			domicilio.put("idEntidad", new Value("idEntidad", domicilio.toLong("idEntidad")));
+			domicilio.put("idMunicipio", new Value("idMunicipio", domicilio.toLong("idMunicipio")));
+			domicilio.put("idLocalidad", new Value("idLocalidad", domicilio.toLong("idLocalidad")));
+      if(!ESql.INSERT.equals(((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getSqlAccion()))
+        ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setSqlAccion(ESql.UPDATE);
+			this.toAsignaEntidad();
+			this.doLoadMunicipios();
+			this.toAsignaMunicipio();
+			this.toAsignaLocalidad();			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaDomicilio
+
+  public void doBusquedaContratoDomicilios() {
+    List<UISelectEntity> domicilios= null;
+    Map<String, Object> params     = null;
+		List<Columna>campos            = null;
+    try {
+      params = new HashMap<>();      
+      params.put(Constantes.SQL_CONDICION, "upper(calle) like upper('%".concat(this.attrs.get("calle").toString()).concat("%')"));
+			campos= new ArrayList<>();
+			campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("numeroExterior", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("numeroInterior", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("entidad", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
+      domicilios = UIEntity.build("VistaDomiciliosCatalogosDto", "domicilios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("contratoDomiciliosBusqueda", domicilios);      
+			this.attrs.put("resultados", domicilios.size());      
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doLoadDomicilios
+
+  public void doUpdateDomicilio(AjaxBehaviorEvent event) {
+    try {
+      List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
+      int index= contratos.indexOf(((FacturaFicticia)getAdminOrden().getOrden()).getIkContrato());
+      if(index>= 0)
+        ((FacturaFicticia)getAdminOrden().getOrden()).setIkContrato(contratos.get(index));
+      this.attrs.put("isContrato", ((FacturaFicticia)getAdminOrden().getOrden()).getIdContrato()!= null && ((FacturaFicticia)getAdminOrden().getOrden()).getIdContrato()> 0);
+      ((AdminFacturas)this.getAdminOrden()).toContratoDomicilios();
+      ((AdminFacturas)this.getAdminOrden()).toLoadContratoLotes();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  }
+
+  public String doColorRow(Parcial row) {
+    return row.getIdContratoLote()% 2== 0 ? "janal-tr-nuevo": ""; 
+  }
+  
+  public void doAgregarLote() {
+    Parcial clon= ((AdminFacturas)this.getAdminOrden()).getLote();
+    if(((AdminFacturas)this.getAdminOrden()).getParciales().indexOf(clon)< 0) {
+      ((AdminFacturas)this.getAdminOrden()).getParciales().remove(clon);
+      if(clon.getSqlAccion().equals(ESql.DELETE))
+        clon.setSqlAccion(ESql.UPDATE);
+      ((AdminFacturas)this.getAdminOrden()).getParciales().add(clon);
+    } // if  
+//    UIBackingUtilities.execute("janal.restore();");
+  }
+  
+  public void doEliminarParcial() {
+    Parcial clon= (Parcial)this.attrs.get("parical");
+    if(clon!= null) {
+      int index= ((AdminFacturas)this.getAdminOrden()).getParciales().indexOf(clon);
+      if(index>= 0) {
+        ((AdminFacturas)this.getAdminOrden()).getParciales().remove(index);
+        if(clon.getSqlAccion().equals(ESql.SELECT) || clon.getSqlAccion().equals(ESql.UPDATE)) {
+          clon.setSqlAccion(ESql.DELETE);
+          ((AdminFacturas)this.getAdminOrden()).getDisponibles().add(clon);
+        } // if  
+        // UIBackingUtilities.execute("janal.restore();");
+      } // if  
+    } // if
+  }
   
 }

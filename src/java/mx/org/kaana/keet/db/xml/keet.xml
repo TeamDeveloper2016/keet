@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetVentasParcialesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_ventas_parciales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_ventas_parciales
+        where      
+          id_contrato_lote = {idContratoLote} and id_venta = {idVenta}
+      </select>
+    </unit>    
     <unit id="TrKeetContratoDomicilioDto">
       <select id="row">
         select      
