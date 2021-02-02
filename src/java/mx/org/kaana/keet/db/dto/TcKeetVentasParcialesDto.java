@@ -109,7 +109,7 @@ public class TcKeetVentasParcialesDto implements IBaseDto, Serializable {
     this.numeroExterior = numeroExterior;
   }
 
-  public String getNoExterior() {
+  public String getNumeroExterior() {
     return numeroExterior;
   }
 
@@ -133,7 +133,7 @@ public class TcKeetVentasParcialesDto implements IBaseDto, Serializable {
     this.numeroInterior = numeroInterior;
   }
 
-  public String getNoInterior() {
+  public String getNumeroInterior() {
     return numeroInterior;
   }
 
@@ -206,13 +206,13 @@ public class TcKeetVentasParcialesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCalle());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getNoExterior());
+		regresar.append(getNumeroExterior());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVentaParcial());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getColonia());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getNoInterior());
+		regresar.append(getNumeroInterior());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
@@ -235,10 +235,10 @@ public class TcKeetVentasParcialesDto implements IBaseDto, Serializable {
 		regresar.put("codigoPostal", getCodigoPostal());
 		regresar.put("idLocalidad", getIdLocalidad());
 		regresar.put("calle", getCalle());
-		regresar.put("numeroExterior", getNoExterior());
+		regresar.put("numeroExterior", getNumeroExterior());
 		regresar.put("idVentaParcial", getIdVentaParcial());
 		regresar.put("colonia", getColonia());
-		regresar.put("numeroInterior", getNoInterior());
+		regresar.put("numeroInterior", getNumeroInterior());
 		regresar.put("registro", getRegistro());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idContratoLote", getIdContratoLote());
@@ -251,7 +251,7 @@ public class TcKeetVentasParcialesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigoPostal(), getIdLocalidad(), getCalle(), getNoExterior(), getIdVentaParcial(), getColonia(), getNoInterior(), getRegistro(), getIdUsuario(), getIdContratoLote(), getPermiso(), getIdVenta(), getReferencia()
+    getCodigoPostal(), getIdLocalidad(), getCalle(), getNumeroExterior(), getIdVentaParcial(), getColonia(), getNumeroInterior(), getRegistro(), getIdUsuario(), getIdContratoLote(), getPermiso(), getIdVenta(), getReferencia()
     };
     return regresar;
   }

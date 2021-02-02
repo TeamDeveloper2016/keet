@@ -1187,21 +1187,14 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   } // doLoadCodigosPostales  
   
 	private void toAsignaEntidad() {
-		Entity domicilio     = null;
 		List<Entity>entidades= null;
 		try {
-			if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdDomicilio().equals(-1L)) {
-				domicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getDomicilio();
+			if(((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().getKey()> 0L) {
 				entidades= (List<Entity>) this.attrs.get("entidades");
-				for(Entity entidad: entidades) {
-					if(entidad.getKey().equals(domicilio.toLong("idEntidad"))) {
-						((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdEntidad(entidad);
-            break;
-          } // if  
-				} // for
+        int index= entidades.indexOf(new UISelectEntity(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad()));
+        if(index>= 0)
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().setIdEntidad(entidades.get(index)); 
 			} // if
-			else
-				((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdEntidad(new Entity(-1L));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -1209,18 +1202,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	} // toAsignaEntidad
 
 	private void toAsignaMunicipio() {
-		Entity domicilio= null;
 		List<Entity>municipios= null;
 		try {
-			if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio().getKey().equals(-1L)) {
-				domicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getDomicilio();
+			if(((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio().getKey()> 0L) {
 				municipios= (List<Entity>) this.attrs.get("municipios");
-				for(Entity municipio: municipios) {
-					if(municipio.getKey().equals(domicilio.toLong("idMunicipio"))) {
-						((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdMunicipio(municipio);
-            break;
-          } // if  
-				} // for
+        int index= municipios.indexOf(new UISelectEntity(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio()));
+        if(index>= 0)
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().setIdMunicipio(municipios.get(index)); 
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -1229,18 +1217,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	} // toAsignaMunicipio
   
 	private void toAsignaLocalidad() {
-		Entity domicilio       = null;
 		List<Entity>localidades= null;
 		try {
-			if(!((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdDomicilio().equals(-1L)) {
-				domicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getDomicilio();
+			if(((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().getIdLocalidad().getKey()> 0L) {
 				localidades= (List<Entity>) this.attrs.get("localidades");
-				for(Entity localidad: localidades) {
-					if(localidad.getKey().equals(domicilio.toLong("idLocalidad"))) {
-						((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdLocalidad(localidad);
-            break;
-					} // if
-				} // for
+        int index= localidades.indexOf(new UISelectEntity(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdLocalidad()));
+        if(index>= 0)
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().setIdLocalidad(localidades.get(index)); 
 			} // if			
 		} // try
 		catch (Exception e) {			
@@ -1321,6 +1304,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("entidad", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("localidad", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
       domicilios = UIEntity.build("VistaDomiciliosCatalogosDto", "domicilios", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("contratoDomiciliosBusqueda", domicilios);      
@@ -1351,13 +1335,16 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   }
 
   public String doColorRow(Parcial row) {
-    return row.getIdContratoLote()% 2== 0 ? "janal-tr-nuevo": ""; 
+    return ""; // row.getIdContratoLote()% 2== 0 ? "janal-tr-nuevo": ""; 
   }
   
   public void doAgregarLote() {
-    Parcial clon= ((AdminFacturas)this.getAdminOrden()).getLote();
+    Parcial clon= new Parcial(this.attrs.get("idContratoLote")!= null? new Long((String)this.attrs.get("idContratoLote")): -1L);
+    int index= ((AdminFacturas)this.getAdminOrden()).getDisponibles().indexOf(clon);
+    if(index>= 0)
+      clon= ((AdminFacturas)this.getAdminOrden()).getDisponibles().get(index);
     if(((AdminFacturas)this.getAdminOrden()).getParciales().indexOf(clon)< 0) {
-      ((AdminFacturas)this.getAdminOrden()).getParciales().remove(clon);
+      ((AdminFacturas)this.getAdminOrden()).getDisponibles().remove(clon);
       if(clon.getSqlAccion().equals(ESql.DELETE))
         clon.setSqlAccion(ESql.UPDATE);
       ((AdminFacturas)this.getAdminOrden()).getParciales().add(clon);
@@ -1365,19 +1352,39 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 //    UIBackingUtilities.execute("janal.restore();");
   }
   
-  public void doEliminarParcial() {
-    Parcial clon= (Parcial)this.attrs.get("parical");
+  public void doEliminarLote(Parcial clon) {
     if(clon!= null) {
       int index= ((AdminFacturas)this.getAdminOrden()).getParciales().indexOf(clon);
       if(index>= 0) {
         ((AdminFacturas)this.getAdminOrden()).getParciales().remove(index);
-        if(clon.getSqlAccion().equals(ESql.SELECT) || clon.getSqlAccion().equals(ESql.UPDATE)) {
+        if(clon.getSqlAccion().equals(ESql.SELECT) || clon.getSqlAccion().equals(ESql.UPDATE))
           clon.setSqlAccion(ESql.DELETE);
-          ((AdminFacturas)this.getAdminOrden()).getDisponibles().add(clon);
-        } // if  
+        ((AdminFacturas)this.getAdminOrden()).getDisponibles().add(clon);
         // UIBackingUtilities.execute("janal.restore();");
       } // if  
     } // if
+  }
+   
+  public void doSincronizarLote() {
+    this.toAsignaEntidad();
+    this.toAsignaMunicipio();
+    this.toAsignaLocalidad();
+    for (Parcial item : ((AdminFacturas)this.getAdminOrden()).getDisponibles()) {
+      item.setEntidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().toString("descripcion"));
+      item.setMunicipio(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio().toString("descripcion"));
+      item.setLocalidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdLocalidad().toString("descripcion"));
+      item.setCodigoPostal(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCodigoPostal());
+      item.setCalle(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCalle());
+      item.setNumeroExterior(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getExterior());
+    } // for
+    for (Parcial item : ((AdminFacturas)this.getAdminOrden()).getParciales()) {
+      item.setEntidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().toString("descripcion"));
+      item.setMunicipio(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio().toString("descripcion"));
+      item.setLocalidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdLocalidad().toString("descripcion"));
+      item.setCodigoPostal(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCodigoPostal());
+      item.setCalle(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCalle());
+      item.setNumeroExterior(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getExterior());
+    } // for
   }
   
 }

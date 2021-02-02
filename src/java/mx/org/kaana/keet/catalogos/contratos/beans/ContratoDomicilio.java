@@ -41,7 +41,7 @@ public class ContratoDomicilio extends TrKeetContratoDomicilioDto {
 	}
 	
 	public ContratoDomicilio(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, sqlAccion, nuevo, 0L, false, null, null, null, null, null, null, null, null, null, null, null, false);
+		this(key, sqlAccion, nuevo, 0L, false, new Entity(-1L), new Entity(-1L), new Entity(-1L), new Entity(-1L), null, null, null, null, null, null, null, false);
 	}
 	
 	public ContratoDomicilio(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar, Entity idEntidad, Entity idMunicipio, Entity idLocalidad, Entity domicilio, String codigoPostal, String calle, String exterior, String interior, String colonia, String entreCalle, String yCalle, boolean nuevoCp) {		

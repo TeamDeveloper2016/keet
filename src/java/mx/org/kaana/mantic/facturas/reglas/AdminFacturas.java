@@ -39,7 +39,6 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	private static final Log LOG              = LogFactory.getLog(AdminFacturas.class);
 
 	private FacturaFicticia orden;
-  private Parcial lote;
   private List<Parcial> parciales;
   private List<Parcial> disponibles;
 
@@ -196,14 +195,6 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		this.orden= (FacturaFicticia)orden;
 	}
 
-  public Parcial getLote() {
-    return lote;
-  }
-
-  public void setLote(Parcial lote) {
-    this.lote = lote;
-  }
-
   public List<Parcial> getParciales() {
     return parciales;
   }
@@ -278,12 +269,26 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
-      params.put("idContrato", this.orden.getIdContrato());      
+      params.put("idContrato", this.orden.getIdContrato());
+      int count= 0;
+      while(count< this.parciales.size()) {
+        Parcial item= this.parciales.get(count);
+        if(item.getSqlAccion().equals(ESql.INSERT))
+          this.parciales.remove(item);
+        else {
+          item.setSqlAccion(ESql.DELETE);
+          count++;
+        } // else  
+      } // while
       this.disponibles = (List<Parcial>)DaoFactory.getInstance().toEntitySet(Parcial.class, "VistaIngresosDto", "lotes", params);
-      if(this.disponibles!= null && !this.disponibles.isEmpty()) 
-        for (Parcial item : disponibles) {
-          if(this.parciales.indexOf(item)>= 0)
+      count= 0;
+      if(this.disponibles!= null && !this.disponibles.isEmpty()) {
+        while(count< this.disponibles.size()) {
+          Parcial item= this.disponibles.get(count);
+          if(this.parciales.indexOf(item)>= 0) {
+            item.getSqlAccion().equals(ESql.SELECT);
             this.disponibles.remove(item);
+          } // if  
           else {
             item.setSqlAccion(ESql.INSERT);
             item.setCodigoPostal(this.orden.getDomicilioContrato().getCodigoPostal());
@@ -293,10 +298,15 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
             item.setNumeroInterior(this.orden.getDomicilioContrato().getInterior());
             item.setIdLocalidad(this.orden.getDomicilioContrato().getIdLocalidad().getKey());
             item.setPermiso(this.orden.getIkContrato().toString("permiso"));
+            if(this.orden.getDomicilioContrato().getIdLocalidad().getKey()> 0L) {
+              item.setEntidad(this.orden.getDomicilioContrato().getIdEntidad().toString("descripcion"));
+              item.setMunicipio(this.orden.getDomicilioContrato().getIdMunicipio().toString("descripcion"));
+              item.setLocalidad(this.orden.getDomicilioContrato().getIdLocalidad().toString("descripcion"));
+            } // if
+            count++;
           } // else
-        } // for
-      else
-        this.parciales= new ArrayList<>();
+        } // while
+      } // if
     } // try
     catch (Exception e) {
 			throw e;

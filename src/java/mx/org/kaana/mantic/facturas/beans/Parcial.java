@@ -35,10 +35,12 @@ public final class Parcial extends TcKeetVentasParcialesDto implements Serializa
 
   public Parcial(Long key) {
     this(key, ESql.INSERT);
+    this.setIdContratoLote(key);
   }
   
   public Parcial(Long key, ESql sqlAccion) {
     super(key);
+    this.setIdContratoLote(key);
     this.sqlAccion= sqlAccion;
   }
 
@@ -163,4 +165,9 @@ public final class Parcial extends TcKeetVentasParcialesDto implements Serializa
     return TcKeetVentasParcialesDto.class;
   }
 
+  @Override
+  public String toString() {
+    return String.valueOf(idContratoLote);
+  }
+  
 }
