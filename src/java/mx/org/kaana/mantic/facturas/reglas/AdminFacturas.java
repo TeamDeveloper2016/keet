@@ -286,7 +286,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
         while(count< this.disponibles.size()) {
           Parcial item= this.disponibles.get(count);
           if(this.parciales.indexOf(item)>= 0) {
-            item.getSqlAccion().equals(ESql.SELECT);
+            item.getSqlAccion().equals(ESql.UPDATE);
             this.disponibles.remove(item);
           } // if  
           else {

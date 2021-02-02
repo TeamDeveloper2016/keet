@@ -735,11 +735,14 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			params.put("idDesarrollo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdDesarrollo());
 			contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("contratos", contratos);
-      if(!contratos.isEmpty()) 
+      if(contratos== null || contratos.isEmpty()) 
+        ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkContrato(new UISelectEntity(-1L));
+      else  
         if(this.accion.equals(EAccion.AGREGAR))
           ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(0));
         else  
           ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkContrato(contratos.get(contratos.indexOf(((FacturaFicticia)this.getAdminOrden().getOrden()).getIkContrato())));
+      this.doUpdateDomicilio(null);
 		} // try // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);

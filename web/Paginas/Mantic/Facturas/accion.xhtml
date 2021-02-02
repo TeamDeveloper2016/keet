@@ -180,7 +180,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
   						<p:outputLabel for="idEmpresa" value="Sucursal:"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticFacturasAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" process="@this" listener="#{manticFacturasAccion.doUpdateDesarrollos}" update="clientes idDesarrollo idContrato idCliente contenedorGrupos:contenido contenedorGrupos:tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); reloadDesarrollo(); janal.resize();"/>
+                <p:ajax event="change" process="@this idDesarrollo idContrato" listener="#{manticFacturasAccion.doUpdateDesarrollos}" update="clientes idDesarrollo idContrato idCliente contenedorGrupos:contenido contenedorGrupos:tabla contenedorGrupos:lote contenedorGrupos:tablaLotes @(.domcicilio)" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); reloadDesarrollo(); janal.resize();"/>
                 <f:selectItems value="#{manticFacturasAccion.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -193,7 +193,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
   						<p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
               <p:selectOneMenu id="idDesarrollo" value="#{manticFacturasAccion.adminOrden.orden.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticFacturasAccion.doUpdateContratos}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();janal.resize();"/>
+                <p:ajax event="change" onstart="return janal.bloquear();" process="@this idContrato" listener="#{manticFacturasAccion.doUpdateContratos}" update="@(.todos) contenedorGrupos:lote contenedorGrupos:tablaLotes @(.domcicilio)" oncomplete="janal.desbloquear();reloadContrato();janal.resize();"/>
                 <f:selectItems value="#{manticFacturasAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '- '} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -206,7 +206,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
     					<p:outputLabel for="idContrato" value="Contratos:"/>
               <p:selectOneMenu id="idContrato" value="#{manticFacturasAccion.adminOrden.orden.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticFacturasAccion.doUpdateDomicilio}" update="contenedorGrupos contenedorGrupos:lote contenedorGrupos:tablaLotes" oncomplete="janal.desbloquear(); janal.resize();"/>
+                <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticFacturasAccion.doUpdateDomicilio}" update="contenedorGrupos contenedorGrupos:lote contenedorGrupos:tablaLotes @(.domcicilio)" oncomplete="janal.desbloquear(); janal.resize();"/>
                 <f:selectItems value="#{manticFacturasAccion.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '- '} #{one.etapa}"/>
                 <p:column headerText="Clave">
                   <p:outputLabel value="#{list.clave}"/>
