@@ -20,7 +20,28 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
   private ContratoDomicilio domicilioContrato;
+  private List<Parcial> parciales;
+  private List<Parcial> disponibles;
 
+	public FacturaFicticia() {
+		this(-1L);
+	}
+
+	public FacturaFicticia(Long key) {
+		this(0D, null, -1L, key, "0", 0D, 0D, 1L, 1D, -1L, -1L, -1L, -1L, "0", null, Long.valueOf(Fecha.getAnioActual()), "", -1L, 0D, 2L, 2L, 0D, "", -1L, LocalDate.now(), "");
+	}
+	
+	public FacturaFicticia(Double descuentos, Long idFactura, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, LocalDate dia, String referencia) {		
+		super(descuentos, idTipoPago, idFicticia, extras, global, total, idFicticiaEstatus, tipoDeCambio, orden, idTipoMedioPago, idCliente, idClienteDomicilio, descuento, idBanco, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, dia, referencia, idFactura);		
+    this.setCandado(2L);			
+    this.setIdAutorizar(2L);			
+    this.setIdCredito(1L);			
+    this.setIdFacturar(1L);			
+    this.setIdManual(2L);			
+    this.setCobro(LocalDateTime.now());			
+    this.setIdSincronizado(2L);			
+	}	
+  
   public UISelectEntity getIkSerie() {
     return ikSerie;
   }
@@ -89,25 +110,22 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
     this.domicilioContrato = domicilioContrato;
   }
 
-	public FacturaFicticia() {
-		this(-1L);
-	}
+  public void setParciales(List<Parcial> parciales) {
+    this.parciales = parciales;
+  }
 
-	public FacturaFicticia(Long key) {
-		this(0D, null, -1L, key, "0", 0D, 0D, 1L, 1D, -1L, -1L, -1L, -1L, "0", null, Long.valueOf(Fecha.getAnioActual()), "", -1L, 0D, 2L, 2L, 0D, "", -1L, LocalDate.now(), "");
-	}
-	
-	public FacturaFicticia(Double descuentos, Long idFactura, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, LocalDate dia, String referencia) {		
-		super(descuentos, idTipoPago, idFicticia, extras, global, total, idFicticiaEstatus, tipoDeCambio, orden, idTipoMedioPago, idCliente, idClienteDomicilio, descuento, idBanco, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, dia, referencia, idFactura);		
-    this.setCandado(2L);			
-    this.setIdAutorizar(2L);			
-    this.setIdCredito(1L);			
-    this.setIdFacturar(1L);			
-    this.setIdManual(2L);			
-    this.setCobro(LocalDateTime.now());			
-    this.setIdSincronizado(2L);			
-	}	
-	
+  public List<Parcial> getParciales() {
+    return parciales;
+  }
+
+  public List<Parcial> getDisponibles() {
+    return disponibles;
+  }
+
+  public void setDisponibles(List<Parcial> disponibles) {
+    this.disponibles = disponibles;
+  }
+
 	@Override
 	public Class toHbmClass() {
 		return TcManticFicticiasDto.class;

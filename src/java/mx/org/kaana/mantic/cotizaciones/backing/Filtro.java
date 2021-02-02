@@ -45,6 +45,7 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -161,7 +162,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		Entity seleccionado     = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TcManticFicticiasDto(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
+			transaccion= new Transaccion(new FacturaFicticia(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La factura se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else

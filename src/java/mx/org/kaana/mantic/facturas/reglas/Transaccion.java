@@ -9,9 +9,15 @@ import java.util.Map;
 import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import static mx.org.kaana.kajool.enums.ESql.DELETE;
+import static mx.org.kaana.kajool.enums.ESql.INSERT;
+import static mx.org.kaana.kajool.enums.ESql.SELECT;
+import static mx.org.kaana.kajool.enums.ESql.UPDATE;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
@@ -24,6 +30,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
@@ -35,6 +42,8 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
+import mx.org.kaana.mantic.facturas.beans.Parcial;
 import org.apache.log4j.Logger;
 
 /**
@@ -49,7 +58,7 @@ public class Transaccion extends TransaccionFactura {
 
   private static final Logger LOG    = Logger.getLogger(Transaccion.class);
 	private TcManticFicticiasBitacoraDto bitacora;
-	private TcManticFicticiasDto orden;	
+	private FacturaFicticia orden;	
 	private Long idFicticia;
 	private List<Articulo> articulos;
 	private String messageError;	
@@ -74,19 +83,19 @@ public class Transaccion extends TransaccionFactura {
 		this.comentarios= comentarios;
 	} // Transaccion
 	
-	public Transaccion(TcManticFicticiasDto orden) {
+	public Transaccion(FacturaFicticia orden) {
 		this(orden, "");
 	}
 	
-	public Transaccion(TcManticFicticiasDto orden, String justificacion) {
+	public Transaccion(FacturaFicticia orden, String justificacion) {
 		this(orden, new ArrayList<Articulo>(), justificacion);
 	} // Transaccion
 
-	public Transaccion(TcManticFicticiasDto orden, List<Articulo> articulos) {		
+	public Transaccion(FacturaFicticia orden, List<Articulo> articulos) {		
 		this(orden, articulos, "");
 	}
 	
-	public Transaccion(TcManticFicticiasDto orden, List<Articulo> articulos, String justificacion) { 		
+	public Transaccion(FacturaFicticia orden, List<Articulo> articulos, String justificacion) { 		
 		this.orden        = orden;		
 		this.articulos    = articulos;
 		this.justificacion= justificacion;
@@ -137,14 +146,14 @@ public class Transaccion extends TransaccionFactura {
 					break;				
 				case ELIMINAR:
 					idEstatusFactura= EEstatusFicticias.CANCELADA.getIdEstatusFicticia();
-					this.orden= (TcManticFicticiasDto) DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.orden.getIdFicticia());
+					this.orden= (FacturaFicticia) DaoFactory.getInstance().findById(sesion, FacturaFicticia.class, this.orden.getIdFicticia());
 					this.orden.setIdFicticiaEstatus(idEstatusFactura);					
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L)
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFactura, this.justificacion);					
 					break;
 				case JUSTIFICAR:		
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.orden= (TcManticFicticiasDto) DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.bitacora.getIdFicticia());
+						this.orden= (FacturaFicticia) DaoFactory.getInstance().findById(sesion, FacturaFicticia.class, this.bitacora.getIdFicticia());
 						this.orden.setIdFicticiaEstatus(this.bitacora.getIdFicticiaEstatus());						
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						if((this.bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) || this.bitacora.getIdFicticiaEstatus().equals(EEstatusVentas.TERMINADA.getIdEstatusVenta())) && this.checkTotal(sesion)) {
@@ -157,7 +166,7 @@ public class Transaccion extends TransaccionFactura {
 								params.put("intentos", (factura.getIntentos()+1L));
 								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
 								this.generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura(), this.correos);
-							} // 
+							} // if
 						} // if
 						else 
 							if(this.bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.CANCELADA.getIdEstatusFicticia()) || this.bitacora.getIdFicticiaEstatus().equals(EEstatusVentas.ELIMINADA.getIdEstatusVenta())) {
@@ -257,7 +266,7 @@ public class Transaccion extends TransaccionFactura {
 		Map<String, Object>params= null;
 		try {									
 			idFactura= registrarFactura(sesion);										
-			if(idFactura>= 1L){
+			if(idFactura>= 1L) {
 				consecutivo= this.toSiguiente(sesion);			
         if(this.getOrden().getIdContrato()!= null && this.getOrden().getIdContrato()<= 0)
           this.getOrden().setIdContrato(null);
@@ -277,8 +286,9 @@ public class Transaccion extends TransaccionFactura {
 					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, idFactura, params)>= 1L){					
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
 						this.toFillArticulos(sesion);
-					} // if					
+					} // if	
 				} // if
+        this.checkContratoDomicilio(sesion);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -303,9 +313,10 @@ public class Transaccion extends TransaccionFactura {
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 0;
-					toFillArticulos(sesion);
+					this.toFillArticulos(sesion);
 				} // if
 			} // if
+      this.checkContratoDomicilio(sesion);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -323,21 +334,52 @@ public class Transaccion extends TransaccionFactura {
 	
 	private void toFillArticulos(Session sesion) throws Exception {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticFicticiasDetallesDto", "detalle", this.orden.toMap());
-		for (Articulo item: todos) 
-			if(this.articulos.indexOf(item)< 0)
-				DaoFactory.getInstance().delete(sesion, item);
-		for (Articulo articulo: this.articulos) {
-			if(articulo.isValid()) {
-				TcManticFicticiasDetallesDto item= articulo.toFicticiaDetalle();
-				item.setIdFicticia(this.orden.getIdFicticia());
-				if(DaoFactory.getInstance().findIdentically(sesion, TcManticFicticiasDetallesDto.class, item.toMap())== null) 
-					DaoFactory.getInstance().insert(sesion, item);
-				else
-					DaoFactory.getInstance().update(sesion, item);
-			} // if
-		} // for
+    try {
+      for (Articulo item: todos) 
+        if(this.articulos.indexOf(item)< 0)
+          DaoFactory.getInstance().delete(sesion, item);
+      for (Articulo articulo: this.articulos) {
+        if(articulo.isValid()) {
+          TcManticFicticiasDetallesDto item= articulo.toFicticiaDetalle();
+          item.setIdFicticia(this.orden.getIdFicticia());
+          if(DaoFactory.getInstance().findIdentically(sesion, TcManticFicticiasDetallesDto.class, item.toMap())== null) 
+            DaoFactory.getInstance().insert(sesion, item);
+          else
+            DaoFactory.getInstance().update(sesion, item);
+        } // if
+      } // for
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+    this.toFillParciales(sesion);
 	} // toFillArticulos
 	
+  private void toFillParciales(Session sesion) throws Exception {
+    try {
+      if(this.orden.getParciales()!= null && !this.orden.getParciales().isEmpty())
+        for (Parcial item: this.orden.getParciales()) {
+          switch(item.getSqlAccion()) {
+            case INSERT:
+              item.setIdVenta(this.orden.getIdVenta());
+              item.setIdUsuario(JsfBase.getIdUsuario());
+              DaoFactory.getInstance().insert(sesion, item);
+              break;
+            case UPDATE:
+              DaoFactory.getInstance().update(sesion, item);
+            case DELETE:
+              DaoFactory.getInstance().delete(sesion, item);
+              break;
+            case SELECT:
+              break;
+          } // switch
+        } // for
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;
@@ -571,4 +613,92 @@ public class Transaccion extends TransaccionFactura {
 		} // finally
 		return regresar;
 	} // toClonarFicticia
+  
+  private void checkContratoDomicilio(Session sesion) throws Exception {
+    try {
+      if(this.orden.getIdContrato()!=null && this.orden.getIdContrato()> 0L && this.orden.getDomicilioContrato()!= null) {
+        ContratoDomicilio item= this.orden.getDomicilioContrato();
+        switch(item.getSqlAccion()) {
+          case INSERT:
+            if(item.getIdDomicilio()< 0L) {
+              item.setIdDomicilio(this.toIdDomicilio(sesion, item));
+              if(item.getIdDomicilio()< 0L)
+                item.setIdDomicilio(this.toUpsertDomicilio(sesion, item));
+            } // if
+            item.setIdPrincipal(1L); 
+            item.setIdContrato(this.orden.getIdContrato());
+            item.setIdUsuario(JsfBase.getIdUsuario());
+            DaoFactory.getInstance().insert(sesion, item);
+            break;
+          case UPDATE:
+            item.setIdPrincipal(1L); 
+            item.setIdContrato(this.orden.getIdContrato());
+            item.setIdUsuario(JsfBase.getIdUsuario());
+            this.toUpsertDomicilio(sesion, item);
+            DaoFactory.getInstance().update(sesion, item);
+          case DELETE:
+            DaoFactory.getInstance().delete(sesion, item);
+            break;
+          case SELECT:
+            break;
+        } // switch
+      } // if   
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+	private Long toUpsertDomicilio(Session sesion, ContratoDomicilio contratoDomicilio) throws Exception {
+		Long regresar= -1L;		
+    try {
+      TcManticDomiciliosDto domicilio= null;
+      if(contratoDomicilio.getIdDomicilio()== null || contratoDomicilio.getIdDomicilio()<= 0L) 
+        domicilio= new TcManticDomiciliosDto();
+      else
+        domicilio= (TcManticDomiciliosDto)DaoFactory.getInstance().findById(sesion, TcManticDomiciliosDto.class, contratoDomicilio.getIdDomicilio());
+      domicilio.setIdLocalidad(contratoDomicilio.getIdLocalidad().getKey());
+      domicilio.setAsentamiento(contratoDomicilio.getColonia());
+      domicilio.setCalle(contratoDomicilio.getCalle());
+      domicilio.setCodigoPostal(contratoDomicilio.getCodigoPostal());
+      domicilio.setEntreCalle(contratoDomicilio.getEntreCalle());
+      domicilio.setIdUsuario(JsfBase.getIdUsuario());
+      domicilio.setNumeroExterior(contratoDomicilio.getExterior());
+      domicilio.setNumeroInterior(contratoDomicilio.getInterior());
+      domicilio.setYcalle(contratoDomicilio.getyCalle());
+      if(domicilio.isValid())
+        regresar= DaoFactory.getInstance().update(sesion, domicilio);		
+      else
+        regresar= DaoFactory.getInstance().insert(sesion, domicilio);		
+    } // try 
+    catch(Exception e) {
+      throw e;
+    } // catch
+		return regresar;
+	} // insertDomicilio
+  
+	private Long toIdDomicilio(Session sesion, ContratoDomicilio contratoDomicilio) throws Exception{
+		Long regresar            = null;
+    Entity item              = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idLocalidad", contratoDomicilio.getIdLocalidad().getKey());
+			params.put("codigoPostal", contratoDomicilio.getCodigoPostal());
+			params.put("calle", contratoDomicilio.getCalle());
+			params.put("numeroExterior", contratoDomicilio.getExterior());
+			params.put("numeroInterior", contratoDomicilio.getInterior());
+			params.put("asentamiento", contratoDomicilio.getColonia());
+			params.put("entreCalle", contratoDomicilio.getEntreCalle());
+			params.put("yCalle", contratoDomicilio.getyCalle());
+			item= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticDomiciliosDto", "domicilioExiste", params);
+      regresar= item!= null? item.getKey(): -1L;
+		} // try		
+		finally {
+			Methods.clean(params);
+			Methods.clean(item);
+		} // finally
+		return regresar;
+	} // toDomicilio
+  
 } 

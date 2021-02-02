@@ -39,8 +39,6 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	private static final Log LOG              = LogFactory.getLog(AdminFacturas.class);
 
 	private FacturaFicticia orden;
-  private List<Parcial> parciales;
-  private List<Parcial> disponibles;
 
 	public AdminFacturas(FacturaFicticia orden) throws Exception {
 		this(orden, true);
@@ -58,8 +56,6 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
       this.orden.setIkDesarrollo(new UISelectEntity(new Entity(this.orden.getIdDesarrollo())));
       this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
-      this.parciales  = new ArrayList<>();
-      this.disponibles= new ArrayList<>();
 		}	// if
 		else	{
 		  articulos= new ArrayList<>();
@@ -70,16 +66,18 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
       this.orden.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.orden.setIkDesarrollo(new UISelectEntity(-1L));
       this.orden.setIkCliente(new UISelectEntity(-1L));
-      this.parciales  = new ArrayList<>();
-      this.disponibles= new ArrayList<>();
 		} // else	
     if(this.orden.getIdContrato()== null) {
       this.orden.setIkContrato(new UISelectEntity(-1L));
       this.orden.setDomicilioContrato(new ContratoDomicilio(-1L, ESql.INSERT));
+      this.orden.setParciales(new ArrayList<>());
+      this.orden.setDisponibles(new ArrayList<>());
     } // if
     else {
       this.orden.setIkContrato(new UISelectEntity(new Entity(this.orden.getIdContrato())));
       this.orden.setDomicilioContrato(this.toContratoDomicilios(this.orden.getIdContrato()));
+      this.orden.setParciales(new ArrayList<>());
+      this.toLoadContratoLotes();
     } // else  
 		if(loadDefault)
 			this.getArticulos().add(new ArticuloVenta(-1L, true));
@@ -177,8 +175,8 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 			else
 				this.orden.setIdAlmacen(1L);
 			this.toCalculate();
-      this.parciales  = new ArrayList<>();
-      this.disponibles= new ArrayList<>();
+      this.orden.setParciales(new ArrayList<>());
+      this.orden.setDisponibles(new ArrayList<>());
 		} // try
 		finally {
 			Methods.clean(params);
@@ -194,14 +192,6 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	public void setOrden(IBaseDto orden) {
 		this.orden= (FacturaFicticia)orden;
 	}
-
-  public List<Parcial> getParciales() {
-    return parciales;
-  }
-
-  public List<Parcial> getDisponibles() {
-    return disponibles;
-  }
 
 	@Override
 	public Double getTipoDeCambio() {
@@ -271,23 +261,23 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
       params = new HashMap<>();      
       params.put("idContrato", this.orden.getIdContrato());
       int count= 0;
-      while(count< this.parciales.size()) {
-        Parcial item= this.parciales.get(count);
+      while(count< this.orden.getParciales().size()) {
+        Parcial item= this.orden.getParciales().get(count);
         if(item.getSqlAccion().equals(ESql.INSERT))
-          this.parciales.remove(item);
+          this.orden.getParciales().remove(item);
         else {
           item.setSqlAccion(ESql.DELETE);
           count++;
         } // else  
       } // while
-      this.disponibles = (List<Parcial>)DaoFactory.getInstance().toEntitySet(Parcial.class, "VistaIngresosDto", "lotes", params);
+      this.orden.setDisponibles((List<Parcial>)DaoFactory.getInstance().toEntitySet(Parcial.class, "VistaIngresosDto", "lotes", params));
       count= 0;
-      if(this.disponibles!= null && !this.disponibles.isEmpty()) {
-        while(count< this.disponibles.size()) {
-          Parcial item= this.disponibles.get(count);
-          if(this.parciales.indexOf(item)>= 0) {
+      if(this.orden.getDisponibles()!= null && !this.orden.getDisponibles().isEmpty()) {
+        while(count< this.orden.getDisponibles().size()) {
+          Parcial item= this.orden.getDisponibles().get(count);
+          if(this.orden.getParciales().indexOf(item)>= 0) {
             item.getSqlAccion().equals(ESql.UPDATE);
-            this.disponibles.remove(item);
+            this.orden.getDisponibles().remove(item);
           } // if  
           else {
             item.setSqlAccion(ESql.INSERT);

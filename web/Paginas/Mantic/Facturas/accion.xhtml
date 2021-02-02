@@ -17,20 +17,37 @@
 			Janal.Control.fields = {				 				
 				'idDesarrollo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'idCliente'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'idContrato'  : {validaciones: 'libre', mascara: 'libre'},
-				'idSerie'     : {validaciones: 'requerido', mascara: 'libre'},
-				'idTipoComprobante': {validaciones: 'requerido', mascara: 'libre'},
-				'articulos'   : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica'},			
-				'total'       : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica'},			
-				'descuento'   : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos'},
-				'observaciones' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'cfdi'        : {validaciones: 'requerido', mascara: 'libre', mensaje:'Tipo de CFDI obligatorio.'},
-				'referencia'  : {validaciones: 'requerido', mascara: 'libre'},
-				'tipoPago'    : {validaciones: 'requerido', mascara: 'libre'},
-				'nombres'     : {multiple: '$', validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'sat'         : {multiple: '$', validaciones: 'requerido|entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
-				'cantidades'  : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'},
-				'precios'     : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'}
+				'idContrato'  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'idSerie'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'idTipoComprobante': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'articulos'   : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
+				'total'       : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
+				'descuento'   : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
+				'observaciones' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'cfdi'        : {validaciones: 'requerido', mascara: 'libre', mensaje:'Tipo de CFDI obligatorio.', grupo: 'general'},
+				'referencia'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'tipoPago'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:nombres'   : {multiple: '$', validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:sat'       : {multiple: '$', validaciones: 'requerido|entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:cantidades': {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:precios'   : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:entidad'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:municipio' : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:localidad' : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:cp'        : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
+        'contenedorGrupos\\:calle'     : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
+        'contenedorGrupos\\:exterior'  : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
+        'contenedorGrupos\\:interior'  : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
+        'contenedorGrupos\\:asentamiento' : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
+        'contenedorGrupos\\:entreCalle'   : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
+        'contenedorGrupos\\:otraCalle'    : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
+        'contenedorGrupos\\:tipoDomicilio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:localidadLote': {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
+        'contenedorGrupos\\:permisoLote'  : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
+        'contenedorGrupos\\:calleLote'    : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
+        'contenedorGrupos\\:numeroExteriorLote': {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
+        'contenedorGrupos\\:codigoPostalLote'  : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
+        'contenedorGrupos\\:referenciaLote'    : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'}
 			};	
 			
 			fieldsVenta = {
@@ -76,7 +93,7 @@
 				$(jsArticulos.sat()).addClass('ignore');
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
-				var ok= janal.execute(lock);
+				var ok= janal.partial('general', [{}], lock);
 				if(!ok) {
 					jsArticulos.cursor.index= index;
   				$(jsArticulos.description()).removeClass('ignore');
@@ -93,6 +110,9 @@
 				font-weight: bold !important;
 				font-style: italic;	
 			}			
+      .janal-table-tr-hide {
+        display: none;
+      }
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -580,7 +600,7 @@
                 <p:outputLabel for="lote" value="Lotes disponibles:"/>
                 <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-92, janal-wid-4 janal-column-center, janal-wid-4 janal-column-center">
                   <p:selectOneMenu id="lote" value="#{manticFacturasAccion.attrs.idContratoLote}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item">
-                    <f:selectItems value="#{manticFacturasAccion.adminOrden.disponibles}" var="element" itemValue="#{element}" itemLabel="#{element.prototipo} - M#{element.manzana}L#{element.lote}"/>
+                    <f:selectItems value="#{manticFacturasAccion.adminOrden.orden.disponibles}" var="element" itemValue="#{element}" itemLabel="#{element.prototipo} - M#{element.manzana}L#{element.lote}"/>
                     <p:column headerText="Lote" styleClass="janal-column-left janal-wid-col-150">
                       <h:outputText value="M#{item.manzana}L#{item.lote}"/>
                     </p:column>   										
@@ -601,20 +621,20 @@
                   <p:commandButton action="#{manticFacturasAccion.doSincronizarLote}" process="@this @(.domicilio)" update="contenedorGrupos:tablaLotes" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Sincronizar"/>						
                 </p:panelGrid>
               </p:panelGrid>
-              <p:dataTable lazy="false" id="tablaLotes" widgetVar="kajoolTableLotes" var="row" value="#{manticFacturasAccion.adminOrden.parciales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasAccion.attrs.parcial}" selectionMode="single" paginator="true" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idVentaParcial}" rowStyleClass="#{manticFacturasAccion.doColorRow(row)}">
+              <p:dataTable lazy="false" id="tablaLotes" widgetVar="kajoolTableLotes" var="row" value="#{manticFacturasAccion.adminOrden.orden.parciales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasAccion.attrs.parcial}" selectionMode="single" paginator="true" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idVentaParcial}" rowStyleClass="#{manticFacturasAccion.doColorRow(row)}">
                 <p:column class="MarAuto Responsive janal-wid-3">
                   <f:facet name="header">
                     <h:outputText value="No"/>
                   </f:facet>
                   <p:outputLabel value="#{index+ 1}.-"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-wid-15">
+                <p:column class="localidadLote MarAuto Responsive janal-wid-15">
                   <f:facet name="header">
                     <h:outputText value="Localidad"/>
                   </f:facet>
-                  <p:outputLabel value="#{row.localidad}"/> 
+                  <p:inputText id="localidadLote" value="#{row.localidad}" styleClass="janal-wid-100-txt"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-wid-15">
+                <p:column class="permisoLote MarAuto Responsive janal-wid-15">
                   <f:facet name="header">
                     <h:outputText value="Permiso"/>
                   </f:facet>
@@ -626,25 +646,25 @@
                   </f:facet>
                   <p:outputLabel value="M#{row.manzana}L#{row.lote}"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive">
+                <p:column class="calleLote MarAuto Responsive">
                   <f:facet name="header">
                     <h:outputText value="Calle"/>
                   </f:facet>
                   <p:inputText id="calleLote" value="#{row.calle}" styleClass="janal-wid-100-txt"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-wid-8">
+                <p:column class="numeroExteriorLote MarAuto Responsive janal-wid-8">
                   <f:facet name="header">
                     <h:outputText value="Número"/>
                   </f:facet>
                   <p:inputText id="numeroExteriorLote" value="#{row.numeroExterior}" styleClass="janal-wid-100-txt"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-wid-8">
+                <p:column class="codigoPostalLote MarAuto Responsive janal-wid-8">
                   <f:facet name="header">
                     <h:outputText value="C.P."/>
                   </f:facet>
                   <p:inputText id="codigoPostalLote" value="#{row.codigoPostal}" styleClass="janal-wid-100-txt"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive">
+                <p:column class="referenciaLote MarAuto Responsive">
                   <f:facet name="header">
                     <h:outputText value="Referencia"/>
                   </f:facet>
@@ -657,7 +677,7 @@
                   <p:commandButton action="#{manticFacturasAccion.doEliminarLote(row)}" process="@this" update="contenedorGrupos:lote contenedorGrupos:tablaLotes" icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear(); janal.resize();"/>
                 </p:column>
                 <f:facet name="footer">
-                  <p:outputLabel value="Total [#{manticFacturasAccion.adminOrden.parciales== null? 0: manticFacturasAccion.adminOrden.parciales.size()}] registros"/>
+                  <p:outputLabel value="Total [#{manticFacturasAccion.adminOrden.orden.parciales== null? 0: manticFacturasAccion.adminOrden.orden.parciales.size()}] registros"/>
                 </f:facet>
               </p:dataTable>
             </p:tab>

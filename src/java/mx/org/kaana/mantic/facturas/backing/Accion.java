@@ -267,7 +267,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     String regresar        = null;
     try {			
 			this.loadOrdenVenta();
-			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
+			transaccion = new Transaccion((FacturaFicticia)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos(), (String)this.attrs.get("observaciones"));
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR))				  
@@ -426,7 +426,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     try {								
 			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))) {
 				this.loadOrdenVenta();
-				transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				transaccion = new Transaccion((FacturaFicticia)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
@@ -437,7 +437,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
 			} // if	
 			if(((FacturaFicticia)this.getAdminOrden().getOrden()).isValid()) {
-				transaccion= new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()));
+				transaccion= new Transaccion((FacturaFicticia)this.getAdminOrden().getOrden());
 				transaccion.ejecutar(EAccion.NO_APLICA);
 			} // if
     } // try
@@ -873,11 +873,11 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))) {
 					((FacturaFicticia)this.getAdminOrden().getOrden()).setIdVentaEstatus(ESTATUS_ELABORADA);
 					this.loadOrdenVenta();
-					transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
+					transaccion = new Transaccion((FacturaFicticia)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos(), (String)this.attrs.get("observaciones"));
 					this.getAdminOrden().toAdjustArticulos();
 					transaccion.ejecutar(EAccion.DESACTIVAR);
 					JsfBase.setFlashAttribute("idVenta", transaccion.getOrden().getIdVenta());
-				}
+				} // if
 				else
 					JsfBase.setFlashAttribute("idVenta", -1L);																											
 				JsfBase.setFlashAttribute("idCliente", idCliente);
@@ -999,7 +999,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     try {			
 			this.loadOrdenVenta();
 			eaccion= ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdVenta().equals(-1L) ? EAccion.AGREGAR : EAccion.MODIFICAR;						
-			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());			
+			transaccion = new Transaccion((FacturaFicticia)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos(), (String)this.attrs.get("observaciones"));			
 			if (transaccion.ejecutar(eaccion)) { 
 				if(eaccion.equals(EAccion.AGREGAR))
 					UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
@@ -1338,31 +1338,31 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   }
 
   public String doColorRow(Parcial row) {
-    return ""; // row.getIdContratoLote()% 2== 0 ? "janal-tr-nuevo": ""; 
+    return row.getSqlAccion().equals(ESql.DELETE)? "janal-table-tr-hide": ""; 
   }
   
   public void doAgregarLote() {
     Parcial clon= new Parcial(this.attrs.get("idContratoLote")!= null? new Long((String)this.attrs.get("idContratoLote")): -1L);
-    int index= ((AdminFacturas)this.getAdminOrden()).getDisponibles().indexOf(clon);
+    int index= ((FacturaFicticia)this.getAdminOrden().getOrden()).getDisponibles().indexOf(clon);
     if(index>= 0)
-      clon= ((AdminFacturas)this.getAdminOrden()).getDisponibles().get(index);
-    if(((AdminFacturas)this.getAdminOrden()).getParciales().indexOf(clon)< 0) {
-      ((AdminFacturas)this.getAdminOrden()).getDisponibles().remove(clon);
+      clon= ((FacturaFicticia)this.getAdminOrden().getOrden()).getDisponibles().get(index);
+    if(((FacturaFicticia)this.getAdminOrden().getOrden()).getParciales().indexOf(clon)< 0) {
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).getDisponibles().remove(clon);
       if(clon.getSqlAccion().equals(ESql.DELETE))
         clon.setSqlAccion(ESql.UPDATE);
-      ((AdminFacturas)this.getAdminOrden()).getParciales().add(clon);
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).getParciales().add(clon);
     } // if  
 //    UIBackingUtilities.execute("janal.restore();");
   }
   
   public void doEliminarLote(Parcial clon) {
     if(clon!= null) {
-      int index= ((AdminFacturas)this.getAdminOrden()).getParciales().indexOf(clon);
+      int index= ((FacturaFicticia)this.getAdminOrden().getOrden()).getParciales().indexOf(clon);
       if(index>= 0) {
-        ((AdminFacturas)this.getAdminOrden()).getParciales().remove(index);
+        ((FacturaFicticia)this.getAdminOrden().getOrden()).getParciales().remove(index);
         if(clon.getSqlAccion().equals(ESql.SELECT) || clon.getSqlAccion().equals(ESql.UPDATE))
           clon.setSqlAccion(ESql.DELETE);
-        ((AdminFacturas)this.getAdminOrden()).getDisponibles().add(clon);
+        ((FacturaFicticia)this.getAdminOrden().getOrden()).getDisponibles().add(clon);
         // UIBackingUtilities.execute("janal.restore();");
       } // if  
     } // if
@@ -1372,7 +1372,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     this.toAsignaEntidad();
     this.toAsignaMunicipio();
     this.toAsignaLocalidad();
-    for (Parcial item : ((AdminFacturas)this.getAdminOrden()).getDisponibles()) {
+    for (Parcial item : ((FacturaFicticia)this.getAdminOrden().getOrden()).getDisponibles()) {
       item.setEntidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().toString("descripcion"));
       item.setMunicipio(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio().toString("descripcion"));
       item.setLocalidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdLocalidad().toString("descripcion"));
@@ -1380,7 +1380,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
       item.setCalle(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCalle());
       item.setNumeroExterior(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getExterior());
     } // for
-    for (Parcial item : ((AdminFacturas)this.getAdminOrden()).getParciales()) {
+    for (Parcial item : ((FacturaFicticia)this.getAdminOrden().getOrden()).getParciales()) {
       item.setEntidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().toString("descripcion"));
       item.setMunicipio(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdMunicipio().toString("descripcion"));
       item.setLocalidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdLocalidad().toString("descripcion"));

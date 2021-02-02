@@ -36,13 +36,13 @@ import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
-import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.logging.Log;
@@ -134,7 +134,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		Entity seleccionado     = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TcManticFicticiasDto(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
+			transaccion= new Transaccion(new FacturaFicticia(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La factura se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
@@ -466,14 +466,14 @@ public class Filtro extends FiltroFactura implements Serializable {
 	} // doImportar
 	
 	public void doClonar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
-		TcManticFicticiasDto dto= null;
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;
+		FacturaFicticia dto    = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			dto= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, seleccionado.getKey());
+			dto= (FacturaFicticia)DaoFactory.getInstance().findById(FacturaFicticia.class, seleccionado.getKey());
 			if(dto!= null) {
-				TcManticFicticiasDto copia= SerializationUtils.clone(dto);
+				FacturaFicticia copia= SerializationUtils.clone(dto);
 				transaccion= new Transaccion(copia);
 				if(transaccion.ejecutar(EAccion.COPIAR)) {
 					UIBackingUtilities.execute("janal.back('clon\\u00F3 la factura ', '"+ copia.getConsecutivo()+ "');");
@@ -667,12 +667,12 @@ public class Filtro extends FiltroFactura implements Serializable {
 	}
 		
 	public void doCancelarFacturacion() {
-		Transaccion transaccion         = null;
-		Entity seleccionado             = null;		
-		TcManticFicticiasDto ticketVenta= null;
+		Transaccion transaccion    = null;
+		Entity seleccionado        = null;		
+		FacturaFicticia ticketVenta= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");						
-			ticketVenta= new TcManticFicticiasDto();
+			ticketVenta = new FacturaFicticia();
 			ticketVenta.setKey(seleccionado.getKey());
 			ticketVenta.setIdFactura(seleccionado.toLong("idFactura"));
 			transaccion= new Transaccion(ticketVenta, (String) this.attrs.get("justificacionCancelar"));

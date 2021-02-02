@@ -271,20 +271,24 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // registrarDomicilio	
  
-	private Long insertDomicilio(Session sesion, ContratoDomicilio contratoDomicilio) throws Exception{
-		TcManticDomiciliosDto domicilio= null;
+	private Long insertDomicilio(Session sesion, ContratoDomicilio contratoDomicilio) throws Exception {
 		Long regresar= -1L;		
-		domicilio= new TcManticDomiciliosDto();
-		domicilio.setIdLocalidad(contratoDomicilio.getIdLocalidad().getKey());
-		domicilio.setAsentamiento(contratoDomicilio.getColonia());
-		domicilio.setCalle(contratoDomicilio.getCalle());
-		domicilio.setCodigoPostal(contratoDomicilio.getCodigoPostal());
-		domicilio.setEntreCalle(contratoDomicilio.getEntreCalle());
-		domicilio.setIdUsuario(JsfBase.getIdUsuario());
-		domicilio.setNumeroExterior(contratoDomicilio.getExterior());
-		domicilio.setNumeroInterior(contratoDomicilio.getInterior());
-		domicilio.setYcalle(contratoDomicilio.getyCalle());
-		regresar= DaoFactory.getInstance().insert(sesion, domicilio);		
+    try {
+      TcManticDomiciliosDto domicilio= new TcManticDomiciliosDto();
+      domicilio.setIdLocalidad(contratoDomicilio.getIdLocalidad().getKey());
+      domicilio.setAsentamiento(contratoDomicilio.getColonia());
+      domicilio.setCalle(contratoDomicilio.getCalle());
+      domicilio.setCodigoPostal(contratoDomicilio.getCodigoPostal());
+      domicilio.setEntreCalle(contratoDomicilio.getEntreCalle());
+      domicilio.setIdUsuario(JsfBase.getIdUsuario());
+      domicilio.setNumeroExterior(contratoDomicilio.getExterior());
+      domicilio.setNumeroInterior(contratoDomicilio.getInterior());
+      domicilio.setYcalle(contratoDomicilio.getyCalle());
+      regresar= DaoFactory.getInstance().insert(sesion, domicilio);		
+    } // try 
+    catch(Exception e) {
+      throw e;
+    } // catch
 		return regresar;
 	} // insertDomicilio
 	
