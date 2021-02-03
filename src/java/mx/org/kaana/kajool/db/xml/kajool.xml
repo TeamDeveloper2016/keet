@@ -393,7 +393,8 @@
 			</select>
 			<select id="comboEntidades">
 				select
-          id_entidad id_key, descripcion, clave
+          id_entidad id_key, 
+          upper(descripcion) as descripcion, clave
         from
           tc_janal_entidades
 				where

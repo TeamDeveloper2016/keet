@@ -24,6 +24,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.dto.TrJanalMensajesUsuariosDto;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETiposMensajes;
 import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.usuarios.reglas.Transaccion;
 
@@ -43,7 +44,7 @@ public class Agregar extends IBaseAttribute implements Serializable {
       this.attrs.put("idUsuario", datosUsuario.toLong("idKey"));
       this.attrs.put("usuario", datosUsuario.toString("usuario"));
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("prioridades", UISelect.seleccione("TcJanalPrioridadesDto", this.attrs, "descripcion"));
+      this.attrs.put("prioridades", UISelect.seleccione("TcJanalPrioridadesDto", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("dto", new TcJanalMensajesDto());
       this.attrs.put("dtoUsuario", new TrJanalMensajesUsuariosDto());
     } // try

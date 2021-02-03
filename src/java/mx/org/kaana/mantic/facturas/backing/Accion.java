@@ -254,7 +254,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
         ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(-1L));
         this.setPrecio("menudeo");
       } // else
-      
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -1378,7 +1377,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
       item.setLocalidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdLocalidad().toString("descripcion"));
       item.setCodigoPostal(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCodigoPostal());
       item.setCalle(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCalle());
-      item.setNumeroExterior(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getExterior());
     } // for
     for (Parcial item : ((FacturaFicticia)this.getAdminOrden().getOrden()).getParciales()) {
       item.setEntidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdEntidad().toString("descripcion"));
@@ -1386,8 +1384,28 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
       item.setLocalidad(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getIdLocalidad().toString("descripcion"));
       item.setCodigoPostal(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCodigoPostal());
       item.setCalle(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCalle());
-      item.setNumeroExterior(((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getExterior());
     } // for
+  }
+
+  public void doLookForCodigoPostal() {
+		Map<String, Object>params= null;
+    try {
+      params             = new HashMap<>();			
+      String codigoPostal= ((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().getCodigoPostal();
+      if(!Cadena.isVacio(codigoPostal)) {
+        params.put("codigo", codigoPostal);			
+        Value value= (Value)DaoFactory.getInstance().toField("TcManticCodigosPostalesDto", "unico", params, "idCodigoPostal");
+        if(value!= null && value.getData()!= null)
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).getDomicilioContrato().setIdCodigoPostal(value.toLong());
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+		finally {
+			Methods.clean(params);
+		} // finally
   }
   
 }

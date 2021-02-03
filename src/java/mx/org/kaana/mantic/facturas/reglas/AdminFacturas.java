@@ -284,7 +284,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
             item.setCodigoPostal(this.orden.getDomicilioContrato().getCodigoPostal());
             item.setCalle(this.orden.getDomicilioContrato().getCalle());
             item.setColonia(this.orden.getDomicilioContrato().getColonia());
-            item.setNumeroExterior(this.orden.getDomicilioContrato().getExterior());
+            item.setNumeroExterior(item.getLote());
             item.setNumeroInterior(this.orden.getDomicilioContrato().getInterior());
             item.setIdLocalidad(this.orden.getDomicilioContrato().getIdLocalidad().getKey());
             item.setPermiso(this.orden.getIkContrato().toString("permiso"));

@@ -1,12 +1,17 @@
 package mx.org.kaana.mantic.catalogos.comun;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.procesos.mantenimiento.catalogos.beans.Column;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
@@ -101,6 +106,11 @@ public abstract class MotorBusquedaCatalogos {
 			params.put("idPais", 1);
       params.put(Constantes.SQL_CONDICION, "id_entidad=" + toIdEntidad(idMunicipio));
 			regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalEntidadesDto", "comboEntidades", params);
+      if(regresar!= null) {
+        List<Columna> columns= new ArrayList<>();
+        columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+        UIBackingUtilities.toFormatEntity(regresar, columns);
+      } // if  
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -118,6 +128,11 @@ public abstract class MotorBusquedaCatalogos {
       params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_municipio=" + toIdMunicipio(idLocalidad));
       regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalMunicipiosDto", "row", params);							
+      if(regresar!= null) {
+        List<Columna> columns= new ArrayList<>();
+        columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+        UIBackingUtilities.toFormatEntity(regresar, columns);
+      } // if  
 		} // try
 		catch (Exception e) {
 			throw e;			
@@ -135,6 +150,11 @@ public abstract class MotorBusquedaCatalogos {
       params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_localidad=" + toIdLocalidad(idDomicilio));
       regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalLocalidadesDto", "row", params);							
+      if(regresar!= null) {
+        List<Columna> columns= new ArrayList<>();
+        columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+        UIBackingUtilities.toFormatEntity(regresar, columns);
+      } // if  
 		} // try
 		catch (Exception e) {
 			throw e;			

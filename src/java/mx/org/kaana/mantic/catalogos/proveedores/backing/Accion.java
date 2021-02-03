@@ -443,7 +443,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				params= new HashMap<>();
 				params.put("idEntidad", domicilio.getKey());
 				params.put("codigo", domicilio.toString("codigoPostal"));
-				codigos= (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "entidadCodigo", params, Collections.EMPTY_LIST, 30L);
+				codigos= (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "identically", params, Collections.EMPTY_LIST, 30L);
 				this.attrs.put("codigosPostales", codigos);
 				if(codigos!= null && !codigos.isEmpty()) {
 					this.registroProveedor.getDomicilio().setIdCodigoPostal(codigos.get(0).getKey());

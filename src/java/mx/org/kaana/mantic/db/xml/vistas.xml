@@ -4335,8 +4335,8 @@
 					tc_mantic_domicilios.numero_interior,
 					tc_mantic_domicilios.asentamiento,
 					tc_mantic_domicilios.codigo_postal,					
-					tc_janal_localidades.descripcion as localidad,
-					tc_janal_municipios.descripcion as municipio
+					upper(tc_janal_localidades.descripcion) as localidad,
+					upper(tc_janal_municipios.descripcion) as municipio
 				from 
 					tr_mantic_cliente_domicilio
 				inner join 
@@ -6557,13 +6557,13 @@
           tc_mantic_domicilios.*,
           concat(tc_janal_entidades.descripcion,' , ',calle,' ',numero_exterior,' ',asentamiento) as domicilio,          
           tc_janal_localidades.clave as clave_localidad,
-          tc_janal_localidades.descripcion as localidad,
+          upper(tc_janal_localidades.descripcion) as localidad,
           tc_janal_municipios.id_municipio,
           tc_janal_municipios.clave as clave_municipio,
-          tc_janal_municipios.descripcion as municipio,
+          upper(tc_janal_municipios.descripcion) as municipio,
           tc_janal_entidades.id_entidad,
           tc_janal_entidades.clave as clave_entidad,
-          tc_janal_entidades.descripcion as entidad
+          upper(tc_janal_entidades.descripcion) as entidad
         from 
           tc_mantic_domicilios
         inner join 

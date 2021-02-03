@@ -27,9 +27,9 @@
           tc_keet_contratos_lotes.lote,
           tc_keet_contratos_lotes.calle as calle_lote,
           tc_keet_contratos_lotes.numero as numero_lote,
-          tc_janal_entidades.descripcion as entidad,
-          tc_janal_municipios.descripcion as municipio,
-          tc_janal_localidades.descripcion as localidad         
+          upper(tc_janal_entidades.descripcion) as entidad,
+          upper(tc_janal_municipios.descripcion) as municipio,
+          upper(tc_janal_localidades.descripcion) as localidad         
         from
           tc_keet_contratos_lotes          
         left join
@@ -2094,6 +2094,8 @@
 					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
 				where
 					tc_keet_desarrollos.id_desarrollo= {idDesarrollo}
+        order by
+          tc_keet_contratos.registro desc 
 			</select>
 			<select id="personalAsignado">
 				select

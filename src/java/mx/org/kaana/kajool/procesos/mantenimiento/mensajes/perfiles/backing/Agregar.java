@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TrJanalMensajesPerfilesDto;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETiposMensajes;
 import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.perfiles.reglas.Transaccion;
 
@@ -47,8 +48,8 @@ public class Agregar extends IBaseAttribute implements Serializable {
       this.attrs.put("idGrupo", new Long(-1));
       this.attrs.put("descripcion", "");
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", this.attrs, "descripcion"));
-      this.attrs.put("prioridades", UISelect.seleccione("TcJanalPrioridadesDto", this.attrs, "descripcion"));
+      this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("prioridades", UISelect.seleccione("TcJanalPrioridadesDto", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
       switch (accion) {
         case AGREGAR:
           this.attrs.put("dto", new TcJanalMensajesDto());
@@ -164,6 +165,6 @@ public class Agregar extends IBaseAttribute implements Serializable {
 
   public void doPerfiles() {
     this.attrs.put("idPerfil", new Long(-1L));
-    this.attrs.put("perfiles", UISelect.seleccione("TcJanalPerfilesDto", "porGrupo", this.attrs, "descripcion"));
+    this.attrs.put("perfiles", UISelect.seleccione("TcJanalPerfilesDto", "porGrupo", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
   }
 }

@@ -42,7 +42,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     this.attrs.put("idGrupo", new Long(-1L));
     this.attrs.put("descripcion", "");
     this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-    this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", this.attrs, "descripcion"));
+    this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
   } // init
 
   @Override
@@ -82,7 +82,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public void doPerfiles() {
     this.attrs.put("idPerfil", new Long(-1L));
-    this.attrs.put("perfiles", UISelect.seleccione("TcJanalPerfilesDto", "porGrupo", this.attrs, "descripcion"));
+    this.attrs.put("perfiles", UISelect.seleccione("TcJanalPerfilesDto", "porGrupo", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
   }
 
   public void doEliminar() {

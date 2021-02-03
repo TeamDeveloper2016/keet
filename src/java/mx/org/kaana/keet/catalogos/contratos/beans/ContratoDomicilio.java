@@ -25,8 +25,6 @@ public class ContratoDomicilio extends TrKeetContratoDomicilioDto {
 	private boolean nuevoCp;
 	private Long idCodigoPostal;	
 	private Boolean principal;	
-	private Long idTipoDomicilio;
-  
 	
 	public ContratoDomicilio() {
 		this(-1L);
@@ -63,7 +61,6 @@ public class ContratoDomicilio extends TrKeetContratoDomicilioDto {
 		this.nuevoCp     = nuevoCp;
     this.principal   = true;
     this.idCodigoPostal = -1L;
-    this.idTipoDomicilio= -1L;
 	}
 
 	public ESql getSqlAccion() {
@@ -208,14 +205,6 @@ public class ContratoDomicilio extends TrKeetContratoDomicilioDto {
 
   public void setPrincipal(Boolean principal) {
     this.principal = principal;
-  }
-
-  public Long getIdTipoDomicilio() {
-    return idTipoDomicilio;
-  }
-
-  public void setIdTipoDomicilio(Long idTipoDomicilio) {
-    this.idTipoDomicilio = idTipoDomicilio;
   }
 
   @Override

@@ -281,6 +281,25 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toDomicilio  
  
+	public Long toIdCodigoPostal(String codigo) throws Exception {
+		Long regresar            = null;
+		Map<String, Object>params= null;
+		try {
+		  params= new HashMap<>();			
+			params.put("codigo", codigo);			
+			Value value= (Value)DaoFactory.getInstance().toField("TcManticCodigosPostalesDto", "unico", params, "idCodigoPostal");
+      if(value!= null && value.getData()!= null)
+        regresar= value.toLong();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toIdCodigoPostal  
+ 
 	public List<ContratoDomicilio> toContratoDomicilios(boolean update) throws Exception {
 		List<ContratoDomicilio> regresar= null;
 		TcManticDomiciliosDto domicilio = null;

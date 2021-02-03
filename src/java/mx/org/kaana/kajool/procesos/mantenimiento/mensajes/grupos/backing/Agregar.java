@@ -22,6 +22,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TrJanalMensajesGruposDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.dto.TrJanalMensajesPerfilesDto;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.grupos.reglas.Transaccion;
 
 /**
@@ -60,8 +61,8 @@ public class Agregar extends IBaseAttribute implements Serializable{
           this.attrs.put("idPrioridad", new Long(-1));
           this.attrs.put("valida", "uno,dos");
           this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-          this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", this.attrs, "descripcion"));
-          this.attrs.put("prioridades", UISelect.seleccione("TcJanalPrioridadesDto", this.attrs, "descripcion"));
+          this.attrs.put("grupos", UISelect.seleccione("TcJanalGruposDto", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
+          this.attrs.put("prioridades", UISelect.seleccione("TcJanalPrioridadesDto", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
           this.attrs.put("dto", new TcJanalMensajesDto());
           this.attrs.put("dtoMensajesGrupos", new TrJanalMensajesGruposDto());
           break;

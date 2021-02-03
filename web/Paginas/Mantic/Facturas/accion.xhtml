@@ -35,19 +35,20 @@
         'contenedorGrupos\\:municipio' : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad' : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:cp'        : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
-        'contenedorGrupos\\:calle'     : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
-        'contenedorGrupos\\:exterior'  : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
-        'contenedorGrupos\\:interior'  : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
-        'contenedorGrupos\\:asentamiento' : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
-        'contenedorGrupos\\:entreCalle'   : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
-        'contenedorGrupos\\:otraCalle'    : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio'},
+        'contenedorGrupos\\:calle'     : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:exterior'  : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:interior'  : {validaciones: 'libre', mascara: 'texto', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:asentamiento' : {validaciones: 'requerido', mascara: 'texto', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:entreCalle'   : {validaciones: 'libre', mascara: 'texto', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:otraCalle'    : {validaciones: 'libre', mascara: 'texto', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:tipoDomicilio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:localidadLote': {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
-        'contenedorGrupos\\:permisoLote'  : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
-        'contenedorGrupos\\:calleLote'    : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
-        'contenedorGrupos\\:numeroExteriorLote': {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
-        'contenedorGrupos\\:codigoPostalLote'  : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'},
-        'contenedorGrupos\\:referenciaLote'    : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad'}
+        'contenedorGrupos\\:localidadLote': {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:permisoLote'  : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:calleLote'    : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:numeroExteriorLote': {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:numeroInteriorLote': {multiple: '$', validaciones: 'libre', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:codigoPostalLote'  : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:referenciaLote'    : {multiple: '$', validaciones: 'libre', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'}
 			};	
 			
 			fieldsVenta = {
@@ -87,6 +88,7 @@
 			} // validateCapturaDescuentos				
 			
       function execute(lock) {
+        janal.reset();
 				var index= jsArticulos.cursor.index;
 				jsArticulos.cursor.index= jsArticulos.cursor.top;
 				$(jsArticulos.description()).addClass('ignore');
@@ -94,14 +96,18 @@
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
 				var ok= janal.partial('general', [{}], lock);
-				if(!ok) {
-					jsArticulos.cursor.index= index;
-  				$(jsArticulos.description()).removeClass('ignore');
-	  			$(jsArticulos.sat()).removeClass('ignore');
-  				$(jsArticulos.amount()).removeClass('ignore');
-	  			$(jsArticulos.price()).removeClass('ignore');
-				} // else	
-				return ok;
+				if(ok) {
+          var idContrato= parseInt($('#idContrato'+ janal.INPUT_RESERVE).val());
+          if(idContrato> 0) 
+            ok= janal.partial('domicilio|parcialidad', [{}], lock);  
+				} // if
+        jsArticulos.cursor.index= index;
+        $(jsArticulos.description()).removeClass('ignore');
+        $(jsArticulos.sat()).removeClass('ignore');
+        $(jsArticulos.amount()).removeClass('ignore');
+        $(jsArticulos.price()).removeClass('ignore');
+				// return ok;
+        return false;
 			}			
 		</script>   
 		<style type="text/css">
@@ -375,7 +381,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">	
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticFacturasAccion.doTabChange}" process="@this" update="@(.involucrados) contenedorGrupos:lote contenedorGrupos:tablaLotes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.resize();"/>
+            <p:ajax event="tabChange" listener="#{manticFacturasAccion.doTabChange}" process="@this" update="@(.involucrados) contenedorGrupos:lote contenedorGrupos:tablaLotes" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.reset();"/>
             <p:tab title="General">							
               <p:panelGrid id="deudor" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" rendered="#{not empty manticFacturasAccion.saldoCliente.mensaje}">
                 <p:outputLabel value="#{manticFacturasAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange"/>
@@ -424,7 +430,7 @@
                         </div>	
                       </div>	
                     </p:column>
-                    <p:column class="MarAuto Responsive nombres">
+                    <p:column class="nombres MarAuto Responsive">
                       <f:facet name="header">
                         <h:outputText value="Concepto"/>
                       </f:facet>
@@ -436,20 +442,20 @@
                       </f:facet>
                       <p:outputLabel value="#{row['propio']}" title="Existencias: #{row['stock']}"/>
                     </p:column>		
-                    <p:column class="janal-column-right MarAuto Responsive janal-wid-8 sat">
+                    <p:column class="sat janal-column-right MarAuto Responsive janal-wid-8 sat">
                       <f:facet name="header">
                         <h:outputText value="Sat"/>
                       </f:facet>
                       <p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila"/>
                     </p:column>		
-                    <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-8">
                       <f:facet name="header">
                         <h:outputText value="Cantidad"/>
                       </f:facet>
                       <p:outputLabel value="#{row['cantidad']}"/>
                       <p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
                     </p:column>		
-                    <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <p:column class="precios janal-column-right MarAuto Responsive janal-wid-8">
                       <f:facet name="header">
                         <h:outputText value="Precio"/>
                       </f:facet>
@@ -535,8 +541,8 @@
                       <h:outputText value="#{item.asentamiento}"/>
                     </p:column>  
                   </p:selectOneMenu>	
-                  <p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
-                  <p:commandButton action="#{manticFacturasAccion.doSincronizarLote}" process="@this @(.domicilio)" update="contenedorGrupos:tablaLotes" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Sincronizar"/>						
+                  <p:commandButton title="Buscar domicilio" process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" style="float: right !important"/>
+                  <p:commandButton title="Sincronizar" action="#{manticFacturasAccion.doSincronizarLote}" process="@this @(.domicilio)" update="contenedorGrupos:tablaLotes" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 </p:panelGrid>
                 <p:spacer/>
                 <p:separator/>
@@ -573,7 +579,9 @@
                   </p:column>  
                 </p:selectOneMenu>																	
                 <p:outputLabel for="cp" value="Código postal:"/>                  
-                <p:inputText id="cp" placeholder="Ejemplo: 20284" styleClass="domicilio janal-wid-100-txt" value="#{manticFacturasAccion.adminOrden.orden.domicilioContrato.codigoPostal}"/>
+                <p:inputText id="cp" placeholder="Ejemplo: 20284" styleClass="domicilio janal-wid-100-txt" value="#{manticFacturasAccion.adminOrden.orden.domicilioContrato.codigoPostal}">
+                  <p:ajax event="blur" listener="#{manticFacturasAccion.doLookForCodigoPostal}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                </p:inputText>  
                 <p:outputLabel for="calle" value="Calle:"/>
                 <p:inputText id="calle" styleClass="domicilio janal-wid-100-txt" value="#{manticFacturasAccion.adminOrden.orden.domicilioContrato.calle}" />
                 <p:outputLabel for="exterior" value="Número exterior:"/>
@@ -617,8 +625,8 @@
                       <h:outputText value="#{item.numeroLote}"/>
                     </p:column>  
                   </p:selectOneMenu>	
-                  <p:commandButton action="#{manticFacturasAccion.doAgregarLote}" process="@this contenedorGrupos:lote" update="contenedorGrupos:lote contenedorGrupos:tablaLotes" icon="fa fa-plus" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Agregar"/>						
-                  <p:commandButton action="#{manticFacturasAccion.doSincronizarLote}" process="@this @(.domicilio)" update="contenedorGrupos:tablaLotes" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Sincronizar"/>						
+                  <p:commandButton title="Agregar" action="#{manticFacturasAccion.doAgregarLote}" process="@this contenedorGrupos:lote" update="contenedorGrupos:lote contenedorGrupos:tablaLotes" icon="fa fa-plus" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.resize();"/>
+                  <p:commandButton title="Sincronizar" action="#{manticFacturasAccion.doSincronizarLote}" process="@this @(.domicilio)" update="contenedorGrupos:tablaLotes" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 </p:panelGrid>
               </p:panelGrid>
               <p:dataTable lazy="false" id="tablaLotes" widgetVar="kajoolTableLotes" var="row" value="#{manticFacturasAccion.adminOrden.orden.parciales}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasAccion.attrs.parcial}" selectionMode="single" paginator="true" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idVentaParcial}" rowStyleClass="#{manticFacturasAccion.doColorRow(row)}">
@@ -627,6 +635,12 @@
                     <h:outputText value="No"/>
                   </f:facet>
                   <p:outputLabel value="#{index+ 1}.-"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Lote"/>
+                  </f:facet>
+                  <p:outputLabel value="M#{row.manzana}L#{row.lote}" styleClass="janal-color-blue janal-font-bold"/> 
                 </p:column>
                 <p:column class="localidadLote MarAuto Responsive janal-wid-15">
                   <f:facet name="header">
@@ -640,12 +654,6 @@
                   </f:facet>
                   <p:inputText id="permisoLote" value="#{row.permiso}" styleClass="janal-wid-100-txt"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-wid-8">
-                  <f:facet name="header">
-                    <h:outputText value="Lote"/>
-                  </f:facet>
-                  <p:outputLabel value="M#{row.manzana}L#{row.lote}"/> 
-                </p:column>
                 <p:column class="calleLote MarAuto Responsive">
                   <f:facet name="header">
                     <h:outputText value="Calle"/>
@@ -654,9 +662,15 @@
                 </p:column>
                 <p:column class="numeroExteriorLote MarAuto Responsive janal-wid-8">
                   <f:facet name="header">
-                    <h:outputText value="Número"/>
+                    <h:outputText value="Exterior"/>
                   </f:facet>
                   <p:inputText id="numeroExteriorLote" value="#{row.numeroExterior}" styleClass="janal-wid-100-txt"/> 
+                </p:column>
+                <p:column class="numeroInteriorLote MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Interior"/>
+                  </f:facet>
+                  <p:inputText id="numeroInteriorLote" value="#{row.numeroInterior}" styleClass="janal-wid-100-txt"/> 
                 </p:column>
                 <p:column class="codigoPostalLote MarAuto Responsive janal-wid-8">
                   <f:facet name="header">

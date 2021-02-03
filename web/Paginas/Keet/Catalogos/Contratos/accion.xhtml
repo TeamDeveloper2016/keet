@@ -292,7 +292,9 @@
                   </p:column>  
                 </p:selectOneMenu>																	
                 <p:outputLabel for="cp" value="Código postal:"/>                  
-                <p:inputText id="cp" placeholder="Ejemplo: 20284" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.domicilio.codigoPostal}"/>
+                <p:inputText id="cp" placeholder="Ejemplo: 20284" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.domicilio.codigoPostal}">
+                  <p:ajax event="blur" listener="#{keetCatalogosContratosAccion.doLookForCodigoPostal}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                </p:inputText>  
                 <p:outputLabel for="calle" value="Calle:"/>
                 <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosAccion.contrato.domicilio.calle}" />
                 <p:outputLabel for="exterior" value="Número exterior:"/>

@@ -287,9 +287,13 @@
        return this.toUnicodeString(this.root);
      }, // toContext
      labels: function(id) {
-       return $('label[for$="'+ id+ '"], label[for$="'+ id+ $janal.SELECT_FOCUS+ '"], label[for$="'+ id+ $janal.INPUT_RESERVE+ '"], th.'+ (id.indexOf(':')> 0? id.substring(id.indexOf(':')+ 1): id)+ '>span, a.'+ id);
+       if($janal.whatIsIt(id)=== 'String')
+         id= id.lastIndexOf(':')> 0? id.substring(id.lastIndexOf(':')+ 1): id;
+       return $('label[for$="'+ id+ '"], label[for$="'+ id+ $janal.SELECT_FOCUS+ '"], label[for$="'+ id+ $janal.INPUT_RESERVE+ '"], th.'+ id+ '>span, a.'+ id);
      }, // labels
      selector: function(multiple, id) {
+       if($janal.whatIsIt(id)=== 'String')
+         id= id.lastIndexOf(':')> 0? id.substring(id.lastIndexOf(':')+ 1): id;
        return 'input[id'+ multiple+ '="'+ id+ '"], input[id'+ multiple+ '="'+ id+ $janal.INPUT_RESERVE+ '"], select[id'+ multiple+ '="'+ id+ $janal.INPUT_RESERVE+ '"], textarea[id'+ multiple+ '="'+ id+ '"], input[id^="'+ id+ ':"], input[id*=":'+ id+ ':"], input[id'+ multiple+ '=":'+ id+ '"]';       
      },
      components: function(multiple, id) {
@@ -1309,7 +1313,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.7.5';
+      return '0.3.7.8';
     }, // version
     align: function(pixels) {
       try {

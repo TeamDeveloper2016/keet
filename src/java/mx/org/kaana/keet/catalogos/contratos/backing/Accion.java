@@ -113,7 +113,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
       this.attrs.put("proyectos", UIEntity.seleccione("TcKeetProyectosDto", "row", this.attrs, "clave"));
       this.attrs.put("tipoObras", UIEntity.seleccione("VistaTiposObrasDto", "catalogo", this.attrs, "tipoObra"));
-      this.fachadas= UISelect.seleccione("TcKeetTiposFachadasDto", "row", this.attrs, "nombre");
+      this.fachadas= UISelect.seleccione("TcKeetTiposFachadasDto", "row", this.attrs, "nombre", EFormatoDinamicos.MAYUSCULAS);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -135,7 +135,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private void loadPrototipos() {
 	  try {
 			this.attrs.put("idCliente", ((TcKeetProyectosDto)DaoFactory.getInstance().findById(TcKeetProyectosDto.class, this.contrato.getContrato().getIdProyecto())).getIdCliente());
-      this.prototipos= UISelect.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre");
+      this.prototipos= UISelect.seleccione("TcKeetPrototiposDto", "byCliente", this.attrs, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.contrato.getContrato().validaPrototipos(this.prototipos);
     } // try
     catch (Exception e) {
@@ -654,6 +654,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.contrato.getDomicilio().setAsentamiento("");
       this.contrato.getDomicilio().setEntreCalle("");
       this.contrato.getDomicilio().setYcalle("");
+      this.contrato.getDomicilio().setPrincipal(true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -799,5 +800,26 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // toAgregarContrato
+ 
+  public void doLookForCodigoPostal() {
+		Map<String, Object>params= null;
+    try {
+      params             = new HashMap<>();			
+      String codigoPostal= this.contrato.getDomicilio().getCodigoPostal();
+      if(!Cadena.isVacio(codigoPostal)) {
+        params.put("codigo", codigoPostal);			
+        Value value= (Value)DaoFactory.getInstance().toField("TcManticCodigosPostalesDto", "unico", params, "idCodigoPostal");
+        if(value!= null && value.getData()!= null)
+          this.contrato.getDomicilio().setIdCodigoPostal(value.toLong());
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+  }
   
 }
