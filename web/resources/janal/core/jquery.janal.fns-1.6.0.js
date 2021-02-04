@@ -116,7 +116,7 @@ $.mask.rules = $.extend($.mask.rules, {
   'f': /[HhMm]/,
   'g': /[0-9a-zA-Z\u00F1\u00D1]/,
   'h': /[0-9aA]/,
-  'i': /[0-9a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1,.;:¿?¡!"(){}@#%&_]/,
+  'i': /[0-9a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1,.;:¿?¡!"(){}@#%&_-]/,
   'j': /[0-9a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1,.;:¿?¡!"(){}@+-=*_%#|~^&]/,
   'k': /[0-9a-zA-Z]/,
   'l': /[aeiou\u00E1\u00E9\u00ED\u00F3\u00FA]/,
@@ -436,7 +436,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return parseFloat(janal.cleanToken(value), 10)> params.cuanto;
     }, function(params, element) {
-      return 'El valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor tiene que ser mayor '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser mayor a '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('mayor-igual', function(value, element, params) {
@@ -450,7 +450,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
     }, function(params, element) {
-      return 'El valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor tiene que ser mayor o igual '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser mayor o igual a '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('max-valor', function(value, element, params) {
@@ -464,7 +464,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
     }, function(params, element) {
-      return 'El valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor m\u00E1ximo es '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser mayor a '+ params.cuanto+ '.';
     });
 
   $.validator.addMethod('menor', function(value, element, params) {
@@ -478,7 +478,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)< params.cuanto;
     }, function(params, element) {
-      return 'El valor ('+ $(element).val()+ ') tiene que ser menor al permitido, el valor tiene que ser menor '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser menor a '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('menor-igual', function(value, element, params) {
@@ -492,7 +492,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
     }, function(params, element) {
-      return 'El valor ('+ $(element).val()+ ') tiene que ser menor al permitido, el valor tiene que ser menor o igual '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') tiene que ser menor o igual a '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('min-valor', function(value, element, params) {
@@ -506,7 +506,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
     }, function(params, element) {
-      return 'El valor ('+ $(element).val()+ ') debe ser menor al permitido, el valor m\u00EDnimo es '+ params.cuanto+ '.';
+      return 'El valor ('+ $(element).val()+ ') debe ser menor a '+ params.cuanto+ '.';
     });
 
   $.validator.addMethod('requerido', function(value, element, params) {
@@ -685,7 +685,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			else
 				return (parseInt(value, 10)>= params.min && parseInt(value,10)<= params.max);	
 		}, function(params) {
-      return 'El valor no se encuentra en el rango permitido, el rango es '+ params.min+ ' al '+ params.max+ '.';
+      return 'El valor no se encuentra en el rango ['+ params.min+ ' al '+ params.max+ '].';
     });
 
 	$.validator.addMethod('secuencia-palabra', function(value, element, params) {

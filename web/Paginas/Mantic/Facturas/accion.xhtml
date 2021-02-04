@@ -48,7 +48,9 @@
         'contenedorGrupos\\:numeroExteriorLote': {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:numeroInteriorLote': {multiple: '$', validaciones: 'libre', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:codigoPostalLote'  : {multiple: '$', validaciones: 'requerido', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:referenciaLote'    : {multiple: '$', validaciones: 'libre', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'}
+        'contenedorGrupos\\:referenciaLote'    : {multiple: '$', validaciones: 'libre', mascara: 'texto', grupo: 'parcialidad', formatos: 'cambiar-mayusculas'},
+				'parciales'   : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},
+				'contenedorGrupos\\:lote': {validaciones: 'requerido', mascara: 'libre', grupo: 'lote'}
 			};	
 			
 			fieldsVenta = {
@@ -95,19 +97,18 @@
 				$(jsArticulos.sat()).addClass('ignore');
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
-				var ok= janal.partial('general', [{}], lock);
+				var ok= janal.partial('general', [], lock);
 				if(ok) {
           var idContrato= parseInt($('#idContrato'+ janal.INPUT_RESERVE).val());
           if(idContrato> 0) 
-            ok= janal.partial('domicilio|parcialidad', [{}], lock);  
+            ok= janal.partial('domicilio|parcialidad', [], lock);  
 				} // if
         jsArticulos.cursor.index= index;
         $(jsArticulos.description()).removeClass('ignore');
         $(jsArticulos.sat()).removeClass('ignore');
         $(jsArticulos.amount()).removeClass('ignore');
         $(jsArticulos.price()).removeClass('ignore');
-				// return ok;
-        return false;
+				return ok;
 			}			
 		</script>   
 		<style type="text/css">
@@ -206,7 +207,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
   						<p:outputLabel for="idEmpresa" value="Sucursal:"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticFacturasAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" process="@this idDesarrollo idContrato" listener="#{manticFacturasAccion.doUpdateDesarrollos}" update="clientes idDesarrollo idContrato idCliente contenedorGrupos:contenido contenedorGrupos:tabla contenedorGrupos:lote contenedorGrupos:tablaLotes @(.domcicilio)" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); reloadDesarrollo(); janal.resize();"/>
+                <p:ajax event="change" process="@this idDesarrollo idContrato" listener="#{manticFacturasAccion.doUpdateDesarrollos}" update="clientes idDesarrollo idContrato idCliente contenedorGrupos:contenido contenedorGrupos:tabla contenedorGrupos:lote contenedorGrupos:tablaLotes @(.domcicilio) @(.parciales)" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); reloadDesarrollo(); janal.resize();"/>
                 <f:selectItems value="#{manticFacturasAccion.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -219,7 +220,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
   						<p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
               <p:selectOneMenu id="idDesarrollo" value="#{manticFacturasAccion.adminOrden.orden.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" onstart="return janal.bloquear();" process="@this idContrato" listener="#{manticFacturasAccion.doUpdateContratos}" update="@(.todos) contenedorGrupos:lote contenedorGrupos:tablaLotes @(.domcicilio)" oncomplete="janal.desbloquear();reloadContrato();janal.resize();"/>
+                <p:ajax event="change" onstart="return janal.bloquear();" process="@this idContrato" listener="#{manticFacturasAccion.doUpdateContratos}" update="@(.todos) contenedorGrupos:lote contenedorGrupos:tablaLotes @(.domcicilio) @(.parciales)" oncomplete="janal.desbloquear();reloadContrato();janal.resize();"/>
                 <f:selectItems value="#{manticFacturasAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '- '} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -232,7 +233,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
     					<p:outputLabel for="idContrato" value="Contratos:"/>
               <p:selectOneMenu id="idContrato" value="#{manticFacturasAccion.adminOrden.orden.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticFacturasAccion.doUpdateDomicilio}" update="contenedorGrupos contenedorGrupos:lote contenedorGrupos:tablaLotes @(.domcicilio)" oncomplete="janal.desbloquear(); janal.resize();"/>
+                <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticFacturasAccion.doUpdateDomicilio}" update="contenedorGrupos contenedorGrupos:lote contenedorGrupos:tablaLotes @(.domcicilio) @(.parciales)" oncomplete="janal.desbloquear(); janal.resize();"/>
                 <f:selectItems value="#{manticFacturasAccion.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '- '} #{one.etapa}"/>
                 <p:column headerText="Clave">
                   <p:outputLabel value="#{list.clave}"/>
@@ -625,7 +626,7 @@
                       <h:outputText value="#{item.numeroLote}"/>
                     </p:column>  
                   </p:selectOneMenu>	
-                  <p:commandButton title="Agregar" action="#{manticFacturasAccion.doAgregarLote}" process="@this contenedorGrupos:lote" update="contenedorGrupos:lote contenedorGrupos:tablaLotes" icon="fa fa-plus" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.resize();"/>
+                  <p:commandButton title="Agregar" action="#{manticFacturasAccion.doAgregarLote}" process="@this contenedorGrupos:lote" update="contenedorGrupos:lote contenedorGrupos:tablaLotes @(.parciales)" icon="fa fa-plus" onstart="return janal.partial('lote');" oncomplete="janal.desbloquear(); janal.resize();"/>
                   <p:commandButton title="Sincronizar" action="#{manticFacturasAccion.doSincronizarLote}" process="@this @(.domicilio)" update="contenedorGrupos:tablaLotes" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 </p:panelGrid>
               </p:panelGrid>
@@ -636,7 +637,7 @@
                   </f:facet>
                   <p:outputLabel value="#{index+ 1}.-"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-wid-8">
+                <p:column class="parciales MarAuto Responsive janal-wid-8">
                   <f:facet name="header">
                     <h:outputText value="Lote"/>
                   </f:facet>
@@ -688,7 +689,7 @@
                   <f:facet name="header">
                     <h:outputText value=""/>
                   </f:facet>
-                  <p:commandButton action="#{manticFacturasAccion.doEliminarLote(row)}" process="@this" update="contenedorGrupos:lote contenedorGrupos:tablaLotes" icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear(); janal.resize();"/>
+                  <p:commandButton action="#{manticFacturasAccion.doEliminarLote(row)}" process="@this" update="contenedorGrupos:lote contenedorGrupos:tablaLotes @(.parciales)" icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear(); janal.resize();"/>
                 </p:column>
                 <f:facet name="footer">
                   <p:outputLabel value="Total [#{manticFacturasAccion.adminOrden.orden.parciales== null? 0: manticFacturasAccion.adminOrden.orden.parciales.size()}] registros"/>
@@ -696,6 +697,7 @@
               </p:dataTable>
             </p:tab>
           </p:tabView>  
+					<p:inputText id="parciales" value="#{manticFacturasAccion.adminOrden.totales.parciales}" styleClass="parciales" style="display:none"/>
 					<p:inputText id="articulos" value="#{manticFacturasAccion.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
           <p:inputText id="total" value="#{manticFacturasAccion.adminOrden.totales.totalDosDecimales}" styleClass="recalculo" style="display:none"/>
 				</div>
@@ -864,7 +866,7 @@
             <p:commandButton icon="fa fa-search" actionListener="#{manticFacturasAccion.doBusquedaContratoDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" onstart="return janal.partial('dialogo');" oncomplete="janal.resize();"/>
           </h:panelGrid>
           <p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
-          <p:selectOneMenu id="domiciliosBusqueda" value="#{manticFacturasAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+          <p:selectOneMenu id="domiciliosBusqueda" value="#{manticFacturasAccion.domicilioContratoBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
             <f:selectItems value="#{manticFacturasAccion.attrs.contratoDomiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
             <p:column headerText="Calle" styleClass="janal-column-left">
               <h:outputText value="#{item.calle}"/>

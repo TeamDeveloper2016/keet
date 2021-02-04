@@ -5,6 +5,48 @@
 <process>
 	<dml> 
 		<unit id="VistaIngresosDto">
+			<select id="detalle">
+        select      
+          ifnull(tc_keet_ventas_parciales.id_venta_parcial, cast(tc_keet_contratos_lotes.id_contrato_lote as int)* -1) as id_key,
+          tc_keet_contratos_lotes.id_contrato_lote,
+          tc_keet_ventas_parciales.id_venta_parcial,
+          tc_keet_ventas_parciales.id_venta,
+          tc_keet_ventas_parciales.permiso,
+          tc_keet_ventas_parciales.codigo_postal,
+          tc_keet_ventas_parciales.id_localidad,
+          tc_keet_ventas_parciales.colonia,
+          tc_keet_ventas_parciales.calle,
+          tc_keet_ventas_parciales.numero_exterior,
+          tc_keet_ventas_parciales.numero_interior,
+          tc_keet_ventas_parciales.referencia,
+          tc_keet_ventas_parciales.id_usuario,
+          tc_keet_ventas_parciales.registro,
+          tc_keet_contratos_lotes.clave as clave_lote,
+          tc_keet_prototipos.nombre as prototipo,
+          tc_keet_contratos_lotes.manzana,
+          tc_keet_contratos_lotes.lote,
+          tc_keet_contratos_lotes.calle as calle_lote,
+          tc_keet_contratos_lotes.numero as numero_lote,
+          upper(tc_janal_entidades.descripcion) as entidad,
+          upper(tc_janal_municipios.descripcion) as municipio,
+          upper(tc_janal_localidades.descripcion) as localidad         
+        from
+          tc_keet_contratos_lotes          
+        inner join
+          tc_keet_ventas_parciales on tc_keet_contratos_lotes.id_contrato_lote= tc_keet_ventas_parciales.id_contrato_lote
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo         
+        inner join
+          tc_janal_localidades on tc_keet_ventas_parciales.id_localidad = tc_janal_localidades.id_localidad         
+        inner join
+          tc_janal_municipios on tc_janal_localidades.id_municipio = tc_janal_municipios.id_municipio         
+        inner join
+          tc_janal_entidades on tc_janal_municipios.id_entidad = tc_janal_entidades.id_entidad         
+        where
+          tc_keet_contratos_lotes.id_contrato= {idContrato}  
+        order by
+          tc_keet_ventas_parciales.registro
+      </select>  
 			<select id="lotes">
         select      
           ifnull(tc_keet_ventas_parciales.id_venta_parcial, cast(tc_keet_contratos_lotes.id_contrato_lote as int)* -1) as id_key,

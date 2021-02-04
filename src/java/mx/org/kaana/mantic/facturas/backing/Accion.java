@@ -64,7 +64,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
 	private FormatLazyModel almacenes;
-  private UISelectEntity domicilioBusqueda;
+  private UISelectEntity domicilioContratoBusqueda;
 
 	public Accion() {
 		super("menudeo", true);
@@ -89,12 +89,12 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		return almacenes;
 	}	
 
-	public UISelectEntity getDomicilioBusqueda() {
-    return domicilioBusqueda;
+	public UISelectEntity getDomicilioContratoBusqueda() {
+    return domicilioContratoBusqueda;
   }
 
-  public void setDomicilioBusqueda(UISelectEntity domicilioBusqueda) {
-    this.domicilioBusqueda = domicilioBusqueda;
+  public void setDomicilioContratoBusqueda(UISelectEntity domicilioContratoBusqueda) {
+    this.domicilioContratoBusqueda = domicilioContratoBusqueda;
   }
   
   @PostConstruct
@@ -180,7 +180,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
           this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
       } // if
       this.toContratoDomicilio();
-      this.doUpdateDomicilio(null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1265,7 +1264,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		UISelectEntity domicilio               = null;
 		try {
 			domiciliosBusqueda=(List<UISelectEntity>)this.attrs.get("contratoDomiciliosBusqueda");
-			domicilio         = domiciliosBusqueda.get(domiciliosBusqueda.indexOf(this.domicilioBusqueda));
+			domicilio         = domiciliosBusqueda.get(domiciliosBusqueda.indexOf(this.domicilioContratoBusqueda));
 			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setDomicilio(domicilio);
       ((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setIdDomicilio(domicilio.getKey());
 			((FacturaFicticia)getAdminOrden().getOrden()).getDomicilioContrato().setCalle(domicilio.toString("calle"));
@@ -1351,6 +1350,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
         clon.setSqlAccion(ESql.UPDATE);
       ((FacturaFicticia)this.getAdminOrden().getOrden()).getParciales().add(clon);
     } // if  
+   ((AdminFacturas)this.getAdminOrden()).getTotales().setParciales(((FacturaFicticia)this.getAdminOrden().getOrden()).getParciales().size());
 //    UIBackingUtilities.execute("janal.restore();");
   }
   
@@ -1362,6 +1362,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
         if(clon.getSqlAccion().equals(ESql.SELECT) || clon.getSqlAccion().equals(ESql.UPDATE))
           clon.setSqlAccion(ESql.DELETE);
         ((FacturaFicticia)this.getAdminOrden().getOrden()).getDisponibles().add(clon);
+        ((AdminFacturas)this.getAdminOrden()).getTotales().setParciales(((FacturaFicticia)this.getAdminOrden().getOrden()).getParciales().size());
         // UIBackingUtilities.execute("janal.restore();");
       } // if  
     } // if

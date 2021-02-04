@@ -367,6 +367,7 @@ public class Transaccion extends TransaccionFactura {
               break;
             case UPDATE:
               DaoFactory.getInstance().update(sesion, item);
+              break;
             case DELETE:
               DaoFactory.getInstance().delete(sesion, item);
               break;
@@ -631,11 +632,9 @@ public class Transaccion extends TransaccionFactura {
             DaoFactory.getInstance().insert(sesion, item);
             break;
           case UPDATE:
-            item.setIdPrincipal(1L); 
-            item.setIdContrato(this.orden.getIdContrato());
-            item.setIdUsuario(JsfBase.getIdUsuario());
             this.toUpsertDomicilio(sesion, item);
             DaoFactory.getInstance().update(sesion, item);
+            break;
           case DELETE:
             DaoFactory.getInstance().delete(sesion, item);
             break;

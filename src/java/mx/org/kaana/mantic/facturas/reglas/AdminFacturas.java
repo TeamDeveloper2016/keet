@@ -48,7 +48,8 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		List<ArticuloVenta> articulos= null;
 		this.orden= orden;		
 		if(this.orden.isValid()) {
-			articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "detalle", orden.toMap());
+      Map params= orden.toMap();
+			articulos = (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "detalle", params);
   	  this.setArticulos(articulos);    
 			this.validatePrecioArticulo();
       this.orden.setIkSerie(new UISelectEntity(new Entity(this.orden.getIdSerie())));
@@ -56,6 +57,14 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
       this.orden.setIkDesarrollo(new UISelectEntity(new Entity(this.orden.getIdDesarrollo())));
       this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
+      if(Cadena.isVacio(this.orden.getIdContrato()))
+        this.orden.setParciales(new ArrayList<>());
+      else 
+        this.orden.setParciales((List<Parcial>)DaoFactory.getInstance().toEntitySet(Parcial.class, "VistaIngresosDto", "detalle", params));
+      if(this.orden.getParciales()!= null && !this.orden.getParciales().isEmpty())
+        for (Parcial item: this.orden.getParciales()) {
+          item.setSqlAccion(ESql.UPDATE);
+        } // for
 		}	// if
 		else	{
 		  articulos= new ArrayList<>();
@@ -66,19 +75,11 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
       this.orden.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.orden.setIkDesarrollo(new UISelectEntity(-1L));
       this.orden.setIkCliente(new UISelectEntity(-1L));
+      this.orden.setParciales(new ArrayList<>());
 		} // else	
-    if(this.orden.getIdContrato()== null) {
-      this.orden.setIkContrato(new UISelectEntity(-1L));
-      this.orden.setDomicilioContrato(new ContratoDomicilio(-1L, ESql.INSERT));
-      this.orden.setParciales(new ArrayList<>());
-      this.orden.setDisponibles(new ArrayList<>());
-    } // if
-    else {
-      this.orden.setIkContrato(new UISelectEntity(new Entity(this.orden.getIdContrato())));
-      this.orden.setDomicilioContrato(this.toContratoDomicilios(this.orden.getIdContrato()));
-      this.orden.setParciales(new ArrayList<>());
-      this.toLoadContratoLotes();
-    } // else  
+    this.orden.setDisponibles(new ArrayList<>());
+    this.orden.setIkContrato(Cadena.isVacio(this.orden.getIdContrato())? new UISelectEntity(-1L): new UISelectEntity(new Entity(this.orden.getIdContrato())));
+    this.orden.setDomicilioContrato(new ContratoDomicilio(-1L, ESql.INSERT));
 		if(loadDefault)
 			this.getArticulos().add(new ArticuloVenta(-1L, true));
 		this.setIdSinIva(2L);
@@ -247,7 +248,10 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
         regresar.setNuevoCp(regresar.getCodigoPostal()!= null && !Cadena.isVacio(regresar.getCodigoPostal()));
       } // if  
       else
-        regresar= this.orden.getDomicilioContrato();
+        if(this.orden.getDomicilioContrato()== null)
+          regresar= new ContratoDomicilio(-1L, ESql.INSERT);
+        else 
+          regresar= this.orden.getDomicilioContrato();
 		} // try
 		catch (Exception e) {		
 			throw e;
@@ -275,9 +279,10 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
       if(this.orden.getDisponibles()!= null && !this.orden.getDisponibles().isEmpty()) {
         while(count< this.orden.getDisponibles().size()) {
           Parcial item= this.orden.getDisponibles().get(count);
-          if(this.orden.getParciales().indexOf(item)>= 0) {
-            item.getSqlAccion().equals(ESql.UPDATE);
+          int index= this.orden.getParciales().indexOf(item);
+          if(index>= 0) {
             this.orden.getDisponibles().remove(item);
+            this.orden.getParciales().get(index).setSqlAccion(ESql.UPDATE);
           } // if  
           else {
             item.setSqlAccion(ESql.INSERT);
@@ -297,10 +302,11 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
           } // else
         } // while
       } // if
+      this.getTotales().setParciales(this.orden.getParciales().size());
     } // try
     catch (Exception e) {
 			throw e;
     } // catch	
   } // toLoadContratoLotes
-  
+
 }

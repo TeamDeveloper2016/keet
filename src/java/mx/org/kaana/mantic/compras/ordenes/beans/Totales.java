@@ -18,6 +18,7 @@ public final class Totales implements Serializable {
 	private static final long serialVersionUID=-724230632673749688L;
 
 	private int articulos;
+	private int parciales;
 	private double importe;
 	private double iva;
 	private double sinIva;
@@ -30,10 +31,10 @@ public final class Totales implements Serializable {
 	private double cantidad;
 
 	public Totales() {
-		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
+		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0);
 	}
 
-	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global, double cantidad) {
+	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global, double cantidad, int parciales) {
 		this.articulos= articulos;
 		this.importe  = importe; 
 		this.iva      = iva;
@@ -44,6 +45,7 @@ public final class Totales implements Serializable {
 		this.utilidad = utilidad;
 		this.global   = global;
 		this.cantidad = cantidad;
+    this.parciales= parciales;
 	}
 
 	public int getArticulos() {
@@ -205,6 +207,14 @@ public final class Totales implements Serializable {
 		this.cantidad=cantidad;
 	}
 
+  public int getParciales() {
+    return parciales;
+  }
+
+  public void setParciales(int parciales) {
+    this.parciales = parciales;
+  }
+
 	public double getImporteDosDecimales() {
 		return Numero.toRedondear(importe);
 	}
@@ -299,6 +309,7 @@ public final class Totales implements Serializable {
 		this.total    = 0;
 		this.utilidad = 0;
 		this.cantidad = 0;
+		this.parciales= 0;
 	}
 
 	@Override
