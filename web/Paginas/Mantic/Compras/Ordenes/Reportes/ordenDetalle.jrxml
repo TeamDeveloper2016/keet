@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ordenDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.compras.ordenes.scriplet.OrdenesDetalles" uuid="a3542042-156a-46f2-b7a4-73d76a67d6b2">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="148"/>
+	<property name="ireport.y" value="176"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -573,8 +573,49 @@
 			</line>
 		</band>
 	</pageFooter>
+	<lastPageFooter>
+		<band height="100">
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="336" y="67" width="111" height="18" uuid="eb02591b-9617-45fc-bde4-a9cf74e77609"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENCARGADA DE COMPRAS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="291" y="69" width="182" height="1" uuid="686a214a-7fbe-401c-892c-f69f2551303a"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="">
+				<reportElement x="291" y="52" width="182" height="17" uuid="74d020b9-1d3b-4374-a69d-4a7439c87f6c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{USUARIO}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RetainShape" hAlign="Center" onErrorType="Blank">
+				<reportElement key="image-2" stretchType="RelativeToTallestObject" x="330" y="1" width="112" height="84" uuid="d34262da-54b1-4901-abac-192871eabee5"/>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA[$P{REPORTE_FIRMA}+ $F{ID_USUARIO}+ "_FIRMA.PNG"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="336" y="79" width="111" height="18" uuid="e5441999-c406-47fd-bdb9-68aad5363cfb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE Y FIRMA]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
 	<summary>
-		<band height="133">
+		<band height="78">
 			<staticText>
 				<reportElement x="615" y="4" width="55" height="18" forecolor="#000000" uuid="f98f9e1e-3631-4ca4-b18f-f6e51941c5c1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -720,43 +761,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{REFERENCIA}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="336" y="103" width="111" height="18" uuid="eb02591b-9617-45fc-bde4-a9cf74e77609"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="7" isBold="true"/>
-				</textElement>
-				<text><![CDATA[ENCARGADA DE COMPRAS]]></text>
-			</staticText>
-			<line>
-				<reportElement x="291" y="105" width="182" height="1" uuid="686a214a-7fbe-401c-892c-f69f2551303a"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<textField pattern="">
-				<reportElement x="291" y="88" width="182" height="17" uuid="74d020b9-1d3b-4374-a69d-4a7439c87f6c"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{USUARIO}]]></textFieldExpression>
-			</textField>
-			<image scaleImage="RetainShape" hAlign="Center" onErrorType="Blank">
-				<reportElement key="image-2" stretchType="RelativeToTallestObject" x="336" y="39" width="112" height="84" uuid="d34262da-54b1-4901-abac-192871eabee5"/>
-				<box>
-					<topPen lineWidth="0.0" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineColor="#000000"/>
-				</box>
-				<imageExpression><![CDATA[$P{REPORTE_FIRMA}+ $F{ID_USUARIO}+ "_FIRMA.PNG"]]></imageExpression>
-			</image>
-			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="336" y="115" width="111" height="18" uuid="e5441999-c406-47fd-bdb9-68aad5363cfb"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="7" isBold="true"/>
-				</textElement>
-				<text><![CDATA[NOMBRE Y FIRMA]]></text>
-			</staticText>
 		</band>
 	</summary>
 </jasperReport>
