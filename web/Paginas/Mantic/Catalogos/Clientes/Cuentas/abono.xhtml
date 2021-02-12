@@ -272,7 +272,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-          <p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="4"/>
+          <p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="2"/>
           <p:outputLabel for="fechaPago" value="Fecha pago:"/>
           <p:calendar id="fechaPago" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasAbono.attrs.fechaPago}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 					<p:outputLabel for="saldar" value="Saldar: "/>

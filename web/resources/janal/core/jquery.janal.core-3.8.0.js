@@ -674,7 +674,7 @@
       }); // each
     }, // cleanForm
     data: function(id, value) {
-      $janal.hide();
+      // $janal.hide();
       var $components= $janal.components(value.multiple, id);
       $janal.console('janal.data: '+ id+ ' encontrados: '+ $components.length);
       $.each($components, function() {
@@ -1039,7 +1039,7 @@
 		},
     change: function(form, fields) {
       $janal.console('janal.change '+ fields);
-      $janal.clean();
+      // $janal.clean();
       $janal.prepare(form, fields, $janal.errors.show);
     }, // update
     execute: function(customs, blockui) {
@@ -1145,7 +1145,7 @@
         } // if  
       }); // each
       $janal.programmer($janal.errors.validations);
-      $janal.hide();
+//      $janal.hide();
       if(typeof(blockui)!== 'undefined' && blockui)
         $janal.bloquear();
       var validator= $('#'+ $janal.form).validate();

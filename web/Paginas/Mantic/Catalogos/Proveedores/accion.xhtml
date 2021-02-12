@@ -449,13 +449,13 @@
 										</p:autoComplete>		
                   </p:column>	
                   <p:column headerText="Precio base" styleClass="precioBase">		                    
-										<p:inputNumber id="precioBase" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articulo.precioBase}" disabled="#{!articulo.nuevo}" onblur="simpleProcess();"/>
+										<p:inputNumber id="precioBase" converter="javax.faces.Double" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articulo.precioBase}" disabled="#{!articulo.nuevo}" onblur="simpleProcess();"/>
                   </p:column>                  
                   <p:column headerText="Precio lista" styleClass="precioLista">		                    
-										<p:inputNumber id="precioLista" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articulo.precioLista}" disabled="#{!articulo.nuevo}" onblur="simpleProcess();"/>
+										<p:inputNumber id="precioLista" converter="javax.faces.Double" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articulo.precioLista}" disabled="#{!articulo.nuevo}" onblur="simpleProcess();"/>
                   </p:column>                  
                   <p:column headerText="Precio especial" styleClass="precioEspecial">		                    
-										<p:inputNumber id="precioEspecial" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articulo.precioEspecial}" disabled="#{!articulo.nuevo}" onblur="simpleProcess();"/>
+										<p:inputNumber id="precioEspecial" converter="javax.faces.Double" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articulo.precioEspecial}" disabled="#{!articulo.nuevo}" onblur="simpleProcess();"/>
                   </p:column>                  
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaArticulos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorArticulo}" oncomplete="janal.refresh();">
@@ -492,10 +492,10 @@
                     </p:selectOneMenu> 																					
                   </p:column>	                  
 									<p:column headerText="Precio convenio" styleClass="precioConvenio">
-										<p:inputNumber id="precioConvenio" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articuloCliente.precioConvenio}" disabled="#{!articuloCliente.nuevo}" onblur="simpleProcess();"/>
+										<p:inputNumber id="precioConvenio" converter="javax.faces.Double" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articuloCliente.precioConvenio}" disabled="#{!articuloCliente.nuevo}" onblur="simpleProcess();"/>
                   </p:column>                  
                   <p:column headerText="Precio anterior">		                    
-										<p:inputNumber id="precioAnterior" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articuloCliente.precioAnterior}" disabled="true" onblur="simpleProcess();"/>
+										<p:inputNumber id="precioAnterior" converter="javax.faces.Double" decimalPlaces="2" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articuloCliente.precioAnterior}" disabled="true" onblur="simpleProcess();"/>
                   </p:column>                  
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaArticulosCliente" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorArticuloCliente}" oncomplete="janal.refresh();">

@@ -241,18 +241,18 @@
                     <p:commandButton id="reporteIconXs" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
                   </div>  
                 </f:facet>												
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.consecutivo}">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.ticket}">
                   <f:facet name="header">
                     <h:outputText value="Consecutivo"/>
                   </f:facet>
-                  <h:outputText value="#{row['consecutivo']}"/>
+                  <h:outputText value="#{row['ticket']}"/>
                 </p:column>					
-                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.clave}">
+                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.contrato}">
                   <f:facet name="header">
                     <h:outputText value="Contrato"/>
                   </f:facet>
-                  <i class="fa fa-fw fa-grip-vertical janal-color-orange"></i>
-                  <h:outputText value="#{row['clave']}"/>
+                  <i class="fa fa-fw fa-grip-vertical janal-color-orange" title="Clave: #{row['clave']}"></i>
+                  <h:outputText value="#{row['contrato']}"/>
                 </p:column>											
                 <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
                   <f:facet name="header">
@@ -290,7 +290,7 @@
                   </f:facet>
                   <h:outputText value="#{row['registro']}"/>
                 </p:column>
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.limite}">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.limite}" rendered="false">
                   <f:facet name="header">
                     <h:outputText value="Vence" title="Fecha en la que vence el pago de la factura"/>
                   </f:facet>
@@ -302,13 +302,13 @@
                   </f:facet>
                   <h:outputText value="#{row['dias']}"/>
                 </p:column>
-                <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.estatus}">
                   <f:facet name="header">
                     <h:outputText value="Estatus"/>
                   </f:facet>
                   <h:outputText value="#{row['estatus']}"/>
                 </p:column>
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-col-20">
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.abonado eq '0.00' ? 'circulo-gris.png' : (row.abonado eq row.importe ? 'circulo-verde.png' : 'circulo-amarillo.png')}" title="#{row.abonado eq '0.00' ? 'Factura sin abonos' : (row.abonado eq row.importe? 'Factura pagada': 'Factura con abonos pendientes')}"/>
                 </p:column>
                 <f:facet name="footer">

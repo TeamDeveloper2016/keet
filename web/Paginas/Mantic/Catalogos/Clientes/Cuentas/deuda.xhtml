@@ -85,12 +85,12 @@
 							</f:facet>
 							<h:outputText value="#{row['ticket']}"/>
 						</p:column>														
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.clave}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.contrato}">
               <f:facet name="header">
                 <h:outputText value="Contrato"/>
               </f:facet>
-              <i class="fa fa-fw fa-grip-vertical janal-color-orange"></i>
-              <h:outputText value="#{row['clave']}"/>
+              <i class="fa fa-fw fa-grip-vertical janal-color-orange" title="Clave: #{row['clave']}"></i>
+              <h:outputText value="#{row['contrato']}"/>
             </p:column>											
             <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
               <f:facet name="header">
@@ -228,7 +228,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-          <p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasDeuda.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="4"/>
+          <p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasDeuda.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="2"/>
 					<p:outputLabel for="fechaPago" value="Fecha pago:"/>
           <p:calendar id="fechaPago" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasDeuda.attrs.fechaPago}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
           <p:outputLabel for="saldar" value="Saldar deuda: " style="display:none"/>
@@ -297,7 +297,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pagoGeneral" value="Pago: $"/>
-					<p:inputNumber id="pagoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.pagoGeneral}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="4"/>
+					<p:inputNumber id="pagoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.pagoGeneral}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="2"/>
 					<p:outputLabel for="fechaPagoGeneral" value="Fecha pago:"/>
           <p:calendar id="fechaPagoGeneral" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasDeuda.attrs.fechaPagoGeneral}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 					<p:outputLabel for="saldarGeneral" value="Saldar deuda: " style="display:none"/>
@@ -422,7 +422,7 @@
 								</p:column>   
 							</p:selectOneMenu>
 							<p:outputLabel for="pagoSegmento" value="Pago: $"/>							
-							<p:inputNumber id="pagoSegmento" value="#{manticCatalogosClientesCuentasDeuda.attrs.pagoSegmento}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="4"/>
+							<p:inputNumber id="pagoSegmento" value="#{manticCatalogosClientesCuentasDeuda.attrs.pagoSegmento}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="2"/>
     					<p:outputLabel for="fechaPagoSegmento" value="Fecha pago:"/>
               <p:calendar id="fechaPagoSegmento" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasDeuda.attrs.fechaPagoSegmento}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="saldarSegmento" value="Saldar deuda: " style="display:none"/>

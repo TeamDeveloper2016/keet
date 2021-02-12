@@ -132,7 +132,7 @@
 								<p:outputLabel for="arranque" value="Arranque:"/>
 								<p:calendar id="arranque" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{keetCatalogosContratosAccion.contrato.contrato.arranque}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
 								<p:outputLabel for="costo" value="Costo:"/>
-								<p:inputNumber id="costo" value="#{keetCatalogosContratosAccion.contrato.contrato.costo}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
+								<p:inputNumber id="costo" value="#{keetCatalogosContratosAccion.contrato.contrato.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2"/>
 								<p:spacer/>
 								<p:separator/>
 								<p:outputLabel for="idProyecto" value="Proyecto:"/>
@@ -186,7 +186,7 @@
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.calle}" styleClass="janal-wid-100-txt"/>
 								</p:column>								
 								<p:column  headerText="Costo" class="janal-wid-6">										
-									<p:inputNumber rendered="#{lote.mostar}" value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
+									<p:inputNumber rendered="#{lote.mostar}" value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2"/>
 								</p:column>								
 								<p:column headerText="Geo" class="janal-wid-col-20">																				
 									<h:graphicImage rendered="#{lote.mostar}" library="janal" name="icon/semaforos/#{lote.georeferencia}.png"/>

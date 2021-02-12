@@ -63,7 +63,7 @@
 									</p:column>     
 								</p:selectOneMenu>
 								<p:outputLabel for="costo" value="Costo:"/>
-								<p:inputNumber id="costo" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.costo}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
+								<p:inputNumber id="costo" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2"/>
               </p:panelGrid>
 						</p:tab>		
 						<p:tab title="Siembra" >	
@@ -127,7 +127,7 @@
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.atributos}" styleClass="janal-wid-100-txt"/>
 								</p:column>								
 								<p:column  headerText="Costo" class="janal-wid-6">										
-									<p:inputNumber rendered="#{lote.mostar}" value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" decimalPlaces="2"/>
+									<p:inputNumber rendered="#{lote.mostar}" value="#{lote.costo}" inputStyleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2"/>
 								</p:column>								
 								<p:column  style="width:35px;text-align: center" >
 									<p:commandButton rendered="#{lote.mostar}" update="tablaLotes" icon="fa fa-close" title="Eliminar" action="#{keetCatalogosProyectosAccion.proyecto.proyecto.doRemoveLote}">
