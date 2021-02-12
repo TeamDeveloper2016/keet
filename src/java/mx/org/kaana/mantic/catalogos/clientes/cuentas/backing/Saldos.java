@@ -27,6 +27,7 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -68,6 +69,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   private LocalDate fechaTermino;
   private LocalDate vigenciaIni;
   private LocalDate vigenciaFin;
+	private FormatLazyModel historialPagos;
   
 
 	public UISelectEntity getEncontrado() {
@@ -138,6 +140,10 @@ public class Saldos extends IBaseFilter implements Serializable {
     this.vigenciaFin = vigenciaFin;
   }
   
+  public FormatLazyModel getHistorialPagos() {
+    return historialPagos;
+  }
+
   @PostConstruct
   @Override
   protected void init() {
@@ -233,7 +239,7 @@ public class Saldos extends IBaseFilter implements Serializable {
         sb.append("tc_mantic_clientes_deudas.id_cliente_deuda_estatus in (1, 2) and ");
       else
         if(!Objects.equals(-1L, estatus.getKey()))
-          sb.append("(tc_mantic_clientes_deudas.id_cliente_estatus= ").append(estatus.getKey()).append(") and ");
+          sb.append("(tc_mantic_clientes_deudas.id_cliente_deuda_estatus= ").append(estatus.getKey()).append(") and ");
     if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))			
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa").toString());
 		else
@@ -795,5 +801,35 @@ public class Saldos extends IBaseFilter implements Serializable {
       Methods.clean(params);
     } // finally
 	} // doLoadContratos  
+ 
+  public void doLoadHistorial(Entity row) {
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+    try {
+  	  params= new HashMap<>();
+      Periodo periodo= new Periodo();
+      periodo.addMeses(-12);
+      params.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_clientes_pagos.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
+			params.put("idCliente", row.toLong("idCliente"));
+      params.put("sortOrder", "order by tc_mantic_ventas.ticket desc, tc_mantic_clientes_pagos.registro desc");
+      columns= new ArrayList<>();
+      columns.add(new Columna("ticket", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));      
+      columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
+      columns.add(new Columna("fechaPago", EFormatoDinamicos.FECHA_CORTA));    
+			this.historialPagos = new FormatCustomLazy("VistaClientesDto", "historial", params, columns);
+      UIBackingUtilities.resetDataTable("tablaHistorial");		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		   
+  }
   
 }

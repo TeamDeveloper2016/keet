@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -56,21 +56,27 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
   private Long orden;
 	@Column (name="ejercicio")
   private Long ejercicio;
+	@Column (name="fecha_pago")
+  private LocalDate fechaPago;
+	@Column (name="global")
+  private Double global;
+	@Column (name="comentarios")
+  private String comentarios;
 
   public TcManticClientesPagosDto() {
     this(new Long(-1L));
   }
 
   public TcManticClientesPagosDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null, null, null, LocalDate.now(), 0D, null);
     setKey(key);
   }
 
-  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia) {
-		this(idUsuario, idClienteDeuda, observaciones, idClientePago, pago, idTipoMedioPago, idCierre, idBanco, referencia, null, null, null);
+  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, LocalDate fechaPago, Double global, String comentarios) {
+		this(idUsuario, idClienteDeuda, observaciones, idClientePago, pago, idTipoMedioPago, idCierre, idBanco, referencia, null, null, null, fechaPago, global, comentarios);
 	}
 	
-  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, String consecutivo, Long orden, Long ejercicio) {
+  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, String consecutivo, Long orden, Long ejercicio, LocalDate fechaPago, Double global, String comentarios) {
     setIdUsuario(idUsuario);
     setIdClienteDeuda(idClienteDeuda);
     setObservaciones(observaciones);
@@ -84,6 +90,9 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		setConsecutivo(consecutivo);
 		setOrden(orden);
 		setEjercicio(ejercicio);
+    this.fechaPago= fechaPago;
+    this.global= global;
+    this.comentarios= comentarios;
   }
 
 	public Long getIdBanco() {
@@ -189,7 +198,31 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 	public void setEjercicio(Long ejercicio) {
 		this.ejercicio = ejercicio;
 	}
-	
+
+  public LocalDate getFechaPago() {
+    return fechaPago;
+  }
+
+  public void setFechaPago(LocalDate fechaPago) {
+    this.fechaPago = fechaPago;
+  }
+
+  public Double getGlobal() {
+    return global;
+  }
+
+  public void setGlobal(Double global) {
+    this.global = global;
+  }
+
+  public String getComentarios() {
+    return comentarios;
+  }
+
+  public void setComentarios(String comentarios) {
+    this.comentarios = comentarios;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -230,6 +263,12 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getGlobal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getComentarios());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -250,13 +289,16 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("orden", getOrden());
+		regresar.put("fechaPago", getFechaPago());
+		regresar.put("global", getGlobal());
+		regresar.put("comentarios", getComentarios());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-			getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago(), getIdCierre(), getIdBanco(), getReferencia(), getConsecutivo(), getOrden(), getEjercicio()
+    Object[] regresar = new Object[] {
+			getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago(), getIdCierre(), getIdBanco(), getReferencia(), getConsecutivo(), getOrden(), getEjercicio(), getFechaPago(), getGlobal(), getComentarios()
     };
     return regresar;
   }

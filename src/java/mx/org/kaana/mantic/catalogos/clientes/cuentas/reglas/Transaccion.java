@@ -8,10 +8,13 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -105,7 +108,7 @@ public class Transaccion extends TransaccionFactura {
 		try {
 			if(this.toCierreCaja(sesion, this.pago.getPago())) {
 				this.pago.setIdCierre(null);				
-				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
 					this.pago.setReferencia(this.referencia);
 					this.pago.setIdBanco(this.idBanco);
 				} // if
@@ -113,13 +116,21 @@ public class Transaccion extends TransaccionFactura {
 				this.pago.setOrden(orden.getOrden());
 				this.pago.setConsecutivo(orden.getConsecutivo());
 				this.pago.setEjercicio(new Long(Fecha.getAnioActual()));
-				if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L){
+				if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L) {
 					deuda= (TcManticClientesDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.pago.getIdClienteDeuda());
-					saldo= deuda.getSaldo() - this.pago.getPago();
+          this.pago.setComentarios(
+            "PAGO INDIVIDUAL $".concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.pago.getPago())).concat(
+            " [").concat(Global.format(EFormatoDinamicos.FECHA_HORA, this.pago.getRegistro())).concat(
+            "] DEUDA $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, deuda.getImporte())).concat(
+            "] SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, deuda.getSaldo())).concat(
+            " NUEVO SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.redondearSat(deuda.getSaldo()- this.pago.getPago()))));
+          this.pago.setGlobal(this.pago.getPago());
+					saldo= deuda.getSaldo()- this.pago.getPago();
 					deuda.setSaldo(saldo); /*FALTA*/
 					deuda.setIdClienteDeudaEstatus(saldo.equals(0D) || this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
 					this.actualizarSaldoCatalogoCliente(sesion, deuda.getIdCliente(), this.pago.getPago(), false);
+          DaoFactory.getInstance().update(sesion, this.pago);
 				} // if
 			} // if
 		} // try
@@ -143,10 +154,10 @@ public class Transaccion extends TransaccionFactura {
 		Long idEstatus           = -1L;
 		try {
 			deudas= this.toDeudas(sesion);
-			for(Entity deuda: deudas){
-				if(saldo > 0){					
-					saldoDeuda= Double.valueOf(deuda.toString("saldo"));
-					if(saldoDeuda < this.pago.getPago()){
+			for(Entity deuda: deudas) {
+				if(saldo > 0) {					
+					saldoDeuda= Numero.toRedondear(deuda.toDouble("saldo"));
+					if(saldoDeuda < this.pago.getPago()) {
 						pagoParcial= saldoDeuda;
 						saldo= this.pago.getPago() - saldoDeuda;						
 						this.pago.setPago(saldo);
@@ -159,7 +170,7 @@ public class Transaccion extends TransaccionFactura {
 						abono= saldoDeuda - this.pago.getPago();
 						idEstatus= this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					} /// else
-					if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
+					if(registrarPago(sesion, deuda, pagoParcial)) {
 						params= new HashMap<>();
 						params.put("saldo", abono);
 						params.put("idClienteDeudaEstatus", idEstatus);
@@ -179,20 +190,28 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // procesarPagoGeneral
 	
-	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception {
+	private boolean registrarPago(Session sesion, Entity deuda, Double pagoParcial) throws Exception {
 		TcManticClientesPagosDto registroPago= null;
 		boolean regresar                     = false;
 		Siguiente orden	                     = null;
 		try {
+      Long idClienteDeuda= deuda.getKey();
 			if(this.toCierreCaja(sesion, pagoParcial)) {
 				registroPago= new TcManticClientesPagosDto();
 				registroPago.setIdClienteDeuda(idClienteDeuda);
 				registroPago.setIdUsuario(JsfBase.getIdUsuario());
-				registroPago.setObservaciones("PAGO APLICADO A LA DEUDA. ".concat(this.pago.getObservaciones()).concat(". PAGO GENERAL POR $").concat(this.pagoGeneral.toString()));
+				registroPago.setComentarios(
+          "PAGO GENERAL $".concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.pagoGeneral)).concat(
+          " [").concat(Global.format(EFormatoDinamicos.FECHA_HORA, registroPago.getRegistro())).concat(
+          "] DEUDA $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, deuda.toDouble("importe"))).concat(
+          " SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, deuda.toDouble("saldo"))).concat(
+          " APLICADO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, pagoParcial)).concat(
+          " NUEVO SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.redondearSat(deuda.toDouble("saldo")- pagoParcial))));
+				registroPago.setGlobal(this.pagoGeneral);
 				registroPago.setPago(pagoParcial);
 				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
 				registroPago.setIdCierre(null);
-				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
 					registroPago.setIdBanco(this.idBanco);
 					registroPago.setReferencia(this.referencia);
 				} // if
@@ -215,7 +234,7 @@ public class Transaccion extends TransaccionFactura {
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
 			params.put("sortOrder", "order by dias desc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
 		} // try
@@ -235,7 +254,7 @@ public class Transaccion extends TransaccionFactura {
 //			datosCierre.setIdCaja(this.idCaja);
 //			datosCierre.getTotales().setEfectivo(pago);
 //			cierre= new mx.org.kaana.mantic.ventas.caja.reglas.Transaccion(datosCierre);
-//			if(cierre.verificarCierreCaja(sesion)){
+//			if(cierre.verificarCierreCaja(sesion)) {
 //				this.idCierreActivo= cierre.getIdCierreVigente();
 //				regresar= cierre.alterarCierreCaja(sesion, this.pago.getIdTipoMedioPago());
 //			} // if
@@ -258,12 +277,12 @@ public class Transaccion extends TransaccionFactura {
 		Long idEstatus           = -1L;
 		try {
 			deudas= toDeudas(sesion);
-			for(Entity deuda: deudas){
+			for(Entity deuda: deudas) {
 				for(Entity cuenta: this.cuentas) {
 					if(deuda.getKey().equals(cuenta.getKey())) {
 						if(saldo > 0) {					
-							saldoDeuda= Double.valueOf(deuda.toString("saldo"));
-							if(saldoDeuda < this.pago.getPago()){
+							saldoDeuda= Numero.toRedondear(deuda.toDouble("saldo"));
+							if(saldoDeuda < this.pago.getPago()) {
 								pagoParcial= saldoDeuda;
 								saldo= this.pago.getPago() - saldoDeuda;						
 								this.pago.setPago(saldo);
@@ -276,7 +295,7 @@ public class Transaccion extends TransaccionFactura {
 								abono= saldoDeuda - this.pago.getPago();
 								idEstatus= this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 							} /// else
-							if(this.registrarPago(sesion, deuda.getKey(), pagoParcial)){
+							if(this.registrarPago(sesion, deuda, pagoParcial)) {
 								params= new HashMap<>();
 								params.put("saldo", abono);
 								params.put("idClienteDeudaEstatus", idEstatus);
@@ -285,7 +304,7 @@ public class Transaccion extends TransaccionFactura {
 							}	// if				
 						} // if
 						else if (this.saldar) {
-							if(registrarPago(sesion, deuda.getKey(), 0D)) {
+							if(registrarPago(sesion, deuda, 0D)) {
 								params= new HashMap<>();
 								params.put("saldo", 0);
 								params.put("idClienteDeudaEstatus", EEstatusClientes.FINALIZADA.getIdEstatus());
@@ -342,7 +361,7 @@ public class Transaccion extends TransaccionFactura {
 	private void toDeleteAll(String path, String type, List<Nombres> listado) {
     FileSearch fileSearch = new FileSearch();
     fileSearch.searchDirectory(new File(path), type.toLowerCase());
-    if(fileSearch.getResult().size()> 0){
+    if(fileSearch.getResult().size()> 0) {
 		  for (String matched: fileSearch.getResult()) {
 				String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
 				if(listado.indexOf(new Nombres(name))< 0) {

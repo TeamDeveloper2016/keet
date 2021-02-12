@@ -310,7 +310,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			params= new HashMap<>();
 			params.put("idCliente", ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());									
 			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");			
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_estatus in (".concat(EEstatusClientes.INICIADA.getIdEstatus().toString()).concat(",").concat(EEstatusClientes.PARCIALIZADA.getIdEstatus().toString()).concat(")"));			
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_deuda_estatus in (".concat(EEstatusClientes.INICIADA.getIdEstatus().toString()).concat(",").concat(EEstatusClientes.PARCIALIZADA.getIdEstatus().toString()).concat(")"));			
 			columns= new ArrayList<>();
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));

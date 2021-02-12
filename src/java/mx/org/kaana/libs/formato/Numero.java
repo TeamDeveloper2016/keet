@@ -64,16 +64,16 @@ public final class Numero {
         regresar= formatear("########0.00", valor);
         break;
       case NUMERO_SAT_DECIMALES: // formato numero con decimales
-        regresar= formatear("########0.0000", valor);
+        regresar= formatear("########0.00", valor);
         break;
       case NUMERO_SIN_DECIMALES: // formato numoer sin decimales
         regresar= formatear("########0", valor);
         break;
       case MONEDA_SAT_DECIMALES: // formato moneda
-        regresar= formatear("$ ###,##0.0000", valor);
+        regresar= formatear("$ ###,##0.00", valor);
         break;
       case MILES_SAT_DECIMALES: // separacion de miles
-        regresar= formatear("###,##0.0000", valor);
+        regresar= formatear("###,##0.00", valor);
         break;
     } // switch
     return regresar;
@@ -95,13 +95,15 @@ public final class Numero {
 
   public static String redondearSat(double valor) {
     int operador= valor< 0? -1: 1;
-    valor= operador* (Math.floor(Math.abs(valor)*100000+ 0.5000001)/100000.0);
+//    valor= operador* (Math.floor(Math.abs(valor)*100000+ 0.5000001)/100000.0);
+    valor= operador* (Math.floor(Math.abs(valor)*100+ 0.5001)/100.0);
     return String.valueOf(valor);
   } // redondear
 
   public static String toTruncate(double valor, int decimals) {
     int operador= valor< 0? -1: 1;
-    valor= operador* (Math.floor(Math.abs(valor)*100000+ 0.5000001)/100000.0);
+//    valor= operador* (Math.floor(Math.abs(valor)*100000+ 0.5000001)/100000.0);
+    valor= operador* (Math.floor(Math.abs(valor)*100000+ 0.50001)/1000.0);
 		String regresar= String.valueOf(valor);
     return regresar.indexOf(".")> 0 && regresar.indexOf(".")+ decimals+ 1<= regresar.length()? regresar.substring(0, regresar.indexOf(".")+ decimals+ 1): regresar;
   } // redondear
@@ -117,7 +119,8 @@ public final class Numero {
 
   public static double toRedondearSat(double valor) {
     int operador= valor< 0? -1: 1;
-    return operador* (Math.floor(Math.abs(valor)*100000+ 0.50000001)/100000.0);
+//    return operador* (Math.floor(Math.abs(valor)*100000+ 0.50000001)/100000.0);
+    return operador* (Math.floor(Math.abs(valor)*100+ 0.5001)/100.0);
   } // redondear
 
   public static double toAjustarDecimales(double valor) {

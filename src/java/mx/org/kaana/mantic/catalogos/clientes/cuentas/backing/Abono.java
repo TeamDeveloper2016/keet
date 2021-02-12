@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.clientes.cuentas.backing;
 
 import java.io.File;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,7 @@ public class Abono extends IBasePagos implements Serializable {
       this.attrs.put("idClienteDeuda", JsfBase.getFlashAttribute("idClienteDeuda"));    
 			this.attrs.put("cliente", DaoFactory.getInstance().findById(TcManticClientesDto.class, Long.valueOf(this.attrs.get("idCliente").toString())));			
 			this.attrs.put("saldar", "2");						
+			this.attrs.put("fechaPago", LocalDate.now());
 			this.initValues();
 			this.loadClienteDeuda();
 			this.doLoad();
@@ -129,6 +131,7 @@ public class Abono extends IBasePagos implements Serializable {
       pago.setIdUsuario(JsfBase.getIdUsuario());
       pago.setObservaciones((String)this.attrs.get("observaciones"));
       pago.setPago((Double)this.attrs.get("pago"));
+			pago.setFechaPago((LocalDate)this.attrs.get("fechaPago"));
       pago.setIdTipoMedioPago(((UISelectEntity)this.attrs.get("tipoPago")).getKey());
       tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
       transaccion= new Transaccion(pago, (Long)this.attrs.get("idCliente"), tipoPago ? -1 : ((UISelectEntity)this.attrs.get("banco")).getKey(), tipoPago ? "" : (String)this.attrs.get("referencia"), saldar);
