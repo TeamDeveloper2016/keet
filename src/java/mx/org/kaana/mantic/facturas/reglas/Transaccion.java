@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.operation.IActions;
+import mx.org.kaana.kajool.db.comun.operation.Insert;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -42,6 +44,7 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.facturas.beans.Documento;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.beans.Parcial;
 import org.apache.log4j.Logger;
@@ -139,7 +142,7 @@ public class Transaccion extends TransaccionFactura {
 				case REGISTRAR:	
 				case DESACTIVAR:
 					idEstatusFactura= accion.equals(EAccion.AGREGAR) ? EEstatusFicticias.ABIERTA.getIdEstatusFicticia() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdFicticiaEstatus() : idEstatusFactura);
-					regresar= this.orden.getIdFicticia()!= null && !this.orden.getIdFicticia().equals(-1L) ? actualizarFicticia(sesion, idEstatusFactura) : registrarFicticia(sesion, idEstatusFactura);					
+					regresar= this.orden.getIdFicticia()!= null && !this.orden.getIdFicticia().equals(-1L) ? this.actualizarFicticia(sesion, idEstatusFactura) : this.registrarFicticia(sesion, idEstatusFactura);					
 					break;
 				case MODIFICAR:
 					regresar= actualizarFicticia(sesion, EEstatusFicticias.ABIERTA.getIdEstatusFicticia());					
@@ -183,7 +186,7 @@ public class Transaccion extends TransaccionFactura {
 					} // if
 					break;								
 				case REPROCESAR:
-					regresar= actualizarFicticia(sesion, EEstatusFicticias.TIMBRADA.getIdEstatusFicticia());				
+					regresar= this.actualizarFicticia(sesion, EEstatusFicticias.TIMBRADA.getIdEstatusFicticia());				
 					break;		
 				case NO_APLICA:
 					params.put("idFicticia", this.orden.getIdFicticia());
@@ -193,7 +196,7 @@ public class Transaccion extends TransaccionFactura {
 					} // if					
 					break;
 				case COMPLEMENTAR: 
-					regresar= agregarContacto(sesion);
+					regresar= this.agregarContacto(sesion);
 					break;
 				case DEPURAR:
 					this.messageError= "Ocurrio un error al cancelar la factura.";
@@ -205,7 +208,7 @@ public class Transaccion extends TransaccionFactura {
 						factura.setCancelada(LocalDateTime.now());
 						factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
 						regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
-						registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "Cancelación de factura.".concat(this.justificacion));
+						this.registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "Cancelación de factura.".concat(this.justificacion));
 					} // if
 					else
 						throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
@@ -289,6 +292,7 @@ public class Transaccion extends TransaccionFactura {
 					} // if	
 				} // if
         this.checkContratoDomicilio(sesion);
+        this.checkComplementoPago(sesion);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -317,6 +321,7 @@ public class Transaccion extends TransaccionFactura {
 				} // if
 			} // if
       this.checkContratoDomicilio(sesion);
+      this.checkComplementoPago(sesion);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -699,5 +704,21 @@ public class Transaccion extends TransaccionFactura {
 		} // finally
 		return regresar;
 	} // toDomicilio
+  
+  private void checkComplementoPago(Session sesion) throws Exception {
+    try {  
+      if(this.orden.getDocumentos()!= null && !this.orden.getDocumentos().isEmpty())
+        for (IActions item: this.orden.getDocumentos()) {
+          if(item instanceof Insert) {
+            ((Documento)item.getDto()).setIdVenta(this.orden.getIdVenta());
+            ((Documento)item.getDto()).setIdUsuario(JsfBase.getIdUsuario());
+          } // if  
+          item.ejecutar(sesion);
+        } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
   
 } 

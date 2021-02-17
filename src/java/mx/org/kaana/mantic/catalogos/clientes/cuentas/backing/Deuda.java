@@ -303,7 +303,6 @@ public class Deuda extends IBaseFilter implements Serializable {
   
 	public String doRegresar() {	  
     JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));
-    
 		return "saldos".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
 	

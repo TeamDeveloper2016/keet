@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.operation.Select;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.ESql;
@@ -65,6 +66,12 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
       if(this.orden.getParciales()!= null && !this.orden.getParciales().isEmpty())
         for (Parcial item: this.orden.getParciales()) {
           item.setSqlAccion(ESql.UPDATE);
+        } // for
+      List<Documento> documentos= (List<Documento>)DaoFactory.getInstance().toEntitySet(Documento.class, "VistaIngresosDto", "documentos", params);
+      if(this.orden.getDocumentos()!= null && !this.orden.getDocumentos().isEmpty())
+        for (Documento item: documentos) {
+          item.setIkFactura(new UISelectEntity(item.getIdDetalle()));
+          this.orden.getDocumentos().add(new Select(item));
         } // for
 		}	// if
 		else	{
