@@ -38,14 +38,14 @@ import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 
 @Named(value= "keetComprasRequisicionesAccion")
 @ViewScoped
-public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implements Serializable {
+public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos implements Serializable {
 
 	private static final long serialVersionUID = -4260859613485238198L;  
 	private RegistroRequisicion registroRequisicion;	
 
 	public Accion() {
 		super();
-	} // Accion
+	} // Catalogos
 	
 	public RegistroRequisicion getRegistroRequisicion() {
 		return registroRequisicion;

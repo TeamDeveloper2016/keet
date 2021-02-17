@@ -204,8 +204,9 @@ public class Transferir extends IBaseTnx {
 			complement.getTaxStamp().getSatCertNumber(), // String certificadoSat
 			detail.getCertNumber(), // String certificadoDigital
 			certificacion, // Timestamp certificacion
-			complement.getTaxStamp().getUuid(),
-			EEstatusFacturas.TIMBRADA.getIdEstatusFactura()
+			complement.getTaxStamp().getUuid(), // uUID
+			EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), // idEstatusFactura
+      1L // idSerie      
 		);
 		return regresar;
 	}

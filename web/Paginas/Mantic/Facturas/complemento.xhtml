@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Generar/Modificar/Consultar un complemento de pago"/>
+	<ui:param name="janalBackingPage" value="#{manticFacturasComplemento}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>
+	<ui:param name="notIsCaja" value="false" class="javax.faces.Boolean"/>
+	<ui:define name="librerias">
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
+		<script type="text/javascript">			
+			Janal.Control.fields = {				 				
+				'idCliente'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'idSerie'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'idTipoComprobante': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'descuento'   : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
+				'observaciones' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'cfdi'        : {validaciones: 'requerido', mascara: 'libre', mensaje:'Tipo de CFDI obligatorio.', grupo: 'general'},
+				'referencia'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'tipoPago'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'parciales'   : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'}
+			};	
+			
+			fieldsDomicilio ={
+				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+			};
+      
+    	$(document).ready(function() {
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticFacturasComplemento.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:', true, true);
+				janal.readingMode('#{manticFacturasComplemento.attrs.nombreAccion}');
+				$(".janal-icon-click").click(function() {
+					if($(this).attr('id')=== 'janal-icon-minus') 
+						$('#janal-icon-plus').show();
+					else 
+						$('#janal-icon-minus').show();
+          $("#janal-contenedor-datos").fadeToggle(1100, "linear");
+					$(this).hide();
+				});
+      });							
+			
+      function execute(lock) {
+        janal.reset();
+				var index= jsArticulos.cursor.index;
+				jsArticulos.cursor.index= jsArticulos.cursor.top;
+				$(jsArticulos.description()).addClass('ignore');
+				$(jsArticulos.sat()).addClass('ignore');
+				$(jsArticulos.amount()).addClass('ignore');
+				$(jsArticulos.price()).addClass('ignore');
+				var ok= janal.partial('general', [], lock);
+        jsArticulos.cursor.index= index;
+        $(jsArticulos.description()).removeClass('ignore');
+        $(jsArticulos.sat()).removeClass('ignore');
+        $(jsArticulos.amount()).removeClass('ignore');
+        $(jsArticulos.price()).removeClass('ignore');
+				return ok;
+			}			
+		</script>   
+		<style type="text/css">
+			.janal-total-compra {
+				font-size: 30px !important;
+				font-weight: bold !important;
+				font-style: italic;	
+			}			
+      .janal-table-tr-hide {
+        display: none;
+      }
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:defaultCommand target="limpio"/>
+		<pe:remoteCommand name="listado" actionListener="#{manticFacturasComplemento.doUpdateDialogClientes}" update="compradores comprador" process="@this codigo">
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
+		<p:remoteCommand name="clean" actionListener="#{manticFacturasComplemento.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
+		<p:remoteCommand name="erase" actionListener="#{manticFacturasComplemento.doCleanClientes}" process="@this rfcClientes" update="compradores comprador"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all">
+					<span class="ui-panel-title">[F12] Mostrar y/o ocultar los datos del cliente</span>
+					<a href="#" id="janal-icon-minus" class="ui-panel-titlebar-icon ui-corner-all ui-state-default janal-icon-click" style="display: none"><span class="ui-icon ui-icon-minusthick"></span></a>
+					<a href="#" id="janal-icon-plus" class="ui-panel-titlebar-icon ui-corner-all ui-state-default janal-icon-click"><span class="ui-icon ui-icon-plusthick"></span></a>
+				</div>	
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div id="janal-contenedor-datos" class="ui-grid-col-12" style="display: none">					
+					<p:panelGrid id="panelEmpresa" columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-20, janal-wid-15, janal-wid-55">
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+    					<p:outputLabel for="idSerie" value="Serie:"/>
+              <p:selectOneMenu id="idSerie" value="#{manticFacturasComplemento.adminOrden.orden.ikSerie}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticFacturasComplemento.attrs.series}" var="two" itemValue="#{two}" itemLabel="#{two.nombre}"/>
+                <p:column headerText="nombre">
+                  <p:outputLabel value="#{list.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>																						
+            </p:panelGrid> 
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+    					<p:outputLabel for="idTipoComprobante" value="Comprobante:"/>
+              <p:selectOneMenu id="idTipoComprobante" value="#{manticFacturasComplemento.adminOrden.orden.ikTipoComprobante}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticFacturasComplemento.attrs.comprobantes}" var="three" itemValue="#{three}" itemLabel="#{three.nombre}"/>
+                <p:column headerText="Nombre">
+                  <p:outputLabel value="#{list.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>																						
+            </p:panelGrid> 
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:outputLabel for="idEmpresa" value="Sucursal:"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticFacturasComplemento.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" process="@this" listener="#{manticFacturasComplemento.doUpdateDesarrollos}" update="clientes idCliente @(.domcicilio) @(.parciales)" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.resize();"/>
+                <f:selectItems value="#{manticFacturasComplemento.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+            </p:panelGrid>  
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
+							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasComplemento.attrs.cliente}" completeMethod="#{manticFacturasComplemento.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasComplemento.doAsignaCliente}" update="idCliente panelDomicilio @(.factura)" oncomplete="janal.desbloquear(); reloadFacturas();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+										<h:outputText value="Clave" />
+										<h:outputText value="#{customCliente.clave}"/>
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{customCliente.rfc}"/>
+										<h:outputText value="Razón social:"/>
+										<h:outputText value="#{customCliente.razonSocial}"/>												
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+						</p:panelGrid>	
+					</p:panelGrid>					
+					<p:panelGrid id="panelCliente" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">	
+            <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center" rendered="false">
+							<p:spacer width="1"/>
+							<p:spacer width="1"/>
+						  <p:commandButton id="catalogoCliente" title="Agregar / Modificar un cliente" icon="fa fa-users" process="@this" action="#{manticFacturasComplemento.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+							<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un concepto" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();">
+							  <f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
+							</p:commandButton> 
+						</p:panelGrid>
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+							<p:outputLabel for="idCliente" value="Cliente seleccionado:"/>							
+							<p:selectOneMenu id="idCliente" value="#{manticFacturasComplemento.adminOrden.orden.ikCliente}" var="item" styleClass="todos janal-wid-100-txt" converter="janal.convertidor.Entity">								
+								<f:selectItems value="#{manticFacturasComplemento.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="RFC">
+									<h:outputText value="#{item.rfc}"/>
+								</p:column>   
+								<p:column headerText="Razón social">
+									<h:outputText value="#{item.razonSocial}"/>
+								</p:column>   
+							</p:selectOneMenu>
+						</p:panelGrid>						
+            <p:panelGrid id="panelDomicilio" columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="domicilio" value="Domicilio:"/>
+              <p:selectOneMenu id="domicilio" placeholder="Seleccionar un cliente" value="#{manticFacturasComplemento.attrs.domicilio}" var="item" styleClass="todos janal-wid-100-txt" converter="janal.convertidor.Entity">															
+                <f:selectItems value="#{manticFacturasComplemento.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} #{empty element.numeroInterior.data ? ' ': ' - '+ element.numeroInterior.toString}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad}, #{element.municipio}"/>
+                <p:column headerText="Calle">
+                  <h:outputText value="#{item.calle}"/>
+                </p:column>   
+                <p:column headerText="Ext.">
+                  <h:outputText value="#{item.numeroExterior}"/>
+                </p:column>   
+                <p:column headerText="Int.">
+                  <h:outputText value="#{item.numeroInterior}"/>
+                </p:column>   
+                <p:column headerText="Colonia/Fraccionamiento">
+                  <h:outputText value="#{item.asentamiento}"/>
+                </p:column>   
+                <p:column headerText="C.P.">
+                  <h:outputText value="#{item.codigoPostal}"/>
+                </p:column>   
+                <p:column headerText="Municipio">
+                  <h:outputText value="#{item.municipio}"/>
+                </p:column>   
+                <p:column headerText="Localidad">
+                  <h:outputText value="#{item.localidad}"/>
+                </p:column>   
+              </p:selectOneMenu>
+            </p:panelGrid>
+					</p:panelGrid>	
+          <p:panelGrid id="panelTiposPagos" layout="grid" columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-20, janal-wid-15, janal-wid-30, janal-wid-15">
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:outputLabel for="tipoMedioPago" value="Forma de pago:"/>												
+              <p:selectOneMenu id="tipoMedioPago" value="#{manticFacturasComplemento.attrs.tipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                <p:ajax event="change" process="@this" listener="#{manticFacturasComplemento.doValidaTipoPago}" update="panelTiposPagos banco referencia lbanco lreferencia sp1 sp2"/>
+                <f:selectItems value="#{manticFacturasComplemento.attrs.tiposMedioPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:spacer id="sp1" rendered="#{!manticFacturasComplemento.attrs.mostrarBanco}"/>
+              <p:spacer width="1" rendered="#{!manticFacturasComplemento.attrs.mostrarBanco}"/>
+    					<p:outputLabel id="lbanco" for="banco" value="Banco:" rendered="#{manticFacturasComplemento.attrs.mostrarBanco}"/>
+              <p:selectOneMenu id="banco" value="#{manticFacturasComplemento.attrs.banco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticFacturasComplemento.attrs.mostrarBanco}">
+                <f:selectItems value="#{manticFacturasComplemento.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+                <p:column headerText="Razón social">
+                  <h:outputText value="#{item.razonSocial}"/>
+                </p:column>   
+              </p:selectOneMenu>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:spacer id="sp2" rendered="#{!manticFacturasComplemento.attrs.mostrarBanco}"/>						
+              <p:spacer width="1" rendered="#{!manticFacturasComplemento.attrs.mostrarBanco}"/>
+  						<p:outputLabel id="lreferencia" for="referencia" value="Referencia:" rendered="#{manticFacturasComplemento.attrs.mostrarBanco}"/>												
+              <p:inputText id="referencia" value="#{manticFacturasComplemento.attrs.referencia}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564" rendered="#{manticFacturasComplemento.attrs.mostrarBanco}"/>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:outputLabel for="tipoPago" value="Método de pago:"/>												
+              <p:selectOneMenu id="tipoPago" value="#{manticFacturasComplemento.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+                <f:selectItems value="#{manticFacturasComplemento.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.clave or element.clave eq ''? ' ': '-'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+            </p:panelGrid>  
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+  						<p:outputLabel for="cfdi" value="Uso del CFDI:"/>												
+              <p:selectOneMenu id="cfdi" value="#{manticFacturasComplemento.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">																			
+                <f:selectItems value="#{manticFacturasComplemento.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <p:column styleClass="janal-column-left janal-wid-col-50">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   										
+                <p:column styleClass="janal-column-left">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   										
+              </p:selectOneMenu>		
+            </p:panelGrid>  
+					</p:panelGrid>
+				</div>
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">	
+          <p:remoteCommand name="reloadFacturas" onstart="return janal.bloquear();" process="@this" update="contenedorGrupos:idFactura" oncomplete="janal.desbloquear();"/>
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticFacturasComplemento.doTabChange}" process="@this" update="@(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.reset();"/>
+            <p:tab title="Información del pago">
+              <p:panelGrid columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-25, janal-wid-10, janal-wid-15, janal-wid-15, janal-wid-15">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="fechaPago" value="Fecha pago:"/>
+                  <p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-100-txt" value="#{manticFacturasComplemento.adminOrden.orden.fechaPago}" pattern="dd/MM/yyyy HH:mm:ss" showHour="true" showMinute="true" showSecond="true" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+                </p:panelGrid> 
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="idMoneda" value="Moneda:"/>
+                  <p:selectOneMenu id="idMoneda" value="#{manticFacturasComplemento.adminOrden.orden.ikTipoMoneda}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <f:selectItems value="#{manticFacturasComplemento.attrs.monedas}" var="two" itemValue="#{two}" itemLabel="#{two.siglas} - #{two.nombre}"/>
+                    <p:column headerText="siglas">
+                      <p:outputLabel value="#{list.siglas}"/>
+                    </p:column>   
+                    <p:column headerText="nombre">
+                      <p:outputLabel value="#{list.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>																						
+                </p:panelGrid> 
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="tipoCambio" value="Tipo de cambio:"/>
+                  <p:inputNumber id="tipoCambio" value="#{manticFacturasComplemento.adminOrden.orden.tipoDeCambio}" inputStyleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double" decimalPlaces="2"/>
+                </p:panelGrid> 
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="total" value="Pagado:"/>
+                  <p:inputNumber id="total" value="#{manticFacturasComplemento.adminOrden.orden.total}" styleClass="totales" inputStyleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double" decimalPlaces="2">
+                    <p:ajax event="blur" process="@this" update="@(.totales)" listener="#{manticFacturasComplemento.doCheckSaldoTotal}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  </p:inputNumber>  
+                </p:panelGrid> 
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="acumulado" value="Acumulado:"/>
+                  <p:inputNumber id="acumulado" value="#{manticFacturasComplemento.adminOrden.orden.saldo}" styleClass="totales" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="2" readonly="true"/>
+                </p:panelGrid> 
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="diferencia" value="Diferencia:"/>
+                  <p:inputNumber id="diferencia" value="#{manticFacturasComplemento.adminOrden.orden.diferencia}" styleClass="totales" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-orange" converter="javax.faces.Double" decimalPlaces="2" readonly="true"/>
+                </p:panelGrid> 
+              </p:panelGrid> 
+              <p:panel header="Documento referenciado" collapsed="false" toggleable="true">
+                <p:panelGrid columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-56, janal-wid-10, janal-wid-10, janal-wid-10, janal-wid-10, janal-wid-4 janal-column-center">
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="idFactura" value="Documento:"/>
+                    <p:selectOneMenu id="idFactura" value="#{manticFacturasComplemento.documento.ikFactura}" var="list" converter="janal.convertidor.Entity" styleClass="factura janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" process="@this" update="@(.factura)" listener="#{manticFacturasComplemento.doLoadFactura}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                      <f:selectItems value="#{manticFacturasComplemento.attrs.facturas}" var="two" itemValue="#{two}" itemLabel="[#{two.id}] [#{two.serie}#{two.folio}] $#{two.saldo}"/>
+                      <p:column headerText="ID doc">
+                        <p:outputLabel value="#{list.id}"/>
+                      </p:column>   
+                      <p:column headerText="Serie">
+                        <p:outputLabel value="#{list.serie}"/>
+                      </p:column>   
+                      <p:column headerText="Folio">
+                        <p:outputLabel value="#{list.folio}"/>
+                      </p:column>   
+                      <p:column headerText="Saldo">
+                        <p:outputLabel value="#{list.saldo}"/>
+                      </p:column>   
+                    </p:selectOneMenu>																						
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="parcialidad" value="Parcialidad:"/>
+                    <p:inputNumber id="parcialidad" value="#{manticFacturasComplemento.documento.parcialidad}" styleClass="factura" inputStyleClass="factura janal-wid-100-txt janal-column-right" converter="javax.faces.Double" decimalPlaces="2"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="saldo" value="Saldo anterior:"/>
+                    <p:inputNumber id="saldo" value="#{manticFacturasComplemento.documento.saldo}" styleClass="factura" inputStyleClass="factura janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="2" readonly="true"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="pagado" value="Pagado:"/>
+                    <p:inputNumber id="pagado" value="#{manticFacturasComplemento.documento.pagado}" styleClass="factura" inputStyleClass="factura janal-wid-100-txt janal-column-right" converter="javax.faces.Double" decimalPlaces="2">
+                      <p:ajax event="blur" process="@this" update="@(.factura)" listener="#{manticFacturasComplemento.doCheckSaldoInsulto}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                    </p:inputNumber>  
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:outputLabel for="insoluto" value="Saldo insoluto:"/>
+                    <p:inputNumber id="insoluto" value="#{manticFacturasComplemento.documento.insoluto}" styleClass="factura" inputStyleClass="factura janal-wid-100-txt janal-column-right janal-color-orange" converter="javax.faces.Double" decimalPlaces="2" readonly="true"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                    <p:spacer/>
+                    <p:commandButton action="#{manticFacturasComplemento.doAgregar}" process="@this @(.factura)" update="tabla @(.totales)" icon="fa fa-plus" title="Agregar" onstart="return janal.partial('documento')" oncomplete="return janal.desbloquear();"/>
+                  </p:panelGrid>
+                </p:panelGrid>
+              </p:panel>
+              <p:dataTable lazy="false" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasComplemento.adminOrden.orden.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasComplemento.attrs.proyecto}" selectionMode="single" paginator="true" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.dto.idDetalle}" rowStyleClass="#{manticFacturasComplemento.doColorRow(row)}">
+                <p:column class="MarAuto Responsive janal-wid-3">
+                  <f:facet name="header">
+                    <h:outputText value="No"/>
+                  </f:facet>
+                  <p:outputLabel value="#{index+ 1}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Documento"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row.dto.id}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-wid-5">
+                  <f:facet name="header">
+                    <h:outputText value="Serie"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row.dto.serie}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-wid-5">
+                  <f:facet name="header">
+                    <h:outputText value="Folio"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row.dto.folio}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Método pago"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row.dto.metodoPago}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-column-center janal-wid-5">
+                  <f:facet name="header">
+                    <h:outputText value="Moneda"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row.dto.moneda}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-column-right janal-wid-6">
+                  <f:facet name="header">
+                    <h:outputText value="Parcialidad"/>
+                  </f:facet>
+                  <p:outputLabel value="#{row.dto.parcialidad}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-column-right janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Saldo anterior"/>
+                  </f:facet>
+                  <p:outputLabel value="#{manticFacturasComplemento.doMiles(row.dto.saldo)}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-column-right janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Pagado"/>
+                  </f:facet>
+                  <p:outputLabel value="#{manticFacturasComplemento.doMiles(row.dto.pagado)}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-column-right janal-wid-8">
+                  <f:facet name="header">
+                    <h:outputText value="Saldo insoluto"/>
+                  </f:facet>
+                  <p:outputLabel value="#{manticFacturasComplemento.doMiles(row.dto.insoluto)}"/> 
+                </p:column>
+                <p:column class="MarAuto Responsive janal-wid-col-38">
+                  <f:facet name="header">
+                    <h:outputText value=""/>
+                  </f:facet>
+                  <p:commandButton action="#{manticFacturasComplemento.doEliminar}" process="@this" update="tabla @(.totales)" icon="fa fa-trash" title="Eliminar" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();">
+                    <f:setPropertyActionListener value="#{row}" target="#{manticFacturasComplemento.attrs.documento}" />
+                  </p:commandButton>  
+                </p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{manticFacturasComplemento.adminOrden.orden.documentos== null? 0: manticFacturasComplemento.adminOrden.orden.documentos.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>                    
+            </p:tab>
+          </p:tabView>  
+				</div>
+			</div>
+		</div>		
+		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
+	</ui:define>    
+	<ui:define name="acciones">		
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticFacturasComplemento.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" update="panelEmpresa"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticFacturasComplemento.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasComplemento.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" update="panelEmpresa"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticFacturasComplemento.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>						
+	</ui:define>	
+	<ui:define name="dialogos">		
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
+			<ui:param name="dialogo" value="articulos"/>
+			<ui:param name="seleccionado" value="#{null}"/>
+		</ui:include>
+    <p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore(); janal.refresh(); janal.resize();" onShow="janal.change('formDialogoDomicilios', fieldsDomicilio); janal.refresh();">
+      <h:form id="formDialogoDomicilios" prependId="false">
+        <h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-130, janal-wid-98 janal-column-right">
+          <p:outputLabel for="calleBusqueda" value="Calle:"/>
+          <h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-98, janal-wid-col-38">
+            <p:inputText id="calleBusqueda" value="#{manticFacturasComplemento.attrs.calle}" styleClass="janal-wid-100-txt"/>
+            <p:commandButton icon="fa fa-search" actionListener="#{manticFacturasComplemento.doBusquedaContratoDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" onstart="return janal.partial('dialogo');" oncomplete="janal.resize();"/>
+          </h:panelGrid>
+          <p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
+          <p:selectOneMenu id="domiciliosBusqueda" value="#{manticFacturasComplemento.domicilioContratoBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+            <f:selectItems value="#{manticFacturasComplemento.attrs.contratoDomiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
+            <p:column headerText="Calle" styleClass="janal-column-left">
+              <h:outputText value="#{item.calle}"/>
+            </p:column>   
+            <p:column headerText="Ext." styleClass="janal-column-right janal-wid-col-50">
+              <h:outputText value="#{item.numeroExterior}"/>
+            </p:column>  										
+            <p:column headerText="Int." styleClass="janal-column-right janal-wid-col-50" rendered="false">
+              <h:outputText value="#{item.numeroInterior}"/>
+            </p:column>  										
+            <p:column headerText="Colonia" styleClass="janal-column-left janal-wid-col-250">
+              <h:outputText value="#{item.asentamiento}"/>
+            </p:column>  
+            <p:column headerText="C.P." styleClass="janal-column-left janal-wid-col-50">
+              <h:outputText value="#{item.codigoPostal}"/>
+            </p:column>  
+            <p:column headerText="Municipio" styleClass="janal-column-left janal-wid-col-150">
+              <h:outputText value="#{item.municipio}"/>
+            </p:column>   
+            <p:column headerText="Localidad" styleClass="janal-column-left janal-wid-col-150">
+              <h:outputText value="#{item.localidad}"/>
+            </p:column>   
+          </p:selectOneMenu>
+          <p:spacer/>
+          <p:outputLabel id="totalResultados" value="Total [#{manticFacturasComplemento.attrs.resultados}]"/>
+        </h:panelGrid>
+        <hr class="ui-widget-content"/>
+        <div class="janal-line-button">
+          <p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" value="Aceptar" action="#{manticFacturasComplemento.doAsignaContratoDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();janal.refresh(); janal.alignCp();"/>
+          <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();"/>
+        </div>
+      </h:form>
+    </p:dialog>
+		<p:dialog widgetVar="dialogoClientes" header="Buscar clientes" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" onShow="$('input[name=rfcClientes]').val('');erase();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="rfcClientes" value="RFC o nombre: (Para buscar por RFC colocar un punto al inicio)"/>
+				</div>			
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:inputText id="rfcClientes" value="#{manticFacturasComplemento.attrs.dialogoRfc}" styleClass="janal-wid-100-txt key-up-clientes janal-key-clientes" style="text-transform: uppercase"/>
+				</div>			
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel value="Click sobre la tabla para seleccionar el cliente, por defecto es el primero de la lista"/><br/>
+					<p:dataTable id="compradores" widgetVar="widgetClientes" lazy="true" styleClass="janal-row-clientes janal-wid-100" value="#{manticFacturasComplemento.attrs.lazyModelClientes}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
+						<p:ajax event="rowDblselect" listener="#{manticFacturasComplemento.doRowDblCliente}" process="@this compradores" update="@(.filas) @(.recalculo) idCliente clientes" oncomplete="PF('dialogoClientes').hide();" />	
+						<p:column headerText="No" styleClass="janal-wid-col-30">
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Clave" styleClass="janal-wid-10">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   
+						<p:column headerText="RFC" styleClass="janal-wid-20">
+							<h:outputText value="#{item.rfc}"/>
+						</p:column>   
+						<p:column headerText="Cliente">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>   
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticFacturasComplemento.attrs.lazyModelClientes==null? 0: manticFacturasComplemento.attrs.lazyModelClientes.rowCount}] registros"/>
+            </f:facet>
+					</p:dataTable>
+				</div>
+			</div>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="comprador" icon="fa fa-check" process="@this compradores" update="@(.filas) @(.recalculo) clientes idCliente" value="Aceptar" actionListener="#{manticFacturasComplemento.doChangeCliente}" onstart="return jsArticulos.comprador();" oncomplete="PF('dialogoClientes').hide();" disabled="#{manticFacturasComplemento.attrs.lazyModelClientes.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogoClientes').hide();"/>
+			</div>
+		</p:dialog>
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="codigo" value="Código o nombre:"/>
+					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
+					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
+						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
+					</pe:tooltip>
+				</div>			
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:inputText id="codigo" value="#{manticFacturasComplemento.attrs.codigo}" styleClass="janal-wid-100-txt key-buscados-event" style="text-transform: uppercase"/>
+				</div>			
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
+					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticFacturasComplemento.attrs.lazyModel}" selection="#{manticFacturasComplemento.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
+						<p:ajax event="rowDblselect" listener="#{manticFacturasComplemento.doRowDblselect}" process="@this" update="@(.filas) @(.recalculo)" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>	
+						<p:column headerText="No" styleClass="janal-wid-col-30">
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Propio" styleClass="janal-wid-15">
+							<h:outputText value="#{item.propio}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-13">
+							<h:outputText value="#{item.original}"/>
+						</p:column>   
+						<p:column headerText="Stock" styleClass="janal-column-right janal-wid-10">
+							<h:outputText value="#{manticFacturasComplemento.doMiles(item.stock)}"/>
+						</p:column>   
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticFacturasComplemento.attrs.lazyModel==null? 0: manticFacturasComplemento.attrs.lazyModel.rowCount}] registros"/>
+            </f:facet>
+					</p:dataTable>
+				</div>
+			</div>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticFacturasComplemento.doChangeBuscado}" onstart="return jsArticulos.parche();" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticFacturasComplemento.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
+			</div>
+		</p:dialog>				
+	</ui:define>
+</ui:composition>

@@ -3,10 +3,13 @@ package mx.org.kaana.mantic.facturas.beans;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.kajool.db.comun.operation.IActions;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 
 public class FacturaFicticia extends TcManticFicticiasDto implements Serializable {
@@ -19,9 +22,11 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
+	private UISelectEntity ikTipoMoneda;
   private ContratoDomicilio domicilioContrato;
   private List<Parcial> parciales;
   private List<Parcial> disponibles;
+  private List<IActions> documentos;
 
 	public FacturaFicticia() {
 		this(-1L);
@@ -40,6 +45,7 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
     this.setIdManual(2L);			
     this.setCobro(LocalDateTime.now());			
     this.setIdSincronizado(2L);			
+    this.documentos= new ArrayList<>();
 	}	
   
   public UISelectEntity getIkSerie() {
@@ -101,6 +107,16 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 		if(this.ikContrato!= null)
 		  this.setIdContrato(this.ikContrato.getKey());
   }
+
+  public UISelectEntity getIkTipoMoneda() {
+    return ikTipoMoneda;
+  }
+
+  public void setIkTipoMoneda(UISelectEntity ikTipoMoneda) {
+    this.ikTipoMoneda = ikTipoMoneda;
+		if(this.ikTipoMoneda!= null)
+		  this.setIdTipoMoneda(this.ikTipoMoneda.getKey());
+  }
   
   public ContratoDomicilio getDomicilioContrato() {
     return domicilioContrato;
@@ -126,9 +142,44 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
     this.disponibles = disponibles;
   }
 
+  public List<IActions> getDocumentos() {
+    return documentos;
+  }
+
+  public void setDocumentos(List<IActions> documentos) {
+    this.documentos = documentos;
+  }
+
 	@Override
 	public Class toHbmClass() {
 		return TcManticFicticiasDto.class;
 	}			
+
+  @Override
+  protected void finalize() throws Throwable {
+    super.finalize(); 
+    Methods.clean(this.documentos);
+  }
+
+  public IActions isEqual(Documento documento) {
+    IActions regresar= null;
+    for (IActions item : this.documentos) {
+      if(((Documento)item.getDto()).getIdDetalle().equals(documento.getIdDetalle())) {
+        regresar= item;
+        break;
+      } // if  
+    } // for
+    return regresar;
+  }
+
+  public void toAdd(Double pagado) {
+    this.setSaldo(this.getSaldo()+ pagado);
+    this.setDiferencia(this.getTotal()- this.getSaldo());
+  }
+  
+  public void toRemove(Double pagado) {
+    this.setSaldo(this.getSaldo()- pagado);
+    this.setDiferencia(this.getTotal()- this.getSaldo());
+  }
   
 }

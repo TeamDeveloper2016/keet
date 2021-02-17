@@ -322,8 +322,8 @@
               <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="detalle">            
                 <p:menuitem id="consultar" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doAccion}" process="@this detalle"/>
                 <p:separator/>
-                <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this detalle" />					
-                <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this detalle"/>
+                <p:menuitem id="pago" icon="fa fa-minus-circle" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this detalle" rendered="false"/>					
+                <p:menuitem id="deuda" icon="fa fa-dollar" value="Deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this detalle"/>
                 <p:separator/>
                 <p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosClientesCuentasSaldos.doImportar}"/>
                 <p:separator/>					

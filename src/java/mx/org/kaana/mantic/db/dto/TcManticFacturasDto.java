@@ -53,7 +53,6 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   private String observaciones;
   @Column (name="id_facturama")
   private String idFacturama;
-	
   @Column (name="cadena_original")
   private String cadenaOriginal;
   @Column (name="sello_sat")
@@ -68,26 +67,27 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   private LocalDateTime certificacion;
   @Column (name="folio_fiscal")
   private String folioFiscal;
-	
   @Column (name="registro")
   private LocalDateTime registro;
   @Column (name="cancelada")
   private LocalDateTime cancelada;
+  @Column (name="id_serie")
+  private Long idSerie;
 
   public TcManticFacturasDto() {
     this(new Long(-1L));
   }
 
   public TcManticFacturasDto(Long key) {
-    this(new Long(-1L), LocalDate.now(), null, null, null, 0L, null, null, null, null);
+    this(new Long(-1L), LocalDate.now(), null, null, null, 0L, null, null, null, null, 1L);
     setKey(key);
   }
 
-  public TcManticFacturasDto(Long idFactura, LocalDate ultimoIntento, LocalDateTime timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama) {
-    this(new Long(-1L), LocalDate.now(), timbrado, idUsuario, folio, intentos, correos, comentarios, observaciones, idFacturama, null, null, null, null, null, LocalDateTime.now(), null, 1L);
+  public TcManticFacturasDto(Long idFactura, LocalDate ultimoIntento, LocalDateTime timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, Long idSerie) {
+    this(new Long(-1L), LocalDate.now(), timbrado, idUsuario, folio, intentos, correos, comentarios, observaciones, idFacturama, null, null, null, null, null, LocalDateTime.now(), null, 1L, idSerie);
 	}
 	
-  public TcManticFacturasDto(Long idFactura, LocalDate ultimoIntento, LocalDateTime timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, String cadenaOriginal, String selloSat, String selloCfdi, String certificadoSat, String certificadoDigital, LocalDateTime certificacion, String folioFiscal, Long idFacturaEstatus) {
+  public TcManticFacturasDto(Long idFactura, LocalDate ultimoIntento, LocalDateTime timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, String cadenaOriginal, String selloSat, String selloCfdi, String certificadoSat, String certificadoDigital, LocalDateTime certificacion, String folioFiscal, Long idFacturaEstatus, Long idSerie) {
     setIdFactura(idFactura);
     setUltimoIntento(ultimoIntento);
     setTimbrado(timbrado);
@@ -107,7 +107,8 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		this.folioFiscal= folioFiscal;
     setRegistro(LocalDateTime.now());
 		this.cancelada= LocalDateTime.now();
-		setIdFacturaEstatus(idFacturaEstatus);
+		this.idFacturaEstatus= idFacturaEstatus;
+    this.idSerie= idSerie;
   }
 	
   public void setIdFactura(Long idFactura) {
@@ -269,6 +270,14 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 	public void setIdFacturaEstatus(Long idFacturaEstatus) {
 		this.idFacturaEstatus = idFacturaEstatus;
 	}	
+
+  public Long getIdSerie() {
+    return idSerie;
+  }
+
+  public void setIdSerie(Long idSerie) {
+    this.idSerie = idSerie;
+  }
 	
   @Transient
   @Override
@@ -324,6 +333,8 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.append(getCancelada());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdFacturaEstatus());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdSerie());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -351,13 +362,14 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.put("registro", getRegistro());
 		regresar.put("cancelada", getCancelada());
 		regresar.put("idFacturaEstatus", getIdFacturaEstatus());
+		regresar.put("idSerie", getIdSerie());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getFolio(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getCadenaOriginal(), getSelloSat(), getSelloCfdi(), getCertificadoSat(), getCertificadoDigital(), getCertificacion(), getFolioFiscal(), getRegistro(), getCancelada(), getIdFacturaEstatus()
+      getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getFolio(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getCadenaOriginal(), getSelloSat(), getSelloCfdi(), getCertificadoSat(), getCertificadoDigital(), getCertificacion(), getFolioFiscal(), getRegistro(), getCancelada(), getIdFacturaEstatus(), getIdSerie()
     };
     return regresar;
   }

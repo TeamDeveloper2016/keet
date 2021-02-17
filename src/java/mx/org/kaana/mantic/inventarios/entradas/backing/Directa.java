@@ -900,7 +900,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
         if(clon instanceof Select || clon instanceof Update) {
           ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getProyectos().add(new Delete(clon.getDto()));
           this.proyecto= (NotaProyecto)clon.getDto();
-          this.proyecto.setIkDesarrollo(new UISelectEntity(this.proyecto.getIkDesarrollo()));
+          this.proyecto.setIkDesarrollo(new UISelectEntity(this.proyecto.getIdDesarrollo()));
           this.proyecto.setIkCliente(new UISelectEntity(this.proyecto.getIdCliente()));
           this.proyecto.setIkContrato(new UISelectEntity(this.proyecto.getIdContrato()));
         } // if  
@@ -944,7 +944,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
         if(clon instanceof Select || clon instanceof Update) {
           ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getEmpleados().add(new Delete(clon.getDto()));
           this.empleado= (NotaEmpleado)clon.getDto();
-          this.empleado.setIkDesarrollo(new UISelectEntity(this.empleado.getIkDesarrollo()));
+          this.empleado.setIkDesarrollo(new UISelectEntity(this.empleado.getIdDesarrollo()));
           this.empleado.setIkCliente(new UISelectEntity(this.empleado.getIdCliente()));
           this.empleado.setIkContrato(new UISelectEntity(this.empleado.getIdContrato()));
           this.empleado.setIkEmpresaPersona(new UISelectEntity(this.empleado.getIdEmpresaPersona()));

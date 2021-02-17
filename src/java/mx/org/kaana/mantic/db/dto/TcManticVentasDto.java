@@ -125,7 +125,15 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Long idSerie;
   @Column (name="id_tipo_comprobante")
   private Long idTipoComprobante;
-
+  @Column (name="saldo")
+  private Double saldo;
+  @Column (name="fechaPago")
+  private LocalDateTime fechaPago;
+  @Column (name="id_tipo_moneda")
+  private Long idTipoMoneda;
+  @Column (name="diferencia")
+  private Double diferencia;
+  
   public TcManticVentasDto() {
     this(new Long(-1L));
   }
@@ -193,12 +201,16 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		this.referencia= referencia;
 		this.idTipoDocumento= idTipoDocumento;
 		setCandado(candado);
-		this.idSincronizado= 2L;
-    this.idDesarrollo= idDesarrollo;
-    this.idContrato= idContrato;
-    this.idExtra= idExtra;
-    this.idSerie    = 1L;
+		this.idSincronizado   = 2L;
+    this.idDesarrollo     = idDesarrollo;
+    this.idContrato       = idContrato;
+    this.idExtra          = idExtra;
+    this.idSerie          = 1L;
     this.idTipoComprobante= 1L;
+    this.saldo            = total;
+    this.fechaPago        = LocalDateTime.now();
+    this.idTipoMoneda     = 1L;
+    this.diferencia       = total;
   }
 	
 	public Long getIdManual() {
@@ -576,6 +588,38 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   public void setIdTipoComprobante(Long idTipoComprobante) {
     this.idTipoComprobante = idTipoComprobante;
   }
+
+  public Double getSaldo() {
+    return saldo;
+  }
+
+  public void setSaldo(Double saldo) {
+    this.saldo = saldo;
+  }
+
+  public LocalDateTime getFechaPago() {
+    return fechaPago;
+  }
+
+  public void setFechaPago(LocalDateTime fechaPago) {
+    this.fechaPago = fechaPago;
+  }
+
+  public Long getIdTipoMoneda() {
+    return idTipoMoneda;
+  }
+
+  public void setIdTipoMoneda(Long idTipoMoneda) {
+    this.idTipoMoneda = idTipoMoneda;
+  }
+
+  public Double getDiferencia() {
+    return diferencia;
+  }
+
+  public void setDiferencia(Double diferencia) {
+    this.diferencia = diferencia;
+  }
 	
   @Transient
   @Override
@@ -685,6 +729,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(getIdSerie());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoComprobante());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSaldo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMoneda());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDiferencia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -739,13 +791,17 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.put("idExtra", getIdExtra());
 		regresar.put("idSerie", getIdSerie());
 		regresar.put("idTipoComprobante", getIdTipoComprobante());
+		regresar.put("saldo", getSaldo());
+		regresar.put("fechaPago", getFechaPago());
+		regresar.put("idTipoMoneda", getIdTipoMoneda());
+		regresar.put("diferencia", getDiferencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar(), getCobro(), getIdClienteDomicilio(), getIdTipoMedioPago(), getIdTipoPago(), getIdBanco(), getReferencia(), getIdTipoDocumento(), getCandado(), getIdSincronizado(), getIdDesarrollo(), getIdContrato(), getIdExtra(), getIdSerie(), getIdTipoComprobante()
+			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar(), getCobro(), getIdClienteDomicilio(), getIdTipoMedioPago(), getIdTipoPago(), getIdBanco(), getReferencia(), getIdTipoDocumento(), getCandado(), getIdSincronizado(), getIdDesarrollo(), getIdContrato(), getIdExtra(), getIdSerie(), getIdTipoComprobante(), getSaldo(), getFechaPago(), getIdTipoMoneda(), getDiferencia()
     };
     return regresar;
   }

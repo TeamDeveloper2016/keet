@@ -764,7 +764,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
     } // finally
 	}	// doUpdateClientes
 	
-	public void doActualizaPrecioCliente(){
+	public void doActualizaPrecioCliente() {
 		List<UISelectEntity> clientesSeleccion= null;
 		UISelectEntity clienteSeleccion       = null;
 		boolean precioVigente                 = false;

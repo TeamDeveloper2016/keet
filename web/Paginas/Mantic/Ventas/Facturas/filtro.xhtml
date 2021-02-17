@@ -200,8 +200,8 @@
         </div>
       </div>
     </div>		 
-		<hr class="ui-widget-content" style="#{!manticVentasFacturasFiltro.attrs.regresar ? '': 'display:none'}"/>
-		<div class="janal-line-button" style="#{!manticVentasFacturasFiltro.attrs.regresar ? '': 'display:none'}">
+		<hr class="ui-widget-content" style="#{!manticVentasFacturasFiltro.attrs.regreso ? '': 'display:none'}"/>
+		<div class="janal-line-button" style="#{!manticVentasFacturasFiltro.attrs.regreso ? '': 'display:none'}">
 			<div class="lg-pantalla">			
 				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasFacturasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" rendered="#{!manticVentasFacturasFiltro.attrs.regreso}"/>						
 			</div>	

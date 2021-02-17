@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetVentasPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_ventas_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_ventas_pagos
+        where      
+          id_detalle = {idDetalle} and id_venta = {idVenta}
+      </select>
+    </unit>
     <unit id="TcKeetVentasParcialesDto">
       <select id="row">
         select      
@@ -51,7 +69,8 @@
         from      
           tc_keet_series
         where 
-          {condicion} 
+          id_tipo= {idTipo}
+          and {condicion} 
       </select>
       <select id="identically">
         select      
@@ -79,7 +98,8 @@
         from      
           tc_keet_tipos_comprobantes
         where 
-          {condicion} 
+          id_tipo= {idTipo}
+          and {condicion} 
       </select>
       <select id="identically">
         select      

@@ -31,7 +31,7 @@ import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 
 @Named(value = "keetCajaChicaAccion")
 @ViewScoped
-public class Accion extends mx.org.kaana.mantic.facturas.backing.Accion implements Serializable {
+public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos implements Serializable {
 
 	private static final long serialVersionUID= 2847354766000406350L;  			
 	

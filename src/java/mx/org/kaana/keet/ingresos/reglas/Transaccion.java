@@ -162,6 +162,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			this.comprobante.setIntentos(0L);
 			this.comprobante.setCorreos("");
 			this.comprobante.setObservaciones("FACTURA REGISTRADA DE FORMA MANUAL");
+			this.comprobante.setIdSerie(this.orden.getIdSerie()== null || this.orden.getIdSerie()<= 0? null: this.orden.getIdSerie());
 			regresar= DaoFactory.getInstance().insert(sesion, this.comprobante);
       TcManticFacturasBitacoraDto registro= new TcManticFacturasBitacoraDto(this.comprobante.getIdFacturaEstatus(), this.comprobante.getIdFactura(), null, JsfBase.getIdUsuario(), -1L);
       DaoFactory.getInstance().insert(sesion, registro);
