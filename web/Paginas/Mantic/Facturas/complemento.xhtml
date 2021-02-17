@@ -23,7 +23,10 @@
 				'cfdi'        : {validaciones: 'requerido', mascara: 'libre', mensaje:'Tipo de CFDI obligatorio.', grupo: 'general'},
 				'referencia'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'tipoPago'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'parciales'   : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'}
+        'contenedorGrupos\\:total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'totales'},
+        'contenedorGrupos\\:diferencia': {validaciones: 'requerido|menor-igual({"cuanto": 0})', mascara: 'no-aplica', grupo: 'totales'},
+        'contenedorGrupos\\:pagado'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'factura'},
+        'contenedorGrupos\\:insoluto'  : {validaciones: 'requerido|meyor-igual({"cuanto": 0})', mascara: 'no-aplica', grupo: 'factura'}
 			};	
 			
 			fieldsDomicilio ={
@@ -51,7 +54,7 @@
 				$(jsArticulos.sat()).addClass('ignore');
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
-				var ok= janal.partial('general', [], lock);
+				var ok= janal.partial('general|totales', [], lock);
         jsArticulos.cursor.index= index;
         $(jsArticulos.description()).removeClass('ignore');
         $(jsArticulos.sat()).removeClass('ignore');
@@ -334,7 +337,7 @@
                   </p:panelGrid>
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                     <p:spacer/>
-                    <p:commandButton action="#{manticFacturasComplemento.doAgregar}" process="@this @(.factura)" update="tabla @(.totales)" icon="fa fa-plus" title="Agregar" onstart="return janal.partial('documento')" oncomplete="return janal.desbloquear();"/>
+                    <p:commandButton action="#{manticFacturasComplemento.doAgregar}" process="@this @(.factura)" update="tabla @(.totales)" icon="fa fa-plus" title="Agregar" onstart="return janal.partial('factura');" oncomplete="return janal.desbloquear();"/>
                   </p:panelGrid>
                 </p:panelGrid>
               </p:panel>
@@ -357,7 +360,7 @@
                   </f:facet>
                   <p:outputLabel value="#{row.dto.serie}"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-wid-5">
+                <p:column class="MarAuto Responsive janal-wid-8">
                   <f:facet name="header">
                     <h:outputText value="Folio"/>
                   </f:facet>
@@ -381,19 +384,19 @@
                   </f:facet>
                   <p:outputLabel value="#{row.dto.parcialidad}"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-column-right janal-wid-8">
+                <p:column class="MarAuto Responsive janal-column-right janal-wid-10">
                   <f:facet name="header">
                     <h:outputText value="Saldo anterior"/>
                   </f:facet>
                   <p:outputLabel value="#{manticFacturasComplemento.doMiles(row.dto.saldo)}"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-column-right janal-wid-8">
+                <p:column class="MarAuto Responsive janal-column-right janal-wid-10">
                   <f:facet name="header">
                     <h:outputText value="Pagado"/>
                   </f:facet>
                   <p:outputLabel value="#{manticFacturasComplemento.doMiles(row.dto.pagado)}"/> 
                 </p:column>
-                <p:column class="MarAuto Responsive janal-column-right janal-wid-8">
+                <p:column class="MarAuto Responsive janal-column-right janal-wid-10">
                   <f:facet name="header">
                     <h:outputText value="Saldo insoluto"/>
                   </f:facet>

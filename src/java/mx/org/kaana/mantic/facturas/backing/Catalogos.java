@@ -411,6 +411,9 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setSaldo(this.getAdminOrden().getTotales().getTotal());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setDiferencia(this.getAdminOrden().getTotales().getTotal());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMoneda(1L);
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdClienteDomicilio(((Entity)this.attrs.get("domicilio")).getKey());		
 		if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)

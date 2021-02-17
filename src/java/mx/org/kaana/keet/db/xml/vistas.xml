@@ -31,7 +31,8 @@
           tc_mantic_tipos_pagos on tc_mantic_ventas.id_tipo_pago= tc_mantic_tipos_pagos.id_tipo_pago
         where
           tc_mantic_ventas.id_cliente= {idCliente}
-          and tc_mantic_ventas.saldo> 0        
+          and tc_mantic_ventas.saldo> 0    
+          and tc_mantic_ventas.id_tipo_comprobante!= 3
       </select>  
 			<select id="detalle">
         select      
