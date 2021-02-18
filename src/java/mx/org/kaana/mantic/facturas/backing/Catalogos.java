@@ -56,7 +56,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 	private static final String INDIVIDUAL     = "1";
 	private static final Long ESTATUS_ELABORADA= 11L;
 	
-	private EAccion accion;	
+	protected EAccion accion;	
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
 	private FormatLazyModel almacenes;

@@ -114,6 +114,8 @@ public class Filtro extends FiltroFactura implements Serializable {
       else
         if(!Cadena.isVacio(this.attrs.get("seleccionado")) && Objects.equals(1L, ((Entity)this.attrs.get("seleccionado")).toLong("idManual")))
           pagina = "/Paginas/Keet/Ingresos/accion";
+      if(!Cadena.isVacio(this.attrs.get("seleccionado")) && Objects.equals(3L, ((Entity)this.attrs.get("seleccionado")).toLong("idTipoComprobante")))
+        pagina= "/Paginas/Mantic/Facturas/complemento";
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/filtro");		
 			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);

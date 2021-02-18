@@ -73,6 +73,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
           item.setIkFactura(new UISelectEntity(item.getIdDetalle()));
           this.orden.getDocumentos().add(new Select(item));
         } // for
+        this.orden.setFacturas(new Long(this.orden.getDocumentos().size()));
 		}	// if
 		else	{
 		  articulos= new ArrayList<>();

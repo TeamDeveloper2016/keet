@@ -27,6 +27,7 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
   private List<Parcial> parciales;
   private List<Parcial> disponibles;
   private List<IActions> documentos;
+  private Long facturas;
 
 	public FacturaFicticia() {
 		this(-1L);
@@ -46,6 +47,7 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
     this.setCobro(LocalDateTime.now());			
     this.setIdSincronizado(2L);			
     this.documentos= new ArrayList<>();
+    this.facturas  = 0L;
 	}	
   
   public UISelectEntity getIkSerie() {
@@ -150,6 +152,14 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
     this.documentos = documentos;
   }
 
+  public Long getFacturas() {
+    return facturas;
+  }
+
+  public void setFacturas(Long facturas) {
+    this.facturas = facturas;
+  }
+
 	@Override
 	public Class toHbmClass() {
 		return TcManticFicticiasDto.class;
@@ -175,11 +185,13 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
   public void toAdd(Double pagado) {
     this.setSaldo(this.getSaldo()+ pagado);
     this.setDiferencia(this.getTotal()- this.getSaldo());
+    this.setFacturas(new Long(this.getDocumentos().size()));
   }
   
   public void toRemove(Double pagado) {
     this.setSaldo(this.getSaldo()- pagado);
     this.setDiferencia(this.getTotal()- this.getSaldo());
+    this.setFacturas(new Long(this.getDocumentos().size()));
   }
   
 }

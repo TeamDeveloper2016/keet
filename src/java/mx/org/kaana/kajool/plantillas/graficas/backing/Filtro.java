@@ -2,8 +2,12 @@ package mx.org.kaana.kajool.plantillas.graficas.backing;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -32,6 +36,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.test.depurar.Clean;
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  *@company KAANA
@@ -47,6 +52,21 @@ public class Filtro extends IBaseAttribute implements Serializable {
 
   private static final Log LOG=LogFactory.getLog(Filtro.class);
 	private static final long serialVersionUID=-636605048480511716L;
+
+  private List<SelectItem> programas;
+  private String[] programa;
+  
+  public List<SelectItem> getProgramas() {
+    return programas;
+  }
+
+  public String[] getPrograma() {
+    return programa;
+  }
+
+  public void setPrograma(String[] programa) {
+    this.programa = programa;
+  }
 
   @Override
   @PostConstruct
@@ -89,6 +109,28 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			picModel.getLegend().setFormatter("function (params) {return jsEcharts.legend(params);}");
 			picModel.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'percent');}");
   		this.attrs.put("pictorial", picModel.toJson());
+      
+        this.programas = new ArrayList<>();
+        SelectItemGroup proyectos = new SelectItemGroup("Programas");
+        proyectos.setSelectItems(new SelectItem[]{
+          new SelectItem("ENOE", "ENOE"),
+          new SelectItem("ENIGH", "ENIGH"),
+          new SelectItem("ENSU", "ENSU"),
+          new SelectItem("ENVI", "ENVI"),
+          new SelectItem("ETOE", "ETOE"),
+          new SelectItem("ENPOL", "ENPOL"),
+          new SelectItem("EEN", "EEN"),
+          new SelectItem("HECRA", "HECRA")
+        });
+
+        SelectItemGroup nacional= new SelectItemGroup("Nacional");
+        nacional.setSelectItems(new SelectItem[]{
+          new SelectItem("TODOS", "TODOS", "TODOS", true),
+        });
+
+        programas.add(proyectos);
+        programas.add(nacional);
+        this.programa= new String[] {"TODOS"};
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -96,6 +138,25 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		} // catch
 	}
 
+	public void doRefreshPlantilla() {
+    List<String> items= Arrays.asList(this.programa);
+    if(items.size()> 0) {
+      List<String> clon= new ArrayList<>();
+      for (String item: this.programa) {
+        if(!item.equals("TODOS"))
+          clon.add(item);
+      } // for
+      this.programa= clon.toArray(new String[clon.size()]);
+    } // if
+    else
+      if(items.isEmpty()) 
+        this.programa= new String[] {"TODOS"};
+    items= Arrays.asList(this.programa);    
+    UIBackingUtilities.update("programas");
+    UIBackingUtilities.update("informacion");
+    JsfBase.addMessage(items.toString());
+  }
+  
 	public void doCleanDB() {
 		try {
   		Clean.main(null);

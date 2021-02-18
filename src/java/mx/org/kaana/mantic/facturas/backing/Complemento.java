@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.operation.Delete;
 import mx.org.kaana.kajool.db.comun.operation.IActions;
 import mx.org.kaana.kajool.db.comun.operation.Insert;
@@ -20,6 +23,8 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.facturas.beans.Documento;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import org.primefaces.event.SelectEvent;
@@ -61,6 +66,34 @@ public class Complemento extends Catalogos {
   }  
 
 	@Override
+  public void doLoad() {
+    Map<String, Object> params = null;
+    try {
+      super.doLoad();
+      params = new HashMap<>();      
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put("idArticuloTipo", 4L);
+      params.put("codigo", "ACT");      
+      switch (this.accion) {
+        case AGREGAR:											
+          Articulo pago= (Articulo)DaoFactory.getInstance().toEntity(Articulo.class, "VistaIngresosDto", "complemento", params);
+          this.getAdminOrden().getArticulos().add(pago);
+          break;
+        case MODIFICAR:			
+        case CONSULTAR:			
+          break;
+      } // switch		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doLoad
+  
+	@Override
 	public void doAsignaCliente(SelectEvent event) {
 		UISelectEntity seleccion     = null;
 		List<UISelectEntity> clientes= null;
@@ -95,6 +128,7 @@ public class Complemento extends Catalogos {
         this.documento.setIkFactura(facturas.get(0));
         this.doLoadFactura();
       } // if
+      this.checkLoadFacturas();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -120,6 +154,7 @@ public class Complemento extends Catalogos {
         this.documento.setPagado(this.documento.getSaldo());
         this.documento.setInsoluto(0D);
         this.documento.setIdDetalle(this.documento.getIkFactura().toLong("idDetalle"));
+        this.documento.setIdCliente(this.documento.getIkFactura().toLong("idCliente"));
         this.documento.setParcialidad(1L);
       } // if  
     } // try
@@ -183,5 +218,39 @@ public class Complemento extends Catalogos {
   public String doColorRow(IActions row) {
     return row instanceof Delete? "janal-table-tr-hide": ""; 
   }
+
+  @Override
+  public void doUpdateDesarrollos() {
+    super.doUpdateDesarrollos();
+		this.toLoadFacturas(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdCliente());
+  }  
+  
+  @Override
+  public void doUpdateContratos(AjaxBehaviorEvent event) {
+    super.doUpdateContratos(event);
+  	this.toLoadFacturas(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdCliente());
+  }  
+
+  private void checkLoadFacturas() {
+    Long idCliente= ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdCliente();
+    IActions item = null;
+    int count     = 0;
+    while(count< ((FacturaFicticia)this.getAdminOrden().getOrden()).getDocumentos().size()) {
+      item= ((FacturaFicticia)this.getAdminOrden().getOrden()).getDocumentos().get(count);
+      if(Objects.equals(idCliente, ((Documento)item.getDto()).getIdCliente())) {
+        if(item instanceof Delete) 
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).getDocumentos().set(count, new Update(item.getDto()));
+        count++;
+      } // if  
+      else {
+        if(item instanceof Insert)
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).getDocumentos().remove(count);
+        else {
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).getDocumentos().set(count, new Delete(item.getDto()));
+          count++;
+        } // if  
+      } // else
+    } // while
+  } 
   
 }

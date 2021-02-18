@@ -23,6 +23,7 @@ public class Documento extends TcKeetVentasPagosDto implements Serializable {
   private String metodoPago;
   private String moneda;
   private Double tipoDeCambio;
+  private Long idCliente;
 
   public Documento() {
     this(-1L);
@@ -87,6 +88,14 @@ public class Documento extends TcKeetVentasPagosDto implements Serializable {
 
   public void setTipoDeCambio(Double tipoDeCambio) {
     this.tipoDeCambio = tipoDeCambio;
+  }
+
+  public Long getIdCliente() {
+    return idCliente;
+  }
+
+  public void setIdCliente(Long idCliente) {
+    this.idCliente = idCliente;
   }
 
   @Override

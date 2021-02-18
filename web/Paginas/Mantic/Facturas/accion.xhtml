@@ -16,8 +16,8 @@
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'idDesarrollo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'idCliente'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'idContrato'  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'idCliente'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'idSerie'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'idTipoComprobante': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'articulos'   : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
@@ -246,7 +246,7 @@
 					</p:panelGrid>					
           <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
           <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
-					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-40, janal-wid-45">	
+					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-30, janal-wid-40">	
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
 							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasAccion.attrs.cliente}" completeMethod="#{manticFacturasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">

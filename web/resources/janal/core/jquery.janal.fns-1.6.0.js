@@ -601,6 +601,20 @@ $.mask.masks = $.extend($.mask.masks, {
       return 'El valor '+ janal.parser(element)+ ' debe ser igual a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
     });
 
+	$.validator.addMethod('igual', function(value, element, params) {
+      if (janal.empty(value) || $(element).hasClass('ignore'))
+        return true;
+      else
+        if(typeof(params.valor)=== 'undefined') {
+					janal.programmer([{summary: 'Funci\u00F3n: igual', detail: 'falta el parametro {valor}'}]);
+          return false;
+				} // if	
+        else
+         return parseFloat(janal.cleanToken(value), 10)=== params.valor;
+    }, function(params, element) {
+      return 'El valor ('+ $(element).val()+ ') tiene que ser igual a '+ params.valor+ '.';
+    });
+
 	$.validator.addMethod('menor-a', function(value, element, params) {
 		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
