@@ -103,17 +103,23 @@ public class Filtro extends FiltroFactura implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
+    return this.toAccion(accion, "/Paginas/Mantic/Facturas/accion");
+  }
+  
+  public String doFactura(String accion) {
+    return this.toAccion(accion, "/Paginas/Keet/Ingresos/accion");
+  }
+  
+  public String doPago(String accion) {
+    return this.toAccion(accion, "/Paginas/Mantic/Facturas/complemento");
+  }
+  
+  public String toAccion(String accion, String pagina) {
     EAccion eaccion= null;
-    String pagina  = "/Paginas/Mantic/Facturas/accion";
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-      if(EAccion.COMPLETO.equals(eaccion)) {
-        eaccion= EAccion.AGREGAR;
+      if(!Cadena.isVacio(this.attrs.get("seleccionado")) && Objects.equals(1L, ((Entity)this.attrs.get("seleccionado")).toLong("idManual")))
         pagina = "/Paginas/Keet/Ingresos/accion";
-      } // if  
-      else
-        if(!Cadena.isVacio(this.attrs.get("seleccionado")) && Objects.equals(1L, ((Entity)this.attrs.get("seleccionado")).toLong("idManual")))
-          pagina = "/Paginas/Keet/Ingresos/accion";
       if(!Cadena.isVacio(this.attrs.get("seleccionado")) && Objects.equals(3L, ((Entity)this.attrs.get("seleccionado")).toLong("idTipoComprobante")))
         pagina= "/Paginas/Mantic/Facturas/complemento";
 			JsfBase.setFlashAttribute("accion", eaccion);		

@@ -26,6 +26,7 @@ import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -37,6 +38,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
@@ -304,7 +306,7 @@ public class Transaccion extends TransaccionFactura {
 	private boolean actualizarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
 		boolean regresar           = false;
 		Map<String, Object>params  = null;
-		TcManticFacturasDto factura=null;
+		TcManticFacturasDto factura= null;
 		try {						
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);						
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -706,7 +708,9 @@ public class Transaccion extends TransaccionFactura {
 	} // toDomicilio
   
   private void checkComplementoPago(Session sesion) throws Exception {
+    Map<String, Object> params = null;
     try {  
+      params = new HashMap<>();      
       if(this.orden.getDocumentos()!= null && !this.orden.getDocumentos().isEmpty())
         for (IActions item: this.orden.getDocumentos()) {
           if(item instanceof Insert) {
@@ -714,11 +718,18 @@ public class Transaccion extends TransaccionFactura {
             ((Documento)item.getDto()).setIdUsuario(JsfBase.getIdUsuario());
           } // if  
           item.ejecutar(sesion);
+          params.put("idVenta", ((Documento)item.getDto()).getIdDetalle());      
+          params.put("saldo", ((Documento)item.getDto()).getInsoluto());      
+          params.put("diferencia", Numero.toRedondearSat(((Documento)item.getDto()).getGlobal()- ((Documento)item.getDto()).getInsoluto()));
+          DaoFactory.getInstance().updateAll(sesion, TcManticVentasDto.class, params, "saldo");
         } // if
     } // try
     catch (Exception e) {
       throw e;
     } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
 } 

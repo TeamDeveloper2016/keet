@@ -62,6 +62,7 @@
           tc_keet_ventas_pagos.id_venta,
           tc_keet_ventas_pagos.id_detalle,
           tc_keet_ventas_pagos.parcialidad,
+          tc_mantic_ventas.total as global,
           tc_keet_ventas_pagos.saldo,
           tc_keet_ventas_pagos.pagado,
           tc_keet_ventas_pagos.insoluto,
@@ -72,7 +73,9 @@
         inner join
           tc_keet_ventas_pagos on tc_mantic_ventas.id_venta= tc_keet_ventas_pagos.id_venta
         inner join
-          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+          tc_mantic_ventas as tt_mantic_ventas on tc_keet_ventas_pagos.id_detalle= tt_mantic_ventas.id_venta
+        inner join
+          tc_mantic_facturas on tt_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
         inner join
           tc_keet_series on tc_keet_series.id_serie= tc_mantic_facturas.id_serie
         inner join
@@ -80,7 +83,7 @@
         inner join
           tc_mantic_tipos_pagos on tc_mantic_ventas.id_tipo_pago= tc_mantic_tipos_pagos.id_tipo_pago
         where
-          tc_keet_ventas_pagos.id_venta_pago= {idVenta}
+          tc_keet_ventas_pagos.id_venta= {idVenta}
       </select>  
 			<select id="facturas">
         select
@@ -93,9 +96,10 @@
           tc_mantic_tipos_pagos.clave as metodo_pago,
           tc_mantic_tipos_monedas.siglas as moneda,
           tc_mantic_ventas.tipo_de_cambio,
-          tc_mantic_ventas.saldo,
-          tc_mantic_ventas.saldo as importe,
+          ifnull(tc_keet_ventas_pagos.saldo, tc_mantic_ventas.saldo) as saldo,
+          ifnull(tc_keet_ventas_pagos.saldo, tc_mantic_ventas.saldo) as importe,
           tc_mantic_ventas.total,
+          tc_mantic_ventas.total as global,
           tc_mantic_ventas.diferencia
         from
           tc_mantic_ventas
@@ -107,6 +111,8 @@
           tc_mantic_tipos_monedas on tc_mantic_ventas.id_tipo_moneda= tc_mantic_tipos_monedas.id_tipo_moneda
         inner join
           tc_mantic_tipos_pagos on tc_mantic_ventas.id_tipo_pago= tc_mantic_tipos_pagos.id_tipo_pago
+        left join
+          tc_keet_ventas_pagos on tc_mantic_ventas.id_venta= tc_keet_ventas_pagos.id_detalle and tc_keet_ventas_pagos.id_venta= {idVenta}
         where
           tc_mantic_ventas.id_cliente= {idCliente}
           and tc_mantic_ventas.saldo> 0    

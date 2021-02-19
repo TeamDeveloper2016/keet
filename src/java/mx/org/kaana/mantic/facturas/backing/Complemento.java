@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.db.comun.operation.IActions;
 import mx.org.kaana.kajool.db.comun.operation.Insert;
 import mx.org.kaana.kajool.db.comun.operation.Select;
 import mx.org.kaana.kajool.db.comun.operation.Update;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -25,6 +26,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.facturas.beans.Documento;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import org.primefaces.event.SelectEvent;
@@ -61,8 +63,8 @@ public class Complemento extends Catalogos {
   @PostConstruct
   @Override
   protected void init() {
-    super.init();
     this.documento= new Documento(new Long((int)(Math.random()*-10000)));
+    super.init();
   }  
 
 	@Override
@@ -93,6 +95,12 @@ public class Complemento extends Catalogos {
     } // finally
   } // doLoad
   
+  @Override
+  public void doAsignaClienteInicial(Long idCliente) {
+    super.doAsignaClienteInicial(idCliente);
+    this.toLoadFacturas(idCliente);
+  }  
+  
 	@Override
 	public void doAsignaCliente(SelectEvent event) {
 		UISelectEntity seleccion     = null;
@@ -118,6 +126,7 @@ public class Complemento extends Catalogos {
 			columns= new ArrayList<>();
 			params = new HashMap<>();
 			params.put("idCliente", idCliente);
+			params.put("idVenta", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdVenta());
       columns.add(new Columna("moneda", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
 			columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
@@ -155,6 +164,7 @@ public class Complemento extends Catalogos {
         this.documento.setInsoluto(0D);
         this.documento.setIdDetalle(this.documento.getIkFactura().toLong("idDetalle"));
         this.documento.setIdCliente(this.documento.getIkFactura().toLong("idCliente"));
+        this.documento.setGlobal(this.documento.getIkFactura().toDouble("global"));
         this.documento.setParcialidad(1L);
       } // if  
     } // try
@@ -220,12 +230,6 @@ public class Complemento extends Catalogos {
   }
 
   @Override
-  public void doUpdateDesarrollos() {
-    super.doUpdateDesarrollos();
-		this.toLoadFacturas(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdCliente());
-  }  
-  
-  @Override
   public void doUpdateContratos(AjaxBehaviorEvent event) {
     super.doUpdateContratos(event);
   	this.toLoadFacturas(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdCliente());
@@ -242,15 +246,32 @@ public class Complemento extends Catalogos {
           ((FacturaFicticia)this.getAdminOrden().getOrden()).getDocumentos().set(count, new Update(item.getDto()));
         count++;
       } // if  
-      else {
+      else 
         if(item instanceof Insert)
           ((FacturaFicticia)this.getAdminOrden().getOrden()).getDocumentos().remove(count);
         else {
           ((FacturaFicticia)this.getAdminOrden().getOrden()).getDocumentos().set(count, new Delete(item.getDto()));
           count++;
         } // if  
-      } // else
     } // while
   } 
+
+  @Override
+	protected void loadOrdenVenta() {
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoMedioPago").toString()));
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdUsoCfdi(Long.valueOf(this.attrs.get("cfdi").toString()));
+		if(!Long.valueOf(this.attrs.get("tipoMedioPago").toString()).equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setReferencia(this.attrs.get("referencia").toString());
+		} // if
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdClienteDomicilio(((Entity)this.attrs.get("domicilio")).getKey());		
+		if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
+	} // loadOrdenVenta
   
 }

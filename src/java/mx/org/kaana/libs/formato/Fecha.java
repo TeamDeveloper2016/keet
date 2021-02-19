@@ -7,9 +7,11 @@ package mx.org.kaana.libs.formato;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -483,7 +485,7 @@ public  class Fecha {
       if (fecha.length() == 14 || fecha.length() == 15 || fecha.length() == 16 || fecha.length() == 17) // yyyyMMddHHmmss YYYYMMDDHHmmssS
         fecha = reversa(fecha.substring(0, 8)).concat(" ").concat(fecha.substring(8, 10)).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
       else
-        if (fecha.length() >= 20) // dd/mm/yyyy HH:mm:ss.S
+        if (fecha.length()>= 18) // dd/MM/yyyy HH:mm:ss.S
           fecha = getFormatoEspaniol(fecha.substring(0, 10)).concat(fecha.substring(10));
     Calendar calendar = Calendar.getInstance();
     calendar.set(Calendar.DATE, Numero.getInteger(fecha.substring(0, 2)));
@@ -717,7 +719,9 @@ public  class Fecha {
   } // getLocalTimeBD
 	
 	public static void main(String ... args) {
-		LOG.info(Fecha.toLocalDate("01/01/2020"));
+    String value= "18/02/2021 17:15:19";
+    LocalDateTime date= Instant.ofEpochMilli(Fecha.getFechaHora(value).getTimeInMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		LOG.info(date);
 	}
 	
 } // Fecha

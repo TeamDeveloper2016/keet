@@ -68,12 +68,12 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
           item.setSqlAccion(ESql.UPDATE);
         } // for
       List<Documento> documentos= (List<Documento>)DaoFactory.getInstance().toEntitySet(Documento.class, "VistaIngresosDto", "documentos", params);
-      if(this.orden.getDocumentos()!= null && !this.orden.getDocumentos().isEmpty())
+      if(documentos!= null && !documentos.isEmpty())
         for (Documento item: documentos) {
           item.setIkFactura(new UISelectEntity(item.getIdDetalle()));
           this.orden.getDocumentos().add(new Select(item));
         } // for
-        this.orden.setFacturas(new Long(this.orden.getDocumentos().size()));
+      this.orden.setFacturas(new Long(this.orden.getDocumentos().size()));
 		}	// if
 		else	{
 		  articulos= new ArrayList<>();

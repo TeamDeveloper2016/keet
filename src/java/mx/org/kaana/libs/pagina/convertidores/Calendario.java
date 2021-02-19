@@ -40,7 +40,7 @@ public class Calendario implements Converter {
           if(!value.contains("/"))
             date = Instant.ofEpochMilli(Fecha.getFechaHora("01/01/1970 ".concat(value)).getTimeInMillis()).atZone(ZoneId.systemDefault()).toLocalTime();
 					else	
-            date= Instant.ofEpochMilli(Fecha.getFechaHora("01/01/1970 ".concat(value)).getTimeInMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            date= Instant.ofEpochMilli(Fecha.getFechaHora(value).getTimeInMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime();
       } // try
       catch(Exception e) {
         conversionError = true;

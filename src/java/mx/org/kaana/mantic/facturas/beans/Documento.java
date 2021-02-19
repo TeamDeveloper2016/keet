@@ -24,9 +24,11 @@ public class Documento extends TcKeetVentasPagosDto implements Serializable {
   private String moneda;
   private Double tipoDeCambio;
   private Long idCliente;
+  private Double global;
 
   public Documento() {
     this(-1L);
+    this.global= 0D;
   }
 
   public Documento(Long key) {
@@ -96,6 +98,14 @@ public class Documento extends TcKeetVentasPagosDto implements Serializable {
 
   public void setIdCliente(Long idCliente) {
     this.idCliente = idCliente;
+  }
+
+  public Double getGlobal() {
+    return global;
+  }
+
+  public void setGlobal(Double global) {
+    this.global = global;
   }
 
   @Override

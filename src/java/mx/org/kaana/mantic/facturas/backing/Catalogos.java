@@ -169,14 +169,9 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
       } // switch		
    		this.loadCatalogs();					
       this.doUpdateDesarrollos();      
-      idCliente= ((FacturaFicticia)getAdminOrden().getOrden()).getIdCliente();
-      if(idCliente!= null && !idCliente.equals(-1L)) {
-        this.doAsignaClienteInicial(idCliente);
-        this.loadDomicilios(idCliente);
-        idClienteDomicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getIdClienteDomicilio();
-        if(idClienteDomicilio!= null && !idClienteDomicilio.equals(-1L))
-          this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
-      } // if
+      idClienteDomicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getIdClienteDomicilio();
+      if(idClienteDomicilio!= null && !idClienteDomicilio.equals(-1L))
+        this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
       this.toContratoDomicilio();
     } // try
     catch (Exception e) {
@@ -202,7 +197,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 				} // for
 			} // if
 			cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
-			for(Entity cfdi: cfdis) {
+			for(UISelectEntity cfdi: cfdis) {
 				if(cfdi.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdUsoCfdi()))
 					this.attrs.put("cfdi", cfdi);
 			} // for
@@ -251,6 +246,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
         ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(-1L));
         this.setPrecio("menudeo");
       } // else
+      this.loadDomicilios(idCliente);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -398,7 +394,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 		return regresar;
 	} // toDescuentoVigente
 	
-	private void loadOrdenVenta() {
+	protected void loadOrdenVenta() {
 		// this.getAdminOrden().toCheckTotales();
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoMedioPago").toString()));
@@ -412,7 +408,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setSaldo(this.getAdminOrden().getTotales().getTotal());
-		((FacturaFicticia)this.getAdminOrden().getOrden()).setDiferencia(this.getAdminOrden().getTotales().getTotal());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setDiferencia(0D);
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMoneda(1L);
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdClienteDomicilio(((Entity)this.attrs.get("domicilio")).getKey());		
@@ -854,7 +850,6 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
       UISelectEntity item= desarrollos.get(desarrollos.indexOf(desarrollo));
       ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(item.toLong("idCliente")));
       this.doAsignaClienteInicial(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdCliente());
-      this.loadDomicilios(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdCliente());
 			this.doLoadContratos();
 		} // try // try
 		catch (Exception e) {
@@ -936,8 +931,8 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 			cfdis= UIEntity.seleccione("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS, "clave");
 			this.attrs.put("cfdis", cfdis);
 			this.attrs.put("cfdi", new UISelectEntity("-1"));
-			for(Entity record: cfdis) {
-				if(record.getKey().equals(3L))
+			for(UISelectEntity record: cfdis) {
+				if(record.getKey().equals(1L))
 					this.attrs.put("cfdi", record);
 			} // for
 		} // try
