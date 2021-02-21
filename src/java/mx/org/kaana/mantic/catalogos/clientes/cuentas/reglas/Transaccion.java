@@ -11,7 +11,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends TransaccionFactura {
+public class Transaccion extends Facturama {
 
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);
 	

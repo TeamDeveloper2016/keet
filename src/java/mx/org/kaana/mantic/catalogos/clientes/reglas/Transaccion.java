@@ -13,7 +13,7 @@ import mx.org.kaana.keet.db.dto.TcKeetClientesBancosDto;
 import mx.org.kaana.keet.db.dto.TcKeetClientesInfraestructurasDto;
 import mx.org.kaana.keet.db.dto.TcKeetClientesViviendasDto;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -47,7 +47,7 @@ import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class Transaccion extends TransaccionFactura {
+public class Transaccion extends Facturama {
 
 	private static final Log LOG=LogFactory.getLog(Transaccion.class);
 	

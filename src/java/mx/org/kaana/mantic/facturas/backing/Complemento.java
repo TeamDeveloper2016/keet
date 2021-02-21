@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -145,7 +144,6 @@ public class Complemento extends Catalogos {
 		} // catch		
 	} // loadDocumentos
 
-
   public void doLoadFactura() {
     List<UISelectEntity> facturas= null;
     try {      
@@ -228,12 +226,6 @@ public class Complemento extends Catalogos {
   public String doColorRow(IActions row) {
     return row instanceof Delete? "janal-table-tr-hide": ""; 
   }
-
-  @Override
-  public void doUpdateContratos(AjaxBehaviorEvent event) {
-    super.doUpdateContratos(event);
-  	this.toLoadFacturas(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdCliente());
-  }  
 
   private void checkLoadFacturas() {
     Long idCliente= ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdCliente();

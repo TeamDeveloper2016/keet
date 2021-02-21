@@ -13,7 +13,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transaccion extends TransaccionFactura {
+public class Transaccion extends Facturama {
 
   private static final Logger LOG= Logger.getLogger(Transaccion.class);	
 	
@@ -225,19 +225,19 @@ public class Transaccion extends TransaccionFactura {
 	
 	private boolean generarTimbradoFactura(Session sesion, Long idVenta, Long idFactura, String correos) throws Exception {
 		boolean regresar          = false;
-		TransaccionFactura factura= null;
+		Facturama factura= null;
 		CFDIGestor gestor         = null;
 		try {
 			actualizarClienteFacturama(sesion);
 			sesion.flush();
 			gestor= new CFDIGestor(idVenta);			
-			factura= new TransaccionFactura();
+			factura= new Facturama();
 			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
 			factura.setCliente(gestor.toClienteCfdiVenta(sesion));
 			factura.getCliente().setIdFactura(idFactura);
 			factura.getCliente().setMetodoPago(ETipoPago.fromIdTipoPago(this.orden.getIdTipoPago()).getClave());
-			regresar= factura.generarCfdi(sesion);				
-		} // try
+			regresar= factura.generarFactura(sesion);				
+		} // try // try
 		catch (Exception e) {			
 			this.messageError= "Error al realizar el timbrado de la factura.";
 			throw e;

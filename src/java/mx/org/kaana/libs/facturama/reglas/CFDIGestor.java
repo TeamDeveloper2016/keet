@@ -9,6 +9,8 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
+import mx.org.kaana.mantic.facturas.beans.Complemento;
+import mx.org.kaana.mantic.facturas.beans.Documento;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -28,7 +30,7 @@ public class CFDIGestor implements Serializable {
 		this.idComodin= idComodin;
 	} // CFDIGestor	
 	
-	public ClienteFactura toClienteFactura() throws Exception{
+	public ClienteFactura toClienteFactura() throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -42,7 +44,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ClienteFactura toClienteFactura(Session sesion) throws Exception{
+	public ClienteFactura toClienteFactura(Session sesion) throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -56,7 +58,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ClienteFactura toClienteFacturaUpdate() throws Exception{
+	public ClienteFactura toClienteFacturaUpdate() throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -70,7 +72,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ClienteFactura toClienteFacturaUpdate(Session sesion) throws Exception{
+	public ClienteFactura toClienteFacturaUpdate(Session sesion) throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -84,7 +86,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ClienteFactura toClienteFacturaUpdateVenta(Long idClientedomicilio) throws Exception{
+	public ClienteFactura toClienteFacturaUpdateVenta(Long idClientedomicilio) throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -114,7 +116,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ClienteFactura toClienteCfdiVenta() throws Exception{
+	public ClienteFactura toClienteCfdiVenta() throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -128,7 +130,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ClienteFactura toClienteCfdiVenta(Session sesion) throws Exception{
+	public ClienteFactura toClienteCfdiVenta(Session sesion) throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -142,7 +144,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ClienteFactura toClienteCfdiFicticia() throws Exception{
+	public ClienteFactura toClienteCfdiFicticia() throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -156,7 +158,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ClienteFactura toClienteCfdiFicticia(Session sesion) throws Exception{
+	public ClienteFactura toClienteCfdiFicticia(Session sesion) throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -170,7 +172,21 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public List<ClienteFactura> toAllClientesFactura() throws Exception{
+	public Complemento toClienteComplemento(Session sesion) throws Exception {
+		Complemento regresar     = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta=" + this.idComodin);
+			regresar= (Complemento) DaoFactory.getInstance().toEntity(sesion, Complemento.class, "VistaClientesDto", "cfdiFicticia", params);
+		} // try		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toClienteFactura
+	
+	public List<ClienteFactura> toAllClientesFactura() throws Exception {
 		List<ClienteFactura> regresar= null;
 		Map<String, Object>params    = null;
 		try {
@@ -184,7 +200,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public List<ClienteFactura> toAllClientesFactura(Session sesion) throws Exception{
+	public List<ClienteFactura> toAllClientesFactura(Session sesion) throws Exception {
 		List<ClienteFactura> regresar= null;
 		Map<String, Object>params    = null;
 		try {
@@ -198,7 +214,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ArticuloFactura toArticuloFactura() throws Exception{
+	public ArticuloFactura toArticuloFactura() throws Exception {
 		ArticuloFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
@@ -212,7 +228,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public ArticuloFactura toArticuloFactura(Session sesion) throws Exception{
+	public ArticuloFactura toArticuloFactura(Session sesion) throws Exception {
 		ArticuloFactura regresar = null;
 		Map<String, Object>params= null;
 		try {
@@ -226,7 +242,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public List<ArticuloFactura> toAllArticulosFactura() throws Exception{
+	public List<ArticuloFactura> toAllArticulosFactura() throws Exception {
 		List<ArticuloFactura> regresar= null;
 		Map<String, Object>params     = null;
 		try {
@@ -240,7 +256,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public List<ArticuloFactura> toAllArticulosFactura(Session sesion) throws Exception{
+	public List<ArticuloFactura> toAllArticulosFactura(Session sesion) throws Exception {
 		List<ArticuloFactura> regresar= null;
 		Map<String, Object>params     = null;
 		try {
@@ -254,7 +270,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public List<ArticuloFactura> toDetalleCfdiVentas() throws Exception{
+	public List<ArticuloFactura> toDetalleCfdiVentas() throws Exception {
 		List<ArticuloFactura> regresar= null;
 		Map<String, Object>params     = null;
 		try {
@@ -268,7 +284,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public List<ArticuloFactura> toDetalleCfdiVentas(Session sesion) throws Exception{
+	public List<ArticuloFactura> toDetalleCfdiVentas(Session sesion) throws Exception {
 		List<ArticuloFactura> regresar= null;
 		Map<String, Object>params     = null;
 		try {
@@ -282,7 +298,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public List<ArticuloFactura> toDetalleCfdiFicticia() throws Exception{
+	public List<ArticuloFactura> toDetalleCfdiFicticia() throws Exception {
 		List<ArticuloFactura> regresar= null;
 		Map<String, Object>params     = null;
 		try {
@@ -296,7 +312,7 @@ public class CFDIGestor implements Serializable {
 		return regresar;
 	} // toClienteFactura
 	
-	public List<ArticuloFactura> toDetalleCfdiFicticia(Session sesion) throws Exception{
+	public List<ArticuloFactura> toArticulosCfdi(Session sesion) throws Exception {
 		List<ArticuloFactura> regresar= null;
 		Map<String, Object>params     = null;
 		try {
@@ -308,5 +324,20 @@ public class CFDIGestor implements Serializable {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toClienteFactura
+	} // toArticulosCfdi
+  
+	public List<Documento> toDocumentosCfdi(Session sesion) throws Exception {
+		List<Documento> regresar = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", this.idComodin);
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, Documento.class, "VistaIngresosDto", "documentos", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDocumentosCfdi
+  
 }

@@ -15,7 +15,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.db.dto.TcKeetFamiliasDto;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Variables;
@@ -44,7 +44,7 @@ import mx.org.kaana.mantic.enums.ETipoImagen;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import org.hibernate.Session;
 
-public class Transaccion extends TransaccionFactura {
+public class Transaccion extends Facturama {
 
 	private static final Long ACTIVO  = 1L;
 	private static final Long INACTIVO= 2L;

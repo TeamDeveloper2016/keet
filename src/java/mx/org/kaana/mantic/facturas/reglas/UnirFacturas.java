@@ -14,7 +14,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFacturasGruposDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -45,7 +45,7 @@ import org.apache.log4j.Logger;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class UnirFacturas extends TransaccionFactura {
+public class UnirFacturas extends Facturama {
 
   private static final Logger LOG= Logger.getLogger(UnirFacturas.class);
 	private TcManticFicticiasDto orden;	
@@ -304,17 +304,17 @@ public class UnirFacturas extends TransaccionFactura {
 	} // registrarFactura
 	
 	private void generarTimbradoFactura(Session sesion, Long idFicticia, Long idFactura, String correos) throws Exception {
-		TransaccionFactura factura= null;
+		Facturama factura= null;
 		CFDIGestor gestor         = null;
 		try {
 			actualizarClienteFacturama(sesion, idFicticia);
 			gestor= new CFDIGestor(idFicticia);			
-			factura= new TransaccionFactura();
-			factura.setArticulos(gestor.toDetalleCfdiFicticia(sesion));
+			factura= new Facturama();
+			factura.setArticulos(gestor.toArticulosCfdi(sesion));
 			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
 			factura.getCliente().setIdFactura(idFactura);
-			factura.generarCfdi(sesion);				
-		} // try
+			factura.generarFactura(sesion);				
+		} // try // try
     catch(Exception e) {
 			throw e;
 		} // catch

@@ -17,7 +17,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -238,18 +238,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	
 	
 	public void doPublicarFacturama(){
-		TransaccionFactura transaccion= null;
+		Facturama transaccion= null;
 		CFDIGestor gestor             = null;
 		ClienteFactura cliente        = null;
 		try {
 			gestor= new CFDIGestor(((Entity)this.attrs.get("seleccionado")).getKey());
 			cliente= gestor.toClienteFactura();			
-			transaccion= new TransaccionFactura(cliente);
+			transaccion= new Facturama(cliente);
 			if(transaccion.ejecutar(EAccion.ACTIVAR))
 				JsfBase.addMessage("Registrar cliente en facturama", "Se registro de forma correcta.");
 			else
 				JsfBase.addMessage("Registrar cliente en facturama", "Ocurrio un error al registrar el cliente en facturama.");			
-		} // try
+		} // try // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			

@@ -23,7 +23,7 @@ import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Numero;
@@ -49,6 +49,7 @@ import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.beans.Documento;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.beans.Parcial;
+import mx.org.kaana.mantic.facturas.enums.ETiposComprobantes;
 import org.apache.log4j.Logger;
 
 /**
@@ -59,7 +60,7 @@ import org.apache.log4j.Logger;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transaccion extends TransaccionFactura {
+public class Transaccion extends Facturama {
 
   private static final Logger LOG    = Logger.getLogger(Transaccion.class);
 	private TcManticFicticiasBitacoraDto bitacora;
@@ -170,7 +171,7 @@ public class Transaccion extends TransaccionFactura {
 								params.put("timbrado", LocalDateTime.now());		
 								params.put("intentos", (factura.getIntentos()+1L));
 								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
-								this.generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura(), this.correos);
+								this.generarTimbradoFactura(sesion, factura.getIdFactura(), this.correos);
 							} // if
 						} // if
 						else 
@@ -502,24 +503,32 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // toClientesTipoContacto
 	
-	private void generarTimbradoFactura(Session sesion, Long idFicticia, Long idFactura, String correos) throws Exception {
-		TransaccionFactura factura= null;
-		CFDIGestor gestor         = null;
+	private void generarTimbradoFactura(Session sesion, Long idFactura, String correos) throws Exception {
+		Facturama factura= null;
+		CFDIGestor gestor= null;
 		try {
-			actualizarClienteFacturama(sesion, idFicticia);
-			gestor= new CFDIGestor(idFicticia);			
-			factura= new TransaccionFactura();
-			factura.setArticulos(gestor.toDetalleCfdiFicticia(sesion));
-			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
+			this.actualizarClienteFacturama(sesion, this.orden.getIdFicticia());
+			gestor = new CFDIGestor(this.orden.getIdFicticia());			
+			factura= new Facturama();
 			factura.getCliente().setIdFactura(idFactura);
-			factura.generarCfdi(sesion);	
+      if(Objects.equals(ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante(), this.orden.getIdTipoComprobante())) {
+  			factura.setComplemento(gestor.toClienteComplemento(sesion));
+  			factura.setDocumentos(gestor.toDocumentosCfdi(sesion));
+  			factura.generarComplemento(sesion);	
+      }  
+      else {
+  			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
+  			factura.setArticulos(gestor.toArticulosCfdi(sesion));
+			  factura.generarFactura(sesion);	
+      } // if  
+      /**KEET**/
 			/*try {
 				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
 			} // try
 			catch (Exception e) {				
 				Error.mensaje(e);				
 			} // catch*/
-		} // try
+		} // try // try
 		catch (Exception e) {			
 			this.messageError= "";
 			throw e;

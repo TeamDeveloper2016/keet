@@ -14,7 +14,9 @@ import mx.org.kaana.libs.facturama.models.request.ProductTax;
 import mx.org.kaana.libs.facturama.models.request.Cfdi;
 import mx.org.kaana.libs.facturama.models.request.CfdiType;
 import mx.org.kaana.libs.facturama.models.request.Item;
+import mx.org.kaana.libs.facturama.models.request.Payment;
 import mx.org.kaana.libs.facturama.models.request.Receiver;
+import mx.org.kaana.libs.facturama.models.request.RelatedDocument;
 import mx.org.kaana.libs.facturama.models.request.Tax;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.services.CfdiService;
@@ -23,6 +25,8 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
+import mx.org.kaana.mantic.facturas.beans.Documento;
+import mx.org.kaana.mantic.facturas.beans.Complemento;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -141,7 +145,7 @@ public class CFDIFactory implements Serializable {
 		Cfdi cfdi      = null;
 		try {
 			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) {
-			  cfdi= loadCfdi(encabezado, detalle);
+			  cfdi= factura(encabezado, detalle);
 			  regresar= createCfdi(cfdi).getId();
 			} // if	
 		} // try
@@ -151,11 +155,25 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createCfdiId	
 	
-	public mx.org.kaana.libs.facturama.models.response.Cfdi createCfdi(ClienteFactura encabezado, List<ArticuloFactura> detalle) throws Exception {
+	public mx.org.kaana.libs.facturama.models.response.Cfdi createFactura(ClienteFactura encabezado, List<ArticuloFactura> detalle) throws Exception {
 		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
 		Cfdi cfdi    = null;
 		try {
-		  cfdi= loadCfdi(encabezado, detalle);
+		  cfdi= this.factura(encabezado, detalle);
+			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) 
+			  regresar= createCfdi(cfdi);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return regresar;
+	} // createCfdi
+	
+	public mx.org.kaana.libs.facturama.models.response.Cfdi createComplemento(Complemento encabezado, List<Documento> documentos) throws Exception {
+		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
+		Cfdi cfdi    = null;
+		try {
+		  cfdi= this.complemento(encabezado, documentos);
 			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) 
 			  regresar= createCfdi(cfdi);
 		} // try
@@ -177,7 +195,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createCfdi
 	
-	private Cfdi loadCfdi(ClienteFactura encabezado, List<ArticuloFactura> detalle){		
+	private Cfdi factura(ClienteFactura encabezado, List<ArticuloFactura> detalle){		
 		Cfdi regresar= null;
 		try {
 			regresar= new Cfdi();
@@ -188,13 +206,13 @@ public class CFDIFactory implements Serializable {
 			regresar.setPaymentForm(encabezado.getMedioPago());
 			regresar.setPaymentMethod(encabezado.getMetodoPago());
 			regresar.setReceiver(toReceiver(encabezado));
-			regresar.setItems(detalleFactura(detalle));
+			regresar.setItems(articulos(detalle));
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch
 		return regresar;
-	} // loadCfdi
+	} // factura
 	
 	private Receiver toReceiver(ClienteFactura encabezado){
 		Receiver regresar= null;
@@ -211,7 +229,56 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // toReceiver
 	
-	private List<Item> detalleFactura(List<ArticuloFactura> articulos){
+	private Cfdi complemento(Complemento encabezado, List<Documento> documentos){		
+		Cfdi regresar= null;
+		try {
+			regresar= new Cfdi();
+			regresar.setCurrency(CURRENCY);
+			regresar.setExpeditionPlace(encabezado.getCodigoPostal());
+			regresar.setPaymentConditions(Cadena.isVacio(encabezado.getObservaciones()) ? null : encabezado.getObservaciones());
+			regresar.setCfdiType(CfdiType.Pago.getValue());
+			regresar.setPaymentForm(encabezado.getMedioPago());
+			regresar.setPaymentMethod(encabezado.getMetodoPago());
+			regresar.setReceiver(this.toReceiver(encabezado));
+      Payment pagos = new Payment();
+      pagos.setDate(encabezado.getFechaPago().toString());
+      pagos.setPaymentForm(encabezado.getMedioPago());
+      pagos.setCurrency(encabezado.getMoneda());
+      pagos.setAmount(encabezado.getTotal());
+			pagos.setRelatedDocument(this.documentos(documentos));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		return regresar;    
+  }
+  
+	private List<RelatedDocument> documentos(List<Documento> documentos){
+    List<RelatedDocument> regresar= null;
+		RelatedDocument related       = null;
+    try {      
+			regresar= new ArrayList<>();
+			for(Documento item: documentos) {
+        related= new RelatedDocument();
+        related.setUuid(item.getId());
+        related.setSerie(item.getSerie());
+        related.setFolio(item.getFolio());
+        related.setCurrency(item.getMoneda());
+        related.setExchageRate(item.getTipoDeCambio());
+        related.setPaymentMethod(item.getMetodoPago());
+        related.setPartialityNumber(item.getParcialidad().intValue());
+        related.setPreviousBalanceAmount(item.getSaldo());
+        related.setAmountPaid(item.getPagado());
+      } // for
+      regresar.add(related);
+    } // try
+    catch (Exception e) {
+			throw e;
+    } // catch	
+    return regresar;
+  }
+  
+	private List<Item> articulos(List<ArticuloFactura> articulos){
 		List<Item> regresar= null;
 		Item articulo      = null;
 		try {
@@ -243,7 +310,7 @@ public class CFDIFactory implements Serializable {
 			throw e;
 		} // catch		
 		return regresar;		
-	} // detalleFactura
+	} // articulos
 	
 	private List<Tax> toTaxArticulo(ArticuloFactura articulo){
 		List<Tax> regresar= null;
@@ -262,7 +329,7 @@ public class CFDIFactory implements Serializable {
 			throw e;
 		} // catch		
 		return regresar;		
-	} // detalleFactura
+	} // toTaxArticulo
 	
 	public String createClientId(ClienteFactura detalleCliente) throws Exception {
 		String regresar= null;

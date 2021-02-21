@@ -44,6 +44,7 @@ import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
+import mx.org.kaana.mantic.facturas.enums.ETiposComprobantes;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -618,7 +619,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 //		if(row.toLong("idFacturaEstatus").equals(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura()))
 //			regresar= "janal-tr-nuevo";
 //		else 
-     if(row.toLong("idTipoComprobante").equals(1L))
+     if(!row.toLong("idTipoComprobante").equals(ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante()))
 			  regresar= "janal-tr-diferencias";
 		return regresar;
 	}  // doFacturaColor

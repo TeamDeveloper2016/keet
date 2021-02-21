@@ -35,7 +35,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -364,18 +364,18 @@ public class Filtro extends Comun implements Serializable {
 	} // doFindArticulo
 	
 	public void doPublicarFacturama(){
-		TransaccionFactura transaccion= null;
+		Facturama transaccion= null;
 		CFDIGestor gestor             = null;
 		ArticuloFactura articulo      = null;
 		try {
 			gestor= new CFDIGestor(((Entity)this.attrs.get("seleccionado")).getKey());
 			articulo= gestor.toArticuloFactura();			
-			transaccion= new TransaccionFactura(articulo);
+			transaccion= new Facturama(articulo);
 			if(transaccion.ejecutar(EAccion.AGREGAR))
 				JsfBase.addMessage("Registrar articulo en facturama", "Se registro de forma correcta.");
 			else
 				JsfBase.addMessage("Registrar articulo en facturama", "Ocurrio un error al registrar el articulo en facturama.");			
-		} // try
+		} // try // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			

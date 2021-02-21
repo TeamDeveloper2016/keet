@@ -246,4 +246,5 @@ public class ArticuloFactura implements Serializable, IBaseDto {
 	public Class toHbmClass() {
 		return ArticuloFactura.class;
 	}
+  
 }

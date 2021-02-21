@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.event.AjaxBehaviorEvent;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -925,16 +926,18 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 		try {
 			params= new HashMap<>();
 			campos= new ArrayList<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      if(Objects.equals(1L, this.idTipo))
+			  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else
+			  params.put(Constantes.SQL_CONDICION, "id_uso_cfdi= 22");
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			cfdis= UIEntity.seleccione("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS, "clave");
+			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("cfdis", cfdis);
-			this.attrs.put("cfdi", new UISelectEntity("-1"));
-			for(UISelectEntity record: cfdis) {
-				if(record.getKey().equals(1L))
-					this.attrs.put("cfdi", record);
-			} // for
+      if(cfdis!= null && !cfdis.isEmpty())
+				this.attrs.put("cfdi", cfdis.get(0));
+      else
+			  this.attrs.put("cfdi", new UISelectEntity("-1"));
 		} // try
 		catch (Exception e) {			
 			throw e;

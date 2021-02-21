@@ -12,7 +12,7 @@ import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
-import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -29,7 +29,7 @@ import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import org.hibernate.Session;
 
-public class Transaccion extends TransaccionFactura{
+public class Transaccion extends Facturama{
 
 	private static final Long ELABORADA= 1L;
 	private Totales totales;
