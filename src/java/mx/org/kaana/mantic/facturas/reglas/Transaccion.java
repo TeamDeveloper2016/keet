@@ -515,20 +515,20 @@ public class Transaccion extends Facturama {
   			factura.setComplemento(gestor.toClienteComplemento(sesion));
   			factura.setDocumentos(gestor.toDocumentosCfdi(sesion));
   			factura.generarComplemento(sesion);	
-      }  
+      } // else 
       else {
   			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
   			factura.setArticulos(gestor.toArticulosCfdi(sesion));
 			  factura.generarFactura(sesion);	
       } // if  
       /**KEET**/
-			/*try {
+			try {
 				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
 			} // try
 			catch (Exception e) {				
 				Error.mensaje(e);				
-			} // catch*/
-		} // try // try
+			} // catch
+		} // try 
 		catch (Exception e) {			
 			this.messageError= "";
 			throw e;
