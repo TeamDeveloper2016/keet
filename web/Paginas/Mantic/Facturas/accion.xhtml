@@ -113,7 +113,7 @@
 		</script>   
 		<style type="text/css">
 			.janal-total-compra {
-				font-size: 30px !important;
+				font-size: 26px !important;
 				font-weight: bold !important;
 				font-style: italic;	
 			}			
@@ -383,7 +383,7 @@
               <p:panelGrid id="deudor" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" rendered="#{not empty manticFacturasAccion.saldoCliente.mensaje}">
                 <p:outputLabel value="#{manticFacturasAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange"/>
               </p:panelGrid>						
-              <p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" style="height:380px !important;" columnClasses="janal-wid-80, janal-wid-20">					
+              <p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" style="height:380px !important;" columnClasses="janal-wid-85, janal-wid-15">					
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >					
                   <p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
                     <p:column class="MarAuto Responsive janal-wid-3">
@@ -431,7 +431,8 @@
                       <f:facet name="header">
                         <h:outputText value="Concepto"/>
                       </f:facet>
-                      <p:inputText id="nombres" value="#{row['nombre']}" title="#{row['nombre']}" styleClass="janal-wid-100-txt key-event-sat filas" onblur="$(this).attr('title', $(this).val());"/>
+                      <p:inputTextarea id="nombres" value="#{row['nombre']}" title="#{row['nombre']}" styleClass="janal-wid-100-txt key-event-sat filas" onblur="$(this).attr('title', $(this).val());" rows="1" autoResize="true" maxlength="255" counterTemplate="{0} caracteres restantes"/>
+                      <!--h:outputText id="display" class="p-d-block" /-->
                     </p:column>										
                     <p:column class="MarAuto Responsive janal-wid-8" rendered="false">
                       <f:facet name="header">
@@ -452,7 +453,7 @@
                       <p:outputLabel value="#{row['cantidad']}"/>
                       <p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
                     </p:column>		
-                    <p:column class="precios janal-column-right MarAuto Responsive janal-wid-8">
+                    <p:column class="precios janal-column-right MarAuto Responsive janal-wid-10">
                       <f:facet name="header">
                         <h:outputText value="Precio"/>
                       </f:facet>
@@ -479,7 +480,7 @@
                       </f:facet>
                       <p:outputLabel value="#{row['impuestos$']}"/>
                     </p:column>		
-                    <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
                       <f:facet name="header">
                         <h:outputText value="Importe"/>
                       </f:facet>
@@ -509,9 +510,9 @@
                     <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasAccion.adminOrden.totales.subTotalDosDecimales$}"/>
                     <p:outputLabel value="IVA:"/>
                     <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasAccion.adminOrden.totales.ivaDosDecimales$}"/>
-                    <p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
-                    <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticFacturasAccion.adminOrden.totales.totalDosDecimales$}"/>
                   </p:panelGrid>
+                  <p:outputLabel for="total" value="Total:" styleClass="janal-wid-100-txt janal-total-compra janal-color-orange"/>
+                  <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticFacturasAccion.adminOrden.totales.totalDosDecimales$}"/>
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>

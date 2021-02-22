@@ -44,8 +44,10 @@ public class CFDIFactory implements Serializable {
 	private static final long serialVersionUID =-5361573067043698091L;
   private static final String USER           = "CAFUCONSTRUCCIONES";
   private static final String PASSWORD       = "CAFU-TEMPORAL";
-  private static final String USER_PU        = "FERRBONANZASANDBOX";
-  private static final String PASSWORD_PU    = "zabonan2018sandbox";
+  // private static final String USER_PU        = "FERRBONANZASANDBOX";
+  // private static final String PASSWORD_PU    = "zabonan2018sandbox";
+  private static final String USER_PU        = "jimenez76";
+  private static final String PASSWORD_PU    = "jimenez76";
   private static final String DESCRIPCION_IVA= "IVA";
   private static final String CURRENCY       = "MXN";  
 	
@@ -124,7 +126,7 @@ public class CFDIFactory implements Serializable {
 		File result= new File(path);		
 		if (!result.exists())
 			result.mkdirs();
-		result= new File(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()));
+		// result= new File(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()));
 		this.facturama.Cfdis().SavePdf(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()), id);
 	}	
 
