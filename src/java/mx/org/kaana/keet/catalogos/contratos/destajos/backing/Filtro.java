@@ -108,7 +108,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 				this.attrs.put("especialidad", idDepartamento);
 				this.doLoadFiguras();				
 				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));
-				doLoad();
+				this.doLoad();
 			} // if
     } // try // try
     catch (Exception e) {

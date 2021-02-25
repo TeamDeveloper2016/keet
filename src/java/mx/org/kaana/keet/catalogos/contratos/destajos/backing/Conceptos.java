@@ -147,7 +147,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		try {
 			regresar= new HashMap<>();
 			regresar.put("idDepartamento", this.attrs.get("idDepartamento"));
-			regresar.put("clave", toClaveEstacion());
+			regresar.put("clave", this.toClaveEstacion());
 			regresar.put("estatus", EEstacionesEstatus.INICIAR.getKey() + "," + EEstacionesEstatus.EN_PROCESO.getKey() + "," + EEstacionesEstatus.TERMINADO.getKey());			
 			regresar.put("nombreConcepto", this.attrs.get("nombreConcepto").toString().toUpperCase());			
 		} // try
@@ -157,12 +157,12 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		return regresar;
 	} // toPrepare
 	
-	private String toClaveEstacion(){
+	private String toClaveEstacion() {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
-			regresar.append(Fecha.getAnioActual());
+			regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("orden"), 3, '0', true));
 		} // try

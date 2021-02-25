@@ -75,7 +75,7 @@
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
 					<p:dataGrid var="row" value="#{keetCatalogosContratosDestajosFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index"
-											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosDestajosFiltro.lazyModel.rowCount gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
+											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosDestajosFiltro.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
 											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
 											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
