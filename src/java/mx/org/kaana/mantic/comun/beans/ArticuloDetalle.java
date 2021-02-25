@@ -131,7 +131,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
   public String getCosto$() {
-		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto());
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.getCosto());
   }
 
   public void setDescuento(String descuento) {
@@ -204,6 +204,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 
   public Double getCantidad() {
     return Numero.toRedondearSat(Cadena.isVacio(cantidad)? 1d: cantidad);
+  }
+
+  public String getCantidad$() {
+    return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(Cadena.isVacio(cantidad)? 1d: cantidad));
   }
 
   public void setIdArticulo(Long idArticulo) {

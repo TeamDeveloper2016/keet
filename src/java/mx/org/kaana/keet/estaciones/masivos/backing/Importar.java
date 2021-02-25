@@ -80,36 +80,6 @@ public class Importar extends IBaseImportar implements Serializable {
 				this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
 			else
 				this.categoria= ECargaMasiva.ESTACIONES;
-//			if(JsfBase.getFlashAttribute("idTipoMasivo")!= null)
-//				switch(((Long)JsfBase.getFlashAttribute("idTipoMasivo")).intValue()) {
-//					case 9:
-//						this.categoria= ECargaMasiva.ESTACIONES;
-//   			    this.toLoadContratosLotes();
-//						break;
-//					case 10:
-//						this.categoria= ECargaMasiva.PERSONAL;
-//						break;
-//					case 11:
-//						this.categoria= ECargaMasiva.PLANTILLAS;
-//      			this.toLoadPrototipos();
-//						break;
-//					case 12:
-//						this.categoria= ECargaMasiva.MATERIALES;
-//   			    this.toLoadContratosLotes();
-//						break;
-//					case 13:
-//						this.categoria= ECargaMasiva.PRECIOS;
-//      			this.toLoadProveedores();
-//						break;
-//					case 14:
-//						this.categoria= ECargaMasiva.PRECIOS_CONVENIO;
-//      			this.toLoadProveedores();
-//      			this.toLoadClientes();
-//						break;
-//				} // switch
-//			else {
-//				this.categoria= ECargaMasiva.ESTACIONES;
-//			} // if
 			this.attrs.put("xls", ""); 
 			this.attrs.put("tuplas", 0L);
 			this.masivo = new TcManticMasivasArchivosDto(
@@ -319,7 +289,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		UIBackingUtilities.update("catalogo @(.involucrados) @(.importado) @(.janal-upload-frame)");
 		switch(this.masivo.getIdTipoMasivo().intValue()) {
 			case 9: 
-				this.categoria= ECargaMasiva.PERSONAL;
+				this.categoria= ECargaMasiva.ESTACIONES;
         UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratoLote', {validaciones: 'requerido', mascara: 'libre'});");			
 				break;
 			case 10: 

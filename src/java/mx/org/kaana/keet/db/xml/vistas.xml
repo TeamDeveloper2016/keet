@@ -1700,9 +1700,9 @@
 				  '00111100' as sat,
 				  tc_keet_estaciones.nombre,
 				  0 as cantidad,
-				  round(tc_keet_contratos_destajos_proveedores.costo, 4) as subtotal,
-				  round(tc_keet_contratos_destajos_proveedores.costo* 0.16, 4) as iva,
-				  round(tc_keet_contratos_destajos_proveedores.costo* 1.16, 4) as total
+				  round(tc_keet_contratos_destajos_proveedores.costo, 2) as subtotal,
+				  round(tc_keet_contratos_destajos_proveedores.costo* 0.16, 2) as iva,
+				  round(tc_keet_contratos_destajos_proveedores.costo* 1.16, 2) as total
 			  from
 				  tc_keet_contratos_lotes_proveedores
 			  inner join
@@ -2564,6 +2564,17 @@
 					group by
 						tc_keet_proveedores_departamentos.id_proveedor				  
 					 ) as departamento,
+          (select 
+						group_concat(tc_keet_departamentos.id_departamento separator ',')
+					from
+						tc_keet_proveedores_departamentos
+					inner join
+						tc_keet_departamentos on tc_keet_proveedores_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+					where 
+						tc_mantic_proveedores.id_proveedor= tc_keet_proveedores_departamentos.id_proveedor
+					group by
+						tc_keet_proveedores_departamentos.id_proveedor				  
+					 ) as ids_departamento,        
 					'SUBCONTRATISTA' puesto,
 					tc_mantic_proveedores.id_activo,
 					1 id_nomina,
@@ -2648,14 +2659,15 @@
 						 ) as departamento,
 					'SUBCONTRATISTA' puesto,
 					tc_mantic_proveedores.id_activo,
-					1 id_nomina,
-					tc_mantic_proveedores.rfc nss,
-					tc_mantic_proveedores.razon_social nombres,
-					'' paterno,
-					'' materno,					
+					1 as id_nomina,
+          2 as id_seguro,
+					tc_mantic_proveedores.rfc as nss,
+					tc_mantic_proveedores.razon_social as nombres,
+					'' as paterno,
+					'' as materno,					
 					tc_mantic_proveedores.rfc,					
-					tc_mantic_proveedores.rfc curp,					
-					2 tipo
+					tc_mantic_proveedores.rfc as curp,					
+					2 as tipo
         from                				
 					tc_mantic_proveedores				
         where 
@@ -2781,8 +2793,8 @@
 					select 
 						convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,						
 						concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) nombre_completo,
-						tc_mantic_puestos.nombre puesto,
-						tc_keet_departamentos.nombre departamento,						
+						tc_mantic_puestos.nombre as puesto,
+						tc_keet_departamentos.nombre as departamento,						
 						tr_mantic_empresa_personal.id_activo,												
 						1 tipo  																																																
 					from 
@@ -2802,8 +2814,8 @@
 					union
 					select 
 						convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,    						
-						tc_mantic_proveedores.razon_social nombre_completo,				
-						'SUBCONTRATISTA' puesto,  
+						tc_mantic_proveedores.razon_social as nombre_completo,				
+						'SUBCONTRATISTA' as puesto,  
 						(select 
 							group_concat(tc_keet_departamentos.nombre separator ', ')
 						from
@@ -2816,7 +2828,7 @@
 							tc_keet_proveedores_departamentos.id_proveedor				  
 						 ) as departamento,
 						tc_mantic_proveedores.id_activo,												   										
-						2 tipo  
+						2 as tipo  
 					from 
 						tc_mantic_proveedores
 					inner join 
@@ -5336,7 +5348,7 @@
 					convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
 					tc_keet_departamentos.nombre departamento,
 					tc_keet_departamentos.id_departamento as ids_departamento,
-					tc_mantic_puestos.nombre puesto,
+					tc_mantic_puestos.nombre as puesto,
 					tr_mantic_empresa_personal.id_activo,
 					tr_mantic_empresa_personal.id_nomina,
 					tr_mantic_empresa_personal.nss,
@@ -5345,7 +5357,7 @@
 					tc_mantic_personas.materno,					
 					tc_mantic_personas.rfc,					
 					tc_mantic_personas.curp,					          
-					1 tipo,
+					1 as tipo,
 					tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista,
 					tc_keet_contratos_lotes_contratistas.id_contrato_lote,
 					tc_keet_contratos_lotes_contratistas.id_empresa_persona,
@@ -5396,19 +5408,19 @@
 					group by
 						tc_keet_proveedores_departamentos.id_proveedor				  
 					 ) as ids_departamento,
-					'SUBCONTRATISTA' puesto,
+					'SUBCONTRATISTA' as puesto,
 					tc_mantic_proveedores.id_activo,
-					1 id_nomina,
-					tc_mantic_proveedores.rfc nss,
-					tc_mantic_proveedores.razon_social nombres,
-					'' paterno,
-					'' materno,					
+					1 as id_nomina,
+					tc_mantic_proveedores.rfc as nss,
+					tc_mantic_proveedores.razon_social as nombres,
+					'' as paterno,
+					'' as materno,					
 					tc_mantic_proveedores.rfc,					
-					tc_mantic_proveedores.rfc curp,					
-					2 tipo,					
+					tc_mantic_proveedores.rfc as curp,					
+					2 as tipo,					
 					tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor id_contrato_lote_contratista,
 					tc_keet_contratos_lotes_proveedores.id_contrato_lote,
-					tc_keet_contratos_lotes_proveedores.id_proveedor id_empresa_persona,
+					tc_keet_contratos_lotes_proveedores.id_proveedor as id_empresa_persona,
 					tc_keet_contratos_lotes_proveedores.observaciones,
 					tc_keet_contratos_lotes_proveedores.id_trabajo,
 					tc_keet_contratos_lotes_proveedores.id_usuario,

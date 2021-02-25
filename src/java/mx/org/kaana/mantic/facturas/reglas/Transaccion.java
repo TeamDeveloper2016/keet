@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.facturas.reglas;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +21,15 @@ import static mx.org.kaana.kajool.enums.ESql.INSERT;
 import static mx.org.kaana.kajool.enums.ESql.SELECT;
 import static mx.org.kaana.kajool.enums.ESql.UPDATE;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
+import mx.org.kaana.keet.db.dto.TcManticClientesDeudasBitacoraDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.Facturama;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
@@ -35,6 +37,9 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
@@ -51,6 +56,7 @@ import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.beans.Documento;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.beans.Parcial;
+import mx.org.kaana.mantic.facturas.enums.EEstatusClientesDeudas;
 import mx.org.kaana.mantic.facturas.enums.ETiposComprobantes;
 import org.apache.log4j.Logger;
 
@@ -184,9 +190,10 @@ public class Transaccion extends Facturama {
 									CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
 									factura.setCancelada(LocalDateTime.now());
 									regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
+                  this.cancelDocumentosPagos(sesion);
 								} // if
 								else
-									throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
+									throw new Exception("No fue posible cancelar el documento, por favor vuelva a intentarlo !");															
 							} // else if
 					} // if
 					break;								
@@ -207,13 +214,14 @@ public class Transaccion extends Facturama {
 					this.messageError= "Ocurrio un error al cancelar la factura.";
 					params= new HashMap<>();
 					params.put("idFactura", this.orden.getIdFactura());
-					factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
+					factura= (TcManticFacturasDto)DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 					if(factura!= null && factura.getIdFacturama()!= null) {
 						CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
 						factura.setCancelada(LocalDateTime.now());
 						factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
 						regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
-						this.registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "Cancelación de factura.".concat(this.justificacion));
+						this.registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "CANCELADA ".concat(this.justificacion));
+            this.cancelDocumentosPagos(sesion);
 					} // if
 					else
 						throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
@@ -271,9 +279,8 @@ public class Transaccion extends Facturama {
 		Siguiente consecutivo    = null;
 		Siguiente cuenta         = null;
 		Long idFactura           = -1L;
-		Map<String, Object>params= null;
 		try {									
-			idFactura= registrarFactura(sesion);										
+			idFactura= this.registrarFactura(sesion);										
 			if(idFactura>= 1L) {
 				consecutivo= this.toSiguiente(sesion);			
         if(this.getOrden().getIdContrato()!= null && this.getOrden().getIdContrato()<= 0)
@@ -288,13 +295,8 @@ public class Transaccion extends Facturama {
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 				this.orden.setIdFactura(idFactura);
 				if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L) {
-					params= new HashMap<>();
-					// Este campo ya no se va a utilizar porque toda va a caer en venta, las facturas ficticias tienden a desaparecer
-					params.put("idVenta", this.orden.getIdVenta());
-					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, idFactura, params)>= 1L){					
-						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
-						this.toFillArticulos(sesion);
-					} // if	
+  				regresar= this.registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
+					this.toFillArticulos(sesion);
 				} // if
         this.checkContratoDomicilio(sesion);
         this.checkComplementoPago(sesion);
@@ -513,20 +515,21 @@ public class Transaccion extends Facturama {
 			gestor = new CFDIGestor(this.orden.getIdFicticia());			
 			factura= new Facturama();
 			factura.getCliente().setIdFactura(idFactura);
+      /**KEET**/
       if(Objects.equals(ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante(), this.orden.getIdTipoComprobante())) {
   			factura.setComplemento(gestor.toClienteComplemento(sesion));
   			factura.setDocumentos(gestor.toDocumentosCfdi(sesion));
-  			factura.generarComplemento(sesion);	
-        this.toCheckFacturasPagos(sesion);
+  			// factura.generarComplemento(sesion);	
+        this.toCheckFacturasPagos(sesion, factura.getDocumentos());
       } // else 
       else {
   			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
   			factura.setArticulos(gestor.toArticulosCfdi(sesion));
-			  factura.generarFactura(sesion);	
+			  // factura.generarFactura(sesion);	
+        this.toRecordDeuda(sesion, this.orden.getTotal());
       } // if  
-      /**KEET**/
 			try {
-				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
+				// CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
 			} // try
 			catch (Exception e) {				
 				Error.mensaje(e);				
@@ -744,23 +747,94 @@ public class Transaccion extends Facturama {
     } // finally
   }
   
-  public void toCheckFacturasPagos(Session sesion) {
-    List<Columna> columns = null;    
-    Map<String, Object> params = null;
+  public void toCheckFacturasPagos(Session sesion, List<Documento> documentos) throws Exception {
+    this.toCheckFacturasPagos(sesion, documentos, "");
+  }
+  
+  public void toCheckFacturasPagos(Session sesion, List<Documento> documentos, String leyenda) throws Exception {
+    mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion pagos= null;
     try {      
-      params = new HashMap<>();      
-      params.put("id", 1L);      
-      columns = new ArrayList<>();
-      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
-      // Entity entity = DaoFactory.getInstance().toEntity("", "", params);
+		  TcManticClientesPagosDto pago= new TcManticClientesPagosDto();
+      pago.setIdUsuario(JsfBase.getIdUsuario());
+      pago.setObservaciones(leyenda+ " COMPLEMENTO DE PAGO "+ this.orden.getTicket()+ " ["+ Global.format(EFormatoDinamicos.FECHA_HORA, this.orden.getRegistro())+ "]");
+      pago.setPago(this.orden.getTotal());
+      pago.setFechaPago(this.orden.getFechaPago().toLocalDate());
+      pago.setIdTipoMedioPago(this.orden.getIdTipoPago());
+      pagos= new mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion(
+        pago, // TcManticClientesPagosDto pago, 
+        this.orden.getIdCliente(), // Long idCliente, 
+        this.orden.getIdBanco(), // Long idBanco, 
+        this.orden.getReferencia(), // String referencia, 
+        Collections.EMPTY_LIST, // List<Entity> cuentas, 
+        false // boolean saldar
+      );
+      pagos.procesarComplementoPago(sesion, documentos);
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
+      throw e;
+    } // catch	
+  }
+  
+  public void cancelDocumentosPagos(Session sesion) throws Exception {
+    Map<String, Object> params= null;
+  	CFDIGestor gestor         = null;
+    try {
+      params= new HashMap<>();      
+      params.put("idVenta", this.orden.getIdVenta());      
+      params.put("idVentaEstatus", EEstatusFicticias.CANCELADA.getIdEstatusFicticia());      
+      params.put("observaciones", "CANCELADA "+ Global.format(EFormatoDinamicos.FECHA_HORA, LocalDateTime.now())+ " POR ["+ JsfBase.getAutentifica().getCredenciales().getCuenta()+ "]");
+      DaoFactory.getInstance().updateAll(sesion, TcManticVentasDto.class, params, "cancelo");
+      if(Objects.equals(ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante(), this.orden.getIdTipoComprobante())) {
+        gestor= new CFDIGestor(this.orden.getIdFicticia());
+        List<Documento> documentos= gestor.toDocumentosCfdi(sesion);
+        if(documentos!= null && !documentos.isEmpty()) {
+          for(Documento item: documentos) {
+            item.setInsoluto(item.getInsoluto()+ item.getPagado());
+            item.setPagado(item.getPagado()* -1D);
+            params.put("idVenta", item.getIdDetalle());      
+            params.put("pagado", item.getPagado());      
+            DaoFactory.getInstance().updateAll(sesion, TcManticVentasDto.class, params, "depuro");
+          } // for
+          this.toCheckFacturasPagos(sesion, documentos, "CANCELADO");
+        } // if  
+      } // if
+      else {
+        params.put("idCliente", this.orden.getIdCliente());      
+        params.put("idClienteDeudaEstatus", EEstatusClientesDeudas.CANCELADA.getIdClienteDeudaEstatus());
+        DaoFactory.getInstance().updateAll(sesion, TcManticClientesDeudasDto.class, params, "cancelo");
+        // CHECAR COMO SE ALMACENA EL VALOR DEL SALDO EN LA TABLA DE CLIENTES, SI ES EL LIMITE DE CREDITO LAS VENTAS A CREDITO
+        DaoFactory.getInstance().updateAll(sesion, TcManticClientesDto.class, params, "cancelo");
+      } // if  
+    } // try
+    catch (Exception e) {
+      throw e;
     } // catch	
     finally {
       Methods.clean(params);
-      Methods.clean(columns);
     } // finally
   }
+  
+  protected void toRecordDeuda(Session sesion, Double importe) throws Exception {
+		TcManticClientesDeudasDto deuda= null;		
+		deuda= new TcManticClientesDeudasDto();
+		deuda.setIdVenta(this.orden.getIdVenta());
+		deuda.setIdCliente(this.orden.getIdCliente());
+		deuda.setIdUsuario(JsfBase.getIdUsuario());
+		deuda.setImporte(importe);
+		deuda.setSaldo(importe);
+		deuda.setLimite(this.toLimiteCredito(sesion));
+		deuda.setIdClienteDeudaEstatus(EEstatusFicticias.ABIERTA.getIdEstatusFicticia()); // INICIADA
+		DaoFactory.getInstance().insert(sesion, deuda);		
+    TcManticClientesDeudasBitacoraDto registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
+    DaoFactory.getInstance().insert(sesion, registro);		
+	} // registrarDeuda  
+  
+	public LocalDate toLimiteCredito(Session sesion) throws Exception {
+		TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
+		Long addDias= cliente.getPlazoDias();			
+		LocalDate regresar= LocalDate.now();			
+		regresar.plusDays(addDias.intValue());
+		return regresar;
+	} // toLimiteCredito
+  
 } 

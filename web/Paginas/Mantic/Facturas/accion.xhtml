@@ -246,7 +246,7 @@
 					</p:panelGrid>					
           <p:remoteCommand name="reloadContrato" process="@this" update="idContrato"/>
           <p:remoteCommand name="reloadDesarrollo" process="@this" update="idDesarrollo"/>
-					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-30, janal-wid-40">	
+					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-40, janal-wid-45">	
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
 							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasAccion.attrs.cliente}" completeMethod="#{manticFacturasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
@@ -274,7 +274,7 @@
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 							<p:outputLabel for="idCliente" value="Cliente seleccionado:"/>							
 							<p:selectOneMenu id="idCliente" value="#{manticFacturasAccion.adminOrden.orden.ikCliente}" var="item" styleClass="todos janal-wid-100-txt" converter="janal.convertidor.Entity">								
-								<f:selectItems value="#{manticFacturasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+								<f:selectItems value="#{manticFacturasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
@@ -288,8 +288,8 @@
 						</p:panelGrid>						
             <p:panelGrid id="panelDomicilio" columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="domicilio" value="Domicilio:"/>
-              <p:selectOneMenu id="domicilio" placeholder="Seleccionar un cliente" value="#{manticFacturasAccion.attrs.domicilio}" var="item" styleClass="todos janal-wid-100-txt" converter="janal.convertidor.Entity">															
-                <f:selectItems value="#{manticFacturasAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} #{empty element.numeroInterior.data ? ' ': ' - '+ element.numeroInterior.toString}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad}, #{element.municipio}"/>
+              <p:selectOneMenu id="domicilio" placeholder="Seleccionar un cliente" value="#{manticFacturasAccion.attrs.domicilio}" var="item" styleClass="todos janal-wid-100-txt" converter="janal.convertidor.Entity">
+                <f:selectItems value="#{manticFacturasAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} #{empty element.numeroInterior.data ? ' ': ' - '+ element.numeroInterior.toString}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad},"/>
                 <p:column headerText="Calle">
                   <h:outputText value="#{item.calle}"/>
                 </p:column>   
@@ -431,7 +431,7 @@
                       <f:facet name="header">
                         <h:outputText value="Concepto"/>
                       </f:facet>
-                      <p:inputTextarea id="nombres" value="#{row['nombre']}" title="#{row['nombre']}" styleClass="janal-wid-100-txt key-event-sat filas" onblur="$(this).attr('title', $(this).val());" rows="1" autoResize="true" maxlength="255" counterTemplate="{0} caracteres restantes"/>
+                      <p:inputTextarea id="nombres" value="#{row['nombre']}" title="#{row['nombre']}" styleClass="janal-wid-100-txt key-event-sat filas" onblur="$(this).attr('title', $(this).val());" rows="1" autoResize="true" maxlength="1000" counterTemplate="{0} caracteres restantes"/>
                       <!--h:outputText id="display" class="p-d-block" /-->
                     </p:column>										
                     <p:column class="MarAuto Responsive janal-wid-8" rendered="false">
@@ -450,16 +450,16 @@
                       <f:facet name="header">
                         <h:outputText value="Cantidad"/>
                       </f:facet>
-                      <p:outputLabel value="#{row['cantidad']}"/>
+                      <p:outputLabel value="#{row['cantidad$']}"/>
                       <p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
                     </p:column>		
                     <p:column class="precios janal-column-right MarAuto Responsive janal-wid-10">
                       <f:facet name="header">
                         <h:outputText value="Precio"/>
                       </f:facet>
-                      <p:outputLabel value="#{row['costo']}"/>
-                      <p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-                      <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
+                      <p:outputLabel value="#{row['costo$']}"/>
+                      <p:inputText id="values" value="#{row['valor']}" style="display:none" converter="javax.faces.Double"/>
+                      <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none" converter="javax.faces.Double"/>
                     </p:column>				
                     <p:column class="janal-column-right MarAuto Responsive janal-wid-8" rendered="false">
                       <f:facet name="header">
@@ -511,8 +511,8 @@
                     <p:outputLabel value="IVA:"/>
                     <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasAccion.adminOrden.totales.ivaDosDecimales$}"/>
                   </p:panelGrid>
-                  <p:outputLabel for="total" value="Total:" styleClass="janal-wid-100-txt janal-total-compra janal-color-orange"/>
-                  <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticFacturasAccion.adminOrden.totales.totalDosDecimales$}"/>
+                  <p:outputLabel for="total" value="Total:" styleClass="janal-wid-100-txt janal-column-right janal-total-compra janal-color-orange"/>
+                  <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange janal-column-right" value="$ #{manticFacturasAccion.adminOrden.totales.totalDosDecimales$}"/>
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>

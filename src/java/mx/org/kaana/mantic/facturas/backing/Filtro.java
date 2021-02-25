@@ -684,6 +684,13 @@ public class Filtro extends FiltroFactura implements Serializable {
 			ticketVenta = new FacturaFicticia();
 			ticketVenta.setKey(seleccionado.getKey());
 			ticketVenta.setIdFactura(seleccionado.toLong("idFactura"));
+			ticketVenta.setIdCliente(seleccionado.toLong("idCliente"));
+      ticketVenta.setTotal(seleccionado.toDouble("total"));
+      ticketVenta.setTicket(seleccionado.toString("ticket"));
+      ticketVenta.setIdTipoMedioPago(seleccionado.toLong("idTipoMedioPago"));
+      ticketVenta.setFechaPago(seleccionado.toTimestamp("fechaPago"));
+      ticketVenta.setIdBanco(seleccionado.toLong("idBanco"));
+      ticketVenta.setReferencia(seleccionado.toString("referencia"));
 			transaccion= new Transaccion(ticketVenta, (String) this.attrs.get("justificacionCancelar"));
 			if(transaccion.ejecutar(EAccion.DEPURAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);

@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.db.comun.operation.Insert;
 import mx.org.kaana.kajool.db.comun.operation.Select;
 import mx.org.kaana.kajool.db.comun.operation.Update;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -163,7 +164,7 @@ public class Complemento extends Catalogos {
         this.documento.setIdDetalle(this.documento.getIkFactura().toLong("idDetalle"));
         this.documento.setIdCliente(this.documento.getIkFactura().toLong("idCliente"));
         this.documento.setGlobal(this.documento.getIkFactura().toDouble("global"));
-        this.documento.setParcialidad(1L);
+        this.documento.setParcialidad(this.toLookNextParcial(facturas.get(index).toLong("idDetalle")));
       } // if  
     } // try
     catch (Exception e) {
@@ -187,7 +188,7 @@ public class Complemento extends Catalogos {
     Documento clon= this.documento;
     if(item== null) {
       ((FacturaFicticia)this.getAdminOrden().getOrden()).getDocumentos().add(new Insert(this.documento));
-        ((FacturaFicticia)this.getAdminOrden().getOrden()).toAdd(clon.getPagado());
+      ((FacturaFicticia)this.getAdminOrden().getOrden()).toAdd(clon.getPagado());
     } // if
     else
       if(item instanceof Delete) {
@@ -265,5 +266,25 @@ public class Complemento extends Catalogos {
 		if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
 	} // loadOrdenVenta
+
+  public Long toLookNextParcial(Long idVenta) {
+    Long regresar= 1L;
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idVenta", idVenta);
+      Value value = DaoFactory.getInstance().toField("TcKeetVentasPagosDto", "siguiente", params, "parcialidad");
+      if(value!= null && value.getData()!= null)
+        regresar= value.toLong();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  } 
   
 }

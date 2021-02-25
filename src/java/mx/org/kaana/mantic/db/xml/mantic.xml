@@ -3537,6 +3537,17 @@
         where 
           {condicion} 
       </select>
+			<update id="cancelo">
+				update 
+				  tc_mantic_clientes 
+			  inner join
+					tc_mantic_clientes_deudas on tc_mantic_clientes.id_cliente= tc_mantic_clientes_deudas.id_cliente
+				set 
+          tc_mantic_clientes.saldo= round(tc_mantic_clientes.saldo- tc_mantic_clientes_deudas.saldo, 2)
+				where
+					tc_mantic_clientes_deudas.id_cliente= {idCliente}
+					and tc_mantic_clientes_deudas.id_venta= {idVenta}
+			</update>
 		</unit>		
 		<unit id="TcManticImagenesDto">
       <select id="row">
@@ -4753,6 +4764,24 @@
 				where 
 				  id_venta= {idVenta}
 			</update>
+			<update id="cancelo">
+				update 
+				  tc_mantic_ventas 
+				set 
+          id_venta_estatus= {idVentaEstatus},
+          observaciones= concat(observaciones,' ', '{observaciones}')
+				where 
+				  id_venta= {idVenta}
+			</update>
+			<update id="depuro">
+				update 
+				  tc_mantic_ventas 
+				set 
+				  saldo= round(saldo+ {pagado}, 2),
+          diferencia= round(diferencia- {pagado}, 2)
+				where 
+				  id_venta= {idVenta}
+			</update>
     </unit>
     <unit id="TcManticVentasDetallesDto">
       <select id="row">
@@ -5362,6 +5391,16 @@
 				order by
 				  tc_mantic_clientes_deudas.registro
       </select>
+			<update id="cancelo">
+				update 
+				  tc_mantic_clientes_deudas 
+				set 
+          id_cliente_deuda_estatus= {idClienteDeudaEstatus},
+          observaciones= concat(observaciones, ' ', '{observaciones}')
+				where 
+          id_cliente= {idCliente}
+				  and id_venta= {idVenta}
+			</update>
     </unit>
     <unit id="TcManticClientesPagosDto">
       <select id="row">

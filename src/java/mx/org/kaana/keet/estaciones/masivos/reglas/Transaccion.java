@@ -122,7 +122,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
       } // if
     } // tyr
 		catch (Exception e) {
-      throw new Exception(messageError.concat("<br/>") + e.getMessage());
+      throw new Exception(messageError.concat("<br/>")+ e);
     } // catch
     return regresar;
   }

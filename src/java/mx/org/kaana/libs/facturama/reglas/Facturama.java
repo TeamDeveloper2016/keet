@@ -345,19 +345,22 @@ public class Facturama extends IBaseTnx {
 			} // if
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, idBitacora, e.getMessage(), false);
+			this.registrarBitacora(sesion, idBitacora, e.getMessage(), false);
 			throw e;
 		} // catch		
 		return regresar;
 	} // procesarClientes
 	
 	protected boolean actualizarProducto(Session sesion, Long id, String idFacturama) throws Exception {
-		boolean regresar            = false;
 		TcManticArticulosDto articulo= null;		
-		articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, id);
-		articulo.setIdFacturama(idFacturama);
-		regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;		
-		return regresar;
+    try {
+		  articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, id);
+		  articulo.setIdFacturama(idFacturama);
+    } // try  
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 	} // actualizarCliente
 	
 	public boolean generarFactura(Session sesion) throws Exception {
@@ -369,7 +372,7 @@ public class Facturama extends IBaseTnx {
 		Cfdi cfdi       = null;
 		try {
 			cfdi= CFDIFactory.getInstance().createFactura(this.cliente, this.articulos);
-			if(isCorrectId(cfdi.getId())) {
+			if(this.isCorrectId(cfdi.getId())) {
 				this.idFacturamaRegistro= cfdi.getId();
 				regresar= this.actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi, idUsuario);
 				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));				
@@ -402,7 +405,7 @@ public class Facturama extends IBaseTnx {
 		Cfdi cfdi       = null;
 		try {
 			cfdi= CFDIFactory.getInstance().createComplemento(this.complemento, this.documentos);
-			if(isCorrectId(cfdi.getId())) {
+			if(this.isCorrectId(cfdi.getId())) {
 				this.idFacturamaRegistro= cfdi.getId();
 				regresar= this.actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi, idUsuario);
 				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));				
@@ -417,7 +420,7 @@ public class Facturama extends IBaseTnx {
 			} // else
 		} // try
 		catch (Exception e) {						
-			if(existFactura()) {
+			if(this.existFactura()) {
 				this.registrarBitacoraFactura(this.cliente.getIdFactura(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Ocurrió un error al realizar la facturación automatica.", idUsuario);		
 				this.actualizarFacturaAutomatico(this.cliente.getIdFactura(), idUsuario, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
 			} // if
@@ -587,7 +590,7 @@ public class Facturama extends IBaseTnx {
 		TcManticClientesDto cliente= null;
 		try {
 			cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, idCliente);
-			cliente.setSaldo(sumar ? (cliente.getSaldo() + cantidad) : (cliente.getSaldo() - cantidad));
+			cliente.setSaldo(sumar? (cliente.getSaldo()+ cantidad): (cliente.getSaldo()- cantidad));
 			DaoFactory.getInstance().update(sesion, cliente);
 		} // try
 		catch (Exception e) {			

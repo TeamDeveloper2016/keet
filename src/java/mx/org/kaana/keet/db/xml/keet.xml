@@ -24,6 +24,14 @@
         where      
           id_detalle = {idDetalle} and id_venta = {idVenta}
       </select>
+      <select id="siguiente">
+        select      
+          parcialidad+ 1 as parcialidad
+        from      
+          tc_keet_ventas_pagos
+        where      
+          id_detalle= {idVenta};
+      </select>
     </unit>
     <unit id="TcKeetVentasParcialesDto">
       <select id="row">

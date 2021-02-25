@@ -26,6 +26,7 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.facturas.beans.Documento;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,6 +63,7 @@ public class Transaccion extends Facturama {
 		this.referencia= referencia;
 		this.cuentas   = cuentas;
 		this.saldar    = saldar;
+  	this.pagoGeneral= this.pago.getPago();
 	} // Transaccion
 	
 	public Transaccion(Importado file, TcManticClientesDeudasDto clienteDeuda, Long idClientePago) {
@@ -74,14 +76,12 @@ public class Transaccion extends Facturama {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar= false;
     try {			
-			if(this.pago!= null)
-				this.pagoGeneral= this.pago.getPago();
       switch (accion) {
         case AGREGAR:					
-						regresar= this.procesarPago(sesion);
+					regresar= this.procesarPago(sesion);
           break;       
         case PROCESAR:					
-						regresar= this.procesarPagoGeneral(sesion);
+					regresar= this.procesarPagoGeneral(sesion);
           break;       
 				case COMPLEMENTAR: 
 					regresar= this.procesarPagoSegmento(sesion);
@@ -200,6 +200,7 @@ public class Transaccion extends Facturama {
 				registroPago= new TcManticClientesPagosDto();
 				registroPago.setIdClienteDeuda(idClienteDeuda);
 				registroPago.setIdUsuario(JsfBase.getIdUsuario());
+        registroPago.setObservaciones(this.pago.getObservaciones());
 				registroPago.setComentarios(
           "PAGO GENERAL $".concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.pagoGeneral)).concat(
           " [").concat(Global.format(EFormatoDinamicos.FECHA_HORA, registroPago.getRegistro())).concat(
@@ -234,7 +235,7 @@ public class Transaccion extends Facturama {
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
 			params.put("sortOrder", "order by dias desc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
 		} // try
@@ -276,7 +277,7 @@ public class Transaccion extends Facturama {
 		Double abono             = 0D;		
 		Long idEstatus           = -1L;
 		try {
-			deudas= toDeudas(sesion);
+			deudas= this.toDeudas(sesion);
 			for(Entity deuda: deudas) {
 				for(Entity cuenta: this.cuentas) {
 					if(deuda.getKey().equals(cuenta.getKey())) {
@@ -323,7 +324,7 @@ public class Transaccion extends Facturama {
 			Methods.clean(params);			
 		} // finally
 		return regresar;
-	} // procesarPagoGeneral
+	} // procesarPagoSegmento
 	
 	protected void toUpdateDeleteFilePago(Session sesion) throws Exception {
 		TcManticClientesPagosArchivosDto tmp= null;
@@ -410,5 +411,52 @@ public class Transaccion extends Facturama {
 		} // finally
 		return regresar;
 	} // toSiguiente
+ 
+	public boolean procesarComplementoPago(Session sesion, List<Documento> documentos) throws Exception {		
+		boolean regresar         = true;
+		Map<String, Object>params= null;
+		try {
+      for(Documento cuenta: documentos) {
+        Entity deuda= this.toDeudaParticular(sesion, cuenta.getIdDetalle());
+        if(deuda!= null && !deuda.isEmpty()) {
+          Long idEstatus= cuenta.getInsoluto()<= 0D? EEstatusClientes.FINALIZADA.getIdEstatus(): EEstatusClientes.PARCIALIZADA.getIdEstatus();
+          if(this.registrarPago(sesion, deuda, cuenta.getPagado())) {
+            params= new HashMap<>();
+            params.put("saldo", cuenta.getInsoluto());
+            params.put("idClienteDeudaEstatus", idEstatus);
+            DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
+            this.actualizarSaldoCatalogoCliente(sesion, this.idCliente, cuenta.getPagado(), true);
+          }	// if				
+        } // if
+			} // for
+		} // try
+		catch (Exception e) {			
+			this.messageError= "Error al registrar el pago";
+			throw e; 
+		} // catch		
+		finally {
+			Methods.clean(params);			
+		} // finally
+		return regresar;
+	} // procesarComplementoPago
+ 
+	private Entity toDeudaParticular(Session sesion, Long idVenta) throws Exception {
+		Entity regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", this.idCliente);
+			params.put("idVenta", idVenta);
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
+			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaClientesDto", "particular", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+		return regresar;
+	} // toDeudaParticular	
   
 }
