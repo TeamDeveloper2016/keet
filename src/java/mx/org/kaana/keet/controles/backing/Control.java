@@ -221,7 +221,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
 			this.attrs.put("idTipoFiguraCorreo", figura.toLong("tipo"));
-			this.attrs.put("idFiguraCorreo", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
+			this.attrs.put("idFiguraCorreo", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
 			this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));
 	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "lotesResidentes", params);		
 			lotesCriterio= UIEntity.seleccione("VistaCapturaDestajosDto", "lotesResidentes", params, "descripcionLote");
@@ -261,6 +261,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		regresar.put("longitud", new Value("longitud", -102.252030));
 		regresar.put("ordenContrato", new Value("ordenContrato", ""));
 		regresar.put("claveContrato", new Value("claveContrato", ""));
+		regresar.put("ejercicio", new Value("ejercicio", Fecha.getAnioActual()));
 		return regresar;
 	} // toLoteDefault
 	
@@ -272,7 +273,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 			for(Entity mzaLote: this.lotes) {
 				params.clear();
 				params.put("idDepartamento", this.attrs.get("especialidad"));
-				params.put("clave", toClaveEstacion(mzaLote));
+				params.put("clave", this.toClaveEstacion(mzaLote));
 				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaDestajosDto", "estatusControlManzanaLote", params);
 				if(estatus.toString("total")!= null) {
 					if(estatus.toLong("total").equals(estatus.toLong("terminado"))) {
@@ -305,7 +306,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		try {			
 			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
-			regresar.append(Fecha.getAnioActual());
+			regresar.append(lote.toString("ejercicio"));
 			regresar.append(Cadena.rellenar(lote.toString("ordenContrato"), 3, '0', true));
 			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));
 		} // try

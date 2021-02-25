@@ -15,6 +15,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -99,6 +100,7 @@ public class Lotes extends IBaseFilter implements Serializable {
 		regresar.put("fechaTermino", new Value("fechaTermino", "-"));
 		regresar.put("diasConstruccion", new Value("diasConstruccion", "-"));
 		regresar.put("contratistas", new Value("contratistas", ""));
+		regresar.put("ejercicio", new Value("ejercicio", Fecha.getAnioActual()));
 		return regresar;
 	} // toLoteDefault
 	

@@ -217,7 +217,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
-			idXml= figura.toLong("tipo").equals(1L) ? "lotesContratistas" : "lotesSubContratistas";
+			idXml= figura.toLong("tipo").equals(1L)? "lotesContratistas": "lotesSubContratistas";
 			this.attrs.put("idTipoFiguraCorreo", figura.toLong("tipo"));
 			this.attrs.put("idFiguraCorreo", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
 			this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));

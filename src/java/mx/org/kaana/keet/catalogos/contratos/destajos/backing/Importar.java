@@ -206,7 +206,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		try {			
 			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
-			regresar.append(Fecha.getAnioActual());
+			regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
 			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("orden"), 3, '0', true));
 		} // try
@@ -226,7 +226,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			tipo, // tipo
 			((Entity)this.attrs.get("concepto")).toString("departamento"), // especialidad
 			((Entity)this.attrs.get("concepto")).toString("nombre"), // concepto			
-			toClaveEstacion(), // consecutivo
+			this.toClaveEstacion(), // consecutivo
 			-1L,
 			this.getFile().getName(), // archivo			
 			null, // eliminado
@@ -248,8 +248,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			tipo, // tipo
 			((Entity)this.attrs.get("concepto")).toString("departamento"), // especialidad
 			((Entity)this.attrs.get("concepto")).toString("nombre"), // concepto			
-			toClaveEstacion(), // consecutivo
-			toIdContratoDestajoFigura(), // idContratoDestajoProveedor
+			this.toClaveEstacion(), // consecutivo
+			this.toIdContratoDestajoFigura(), // idContratoDestajoProveedor
 			-1L,						
 			this.getFile().getName(), // archivo						
 			null, // eliminado			
