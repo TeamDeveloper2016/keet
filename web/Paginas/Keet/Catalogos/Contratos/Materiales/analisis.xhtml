@@ -51,7 +51,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetCatalogosContratosMaterialesAnalisis.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetCatalogosContratosMaterialesAnalisis.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetCatalogosContratosMaterialesAnalisis.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+                <f:selectItems value="#{keetCatalogosContratosMaterialesAnalisis.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -72,7 +72,7 @@
 							<p:calendar id="termino" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81"	value="#{keetCatalogosContratosMaterialesAnalisis.termino}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" showOn="button"/>
 							<p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
 							<p:selectOneMenu id="idDesarrollo" value="#{keetCatalogosContratosMaterialesAnalisis.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetCatalogosContratosMaterialesAnalisis.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
+                <f:selectItems value="#{keetCatalogosContratosMaterialesAnalisis.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

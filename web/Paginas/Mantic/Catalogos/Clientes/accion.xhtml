@@ -63,7 +63,7 @@
 								</p:panelGrid>								
                 <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesAccion.attrs.isMatriz}"/>
 								<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{manticCatalogosClientesAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+									<f:selectItems value="#{manticCatalogosClientesAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '|'} #{element.titulo}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   

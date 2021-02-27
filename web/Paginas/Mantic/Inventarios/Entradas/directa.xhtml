@@ -157,7 +157,7 @@
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{manticInventariosEntradasDirecta.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) contenedorGrupos:gasto:idDesarrolloProyecto contenedorGrupos:gasto:idDesarrolloEmpleado" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
-									<f:selectItems value="#{manticInventariosEntradasDirecta.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+									<f:selectItems value="#{manticInventariosEntradasDirecta.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -168,7 +168,7 @@
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasDirecta.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt faltantes proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticInventariosEntradasDirecta.doUpdateProveedor}" process="@this" update="diasPlazo fechaPago tabla @(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{manticInventariosEntradasDirecta.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.clave or element.clave eq ''? '': '-'} #{element.razonSocial}"/>
+									<f:selectItems value="#{manticInventariosEntradasDirecta.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.clave or element.clave eq ''? '': '|'} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -426,7 +426,7 @@
                         <p:outputLabel for="idDesarrolloProyecto" value="Desarrollo:"/>
                         <p:selectOneMenu id="idDesarrolloProyecto" value="#{manticInventariosEntradasDirecta.proyecto.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-88" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                           <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticInventariosEntradasDirecta.doUpdateClienteProyecto}" update="@(.directos)" oncomplete="janal.desbloquear();reloadContratoDirecto();"/>
-                          <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.desarrollosProyecto}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
+                          <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.desarrollosProyecto}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                           <p:column headerText="Clave">
                             <h:outputText value="#{item.clave}"/>
                           </p:column>   
@@ -442,7 +442,7 @@
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                         <p:outputLabel for="idContratoProyecto" value="Contrato:"/>
                         <p:selectOneMenu id="idContratoProyecto" value="#{manticInventariosEntradasDirecta.proyecto.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="janal-wid-92 directos" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                          <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.contratosProyecto}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '-'} #{one.etapa}"/>
+                          <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.contratosProyecto}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
                           <p:column headerText="Clave">
                             <p:outputLabel value="#{list.clave}"/>
                           </p:column>   
@@ -522,7 +522,7 @@
                         <p:outputLabel for="idDesarrolloEmpleado" value="Desarrollo:"/>
                         <p:selectOneMenu id="idDesarrolloEmpleado" value="#{manticInventariosEntradasDirecta.empleado.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-88" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                           <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticInventariosEntradasDirecta.doUpdateClienteEmpleado}" update="@(.manodeobra)" oncomplete="janal.desbloquear();reloadContratoManodeObra();"/>
-                          <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.desarrollosEmpleado}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
+                          <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.desarrollosEmpleado}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                           <p:column headerText="Clave">
                             <h:outputText value="#{item.clave}"/>
                           </p:column>   

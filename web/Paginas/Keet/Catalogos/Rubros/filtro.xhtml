@@ -41,7 +41,7 @@
 							</p:selectOneMenu>	
 							<p:outputLabel for="idEmpaqueUnidadMedida" value="Unidad:"/>
 								<p:selectOneMenu id="idEmpaqueUnidadMedida" value="#{keetCatalogosRubrosFiltro.attrs.empaqueUnidadMedida}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosRubrosFiltro.attrs.unidadesMedidas}"  var="element" itemValue="#{element}" itemLabel="#{element.empaque} #{empty element.medida or element.medida eq ''? '': '-'} #{element.medida}"/>
+									<f:selectItems value="#{keetCatalogosRubrosFiltro.attrs.unidadesMedidas}"  var="element" itemValue="#{element}" itemLabel="#{element.empaque} #{empty element.medida or element.medida eq ''? '': '|'} #{element.medida}"/>
 									<p:column headerText="Presentación">
 										<h:outputText value="#{item.empaque}"/>
 									</p:column>   

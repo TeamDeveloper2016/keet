@@ -37,7 +37,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetNominasPersonas.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetNominasPersonas.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetNominasPersonas.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+                <f:selectItems value="#{keetNominasPersonas.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -47,7 +47,7 @@
               </p:selectOneMenu>
 							<p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
 							<p:selectOneMenu id="idDesarrollo" value="#{keetNominasPersonas.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{keetNominasPersonas.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
+                <f:selectItems value="#{keetNominasPersonas.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -116,7 +116,7 @@
 							</p:selectOneMenu>																
 							<p:outputLabel for="contratista" value="Contratista:"/>
 							<p:selectOneMenu id="contratista" value="#{keetNominasPersonas.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-								<f:selectItems value="#{keetNominasPersonas.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.nombres or element.nombres eq ''? '': '-'} #{element.nombres}"/>
+								<f:selectItems value="#{keetNominasPersonas.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
 								<p:column headerText="Departamento">
 									<h:outputText value="#{item.nombre}"/>
 								</p:column> 

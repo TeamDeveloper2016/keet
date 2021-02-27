@@ -61,7 +61,7 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasSaldos.attrs.isMatriz}"/>
 							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesCuentasSaldos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{manticCatalogosClientesCuentasSaldos.doLoadDesarrollos}" process="@this idEmpresa" update="idDesarrollo" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-								<f:selectItems value="#{manticCatalogosClientesCuentasSaldos.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+								<f:selectItems value="#{manticCatalogosClientesCuentasSaldos.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '|'} #{element.titulo}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   

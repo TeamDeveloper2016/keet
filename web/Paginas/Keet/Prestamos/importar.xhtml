@@ -108,7 +108,7 @@
 						<p:tab title="Importar">
 							<p:outputLabel for="pago" value="Pago:"/>
 							<p:selectOneMenu id="pago" value="#{keetPrestamosImportar.attrs.pago}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt import-local-file">
-								<f:selectItems value="#{keetPrestamosImportar.attrs.pagos}"  var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{empty element.abono or element.abono.toString eq '-1'? '': '-'} #{element.abono.toString eq '-1'? '': element.abono}"/>								
+								<f:selectItems value="#{keetPrestamosImportar.attrs.pagos}"  var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{empty element.abono or element.abono.toString eq '-1'? '': '|'} #{element.abono.toString eq '-1'? '': element.abono}"/>								
 								<p:ajax event="change" process="@this pago" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<p:column headerText="Folio">
 									<h:outputText value="#{item.consecutivo}"/>

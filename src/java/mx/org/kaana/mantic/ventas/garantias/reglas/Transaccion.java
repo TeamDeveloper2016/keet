@@ -44,7 +44,7 @@ import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends IBaseTnx {
 
 	private static final Logger LOG          = Logger.getLogger(Transaccion.class);
 	private static final String GENERAL      = "GENERAL";

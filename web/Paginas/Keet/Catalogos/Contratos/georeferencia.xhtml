@@ -35,7 +35,7 @@
 					<p:outputLabel for="contrato" value="Contrato(s):" styleClass="janal-wid-100-txt"/>							
 					<p:selectOneMenu id="contrato" value="#{keetCatalogosContratosGeoreferencia.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">																
 						<p:ajax event="change" onstart="return janal.bloquear();" process="@this contrato" listener="#{keetCatalogosContratosGeoreferencia.doLoad}" oncomplete="janal.desbloquear();" update="contenedorGrupos"/>
-						<f:selectItems value="#{keetCatalogosContratosGeoreferencia.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.etapa or element.etapa eq ''? '': '-'} #{element.etapa}"/>
+						<f:selectItems value="#{keetCatalogosContratosGeoreferencia.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.etapa or element.etapa eq ''? '': '|'} #{element.etapa}"/>
 						<p:column headerText="Contrato">
 							<h:outputText value="#{item.clave}"/>
 						</p:column> 

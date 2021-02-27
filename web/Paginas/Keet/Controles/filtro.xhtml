@@ -25,7 +25,7 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetControlesFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetControlesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{keetControlesFiltro.doLoadClientes()}" process="@this" update="panelBusqueda" />
-								<f:selectItems value="#{keetControlesFiltro.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? ' ': '-'} #{element.titulo}"/>
+								<f:selectItems value="#{keetControlesFiltro.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? ' ': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
@@ -35,7 +35,7 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="idCliente" value="Cliente:"/>
 							<p:selectOneMenu id="idCliente" value="#{keetControlesFiltro.attrs.cliente}" var="item" converter="janal.convertidor.Entity"  styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetControlesFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? ' ': '-'} #{element.razonSocial}"/>
+								<f:selectItems value="#{keetControlesFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? ' ': '|'} #{element.razonSocial}"/>
 								<p:ajax event="change" listener="#{keetControlesFiltro.doLoadPrototipos}" process="@this" update="panelBusqueda" />
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>

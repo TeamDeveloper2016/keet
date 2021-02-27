@@ -60,7 +60,7 @@
 						</p:selectOneMenu>																
 						<p:outputLabel for="nombre" value="Contratista:"/>							
 						<p:selectOneMenu id="nombre" value="#{keetCatalogosContratosContratistasAsignacion.attrs.nombre}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">																
-							<f:selectItems value="#{keetCatalogosContratosContratistasAsignacion.attrs.nombres}" var="element" itemValue="#{element}" itemLabel="#{element.departamento} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>
+							<f:selectItems value="#{keetCatalogosContratosContratistasAsignacion.attrs.nombres}" var="element" itemValue="#{element}" itemLabel="#{element.departamento} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '|'} #{element.nombreCompleto}"/>
 							<p:column headerText="Departamento">
 								<h:outputText value="#{item.departamento}"/>
 							</p:column> 

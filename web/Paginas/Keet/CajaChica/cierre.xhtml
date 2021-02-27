@@ -72,7 +72,7 @@
 					</p:accordionPanel>						
 					<p:outputLabel for="residente" value="Residente:"/>							
 					<p:selectOneMenu id="residente" value="#{keetCajaChicaCierre.attrs.residente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">																
-						<f:selectItems value="#{keetCajaChicaCierre.attrs.residentes}" var="element" itemValue="#{element}" itemLabel="#{element.departamento} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>
+						<f:selectItems value="#{keetCajaChicaCierre.attrs.residentes}" var="element" itemValue="#{element}" itemLabel="#{element.departamento} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '|'} #{element.nombreCompleto}"/>
 						<p:column headerText="Departamento">
 							<h:outputText value="#{item.departamento}"/>
 						</p:column> 

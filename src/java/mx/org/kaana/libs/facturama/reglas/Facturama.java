@@ -51,6 +51,7 @@ public class Facturama extends IBaseTnx {
 	private String idFacturamaRegistro;
 
 	public Facturama() {		
+    this(new ClienteFactura());
 	} // Transaccion
 
 	public Facturama(ClienteFactura cliente) {

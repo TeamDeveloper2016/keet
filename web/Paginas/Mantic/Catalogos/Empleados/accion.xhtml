@@ -136,7 +136,7 @@
 								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.isMatriz}"/>
 								<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doLoadPuestos}" process="@this idEmpresa" update="contenedorGrupos:puesto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadPuestos();"/>										
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '|'} #{element.titulo}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -167,7 +167,7 @@
 								</p:selectOneMenu>								
 								<p:outputLabel for="contratista" value="Contratista:"/>
 								<p:selectOneMenu id="contratista" value="#{manticCatalogosPersonasAccion.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.puesto or element.puesto eq ''? '': '-'} #{element.nombres}"/>
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.puesto or element.puesto eq ''? '': '|'} #{element.nombres}"/>
 									<p:column headerText="Puesto">
 										<h:outputText value="#{item.puesto}"/>
 									</p:column> 

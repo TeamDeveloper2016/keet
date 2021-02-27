@@ -118,7 +118,7 @@
   						<p:outputLabel for="idEmpresa" value="Sucursal:"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticFacturasComplemento.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" process="@this" listener="#{manticFacturasComplemento.doUpdateDesarrollos}" update="idDesarrollo idContrato idCliente contenedorGrupos:tabla idCliente clientes @(.factura) @(.totales)" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.resize(); janal.reset(); reloadDesarrollo(); reloadFacturas();"/>
-                <f:selectItems value="#{manticFacturasComplemento.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                <f:selectItems value="#{manticFacturasComplemento.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -265,7 +265,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
   						<p:outputLabel for="tipoPago" value="Método de pago:"/>												
               <p:selectOneMenu id="tipoPago" value="#{manticFacturasComplemento.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
-                <f:selectItems value="#{manticFacturasComplemento.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.clave or element.clave eq ''? ' ': '-'} #{element.nombre}"/>
+                <f:selectItems value="#{manticFacturasComplemento.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.clave or element.clave eq ''? ' ': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

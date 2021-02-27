@@ -36,6 +36,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -333,7 +334,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			} // else
 		} // try
     catch(Exception e) {
-      throw e;
+      throw new KajoolBaseException("No se pueden eliminar las estaciones ya tiene avance registrado !");
     } // catch
 		finally {
 			Methods.clean(params);

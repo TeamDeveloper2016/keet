@@ -126,7 +126,7 @@
 								<p:outputLabel for="idLimpiar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 16? '': 'none'}" styleClass="involucrados"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30 janal-column-center">
 									<p:selectCheckboxMenu id="idContratoLote" multiple="true" filterPlaceholder="SELECCIONE EL LOTE" emptyLabel="NO HAY LOTES DISPONIBLES" value="#{keetEstacionesMasivosImportar.attrs.izContratoLote}" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 9 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 12 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 16? '': 'none'}">
-										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.codigo or element.codigo eq ''? '': '-'} #{element.codigo}"/>
+										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.lotes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.codigo or element.codigo eq ''? '': '|'} #{element.codigo}"/>
 										<p:column headerText="Ejercicio">
 											<h:outputText value="#{item.ejercicio}"/>
 										</p:column>   
@@ -152,7 +152,7 @@
 								<p:outputLabel for="idEliminar" value="Limpiar estructura:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 11? '': 'none'}" styleClass="involucrados"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30 janal-column-center">
 									<p:selectOneMenu id="idPlantilla" value="#{keetEstacionesMasivosImportar.attrs.idPlantilla}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 11? '': 'none'}">
-										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.plantillas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.plantillas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 										<p:column headerText="Clave">
 											<h:outputText value="#{item.clave}"/>
 										</p:column>   
@@ -171,7 +171,7 @@
 								<p:outputLabel for="idProveedor" value="Proveedores:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 13 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 14? '': 'none'}" styleClass="involucrados"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-95, janal-wid-col-30 janal-column-right">
 									<p:selectOneMenu id="idProveedor" value="#{keetEstacionesMasivosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 13 or keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 14? '': 'none'}">
-										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '-'} #{element.razonSocial}"/>
+										<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '|'} #{element.razonSocial}"/>
 										<p:column headerText="Clave">
 											<h:outputText value="#{item.clave}"/>
 										</p:column>   
@@ -186,7 +186,7 @@
 								</p:panelGrid>
 								<p:outputLabel for="idCliente" value="Clientes:" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 14? '': 'none'}" styleClass="involucrados"/>
 								<p:selectOneMenu id="idCliente" value="#{keetEstacionesMasivosImportar.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{keetEstacionesMasivosImportar.masivo.idTipoMasivo eq 14? '': 'none'}">
-									<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '-'} #{element.razonSocial}"/>
+									<f:selectItems value="#{keetEstacionesMasivosImportar.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '|'} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   

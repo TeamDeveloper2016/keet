@@ -134,7 +134,7 @@
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) desarrollo idAlmacen idCliente idContrato lote" oncomplete="reloadDesarrollo();"/>
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -159,7 +159,7 @@
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateAlmacen}" process="@this"/>
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}" var="two" itemValue="#{two.key}" itemLabel="#{two.clave} #{empty two.nombre or two.nombre eq ''? '': '-'} #{two.nombre}"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}" var="two" itemValue="#{two.key}" itemLabel="#{two.clave} #{empty two.nombre or two.nombre eq ''? '': '|'} #{two.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   

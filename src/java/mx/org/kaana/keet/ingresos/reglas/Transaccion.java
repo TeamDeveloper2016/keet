@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusFacturas;
+import mx.org.kaana.mantic.facturas.enums.EEstatusClientesDeudas;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.log4j.Logger;
 
@@ -364,18 +365,27 @@ public class Transaccion extends IBaseTnx implements Serializable {
   }
   
   protected void toRecordDeuda(Session sesion, Double importe) throws Exception {
-		TcManticClientesDeudasDto deuda= null;		
-		deuda= new TcManticClientesDeudasDto();
-		deuda.setIdVenta(this.orden.getIdVenta());
-		deuda.setIdCliente(this.orden.getIdCliente());
-		deuda.setIdUsuario(JsfBase.getIdUsuario());
-		deuda.setImporte(importe);
-		deuda.setSaldo(importe);
-		deuda.setLimite(this.toLimiteCredito(sesion));
-		deuda.setIdClienteDeudaEstatus(1L); // INICIADA
-		DaoFactory.getInstance().insert(sesion, deuda);		
-    TcManticClientesDeudasBitacoraDto registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
-    DaoFactory.getInstance().insert(sesion, registro);		
+		TcManticClientesDeudasDto deuda           = null;		
+    TcManticClientesDeudasBitacoraDto registro= null;
+    try {
+      deuda= new TcManticClientesDeudasDto();
+      deuda.setIdVenta(this.orden.getIdVenta());
+      deuda.setIdCliente(this.orden.getIdCliente());
+      deuda.setIdUsuario(JsfBase.getIdUsuario());
+      deuda.setImporte(importe);
+      deuda.setSaldo(importe);
+      deuda.setLimite(this.toLimiteCredito(sesion));
+      deuda.setIdClienteDeudaEstatus(EEstatusClientesDeudas.INICIAL.getIdClienteDeudaEstatus()); // INICIADA
+      DaoFactory.getInstance().insert(sesion, deuda);		
+      registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
+      DaoFactory.getInstance().insert(sesion, registro);		
+			TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
+			cliente.setSaldo(cliente.getSaldo()+ importe);
+			DaoFactory.getInstance().update(sesion, cliente);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
 	} // registrarDeuda  
   
 	public LocalDate toLimiteCredito(Session sesion) throws Exception {

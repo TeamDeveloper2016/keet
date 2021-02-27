@@ -42,7 +42,7 @@ public class Asignacion extends IBaseAttribute implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.loadCatalogos();
 			Catalogos.toLoadEspecialidades(this.attrs);
-			doLoad();
+			this.doLoad();
     } // try 
     catch (Exception e) {
       Error.mensaje(e);

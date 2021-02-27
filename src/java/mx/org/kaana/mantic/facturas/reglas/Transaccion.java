@@ -160,14 +160,14 @@ public class Transaccion extends Facturama {
 					break;				
 				case ELIMINAR:
 					idEstatusFactura= EEstatusFicticias.CANCELADA.getIdEstatusFicticia();
-					this.orden= (FacturaFicticia) DaoFactory.getInstance().findById(sesion, FacturaFicticia.class, this.orden.getIdFicticia());
+					this.orden= (FacturaFicticia) DaoFactory.getInstance().toEntity(sesion, FacturaFicticia.class, "TcManticFicticiasDto", "detalle", this.orden.toMap());
 					this.orden.setIdFicticiaEstatus(idEstatusFactura);					
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L)
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFactura, this.justificacion);					
 					break;
 				case JUSTIFICAR:		
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.orden= (FacturaFicticia) DaoFactory.getInstance().findById(sesion, FacturaFicticia.class, this.bitacora.getIdFicticia());
+						this.orden= (FacturaFicticia) DaoFactory.getInstance().toEntity(sesion, FacturaFicticia.class, "TcManticFicticiasDto", "detalle", this.bitacora.toMap());
 						this.orden.setIdFicticiaEstatus(this.bitacora.getIdFicticiaEstatus());						
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						if((this.bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) || this.bitacora.getIdFicticiaEstatus().equals(EEstatusVentas.TERMINADA.getIdEstatusVenta())) && this.checkTotal(sesion)) {
@@ -513,7 +513,7 @@ public class Transaccion extends Facturama {
 		try {
 			this.actualizarClienteFacturama(sesion, this.orden.getIdFicticia());
 			gestor = new CFDIGestor(this.orden.getIdFicticia());			
-			factura= new Facturama();
+			factura= new Facturama(gestor.toClienteCfdiFicticia(sesion));
 			factura.getCliente().setIdFactura(idFactura);
       /**KEET**/
       if(Objects.equals(ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante(), this.orden.getIdTipoComprobante())) {
@@ -523,7 +523,6 @@ public class Transaccion extends Facturama {
         this.toCheckFacturasPagos(sesion, factura.getDocumentos());
       } // else 
       else {
-  			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
   			factura.setArticulos(gestor.toArticulosCfdi(sesion));
 			  // factura.generarFactura(sesion);	
         this.toRecordDeuda(sesion, this.orden.getTotal());
@@ -546,7 +545,7 @@ public class Transaccion extends Facturama {
 		ClienteFactura cliente= gestor.toClienteFacturaUpdate(sesion);
 		setCliente(cliente);
 		if(cliente.getIdFacturama()!= null)
-			updateCliente(sesion);
+			this.updateCliente(sesion);
 		else
 			super.procesarCliente(sesion);		
 	} // actualizarArticuloFacturama
@@ -815,18 +814,27 @@ public class Transaccion extends Facturama {
   }
   
   protected void toRecordDeuda(Session sesion, Double importe) throws Exception {
-		TcManticClientesDeudasDto deuda= null;		
-		deuda= new TcManticClientesDeudasDto();
-		deuda.setIdVenta(this.orden.getIdVenta());
-		deuda.setIdCliente(this.orden.getIdCliente());
-		deuda.setIdUsuario(JsfBase.getIdUsuario());
-		deuda.setImporte(importe);
-		deuda.setSaldo(importe);
-		deuda.setLimite(this.toLimiteCredito(sesion));
-		deuda.setIdClienteDeudaEstatus(EEstatusFicticias.ABIERTA.getIdEstatusFicticia()); // INICIADA
-		DaoFactory.getInstance().insert(sesion, deuda);		
-    TcManticClientesDeudasBitacoraDto registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
-    DaoFactory.getInstance().insert(sesion, registro);		
+		TcManticClientesDeudasDto deuda           = null;		
+    TcManticClientesDeudasBitacoraDto registro= null;
+    try {
+      deuda= new TcManticClientesDeudasDto();
+      deuda.setIdVenta(this.orden.getIdVenta());
+      deuda.setIdCliente(this.orden.getIdCliente());
+      deuda.setIdUsuario(JsfBase.getIdUsuario());
+      deuda.setImporte(importe);
+      deuda.setSaldo(importe);
+      deuda.setLimite(this.toLimiteCredito(sesion));
+      deuda.setIdClienteDeudaEstatus(EEstatusClientesDeudas.INICIAL.getIdClienteDeudaEstatus()); // INICIADA
+      DaoFactory.getInstance().insert(sesion, deuda);		
+      registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
+      DaoFactory.getInstance().insert(sesion, registro);
+			TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
+			cliente.setSaldo(cliente.getSaldo()+ importe);
+			DaoFactory.getInstance().update(sesion, cliente);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
 	} // registrarDeuda  
   
 	public LocalDate toLimiteCredito(Session sesion) throws Exception {

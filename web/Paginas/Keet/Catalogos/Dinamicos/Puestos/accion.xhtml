@@ -24,7 +24,7 @@
   <ui:define name="uiCamposPrioridad">		
 		<p:outputLabel for="idEmpresa" value="Sucursal:"/>
 		<p:selectOneMenu id="idEmpresa" value="#{keetCatalogosDinamicosPuestosAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-			<f:selectItems value="#{keetCatalogosDinamicosPuestosAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+			<f:selectItems value="#{keetCatalogosDinamicosPuestosAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 			<p:column headerText="Clave">
 				<h:outputText value="#{item.clave}"/>
 			</p:column>   

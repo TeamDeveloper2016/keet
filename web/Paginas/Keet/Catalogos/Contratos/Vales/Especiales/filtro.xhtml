@@ -45,7 +45,7 @@
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
 								<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosValesEspecialesFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosValesEspecialesFiltro.doLoad}" update="tabla  destajo lotes" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetCatalogosContratosValesEspecialesFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '-'} #{element.nombreCompleto}"/>									
+									<f:selectItems value="#{keetCatalogosContratosValesEspecialesFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '|'} #{element.nombreCompleto}"/>									
 									<p:column headerText="Puesto">
 										<h:outputText value="#{item.puesto}"/>
 									</p:column> 

@@ -74,7 +74,7 @@
               <p:inputText id="consecutivo" value="#{manticComprasOrdenesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
 							<p:outputLabel for="idCliente" value="Cliente:"/>
 							<p:selectOneMenu id="idCliente" value="#{manticComprasOrdenesFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{manticComprasOrdenesFiltro.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+								<f:selectItems value="#{manticComprasOrdenesFiltro.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
@@ -84,7 +84,7 @@
 							</p:selectOneMenu>
 						  <p:outputLabel for="idProveedor" value="Proveedor:"/>
               <p:selectOneMenu id="idProveedor" value="#{manticComprasOrdenesFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-' } #{element.nombre}"/>
+                <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|' } #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

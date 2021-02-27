@@ -25,7 +25,7 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetControlesContrato.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetControlesContrato.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{keetControlesContrato.doLoadContratos()}" process="@this" update="panelBusqueda" />
-								<f:selectItems value="#{keetControlesContrato.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
+								<f:selectItems value="#{keetControlesContrato.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
@@ -35,7 +35,7 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="idContrato" value="Contrato:"/>
 							<p:selectOneMenu id="idContrato" value="#{keetControlesContrato.attrs.contrato}" var="item" converter="janal.convertidor.Entity"  styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetControlesContrato.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '-'} #{one.etapa}"/>
+								<f:selectItems value="#{keetControlesContrato.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
 								<p:ajax event="change" listener="#{keetControlesContrato.doLoadLotes}" process="@this" update="panelBusqueda" />
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -46,7 +46,7 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="lote" value="Lote:"/>
               <p:selectOneMenu id="lote" value="#{keetControlesContrato.attrs.lote}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-                <f:selectItems value="#{keetControlesContrato.attrs.lotes}" var="two" itemValue="#{two}" itemLabel="#{two.clave} #{empty two.manzana or two.manzana eq ''? '': '-'} #{two.manzana} #{empty two.lote or two.lote.toString() eq '-1'? '': '-'} #{empty two.lote or two.lote eq '-1'? '': two.lote}"/>
+                <f:selectItems value="#{keetControlesContrato.attrs.lotes}" var="two" itemValue="#{two}" itemLabel="#{two.clave} #{empty two.manzana or two.manzana eq ''? '': '|'} #{two.manzana} #{empty two.lote or two.lote.toString() eq '-1'? '': '|'} #{empty two.lote or two.lote eq '-1'? '': two.lote}"/>
                   <p:column headerText="Clave">
                 <h:outputText value="#{item.clave}"/>
                 </p:column>

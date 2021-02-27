@@ -1,6 +1,8 @@
 package mx.org.kaana.keet.estaciones.backing;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -21,7 +23,9 @@ import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 
 @Named(value = "keetEstacionesContrato")
 @ViewScoped
-public class Contrato extends Filtro {
+public class Contrato extends Filtro implements Serializable {
+
+  private static final long serialVersionUID = -2149414807855567759L;
 	
 	@PostConstruct
   @Override
@@ -105,11 +109,16 @@ public class Contrato extends Filtro {
 		UISelectEntity contrato = null;
 	  try {
 			contrato = (UISelectEntity)this.attrs.get("contrato");
-			if(contrato!= null && contrato.getKey()> 0L) 
+			if(contrato!= null && !contrato.isEmpty()) 
 			  this.attrs.put(Constantes.SQL_CONDICION, "id_contrato= ".concat(contrato.getKey().toString()));
 			else
-				this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("lotes", UIEntity.seleccione("TcKeetContratosLotesDto", "row", this.attrs, "clave"));
+				this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);
+      List<UISelectEntity> lotes= UIEntity.seleccione("TcKeetContratosLotesDto", "row", this.attrs, "clave");
+      if(lotes!= null && !lotes.isEmpty())
+        this.attrs.put("lote", lotes.get(0));
+      else
+        this.attrs.put("lote", new UISelectEntity(-1L)); 
+      this.attrs.put("lotes", lotes);
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -121,11 +130,17 @@ public class Contrato extends Filtro {
 		UISelectEntity empresa= null;
 	  try {
 			empresa = (UISelectEntity)this.attrs.get("idEmpresa");
-			if(empresa!= null && empresa.getKey()> 0L) 
+			if(empresa!= null && !empresa.isEmpty()) 
 			  this.attrs.put("sucursales", empresa.getKey());
 			else
 				this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("contratos", UIEntity.seleccione("VistaContratosDto", "byEmpresa", this.attrs, "clave"));
+      List<UISelectEntity> contratos= UIEntity.seleccione("VistaContratosDto", "byEmpresa", this.attrs, "clave");
+      if(contratos!= null && !contratos.isEmpty())
+        this.attrs.put("contrato", contratos.get(0));
+      else
+        this.attrs.put("contrato", new UISelectEntity(-1L)); 
+      this.attrs.put("contratos", contratos);
+      this.doLoadLotes();
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
