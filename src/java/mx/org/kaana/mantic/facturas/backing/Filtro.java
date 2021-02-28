@@ -35,7 +35,6 @@ import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -55,7 +54,12 @@ import org.primefaces.event.SelectEvent;
 public class Filtro extends FiltroFactura implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
-	private static final Log LOG=LogFactory.getLog(Filtro.class);			
+	private static final Log LOG= LogFactory.getLog(Filtro.class);			
+  private List<Entity> registros= null;
+
+  public List<Entity> getRegistros() {
+    return registros;
+  }
 	
   @PostConstruct
   @Override
@@ -407,28 +411,45 @@ public class Filtro extends FiltroFactura implements Serializable {
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion              = null;
-		TcManticFicticiasDto orden           = null;
+		FacturaFicticia orden                = null;
 		TcManticFicticiasBitacoraDto bitacora= null;
 		Entity seleccionado                  = null;
 		StringBuilder emails                 = null;
-		try {
+    List<Columna> columns                = null;
+    try {
+      this.registros= null;
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			orden= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, seleccionado.getKey());
+			orden   = (FacturaFicticia) DaoFactory.getInstance().toEntity(FacturaFicticia.class, "TcManticFicticiasDto", "detalle", seleccionado.toMap());
 			bitacora= new TcManticFicticiasBitacoraDto(orden.getTicket(), (String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getTotal());
-			emails= new StringBuilder("");
+			emails  = new StringBuilder("");
 			if(this.getSelectedCorreos()!= null && !this.getSelectedCorreos().isEmpty()){
 				for(Correo mail: this.getSelectedCorreos())
 					if(!Cadena.isVacio(mail.getDescripcion()))
 						emails.append(mail.getDescripcion()).append(", ");
 			} // if
-			transaccion= new Transaccion(bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
-				if(bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) || bitacora.getIdFicticiaEstatus().equals(EEstatusVentas.ELIMINADA.getIdEstatusVenta()))
-					this.doSendMail();				
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
-			} // if
-			else
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+      if(Objects.equals(EEstatusFicticias.CANCELADA.getIdEstatusFicticia(), bitacora.getIdFicticiaEstatus())) {
+        if(Objects.equals(orden.getIdTipoComprobante(), ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante()))
+          this.registros= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaIngresosDto", "encontrado", orden.toMap());
+        else 
+          this.registros= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaIngresosDto", "existe", orden.toMap());
+        if(this.registros!= null && !this.registros.isEmpty()) {
+          columns = new ArrayList<>();
+          columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_HORA_CORTA));
+          columns.add(new Columna("pagado", EFormatoDinamicos.MILES_CON_DECIMALES));
+          UIBackingUtilities.toFormatEntitySet(registros, columns);
+          UIBackingUtilities.execute("PF('dlgConsulta').show();");
+        } // if  
+      } // if 
+      if(this.registros== null || this.registros.isEmpty()) {
+        transaccion= new Transaccion(orden, bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
+        if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
+          if(bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) || bitacora.getIdFicticiaEstatus().equals(EEstatusVentas.ELIMINADA.getIdEstatusVenta()))
+            this.doSendMail();				
+          JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+        } // if
+        else
+          JsfBase.addMessage("Cambio estatus", "Ocurrió un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+      } // if  
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -619,7 +640,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 //		if(row.toLong("idFacturaEstatus").equals(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura()))
 //			regresar= "janal-tr-nuevo";
 //		else 
-     if(!row.toLong("idTipoComprobante").equals(ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante()))
+     if(row.toLong("idTipoComprobante").equals(ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante()))
 			  regresar= "janal-tr-diferencias";
 		return regresar;
 	}  // doFacturaColor

@@ -88,10 +88,11 @@ public class Transaccion extends Facturama {
 	}	// Transaccion
 	
 	public Transaccion(TcManticFicticiasBitacoraDto bitacora) { 
-		this(bitacora, "", "");
+		this(new FacturaFicticia(), bitacora, "", "");
 	} // Transaccion
 	
-	public Transaccion(TcManticFicticiasBitacoraDto bitacora, String correos, String comentarios) {
+	public Transaccion(FacturaFicticia orden, TcManticFicticiasBitacoraDto bitacora, String correos, String comentarios) {
+    this.orden      = orden;
 		this.bitacora   = bitacora;
 		this.correos    = correos;
 		this.comentarios= comentarios;
@@ -167,7 +168,6 @@ public class Transaccion extends Facturama {
 					break;
 				case JUSTIFICAR:		
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.orden= (FacturaFicticia) DaoFactory.getInstance().toEntity(sesion, FacturaFicticia.class, "TcManticFicticiasDto", "detalle", this.bitacora.toMap());
 						this.orden.setIdFicticiaEstatus(this.bitacora.getIdFicticiaEstatus());						
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						if((this.bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) || this.bitacora.getIdFicticiaEstatus().equals(EEstatusVentas.TERMINADA.getIdEstatusVenta())) && this.checkTotal(sesion)) {
@@ -515,7 +515,6 @@ public class Transaccion extends Facturama {
 			gestor = new CFDIGestor(this.orden.getIdFicticia());			
 			factura= new Facturama(gestor.toClienteCfdiFicticia(sesion));
 			factura.getCliente().setIdFactura(idFactura);
-      /**KEET**/
       if(Objects.equals(ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante(), this.orden.getIdTipoComprobante())) {
   			factura.setComplemento(gestor.toClienteComplemento(sesion));
   			factura.setDocumentos(gestor.toDocumentosCfdi(sesion));
@@ -551,27 +550,27 @@ public class Transaccion extends Facturama {
 	} // actualizarArticuloFacturama
 	
 	private boolean checkTotal(Session sesion) throws Exception {
-		boolean regresar = false;
-		Double sumTotal  = 0D;
-		Double sumDetalle= 0D;
+		boolean regresar= false;
+		Double value    = 0D;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("idFicticia", this.orden.getIdFicticia());
-			Value detalle= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDetallesDto", "total", params, "total");
+			params.put("idVenta", this.orden.getIdFicticia());
+			Value detalle= null;
+      if(Objects.equals(this.orden.getIdTipoComprobante(), ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante()))
+        detalle= DaoFactory.getInstance().toField(sesion, "TcKeetVentasPagosDto", "total", params, "total");
+      else
+        detalle= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDetallesDto", "total", params, "total");
 			if(detalle!= null && detalle.getData()!= null)
-				sumDetalle= detalle.toDouble();
-			Value total= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "total", params, "total");
-			if(total!= null && total.getData()!= null)
-				sumTotal= total.toDouble();
+				value= detalle.toDouble();
 		} // try
 		finally {
 			Methods.clean(params);
 		} // finally
-		regresar= Objects.equals(sumTotal, sumDetalle);
+		regresar= Objects.equals(this.orden.getTotal(), value);
 		if(!regresar) {
-			LOG.warn("Diferencias en los importes de la factura: "+ this.orden.getIdFicticia()+ " verificar situacion, total ["+ sumTotal+ "] detalle["+ sumDetalle+ "]");
-			throw new KajoolBaseException("No se puede timbrar porque el importe total difiere de los importes del detalle de la factura !");	
+			LOG.warn("Diferencias en los importes del documento: "+ this.orden.getIdFicticia()+ " verificar situacion, total ["+ this.orden.getTotal()+ "] detalle["+ value+ "]");
+			throw new KajoolBaseException("No se puede timbrar porque el importe total difiere de los importes del detalle del documento !");	
 		} // if	
 		return regresar;
 	}

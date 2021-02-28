@@ -34,7 +34,7 @@
                 </p:column>
 							</p:selectOneMenu>
 							<p:outputLabel for="idContrato" value="Contrato:"/>
-							<p:selectOneMenu id="idContrato" value="#{keetEstacionesContrato.attrs.contrato}" var="item" converter="janal.convertidor.Entity"  styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:selectOneMenu id="idContrato" value="#{keetEstacionesContrato.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItems value="#{keetEstacionesContrato.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
 								<p:ajax event="change" listener="#{keetEstacionesContrato.doLoadLotes}" process="@this" update="lote" />
 								<p:column headerText="Clave">

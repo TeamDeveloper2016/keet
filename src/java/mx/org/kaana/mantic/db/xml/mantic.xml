@@ -863,7 +863,7 @@
 				from 
 					tc_mantic_ventas_detalles 
 				where  
-					id_venta = {idFicticia}
+					id_venta = {idVenta}
 			</select>
 			<delete id="rows">
 				delete from tc_mantic_ventas_detalles where id_venta= {idFicticia}
@@ -918,7 +918,7 @@
         from      
           tc_mantic_ventas
         where 
-          id_venta = {idFicticia} 
+          id_venta = {idVenta} or id_venta= {idFicticia}
       </select>
 			<select id="siguiente">
         select
@@ -947,7 +947,7 @@
 				from 
 					tc_mantic_ventas
 				where  
-					id_venta = {idFicticia}
+					id_venta = {idVenta}
 			</select>
     </unit>
     <unit id="TcManticCierresMonedasDto">

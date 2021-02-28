@@ -30,8 +30,16 @@
         from      
           tc_keet_ventas_pagos
         where      
-          id_detalle= {idVenta};
+          id_detalle= {idVenta}
       </select>
+			<select id="total">
+				select
+					truncate(sum(tc_keet_ventas_pagos.pagado), 1) as total
+				from 
+					tc_keet_ventas_pagos 
+				where  
+					id_venta = {idVenta}
+			</select>
     </unit>
     <unit id="TcKeetVentasParcialesDto">
       <select id="row">

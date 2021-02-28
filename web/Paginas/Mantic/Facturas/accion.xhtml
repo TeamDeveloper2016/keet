@@ -510,9 +510,9 @@
                     <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasAccion.adminOrden.totales.subTotalDosDecimales$}"/>
                     <p:outputLabel value="IVA:"/>
                     <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasAccion.adminOrden.totales.ivaDosDecimales$}"/>
+                    <p:outputLabel for="total" value="Total:" styleClass="janal-wid-100-txt janal-column-right janal-total-compra janal-color-orange"/>
+                    <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticFacturasAccion.adminOrden.totales.totalDosDecimales$}"/>
                   </p:panelGrid>
-                  <p:outputLabel for="total" value="Total:" styleClass="janal-wid-100-txt janal-column-right janal-total-compra janal-color-orange"/>
-                  <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange janal-column-right" value="$ #{manticFacturasAccion.adminOrden.totales.totalDosDecimales$}"/>
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>

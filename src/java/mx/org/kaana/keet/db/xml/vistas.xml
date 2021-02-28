@@ -5,6 +5,65 @@
 <process>
 	<dml> 
 		<unit id="VistaIngresosDto">
+			<select id="encontrado">
+        select
+          tc_keet_ventas_pagos.id_venta_pago as id_key,
+          tc_mantic_ventas.ticket,
+          tc_keet_series.nombre as serie,
+          tc_mantic_facturas.folio,
+          tc_keet_ventas_pagos.parcialidad,
+          tc_keet_ventas_pagos.pagado,
+          tc_mantic_facturas.timbrado
+        from  
+          tc_keet_ventas_pagos
+        inner join 
+        (select
+          tc_keet_ventas_pagos.id_detalle
+        from
+          tc_keet_ventas_pagos
+        inner join
+          tc_mantic_ventas on tc_keet_ventas_pagos.id_venta= tc_mantic_ventas.id_venta
+        inner join
+          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+        where
+          tc_mantic_ventas.id_venta= {idVenta}
+          and tc_mantic_facturas.id_factura_estatus= 2) 
+          as tt_keet_temporales on tc_keet_ventas_pagos.id_detalle= tt_keet_temporales.id_detalle
+        inner join
+          tc_mantic_ventas on tc_keet_ventas_pagos.id_detalle= tc_mantic_ventas.id_venta
+        inner join
+          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+        inner join
+          tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie
+        where
+          tc_keet_ventas_pagos.id_venta> {idVenta} 
+          and tc_mantic_facturas.id_factura_estatus= 2
+        order by
+          tc_mantic_ventas.ticket, tc_mantic_facturas.folio, tc_mantic_ventas.registro desc
+      </select>  
+			<select id="existe">
+        select
+          tc_keet_ventas_pagos.id_venta_pago as id_key,
+          tc_mantic_ventas.ticket,
+        	tc_keet_series.nombre as serie,
+          tc_mantic_facturas.folio,
+          tc_keet_ventas_pagos.parcialidad,
+          tc_keet_ventas_pagos.pagado,
+          tc_mantic_facturas.timbrado
+        from
+          tc_keet_ventas_pagos
+        inner join
+          tc_mantic_ventas on tc_keet_ventas_pagos.id_venta= tc_mantic_ventas.id_venta
+        inner join
+          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+        inner join
+          tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie
+        where
+          tc_keet_ventas_pagos.id_detalle= {idVenta}
+          and tc_mantic_facturas.id_factura_estatus= 2
+        order by
+          tc_mantic_ventas.registro desc
+      </select>  
 			<select id="complemento">
         select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
@@ -117,6 +176,9 @@
           tc_mantic_ventas.id_cliente= {idCliente}
           and tc_mantic_ventas.saldo> 0    
           and tc_mantic_ventas.id_tipo_comprobante!= 3
+          and tc_mantic_facturas.id_factura_estatus= 2
+        order by
+          tc_mantic_ventas.registro desc
       </select>  
 			<select id="detalle">
         select      
@@ -162,7 +224,7 @@
       </select>  
 			<select id="lotes">
         select      
-          ifnull(tc_keet_ventas_parciales.id_venta_parcial, cast(tc_keet_contratos_lotes.id_contrato_lote as int)* -1) as id_key,
+          ifnull(tc_keet_ventas_parciales.id_venta_parcial, tc_keet_contratos_lotes.id_contrato_lote* -1) as id_key,
           tc_keet_contratos_lotes.id_contrato_lote,
           tc_keet_ventas_parciales.id_venta_parcial,
           tc_keet_ventas_parciales.id_venta,

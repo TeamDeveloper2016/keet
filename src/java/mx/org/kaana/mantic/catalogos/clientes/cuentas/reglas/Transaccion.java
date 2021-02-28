@@ -425,7 +425,7 @@ public class Transaccion extends Facturama {
             params.put("saldo", cuenta.getInsoluto());
             params.put("idClienteDeudaEstatus", idEstatus);
             DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
-            this.actualizarSaldoCatalogoCliente(sesion, this.idCliente, cuenta.getPagado(), true);
+            this.actualizarSaldoCatalogoCliente(sesion, this.idCliente, cuenta.getPagado(), false);
           }	// if				
         } // if
 			} // for
