@@ -372,21 +372,21 @@ public class Filtro extends FiltroFactura implements Serializable {
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion              = null;
-		TcManticFicticiasDto orden           = null;
+		FacturaFicticia orden                = null;
 		TcManticFicticiasBitacoraDto bitacora= null;
 		Entity seleccionado                  = null;
 		StringBuilder emails                 = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			orden= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, seleccionado.getKey());
+			orden   = (FacturaFicticia) DaoFactory.getInstance().toEntity(FacturaFicticia.class, "TcManticFicticiasDto", "detalle", seleccionado.toMap());
 			bitacora= new TcManticFicticiasBitacoraDto(orden.getTicket(), (String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getTotal());
-			emails= new StringBuilder("");
+			emails  = new StringBuilder("");
 			if(getSelectedCorreos()!= null && !getSelectedCorreos().isEmpty()){
 				for(Correo mail: getSelectedCorreos())
 					if(!Cadena.isVacio(mail.getDescripcion()))
 						emails.append(mail.getDescripcion()).append(", ");
 			} // if
-			transaccion= new Transaccion(bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
+			transaccion= new Transaccion(orden, bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)){
 				if(bitacora.getIdFicticiaEstatus().equals(EEstatusCotizaciones.FINALIZADA.getIdEstatusFicticia()))
 					doSendmail();				
@@ -401,7 +401,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		} // catch		
 		finally {
 			this.attrs.put("justificacion", "");
-			setSelectedCorreos(new ArrayList<>());
+			this.setSelectedCorreos(new ArrayList<>());
 		} // finally
 	}	// doActualizaEstatus		
 

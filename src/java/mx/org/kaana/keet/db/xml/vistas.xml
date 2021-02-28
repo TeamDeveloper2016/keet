@@ -8,9 +8,9 @@
 			<select id="encontrado">
         select
           tc_keet_ventas_pagos.id_venta_pago as id_key,
-          tc_mantic_ventas.ticket,
-          tc_keet_series.nombre as serie,
-          tc_mantic_facturas.folio,
+          tt_mantic_ventas.ticket,
+          concat(tt_keet_series.nombre, '-', tt_mantic_facturas.folio) complemento,
+          concat(tc_keet_series.nombre, '-', tc_mantic_facturas.folio) factura,
           tc_keet_ventas_pagos.parcialidad,
           tc_keet_ventas_pagos.pagado,
           tc_mantic_facturas.timbrado
@@ -35,9 +35,15 @@
           tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
         inner join
           tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie
+				inner join
+					tc_mantic_ventas as tt_mantic_ventas on tc_keet_ventas_pagos.id_venta= tt_mantic_ventas.id_venta         
+				inner join
+					tc_mantic_facturas as tt_mantic_facturas on tt_mantic_ventas.id_factura= tt_mantic_facturas.id_factura         
+				inner join
+					tc_keet_series as tt_keet_series on tt_mantic_facturas.id_serie= tt_keet_series.id_serie         
         where
-          tc_keet_ventas_pagos.id_venta> {idVenta} 
-          and tc_mantic_facturas.id_factura_estatus= 2
+          tc_keet_ventas_pagos.id_venta> {idVenta}
+          and tt_mantic_facturas.id_factura_estatus= 2
         order by
           tc_mantic_ventas.ticket, tc_mantic_facturas.folio, tc_mantic_ventas.registro desc
       </select>  
@@ -45,22 +51,28 @@
         select
           tc_keet_ventas_pagos.id_venta_pago as id_key,
           tc_mantic_ventas.ticket,
-        	tc_keet_series.nombre as serie,
-          tc_mantic_facturas.folio,
+          concat(tc_keet_series.nombre, '-', tc_mantic_facturas.folio) complemento,
+          concat(tt_keet_series.nombre, '-', tt_mantic_facturas.folio) factura,
           tc_keet_ventas_pagos.parcialidad,
           tc_keet_ventas_pagos.pagado,
-          tc_mantic_facturas.timbrado
+          tc_mantic_facturas.timbrado         
         from
-          tc_keet_ventas_pagos
+          tc_keet_ventas_pagos         
         inner join
-          tc_mantic_ventas on tc_keet_ventas_pagos.id_venta= tc_mantic_ventas.id_venta
+          tc_mantic_ventas on tc_keet_ventas_pagos.id_venta= tc_mantic_ventas.id_venta         
         inner join
-          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+          tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura         
         inner join
-          tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie
+          tc_keet_series on tc_mantic_facturas.id_serie= tc_keet_series.id_serie         
+        inner join
+          tc_mantic_ventas as tt_mantic_ventas on tc_keet_ventas_pagos.id_detalle= tt_mantic_ventas.id_venta         
+        inner join
+          tc_mantic_facturas as tt_mantic_facturas on tt_mantic_ventas.id_factura= tt_mantic_facturas.id_factura         
+        inner join
+          tc_keet_series as tt_keet_series on tt_mantic_facturas.id_serie= tt_keet_series.id_serie         
         where
           tc_keet_ventas_pagos.id_detalle= {idVenta}
-          and tc_mantic_facturas.id_factura_estatus= 2
+          and tc_mantic_facturas.id_factura_estatus= 2         
         order by
           tc_mantic_ventas.registro desc
       </select>  

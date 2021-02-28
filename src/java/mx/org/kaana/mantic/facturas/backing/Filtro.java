@@ -457,7 +457,8 @@ public class Filtro extends FiltroFactura implements Serializable {
 		} // catch		
 		finally {
 			this.attrs.put("justificacion", "");
-			setSelectedCorreos(new ArrayList<>());
+			this.setSelectedCorreos(new ArrayList<>());
+      Methods.clean(columns);
 		} // finally
 	}	// doActualizaEstatus
 	
@@ -697,26 +698,42 @@ public class Filtro extends FiltroFactura implements Serializable {
 	}
 		
 	public void doCancelarFacturacion() {
-		Transaccion transaccion    = null;
-		Entity seleccionado        = null;		
-		FacturaFicticia ticketVenta= null;
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;		
+		FacturaFicticia orden  = null;
+    List<Columna> columns  = null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");						
-			ticketVenta = new FacturaFicticia();
-			ticketVenta.setKey(seleccionado.getKey());
-			ticketVenta.setIdFactura(seleccionado.toLong("idFactura"));
-			ticketVenta.setIdCliente(seleccionado.toLong("idCliente"));
-      ticketVenta.setTotal(seleccionado.toDouble("total"));
-      ticketVenta.setTicket(seleccionado.toString("ticket"));
-      ticketVenta.setIdTipoMedioPago(seleccionado.toLong("idTipoMedioPago"));
-      ticketVenta.setFechaPago(seleccionado.toTimestamp("fechaPago"));
-      ticketVenta.setIdBanco(seleccionado.toLong("idBanco"));
-      ticketVenta.setReferencia(seleccionado.toString("referencia"));
-			transaccion= new Transaccion(ticketVenta, (String) this.attrs.get("justificacionCancelar"));
-			if(transaccion.ejecutar(EAccion.DEPURAR))
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
-			else
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+      this.registros= null;
+			seleccionado  = (Entity)this.attrs.get("seleccionado");						
+			orden = new FacturaFicticia();
+			orden.setKey(seleccionado.getKey());
+			orden.setIdFactura(seleccionado.toLong("idFactura"));
+			orden.setIdCliente(seleccionado.toLong("idCliente"));
+      orden.setTotal(seleccionado.toDouble("total"));
+      orden.setTicket(seleccionado.toString("ticket"));
+      orden.setIdTipoMedioPago(seleccionado.toLong("idTipoMedioPago"));
+      orden.setFechaPago(seleccionado.toTimestamp("fechaPago"));
+      orden.setIdBanco(seleccionado.toLong("idBanco"));
+      orden.setReferencia(seleccionado.toString("referencia"));
+      orden.setIdTipoComprobante(seleccionado.toLong("idTipoComprobante"));
+      if(Objects.equals(orden.getIdTipoComprobante(), ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante()))
+        this.registros= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaIngresosDto", "encontrado", orden.toMap());
+      else 
+        this.registros= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaIngresosDto", "existe", orden.toMap());
+      if(this.registros!= null && !this.registros.isEmpty()) {
+        columns = new ArrayList<>();
+        columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_HORA_CORTA));
+        columns.add(new Columna("pagado", EFormatoDinamicos.MILES_CON_DECIMALES));
+        UIBackingUtilities.toFormatEntitySet(registros, columns);
+        UIBackingUtilities.execute("PF('dlgConsulta').show();");
+      } // if  
+      if(this.registros== null || this.registros.isEmpty()) {
+        transaccion= new Transaccion(orden, (String)this.attrs.get("justificacionCancelar"));
+        if(transaccion.ejecutar(EAccion.DEPURAR))
+          JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+        else
+          JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+      } // if  
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -724,7 +741,8 @@ public class Filtro extends FiltroFactura implements Serializable {
 		} // catch		
 		finally {
 			this.attrs.put("justificacionCancelar", "");
-			setSelectedCorreos(new ArrayList<>());
+			this.setSelectedCorreos(new ArrayList<>());
+      Methods.clean(columns);
 		} // finally
 	}	// doActualizaEstatus
 	

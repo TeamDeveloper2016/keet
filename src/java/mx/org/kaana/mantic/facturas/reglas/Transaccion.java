@@ -216,15 +216,15 @@ public class Transaccion extends Facturama {
 					params.put("idFactura", this.orden.getIdFactura());
 					factura= (TcManticFacturasDto)DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 					if(factura!= null && factura.getIdFacturama()!= null) {
-						CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
-						factura.setCancelada(LocalDateTime.now());
-						factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
-						regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
-						this.registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "CANCELADA ".concat(this.justificacion));
+            CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
+            factura.setCancelada(LocalDateTime.now());
+            factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
+            regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
+            this.registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "CANCELADA ".concat(this.justificacion));
             this.cancelDocumentosPagos(sesion);
 					} // if
 					else
-						throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
+						throw new Exception("No fue posible cancelar el documento, por favor vuelva a intentarlo !");
 				  break;
 				case ACTIVAR:
 					ficticia= (TcManticFicticiasDto)DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.idFicticia);
@@ -518,16 +518,16 @@ public class Transaccion extends Facturama {
       if(Objects.equals(ETiposComprobantes.COMPLEMENTO_PAGO.getIdTipoComprobante(), this.orden.getIdTipoComprobante())) {
   			factura.setComplemento(gestor.toClienteComplemento(sesion));
   			factura.setDocumentos(gestor.toDocumentosCfdi(sesion));
-  			// factura.generarComplemento(sesion);	
+  			factura.generarComplemento(sesion);	
         this.toCheckFacturasPagos(sesion, factura.getDocumentos());
       } // else 
       else {
   			factura.setArticulos(gestor.toArticulosCfdi(sesion));
-			  // factura.generarFactura(sesion);	
+			  factura.generarFactura(sesion);	
         this.toRecordDeuda(sesion, this.orden.getTotal());
       } // if  
 			try {
-				// CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
+				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
 			} // try
 			catch (Exception e) {				
 				Error.mensaje(e);				
