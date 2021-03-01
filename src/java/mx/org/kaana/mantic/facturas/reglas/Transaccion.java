@@ -231,10 +231,10 @@ public class Transaccion extends Facturama {
 					if(ficticia!= null) {
 						ficticia.setIdTipoDocumento(1L);
 						ficticia.setIdFicticiaEstatus(EEstatusFicticias.ABIERTA.getIdEstatusFicticia());
-						if(DaoFactory.getInstance().update(sesion, ficticia)> 0){
-							idFactura= registrarFactura(sesion);
+						if(DaoFactory.getInstance().update(sesion, ficticia)> 0) {
+							idFactura= this.registrarFactura(sesion);
 							ficticia.setIdFactura(idFactura);
-							if(DaoFactory.getInstance().update(sesion, ficticia)> 0){
+							if(DaoFactory.getInstance().update(sesion, ficticia)> 0) {
 								TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(ficticia.getTicket(), "Se cambio la cotización especial para timbrarse", EEstatusFicticias.ABIERTA.getIdEstatusFicticia(), JsfBase.getIdUsuario(), this.idFicticia, -1L, ficticia.getTotal());
 								regresar= DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
 							} // if
@@ -243,15 +243,15 @@ public class Transaccion extends Facturama {
 					break;
 				case PROCESAR:
 					ficticia= (TcManticFicticiasDto)DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.idFicticia);
-					if(ficticia!= null && ficticia.isValid()){
-						if(ficticia.getIdFactura()!= null && ficticia.getIdFactura()>= 1L){
+					if(ficticia!= null && ficticia.isValid()) {
+						if(ficticia.getIdFactura()!= null && ficticia.getIdFactura()>= 1L) {
 							factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, ficticia.getIdFactura());
-							if(factura.getIdFacturaEstatus().equals(EEstatusFacturas.REGISTRADA.getIdEstatusFactura())){
+							if(factura.getIdFacturaEstatus().equals(EEstatusFacturas.REGISTRADA.getIdEstatusFactura())) {
 								factura.setIdFacturaEstatus(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
 								regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
 							} // if
 						} // if
-						else{
+            else {
 							idFactura= registrarFactura(sesion, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());						
 							ficticia.setIdFactura(idFactura);
 							regresar= DaoFactory.getInstance().update(sesion, ficticia)>= 1L;
@@ -319,7 +319,7 @@ public class Transaccion extends Facturama {
 			params.put("idVenta", this.orden.getIdVenta());
 			factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
 			factura.setObservaciones(this.justificacion);
-			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
+			if(DaoFactory.getInstance().update(sesion, factura)>= 1L) {
 				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")) {
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
@@ -470,14 +470,14 @@ public class Transaccion extends Facturama {
 		Long records                           = 1L;
 		try {
 			correos= toClientesTipoContacto(sesion);
-			if(!correos.isEmpty()){
-				for(ClienteTipoContacto tipoContacto: correos){
+			if(!correos.isEmpty()) {
+				for(ClienteTipoContacto tipoContacto: correos) {
 					if(tipoContacto.getValor().equals(this.correo.getDescripcion()))
 						count++;
 				} // for				
 				records= correos.size() + 1L;
 			} // if
-			if(count== 0){
+			if(count== 0) {
 				contacto= new TrManticClienteTipoContactoDto();
 				contacto.setIdCliente(this.idCliente);
 				contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
@@ -617,7 +617,7 @@ public class Transaccion extends Facturama {
   			regresar= DaoFactory.getInstance().insert(sesion, factura)> 0L;
 				if(regresar) {
 					this.orden.setIdFactura(factura.getIdFactura());
-					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L){
+					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L) {
 						regresar= this.registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
 						if(regresar) {
 							this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticFicticiasDetallesDto", "detalle", params);

@@ -4308,6 +4308,7 @@
 					tc_keet_estaciones.id_empaque_unidad_medida,
 					tc_keet_estaciones.id_estacion_estatus,
 					tc_keet_estaciones.costo,
+          tc_keet_estaciones.costo as importe,
 					principal.*
 				from(  
 				select
@@ -4712,7 +4713,8 @@
 					tc_keet_puntos_controles.id_punto_control,
 					tc_keet_puntos_controles.nombre,
 					tc_keet_puntos_controles.factor,
-					tc_keet_puntos_controles.orden  
+					tc_keet_puntos_controles.orden,
+          round((tc_keet_puntos_controles.factor* {importe})/ 100, 2) as importe  
 				from
 					tc_keet_puntos_paquetes
 				inner join

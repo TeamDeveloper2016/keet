@@ -23,6 +23,7 @@ import mx.org.kaana.keet.comun.gps.Point;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilterMultiple;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -66,6 +67,9 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));
 			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));    
 			this.attrs.put("nombreConcepto", JsfBase.getFlashAttribute("nombreConcepto"));
+      Double total= JsfBase.getFlashAttribute("total")== null? 0D: (Double)JsfBase.getFlashAttribute("total");
+			this.attrs.put("importe", total);
+			this.attrs.put("total", Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
 			this.loadCatalogos();
 			this.doLoad();
     } // try // try
@@ -104,10 +108,12 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
     List<Columna> columns    = null;				
     try {      			
 			params= this.toPrepare();
+      params.put("importe", (Double)this.attrs.get("importe"));
       columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("factor", EFormatoDinamicos.NUMERO_SIN_DECIMALES));                        
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));                        
 	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRevision", params, columns);		
 			this.attrs.put("totalRegistros", DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", "puntosRevision", params).size());
 			UIBackingUtilities.resetDataTable();

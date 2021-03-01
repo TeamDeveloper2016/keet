@@ -18,7 +18,6 @@ import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -244,8 +243,10 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("seleccionado", this.attrs.get("seleccionadoPivote"));									
 		JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));									
 		JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
-		if(seleccionado!= null)
+		if(seleccionado!= null) {
 			JsfBase.setFlashAttribute("concepto", seleccionado);	
+  		JsfBase.setFlashAttribute("total", seleccionado.toDouble("importe"));									
+    } // if  
 		JsfBase.setFlashAttribute("georreferencia", this.attrs.get("georreferencia"));
 		JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			
 		JsfBase.setFlashAttribute("nombreConcepto", this.attrs.get("nombreConcepto"));			
