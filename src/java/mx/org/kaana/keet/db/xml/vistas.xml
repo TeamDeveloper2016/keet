@@ -4714,7 +4714,7 @@
 					tc_keet_puntos_controles.nombre,
 					tc_keet_puntos_controles.factor,
 					tc_keet_puntos_controles.orden,
-          round((tc_keet_puntos_controles.factor* {importe})/ 100, 2) as importe  
+          round((tc_keet_puntos_controles.factor* {importe})/ 100, 1) as importe  
 				from
 					tc_keet_puntos_paquetes
 				inner join
