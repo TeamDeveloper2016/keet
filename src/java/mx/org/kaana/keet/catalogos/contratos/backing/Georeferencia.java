@@ -96,7 +96,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		return regresar.toString();
 	} // toDomicilio
 
-	private void loadContratos(){
+	private void loadContratos() {
 		List<UISelectEntity>contratos= null;
 		Map<String, Object>params    = null;
 		try {
@@ -132,8 +132,8 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo").toString());
 			params.put(Constantes.SQL_CONDICION, contrato.getKey()>=1L ? "tc_keet_contratos_lotes.id_contrato=".concat(contrato.getKey().toString()) : Constantes.SQL_VERDADERO);			
       lotes= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "lotes", params, Constantes.SQL_TODOS_REGISTROS);
-			if(!lotes.isEmpty()){				
-				for(Entity lote: lotes){
+			if(!lotes.isEmpty()) {				
+				for(Entity lote: lotes) {
 					icon  = this.toIcon(lote);
 					marker= new Marker(new LatLng(Double.valueOf(lote.toString("latitud")), Double.valueOf(lote.toString("longitud"))), "Contrato: ".concat(lote.toString("clave")).concat(", Lote: ").concat(lote.toString("codigo")), lote, icon);
 					this.model.addOverlay(marker);
@@ -159,7 +159,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 			params= new HashMap<>();			
 			params.put("clave", toClaveEstacion(mzaLote));
 			estatus= (Entity) DaoFactory.getInstance().toEntity("VistaGeoreferenciaLotesDto", "estatusManzanaLote", params);
-			if(estatus.toString("total")!= null){
+			if(estatus.toString("total")!= null) {
 				this.attrs.put("porcentaje", new Integer(String.valueOf((estatus.toLong("terminado") * 100)/estatus.toLong("total"))));
 				if(estatus.toLong("total").equals(estatus.toLong("terminado")))
 					color= EEstacionesEstatus.TERMINADO.getColor();
@@ -181,7 +181,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		return regresar;
 	} // toIcon
 	
-	private String toClaveEstacion(Entity lote){
+	private String toClaveEstacion(Entity lote) {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
@@ -198,7 +198,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 	
 	public void onTabChange(TabChangeEvent event) {
 		try {
-			if(event.getTab().getTitle().equals("Ubicación")){
+			if(event.getTab().getTitle().equals("Ubicación")) {
 				this.attrs.put("mostrarDetalle", true);				
 				doLoad();
 			} // if
@@ -226,7 +226,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		} // catch		                    
   } // onMarkerSelect
 	
-	private void loadEvidencias(Entity seleccionado){
+	private void loadEvidencias(Entity seleccionado) {
 		List<Columna> columns    = null;
 		Map<String, Object>params= null;
 		try {
@@ -252,14 +252,14 @@ public class Georeferencia extends IBaseFilter implements Serializable {
     } // finally		
 	} // loadEvidencias
 	
-	private void doLoadFiles(){
+	private void doLoadFiles() {
 		List<Entity>importados= null;		
 		String dns            = null;
 		String url            = null;
 		try {
 			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
 			importados= (List<Entity>) this.attrs.get("importados");
-			for(Entity importado: importados){
+			for(Entity importado: importados) {
 				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
 				importado.put("url", new Value("url", url));
 			} // for
@@ -272,7 +272,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doLoadFiles
 	
-	private void loadResidentes(){
+	private void loadResidentes() {
 		List<Entity>residentes   = null;
 		Map<String, Object>params= null;
 		try {
@@ -290,7 +290,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		} // finally
 	} // loadResidentes
 	
-	private void loadContratistas(Entity seleccionado){
+	private void loadContratistas(Entity seleccionado) {
 		List<Entity>contratistas = null;
 		Map<String, Object>params= null;
 		try {
@@ -308,7 +308,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		} // finally
 	} // loadContratistas
 	
-	private void loadAvances(Entity seleccionado){
+	private void loadAvances(Entity seleccionado) {
 		Map<String, Object>params= null;
     List<Columna> columns    = null;				
     try {      			
@@ -330,7 +330,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
     } // finally
 	} // loadAvances
 	
-	private Map<String, Object> toPrepare(Entity seleccionado){
+	private Map<String, Object> toPrepare(Entity seleccionado) {
 		Map<String, Object> regresar= null;
 		try {
 			regresar= new HashMap<>();			
@@ -362,7 +362,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
     return regresar;
   } // doCancelar		
 	
-	public String doCapturaAvances(Entity visitado){
+	public String doCapturaAvances(Entity visitado) {
 		String regresar          = null;    
 		EOpcionesResidente opcion= null;
 		Long idDepartamento      = null;

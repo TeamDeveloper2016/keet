@@ -368,7 +368,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     try {
       UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");	
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
+			figura= figuras.get(figuras.indexOf(figura));
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
 		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
@@ -380,6 +380,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "destajoPersona": "destajoProveedor", params, columns);
       UIBackingUtilities.resetDataTable("tabla");
 			this.attrs.put("destajos", true);
+      this.attrs.put("figura", figura);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -406,7 +407,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       isCompleto = tipo.equals("COMPLETO");
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
       UISelectEntity figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
-      params= new HashMap<>();  
+      params = new HashMap<>();  
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
       if(isCompleto) {

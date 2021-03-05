@@ -70,10 +70,11 @@ public class Accion extends IBaseFilter implements Serializable {
 	
 	public void doAceptar() {
 		Transaccion transaccion= null;
+    TcKeetNominasDto nomina= null;
 		try {		
 			Long idNomina= ((UISelectEntity)this.attrs.get("idNomina")).getKey();
 			if(idNomina== null || idNomina== -1L) {
-				TcKeetNominasDto nomina= new TcKeetNominasDto(
+				nomina= new TcKeetNominasDto(
 					0D, // Double neto, 
 					1L, // Long idNominaEstatus, 
 					0D, // Double deducciones, 
@@ -96,8 +97,11 @@ public class Accion extends IBaseFilter implements Serializable {
 				);
   			transaccion= new Transaccion(nomina, JsfBase.getAutentifica());
 			} // if
-			else
-  			transaccion= new Transaccion(idNomina, JsfBase.getAutentifica());
+      else {
+   			nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, idNomina);
+        nomina.setIdCompleta(((Nomina)this.attrs.get("nomina")).getIdCompleta());
+  			transaccion= new Transaccion(nomina, JsfBase.getAutentifica());
+      } // else  
 			if(transaccion.ejecutar(EAccion.AGREGAR))
 				JsfBase.addMessage("Se procesó la nómina con éxito.", ETipoMensaje.INFORMACION);
 			else
