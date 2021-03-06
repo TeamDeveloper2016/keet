@@ -120,10 +120,16 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 					this.idNomina= this.nomina.getIdNomina();
 				} // if
 				else
-					this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
+          if(this.nomina!=null && this.nomina.isValid())
+            DaoFactory.getInstance().update(sesion, this.nomina);
+          else
+					  this.nomina= (TcKeetNominasDto)DaoFactory.getInstance().findById(TcKeetNominasDto.class, this.idNomina);
 				this.calculos= new Nomina(sesion, this.nomina, (TcKeetNominasPeriodosDto)DaoFactory.getInstance().findById(TcKeetNominasPeriodosDto.class, this.nomina.getIdNominaPeriodo()));
 				this.factura = new Factura(sesion, this.nomina);
 			} // if
+      else
+        if(this.nomina!=null && this.nomina.isValid())
+          DaoFactory.getInstance().update(sesion, this.nomina);
 			switch(accion) {
 				case AGREGAR:
 					switch(this.nomina.getIdNominaEstatus().intValue()) {
