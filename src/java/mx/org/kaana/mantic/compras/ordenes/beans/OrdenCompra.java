@@ -100,7 +100,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	public void setIkCliente(UISelectEntity ikCliente) {
 		this.ikCliente=ikCliente;
 		if(this.ikCliente!= null)
-		  this.setIdCliente(this.ikCliente.getKey());
+		  this.setIdCliente(this.ikCliente.containsKey("idCliente")? this.ikCliente.toLong("idCliente"): this.ikCliente.getKey());
 	}
 
   public UISelectEntity getIkContrato() {
