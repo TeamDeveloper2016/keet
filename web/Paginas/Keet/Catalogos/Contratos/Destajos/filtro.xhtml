@@ -53,7 +53,7 @@
 											<h:outputText value="#{item.nombreCompleto}"/>
 										</p:column>   
 									</p:selectOneMenu>	
-									<p:panelGrid columns="4" styleClass="janal-wid-100-txt">
+									<p:panelGrid id="consultas" columns="4" styleClass="janal-wid-100-txt">
   									<p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar destajo" disabled="true" style="display: #{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
 	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajos}" process="@this contratista" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
 		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajos}" process="@this contratista" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
@@ -69,7 +69,7 @@
 									</p:column>   
 								</p:selectOneMenu>
               </p:panelGrid>										
-              <p:remoteCommand name="reloadContratista" onstart="return janal.bloquear();" process="@this" update="contratista" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadContratista" onstart="return janal.bloquear();" process="@this" update="contratista consultas" oncomplete="janal.desbloquear();"/>
               <p:remoteCommand name="reloadLotes" onstart="return janal.bloquear();" process="@this" update="lotes" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 					</p:accordionPanel>						

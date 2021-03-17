@@ -82,7 +82,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	}
 
 	public Transaccion(TcKeetNominasDto nomina, Autentifica autentifica) {
-		this(-1L, autentifica, -1L, -1L);
+		this(nomina.getIdNomina(), autentifica, -1L, -1L);
 		this.nomina= nomina;
 	}
 

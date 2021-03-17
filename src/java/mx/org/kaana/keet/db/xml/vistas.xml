@@ -5,6 +5,59 @@
 <process>
 	<dml> 
 		<unit id="VistaIngresosDto">
+      <select id="detalle">
+        select
+          tc_mantic_ventas.id_venta as id_key,
+          tt_mantic_facturas.timbrado as fecha_pago,
+          tt_mantic_tipos_monedas.siglas as moneda_pago,
+          tc_mantic_ventas.total as monto_pago,
+          tt_mantic_facturas.folio as folio_fiscal,
+          tt_mantic_facturas.sello_sat,
+          ' ' as no_operacion,
+          ' ' as rfc_ordenante,
+          ' ' as banco_ordenante,
+          ' ' as cuenta_ordenante,
+          ' ' as rfc_beneficiario,
+          ' ' as banco_beneficiario,
+          ' ' as cuenta_beneficiario,
+          concat(tc_mantic_tipos_medios_pagos.clave, ' ', tc_mantic_tipos_medios_pagos.nombre) as forma_pago, 
+          tc_mantic_facturas.folio_fiscal as id_documento,
+          tc_keet_series.nombre as serie,
+          tc_mantic_facturas.folio,
+          tc_mantic_tipos_monedas.siglas as moneda,
+          tc_mantic_tipos_pagos.clave as metodo_pago,
+          tc_keet_ventas_pagos.parcialidad,
+          tc_keet_ventas_pagos.saldo,
+          tc_keet_ventas_pagos.pagado,
+          tc_keet_ventas_pagos.insoluto,
+          tc_mantic_ventas.tipo_de_cambio,
+          tc_mantic_ventas.total as total_final,
+          tc_keet_ventas_pagos.registro
+        from
+          tc_mantic_ventas
+        inner join
+          tc_keet_ventas_pagos on tc_mantic_ventas.id_venta= tc_keet_ventas_pagos.id_venta
+        inner join
+          tc_mantic_ventas as tt_mantic_ventas on tc_keet_ventas_pagos.id_detalle= tt_mantic_ventas.id_venta
+        inner join
+          tc_mantic_facturas on tt_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
+        inner join
+          tc_mantic_facturas as tt_mantic_facturas on tc_mantic_ventas.id_factura= tt_mantic_facturas.id_factura
+        inner join
+          tc_keet_series on tc_keet_series.id_serie= tc_mantic_facturas.id_serie
+        inner join
+          tc_mantic_tipos_monedas on tt_mantic_ventas.id_tipo_moneda= tc_mantic_tipos_monedas.id_tipo_moneda
+        inner join
+          tc_mantic_tipos_monedas as tt_mantic_tipos_monedas on tc_mantic_ventas.id_tipo_moneda= tt_mantic_tipos_monedas.id_tipo_moneda
+        inner join
+          tc_mantic_tipos_pagos on tc_mantic_ventas.id_tipo_pago= tc_mantic_tipos_pagos.id_tipo_pago
+        inner join
+          tc_mantic_tipos_medios_pagos on tc_mantic_ventas.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+        where
+          tc_keet_ventas_pagos.id_venta= {idVenta}
+        order by
+          tc_keet_ventas_pagos.registro        
+      </select>
 			<select id="encontrado">
         select
           tc_keet_ventas_pagos.id_venta_pago as id_key,

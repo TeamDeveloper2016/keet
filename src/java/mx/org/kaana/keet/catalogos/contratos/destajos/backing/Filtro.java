@@ -163,10 +163,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			//figuras= UIEntity.seleccione("VistaCapturaDestajosDto", "empleadosAsociados", params, campos, "puesto");
 			figuras= UIEntity.build("VistaCapturaDestajosDto", "empleadosAsociados", params, campos);
 			this.attrs.put("figuras", figuras);
-			this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
+      UISelectEntity figura= UIBackingUtilities.toFirstKeySelectEntity(figuras);
+			this.attrs.put("figura", figura);
 			this.attrs.put("destajos", false);
-			this.attrs.put("persona", false);
-			this.attrs.put("proveedor", false);
+			this.attrs.put("persona", figura== null || figura.isEmpty()? false: figura.toLong("tipo").equals(1L));
+			this.attrs.put("proveedor", figura== null || figura.isEmpty()? false: figura.toLong("tipo").equals(2L));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

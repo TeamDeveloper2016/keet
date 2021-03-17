@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.reglas.Transferir;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
+import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -208,9 +209,10 @@ public abstract class FiltroFactura extends IBaseTicket {
 				} // finally
 			} // if
       //es importante este orden para los grupos en el reporte	
+      params.put("idVenta", seleccionado.getKey());
       params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
-      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)) {
+      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS) && !reporteSeleccion.equals(EReportes.COMPLEMENTOS_PAGO)) {
         params.put("idFicticia", seleccionado.getKey());
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),-1L, -1L, seleccionado.toLong("idCliente"));
       } // if
@@ -218,9 +220,11 @@ public abstract class FiltroFactura extends IBaseTicket {
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
       parametros= comunes.getComunes();
-      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			      			
+      parametros.put("SUBREPORTE_DIR", JsfBase.getRealPath("/Paginas/Mantic/Facturas/Reportes/"));			      			
+      parametros.put("SUBREPORTE_SQL", Dml.getInstance().getSelect("VistaIngresosDto", "detalle", params));
 			if(email) { 
 				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros), this.attrs.get("nameFacturaPdf").toString().replaceFirst(".pdf", ""));		
         this.reporte.doAceptarSimple();			

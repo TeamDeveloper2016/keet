@@ -8312,8 +8312,7 @@
 					tc_mantic_ventas_detalles on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
 				where  
 					tc_mantic_articulos.id_articulo= {idArticulo}
-				and 
-					tc_mantic_ventas_detalles.id_venta_detalle= {idComodin}
+				  and tc_mantic_ventas_detalles.id_venta_detalle= {idComodin}
 			</select>
 		</unit>
 		<unit id="VistaTcManticGarantiasArticulosDto">
