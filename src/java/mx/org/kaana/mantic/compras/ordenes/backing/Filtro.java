@@ -300,7 +300,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
       parametros= comunes.getComunes();
-      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       if(reporteSeleccion.equals(EReportes.ORDEN_DETALLE)) 

@@ -309,8 +309,10 @@
 					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo 
 				where 
 				  (tc_keet_contratos_destajos_contratistas.id_nomina= {idNomina} or tc_keet_contratos_destajos_contratistas.id_nomina is null) 
+          and tc_keet_contratos_destajos_contratistas.id_estacion_estatus= 3
 				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}		
-				order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
+				order by 
+          tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>
 			<select id="destajoProveedor">
         select 

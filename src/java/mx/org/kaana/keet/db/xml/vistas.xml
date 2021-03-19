@@ -1236,6 +1236,7 @@
             tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo      
 				where 
 				  (tc_keet_contratos_destajos_contratistas.id_nomina= {idNomina} or tc_keet_contratos_destajos_contratistas.id_nomina is null) 
+          and tc_keet_contratos_destajos_contratistas.id_estacion_estatus= 3
 				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}		
 				  and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
 				{sortOrder}			
@@ -1278,6 +1279,7 @@
 					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo 
 				where 
 				  (tc_keet_contratos_destajos_residentes.id_nomina= {idNomina} or tc_keet_contratos_destajos_residentes.id_nomina is null) 
+          and tc_keet_contratos_destajos_residentes.id_estacion_estatus= 3
 				  and tc_keet_contratos_lotes_residentes.id_empresa_persona= {idEmpresaPersona}		
 				  and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
 				{sortOrder}			
@@ -1320,6 +1322,7 @@
 					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo 
 				where 
 				  (tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina} or tc_keet_contratos_destajos_proveedores.id_nomina is null) 
+          tc_keet_contratos_destajos_proveedores.id_estacion_estatus= 3
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
 				  and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
 				{sortOrder}			
@@ -1724,6 +1727,7 @@
 				  tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
 				where 
 				  tc_keet_contratos_destajos_contratistas.id_nomina is null
+          and tc_keet_contratos_destajos_contratistas.id_estacion_estatus= 3
 				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}
 			</select>
 			<select id="agremiados">
@@ -4879,7 +4883,8 @@
 					tc_keet_puntos_controles.orden,
 					rechazos.registro,
 					rechazos.observaciones,
-					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario,
+          round((tc_keet_puntos_controles.factor* {importe})/ 100, 1) as importe
 				from
 					tc_keet_puntos_paquetes
 				inner join
