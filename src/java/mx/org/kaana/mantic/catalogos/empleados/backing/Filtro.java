@@ -86,7 +86,10 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
     this.attrs.put("tipoPersona", UIBackingUtilities.toFirstKeySelectEntity(gestor.getTiposPersonas()));    
     this.attrs.put("puestos", gestor.loadPuestosSimple());
     this.attrs.put("puesto", UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>)this.attrs.get("puestos")));
-    this.attrs.put("departamentos", gestor.loadDepartamentosSimple());
+    this.attrs.put("tiposGastos", gestor.loadTiposGastos());
+    Long idTipoGasto= (Long)UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>)this.attrs.get("tiposGastos"));
+    this.attrs.put("idTipoGasto", idTipoGasto);
+    this.attrs.put("departamentos", gestor.loadDepartamentosSimple(idTipoGasto));
     this.attrs.put("departamento", UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>)this.attrs.get("departamentos")));
   } // loadTiposPersonas  
 	
@@ -182,6 +185,8 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			sb.append("tr_mantic_empresa_personal.id_activo in (").append(this.attrs.get("idActivo")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("idSeguro")))
 			sb.append("tr_mantic_empresa_personal.id_seguro in (").append(this.attrs.get("idSeguro")).append(") and ");					
+		if(!Cadena.isVacio(this.attrs.get("idTipoGasto")) && (Long)this.attrs.get("idTipoGasto")> 0L)
+			sb.append("tc_keet_tipos_gastos.id_tipo_gasto= ").append(this.attrs.get("idTipoGasto")).append(" and ");					
 		if(selectDepartamentos.length > 0) {
 			String allDepartametos= "";
 			for(String departamento: selectDepartamentos)
@@ -320,4 +325,20 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			Error.mensaje(e);			
 		} // catch		
 	} // doDeposito
+  
+  public void doDepartamentos() {
+    Gestor gestor = new Gestor();
+    try {      
+      this.attrs.put("departamentos", gestor.loadDepartamentosSimple((Long)this.attrs.get("idTipoGasto")));
+      this.attrs.put("departamento", UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>)this.attrs.get("departamentos")));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      gestor= null;
+    } // finally
+  }
+  
 }

@@ -39,7 +39,7 @@ public final class Catalogos {
 		finally {
 			Methods.clean(params);
 		} // finally		
-	} // toLoadDepartamentos
+	} // toLoadResidentes
   
 	public static void toLoadEspecialidades(Map<String, Object> attrs) throws Exception {
 		Map<String, Object> params= null;		
@@ -51,13 +51,31 @@ public final class Catalogos {
 		finally {
 			Methods.clean(params);
 		} // finally		
-	} // toLoadDepartamentos
-	
-	public static void toLoadDepartamentos(Map<String, Object> attrs) throws Exception {
-		Map<String, Object> params      = null;		
+	} // toLoadEspecialidades
+
+  public static void toLoadTiposGastos(Map<String, Object> attrs) throws Exception {    
+    Map<String,Object> params= null;
+    try {
+      params =  new HashMap();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			attrs.put("tiposGastos", UISelect.seleccione("TcKeetTiposGastosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);      
+    } // finally
+  } // toLoadTiposGastos
+  
+	public static void toLoadDepartamentos(Long idTipoGasto, Map<String, Object> attrs) throws Exception {
+		Map<String, Object> params= null;		
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+      if(idTipoGasto> 0)
+        params.put(Constantes.SQL_CONDICION, "id_tipo_gasto= "+ idTipoGasto);
+      else
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			attrs.put("departamentos", UISelect.seleccione("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
 		} // try
 		finally {
@@ -65,6 +83,10 @@ public final class Catalogos {
 		} // finally		
 	} // toLoadDepartamentos
 	
+	public static void toLoadDepartamentos(Map<String, Object> attrs) throws Exception {
+    toLoadDepartamentos(-1L, attrs);
+  }
+  
 	public static void toLoadEjercicios(Map<String, Object> attrs) throws Exception {
 		Map<String, Object> params      = null;		
 		try {

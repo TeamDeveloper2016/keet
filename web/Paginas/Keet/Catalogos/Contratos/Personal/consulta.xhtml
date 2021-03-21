@@ -13,6 +13,7 @@
       Janal.Control.fields = {        
 				'tabla\\:departamento': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
 				'tabla\\:idDesarrollo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'tabla\\:idTipoGasto' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'tabla\\:idActivo'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'tabla\\:idSeguro'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'tabla\\:idSinDesarrollo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -47,6 +48,11 @@
                   <p:column headerText="Nombre">
                     <h:outputText value="#{item.nombres}"/>
                   </p:column>                   
+                </p:selectOneMenu>
+                <p:outputLabel for="idTipoGasto" value="Tipo gasto:"/>
+                <p:selectOneMenu id="idTipoGasto" label="Tipo gasto" value="#{keetCatalogosContratosPersonalConsulta.attrs.idTipoGasto}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
+                  <p:ajax event="change" process="@this panelBusqueda" update="departamento tabla" listener="#{keetCatalogosContratosPersonalConsulta.doDepartamentos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.tiposGastos}"/>                
                 </p:selectOneMenu>
 								<p:outputLabel for="departamento" value="Departamento:"/>
 								<p:selectOneMenu id="departamento" value="#{keetCatalogosContratosPersonalConsulta.attrs.idDepartamento}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									

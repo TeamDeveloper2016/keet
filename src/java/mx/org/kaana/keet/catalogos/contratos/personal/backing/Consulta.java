@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
@@ -86,7 +87,10 @@ public class Consulta extends IBaseFilter implements Serializable {
   
 	private void loadCatalogos() throws Exception {
     this.doLoadDesarrollos();
-		Catalogos.toLoadDepartamentos(this.attrs);
+    Catalogos.toLoadTiposGastos(this.attrs);
+    Long idTipoGasto= (Long)UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>)this.attrs.get("tiposGastos"));
+    this.attrs.put("idTipoGasto", idTipoGasto);
+    Catalogos.toLoadDepartamentos(idTipoGasto, this.attrs);
 		Catalogos.toLoadPuestos(this.attrs);
 		Catalogos.toLoadContratistas(this.attrs);
 	} // loadCatalogos	
@@ -145,6 +149,8 @@ public class Consulta extends IBaseFilter implements Serializable {
 		  sb.append("(tc_keet_desarrollos.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");		
 		if(!Cadena.isVacio(this.attrs.get("idPuesto")) && Long.valueOf(this.attrs.get("idPuesto").toString())>= 1L)
 			sb.append("tc_mantic_puestos.id_puesto=").append(this.attrs.get("idPuesto")).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("idTipoGasto")) && (Long)this.attrs.get("idTipoGasto")> 0L)
+			sb.append("tc_keet_tipos_gastos.id_tipo_gasto= ").append(this.attrs.get("idTipoGasto")).append(" and ");					
 		if(this.attrs.get("idDepartamento")!= null && !Cadena.isVacio(this.attrs.get("idDepartamento")) && Long.valueOf(this.attrs.get("idDepartamento").toString())>= 1L)
 			sb.append("tc_keet_departamentos.id_departamento=").append(this.attrs.get("idDepartamento")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey() >= 1L)			
@@ -337,6 +343,18 @@ public class Consulta extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
+  }
+ 
+  public void doDepartamentos() {
+    try {      
+      Catalogos.toLoadDepartamentos((Long)this.attrs.get("idTipoGasto"), attrs);
+      this.attrs.put("departamento", UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>)this.attrs.get("departamentos")));
+      this.doLoad();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
   }
   
 }

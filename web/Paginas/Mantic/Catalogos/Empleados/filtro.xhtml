@@ -16,6 +16,7 @@
         'nombre'      : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas'},       
         'rfc'         : {validaciones: 'rfc'  , mascara: 'fiscal', formatos: 'cambiar-mayusculas'},
         'idActivo'    : {validaciones: 'libre', mascara: 'libre'},
+        'idTipoGasto' : {validaciones: 'libre', mascara: 'libre'},
         'idSeguro'    : {validaciones: 'libre', mascara: 'libre'},
         'tipoPersona' : {validaciones: 'libre', mascara: 'libre'},
 				'salarioMenor': {validaciones: 'libre', mascara: 'libre'},
@@ -78,6 +79,11 @@
 							</p:selectOneMenu>																
               <p:outputLabel for="clave" value="Clave:"/>
               <p:inputText id="clave" value="#{manticCatalogosEmpleadosFiltro.attrs.clave}" styleClass="janal-wid-100-txt" placeholder="ejemplo: BR123"/> 
+              <p:outputLabel for="idTipoGasto" value="Tipo gasto:"/>
+              <p:selectOneMenu id="idTipoGasto" label="Tipo gasto" value="#{manticCatalogosEmpleadosFiltro.attrs.idTipoGasto}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
+								<p:ajax event="change" process="@this" update="departamento" listener="#{manticCatalogosEmpleadosFiltro.doDepartamentos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.resize();"/>
+                <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.tiposGastos}"/>                
+              </p:selectOneMenu>
               <p:outputLabel for="departamento" value="Departamento:"/>
               <p:selectCheckboxMenu id="departamento" label="Departamentos" value="#{manticCatalogosEmpleadosFiltro.attrs.selectDepartamentos}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains" multiple="true">
                 <f:selectItems value="#{manticCatalogosEmpleadosFiltro.attrs.departamentos}"/>                

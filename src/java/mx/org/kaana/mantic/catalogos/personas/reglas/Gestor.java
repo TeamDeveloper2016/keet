@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.org.kaana.mantic.catalogos.personas.reglas;
 
 import java.io.Serializable;
@@ -113,12 +108,15 @@ public class Gestor implements Serializable {
 		return regresar;
   } // loadPuestosSimple
 	
-  public List<UISelectItem> loadDepartamentosSimple() throws Exception {    
+  public List<UISelectItem> loadDepartamentosSimple(Long idTipoGasto) throws Exception {    
 		List<UISelectItem> regresar= null;    
     Map<String,Object> params  = null;
     try {
       params =  new HashMap();
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      if(idTipoGasto> 0)
+        params.put(Constantes.SQL_CONDICION, "id_tipo_gasto= "+ idTipoGasto);
+      else
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			regresar= UISelect.build("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
     } // try
     catch (Exception e) {
@@ -129,4 +127,26 @@ public class Gestor implements Serializable {
     } // finally
 		return regresar;
   } // loadDepartamentosSimple
+  
+  public List<UISelectItem> loadDepartamentosSimple() throws Exception {    
+    return loadDepartamentosSimple(-1L);
+  } // loadDepartamentosSimple
+  
+  public List<UISelectItem> loadTiposGastos() throws Exception {    
+		List<UISelectItem> regresar= null;    
+    Map<String,Object> params  = null;
+    try {
+      params =  new HashMap();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			regresar= UISelect.seleccione("TcKeetTiposGastosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);      
+    } // finally
+		return regresar;
+  } // loadTiposGastos
+  
 }

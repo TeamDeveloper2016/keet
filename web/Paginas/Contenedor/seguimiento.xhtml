@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 14/08/2015
+ time 11:30:04 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Bienvenido" />
+  <ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.underscore.min-1.3.3.js"/>
+    <script type="text/javascript">			
+    </script>
+    <style type="text/css">
+      .janal-box-header-blue {
+        color: white;
+        background: rgb(65,130,179);
+        background: linear-gradient(90deg, rgba(50,82,150,1) 0%, rgba(65,130,179,1) 59%, rgba(0,212,255,1) 76%, rgba(255,255,255,1) 100%);        
+        border-radius: 5px;
+        text-align: center;
+      }
+      .janal-box-title-blue {
+        color: black;
+        background: rgb(0,212,255);
+        background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(0,212,255,1) 59%, rgba(65,130,179,1) 76%, rgba(50,82,150,1) 100%);        
+        border-radius: 5px;
+      }
+      .janal-box-title-red {
+        color: black;
+        background-image: linear-gradient(to right, rgba(0,0,255,0), rgba(0,0,255,0.7));        
+        border-radius: 5px;
+      }
+      .dashboard {
+        margin-right: 0px;
+        margin-left: 0px;
+        margin-top: -8px; 
+      }
+      .dashboard > div { padding: 0px; }
+      .dashboard .card {
+        height: 100%;
+        margin: 5px; 
+      }
+      .dashboard .dot {
+        height: .5em;
+        width: .5em;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+        display: inline-block; 
+      }
+      .dashboard .dot.dot-green { background-color: #4caf50; }
+      .dashboard .dot.dot-red { background-color: #e91e63; }
+      .dashboard .dot.dot-orange { background-color: #ff9800; }     
+      .dashboard .overview-box .overview-numbers {
+        font-size: 16px;
+        color: #4c87c9;
+        font-weight: 700;
+        margin: .5em 0 1em 0; }
+      .dashboard .overview-inner-box {
+        height:360px;
+        padding: 0px !important;
+        border: transparent;
+      }  
+      .dashboard .overview-box.monthly-sales img {
+        width: 100%;
+        margin-top: 1em; }
+      .dashboard .overview-box.total-views img {
+        width: 100%;
+        margin-top: 4em; }
+      .dashboard .overview-box.connections .legend-arrow {
+        vertical-align: top;
+        color: #4caf50;
+        position: relative;
+        top: -4px; }
+      .dashboard .overview-box.connections .dot {
+        margin-right: .5em;
+        vertical-align: middle; }
+      .dashboard .overview-box.connections .connection-chart {
+        text-align: center;
+        padding-top: 2em; }
+      .dashboard .overview-box.connections .connection-chart-legend {
+        padding-left: 4%;
+        padding-top: 1.5em;
+        color: #616161; }
+      .card {
+        -webkit-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+        -moz-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        background: #ffffff;
+        padding: 0.2em;
+        margin-bottom: 1em;
+        box-sizing: border-box; 
+        border-radius: 5px;
+      }
+      .card .card-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin: 1em 0;
+        letter-spacing: .3px; 
+      }
+      .card .card-title:first-child {
+        margin-top: 0; 
+      }
+      .card p {
+        margin: 0 0 1em 0;
+        padding: 0; 
+      }
+     .nopad { padding: 0; }
+     .nopad .ui-panel-content {padding: 0; }      
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="Container100 dashboard">
+      <div class="ContainerIndent">        					
+        <div class="Container100 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <div class="Container100 Responsive Fs20 janal-box-header-blue">
+                <i class="fa fa-people-arrows"></i> Personal activo al día de Miercoles, 20 de Marzo del 2021
+              </div>
+            </div>
+          </div>
+        </div>  
+      </div>  
+      <div class="ContainerIndent">        					
+        <div class="Container50 Responsive overview-box">					
+					<div class="Container50 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive Fs20 janal-box-title-blue">
+                  <i class="fa fa-users"></i> Personal activo
+                </div>
+							</p:panel>
+						</div>										
+					</div>
+					<div class="Container50 Responsive">          
+						<div class="ContainerIndent card">
+							<p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive Fs20 janal-box-title-red">
+                  <i class="fa fa-house-damage"></i> Desarrollos
+                </div>
+							</p:panel>
+						</div>															
+					</div>   						
+        </div>   						
+        <div class="Container50 Responsive overview-box">
+          <div class="ContainerIndent card">            
+            <p:panel styleClass="overview-inner-box">
+              <div class="Container100 Responsive Fs20 janal-box-title-blue">
+                <i class="fa fa-truck-pickup"></i>Contratistas
+              </div>
+              <div class="Container100">
+                <div id="kajool-chart-utilidad-por-sucursal">Hola</div>
+              </div>
+							<div class="Container100 Responsive TexAlCenter">Como</div>
+            </p:panel>						
+          </div>
+        </div>
+      </div>
+    </div>		
+		<p:notificationBar id="lockDownloadBackup" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="downloadBackup" effectSpeed="slow">
+			<span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('downloadBackup').hide();"><i class="fa fa-lg fa-close"/></span>
+			<p:panelGrid layout="grid" columns="1" style="background: transparent;">
+				<h:outputText value="Administrador Web" styleClass="Fs20"/>
+				<p:spacer height="3px"/>
+				<h:outputText value="#{kajoolTablero.attrs.messageBackup}" escape="false" styleClass="Fs14"/>
+			</p:panelGrid>
+		</p:notificationBar>
+  </ui:define>
+</ui:composition>

@@ -7,6 +7,25 @@
   </model>
 
   <dml>
+    <unit id="TcKeetTiposGastosDto">
+      <select id="row">
+        select      
+         tc_keet_tipos_gastos.id_tipo_gasto as id_key,
+          tc_keet_tipos_gastos.*
+        from      
+          tc_keet_tipos_gastos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_tipos_gastos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcKeetVentasPagosDto">
       <select id="row">
         select      
@@ -2203,7 +2222,7 @@
         where  
 				  id_cargar= 1
 				  and id_activo= 1
-				  and (aplicar= '*' or position('{semana}' in aplicar)> 0)
+				  and (aplicar= '*' or position('|{semana}|' in aplicar)> 0)
         order by
 				  clave 
       </select>

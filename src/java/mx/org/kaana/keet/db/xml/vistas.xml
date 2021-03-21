@@ -2520,6 +2520,8 @@
 						tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 					inner join 
 						tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
+  				inner join 
+	  				tc_keet_tipos_gastos on tc_keet_departamentos.id_tipo_gasto = tc_keet_tipos_gastos.id_tipo_gasto
 					inner join	
 						tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
           {union}

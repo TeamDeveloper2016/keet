@@ -1620,7 +1620,7 @@
 			$(id).html(this.escape($(id).html()));
 		},
     resize: function() {
-      setTimeout(function(){$('div.ui-selectonemenu-items-wrapper').attr('style', 'padding-left: 3px !important; padding-right: 3px !important; max-height: 300px !important;');}, 1000);
+      setTimeout(function(){$('div.ui-selectcheckboxmenu-filter-container').attr('style', 'width: 70%;');$('div.ui-selectonemenu-items-wrapper').attr('style', 'padding-left: 3px !important; padding-right: 3px !important; max-height: 300px !important;');}, 1000);
     },  
 		toAndroidKeyCode: function (item) {
 			var key= item.value.charCodeAt(item.value.length- 1);
