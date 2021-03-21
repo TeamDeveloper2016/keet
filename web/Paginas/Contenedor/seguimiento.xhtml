@@ -18,107 +18,28 @@
   <ui:param name="titulo" value="Bienvenido" />
   <ui:define name="librerias">
     <h:outputScript library="janal" name="core/jquery.underscore.min-1.3.3.js"/>
-    <script type="text/javascript">			
-    </script>
+		<h:outputScript library="janal" name="echarts/echarts.min-4.2.2.js"/>
+		<h:outputScript library="janal" name="echarts/resize-sensor-0.0.1.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.echarts.core-0.4.2.js"/>
+    <script type="text/javascript">
+			Janal.Control.Echarts.names= {
+				items       : {json: {hoy: '#{kajoolSeguimiento.attrs.hoy}', nomina: '#{kajoolSeguimiento.attrs.nomina}', nominaInicio: '#{kajoolSeguimiento.attrs.inicio}', nominaTermino: '#{kajoolSeguimiento.attrs.termino}'}},
+				personal    : {json: #{kajoolSeguimiento.attrs.personal}},
+				desarrollos : {json: #{kajoolSeguimiento.attrs.desarrollos}},
+				movimientos : {json: #{kajoolSeguimiento.attrs.movimientos}},
+				contratistas: {json: #{kajoolSeguimiento.attrs.contratistas}}
+			};
+			$(function() {
+				 'use strict'			
+				 new ResizeSensor($('.dashboard'), function() { jsEcharts.responsive(); });				
+			 });
+       $(document).ready(function () {
+         // setTimeout("$('div.keet-top-content').hide();", 2000);
+       });  
+    </script>		
     <style type="text/css">
-      .janal-box-header-blue {
-        color: white;
-        background: rgb(65,130,179);
-        background: linear-gradient(90deg, rgba(50,82,150,1) 0%, rgba(65,130,179,1) 59%, rgba(0,212,255,1) 76%, rgba(255,255,255,1) 100%);        
-        border-radius: 5px;
-        text-align: center;
-      }
-      .janal-box-title-blue {
-        color: black;
-        background: rgb(0,212,255);
-        background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(0,212,255,1) 59%, rgba(65,130,179,1) 76%, rgba(50,82,150,1) 100%);        
-        border-radius: 5px;
-      }
-      .janal-box-title-red {
-        color: black;
-        background-image: linear-gradient(to right, rgba(0,0,255,0), rgba(0,0,255,0.7));        
-        border-radius: 5px;
-      }
-      .dashboard {
-        margin-right: 0px;
-        margin-left: 0px;
-        margin-top: -8px; 
-      }
-      .dashboard > div { padding: 0px; }
-      .dashboard .card {
-        height: 100%;
-        margin: 5px; 
-      }
-      .dashboard .dot {
-        height: .5em;
-        width: .5em;
-        -moz-border-radius: 50%;
-        -webkit-border-radius: 50%;
-        border-radius: 50%;
-        display: inline-block; 
-      }
-      .dashboard .dot.dot-green { background-color: #4caf50; }
-      .dashboard .dot.dot-red { background-color: #e91e63; }
-      .dashboard .dot.dot-orange { background-color: #ff9800; }     
-      .dashboard .overview-box .overview-numbers {
-        font-size: 16px;
-        color: #4c87c9;
-        font-weight: 700;
-        margin: .5em 0 1em 0; }
-      .dashboard .overview-inner-box {
-        height:360px;
-        padding: 0px !important;
-        border: transparent;
-      }  
-      .dashboard .overview-box.monthly-sales img {
-        width: 100%;
-        margin-top: 1em; }
-      .dashboard .overview-box.total-views img {
-        width: 100%;
-        margin-top: 4em; }
-      .dashboard .overview-box.connections .legend-arrow {
-        vertical-align: top;
-        color: #4caf50;
-        position: relative;
-        top: -4px; }
-      .dashboard .overview-box.connections .dot {
-        margin-right: .5em;
-        vertical-align: middle; }
-      .dashboard .overview-box.connections .connection-chart {
-        text-align: center;
-        padding-top: 2em; }
-      .dashboard .overview-box.connections .connection-chart-legend {
-        padding-left: 4%;
-        padding-top: 1.5em;
-        color: #616161; }
-      .card {
-        -webkit-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-        -moz-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-        -moz-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        border-radius: 2px;
-        background: #ffffff;
-        padding: 0.2em;
-        margin-bottom: 1em;
-        box-sizing: border-box; 
-        border-radius: 5px;
-      }
-      .card .card-title {
-        font-size: 16px;
-        font-weight: 500;
-        margin: 1em 0;
-        letter-spacing: .3px; 
-      }
-      .card .card-title:first-child {
-        margin-top: 0; 
-      }
-      .card p {
-        margin: 0 0 1em 0;
-        padding: 0; 
-      }
-     .nopad { padding: 0; }
-     .nopad .ui-panel-content {padding: 0; }      
+      .dashboard .overview-inner-box { height: 283px; padding: 0px !important; border: transparent;}  
+      .keet-chart-panel { width:100%; height: 270px; display:block; }
     </style>
   </ui:define>
   <ui:define name="contenido">
@@ -127,45 +48,76 @@
         <div class="Container100 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
-              <div class="Container100 Responsive Fs20 janal-box-header-blue">
-                <i class="fa fa-people-arrows"></i> Personal activo al día de Miercoles, 20 de Marzo del 2021
+              <div class="Container100 Responsive Fs18 janal-box-header-blue">
+                <i class="fa fa-slack"></i>Información con corte al día de <span id="hoy"/>
               </div>
             </div>
           </div>
         </div>  
       </div>  
       <div class="ContainerIndent">        					
-        <div class="Container50 Responsive overview-box">					
-					<div class="Container50 Responsive">					
-						<div class="ContainerIndent card">
-              <p:panel styleClass="overview-inner-box">
-                <div class="Container100 Responsive Fs20 janal-box-title-blue">
-                  <i class="fa fa-users"></i> Personal activo
-                </div>
-							</p:panel>
-						</div>										
-					</div>
-					<div class="Container50 Responsive">          
-						<div class="ContainerIndent card">
-							<p:panel styleClass="overview-inner-box">
-                <div class="Container100 Responsive Fs20 janal-box-title-red">
-                  <i class="fa fa-house-damage"></i> Desarrollos
-                </div>
-							</p:panel>
-						</div>															
+        <div class="Container30 Responsive overview-box">					
+          <div class="ContainerIndent card">
+            <p:panel styleClass="overview-inner-box">
+              <div class="Container100 Responsive Fs16 janal-box-title-blue">
+                <i class="fa fa-users"></i> Personal activo
+              </div>
+              <div class="keet-chart-panel">
+						    <div id="personal" class="keet-chart-panel">
+							    Cargando gráficas del personal activo
+						    </div>	
+					   </div>	              
+            </p:panel>
+          </div>										
+        </div>  
+        <div class="Container70 Responsive overview-box">					
+          <div class="ContainerIndent card">
+            <p:panel styleClass="overview-inner-box">
+              <div class="Container100 Responsive Fs16 janal-box-title-red">
+                <i class="fa fa-house-damage"></i>Personal adscrito por desarrollos
+              </div>
+              <div class="keet-chart-panel">
+						    <div id="desarrollos" class="keet-chart-panel">
+							    Cargando gráficas del personal por desarrollo
+						    </div>	
+					    </div>	              
+            </p:panel>
 					</div>   						
-        </div>   						
-        <div class="Container50 Responsive overview-box">
+        </div>  
+      </div>
+      <div class="ContainerIndent">        					
+        <div class="Container30 Responsive overview-box">					
+          <div class="ContainerIndent card">
+            <p:panel styleClass="overview-inner-box">
+              <div class="Container100 Responsive Fs16 janal-box-title-blue">
+                <i class="fa fa-user-injured"></i>Movimientos del personal
+              </div>
+              <div class="keet-chart-panel Responsive">
+						    <div id="movimientos" class="keet-chart-panel">
+							    Cargando gráficas movimientos del personal
+						    </div>	
+					    </div>	    
+            </p:panel>  
+            <div class="Container100 Responsive TexAlCenter janal-color-black">
+              <span id="nomina"/>
+            </div>   
+          </div>
+        </div>  
+        <div class="Container70 Responsive overview-box">
           <div class="ContainerIndent card">            
             <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive Fs20 janal-box-title-blue">
-                <i class="fa fa-truck-pickup"></i>Contratistas
+              <div class="Container100 Responsive Fs16 janal-box-title-blue">
+                <i class="fa fa-truck-pickup"></i>Personal adscritos a los contratistas
               </div>
-              <div class="Container100">
-                <div id="kajool-chart-utilidad-por-sucursal">Hola</div>
-              </div>
-							<div class="Container100 Responsive TexAlCenter">Como</div>
+              <div class="keet-chart-panel">
+						    <div id="contratistas" class="keet-chart-panel">
+							    Cargando gráficas personal del contratista
+						    </div>	
+					   </div>	              
             </p:panel>						
+            <div class="Container100 Responsive TexAlCenter janal-color-black">
+              <span id="">Hola</span>
+            </div>   
           </div>
         </div>
       </div>

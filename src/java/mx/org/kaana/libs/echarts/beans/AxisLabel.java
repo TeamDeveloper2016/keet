@@ -32,11 +32,11 @@ public final class AxisLabel implements Serializable {
 	}
 	
 	public AxisLabel(Boolean inside, TextStyle textStyle, String formatter) {
-		this(inside, textStyle, formatter, 30);
+		this(inside, textStyle, formatter, 10);
 	}
 
 	public AxisLabel(TextStyle textStyle) {
-		this(Boolean.FALSE, textStyle, null, 30);
+		this(Boolean.FALSE, textStyle, null, 10);
 	}
 
 	public AxisLabel(Boolean inside, TextStyle textStyle, String formatter, Integer margin) {

@@ -4,6 +4,73 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaSeguimientoDto">
+			<select id="contratistas">
+        select  
+				  if(tt_mantic_empresa_personal.id_seguro= 1, 'CON SEGURO', 'SIN SEGURO') as category,
+				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as serie,
+				  count(*) as value
+        from  
+          tr_mantic_empresa_personal
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join
+					tr_mantic_empresa_personal as tt_mantic_empresa_personal on tr_mantic_empresa_personal.id_empresa_persona= tt_mantic_empresa_personal.id_contratista and tt_mantic_empresa_personal.id_empresa= 1 and tt_mantic_empresa_personal.id_activo= 1
+        where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tr_mantic_empresa_personal.id_puesto= 6
+          and tr_mantic_empresa_personal.id_activo= 1
+        group by
+          tt_mantic_empresa_personal.id_seguro, tr_mantic_empresa_personal.id_empresa_persona        
+			</select>
+			<select id="movimientos">
+        select
+          if(tc_mantic_incidentes.id_tipo_incidente= 10 or tc_mantic_incidentes.id_tipo_incidente= 12, 'ALTA', 'BAJA') as serie,
+          count(*) as value
+        from
+          tc_mantic_incidentes
+        inner join 
+          tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_empresa_persona= tc_mantic_incidentes.id_empresa_persona
+        where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tc_mantic_incidentes.id_tipo_incidente in (10, 11, 12)
+          and date_format(tc_mantic_incidentes.registro, '%Y%m%d')&gt;= '{inicio}'
+          and date_format(tc_mantic_incidentes.registro, '%Y%m%d')&lt;= '{termino}' 
+        group by
+          serie
+      </select>  
+			<select id="desarrollos">
+				select
+				  if(tr_mantic_empresa_personal.id_seguro= 1, 'CON SEGURO', 'SIN SEGURO') as category,
+					if(tc_keet_desarrollos.descripcion is null, 'SIN DESARROLLO', tc_keet_desarrollos.descripcion) as serie, 
+					count(*) as value
+				from
+					tr_mantic_empresa_personal
+				left join
+					tc_keet_contratos_personal on tc_keet_contratos_personal.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				left join
+					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tr_mantic_empresa_personal.id_activo= 1
+        group by
+          tr_mantic_empresa_personal.id_seguro, tc_keet_desarrollos.descripcion
+      </select>  
+			<select id="personal">
+        select
+          if(tr_mantic_empresa_personal.id_seguro= 1, 'CON SEGURO', 'SIN SEGURO') as serie,
+          count(*) as value
+        from
+          tr_mantic_empresa_personal
+        where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tr_mantic_empresa_personal.id_activo= 1
+        group by
+          tr_mantic_empresa_personal.id_seguro        
+      </select>  
+    </unit>
 		<unit id="VistaIngresosDto">
       <select id="detalle">
         select
@@ -1440,6 +1507,21 @@
 				  and tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
 				order by
 				  tc_keet_nominas_periodos.ejercicio desc				
+			</select>
+			<select id="periodo">
+				select
+					distinct(tc_keet_nominas_periodos.ejercicio) as id_key,
+					tc_keet_nominas_periodos.*
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+					tc_keet_nominas.id_empresa in ({sucursales})
+				  and tc_keet_nominas.id_nomina_estatus in (1, 2, 3, 4)
+          and tc_keet_nominas.id_tipo_nomina = 1
+				order by
+				  tc_keet_nominas.id_nomina desc				
 			</select>
 			<select id="semanas">
 				select

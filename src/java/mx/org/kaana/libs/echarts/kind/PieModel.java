@@ -70,6 +70,7 @@ public class PieModel extends ChartModel implements Serializable {
 				item.setName(name);
 				item.setRadius(Arrays.asList("0%", this.radius));
 				item.getLabel().getNormal().setFontSize(14);
+				item.getLabel().getNormal().setColor(Colors.COLOR_BLACK);
 			} // for
 			for (Data item: this.series.get(0).getData()) {
 				this.color.add(Colors.toColor());

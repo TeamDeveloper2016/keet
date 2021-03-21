@@ -90,11 +90,19 @@ public class DonutModel extends PieModel implements Serializable {
 		this.toCustomDisplay(Numero.formatear(Numero.MILES_SIN_DECIMALES, elapsed), Numero.formatear(Numero.MONEDA_CON_DECIMALES, percent)+ " %", Numero.formatear(Numero.MILES_SIN_DECIMALES, total));
 	}
 	
-  public void toCustomDonut(String total) {
+  public void toCustomDonut(String total, String size, String top) {
 		this.graphic= new ArrayList<>();
-		this.graphic.add(new Graphic("center", total, "40px Microsoft YaHei"));
+		this.graphic.add(new Graphic(top, total, size.concat(" Microsoft YaHei")));
 		this.toInnerDisplay(false);
+  }
+  
+  public void toCustomDonut(String total, String size) {
+    this.toCustomDonut(total, size, "40%");
 	}
+
+  public void toCustomDonut(String total) {
+    toCustomDonut(total, "25px");
+  }
 
   public void toCustomDonut(Double total) {
 		this.toCustomDonut(Numero.formatear(Numero.MILES_SIN_DECIMALES, total));

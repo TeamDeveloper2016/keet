@@ -41,6 +41,12 @@ public class TcKeetDepartamentosDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="id_especialidad")
+  private Long idEspecialidad;
+  @Column (name="id_oficina")
+  private Long idOficina;
+  @Column (name="id_tipo_gasto")
+  private Long idTipoGasto;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -49,16 +55,19 @@ public class TcKeetDepartamentosDto implements IBaseDto, Serializable {
   }
 
   public TcKeetDepartamentosDto(Long key) {
-    this(null, new Long(-1L), null, null);
+    this(null, new Long(-1L), null, null, 1L, 1L, 1L);
     setKey(key);
   }
 
-  public TcKeetDepartamentosDto(String descripcion, Long idDepartamento, Long idUsuario, String nombre) {
+  public TcKeetDepartamentosDto(String descripcion, Long idDepartamento, Long idUsuario, String nombre, Long idEspecialidad, Long idOficina, Long idTipoGasto) {
     setDescripcion(descripcion);
     setIdDepartamento(idDepartamento);
     setIdUsuario(idUsuario);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
+    this.idEspecialidad= idEspecialidad;
+    this.idOficina= idOficina;
+    this.idTipoGasto= idTipoGasto;
   }
 	
   public void setDescripcion(String descripcion) {
@@ -101,6 +110,30 @@ public class TcKeetDepartamentosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Long getIdEspecialidad() {
+    return idEspecialidad;
+  }
+
+  public void setIdEspecialidad(Long idEspecialidad) {
+    this.idEspecialidad = idEspecialidad;
+  }
+
+  public Long getIdOficina() {
+    return idOficina;
+  }
+
+  public void setIdOficina(Long idOficina) {
+    this.idOficina = idOficina;
+  }
+
+  public Long getIdTipoGasto() {
+    return idTipoGasto;
+  }
+
+  public void setIdTipoGasto(Long idTipoGasto) {
+    this.idTipoGasto = idTipoGasto;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -124,6 +157,12 @@ public class TcKeetDepartamentosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEspecialidad());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdOficina());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoGasto());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -136,6 +175,9 @@ public class TcKeetDepartamentosDto implements IBaseDto, Serializable {
 		regresar.put("idDepartamento", getIdDepartamento());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("nombre", getNombre());
+		regresar.put("idEspecialidad", getIdEspecialidad());
+		regresar.put("idOficina", getIdOficina());
+		regresar.put("idTipoGasto", getIdTipoGasto());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -143,7 +185,7 @@ public class TcKeetDepartamentosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdDepartamento(), getIdUsuario(), getNombre(), getRegistro()
+      getDescripcion(), getIdDepartamento(), getIdUsuario(), getNombre(), getIdEspecialidad(), getIdOficina(), getIdTipoGasto(), getRegistro()
     };
     return regresar;
   }

@@ -818,3 +818,60 @@ strong { font-weight: bolder; }
 div.ui-selectonemenu-panel { height: 350px; overflow-y: auto;}
 .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container .ui-inputfield {width: 95%; padding-left: 50px !important;}
 .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container {width: 98%;}
+
+.janal-box-header-blue {
+  color: white;
+  background: rgb(65,130,179);
+  background: linear-gradient(90deg, rgba(50,82,150,1) 0%, rgba(65,130,179,1) 59%, rgba(0,212,255,1) 76%, rgba(255,255,255,1) 100%);        
+  border-radius: 5px;
+  text-align: center;
+}
+.janal-box-title-blue {
+  color: black;
+  background: rgb(0,212,255);
+  background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(0,212,255,1) 59%, rgba(65,130,179,1) 76%, rgba(50,82,150,1) 100%);        
+  border-radius: 5px;
+}
+.janal-box-title-red {
+  color: black;
+  background-image: linear-gradient(to right, rgba(0,0,255,0), rgba(0,0,255,0.7));        
+  border-radius: 5px;
+}
+.dashboard { margin-right: 0px; margin-left: 0px; margin-top: -8px; }
+.dashboard > div { padding: 0px; }
+.dashboard .card { height: 100%; margin: 5px; }
+.dashboard .dot {
+  height: .5em;
+  width: .5em;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  display: inline-block; 
+}
+.dashboard .dot.dot-green { background-color: #4caf50; }
+.dashboard .dot.dot-red { background-color: #e91e63; }
+.dashboard .dot.dot-orange { background-color: #ff9800; }     
+.dashboard .overview-box {font-size: 16px; color: #4c87c9; font-weight: 700;}
+.card {
+  -webkit-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  -moz-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  background: #ffffff;
+  padding: 0.2em;
+  margin-bottom: 1em;
+  box-sizing: border-box; 
+  border-radius: 5px;
+}
+.card .card-title {font-size: 16px; font-weight: 500; margin: 1em 0; letter-spacing: .3px; }
+.card .card-title:first-child { margin-top: 0; }
+.card p { margin: 0 0 1em 0; padding: 0; }
+.nopad { padding: 0; }
+.nopad .ui-panel-content {padding: 0; }    
+.keet-item-hide { display: none; }
+.keet-chart-content { text-align: center; }
+.ui-inputfield { width: 65% !important; }
+     
+     

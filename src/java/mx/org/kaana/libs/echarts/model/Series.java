@@ -20,7 +20,7 @@ import mx.org.kaana.libs.formato.Cadena;
 public class Series implements Serializable {
 
 	private static final long serialVersionUID=2040043938762402282L;
-	private static final String PIVOT_GROUP= "cgor";	
+	private static final String PIVOT_GROUP= "keet";	
 	private static final String FIELD_GROUP= "category";	
 	private static final String FIELD_TEXT = "serie";	
 	private static final String FIELD_VALUE= "value";	
@@ -54,6 +54,10 @@ public class Series implements Serializable {
 		} // switch
 	}
 
+  public List<Entity> getData() {
+    return data;
+  }
+  
 	public DataModel getModel() {
 		return model;
 	}
@@ -123,16 +127,17 @@ public class Series implements Serializable {
 		DataModel regresar= new DataModel();
 		mx.org.kaana.libs.echarts.stack.Serie serie = null;
 		String group= null;
-		String color= Colors.toColor();
+    int count   = 0;
+		String color= null;
 		for (Entity item: this.data) {
 			if(Cadena.isVacio(group) || !group.equals(item.toString(FIELD_GROUP))) {
-				color= Colors.toColor();
 				if(!Cadena.isVacio(group))
       		regresar.stack(serie);
-				group= item.toString(FIELD_GROUP);
-				regresar.getLegend().add(group);
-			  serie= new mx.org.kaana.libs.echarts.stack.Serie(group, color);
+				group = item.toString(FIELD_GROUP);
+			  regresar.getLegend().add(group);
+			  serie= new mx.org.kaana.libs.echarts.stack.Serie(group, Colors.COLOR_BLACK);
   			serie.getData().clear();
+  			color= Colors.color(count++);
 			}	// if
 		  regresar.label(item.toString(FIELD_TEXT));
 			serie.getData().add(new Value(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE), color));

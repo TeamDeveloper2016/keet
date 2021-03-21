@@ -51,7 +51,7 @@ public class UtilAplicacion {
   private static final String STYLE_SHEET = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{0}/javax.faces.resource/css/{1}.jsf?ln={2}\">";
 
   private static final String LESS  = "janal.mantic.less.min-2.5.0.js";
-  private static final String CSS   = "janal.mantic.core-0.9.1.css";
+  private static final String CSS   = "janal.mantic.core-0.9.3.css";
   private static final String CORE  = "jquery.janal.core-3.8.2.js";
   private static final String VENTAS= "jquery.janal.ventas.core-1.1.0.js";
   private static final String VALES = "jquery.janal.vales.core-0.0.4.js";
@@ -117,7 +117,7 @@ public class UtilAplicacion {
 
   public String getDefaultCss() {
     StringBuilder sb = new StringBuilder();
-    String[] css = {"sentinel-core-1.0.5.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.2.css|sentinel", CSS.concat("|janal"), "all-5.13.4.min.css|janal", "v4-shims-5.13.1.min.css|janal"};
+    String[] css = {"sentinel-core-1.0.6.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.2.css|sentinel", CSS.concat("|janal"), "all-5.13.4.min.css|janal", "v4-shims-5.13.1.min.css|janal"};
     // String[] css = {"sentinel-core-1.0.3.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.2.css|sentinel", CSS.concat("|janal")};
     for (String item : css) {
       String[] values = item.split("[|]");

@@ -21,7 +21,7 @@ public final class Grid implements Serializable {
   private Boolean containLabel;
 
 	public Grid() {
-		this("60", "60", "10%", "10%", true);
+		this("10", "10", "7%", "15%", true);
 	}
 
 	public Grid(String left) {

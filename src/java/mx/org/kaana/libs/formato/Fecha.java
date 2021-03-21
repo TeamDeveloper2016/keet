@@ -111,7 +111,7 @@ public  class Fecha {
             getNombreDia(calendario.get(calendario.DAY_OF_WEEK)) + ", " + fecha.substring(6, 8) + "/" + fecha.substring(4, 6) +
             "/" + fecha.substring(0, 4);
         break;
-      case FECHA_EXTENDIDA: // Fecha en:  nombre del dia, dia mes a�o   Miercoles, 26 de Noviembre del 2003
+      case FECHA_EXTENDIDA: // Fecha en:  nombre del dia, dia mes anio   Miercoles, 26 de Noviembre del 2003
         fecha =
             getNombreDia(calendario.get(calendario.DAY_OF_WEEK)) + ", " + calendario.get(calendario.DATE) + " de " + getNombreMes(calendario.get(calendario.MONTH)) +
             " de " + calendario.get(calendario.YEAR);
@@ -268,7 +268,7 @@ public  class Fecha {
     return formatear(FECHA_HORA);
   } // getHoy
 
-  public static String getHoyCoreo() {
+  public static String getHoyCorreo() {
     return formatear(FECHA_EXTENDIDA);
   } // getHoy
 
