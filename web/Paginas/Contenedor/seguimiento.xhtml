@@ -40,6 +40,14 @@
        });  
     </script>		
     <style type="text/css">
+      .keet-chart-title {
+        font-weight: normal !important;
+        font-size: 16px;
+      }
+      .keet-chart-footer {
+        font-weight: normal !important;
+        font-size: 12px;
+      }
     </style>
   </ui:define>
   <ui:define name="contenido">
@@ -57,7 +65,7 @@
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <div class="Container100 Responsive Fs18 janal-box-header-blue">
-                <i class="fa fa-slack janal-color-orange"></i><p:spacer width="8px" height="1px"/>Información con corte al día de <span id="hoy"/>
+                <i class="fa fa-slack janal-color-blue"></i><p:spacer width="8px" height="1px"/>Información con corte al día de <span id="hoy"/>
               </div>
             </div>
           </div>
@@ -67,8 +75,8 @@
         <div class="Container30 Responsive overview-box">					
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive Fs16 janal-box-title-green">
-                <i class="fa fa-users janal-color-orange"></i><p:spacer width="8px" height="1px"/> Personal activo
+              <div class="Container100 Responsive keet-chart-title janal-box-title-green">
+                <i class="fa fa-users Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/> Personal activo
               </div>
               <div class="keet-chart-panel">
 						    <div id="personal" class="keet-chart-panel">
@@ -76,13 +84,16 @@
 						    </div>	
 					   </div>	              
             </p:panel>
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet_chart-footer">
+              <span id="nomina"/> (<span id="nominaInicio"/> al <span id="nominaTermino"/>)
+            </div>   
           </div>										
         </div>  
         <div class="Container70 Responsive overview-box">					
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive Fs16 janal-box-title-green">
-                <i class="fa fa-house-damage janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal adscrito por desarrollos
+              <div class="Container100 Responsive keet-chart-title janal-box-title-green">
+                <i class="fa fa-house-damage Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal adscrito por desarrollos
               </div>
               <div class="keet-chart-panel">
 						    <div id="desarrollos" class="keet-chart-panel">
@@ -90,6 +101,9 @@
 						    </div>	
 					    </div>	              
             </p:panel>
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet_chart-footer">
+              <span id="nomina"/> (<span id="nominaInicio"/> al <span id="nominaTermino"/>)
+            </div>   
 					</div>   						
         </div>  
       </div>
@@ -97,8 +111,8 @@
         <div class="Container30 Responsive overview-box">					
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive Fs16 janal-box-title-blue">
-                <i class="fa fa-user-injured janal-color-orange"></i><p:spacer width="8px" height="1px"/>Movimientos del personal
+              <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
+                <i class="fa fa-user-injured Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Movimientos del personal
               </div>
               <div class="keet-chart-panel Responsive">
 						    <div id="movimientos" class="keet-chart-panel">
@@ -106,16 +120,16 @@
 						    </div>	
 					    </div>	    
             </p:panel>  
-            <div class="Container100 Responsive TexAlCenter janal-color-black">
-              <span id="nomina"/>
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet_chart-footer">
+              <span id="nomina"/> (<span id="nominaInicio"/> al <span id="nominaTermino"/>)
             </div>   
           </div>
         </div>  
         <div class="Container70 Responsive overview-box">
           <div class="ContainerIndent card">            
             <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive Fs16 janal-box-title-blue">
-                <i class="fa fa-truck-pickup janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal adscritos a los contratistas
+              <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
+                <i class="fa fa-truck-pickup Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal adscritos a los contratistas
               </div>
               <div class="keet-chart-panel">
 						    <div id="contratistas" class="keet-chart-panel">
@@ -123,8 +137,8 @@
 						    </div>	
 					   </div>	              
             </p:panel>						
-            <div class="Container100 Responsive TexAlCenter janal-color-black">
-              <span id="nomina"/>
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet_chart-footer">
+              <span id="nomina"/> (<span id="nominaInicio"/> al <span id="nominaTermino"/>)
             </div>   
           </div>
         </div>
@@ -134,10 +148,10 @@
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
-                <div class="Container100 Responsive Fs16 janal-box-title-purple">
-                  <i class="fa fa-user janal-color-orange"></i><p:spacer width="8px" height="1px"/>Desarrollos
+                <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
+                  <i class="fa fa-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Desarrollos
                 </div>
-                <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolSeguimiento.desarrollos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.desarrollo}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolSeguimiento.desarrollos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.desarrollo}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                   <p:ajax event="rowSelect" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:ajax event="rowUnselect" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:ajax event="rowSelectCheckbox" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -161,7 +175,7 @@
                   </f:facet>
                 </p:dataTable>                
               </p:panel>  
-              <div class="Container100 Responsive TexAlCenter janal-color-black">
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet_chart-footer">
                 <span id="">.</span>
               </div>   
             </div>
@@ -171,8 +185,8 @@
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
-                <div class="Container100 Responsive Fs16 janal-box-title-purple">
-                  <i class="fa fa-file-invoice-dollar janal-color-orange"></i><p:spacer width="8px" height="1px"/>Nómina por desarrollo
+                <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
+                  <i class="fa fa-file-invoice-dollar Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Nómina por desarrollo
                 </div>
                 <div class="keet-chart-panel">
                   <div id="sueldos" class="keet-chart-panel">
@@ -180,7 +194,7 @@
                   </div>	
                </div>	              
               </p:panel>						
-              <div class="Container100 Responsive TexAlCenter janal-color-black">
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet_chart-footer">
                 <i class="fa fa-lg fa-caret-left janal-color-blue" onclick="back('desarrollo');" style="cursor: pointer;" title="Atras"></i><p:spacer width="8px" height="1px"/><span id="pivoteDesarrollo"></span><p:spacer width="8px" height="1px"/><i class="fa fa-lg fa-caret-right janal-color-blue" onclick="next('desarrollo');" style="cursor: pointer;" title="Adelante"></i>
               </div>   
             </div>
@@ -192,10 +206,10 @@
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
-                <div class="Container100 Responsive Fs16 janal-box-title-red">
-                  <i class="fa fa-user janal-color-orange"></i><p:spacer width="8px" height="1px"/>Contratistas
+                <div class="Container100 Responsive keet-chart-title janal-box-title-red">
+                  <i class="fa fa-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Contratistas
                 </div>
-                <p:dataTable lazy="true" id="tablaContratista" var="row" widgetVar="kajoolTableContratista" rowIndexVar="index" value="#{kajoolSeguimiento.contratistas}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.contratista}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                <p:dataTable lazy="true" id="tablaContratista" var="row" widgetVar="kajoolTableContratista" rowIndexVar="index" value="#{kajoolSeguimiento.contratistas}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.contratista}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                   <p:ajax event="rowSelect" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:ajax event="rowUnselect" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:ajax event="rowSelectCheckbox" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -219,7 +233,7 @@
                   </f:facet>
                 </p:dataTable>                
               </p:panel>  
-              <div class="Container100 Responsive TexAlCenter janal-color-black">
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet_chart-footer">
                 <span id="">.</span>
               </div>   
             </div>
@@ -229,8 +243,8 @@
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
-                <div class="Container100 Responsive Fs16 janal-box-title-red">
-                  <i class="fa fa-hand-holding-usd janal-color-orange"></i><p:spacer width="8px" height="1px"/>Nómina por contratista
+                <div class="Container100 Responsive keet-chart-title janal-box-title-red">
+                  <i class="fa fa-hand-holding-usd Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Nómina por contratista
                 </div>
                 <div class="keet-chart-panel">
                   <div id="destajos" class="keet-chart-panel">
@@ -238,7 +252,7 @@
                   </div>	
                </div>	              
               </p:panel>						
-              <div class="Container100 Responsive TexAlCenter janal-color-black">
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet_chart-footer">
                 <i class="fa fa-lg fa-caret-left janal-color-blue" onclick="back('contratista');" style="cursor: pointer;" title="Atras"></i><p:spacer width="8px" height="1px"/><span id="pivoteContratista"></span><p:spacer width="8px" height="1px"/><i class="fa fa-lg fa-caret-right janal-color-blue" onclick="next('contratista');" style="cursor: pointer;" title="Adelante"></i>
               </div>   
             </div>

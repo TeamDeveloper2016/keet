@@ -125,7 +125,8 @@ public final class Constantes {
   public static final int REGISTROS_TOTAL_PAGINA= 20;
   public static final int REGISTROS_POR_LOTE    = 30;
   public static final int REGISTROS_LOTE_TOPE   = 50;
-  public static final String ICONOS_DE_PAGINACION = "{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}";
+  public static final String ICONOS_DE_PAGINACION = "{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}";
+  public static final String ICONOS_DE_PAGINA_TABLERO = "{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}";
   public static final String REGISTROS_POR_CADA_PAGINA = "10,15,20";
   public static final String REGISTROS_MAX_CADA_PAGINA = "50,100,200";
 
@@ -186,6 +187,10 @@ public final class Constantes {
 
   public String getICONOS_DE_PAGINACION() {
     return Constantes.ICONOS_DE_PAGINACION;
+  }
+
+  public String getICONOS_DE_PAGINA_TABLERO() {
+    return Constantes.ICONOS_DE_PAGINA_TABLERO;
   }
 
   public String getREGISTROS_POR_CADA_PAGINA() {
