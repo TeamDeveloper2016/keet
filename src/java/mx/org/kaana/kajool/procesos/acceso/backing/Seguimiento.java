@@ -1,28 +1,35 @@
 package mx.org.kaana.kajool.procesos.acceso.backing;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.procesos.acceso.enums.ESecuencia;
 import mx.org.kaana.kajool.procesos.comun.Comun;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.echarts.beans.Title;
+import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.echarts.kind.DonutModel;
 import mx.org.kaana.libs.echarts.kind.StackModel;
 import mx.org.kaana.libs.echarts.model.Datas;
+import mx.org.kaana.libs.echarts.model.Multiple;
 import mx.org.kaana.libs.echarts.model.Stacked;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * @company KAANA
@@ -38,13 +45,50 @@ public class Seguimiento extends Comun implements Serializable {
 
   private static final long serialVersionUID= 5323749709626263802L;
   private static final Log LOG              = LogFactory.getLog(Seguimiento.class);
-	private String mes[] = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+  private static final Integer TOP_NOMINA   = 3;
 
+  private Long pivoteDesarrollo;
+  private Long pivoteContratista;
+  private StringBuilder nominasDesarrollo;
+  private StringBuilder nominasContratista;
+	private List<Entity> contratistas;
+	private List<Entity> contratista;
+  private List<Entity> desarrollos;
+  private List<Entity> desarrollo;
+
+  public List<Entity> getContratistas() {
+    return contratistas;
+  }
+
+  public List<Entity> getDesarrollos() {
+    return desarrollos;
+  }
+
+  public List<Entity> getContratista() {
+    return contratista;
+  }
+
+  public void setContratista(List<Entity> contratista) {
+    this.contratista = contratista;
+  }
+
+  public List<Entity> getDesarrollo() {
+    return desarrollo;
+  }
+
+  public void setDesarrollo(List<Entity> desarrollo) {
+    this.desarrollo = desarrollo;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
     try {      
       this.attrs.put("hoy", Fecha.getHoyCorreo());
+      this.pivoteDesarrollo = -1L;
+      this.pivoteContratista= -1L;
+      this.nominasDesarrollo = new StringBuilder();
+      this.nominasContratista= new StringBuilder();
       this.doLoad();
     } // try
     catch (Exception e) {
@@ -56,16 +100,33 @@ public class Seguimiento extends Comun implements Serializable {
   @Override
   public void doLoad() {
     try {
+      this.toLoadNombres();
       this.toLoadPersonal();
       this.toLoadDesarrollos();
       this.toLoadMovimientos();
       this.toLoadContratistas();
+      this.toLoadNominas(ESecuencia.IGUAL, "");
+      this.toLoadSueldos();
+      this.toLoadDestajos();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
     } // catch
   } // doLoad
   
+  private void toLoadNombres() {
+    try {      
+      this.desarrollo= new ArrayList<>();
+      this.desarrollos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresDesarrollos", Collections.EMPTY_MAP);
+      this.contratista= new ArrayList<>();
+      this.contratistas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresContratistas", Collections.EMPTY_MAP);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+    
   private void toLoadPersonal() {
     try {      
       Datas datas= new Datas("Personal", DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "personal", Collections.EMPTY_MAP));
@@ -95,6 +156,7 @@ public class Seguimiento extends Comun implements Serializable {
       stack.toCustomFontSize(14);
       stack.getLegend().setY("85%");
       stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+			// stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
 			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
 			stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
   		this.attrs.put("desarrollos", stack.toJson());
@@ -112,6 +174,8 @@ public class Seguimiento extends Comun implements Serializable {
       Entity nomina= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "periodo", params);
       params.put("inicio", Fecha.formatear(Fecha.FECHA_ESTANDAR, nomina.toDate("inicio")));      
       params.put("termino", Fecha.formatear(Fecha.FECHA_ESTANDAR, nomina.toDate("termino")));
+      this.pivoteDesarrollo = nomina.toLong("idNomina");
+      this.pivoteContratista= nomina.toLong("idNomina");
       this.attrs.put("nomina", nomina.toLong("ejercicio")+ "-"+ nomina.toLong("orden"));
       this.attrs.put("inicio", Fecha.formatear(Fecha.FECHA_CORTA, nomina.toDate("inicio")));
       this.attrs.put("termino", Fecha.formatear(Fecha.FECHA_CORTA, nomina.toDate("termino")));
@@ -125,7 +189,7 @@ public class Seguimiento extends Comun implements Serializable {
 			donut.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'percent');}");
       donut.getSeries().get(0).setCenter(Arrays.asList(new String[] {"50%", "45%"}));
       donut.toCustomDonut(String.valueOf(personal.intValue()), "25px", "40%");
-      donut.setColor(Arrays.asList(new String[] {"#008000", "#ffff00", "#ffb300", "#607d8b"}));
+      donut.setColor(Arrays.asList(new String[] {"#008000", "#ff0000", "#ffb300", "#607d8b"}));
       this.attrs.put("movimientos", donut.toJson());
     } // try
     catch (Exception e) {
@@ -145,6 +209,7 @@ public class Seguimiento extends Comun implements Serializable {
       stack.toCustomFontSize(14);
       stack.getLegend().setY("85%");
       stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+			stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
 			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
 			stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
   		this.attrs.put("contratistas", stack.toJson());
@@ -154,5 +219,205 @@ public class Seguimiento extends Comun implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }
+
+  private void toLoadSueldos() {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("nominas", this.nominasDesarrollo.toString());
+      if(this.desarrollo== null || this.desarrollo.isEmpty())
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else {
+        String sinDesarrollo= null;
+        StringBuilder sb= new StringBuilder("tc_keet_desarrollos.id_desarrollo in (");
+        for (Entity item : this.desarrollo) {
+          sb.append(item.getKey()).append(", ");
+          if(item.getKey().equals(0L))
+            sinDesarrollo= " or (tc_keet_desarrollos.id_desarrollo is null))";
+        } // for
+        sb.delete(sb.length()- 2, sb.length()).append(")");
+        params.put(Constantes.SQL_CONDICION, Cadena.isVacio(sinDesarrollo)? sb.toString(): "(".concat(sb.toString()).concat(sinDesarrollo));
+      } // else  
+			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "sueldos", params));
+      if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+        BarModel sueldos = new BarModel(new Title(), multiple);
+        sueldos.remove();
+        sueldos.toCustomFontSize(14);
+        sueldos.getLegend().setY("85%");
+        sueldos.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+        sueldos.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+        sueldos.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+        this.attrs.put("sueldos", sueldos.toJson());
+      } // if
+      else 
+        JsfBase.addMessage("Informativo", "Ya no hay mas nóminas !");      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
   
+  private void toLoadDestajos() {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("nominas", this.nominasContratista.toString());
+      if(this.contratista== null || this.contratista.isEmpty())
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else {
+        StringBuilder sb    = new StringBuilder("tr_mantic_empresa_personal.id_empresa_persona in (");
+        for (Entity item : this.contratista) {
+          sb.append(item.getKey()).append(", ");
+        } // for
+        sb.delete(sb.length()- 2, sb.length()).append(")");
+        params.put(Constantes.SQL_CONDICION, sb.toString());
+      } // else  
+			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "destajos", params));
+      if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+        BarModel destajos= new BarModel(new Title(), multiple);
+        destajos.remove();
+        destajos.toCustomFontSize(14);
+        destajos.getLegend().setY("85%");
+        destajos.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+        destajos.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+        destajos.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+        destajos.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+        this.attrs.put("destajos", destajos.toJson());
+      } // if  
+      else 
+        JsfBase.addMessage("Informativo", "Ya no hay mas nóminas !");      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+
+  private void toLoadNominas(ESecuencia token, String type) {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      switch(type) {
+        case "desarrollo":
+          params.put("idNomina", this.pivoteDesarrollo);
+          this.nominasDesarrollo.delete(0, this.nominasDesarrollo.length());
+          break;
+        case "contratista":
+          params.put("idNomina", this.pivoteContratista);
+          this.nominasContratista.delete(0, this.nominasContratista.length());
+          break;
+        default:
+          params.put("idNomina", this.pivoteDesarrollo);
+          this.nominasDesarrollo.delete(0, this.nominasDesarrollo.length());
+          break;
+      } // switch
+      params.put("equals", token.getOperador());
+      params.put("orden", token.getOrden());
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "secuencia", params);
+      if(items== null || items.isEmpty() || ESecuencia.MAYOR.equals(token)) {
+        if(items== null || items.isEmpty())
+          JsfBase.addMessage("Informativo", "Ya no hay mas nóminas !");      
+        else
+          params.put("idNomina", items.get(0).toLong("idNomina"));
+        params.put("equals", ESecuencia.IGUAL.getOperador());
+        params.put("orden", ESecuencia.IGUAL.getOrden());
+        items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "secuencia", params);
+      } // if
+      int count= 0;
+      for (Entity item : items) {
+        if(count== 0) {
+          this.attrs.put("pivote".concat(Cadena.letraCapital(type)), item.toString("nomina"));          
+          if(Cadena.isVacio(type)) {
+            this.pivoteDesarrollo = item.toLong("idNomina");
+            this.pivoteContratista= item.toLong("idNomina");
+            this.attrs.put("pivoteDesarrollo", item.toString("nomina"));
+            this.attrs.put("pivoteContratista", item.toString("nomina"));
+          } // if
+          else {
+            switch(type) {
+              case "desarrollo":
+                this.pivoteDesarrollo= item.toLong("idNomina");
+                break;
+              case "contratista":
+                this.pivoteContratista= item.toLong("idNomina");
+                break;
+            } // switch
+          } // else
+        } // if  
+        switch(type) {
+          case "desarrollo":
+            this.nominasDesarrollo.append(item.toLong("idNomina")).append(count< TOP_NOMINA- 1? ",": "");
+            break;
+          case "contratista":
+            this.nominasContratista.append(item.toLong("idNomina")).append(count< TOP_NOMINA- 1? ",": "");
+            break;
+          default:
+            this.nominasDesarrollo.append(item.toLong("idNomina")).append(count< TOP_NOMINA- 1? ",": "");
+            this.nominasContratista.append(item.toLong("idNomina")).append(count< TOP_NOMINA- 1? ",": "");
+            break;
+        } // switch
+        count++;
+        if(count>= TOP_NOMINA)
+          break;
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  public void doNextNomina(String type) {
+    this.toLoadNominas(ESecuencia.MAYOR, type);  
+    this.toUpdateScroll(type);
+    UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {pivoteDesarrollo: '"+ ((String)this.attrs.get("pivoteDesarrollo"))+ "', pivoteContratista: '"+ ((String)this.attrs.get("pivoteContratista"))+ "'}}});");
+  }
+  
+  public void doBackNomina(String type) {
+    this.toLoadNominas(ESecuencia.MENOR, type);  
+    this.toUpdateScroll(type);
+    UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {pivoteDesarrollo: '"+ ((String)this.attrs.get("pivoteDesarrollo"))+ "', pivoteContratista: '"+ ((String)this.attrs.get("pivoteContratista"))+ "'}}});");
+  }
+
+  public void toUpdateScroll(String type) {
+    switch(type) {
+      case "desarrollo":
+        this.toLoadSueldos();
+        UIBackingUtilities.execute("jsEcharts.update('sueldos', {group:'00', json:".concat((String)this.attrs.get("sueldos")).concat("});"));
+        break;
+      case "contratista":
+        this.toLoadDestajos();
+        UIBackingUtilities.execute("jsEcharts.update('destajos', {group:'00', json:".concat((String)this.attrs.get("destajos")).concat("});"));
+        break;
+    } // swtich
+  }
+          
+  public void doUpdateContratista() {
+    try {      
+      if(this.contratista!= null && !this.contratista.isEmpty()) {
+        this.toLoadDestajos();
+        UIBackingUtilities.execute("jsEcharts.update('destajos', {group:'00', json:".concat((String)this.attrs.get("destajos")).concat("});"));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+          
+  public void doUpdateDesarrollo() {
+    try {      
+      if(this.desarrollo!= null && !this.desarrollo.isEmpty()) {
+        this.toLoadSueldos();
+        UIBackingUtilities.execute("jsEcharts.update('sueldos', {group:'00', json:".concat((String)this.attrs.get("sueldos")).concat("});"));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+          
 }

@@ -23,11 +23,13 @@
 		<h:outputScript library="janal" name="core/jquery.janal.echarts.core-0.4.2.js"/>
     <script type="text/javascript">
 			Janal.Control.Echarts.names= {
-				items       : {json: {hoy: '#{kajoolSeguimiento.attrs.hoy}', nomina: '#{kajoolSeguimiento.attrs.nomina}', nominaInicio: '#{kajoolSeguimiento.attrs.inicio}', nominaTermino: '#{kajoolSeguimiento.attrs.termino}'}},
+				items       : {json: {hoy: '#{kajoolSeguimiento.attrs.hoy}', nomina: '#{kajoolSeguimiento.attrs.nomina}', nominaInicio: '#{kajoolSeguimiento.attrs.inicio}', nominaTermino: '#{kajoolSeguimiento.attrs.termino}', pivoteDesarrollo: '#{kajoolSeguimiento.attrs.pivoteDesarrollo}', pivoteContratista: '#{kajoolSeguimiento.attrs.pivoteContratista}'}},
 				personal    : {json: #{kajoolSeguimiento.attrs.personal}},
 				desarrollos : {json: #{kajoolSeguimiento.attrs.desarrollos}},
 				movimientos : {json: #{kajoolSeguimiento.attrs.movimientos}},
-				contratistas: {json: #{kajoolSeguimiento.attrs.contratistas}}
+				contratistas: {json: #{kajoolSeguimiento.attrs.contratistas}},
+				sueldos     : {json: #{kajoolSeguimiento.attrs.sueldos}},
+				destajos    : {json: #{kajoolSeguimiento.attrs.destajos}}
 			};
 			$(function() {
 				 'use strict'			
@@ -38,18 +40,24 @@
        });  
     </script>		
     <style type="text/css">
-      .dashboard .overview-inner-box { height: 283px; padding: 0px !important; border: transparent;}  
-      .keet-chart-panel { width:100%; height: 270px; display:block; }
     </style>
   </ui:define>
   <ui:define name="contenido">
+		<pe:remoteCommand name="next" process="@this" actionListener="#{kajoolSeguimiento.doNextNomina}" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="type"/>  
+		</pe:remoteCommand>
+		<pe:remoteCommand name="back" process="@this" actionListener="#{kajoolSeguimiento.doBackNomina}" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="type"/>  
+		</pe:remoteCommand>
     <div class="Container100 dashboard">
       <div class="ContainerIndent">        					
         <div class="Container100 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <div class="Container100 Responsive Fs18 janal-box-header-blue">
-                <i class="fa fa-slack"></i>Información con corte al día de <span id="hoy"/>
+                <i class="fa fa-slack janal-color-orange"></i><p:spacer width="8px" height="1px"/>Información con corte al día de <span id="hoy"/>
               </div>
             </div>
           </div>
@@ -59,8 +67,8 @@
         <div class="Container30 Responsive overview-box">					
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive Fs16 janal-box-title-blue">
-                <i class="fa fa-users"></i> Personal activo
+              <div class="Container100 Responsive Fs16 janal-box-title-green">
+                <i class="fa fa-users janal-color-orange"></i><p:spacer width="8px" height="1px"/> Personal activo
               </div>
               <div class="keet-chart-panel">
 						    <div id="personal" class="keet-chart-panel">
@@ -73,8 +81,8 @@
         <div class="Container70 Responsive overview-box">					
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive Fs16 janal-box-title-red">
-                <i class="fa fa-house-damage"></i>Personal adscrito por desarrollos
+              <div class="Container100 Responsive Fs16 janal-box-title-green">
+                <i class="fa fa-house-damage janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal adscrito por desarrollos
               </div>
               <div class="keet-chart-panel">
 						    <div id="desarrollos" class="keet-chart-panel">
@@ -90,7 +98,7 @@
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive Fs16 janal-box-title-blue">
-                <i class="fa fa-user-injured"></i>Movimientos del personal
+                <i class="fa fa-user-injured janal-color-orange"></i><p:spacer width="8px" height="1px"/>Movimientos del personal
               </div>
               <div class="keet-chart-panel Responsive">
 						    <div id="movimientos" class="keet-chart-panel">
@@ -107,7 +115,7 @@
           <div class="ContainerIndent card">            
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive Fs16 janal-box-title-blue">
-                <i class="fa fa-truck-pickup"></i>Personal adscritos a los contratistas
+                <i class="fa fa-truck-pickup janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal adscritos a los contratistas
               </div>
               <div class="keet-chart-panel">
 						    <div id="contratistas" class="keet-chart-panel">
@@ -116,11 +124,127 @@
 					   </div>	              
             </p:panel>						
             <div class="Container100 Responsive TexAlCenter janal-color-black">
-              <span id="">Hola</span>
+              <span id="nomina"/>
             </div>   
           </div>
         </div>
       </div>
+      <div class="ContainerIndent">        					
+        <div class="Container30 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive Fs16 janal-box-title-purple">
+                  <i class="fa fa-user janal-color-orange"></i><p:spacer width="8px" height="1px"/>Desarrollos
+                </div>
+                <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolSeguimiento.desarrollos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.desarrollo}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                  <p:ajax event="rowSelect" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="rowUnselect" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="rowSelectCheckbox" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="rowUnselectCheckbox" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="toggleSelect" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:column selectionMode="multiple" style="width:24px;text-align:center"/>
+                  <p:column styleClass="janal-column-left Responsive">
+                    <f:facet name="header">
+                      <h:outputText value="Desarrollo"/>
+                    </f:facet>
+                    <h:outputText value="#{row.nombre}"/>
+                  </p:column>                    
+                  <p:column styleClass="janal-column-right janal-wid-20 Responsive" >
+                    <f:facet name="header">
+                      <h:outputText value="Empleados"/>
+                    </f:facet>
+                    <h:outputText value="#{row.empleados}"/>
+                  </p:column>                    
+                  <f:facet name="footer">
+                    <p:outputLabel value="Total [#{kajoolSeguimiento.desarrollos.size()}] registros"/>
+                  </f:facet>
+                </p:dataTable>                
+              </p:panel>  
+              <div class="Container100 Responsive TexAlCenter janal-color-black">
+                <span id="">.</span>
+              </div>   
+            </div>
+          </div>  
+        </div>  
+        <div class="Container70 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive Fs16 janal-box-title-purple">
+                  <i class="fa fa-file-invoice-dollar janal-color-orange"></i><p:spacer width="8px" height="1px"/>Nómina por desarrollo
+                </div>
+                <div class="keet-chart-panel">
+                  <div id="sueldos" class="keet-chart-panel">
+                    Cargando gráficas nómina por desarrollo
+                  </div>	
+               </div>	              
+              </p:panel>						
+              <div class="Container100 Responsive TexAlCenter janal-color-black">
+                <i class="fa fa-lg fa-caret-left janal-color-blue" onclick="back('desarrollo');" style="cursor: pointer;" title="Atras"></i><p:spacer width="8px" height="1px"/><span id="pivoteDesarrollo"></span><p:spacer width="8px" height="1px"/><i class="fa fa-lg fa-caret-right janal-color-blue" onclick="next('desarrollo');" style="cursor: pointer;" title="Adelante"></i>
+              </div>   
+            </div>
+          </div>
+        </div>  
+      </div>  
+      <div class="ContainerIndent">        					
+        <div class="Container30 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive Fs16 janal-box-title-red">
+                  <i class="fa fa-user janal-color-orange"></i><p:spacer width="8px" height="1px"/>Contratistas
+                </div>
+                <p:dataTable lazy="true" id="tablaContratista" var="row" widgetVar="kajoolTableContratista" rowIndexVar="index" value="#{kajoolSeguimiento.contratistas}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.contratista}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                  <p:ajax event="rowSelect" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="rowUnselect" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="rowSelectCheckbox" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="rowUnselectCheckbox" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="toggleSelect" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:column selectionMode="multiple" style="width:24px;text-align:center"/>
+                  <p:column styleClass="janal-column-left Responsive">
+                    <f:facet name="header">
+                      <h:outputText value="Contratista"/>
+                    </f:facet>
+                    <h:outputText value="#{row.nombre}"/>
+                  </p:column>                    
+                  <p:column styleClass="janal-column-right janal-wid-20 Responsive" >
+                    <f:facet name="header">
+                      <h:outputText value="Empleados"/>
+                    </f:facet>
+                    <h:outputText value="#{row.empleados}"/>
+                  </p:column>                    
+                  <f:facet name="footer">
+                    <p:outputLabel value="Total [#{kajoolSeguimiento.contratistas.size()}] registros"/>
+                  </f:facet>
+                </p:dataTable>                
+              </p:panel>  
+              <div class="Container100 Responsive TexAlCenter janal-color-black">
+                <span id="">.</span>
+              </div>   
+            </div>
+          </div>  
+        </div>  
+        <div class="Container70 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive Fs16 janal-box-title-red">
+                  <i class="fa fa-hand-holding-usd janal-color-orange"></i><p:spacer width="8px" height="1px"/>Nómina por contratista
+                </div>
+                <div class="keet-chart-panel">
+                  <div id="destajos" class="keet-chart-panel">
+                    Cargando gráficas nómina por contratista
+                  </div>	
+               </div>	              
+              </p:panel>						
+              <div class="Container100 Responsive TexAlCenter janal-color-black">
+                <i class="fa fa-lg fa-caret-left janal-color-blue" onclick="back('contratista');" style="cursor: pointer;" title="Atras"></i><p:spacer width="8px" height="1px"/><span id="pivoteContratista"></span><p:spacer width="8px" height="1px"/><i class="fa fa-lg fa-caret-right janal-color-blue" onclick="next('contratista');" style="cursor: pointer;" title="Adelante"></i>
+              </div>   
+            </div>
+          </div>
+        </div>  
+      </div>  
     </div>		
 		<p:notificationBar id="lockDownloadBackup" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="downloadBackup" effectSpeed="slow">
 			<span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('downloadBackup').hide();"><i class="fa fa-lg fa-close"/></span>

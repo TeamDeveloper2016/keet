@@ -3,6 +3,7 @@ package mx.org.kaana.libs.echarts.model;
 import java.io.Serializable;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.echarts.bar.Serie;
 import mx.org.kaana.libs.echarts.bar.Value;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.enums.EData;
@@ -197,5 +198,5 @@ public class Series implements Serializable {
  		regresar.pics(serie);
 		return regresar;
 	}
-	
+  
 }

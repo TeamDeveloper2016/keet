@@ -204,5 +204,10 @@ public class BarModel extends BaseBarModel implements Serializable {
 			item.setMarkLine(null);
 		} // for
 	}
-	
+
+	public void remove() {
+    this.removeLines();
+    this.removeMarks();
+	}
+  
 }

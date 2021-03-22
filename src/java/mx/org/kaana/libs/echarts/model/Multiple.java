@@ -52,5 +52,5 @@ public final class Multiple extends Series implements IDataSet, Serializable {
 	public Legend getLegend() {
 		return this.getModel().getLegend();
 	}
-	
+  
 }

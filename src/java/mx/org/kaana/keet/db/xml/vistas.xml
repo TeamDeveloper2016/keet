@@ -5,6 +5,90 @@
 <process>
 	<dml> 
 		<unit id="VistaSeguimientoDto">
+			<select id="nombresDesarrollos">
+        select
+          ifnull(tc_keet_desarrollos.id_desarrollo, 0) as id_key,
+          if(tc_keet_desarrollos.descripcion is null, 'SIN DESARROLLO', tc_keet_desarrollos.descripcion) as nombre, 
+          count(*) as empleados
+        from
+          tr_mantic_empresa_personal
+        left join
+          tc_keet_contratos_personal on tc_keet_contratos_personal.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+        inner join
+          tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+        left join
+          tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tr_mantic_empresa_personal.id_activo= 1
+        group by
+          tc_keet_desarrollos.descripcion
+      </select>  
+			<select id="nombresContratistas">
+        select  
+          tr_mantic_empresa_personal.id_empresa_persona as id_key,
+				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
+				  count(*) as empleados
+        from  
+          tr_mantic_empresa_personal
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join
+					tr_mantic_empresa_personal as tt_mantic_empresa_personal on tr_mantic_empresa_personal.id_empresa_persona= tt_mantic_empresa_personal.id_contratista and tt_mantic_empresa_personal.id_empresa= 1 and tt_mantic_empresa_personal.id_activo= 1
+        where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tr_mantic_empresa_personal.id_puesto= 6
+          and tr_mantic_empresa_personal.id_activo= 1
+        group by
+          tr_mantic_empresa_personal.id_empresa_persona             
+      </select>  
+			<select id="destajos">
+        select
+         concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as category,
+         concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as serie,
+         round(sum(tc_keet_nominas_personas.neto), 2) as value
+        from
+          tc_keet_nominas_personas
+        inner join
+          tc_keet_nominas on tc_keet_nominas_personas.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        inner join
+          tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+        inner join
+          tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+        where 
+          tc_keet_nominas_personas.id_nomina in ({nominas})
+          and tr_mantic_empresa_personal.id_puesto= 6
+          and {condicion}
+        group by
+          tc_keet_nominas_periodos.id_nomina_periodo, tc_keet_nominas_personas.id_empresa_persona
+        order by  
+          tc_keet_nominas_periodos.id_nomina_periodo desc        
+      </select>  
+			<select id="sueldos">
+        select
+         concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as category,
+         if(tc_keet_desarrollos.descripcion is null, 'SIN DESARROLLO', tc_keet_desarrollos.descripcion) as serie, 
+         round(sum(tc_keet_nominas_personas.neto), 2) as value
+        from
+          tc_keet_nominas_personas
+        inner join
+          tc_keet_nominas on tc_keet_nominas_personas.id_nomina= tc_keet_nominas.id_nomina
+        inner join
+          tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+        left join
+          tc_keet_contratos_personal on tc_keet_contratos_personal.id_empresa_persona= tc_keet_nominas_personas.id_empresa_persona
+        left join
+          tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        where 
+          tc_keet_nominas_personas.id_nomina in ({nominas})
+          and {condicion}
+        group by
+          tc_keet_nominas_periodos.id_nomina_periodo, tc_keet_desarrollos.id_desarrollo
+        order by  
+          tc_keet_nominas_periodos.id_nomina_periodo desc        
+      </select>  
 			<select id="contratistas">
         select  
 				  if(tt_mantic_empresa_personal.id_seguro= 1, 'CON SEGURO', 'SIN SEGURO') as category,
@@ -34,8 +118,8 @@
         where
           tr_mantic_empresa_personal.id_empresa= 1
           and tc_mantic_incidentes.id_tipo_incidente in (10, 11, 12)
-          and date_format(tc_mantic_incidentes.registro, '%Y%m%d')&gt;= '{inicio}'
-          and date_format(tc_mantic_incidentes.registro, '%Y%m%d')&lt;= '{termino}' 
+          and date_format(tc_mantic_incidentes.inicio, '%Y%m%d')&gt;= '{inicio}'
+          and date_format(tc_mantic_incidentes.inicio, '%Y%m%d')&lt;= '{termino}' 
         group by
           serie
       </select>  
@@ -1510,7 +1594,8 @@
 			</select>
 			<select id="periodo">
 				select
-					distinct(tc_keet_nominas_periodos.ejercicio) as id_key,
+					distinct(tc_keet_nominas_periodos.id_nomina_periodo) as id_key,
+          tc_keet_nominas.id_nomina,
 					tc_keet_nominas_periodos.*
 				from
 					tc_keet_nominas
@@ -1522,6 +1607,24 @@
           and tc_keet_nominas.id_tipo_nomina = 1
 				order by
 				  tc_keet_nominas.id_nomina desc				
+			</select>
+			<select id="secuencia">
+				select
+					distinct(tc_keet_nominas_periodos.id_nomina_periodo) as id_key,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,
+          tc_keet_nominas.id_nomina,
+					tc_keet_nominas_periodos.*
+				from
+					tc_keet_nominas
+				inner join 
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+					tc_keet_nominas.id_empresa in ({sucursales})
+				  and tc_keet_nominas.id_nomina_estatus in (3, 4)
+          and tc_keet_nominas.id_tipo_nomina = 1
+          and tc_keet_nominas.id_nomina {equals} {idNomina}
+				order by
+				  tc_keet_nominas.id_nomina {orden}				
 			</select>
 			<select id="semanas">
 				select
