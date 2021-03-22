@@ -72,7 +72,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 	}
 
   public String getCostoTotal() {
-		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, (Double)this.attrs.get("detajoNominaContratista"));
+		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, (Double)this.attrs.get("totalDestajoContratista"));
 	}
 
 	@PostConstruct
@@ -86,7 +86,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			this.loadCatalogs();
 			this.attrs.put("nomina", false);
 			this.attrs.put("destajos", false);
-      this.attrs.put("detajoNominaContratista", 0D);
+      this.attrs.put("totalDestajoContratista", 0D);
 			if(!Cadena.isVacio(idNomina)) {
 				Entity entity= new Entity(idNomina);
 				entity.put("idNomina", new Value("idNomina", idNomina));
@@ -436,11 +436,11 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajo", params, columns);
       UIBackingUtilities.resetDataTable("destajo");
       UIBackingUtilities.scrollTo("destajo");
-      Value total= (Value)DaoFactory.getInstance().toField("VistaNominaConsultasDto", "detajoNominaContratista", params, "total");
+      Value total= (Value)DaoFactory.getInstance().toField("VistaNominaConsultasDto", "totalDestajoContratista", params, "total");
       if(total!= null && total.getData()!= null)
-        this.attrs.put("detajoNominaContratista", total.toDouble());
+        this.attrs.put("totalDestajoContratista", total.toDouble());
       else
-        this.attrs.put("detajoNominaContratista", 0D);
+        this.attrs.put("totalDestajoContratista", 0D);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
