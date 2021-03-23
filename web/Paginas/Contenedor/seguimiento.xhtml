@@ -134,7 +134,7 @@
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
-                <i class="fa fa-hospital-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal sin seguro<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('desarrollo', false);"></i>
+                <i class="fa fa-hospital-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del personal sin seguro<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('desarrollo', false);"></i>
               </div>
               <p:dataTable lazy="true" id="tablaPersonalDesarrollo" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDesarrollo}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                 <p:column styleClass="janal-column-left Responsive">
@@ -199,7 +199,7 @@
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
-                <i class="fa fa-hospital-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal sin seguro<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('contratista', false);"></i>
+                <i class="fa fa-hospital-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del personal sin seguro<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('contratista', false);"></i>
               </div>
               <p:dataTable lazy="true" id="tablaPersonalContratista" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalContratista}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                 <p:column styleClass="janal-column-left Responsive">
