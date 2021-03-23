@@ -42,11 +42,11 @@
        
        function onOffSwitchTable(type, active) {
          if(active) {
-           $('#keet-switch-chart-'+ type).removeClass('Container75').addClass('Container40');
+           $('#keet-switch-chart-'+ type).removeClass(type==='destajos'? 'Container70': 'Container75').addClass('Container40');
            $('#keet-switch-list-'+ type).removeClass('keet-item-hide');
          } // ir
          else {
-           $('#keet-switch-chart-'+ type).removeClass('Container40').addClass('Container75');
+           $('#keet-switch-chart-'+ type).removeClass('Container40').addClass(type==='destajos'? 'Container70': 'Container75');
            $('#keet-switch-list-'+ type).addClass('keet-item-hide');
          } // else  
          jsEcharts.responsive();
@@ -321,7 +321,7 @@
             </div>
           </div>  
         </div>  
-        <div class="Container70 Responsive overview-box">					
+        <div id="keet-switch-chart-destajos" class="Container70 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
@@ -338,6 +338,35 @@
                 <i class="fa fa-lg fa-caret-left janal-color-blue" onclick="back('contratista');" style="cursor: pointer;" title="Atras"></i><p:spacer width="8px" height="1px"/><span id="pivoteContratista"></span><p:spacer width="8px" height="1px"/><i class="fa fa-lg fa-caret-right janal-color-blue" onclick="next('contratista');" style="cursor: pointer;" title="Adelante"></i>
               </div>   
             </div>
+          </div>
+        </div>  
+        <div id="keet-switch-list-destajos" class="Container30 Responsive overview-box keet-item-hide">
+          <div class="ContainerIndent card">
+            <p:panel styleClass="overview-inner-box">
+              <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
+                <i class="fa fa-funnel-dollar Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del calculo de nómina<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('destajos', false);"></i>
+              </div>
+              <p:dataTable lazy="true" id="tablaPersonalDestajos" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDestajos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                <p:column styleClass="janal-column-left Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Concepto"/>
+                  </f:facet>
+                  <h:outputText value="#{row.nombre}" styleClass="#{row.idTipoConcepto eq '4'? 'janal-color-black': row.idTipoConcepto eq '2'? 'janal-color-red': row.idTipoConcepto eq '3'? 'janal-color-blue': ''}"/>
+                </p:column>                    
+                <p:column styleClass="janal-column-right janal-wid-25 Responsive" >
+                  <f:facet name="header">
+                    <h:outputText value="Importe"/>
+                  </f:facet>
+                  <h:outputText value="#{row.importe}"/>
+                </p:column>                    
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{kajoolSeguimiento.attrs.personalDestajos.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>                
+            </p:panel>
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+              <span id="nombreDestajos"/>
+            </div>   
           </div>
         </div>  
       </div>  

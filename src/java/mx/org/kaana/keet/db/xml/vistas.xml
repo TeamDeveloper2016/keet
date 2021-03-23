@@ -5,6 +5,33 @@
 <process>
 	<dml> 
 		<unit id="VistaSeguimientoDto">
+			<select id="personalDestajos">
+				select
+				  tc_keet_nominas_detalles.id_nomina_detalle as id_key,
+					tc_keet_nominas_conceptos.id_tipo_concepto,
+					tc_keet_nominas_detalles.nombre,
+					round(tc_keet_nominas_detalles.valor, 2) as importe,
+				  tc_keet_nominas_detalles.fecha
+				from
+					tc_keet_nominas_detalles
+				inner join
+					tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona = tc_keet_nominas_personas.id_nomina_persona
+				inner join
+          tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join
+					tc_keet_nominas on tc_keet_nominas_personas.id_nomina= tc_keet_nominas.id_nomina
+				inner join
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				inner join
+					tc_keet_nominas_conceptos on tc_keet_nominas_detalles.id_nomina_concepto = tc_keet_nominas_conceptos.id_nomina_concepto
+				inner join
+					tc_keet_tipos_conceptos on tc_keet_nominas_conceptos.id_tipo_concepto = tc_keet_tipos_conceptos.id_tipo_concepto
+				where
+          concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden)= '{nomina}'
+          and concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))= '{destajos}'
+      </select>  
 			<select id="personalContratista">
         select  
 				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as contratista,

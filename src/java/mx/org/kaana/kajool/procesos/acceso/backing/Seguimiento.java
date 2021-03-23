@@ -293,6 +293,7 @@ public class Seguimiento extends Comun implements Serializable {
         destajos.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
         destajos.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
         destajos.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+        destajos.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
         this.attrs.put("destajos", destajos.toJson());
       } // if  
       else {
@@ -448,18 +449,23 @@ public class Seguimiento extends Comun implements Serializable {
 		LOG.info(itemSelected);
     List<Columna> columns     = null;    
     Map<String, Object> params= null;
-    try {      
-      columns = new ArrayList<>();
-      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
-      params = new HashMap<>();
-      params.put(itemSelected.getChart(), itemSelected.getName());
-      List<Entity> items = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "personal".concat(Cadena.letraCapital(itemSelected.getChart())), params);
-      if(items!= null)
-        UIBackingUtilities.toFormatEntitySet(items, columns);
-      this.attrs.put("personal".concat(Cadena.letraCapital(itemSelected.getChart())), items);  
-      UIBackingUtilities.execute("onOffSwitchTable('"+ itemSelected.getChart()+ "', true);");
-      UIBackingUtilities.update("tablaPersonal".concat(Cadena.letraCapital(itemSelected.getChart())));
-      UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "'}}});");
+    try {  
+      if("|desarrollo|contratista|destajos|".indexOf(itemSelected.getChart())> 0) {
+        columns = new ArrayList<>();
+        columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
+        if("|destajos|".indexOf(itemSelected.getChart())> 0) 
+          columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+        params = new HashMap<>();
+        params.put(itemSelected.getChart(), itemSelected.getName());
+        params.put("nomina", itemSelected.getSeriesName());
+        List<Entity> items = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "personal".concat(Cadena.letraCapital(itemSelected.getChart())), params);
+        if(items!= null)
+          UIBackingUtilities.toFormatEntitySet(items, columns);
+        this.attrs.put("personal".concat(Cadena.letraCapital(itemSelected.getChart())), items);  
+        UIBackingUtilities.execute("onOffSwitchTable('"+ itemSelected.getChart()+ "', true);");
+        UIBackingUtilities.update("tablaPersonal".concat(Cadena.letraCapital(itemSelected.getChart())));
+        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "'}}});");
+      } // if  
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
