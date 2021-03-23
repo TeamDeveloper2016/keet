@@ -5,6 +5,49 @@
 <process>
 	<dml> 
 		<unit id="VistaSeguimientoDto">
+			<select id="personalContratista">
+        select  
+				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as contratista,
+				  concat(tt_mantic_personas.nombres, ' ', ifnull(tt_mantic_personas.paterno, ''), ' ', ifnull(tt_mantic_personas.materno, '')) as nombre,
+				  ifnull(tt_mantic_empresa_personal.contratacion, tt_mantic_empresa_personal.ingreso) as fecha
+        from  
+          tr_mantic_empresa_personal
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join
+					tr_mantic_empresa_personal as tt_mantic_empresa_personal on tr_mantic_empresa_personal.id_empresa_persona= tt_mantic_empresa_personal.id_contratista and tt_mantic_empresa_personal.id_empresa= 1 and tt_mantic_empresa_personal.id_activo= 1
+				inner join
+					tc_mantic_personas as tt_mantic_personas on tt_mantic_empresa_personal.id_persona= tt_mantic_personas.id_persona and tt_mantic_personas.id_tipo_persona!= 1
+        where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tr_mantic_empresa_personal.id_puesto= 6
+          and tr_mantic_empresa_personal.id_activo= 1
+          and tt_mantic_empresa_personal.id_seguro= 2
+          and concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))= '{contratista}'
+        order by
+          tc_mantic_personas.curp, tt_mantic_personas.curp
+      </select>  
+			<select id="personalDesarrollo">
+				select
+					if(tc_keet_desarrollos.descripcion is null, 'SIN DESARROLLO', tc_keet_desarrollos.descripcion) as desarrollo, 
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
+          ifnull(tr_mantic_empresa_personal.contratacion, tr_mantic_empresa_personal.ingreso) as fecha
+				from
+					tr_mantic_empresa_personal
+				left join
+					tc_keet_contratos_personal on tc_keet_contratos_personal.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				left join
+					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tr_mantic_empresa_personal.id_activo= 1
+          and tr_mantic_empresa_personal.id_seguro= 2
+          and ((tc_keet_desarrollos.descripcion is null and 'SIN DESARROLLO'= '{desarrollo}') or tc_keet_desarrollos.descripcion= '{desarrollo}')
+        order by
+          tc_keet_desarrollos.descripcion, tc_mantic_personas.curp        
+      </select>  
 			<select id="nombresDesarrollos">
         select
           ifnull(tc_keet_desarrollos.id_desarrollo, 0) as id_key,
@@ -44,9 +87,9 @@
       </select>  
 			<select id="destajos">
         select
-         concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as category,
-         concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as serie,
-         round(sum(tc_keet_nominas_personas.neto), 2) as value
+          concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden) as category,
+          concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as serie,
+          round(sum(tc_keet_nominas_personas.neto), 2) as value
         from
           tc_keet_nominas_personas
         inner join

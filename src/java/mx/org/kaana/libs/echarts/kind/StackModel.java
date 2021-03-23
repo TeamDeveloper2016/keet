@@ -150,11 +150,11 @@ public class StackModel extends BaseBarModel implements Serializable {
         serie.setData(new ArrayList<>());
         for (Value item: this.series.get(this.series.size() - 1).getData()) {
           serie.getData().add(new Value("KEET:" + this.calculate(count), 0.01D));
-          serie.getData().get(serie.getData().size()- 1).getItemStyle().setColor(Colors.COLOR_BLACK);
+          serie.getData().get(serie.getData().size()- 1).getItemStyle().setColor(Colors.COLOR_WHITE);
           count++;
         } // for
         serie.getLabel().getNormal().setPosition(this.getOrientation().equals(EBarOritentation.VERTICAL)? "top": "right");
-        serie.getLabel().getNormal().setColor(Colors.COLOR_BLACK);
+        serie.getLabel().getNormal().setColor(Colors.COLOR_WHITE);
         this.series.add(serie);
       } // try
       catch (Exception e) {

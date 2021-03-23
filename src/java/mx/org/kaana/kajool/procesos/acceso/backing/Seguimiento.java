@@ -12,10 +12,14 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.acceso.enums.ESecuencia;
 import mx.org.kaana.kajool.procesos.comun.Comun;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Title;
+import mx.org.kaana.libs.echarts.json.ItemSelected;
 import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.echarts.kind.DonutModel;
@@ -79,7 +83,7 @@ public class Seguimiento extends Comun implements Serializable {
   public void setDesarrollo(List<Entity> desarrollo) {
     this.desarrollo = desarrollo;
   }
-  
+
   @PostConstruct
   @Override
   protected void init() {
@@ -89,6 +93,8 @@ public class Seguimiento extends Comun implements Serializable {
       this.pivoteContratista= -1L;
       this.nominasDesarrollo = new StringBuilder();
       this.nominasContratista= new StringBuilder();
+      this.attrs.put("personalDesarrollo", new ArrayList<>());
+      this.attrs.put("personalContratista", new ArrayList<>());
       this.doLoad();
     } // try
     catch (Exception e) {
@@ -156,10 +162,11 @@ public class Seguimiento extends Comun implements Serializable {
       stack.toCustomFontSize(14);
       stack.getLegend().setY("85%");
       stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
-			// stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+			stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
 			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
 			stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
-  		this.attrs.put("desarrollos", stack.toJson());
+      stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+  		this.attrs.put("desarrollo", stack.toJson());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -212,7 +219,8 @@ public class Seguimiento extends Comun implements Serializable {
 			stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
 			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
 			stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
-  		this.attrs.put("contratistas", stack.toJson());
+      stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+  		this.attrs.put("contratista", stack.toJson());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -244,12 +252,16 @@ public class Seguimiento extends Comun implements Serializable {
         sueldos.toCustomFontSize(14);
         sueldos.getLegend().setY("85%");
         sueldos.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+  			sueldos.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
         sueldos.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
         sueldos.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+        sueldos.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
         this.attrs.put("sueldos", sueldos.toJson());
       } // if
-      else 
+      else {
         JsfBase.addMessage("Informativo", "Ya no hay mas nóminas !");      
+        this.attrs.put("sueldos", "{}");
+      }  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -283,8 +295,10 @@ public class Seguimiento extends Comun implements Serializable {
         destajos.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
         this.attrs.put("destajos", destajos.toJson());
       } // if  
-      else 
+      else {
         JsfBase.addMessage("Informativo", "Ya no hay mas nóminas !");      
+        this.attrs.put("destajos", "{}");
+      }  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -419,5 +433,41 @@ public class Seguimiento extends Comun implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }
-          
+
+	public void doRefreshEChartSingle(String id, String group) {
+		LOG.info("id: ".concat(id).concat(" group: ").concat(group));
+		try {
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+	}	
+
+	public void doRefreshEChartWith(ItemSelected itemSelected) {
+		LOG.info(itemSelected);
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
+    try {      
+      columns = new ArrayList<>();
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
+      params = new HashMap<>();
+      params.put(itemSelected.getChart(), itemSelected.getName());
+      List<Entity> items = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "personal".concat(Cadena.letraCapital(itemSelected.getChart())), params);
+      if(items!= null)
+        UIBackingUtilities.toFormatEntitySet(items, columns);
+      this.attrs.put("personal".concat(Cadena.letraCapital(itemSelected.getChart())), items);  
+      UIBackingUtilities.execute("onOffSwitchTable('"+ itemSelected.getChart()+ "', true);");
+      UIBackingUtilities.update("tablaPersonal".concat(Cadena.letraCapital(itemSelected.getChart())));
+      UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "'}}});");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
 }

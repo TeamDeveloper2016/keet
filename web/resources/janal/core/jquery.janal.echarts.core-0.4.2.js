@@ -46,7 +46,6 @@
       this.charts = names;
       if (typeof (group) === 'undefined')
         this.selected.group = this.RESERVED_KEY;
-
       Object.assign(this.backup, names);
     }, // init
     start: function () {
