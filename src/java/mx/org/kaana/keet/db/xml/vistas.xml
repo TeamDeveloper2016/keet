@@ -31,6 +31,7 @@
 				where
           concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden)= '{nomina}'
           and concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))= '{destajos}'
+          and tc_keet_nominas_detalles.valor> 0
       </select>  
 			<select id="personalContratista">
         select  
@@ -1349,6 +1350,7 @@
 				where
 					tc_keet_nominas_personas.id_nomina= {idNomina}
 					and tc_keet_nominas_personas.id_empresa_persona= {idEmpresaPersona}
+          and tc_keet_nominas_detalles.valor> 0
 				{sortOrder}				
 			</select>			
 			<select id="proveedor">
