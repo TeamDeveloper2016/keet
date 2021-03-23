@@ -150,7 +150,7 @@
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
                 <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
-                  <i class="fa fa-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Desarrollos
+                  <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Desarrollos disponibles
                 </div>
                 <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolSeguimiento.desarrollos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.desarrollo}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                   <p:ajax event="rowSelect" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -208,7 +208,7 @@
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
                 <div class="Container100 Responsive keet-chart-title janal-box-title-red">
-                  <i class="fa fa-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Contratistas
+                  <i class="fa fa-people-carry Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Contratistas activos
                 </div>
                 <p:dataTable lazy="true" id="tablaContratista" var="row" widgetVar="kajoolTableContratista" rowIndexVar="index" value="#{kajoolSeguimiento.contratistas}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.contratista}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                   <p:ajax event="rowSelect" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>

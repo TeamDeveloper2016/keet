@@ -81,6 +81,12 @@
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.semana}"/>
                 </p:column>   
+                <p:column headerText="Inicio">
+                  <h:outputText value="#{item.inicio}"/>
+                </p:column>   
+                <p:column headerText="Termino">
+                  <h:outputText value="#{item.termino}"/>
+                </p:column>   
               </p:selectOneMenu>	
               <p:outputLabel for="tipo" value="Tipo nómina:" rendered="false"/>
 							<p:selectOneMenu id="tipo" value="#{keetNominasPersonas.attrs.idTipoNomina}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">

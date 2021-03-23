@@ -125,15 +125,20 @@ public final class Catalogos {
 	} // toLoadNominas
 	
 	public static void toLoadSemanas(Map<String, Object> attrs) throws Exception {
+    List<Columna> columns     = null;
 		Map<String, Object> params= null;		
-		try {
+    try {
+      columns= new ArrayList<>();
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, "semana"));
+      attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, columns, "semana"));
       attrs.put("semana", new UISelectEntity(-1L));
 		} // try
 		finally {
 			Methods.clean(params);
+			Methods.clean(columns);
 		} // finally		
 	} // toLoadSemanas
 	

@@ -188,14 +188,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private void loadCatalogs() {
 		Map<String, Object>params= null;
-		try {
+    List<Columna> columns    = null;
+    try {
+      columns= new ArrayList<>();
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			this.loadEmpresas();
 			params= new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("ejercicios", UIEntity.seleccione("VistaNominaDto", "ejercicios", params, "ejercicio"));
       this.attrs.put("ejercicio", new UISelectEntity(-1L));
-      this.attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, "semana"));
+      this.attrs.put("semanas", UIEntity.seleccione("VistaNominaDto", "semanas", params, columns, "semana"));
       this.attrs.put("semana", new UISelectEntity(-1L));
       this.attrs.put("tipos", UIEntity.seleccione("TcKeetTiposNominasDto", "row", params, "nombre"));
       this.attrs.put("idTipoNomina", new UISelectEntity(-1L));
@@ -208,6 +212,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch				
     finally {
 			Methods.clean(params);
+			Methods.clean(columns);
 		}	// finally
 	} // loadCatalogs
 
