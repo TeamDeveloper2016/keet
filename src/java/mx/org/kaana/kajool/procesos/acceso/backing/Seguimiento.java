@@ -464,7 +464,10 @@ public class Seguimiento extends Comun implements Serializable {
         this.attrs.put("personal".concat(Cadena.letraCapital(itemSelected.getChart())), items);  
         UIBackingUtilities.execute("onOffSwitchTable('"+ itemSelected.getChart()+ "', true);");
         UIBackingUtilities.update("tablaPersonal".concat(Cadena.letraCapital(itemSelected.getChart())));
-        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "'}}});");
+        if("|destajos|".indexOf(itemSelected.getChart())> 0) 
+          UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'("+ itemSelected.getSeriesName()+ ") "+ itemSelected.getName()+ "'}}});");
+        else
+          UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "'}}});");
       } // if  
 		} // try
 		catch (Exception e) {
