@@ -5198,17 +5198,22 @@
 					tc_keet_puntos_controles.id_punto_control,
 					tc_keet_puntos_controles.nombre,
 					tc_keet_puntos_controles.factor,
-					tc_keet_puntos_controles.orden  
-				from
+					tc_keet_puntos_controles.orden,
+          ifnull(tc_keet_contratos_puntos_proveedores.registro, tc_keet_contratos_puntos_contratistas.registro) as registro				
+        from
 					tc_keet_puntos_paquetes
 				inner join
 					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
 				inner join 
 					tc_keet_puntos_controles on tc_keet_puntos_paquetes.id_punto_control = tc_keet_puntos_controles.id_punto_control
+        left join
+            tc_keet_contratos_puntos_proveedores on tc_keet_puntos_paquetes.id_punto_paquete= tc_keet_contratos_puntos_proveedores.id_punto_paquete
+        left join
+            tc_keet_contratos_puntos_contratistas on tc_keet_puntos_paquetes.id_punto_paquete= tc_keet_contratos_puntos_contratistas.id_punto_paquete
 				where
-					tc_keet_puntos_grupos.id_departamento={idDepartamento} and tc_keet_puntos_paquetes.id_punto_grupo={idPuntoGrupo}
-				and 
-					tc_keet_puntos_paquetes.id_punto_paquete in (
+					tc_keet_puntos_grupos.id_departamento={idDepartamento} 
+          and tc_keet_puntos_paquetes.id_punto_grupo={idPuntoGrupo}
+				  and tc_keet_puntos_paquetes.id_punto_paquete in (
 						select
 							id_punto_paquete
 						from

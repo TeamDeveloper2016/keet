@@ -50,8 +50,8 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));
 			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));      			
-			loadCatalogos();
-			doLoad();
+			this.loadCatalogos();
+			this.doLoad();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -92,6 +92,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));                  
       columns.add(new Columna("factor", EFormatoDinamicos.NUMERO_SIN_DECIMALES));                  
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));                  
 	    this.lazyModel= new FormatLazyModel("VistaCapturaDestajosDto", "puntosRechazos", params, columns);			
 			UIBackingUtilities.resetDataTable();
     } // try
@@ -124,7 +125,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
 		Transaccion transaccion= null;		
     try {						
 			if(this.selecteds.length>=1){				
-				transaccion= new Transaccion(loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
+				transaccion= new Transaccion(this.loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.REPROCESAR)){
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();

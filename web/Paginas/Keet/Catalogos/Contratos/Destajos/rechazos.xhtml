@@ -76,6 +76,12 @@
               </f:facet>
               <h:outputText value="#{row.factor} %"/>
             </p:column>		                        						
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}" rendered="#{not kajoolUtilAplicacion.isMobile}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row.registro}"/>
+            </p:column>		                        						
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosDestajosRechazos.lazyModel== null? 0: keetCatalogosContratosDestajosRechazos.lazyModel.rowCount}] registros"/>
             </f:facet>
