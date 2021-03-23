@@ -42,11 +42,11 @@
        
        function onOffSwitchTable(type, active) {
          if(active) {
-           $('#keet-switch-chart-'+ type).removeClass('Container70').addClass('Container40');
+           $('#keet-switch-chart-'+ type).removeClass('Container75').addClass('Container40');
            $('#keet-switch-list-'+ type).removeClass('keet-item-hide');
          } // ir
          else {
-           $('#keet-switch-chart-'+ type).removeClass('Container40').addClass('Container70');
+           $('#keet-switch-chart-'+ type).removeClass('Container40').addClass('Container75');
            $('#keet-switch-list-'+ type).addClass('keet-item-hide');
          } // else  
          jsEcharts.responsive();
@@ -96,7 +96,7 @@
         </div>  
       </div>  
       <div class="ContainerIndent">        					
-        <div class="Container30 Responsive overview-box">					
+        <div class="Container25 Responsive overview-box">					
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-green">
@@ -113,7 +113,7 @@
             </div>   
           </div>										
         </div>  
-        <div id="keet-switch-chart-desarrollo" class="Container70 Responsive overview-box">					
+        <div id="keet-switch-chart-desarrollo" class="Container75 Responsive overview-box">					
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-green">
@@ -130,7 +130,7 @@
             </div>   
 					</div>   						
         </div>  
-        <div id="keet-switch-list-desarrollo" class="Container30 Responsive overview-box keet-item-hide">
+        <div id="keet-switch-list-desarrollo" class="Container35 Responsive overview-box keet-item-hide">
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
@@ -145,7 +145,7 @@
                 </p:column>                    
                 <p:column styleClass="janal-column-right janal-wid-25 Responsive" >
                   <f:facet name="header">
-                    <h:outputText value="Fecha"/>
+                    <h:outputText value="Ingreso"/>
                   </f:facet>
                   <h:outputText value="#{row.fecha}"/>
                 </p:column>                    
@@ -161,7 +161,7 @@
         </div>  
       </div>
       <div class="ContainerIndent">        					
-        <div class="Container30 Responsive overview-box">					
+        <div class="Container25 Responsive overview-box">					
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
@@ -178,7 +178,7 @@
             </div>   
           </div>
         </div>  
-        <div id="keet-switch-chart-contratista" class="Container70 Responsive overview-box">
+        <div id="keet-switch-chart-contratista" class="Container75 Responsive overview-box">
           <div class="ContainerIndent card">            
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
@@ -195,7 +195,7 @@
             </div>   
           </div>
         </div>
-        <div id="keet-switch-list-contratista" class="Container30 Responsive overview-box keet-item-hide">
+        <div id="keet-switch-list-contratista" class="Container35 Responsive overview-box keet-item-hide">
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
@@ -210,7 +210,7 @@
                 </p:column>                    
                 <p:column styleClass="janal-column-right janal-wid-25 Responsive" >
                   <f:facet name="header">
-                    <h:outputText value="Fecha"/>
+                    <h:outputText value="Ingreso"/>
                   </f:facet>
                   <h:outputText value="#{row.fecha}"/>
                 </p:column>                    
