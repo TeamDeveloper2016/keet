@@ -821,36 +821,46 @@ div.ui-selectonemenu-panel { height: 350px; overflow-y: auto;}
 .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container {width: 98%;}
 
 .janal-box-header-blue {
-  color: black;
-  background: rgb(63,94,251);
-  background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(10,252,233,1) 20%, rgba(234,240,239,0.17130602240896353) 35%, rgba(240,245,244,0.01724439775910369) 50%, rgba(234,240,239,0.17130602240896353) 66%, rgba(10,252,233,1) 80%, rgba(63,94,251,1) 100%);  border-radius: 5px;
+  color: black; background: rgb(63,94,251); background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(10,252,233,1) 20%, rgba(234,240,239,0.17130602240896353) 35%, rgba(240,245,244,0.01724439775910369) 50%, rgba(234,240,239,0.17130602240896353) 66%, rgba(10,252,233,1) 80%, rgba(63,94,251,1) 100%);  border-radius: 5px;
   text-align: center;
 }
 .janal-box-title-blue {
-  color: black;
-  background: rgb(255,255,255);
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(234,240,239,0.2497373949579832) 20%, rgba(234,240,239,0.5186449579831933) 35%, rgba(155,240,249,1) 50%, rgba(67,229,245,0.17130602240896353) 66%, rgba(64,87,198,1) 80%, rgba(0,40,241,1) 100%);  
+  color: black; background: rgb(255,255,255); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(234,240,239,0.2497373949579832) 20%, rgba(234,240,239,0.5186449579831933) 35%, rgba(155,240,249,1) 50%, rgba(67,229,245,0.17130602240896353) 66%, rgba(64,87,198,1) 80%, rgba(0,40,241,1) 100%);  
   border-radius: 5px;
 }
 .janal-box-title-red {
-  color: black;
-  background: rgb(255,255,255);
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(234,240,239,0.2497373949579832) 20%, rgba(234,240,239,0.5186449579831933) 35%, rgba(241,130,130,1) 50%, rgba(247,82,82,1) 66%, rgba(201,56,56,1) 80%, rgba(101,21,21,1) 100%);  
+  color: black; background: rgb(255,255,255); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(234,240,239,0.2497373949579832) 20%, rgba(234,240,239,0.5186449579831933) 35%, rgba(241,130,130,1) 50%, rgba(247,82,82,1) 66%, rgba(201,56,56,1) 80%, rgba(101,21,21,1) 100%);  
   border-radius: 5px;
 }
 .janal-box-title-green {
-  color: black;
-  background: rgb(255,255,255);
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(234,240,239,0.2497373949579832) 20%, rgba(234,240,239,0.5186449579831933) 35%, rgba(171,250,175,1) 50%, rgba(100,201,105,1) 66%, rgba(44,145,49,1) 80%, rgba(9,70,12,1) 100%);  
+  color: black; background: rgb(255,255,255); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(234,240,239,0.2497373949579832) 20%, rgba(234,240,239,0.5186449579831933) 35%, rgba(171,250,175,1) 50%, rgba(100,201,105,1) 66%, rgba(44,145,49,1) 80%, rgba(9,70,12,1) 100%);  
   border-radius: 5px;
 }
 .janal-box-title-purple {
-  color: black;
-  background: rgb(255,255,255);
-  background: rgb(255,255,255);
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(234,240,239,0.2497373949579832) 20%, rgba(234,240,239,0.5186449579831933) 35%, rgba(203,167,228,1) 50%, rgba(217,171,250,1) 66%, rgba(107,50,156,1) 80%, rgba(53,15,85,1) 100%);  
+  color: black; background: rgb(255,255,255); background: rgb(255,255,255); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(234,240,239,0.2497373949579832) 20%, rgba(234,240,239,0.5186449579831933) 35%, rgba(203,167,228,1) 50%, rgba(217,171,250,1) 66%, rgba(107,50,156,1) 80%, rgba(53,15,85,1) 100%);  
   border-radius: 5px;
 }
+.janal-box-title-pink {
+  color: black; background: rgb(255,255,255); background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,194,246,1) 20%, rgba(255,135,238,1) 40%, rgba(250,86,227,1) 60%, rgba(233,61,209,1) 80%, rgba(247,0,212,1) 100%);  
+  border-radius: 5px;
+}
+.janal-box-title-yellow {
+  color: black; background: rgb(255,255,255); background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,253,190,1) 20%, rgba(255,252,157,1) 40%, rgba(252,249,109,1) 60%, rgba(250,245,60,1) 80%, rgba(252,246,6,1) 100%);  
+  border-radius: 5px;
+}
+.janal-box-title-cyan {
+  color: black; background: rgb(255,255,255); background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(204,253,254,1) 20%, rgba(183,254,255,1) 40%, rgba(114,207,208,1) 60%, rgba(47,177,179,1) 80%, rgba(5,190,191,1) 100%);  
+  border-radius: 5px;
+}
+.janal-box-title-brown {
+  color: black; background: rgb(255,255,255); background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(219,203,171,1) 20%, rgba(182,160,116,1) 40%, rgba(140,117,73,1) 60%, rgba(103,81,38,1) 80%, rgba(79,53,3,1) 100%);  
+  border-radius: 5px;
+}
+.janal-box-title-orange {
+  color: black; background: rgb(255,255,255); background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,242,217,1) 20%, rgba(255,227,173,1) 40%, rgba(254,207,117,1) 60%, rgba(255,190,65,1) 80%, rgba(254,169,5,1) 100%);
+  border-radius: 5px;
+}
+
 .dashboard { margin-right: 0px; margin-left: 0px; margin-top: -8px; }
 .dashboard > div { padding: 0px; }
 .dashboard .card { height: 100%; margin: 5px; }
@@ -884,8 +894,8 @@ div.ui-selectonemenu-panel { height: 350px; overflow-y: auto;}
 .card p { margin: 0 0 1em 0; padding: 0; }
 .nopad { padding: 0; }
 .nopad .ui-panel-content {padding: 0; }    
-.dashboard .overview-inner-box { height: 305px; padding: 0px !important; border: transparent; }  
-.keet-chart-panel { width:100%; height: 298px; display:block; }
+.dashboard .overview-inner-box { height: 323px; padding: 0px !important; border: transparent; }  
+.keet-chart-panel { width:100%; height: 290px; display:block; padding-top: 20px;}
 .keet-item-hide { display: none; }
 .keet-chart-content { text-align: center; }
      

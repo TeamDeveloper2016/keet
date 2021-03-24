@@ -30,7 +30,8 @@
 				contratista : {json: #{kajoolSeguimiento.attrs.contratista}},
 				sueldos     : {json: #{kajoolSeguimiento.attrs.sueldos}},
 				destajos    : {json: #{kajoolSeguimiento.attrs.destajos}},
-				departamento: {json: #{kajoolSeguimiento.attrs.departamento}}
+				departamento: {json: #{kajoolSeguimiento.attrs.departamento}},
+				pagado      : {json: {}}
 			};
 			$(function() {
 				 'use strict'			
@@ -43,11 +44,11 @@
        
        function onOffSwitchTable(type, active) {
          if(active) {
-           $('#keet-switch-chart-'+ type).removeClass(type==='destajos'? 'Container70': type==='departamento'? 'Container100': 'Container75').addClass(type==='departamento'? 'Container50': 'Container40');
+           $('#keet-switch-chart-'+ type).removeClass(type==='destajos' || type==='sueldos'? 'Container70': type==='departamento'? 'Container100': 'Container75').addClass(type==='departamento'? 'Container50': 'Container40');
            $('#keet-switch-list-'+ type).removeClass('keet-item-hide');
          } // ir
          else {
-           $('#keet-switch-chart-'+ type).removeClass(type==='departamento'? 'Container50': 'Container40').addClass(type==='destajos'? 'Container70': type==='departamento'? 'Container100': 'Container75');
+           $('#keet-switch-chart-'+ type).removeClass(type==='departamento'? 'Container50': 'Container40').addClass(type==='destajos' || type==='sueldos'? 'Container70': type==='departamento'? 'Container100': 'Container75');
            $('#keet-switch-list-'+ type).addClass('keet-item-hide');
          } // else  
          jsEcharts.responsive();
@@ -264,7 +265,7 @@
             </div>
           </div>  
         </div>  
-        <div class="Container70 Responsive overview-box">					
+        <div id="keet-switch-chart-sueldos" class="Container70 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
@@ -283,13 +284,30 @@
             </div>
           </div>
         </div>  
+        <div id="keet-switch-list-sueldos" class="Container30 Responsive overview-box keet-item-hide">
+          <div class="ContainerIndent card">
+            <p:panel styleClass="overview-inner-box">
+              <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
+                <i class="fa fa-funnel-dollar Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Calculos de nómina por contratista<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('sueldos', false);"></i>
+              </div>
+              <div class="keet-chart-panel">
+                <div id="pagado" class="keet-chart-panel">
+                  Cargando gráficas nómina por desarrollo y contratista
+                </div>	
+             </div>	              
+            </p:panel>
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+              <span id="nombreSueldos"/>
+            </div>   
+          </div>  
+        </div>  
       </div>  
       <div class="ContainerIndent">        					
         <div class="Container30 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
-                <div class="Container100 Responsive keet-chart-title janal-box-title-red">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-orange">
                   <i class="fa fa-people-carry Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Contratistas activos
                 </div>
                 <p:dataTable lazy="true" id="tablaContratista" var="row" widgetVar="kajoolTableContratista" rowIndexVar="index" value="#{kajoolSeguimiento.contratistas}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.contratista}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
@@ -326,7 +344,7 @@
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
-                <div class="Container100 Responsive keet-chart-title janal-box-title-red">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-orange">
                   <i class="fa fa-hand-holding-usd Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Nómina por contratista
                 </div>
                 <div class="keet-chart-panel">
@@ -344,7 +362,7 @@
         <div id="keet-switch-list-destajos" class="Container30 Responsive overview-box keet-item-hide">
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
+              <div class="Container100 Responsive keet-chart-title janal-box-title-orange">
                 <i class="fa fa-funnel-dollar Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del calculo de nómina<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('destajos', false);"></i>
               </div>
               <p:dataTable lazy="true" id="tablaPersonalDestajos" var="row" widgetVar="kajoolTableDestajos" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDestajos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
@@ -376,7 +394,7 @@
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
-                <div class="Container100 Responsive keet-chart-title janal-box-title-red">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
                   <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal por departamentos
                 </div>
                 <div class="keet-chart-panel">
@@ -394,7 +412,7 @@
         <div id="keet-switch-list-departamento" class="Container50 Responsive overview-box keet-item-hide">
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
+              <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
                 <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del personal<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('departamento', false);"></i>
               </div>
               <p:dataTable lazy="true" id="tablaPersonalDepartamento" var="row" widgetVar="kajoolTableDepartamento" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDepartamento}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">

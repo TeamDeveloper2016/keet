@@ -5,6 +5,40 @@
 <process>
 	<dml> 
 		<unit id="VistaSeguimientoDto">
+			<select id="pagado">
+				select
+				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as serie,
+					sum(round(tc_keet_contratos_destajos_contratistas.costo, 2)) as value
+				from
+					tc_keet_contratos_destajos_contratistas
+				inner join
+					tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina
+				inner join
+					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+		    inner join
+		      tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_empresa_persona
+		    inner join
+		      tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+		    inner join
+		      tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
+		    inner join
+		      tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join
+          tr_mantic_empresa_personal on tc_keet_contratos_lotes_contratistas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				where
+          concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt; 10, '0', ''), tc_keet_nominas_periodos.orden)= '{nomina}'
+          and tc_keet_desarrollos.descripcion= '{sueldos}' 
+          and tr_mantic_empresa_personal.id_puesto= 6
+          and tr_mantic_empresa_personal.id_activo= 1
+        group by
+          tc_keet_contratos_lotes_contratistas.id_empresa_persona
+        order by
+          tc_mantic_personas.paterno, tc_mantic_personas.materno, tc_mantic_personas.nombres
+      </select>  
 			<select id="personalDepartamento">
 				select
 				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,

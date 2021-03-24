@@ -336,6 +336,32 @@ public class Seguimiento extends Comun implements Serializable {
     } // catch	
   }
 
+  private void toLoadPagado(Map<String, Object> params) {
+    try {      
+			Simple simple= new Simple("Contratista", DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "pagado", params));
+      if(simple.getData()!= null && !simple.getData().isEmpty()) {
+        BarModel departamento= new BarModel(new Title(), simple);
+        departamento.remove();
+        departamento.toCustomFontSize(14);
+        departamento.setLegend(null);
+        departamento.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+        departamento.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+        departamento.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+        departamento.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+        departamento.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+        this.attrs.put("pagado", departamento.toJson());
+      } // else  
+      else {
+        JsfBase.addMessage("Informativo", "Ya no hay mas nóminas !");      
+        this.attrs.put("pagado", "{}");
+      }  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+
   private void toLoadNominas(ESecuencia token, String type) {
     Map<String, Object> params = new HashMap<>();
     try {      
@@ -479,7 +505,7 @@ public class Seguimiento extends Comun implements Serializable {
     List<Columna> columns     = null;    
     Map<String, Object> params= null;
     try {  
-      if("|desarrollo|contratista|destajos|departamento|".indexOf(itemSelected.getChart())> 0) {
+      if("|desarrollo|contratista|destajos|departamento|sueldos|".indexOf(itemSelected.getChart())> 0) {
         columns = new ArrayList<>();
         columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
         if("|destajos|departamento|".indexOf(itemSelected.getChart())> 0) 
@@ -487,17 +513,23 @@ public class Seguimiento extends Comun implements Serializable {
         params = new HashMap<>();
         params.put(itemSelected.getChart(), itemSelected.getName());
         params.put("nomina", itemSelected.getSeriesName());
-        List<Entity> items = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "personal".concat(Cadena.letraCapital(itemSelected.getChart())), params);
-        if(items!= null)
-          UIBackingUtilities.toFormatEntitySet(items, columns);
-        this.attrs.put("personal".concat(Cadena.letraCapital(itemSelected.getChart())), items);  
+        if("|sueldos|".indexOf(itemSelected.getChart())> 0) {
+          this.toLoadPagado(params);
+          UIBackingUtilities.execute("jsEcharts.update('pagado', {group:'00', json:".concat((String)this.attrs.get("pagado")).concat("});"));
+        } //
+        else {
+          List<Entity> items = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "personal".concat(Cadena.letraCapital(itemSelected.getChart())), params);
+          if(items!= null)
+            UIBackingUtilities.toFormatEntitySet(items, columns);
+          this.attrs.put("personal".concat(Cadena.letraCapital(itemSelected.getChart())), items);  
+          UIBackingUtilities.update("tablaPersonal".concat(Cadena.letraCapital(itemSelected.getChart())));
+        } // else  
         UIBackingUtilities.execute("onOffSwitchTable('"+ itemSelected.getChart()+ "', true);");
-        UIBackingUtilities.update("tablaPersonal".concat(Cadena.letraCapital(itemSelected.getChart())));
-        if("|destajos|".indexOf(itemSelected.getChart())> 0) 
+        if("|destajos|sueldos|".indexOf(itemSelected.getChart())> 0) 
           UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'("+ itemSelected.getSeriesName()+ ") "+ itemSelected.getName()+ "'}}});");
         else
           UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "'}}});");
-      } // if  
+      } // if 
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
