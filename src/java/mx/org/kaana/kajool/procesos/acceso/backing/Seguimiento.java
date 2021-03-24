@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Title;
+import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 import mx.org.kaana.libs.echarts.json.ItemSelected;
 import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.formato.Error;
@@ -26,6 +27,7 @@ import mx.org.kaana.libs.echarts.kind.DonutModel;
 import mx.org.kaana.libs.echarts.kind.StackModel;
 import mx.org.kaana.libs.echarts.model.Datas;
 import mx.org.kaana.libs.echarts.model.Multiple;
+import mx.org.kaana.libs.echarts.model.Simple;
 import mx.org.kaana.libs.echarts.model.Stacked;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -114,6 +116,7 @@ public class Seguimiento extends Comun implements Serializable {
       this.toLoadNominas(ESecuencia.IGUAL, "");
       this.toLoadSueldos();
       this.toLoadDestajos();
+      this.toLoadDepartamentos();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -267,6 +270,9 @@ public class Seguimiento extends Comun implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally 
   }
   
   private void toLoadDestajos() {
@@ -300,6 +306,29 @@ public class Seguimiento extends Comun implements Serializable {
         JsfBase.addMessage("Informativo", "Ya no hay mas nóminas !");      
         this.attrs.put("destajos", "{}");
       }  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally 
+  }
+
+  private void toLoadDepartamentos() {
+    try {      
+			Simple simple= new Simple("Personal", DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "departamento", Collections.EMPTY_MAP));
+      BarModel departamento= new BarModel(new Title(), simple);
+      departamento.remove();
+      departamento.toCustomFontSize(14);
+      departamento.setLegend(null);
+      departamento.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+      departamento.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+      departamento.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+      departamento.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+      departamento.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+      this.attrs.put("departamento", departamento.toJson());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -450,10 +479,10 @@ public class Seguimiento extends Comun implements Serializable {
     List<Columna> columns     = null;    
     Map<String, Object> params= null;
     try {  
-      if("|desarrollo|contratista|destajos|".indexOf(itemSelected.getChart())> 0) {
+      if("|desarrollo|contratista|destajos|departamento|".indexOf(itemSelected.getChart())> 0) {
         columns = new ArrayList<>();
         columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
-        if("|destajos|".indexOf(itemSelected.getChart())> 0) 
+        if("|destajos|departamento|".indexOf(itemSelected.getChart())> 0) 
           columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
         params = new HashMap<>();
         params.put(itemSelected.getChart(), itemSelected.getName());
@@ -479,4 +508,5 @@ public class Seguimiento extends Comun implements Serializable {
       Methods.clean(columns);
     } // finally
   }
+  
 }

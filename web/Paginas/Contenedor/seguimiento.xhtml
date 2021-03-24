@@ -29,7 +29,8 @@
 				movimientos : {json: #{kajoolSeguimiento.attrs.movimientos}},
 				contratista : {json: #{kajoolSeguimiento.attrs.contratista}},
 				sueldos     : {json: #{kajoolSeguimiento.attrs.sueldos}},
-				destajos    : {json: #{kajoolSeguimiento.attrs.destajos}}
+				destajos    : {json: #{kajoolSeguimiento.attrs.destajos}},
+				departamento: {json: #{kajoolSeguimiento.attrs.departamento}}
 			};
 			$(function() {
 				 'use strict'			
@@ -42,11 +43,11 @@
        
        function onOffSwitchTable(type, active) {
          if(active) {
-           $('#keet-switch-chart-'+ type).removeClass(type==='destajos'? 'Container70': 'Container75').addClass('Container40');
+           $('#keet-switch-chart-'+ type).removeClass(type==='destajos'? 'Container70': type==='departamento'? 'Container100': 'Container75').addClass(type==='departamento'? 'Container50': 'Container40');
            $('#keet-switch-list-'+ type).removeClass('keet-item-hide');
          } // ir
          else {
-           $('#keet-switch-chart-'+ type).removeClass('Container40').addClass(type==='destajos'? 'Container70': 'Container75');
+           $('#keet-switch-chart-'+ type).removeClass(type==='departamento'? 'Container50': 'Container40').addClass(type==='destajos'? 'Container70': type==='departamento'? 'Container100': 'Container75');
            $('#keet-switch-list-'+ type).addClass('keet-item-hide');
          } // else  
          jsEcharts.responsive();
@@ -366,6 +367,62 @@
             </p:panel>
             <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
               <span id="nombreDestajos"/>
+            </div>   
+          </div>
+        </div>  
+      </div>  
+      <div class="ContainerIndent">        					
+        <div id="keet-switch-chart-departamento" class="Container100 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-red">
+                  <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal por departamentos
+                </div>
+                <div class="keet-chart-panel">
+                  <div id="departamento" class="keet-chart-panel">
+                    Cargando gráficas personal por departamento
+                  </div>	
+               </div>	              
+              </p:panel>						
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                .
+              </div>   
+            </div>
+          </div>
+        </div>  
+        <div id="keet-switch-list-departamento" class="Container50 Responsive overview-box keet-item-hide">
+          <div class="ContainerIndent card">
+            <p:panel styleClass="overview-inner-box">
+              <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
+                <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del personal<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('departamento', false);"></i>
+              </div>
+              <p:dataTable lazy="true" id="tablaPersonalDepartamento" var="row" widgetVar="kajoolTableDepartamento" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDepartamento}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                <p:column styleClass="janal-column-left Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Nombre"/>
+                  </f:facet>
+                  <h:outputText value="#{row.nombre}" styleClass="#{row.idTipoConcepto eq '4'? 'janal-color-black': row.idTipoConcepto eq '2'? 'janal-color-red': row.idTipoConcepto eq '3'? 'janal-color-blue': ''}"/>
+                </p:column>                    
+                <p:column styleClass="janal-wid-35 Responsive" >
+                  <f:facet name="header">
+                    <h:outputText value="Puesto"/>
+                  </f:facet>
+                  <h:outputText value="#{row.puesto}"/>
+                </p:column>                    
+                <p:column styleClass="janal-column-right janal-wid-15 Responsive" >
+                  <f:facet name="header">
+                    <h:outputText value="Sueldo"/>
+                  </f:facet>
+                  <h:outputText value="#{row.importe}"/>
+                </p:column>                    
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{kajoolSeguimiento.attrs.personalDepartamento.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>                
+            </p:panel>
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+              <span id="nombreDepartamento"/>
             </div>   
           </div>
         </div>  

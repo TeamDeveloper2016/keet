@@ -5,6 +5,27 @@
 <process>
 	<dml> 
 		<unit id="VistaSeguimientoDto">
+			<select id="personalDepartamento">
+				select
+				  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
+					tc_mantic_puestos.nombre as puesto,
+					tr_mantic_empresa_personal.contratacion as fecha,
+					tr_mantic_empresa_personal.sueldo_semanal as importe
+				from
+					tr_mantic_empresa_personal
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento= tc_keet_departamentos.id_departamento
+				inner join
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
+				where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tr_mantic_empresa_personal.id_activo= 1
+          and tc_keet_departamentos.nombre = '{departamento}'
+        order by 
+          tc_keet_departamentos.nombre
+      </select>  
 			<select id="personalDestajos">
 				select
 				  tc_keet_nominas_detalles.id_nomina_detalle as id_key,
@@ -112,6 +133,24 @@
           and tr_mantic_empresa_personal.id_activo= 1
         group by
           tr_mantic_empresa_personal.id_empresa_persona             
+      </select>  
+			<select id="departamento">
+				select
+				  upper(tc_keet_departamentos.nombre) as serie,
+					count(*) as value
+				from
+					tr_mantic_empresa_personal
+				inner join
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join
+					tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento= tc_keet_departamentos.id_departamento
+				where
+          tr_mantic_empresa_personal.id_empresa= 1
+          and tr_mantic_empresa_personal.id_activo= 1
+        group by
+          tc_keet_departamentos.nombre
+        order by 
+          tc_keet_departamentos.nombre        
       </select>  
 			<select id="destajos">
         select
