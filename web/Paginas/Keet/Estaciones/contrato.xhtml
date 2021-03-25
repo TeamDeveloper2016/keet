@@ -74,7 +74,7 @@
 							</ui:repeat>
 						</f:facet>
 					</p:toolbar>
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesContrato.hijos}" rowKey="#{row.idEstacion}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesContrato.attrs.seleccionado}" selectionMode="single" paginator="#{keetEstacionesContrato.lazyModel.rowCount gt keetEstacionesContrato.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesContrato.hijos}" rowKey="#{row.idEstacion}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesContrato.attrs.seleccionado}" selectionMode="single" paginator="#{keetEstacionesContrato.lazyModel.rowCount gt keetEstacionesContrato.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowDblselect"  listener="#{keetEstacionesContrato.doActualizarChildren}" onstart="return janal.bloquear();" process="@this" update="tabla,seguimiento" oncomplete="janal.desbloquear();"/>
 						<f:facet name="header">							
 							<div class="janal-icons-header">
@@ -105,19 +105,19 @@
 							<f:facet name="header">
 								<h:outputText value="Contrato"/>
 							</f:facet>
-							<h:outputText value="#{keetControlesContrato.attrs.contrato.numero}"/>
+							<h:outputText value="#{keetEstacionesContrato.attrs.contrato.numero}"/>
 						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-10">
 							<f:facet name="header">
 								<h:outputText value="Etapa"/>
 							</f:facet>
-							<h:outputText value="#{keetControlesContrato.attrs.contrato.etapa}"/>
+							<h:outputText value="#{keetEstacionesContrato.attrs.contrato.etapa}"/>
 						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-5">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
-							<h:outputText value="#{keetControlesContrato.attrs.contrato.lote}"/>
+							<h:outputText value="#{keetEstacionesContrato.attrs.contrato.lote}"/>
 						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-6">
 							<f:facet name="header">
@@ -127,7 +127,7 @@
 						</p:column>														
 						<p:column class="MarAuto Responsive">
 							<f:facet name="header">
-								<h:outputText value="#{keetControlesContrato.titulo}"/>
+								<h:outputText value="#{keetEstacionesContrato.titulo}"/>
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>			            
@@ -135,13 +135,13 @@
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
-							<h:outputText value="#{keetControlesContrato.doFecha(row['inicio'])}"/>
+							<h:outputText value="#{keetEstacionesContrato.doFecha(row['inicio'])}"/>
 						</p:column>	      
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-6" >
 							<f:facet name="header">
 								<h:outputText value="Termino" />
 							</f:facet>
-							<h:outputText value="#{keetControlesContrato.doFecha(row['termino'])}"/>
+							<h:outputText value="#{keetEstacionesContrato.doFecha(row['termino'])}"/>
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 							<f:facet name="header">

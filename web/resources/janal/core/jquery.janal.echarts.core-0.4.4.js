@@ -497,7 +497,7 @@
       $.each(params, function (index, items) {
         if (index === 0)
           label = items['name'];
-        if (items['value'] !== '-' && items['value'] > 0) {
+        if (items['value'] !== '-' && items['value'] !== 0) {
           if (items['seriesName'] === null) {
             msg = msg + items['marker'] + ' ' + $echarts.format(items, format) + '<br/>';
           } else {

@@ -352,7 +352,7 @@ public class Seguimiento extends Comun implements Serializable {
         this.attrs.put("pagado", departamento.toJson());
       } // else  
       else {
-        JsfBase.addMessage("Informativo", "Ya no hay mas nóminas !");      
+        JsfBase.addMessage("Informativo", "No hay nómina de contratistas !");      
         this.attrs.put("pagado", "{}");
       }  
     } // try
