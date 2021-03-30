@@ -2461,6 +2461,7 @@
 					tc_keet_contratos.id_contrato as id_key,
 					tc_keet_contratos.consecutivo,
 					tc_keet_contratos.clave,
+					tc_keet_contratos.nombre,
 					tc_keet_contratos.no_viviendas,
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.recepcion,
@@ -2511,6 +2512,7 @@
 					tc_keet_contratos.id_contrato as id_key,
 					tc_keet_contratos.consecutivo,
 					tc_keet_contratos.clave,
+					tc_keet_contratos.nombre,
 					tc_keet_contratos.no_viviendas,
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.recepcion,
@@ -2687,6 +2689,7 @@
 				select 
           tc_keet_contratos_lotes.id_contrato_lote as id_key,
           tc_keet_contratos.id_contrato,
+          tc_keet_contratos.nombre,
           tc_keet_contratos.clave as numero,
           concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
           tc_keet_contratos.no_viviendas,

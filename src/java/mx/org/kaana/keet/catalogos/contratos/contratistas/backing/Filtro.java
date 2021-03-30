@@ -11,6 +11,7 @@ import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -48,13 +49,14 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {		
     try {						
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.loadCatalogs();
 			if(JsfBase.getFlashAttribute("idContratoProcess")!= null){
 				this.attrs.put("idContratoProcess", JsfBase.getFlashAttribute("idContratoProcess"));
-				doLoad();
+				this.doLoad();
 				this.attrs.put("idContratoProcess", null);
 			} // if
 			else
-				doLoad();
+				this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -89,27 +91,45 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private Map<String, Object> toPrepare() throws Exception {
 		Map<String, Object> regresar = new HashMap<>();
-		StringBuilder condicion      = new StringBuilder();
+		StringBuilder sb             = new StringBuilder();
 		UISelectEntity cliente       = (UISelectEntity) this.attrs.get("cliente");
 		List<UISelectEntity> clientes= (List<UISelectEntity>)this.attrs.get("clientes");
 		if(this.attrs.get("idContratoProcess")!= null && !Cadena.isVacio(this.attrs.get("idContratoProcess")))
-			condicion.append("tc_keet_contratos.id_contrato=").append(this.attrs.get("idContratoProcess")).append(" and ");		
-		if(!Cadena.isVacio(this.attrs.get("nombres"))){
-			condicion.append("(tc_keet_desarrollos.nombres like '%").append(this.attrs.get("nombres")).append("%' or ");
-			condicion.append("tc_keet_desarrollos.clave like '%").append(this.attrs.get("nombres")).append("%') and ");
-		} // if
-		if(!Cadena.isVacio(this.attrs.get("etapa"))){
-			condicion.append("tc_keet_contratos.etapa like upper('%").append(this.attrs.get("etapa")).append("%') and ");			
-		} // if
+			sb.append("tc_keet_contratos.id_contrato=").append(this.attrs.get("idContratoProcess")).append(" and ");		
+		if(!Cadena.isVacio(this.attrs.get("idDesarrollo")) && !((UISelectEntity)this.attrs.get("idDesarrollo")).getKey().equals(-1L))
+		  sb.append("(tc_keet_desarrollos.id_desarrollo= ").append(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey()).append(") and ");		
+		if(!Cadena.isVacio(this.attrs.get("idContrato")) && !((UISelectEntity)this.attrs.get("idContrato")).getKey().equals(-1L))
+		  sb.append("(tc_keet_contratos.id_contrato= ").append(((UISelectEntity)this.attrs.get("idContrato")).getKey()).append(") and ");		
 		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-			condicion.append("(tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%') and ");
+			sb.append("(tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%') and ");
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
-			condicion.append("(tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");    			
-		regresar.put(Constantes.SQL_CONDICION, condicion.length()== 0 ? Constantes.SQL_VERDADERO : condicion.substring(0, condicion.length()- 4));				
+			sb.append("(tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");    			
+		regresar.put(Constantes.SQL_CONDICION, sb.length()== 0 ? Constantes.SQL_VERDADERO : sb.substring(0, sb.length()- 4));				
 		regresar.put("idPersona", JsfBase.getAutentifica().getPersona().getIdPersona());
 		return regresar;		
 	} // toPrepare  
 	
+  public void loadCatalogs() {
+    try {
+     Catalogos.toLoadDesarrollos(this.attrs);
+     this.doLoadContratos();
+    } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  }
+  
+  public void doLoadContratos() {
+    try {
+     Catalogos.toLoadContratos(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey(), attrs);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  }
+          
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
  		List<Columna> columns     = null;
     Map<String, Object> params= null;		

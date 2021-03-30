@@ -208,4 +208,40 @@ public final class Catalogos {
 		attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
 	}
 
+	public static void toLoadDesarrollos(Map<String, Object> attrs) throws Exception {
+		List<UISelectEntity>desarrollos= null;
+    Map<String, Object> params     = null;
+    try {
+      params = new HashMap<>();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+  		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      attrs.put("desarrollos", desarrollos);
+      if(desarrollos!= null) 
+        attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
+      else  
+        attrs.put("idDesarrollo", new UISelectEntity(-1L));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+
+	public static void toLoadContratos(Long idDesarrollos, Map<String, Object> attrs) throws Exception {
+		List<UISelectEntity>contratos= null;
+    Map<String, Object> params   = null;
+    try {
+      params = new HashMap<>();
+      params.put("idDesarrollo", idDesarrollos);
+  		contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      attrs.put("contratos", contratos);
+  		if(contratos!= null)
+        attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+      else  
+        attrs.put("idContrato", new UISelectEntity(-1L));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+
 }

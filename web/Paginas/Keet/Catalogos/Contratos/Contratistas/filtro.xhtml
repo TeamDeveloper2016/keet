@@ -11,9 +11,9 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'etapa'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'nombres'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+        'idDesarrollo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'idContrato'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'razonSocial' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
 				
 			$(window).load(function() {
@@ -27,13 +27,30 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
-					<p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
+					<p:accordionPanel id="panelBusqueda" activeIndex="0" multiple="true">
 						<p:tab title="Busqueda:">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">              
-								<p:outputLabel for="nombres" value="Clave ó nombre del desarrollo:"/>
-								<p:inputText id="nombres" value="#{keetCatalogosContratosContratistasFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/>  
-								<p:outputLabel for="etapa" value="Etapa:"/>
-								<p:inputText id="etapa" value="#{keetCatalogosContratosContratistasFiltro.attrs.etapa}" styleClass="janal-wid-100-txt"/>  
+								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
+                <p:selectOneMenu id="idDesarrollo" value="#{keetCatalogosContratosContratistasFiltro.attrs.idDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{keetCatalogosContratosContratistasFiltro.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                  <p:ajax event="change" listener="#{keetCatalogosContratosContratistasFiltro.doLoadContratos}" update="idContrato" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadContratos();"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column> 
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombres}"/>
+                  </p:column> 
+                </p:selectOneMenu>	
+								<p:outputLabel for="idContrato" value="Contrato:"/>
+                <p:selectOneMenu id="idContrato" value="#{keetCatalogosContratosContratistasFiltro.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{keetCatalogosContratosContratistasFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column> 
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column> 
+                </p:selectOneMenu>	
 								<p:outputLabel for="razonSocial" value="Razón social del cliente:"/>
 								<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: CONSTRUCTORA. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosContratistasFiltro.attrs.cliente}" completeMethod="#{keetCatalogosContratosContratistasFiltro.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 									<f:facet name="itemtip">
@@ -53,10 +70,11 @@
 								<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{keetCatalogosContratosContratistasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 								<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{keetCatalogosContratosContratistasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 							</div>
+              <p:remoteCommand name="reloadContratos" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 					</p:accordionPanel>           					
 					<p:carousel id="tabla" value="#{keetCatalogosContratosContratistasFiltro.contratos}" headerText="Contratos" var="item" itemStyle="text-align:center" responsive="true" >								
-						<p:panel header="[#{item.clave}] [#{item.claveDesarrollo}] #{item.nombreDesarrollo}" styleClass="janal-wid-100-txt" >
+						<p:panel header="#{item.nombreDesarrollo} [#{item.nombre}] " styleClass="janal-wid-100-txt" >
 							<p:panelGrid columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-column-center">										
 								<p:commandLink id="ayuda" action="#{keetCatalogosContratosContratistasFiltro.doLotes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="cursor: hand;">
 									<p:graphicImage width="200px" height="130px" library="janal" name="img/sistema/logo.svg"/>
@@ -64,8 +82,8 @@
 								</p:commandLink>										                    
 								<h:outputText value="&lt;b&gt;Etapa:&lt;/b&gt; #{item.etapa}, &lt;b&gt;Viviendas:&lt;/b&gt; [#{item.noViviendas}]" styleClass="Fs18" escape="false"/>
 								<p:panelGrid columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-column-center">
-									<p:outputLabel value="Proyecto:" styleClass="FontBold"/>
-									<h:outputText value="[#{item.claveProyecto}]-#{item.nombreDesarrollo}" styleClass="janal-color-blue"/>
+									<p:outputLabel value="Contrato:" styleClass="FontBold"/>
+									<h:outputText value="[#{item.clave}]-#{item.nombreDesarrollo}" styleClass="janal-color-blue"/>
 									<h:outputText value="#{item.domicilio}" />
 								</p:panelGrid>																		
 							</p:panelGrid>

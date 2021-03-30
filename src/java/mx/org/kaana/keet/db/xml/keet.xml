@@ -2952,6 +2952,15 @@
         where      
           consecutivo = '{consecutivo}' and id_contrato = {idContrato}
       </select>
+      <select id="desarrollo">
+        select      
+					tc_keet_contratos.id_contrato as id_key,
+					tc_keet_contratos.*
+        from      
+          tc_keet_contratos
+        where 
+          id_desarrollo_
+      </select>
     </unit>
 		 <unit id="TcKeetContratosArchivosDto">
       <select id="row">

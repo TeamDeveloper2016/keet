@@ -341,7 +341,7 @@ public class Importar extends IBaseImportar implements Serializable {
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
  			params.put("ejercicio", Fecha.getAnioActual()- 1);
 			if(this.attrs.get("lotes")== null)
-			  lotes= UIEntity.build("VistaContratosLotesDto", "lotes", params, columns);
+			  lotes= UIEntity.build("VistaContratosLotesDto", "lotes", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			else
 				lotes= (List<UISelectEntity>)this.attrs.get("lotes");
   		this.attrs.put("lotes", lotes);

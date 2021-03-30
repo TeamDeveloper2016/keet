@@ -10,6 +10,7 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
@@ -45,7 +46,7 @@ public class Contrato extends Filtro implements Serializable {
 				actualizarChildren(0, 3);
 				this.current.setNivel(3L);
 			} // if	
-		loadCombos();
+		this.loadCombos();
     this.attrs.put("filtroReporte","%");
     } // try
     catch (Exception e) {
@@ -59,31 +60,33 @@ public class Contrato extends Filtro implements Serializable {
 		String nodo                 = "";
 		TcKeetContratosLotesDto lote= null;
     try {
-			if(this.attrs.get("lote")!= null && ((UISelectEntity)this.attrs.get("lote")).getKey()> 0L) {
-				lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(TcKeetContratosLotesDto.class, ((UISelectEntity)this.attrs.get("lote")).getKey());
+			if(this.attrs.get("idLote")!= null && ((UISelectEntity)this.attrs.get("idLote")).getKey()> 0L) {
+				lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(TcKeetContratosLotesDto.class, ((UISelectEntity)this.attrs.get("idLote")).getKey());
 			  nodo= estaciones.toCodeByIdContrato(lote.getIdContrato());
 				this.current=new TcKeetEstacionesDto();
 				this.current.setClave(estaciones.toCode(nodo.concat(lote.getOrden().toString())));
 				this.current.setNivel(4L);
 				this.actualizarChildren(1);
 			} // if
-			else if(this.attrs.get("contrato")!=null && ((UISelectEntity)this.attrs.get("contrato")).getKey()>0L) {
-				nodo= estaciones.toCodeByIdContrato(((UISelectEntity)this.attrs.get("contrato")).getKey());
-				this.current= new TcKeetEstacionesDto();
-				this.current.setClave(nodo);
-				this.current.setNivel(3L);
-				this.actualizarChildren(1);
-			} // else if
-			else if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
-					nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
-					this.current= new TcKeetEstacionesDto();
-					this.current.setClave(estaciones.toCode(nodo));
-					this.current.setNivel(1L);
-					this.actualizarChildren(1,2);
-					this.current.setNivel(3L);
-				} // else if
-				else
-					this.doInicio();
+			else 
+        if(this.attrs.get("idContrato")!=null && ((UISelectEntity)this.attrs.get("idContrato")).getKey()> 0L) {
+          nodo= estaciones.toCodeByIdContrato(((UISelectEntity)this.attrs.get("idContrato")).getKey());
+          this.current= new TcKeetEstacionesDto();
+          this.current.setClave(nodo);
+          this.current.setNivel(3L);
+          this.actualizarChildren(1);
+        } // else if
+        else 
+          if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
+            nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
+            this.current= new TcKeetEstacionesDto();
+            this.current.setClave(estaciones.toCode(nodo));
+            this.current.setNivel(1L);
+            this.actualizarChildren(1,2);
+            this.current.setNivel(3L);
+          } // else if
+          else
+            this.doInicio();
         this.attrs.put("filtroReporte",this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
     } // try
     catch (Exception e) {
@@ -96,8 +99,7 @@ public class Contrato extends Filtro implements Serializable {
 	protected void loadCombos() {
 		try {
 			this.loadEmpresas();
-			this.doLoadContratos();
-			this.doLoadLotes();
+      this.doLoadDesarrollos();
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -108,16 +110,16 @@ public class Contrato extends Filtro implements Serializable {
 	public void doLoadLotes() {
 		UISelectEntity contrato = null;
 	  try {
-			contrato = (UISelectEntity)this.attrs.get("contrato");
+			contrato = (UISelectEntity)this.attrs.get("idContrato");
 			if(contrato!= null && !contrato.isEmpty()) 
 			  this.attrs.put(Constantes.SQL_CONDICION, "id_contrato= ".concat(contrato.getKey().toString()));
 			else
 				this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);
       List<UISelectEntity> lotes= UIEntity.seleccione("TcKeetContratosLotesDto", "row", this.attrs, "clave");
       if(lotes!= null && !lotes.isEmpty())
-        this.attrs.put("lote", lotes.get(0));
+        this.attrs.put("idLote", lotes.get(0));
       else
-        this.attrs.put("lote", new UISelectEntity(-1L)); 
+        this.attrs.put("idLote", new UISelectEntity(-1L)); 
       this.attrs.put("lotes", lotes);
     } // try
     catch (Exception e) {
@@ -125,28 +127,6 @@ public class Contrato extends Filtro implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
 	} // doLoadLotes
-	
-	public void doLoadContratos() {
-		UISelectEntity empresa= null;
-	  try {
-			empresa = (UISelectEntity)this.attrs.get("idEmpresa");
-			if(empresa!= null && !empresa.isEmpty()) 
-			  this.attrs.put("sucursales", empresa.getKey());
-			else
-				this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      List<UISelectEntity> contratos= UIEntity.seleccione("VistaContratosDto", "byEmpresa", this.attrs, "clave");
-      if(contratos!= null && !contratos.isEmpty())
-        this.attrs.put("contrato", contratos.get(0));
-      else
-        this.attrs.put("contrato", new UISelectEntity(-1L)); 
-      this.attrs.put("contratos", contratos);
-      this.doLoadLotes();
-    } // try
-    catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-	} // doLoadContratos
 	
 	@Override
 	public String doAccion(String accion) {
@@ -182,8 +162,8 @@ public class Contrato extends Filtro implements Serializable {
 	
 	public String doUploadIndividual() {
 		Long ikContratoLote= -1L;
-		if(this.attrs.get("lote")!= null && ((UISelectEntity)this.attrs.get("lote")).getKey()> 0L) 
-			ikContratoLote= ((UISelectEntity)this.attrs.get("lote")).getKey();
+		if(this.attrs.get("idLote")!= null && ((UISelectEntity)this.attrs.get("idLote")).getKey()> 0L) 
+			ikContratoLote= ((UISelectEntity)this.attrs.get("idLote")).getKey();
 		JsfBase.setFlashAttribute("ikContratoLote", ikContratoLote);
 		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.ESTACIONES.getId());
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
@@ -197,7 +177,7 @@ public class Contrato extends Filtro implements Serializable {
       params.put("idContrato", Numero.getLong(this.estaciones.toValueKey(row.getClave(), 3)));
       params.put("orden", Numero.getLong(this.estaciones.toValueKey(row.getClave(), 4)));
       Entity contrato = (Entity) DaoFactory.getInstance().toEntity("VistaContratosDto", "contrato", params);
-      this.attrs.put("contrato", contrato);
+      this.attrs.put("idContrato", new UISelectEntity(contrato));
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -208,5 +188,27 @@ public class Contrato extends Filtro implements Serializable {
     } // finally
     return "";
   }
-  
+
+  public void doLoadDesarrollos() {
+    try {
+     Catalogos.toLoadDesarrollos(this.attrs);
+     this.doLoadContratos();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			mx.org.kaana.libs.formato.Error.mensaje(e);			
+		} // catch		
+  }
+
+  public void doLoadContratos() {
+    try {
+     Catalogos.toLoadContratos(((UISelectEntity)this.attrs.get("idDesarrollo")).getKey(), attrs);
+     this.doLoadLotes();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			mx.org.kaana.libs.formato.Error.mensaje(e);			
+		} // catch		
+  }
+
 }
