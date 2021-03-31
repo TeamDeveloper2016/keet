@@ -128,12 +128,11 @@ public class Transaccion extends IBaseTnx {
 	}
 
   private void toUpdateFathers(Session sesion, EAccion accion) throws Exception {
-    Estaciones estaciones= null;
+    Estaciones estaciones= new Estaciones(sesion);
     try {      
-      estaciones= new Estaciones(sesion);
       Double diferencia= 0D;
  			switch(accion) {
-				case AGREGAR:			
+				case AGREGAR:	
           diferencia= this.estacion.getEstacion().getCosto();
           break;
 				case MODIFICAR:			
