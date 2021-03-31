@@ -131,7 +131,7 @@
   						<p:outputLabel for="idDesarrollo" value="Desarrollos:"/>
               <p:selectOneMenu id="idDesarrollo" value="#{manticFacturasComplemento.adminOrden.orden.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" onstart="return janal.bloquear();" process="@this idContrato" listener="#{manticFacturasComplemento.doUpdateContratos}" update="@(.todos) contenedorGrupos:tabla @(.factura) @(.totales)" oncomplete="janal.desbloquear(); janal.resize(); janal.reset(); reloadContrato(); reloadFacturas();"/>
-                <f:selectItems value="#{manticFacturasComplemento.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '- '} #{element.nombres}"/>
+                <f:selectItems value="#{manticFacturasComplemento.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -144,7 +144,7 @@
     					<p:outputLabel for="idContrato" value="Contratos:"/>
               <p:selectOneMenu id="idContrato" value="#{manticFacturasComplemento.adminOrden.orden.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticFacturasComplemento.doUpdateDomicilio}" update="contenedorGrupos:tabla @(.factura) @(.totales)" oncomplete="janal.desbloquear(); janal.resize(); janal.reset();"/>
-                <f:selectItems value="#{manticFacturasComplemento.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '- '} #{one.etapa}"/>
+                <f:selectItems value="#{manticFacturasComplemento.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
                 <p:column headerText="Clave">
                   <p:outputLabel value="#{list.clave}"/>
                 </p:column>   

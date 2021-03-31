@@ -3821,6 +3821,45 @@
 			</select>
 		</unit>		
 		<unit id="VistaEstacionesDto">
+			<select id="rubros">
+        select
+          tc_keet_rubros.id_rubro as id_key,
+          tc_keet_rubros.*
+        from
+          tc_keet_rubros
+        where
+          tc_keet_rubros.codigo not in(
+          select
+            tc_keet_estaciones.codigo
+          from 
+            tc_keet_estaciones
+          where  
+            tc_keet_estaciones.clave like '{clave}%'  
+            and tc_keet_estaciones.nivel= 6
+          ) and tc_keet_rubros.id_destajo= 1
+        order by
+          tc_keet_rubros.id_rubro        
+      </select>  
+			<select id="partidas">
+        select
+          tc_keet_partidas.id_partida as id_key,
+          tc_keet_partidas.*
+        from
+          tc_keet_partidas
+        where
+          tc_keet_partidas.codigo not in(
+          select
+            tc_keet_estaciones.codigo
+          from 
+            tc_keet_estaciones
+          where  
+            tc_keet_estaciones.clave like '{clave}%'  
+            and tc_keet_estaciones.nivel= 5
+          )
+          and tc_keet_partidas.id_destajo= 1
+        order by
+          tc_keet_partidas.codigo
+      </select>  
 			<select id="lazy">
 				select
 					tc_keet_estaciones.id_estacion id_key,

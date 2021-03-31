@@ -126,12 +126,13 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
 			switch(eaccion){
 				case REGISTRAR:
-				  this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+				  this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null? this.current: ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
 					eaccion= EAccion.AGREGAR;
 				case AGREGAR:
 				case MODIFICAR:
 				case CONSULTAR:
 					regresar= "accion".concat(Constantes.REDIRECIONAR);
+					JsfBase.setFlashAttribute("isEstacion", Boolean.TRUE);
 					JsfBase.setFlashAttribute("accion", eaccion);      
 					JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(eaccion.name()));      
 					JsfBase.setFlashAttribute("idEstacion", eaccion.equals(EAccion.AGREGAR) ? -1L : ((TcKeetEstacionesDto) this.attrs.get("seleccionado")).getKey());
@@ -175,7 +176,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 					Methods.clean(this.visitados);
 					this.visitados= this.estaciones.toFather(this.current.getClave());
 				} // if	
-			  this.hijos= this.estaciones.toChildren(incremento, this.current.getClave(), this.current.getNivel().intValue()+nivel, 0);
+			  this.hijos= this.estaciones.toChildren(incremento, this.current.getClave(), this.current.getNivel().intValue()+ nivel, 0);
 			} // if
 		} // try // try
 		catch (Exception e) {

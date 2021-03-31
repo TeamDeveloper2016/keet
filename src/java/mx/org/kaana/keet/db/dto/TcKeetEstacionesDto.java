@@ -288,11 +288,28 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable, Cloneable {
   }
 
   public TcKeetEstacionesDto(Long key) {
-    this(LocalDate.now(), null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), 1L, 6L, null, null, 1L, null, 2L, 1L, null, -1L, LocalDate.now(), LocalDate.now(), 1D, 0D,
+            0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 
+            0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D,
+            0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
     setKey(key);
   }
 
-  public TcKeetEstacionesDto(LocalDate inicio, Double abono50, Double abono51, Double abono52, Double abono53, Double abono54, Double cargo27, Double abono55, Double cargo28, Double cargo29, Long idEstacion, Double cargo20, Double cargo21, Double cargo22, Double cargo23, Double cargo24, Double cargo25, Double cargo26, Long ultimo, Double abono40, Double abono41, Double abono42, Double abono43, Double cargo16, Double abono44, Double cargo17, Double abono45, Double cargo18, Double abono46, Double cargo19, Double abono47, Double abono48, Double abono49, Double cargo10, Double cargo11, Double cargo12, Long nivel, Double cargo13, Double cargo14, Double cargo15, Double cargo50, Double cargo51, Double cargo49, Double cargo41, Double cargo42, Double cargo43, Double cargo44, Double cargo45, Double cargo46, Double cargo47, Double cargo48, Double abono7, Double abono6, String clave, Double abono5, Double abono4, Double abono3, Double abono2, Long idEmpaqueUnidadMedida, Double abono1, Double cargo40, Double cargo2, Double cargo1, Double abono9, Double abono8, Double cargo8, Double cargo38, Double cargo7, Double cargo39, Double cargo9, Double cargo4, Double cargo3, Long idUsuario, Double cargo6, Long idPlantilla, Double cargo5, Double cargo30, Double cargo31, Double cargo32, Double cargo33, Double cargo34, Double cargo35, Double cargo36, Double cargo37, String descripcion, Double abono10, Double abono11, Double abono12, Double abono13, Double abono14, Double abono15, Double abono16, Double abono17, Double abono18, Double abono19, String codigo, Double cargo52, Double cargo53, Double cargo54, Double cantidad, Double cargo55, Long idEstacionEstatus, String nombre, Double abono30, Double abono31, Double abono32, Double abono33, Double abono34, Double abono35, Double abono36, Double abono37, Double abono38, Double abono39, LocalDate termino, Double costo, Double abono20, Double abono21, Double abono22, Double abono23, Double abono24, Double abono25, Double abono26, Double abono27, Double abono28, Double abono29) {
+  public TcKeetEstacionesDto(Long idEstacion, Long ultimo, Long nivel, String codigo, String clave, Long idEmpaqueUnidadMedida, String descripcion, 
+          Long idPlantilla, Long idEstacionEstatus, String nombre, Long idUsuario, LocalDate inicio, LocalDate termino, Double cantidad, Double costo, 
+          Double abono50, Double abono51, Double abono52, Double abono53, Double abono54, Double cargo27, Double abono55, Double cargo28, Double cargo29, 
+          Double abono23, Double abono24, Double abono25, Double abono26, Double abono27, Double abono28, Double abono29, Double cargo20, Double cargo21, 
+          Double cargo22, Double cargo23, Double cargo24, Double cargo25, Double cargo26, Double abono40, Double abono41, Double abono42, Double abono43, 
+          Double cargo16, Double abono44, Double cargo17, Double abono45, Double cargo18, Double abono46, Double cargo19, Double abono47, Double abono48, 
+          Double abono49, Double cargo10, Double cargo11, Double cargo12, Double cargo13, Double cargo14, Double cargo15, Double cargo50, Double cargo51, 
+          Double cargo49, Double cargo41, Double cargo42, Double cargo43, Double cargo44, Double cargo45, Double cargo46, Double cargo47, Double cargo48, 
+          Double abono7,  Double abono6,  Double abono5,  Double abono4,  Double abono3,  Double abono2,  Double abono1,  Double cargo40, Double cargo2, 
+          Double cargo1,  Double abono9,  Double abono8,  Double cargo8,  Double cargo38, Double cargo7,  Double cargo39, Double cargo9,  Double cargo4, 
+          Double cargo3,  Double cargo6,  Double cargo5,  Double cargo30, Double cargo31, Double cargo32, Double cargo33, Double cargo34, Double cargo35, 
+          Double cargo36, Double cargo37, Double abono10, Double abono11, Double abono12, Double abono13, Double abono14, Double abono15, Double abono16, 
+          Double abono17, Double abono18, Double abono19, Double cargo52, Double cargo53, Double cargo54, Double cargo55, Double abono30, Double abono31, 
+          Double abono32, Double abono33, Double abono34, Double abono35, Double abono36, Double abono37, Double abono38, Double abono39, Double abono20, 
+          Double abono21, Double abono22) {
     setInicio(inicio);
     setAbono50(abono50);
     setAbono51(abono51);

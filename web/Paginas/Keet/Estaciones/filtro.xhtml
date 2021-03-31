@@ -74,7 +74,8 @@
 					</p:toolbar>
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesFiltro.hijos}" rowKey="#{row.idEstacion}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetEstacionesFiltro.lazyModel.rowCount gt keetEstacionesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowDblselect"  listener="#{keetEstacionesFiltro.doActualizarChildren}" onstart="return janal.bloquear();" process="@this" update="tabla,seguimiento,repProt" oncomplete="janal.desbloquear();"/>
-						<p:ajax event="rowSelect" update="idContextMenu"/>
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">		
 							<div class="janal-icons-header">
 								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-estaciones.xls" title="Plantilla de estaciones">
@@ -136,7 +137,7 @@
 					</p:dataTable>
 				</div>
 			</div>	
-			<p:contextMenu id="idContextMenu" for="tabla" widgetVar="kajoolContextMenu" >
+			<p:contextMenu id="kajoolContextMenu" for="tabla" widgetVar="kajoolContextMenu" >
         <p:menuitem icon="fa fa-edit" action="#{keetEstacionesFiltro.doAccion('MODIFICAR')}"  value="Modificar"  title="Modificar opción de menú" />
         <p:menuitem icon="fa fa-trash" actionListener="#{keetEstacionesFiltro.doAccion('ELIMINAR')}"  value="Eliminar"  title="Eliminar opción de menú" update="tabla" process="@this,tabla"/>
         <p:separator/>

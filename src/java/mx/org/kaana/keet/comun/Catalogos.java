@@ -216,10 +216,7 @@ public final class Catalogos {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
   		desarrollos= UIEntity.seleccione("TcKeetDesarrollosDto", "row", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
       attrs.put("desarrollos", desarrollos);
-      if(desarrollos!= null) 
-        attrs.put("idDesarrollo", UIBackingUtilities.toFirstKeySelectEntity(desarrollos));
-      else  
-        attrs.put("idDesarrollo", new UISelectEntity(-1L));
+      attrs.put("idDesarrollo", desarrollos!= null? UIBackingUtilities.toFirstKeySelectEntity(desarrollos): new UISelectEntity(-1L));
 		} // try
 		finally {
 			Methods.clean(params);
@@ -234,10 +231,7 @@ public final class Catalogos {
       params.put("idDesarrollo", idDesarrollos);
   		contratos= UIEntity.seleccione("VistaContratosDto", "findDesarrollo", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
       attrs.put("contratos", contratos);
-  		if(contratos!= null)
-        attrs.put("idContrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
-      else  
-        attrs.put("idContrato", new UISelectEntity(-1L));
+      attrs.put("idContrato", contratos!= null? UIBackingUtilities.toFirstKeySelectEntity(contratos): new UISelectEntity(-1L));
 		} // try
 		finally {
 			Methods.clean(params);

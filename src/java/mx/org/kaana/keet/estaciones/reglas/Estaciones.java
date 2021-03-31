@@ -17,10 +17,19 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
+import org.hibernate.Session;
 
 public class Estaciones extends Maestro implements IArbol, Serializable {
 
+  private static final long serialVersionUID = -4944641733164493161L;
+
+  private Session sesion;
+  
 	public Estaciones() {
+    this(null);  
+  }
+  
+	public Estaciones(Session sesion) {
 		 super(
       new Configuracion("Configuración de estaciones", 10),
       new ArrayList<Detalle>(
@@ -33,19 +42,24 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
       new Detalle(6, 3, 2, "0", "[1..999]", "", "Concepto"),  // 6to nivel concepto a 3 digitos
       new Detalle(7, 3, 2, "0", "[1..999]", "", "Material"),  // 7to nivel material a 3 digitos
       new Detalle(8, 3, 2, "0", "[1..999]", "", ""))));
+     this.sesion= sesion;
 	}
 
 	@Override
   public List<TcKeetEstacionesDto> toFather(String value) throws Exception {
     List<TcKeetEstacionesDto> regresar= new ArrayList<>();
-    String[] list                     = uniqueKey(toCodeAll(value), value);
+    String[] list                     = this.uniqueKey(toCodeAll(value), value);
     Map<String, Object> params        = null;
 		try {
 			params=new HashMap<>();
 			for (String clave : list) {
 				params.put("clave", clave);
-				TcKeetEstacionesDto dto=(TcKeetEstacionesDto) DaoFactory.getInstance().findIdentically(TcKeetEstacionesDto.class, params);
-				if (dto!=null&&dto.getKey()!=-1L) {
+        TcKeetEstacionesDto dto= null;
+        if(this.sesion!= null)
+				  dto=(TcKeetEstacionesDto) DaoFactory.getInstance().findIdentically(this.sesion, TcKeetEstacionesDto.class, params);
+        else
+				  dto=(TcKeetEstacionesDto) DaoFactory.getInstance().findIdentically(TcKeetEstacionesDto.class, params);
+				if (dto!=null && dto.getKey()!=-1L) {
 					regresar.add(dto);
 				} // if
 			} // for
@@ -65,7 +79,10 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
 		try {
       value   = toOnlyKey(value, level+child);
       params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+child+aumentarNivel))).concat(" "));
-      regresar= (List) DaoFactory.getInstance().findViewCriteria(TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
+      if(this.sesion!= null)
+        regresar= (List) DaoFactory.getInstance().findViewCriteria(this.sesion, TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
+      else
+        regresar= (List) DaoFactory.getInstance().findViewCriteria(TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -100,7 +117,10 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
 			params  = new HashMap<>();
 			value   = this.toOnlyKey(value, level+child);
 			params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+child))).concat(" "));
-			regresar= DaoFactory.getInstance().findPage(TcKeetEstacionesDto.class, params, first, records);
+      if(this.sesion!= null)
+			  regresar= DaoFactory.getInstance().findPage(this.sesion, TcKeetEstacionesDto.class, params, first, records);
+      else
+			  regresar= DaoFactory.getInstance().findPage(TcKeetEstacionesDto.class, params, first, records);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -118,11 +138,11 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
   public int toCountChildren(String value, int level) throws Exception {
     int regresar= 0;
 		try {
-			List<TcKeetEstacionesDto> list= toChildren(value, level, 0);
-			if (list!=null&&!list.isEmpty()) {
-				TcKeetEstacionesDto dto=list.get(list.size()-1);
-				String key=toValueKey(dto.getClave(), dto.getNivel().intValue());
-				regresar=Numero.getInteger(key);
+			List<TcKeetEstacionesDto> list= this.toChildren(value, level, 0);
+			if (list!=null && !list.isEmpty()) {
+				TcKeetEstacionesDto dto= list.get(list.size()-1);
+				String key= this.toValueKey(dto.getClave(), dto.getNivel().intValue());
+				regresar= Numero.getInteger(key);
 				// falta validar si aun se permite un hijo mas en este nivel
 				// verificar si el total de hijos es menor a la longitud del nivel
 				// y realizar una reclasificacion de la llave
@@ -175,7 +195,10 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
 			params= new HashMap<>();
 			value = toOnlyKey(value, level+child);
 			params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel>="+(level+child))).concat(" "));
-			regresar=(List) DaoFactory.getInstance().findViewCriteria(TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
+      if(this.sesion!= null)
+			  regresar=(List) DaoFactory.getInstance().findViewCriteria(this.sesion, TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
+      else
+			  regresar=(List) DaoFactory.getInstance().findViewCriteria(TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -202,7 +225,10 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
 				} // if
 				else {
 					params.put("clave", list[list.length-2]);
-					regresar=(TcKeetEstacionesDto) DaoFactory.getInstance().findIdentically(TcKeetEstacionesDto.class, params);
+          if(this.sesion!= null)
+		  			regresar=(TcKeetEstacionesDto) DaoFactory.getInstance().findIdentically(this.sesion, TcKeetEstacionesDto.class, params);
+          else
+			  		regresar=(TcKeetEstacionesDto) DaoFactory.getInstance().findIdentically(TcKeetEstacionesDto.class, params);
 				} // else
 			} // if	
 		} // try
@@ -231,7 +257,10 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
 		try {
 			params=new HashMap<>();
 			params.put("idContrato", idContrato);
-			contrato= DaoFactory.getInstance().toField("VistaContratosDto", "getEstacionPatron", params, "patron");
+      if(this.sesion!= null)
+  			contrato= DaoFactory.getInstance().toField(this.sesion, "VistaContratosDto", "getEstacionPatron", params, "patron");
+      else
+  			contrato= DaoFactory.getInstance().toField("VistaContratosDto", "getEstacionPatron", params, "patron");
 			regresar= contrato.getData()!= null? contrato.getData$(): "";
 		} // try
 		catch (Exception e) {

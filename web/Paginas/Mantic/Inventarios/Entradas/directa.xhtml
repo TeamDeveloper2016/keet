@@ -538,7 +538,7 @@
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                         <p:outputLabel for="idContratoEmpleado" value="Contrato:"/>
                         <p:selectOneMenu id="idContratoEmpleado" value="#{manticInventariosEntradasDirecta.empleado.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="janal-wid-88 manodeobra" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                          <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.contratosEmpleado}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '- '} #{one.etapa}"/>
+                          <f:selectItems value="#{manticInventariosEntradasDirecta.attrs.contratosEmpleado}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
                           <p:column headerText="Clave">
                             <p:outputLabel value="#{list.clave}"/>
                           </p:column>   

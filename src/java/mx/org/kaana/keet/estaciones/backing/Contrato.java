@@ -37,13 +37,13 @@ public class Contrato extends Filtro implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
 				this.current= (TcKeetEstacionesDto)JsfBase.getFlashAttribute("estacionProcess");
-				actualizarChildren(1);
+				this.actualizarChildren(1);
 			} // if
-			else{
+      else {
 				this.current=new TcKeetEstacionesDto();
 				this.current.setClave("");
 				this.current.setNivel(1L);
-				actualizarChildren(0, 3);
+				this.actualizarChildren(0, 3);
 				this.current.setNivel(3L);
 			} // if	
 		this.loadCombos();
@@ -57,7 +57,7 @@ public class Contrato extends Filtro implements Serializable {
 	
 	@Override
   public void doLoad() {
-		String nodo                 = "";
+		String nodo                 = null;
 		TcKeetContratosLotesDto lote= null;
     try {
 			if(this.attrs.get("idLote")!= null && ((UISelectEntity)this.attrs.get("idLote")).getKey()> 0L) {
@@ -87,7 +87,7 @@ public class Contrato extends Filtro implements Serializable {
           } // else if
           else
             this.doInicio();
-        this.attrs.put("filtroReporte",this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
+      this.attrs.put("filtroReporte", this.current.getClave().isEmpty()? "%": this.current.getClave().length()< 13? this.current.getClave().concat("%"): this.current.getClave().substring(0,13).concat("%"));
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -139,14 +139,20 @@ public class Contrato extends Filtro implements Serializable {
 				case AGREGAR:
 				case MODIFICAR:
 				case CONSULTAR:
+          regresar= super.doAccion(accion);
+					JsfBase.setFlashAttribute("pivote", this.getVisitados().get(this.getVisitados().size()-1));
+					JsfBase.setFlashAttribute("isEstacion", Boolean.FALSE);
+					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
+          break;
 				case SUBIR:
 				case BAJAR:
 				case ELIMINAR:
-          super.doAccion(accion);
-				break;
+          regresar= super.doAccion(accion);
+          this.doLoad();
+  				break;
 				case LISTAR:
 					JsfBase.setFlashAttribute("estacionPadre", this.current);
-					this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+					this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))== null? this.current: ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
 					regresar= "estructura".concat(Constantes.REDIRECIONAR);
 					JsfBase.setFlashAttribute("estacionProcess", this.current);
 					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
