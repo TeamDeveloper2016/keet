@@ -112,7 +112,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}	// ejecutar	
 	
-	private boolean processDestajoContratista(Session sesion, Long idUsuario) throws Exception{
+	private boolean processDestajoContratista(Session sesion, Long idUsuario) throws Exception {
 		boolean regresar= false;
 		Long key= -1L;
 		TcKeetContratosDestajosContratistasDto dto= null;
@@ -157,7 +157,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadContratista
 	
-	private boolean processDestajoSubContratista(Session sesion, Long idUsuario) throws Exception{
+	private boolean processDestajoSubContratista(Session sesion, Long idUsuario) throws Exception {
 		boolean regresar= false;
 		Long key= -1L;
 		TcKeetContratosDestajosProveedoresDto dto= null;
@@ -205,7 +205,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadSubContratista
 	
-	private boolean processRechazoContratista(Session sesion, Long idUsuario) throws Exception{
+	private boolean processRechazoContratista(Session sesion, Long idUsuario) throws Exception {
 		boolean regresar= false;		
 		TcKeetContratosDestajosContratistasDto dto= null;
 		TcKeetEstacionesDto estacion= null;
@@ -249,7 +249,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadContratista
 	
-	private boolean processRechazoSubContratista(Session sesion, Long idUsuario) throws Exception{
+	private boolean processRechazoSubContratista(Session sesion, Long idUsuario) throws Exception {
 		boolean regresar= false;
 		TcKeetContratosDestajosProveedoresDto dto= null;
 		TcKeetEstacionesDto estacion= null;
@@ -296,7 +296,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadSubContratista
 	
-	private boolean processPuntosContratistas(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception{
+	private boolean processPuntosContratistas(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception {
 		boolean regresar= true;
 		TcKeetContratosPuntosContratistasDto dto= null;
 		try {
@@ -320,7 +320,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // processPuntosContratistas
 	
-	private boolean processPuntosSubContratistas(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception{
+	private boolean processPuntosSubContratistas(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception {
 		boolean regresar= true;
 		TcKeetContratosPuntosProveedoresDto dto= null;
 		try {
@@ -344,11 +344,11 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // processPuntosSubContratistas
 		
-	private boolean processRechazosContratistas(Session sesion, Long idUsuario, Entity puntoRevision, Long idContratoDestajoContratista) throws Exception{
+	private boolean processRechazosContratistas(Session sesion, Long idUsuario, Entity puntoRevision, Long idContratoDestajoContratista) throws Exception {
 		return processRechazosContratistas(sesion, idUsuario, puntoRevision, idContratoDestajoContratista, true);
 	} // processRechazosContratistas
 	
-	private boolean processRechazosContratistas(Session sesion, Long idUsuario, Entity puntoRevision, Long idContratoDestajoContratista, boolean detalle) throws Exception{
+	private boolean processRechazosContratistas(Session sesion, Long idUsuario, Entity puntoRevision, Long idContratoDestajoContratista, boolean detalle) throws Exception {
 		boolean regresar= true;
 		TcKeetContratosRechazosContratistasDto dto= null;
 		TcKeetContratosPuntosContratistasDto punto= null;
@@ -378,11 +378,11 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // processPuntosContratistas
 	
-	private boolean processRechazosSubContratistas(Session sesion, Long idUsuario, Entity puntoRevision, Long idContratoDestajoProveedor) throws Exception{
+	private boolean processRechazosSubContratistas(Session sesion, Long idUsuario, Entity puntoRevision, Long idContratoDestajoProveedor) throws Exception {
 		return processRechazosSubContratistas(sesion, idUsuario, puntoRevision, idContratoDestajoProveedor, true);
 	} // processRechazosSubContratistas
 	
-	private boolean processRechazosSubContratistas(Session sesion, Long idUsuario, Entity puntoRevision, Long idContratoDestajoProveedor, boolean detalle) throws Exception{
+	private boolean processRechazosSubContratistas(Session sesion, Long idUsuario, Entity puntoRevision, Long idContratoDestajoProveedor, boolean detalle) throws Exception {
 		boolean regresar= true;
 		TcKeetContratosRechazosProveedoresDto dto= null;
 		TcKeetContratosPuntosProveedoresDto punto= null;
@@ -412,7 +412,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // processPuntosSubContratistas
 	
-	private Long toSemana() throws Exception{
+	private Long toSemana() throws Exception {
 		Long regresar  = -1L;
 		Semanas semanas= null;
 		try {
@@ -456,11 +456,11 @@ public class Transaccion extends IBaseTnx {
 	} // toIdEstacionEstatus
 	*/
 	
-	private boolean validaInicioTrabajo(Session sesion, Long idContratoDestajo, boolean contratista) throws Exception{
+	private boolean validaInicioTrabajo(Session sesion, Long idContratoDestajo, boolean contratista) throws Exception {
 		return validaInicioTrabajoExtra(sesion, idContratoDestajo, contratista, this.revision.getIdDepartamento(), this.revision.getClave());
 	} // validaInicioTrabajo
 	
-	private boolean validaInicioTrabajoExtra(Session sesion, Long idContratoDestajo, boolean contratista, Long idDepartamento, String clave) throws Exception{
+	private boolean validaInicioTrabajoExtra(Session sesion, Long idContratoDestajo, boolean contratista, Long idDepartamento, String clave) throws Exception {
 		boolean regresar         = false;
 		Long total               = 0L;
 		Map<String, Object>params= null;
@@ -486,11 +486,11 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // validaInicioTrabajo
 	
-	private void actualizaInicioContratoLote(Session sesion, boolean inicio) throws Exception{
+	private void actualizaInicioContratoLote(Session sesion, boolean inicio) throws Exception {
 		actualizaInicioContratoLoteExtra(sesion, inicio, this.revision.getIdContratoLote());
 	} // actualizaInicioContratoLote
 	
-	private void actualizaInicioContratoLoteExtra(Session sesion, boolean inicio, Long idContratoLote) throws Exception{
+	private void actualizaInicioContratoLoteExtra(Session sesion, boolean inicio, Long idContratoLote) throws Exception {
 		TcKeetContratosLotesDto contratoLote= null;
 		try {
 			contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, idContratoLote);
@@ -502,7 +502,7 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 	} // actualizaInicioContratoLoteExtra
 	
-	private boolean actualizaEstacionPadre(Session sesion, TcKeetEstacionesDto hijo, Double total, String semana, boolean alta) throws Exception{
+	private boolean actualizaEstacionPadre(Session sesion, TcKeetEstacionesDto hijo, Double total, String semana, boolean alta) throws Exception {
 		boolean regresar                = true;
 		Estaciones estaciones           = null;
 		List<TcKeetEstacionesDto> padres= null;
@@ -537,7 +537,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // actualizaEstacionPadre
 	
-	private boolean agregarConceptoExtra(Session sesion) throws Exception{
+	private boolean agregarConceptoExtra(Session sesion) throws Exception {
 		boolean regresar                 = false;
 		TcKeetEstacionesDto estacion     = null;
 		TcKeetEstacionesDto estacionClon = null;
@@ -560,6 +560,7 @@ public class Transaccion extends IBaseTnx {
 				Methods.setValue(estacionClon, "abono".concat(String.valueOf(count+1)), new Object[]{0D});
 			} // for
 			estacionClon.setNombre(this.conceptoExtra.getDescripcion());
+			estacionClon.setDescripcion(this.conceptoExtra.getDescripcion());
 			concepto= toConcepto(sesion);
 			estacionClon.setCodigo(concepto.toString("codigo"));
 			estacionClon.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
@@ -581,7 +582,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // agregarConceptoExtra
 	
-	private Entity toConcepto(Session sesion) throws Exception{
+	private Entity toConcepto(Session sesion) throws Exception {
 		Entity regresar          = null;
 		Map<String, Object>params= null;
 		try {
@@ -598,7 +599,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toConcepto
 	
-	private boolean processDestajoContratistaExtra(Session sesion, TcKeetEstacionesDto estacion) throws Exception{		
+	private boolean processDestajoContratistaExtra(Session sesion, TcKeetEstacionesDto estacion) throws Exception {		
 		TcKeetContratosDestajosContratistasDto dto= null;
 		Long idContratoDestajo= -1L;
 		boolean regresar= true;		
@@ -626,7 +627,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadContratista
 	
-	private boolean processPuntosContratistasExtras(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception{
+	private boolean processPuntosContratistasExtras(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception {
 		boolean regresar= true;
 		TcKeetContratosPuntosContratistasDto dto= null;
 		try {
@@ -649,7 +650,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // processPuntosContratistas
 	
-	private boolean processDestajoSubContratistaExtra(Session sesion, TcKeetEstacionesDto estacion) throws Exception{		
+	private boolean processDestajoSubContratistaExtra(Session sesion, TcKeetEstacionesDto estacion) throws Exception {		
 		TcKeetContratosDestajosProveedoresDto dto= null;
 		Long idContratoDestajo= -1L;
 		boolean regresar= true;		
@@ -677,7 +678,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadContratista
 	
-	private boolean processPuntosSubContratistasExtras(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception{
+	private boolean processPuntosSubContratistasExtras(Session sesion, Long idUsuario, Long idContratoDestajo) throws Exception {
 		boolean regresar= true;
 		TcKeetContratosPuntosProveedoresDto dto= null;
 		try {
@@ -700,7 +701,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // processPuntosContratistas
 	
-	private Entity[] loadPuntosRevision(Session sesion, Long idEstacion) throws Exception{
+	private Entity[] loadPuntosRevision(Session sesion, Long idEstacion) throws Exception {
 		Entity[] regresar        = null;
 		List<Entity>puntos       = null;
 		Map<String, Object>params= null;
@@ -723,7 +724,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadPuntosRevision
 	
-	private boolean eliminarConceptoExtraContratista(Session sesion, Long idUsuario) throws Exception{ 
+	private boolean eliminarConceptoExtraContratista(Session sesion, Long idUsuario) throws Exception { 
 		boolean regresar= false;		
 		TcKeetContratosDestajosContratistasDto dto= null;
 		TcKeetEstacionesDto estacion= null;
@@ -758,7 +759,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // eliminarConceptoExtraContratista
 	
-	private boolean eliminarConceptoExtraSubContratista(Session sesion, Long idUsuario) throws Exception{ 
+	private boolean eliminarConceptoExtraSubContratista(Session sesion, Long idUsuario) throws Exception { 
 		boolean regresar= false;
 		TcKeetContratosDestajosProveedoresDto dto= null;
 		TcKeetEstacionesDto estacion= null;

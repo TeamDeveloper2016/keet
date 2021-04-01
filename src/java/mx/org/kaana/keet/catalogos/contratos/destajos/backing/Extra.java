@@ -150,10 +150,10 @@ public class Extra extends IBaseAttribute implements Serializable {
     String regresar        = null;    		
 		Transaccion transaccion= null;		
     try {						
-			transaccion= new Transaccion(loadConceptoExtra());
-			if(transaccion.ejecutar(EAccion.AGREGAR)){
+			transaccion= new Transaccion(this.loadConceptoExtra());
+			if(transaccion.ejecutar(EAccion.AGREGAR)) {
 				JsfBase.addMessage("Agregar concepto extra", "Se realizó la captura del concepto extra de forma correcta.", ETipoMensaje.INFORMACION);
-				regresar= doCancelar();
+				regresar= this.doCancelar();
 			} // if
 			else
 				JsfBase.addMessage("Agregar concepto extra", "Ocurrió un error al realizar la captura del concepto extra.", ETipoMensaje.ERROR);			
@@ -185,7 +185,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 			regresar.setIdPuntoGrupo(concepto.toLong("idPuntoGrupo"));
 			regresar.setIdRubro(concepto.getKey());
 			regresar.setIdDepartamento(Long.valueOf(this.attrs.get("idDepartamento").toString()));
-			regresar.setDescripcion(this.attrs.get("descripcion").toString());
+			regresar.setDescripcion((String)this.attrs.get("descripcion"));
 			regresar.setImporte(Double.valueOf(this.attrs.get("importe").toString()));
 			regresar.setLatitud((String)this.attrs.get("latitud")); 
 			regresar.setLongitud((String)this.attrs.get("longitud"));
