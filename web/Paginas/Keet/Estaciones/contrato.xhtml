@@ -162,7 +162,7 @@
 						</p:column>	      
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-10">
 							<f:facet name="header">
-								<h:outputText value="Termino" />
+								<h:outputText value="Termino"/>
 							</f:facet>
 							<h:outputText value="#{keetEstacionesContrato.doFecha(row['termino'])}"/>
 						</p:column>
@@ -174,13 +174,13 @@
 						</p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-col-30">
 							<f:facet name="header">
-								<h:outputText value="" />
+								<h:outputText value=""/>
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1'? 'circulo-rojo': (row.idEstacionEstatus eq '2'? 'circulo-amarillo': (row.idEstacionEstatus eq '3'? 'circulo-verde': 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1'? 'SIN INICIAR': (row.idEstacionEstatus eq '2'? 'EN PROCESO': (row.idEstacionEstatus eq '3'? 'FINALIZADO': 'CANCELADO'))}"/>
 						</p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8" rendered="false">
 							<f:facet name="header">
-								<h:outputText value="costo" />
+								<h:outputText value="costo"/>
 							</f:facet>
 							<h:outputText value="#{row['costo']}"/>
 						</p:column>

@@ -38,12 +38,12 @@ public class RegistroDesarrollo implements Serializable {
     Desarrollo regresar= null;
 		MotorBusqueda motor= null;
 		try {
-			if(idDesarrollo> 0L) {
+			if(idDesarrollo!= null && idDesarrollo> 0L) {
 				motor= new MotorBusqueda(idDesarrollo);
 				regresar= motor.toDesarrollo();
 				this.domicilio= motor.toDomicilio(regresar);
 			} // if
-			else{				
+      else {
 				regresar= new Desarrollo();
 				this.domicilio= new Domicilio();
 			} // else

@@ -108,6 +108,7 @@
 	<field name="USUARIO" class="java.lang.String"/>
 	<field name="ID_USUARIO" class="java.math.BigDecimal"/>
 	<field name="ETAPA" class="java.lang.String"/>
+	<field name="CONTRATO" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -475,7 +476,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{ETAPA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{CONTRATO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

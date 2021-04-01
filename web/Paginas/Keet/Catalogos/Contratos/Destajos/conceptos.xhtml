@@ -98,14 +98,14 @@
 						</div>
 						<p:commandButton id="gps-button" type="button" icon="fa fa-google-plus" title="Ir al mapa" onclick="window.open('https://www.google.com/maps?q=21.890563,-102.252030&amp;z=17&amp;hl=es');"/>
 					</p:panelGrid>
-					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionado}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModel.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
-						<p:column class="janal-wid-col-30 janal-column-center">              
+          <p:dataTable lazy="true" reflow="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionado}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModel.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single">            						
+						<p:column class="janal-wid-col-31 janal-column-center">              
               <f:facet name="header">
                 <h:outputText value="No"/>
               </f:facet>
               <h:outputText value="#{index+1}.-"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-60" sortBy="#{row.codigo}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-61" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
@@ -117,16 +117,22 @@
               </f:facet>
               <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
             </p:column>		                        
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-100" sortBy="#{row.costo}" rendered="#{not kajoolUtilAplicacion.isMobile}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-101" sortBy="#{row.costo}" rendered="#{not kajoolUtilAplicacion.isMobile}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
               <h:outputText value="#{row.costo}"/>
             </p:column>		                        
-						<p:column class="janal-wid-col-30 janal-column-center">
+						<p:column class="janal-wid-col-31 janal-column-center">
+              <f:facet name="header">
+                <p:outputLabel value="Estatus" styleClass="xs-pantalla"/>
+              </f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1'? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3'? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
-						<p:column class="janal-wid-col-115 janal-column-center">
+						<p:column class="janal-wid-col-116 janal-column-center">
+              <f:facet name="header">
+                <p:outputLabel value="Acciones" styleClass="xs-pantalla"/>
+              </f:facet>
 							<p:commandButton icon="fa fa-pencil" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doPuntosRevision(row)}" title="Capturar puntos de revisión." disabled="#{row.idEstacionEstatus eq '3'}"/>																						
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazar(row)}" title="Rechazar puntos de revisión" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}" disabled="#{row.idEstacionEstatus eq '1'}"/>															
@@ -135,20 +141,20 @@
               <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModel== null? 0: keetCatalogosContratosDestajosConceptos.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
-					<p:dataTable lazy="true" id="tablaExtras" widgetVar="kajoolTableExtras" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModelExtras}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionadoExtra}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModelExtras.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModelExtras.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}">
+					<p:dataTable lazy="true" id="tablaExtras" reflow="true" widgetVar="kajoolTableExtras" var="row" value="#{keetCatalogosContratosDestajosConceptos.lazyModelExtras}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosConceptos.attrs.seleccionadoExtra}" paginator="#{keetCatalogosContratosDestajosConceptos.lazyModelExtras.rowCount gt keetCatalogosContratosDestajosConceptos.lazyModelExtras.pageSize}" rowIndexVar="index" paginatorPosition="bottom" selectionMode="single" rendered="#{keetCatalogosContratosDestajosConceptos.attrs.isAdmin}">
 						<f:facet name="header">							
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-plus" value="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}"/>								
 							</p:menuButton>							
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" process="@this tablaExtras" action="#{keetCatalogosContratosDestajosConceptos.doCapturarExtra}"/>              
 						</f:facet>												
-						<p:column class="janal-wid-col-30 janal-column-center">              
+						<p:column class="janal-wid-col-31 janal-column-center">              
               <f:facet name="header">
                 <h:outputText value="No"/>
               </f:facet>
               <h:outputText value="#{index+1}.-"/>
             </p:column>		
-            <p:column class="janal-wid-col-60 janal-column-left MarAuto Responsive" sortBy="#{row.codigo}">
+            <p:column class="janal-wid-col-61 janal-column-left MarAuto Responsive" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
@@ -160,10 +166,16 @@
               </f:facet>
               <h:outputText value="#{row.nombre}" styleClass="janal-color-black FontBold" title="Costo mano obra: #{row.costo}"/>
             </p:column>		                        
-						<p:column class="janal-wid-col-30 janal-column-center">
+						<p:column class="janal-wid-col-31 janal-column-center">
+              <f:facet name="header">
+                <p:outputLabel value="Estatus" styleClass="xs-pantalla"/>
+              </f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1' ? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3' ? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
-						<p:column class="janal-wid-col-85 janal-column-center">							
+						<p:column class="janal-wid-col-86 janal-column-center">							
+              <f:facet name="header">
+                <p:outputLabel value="Acciones" styleClass="xs-pantalla"/>
+              </f:facet>
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 						</p:column>

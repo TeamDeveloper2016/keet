@@ -4683,6 +4683,7 @@
 					tc_keet_contratos_lotes.*,
 					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
 					tc_keet_contratos.clave clave_contrato,
+          tc_keet_contratos.nombre nombre_contrato,
 					tc_keet_contratos.etapa etapa_contrato,
 					tc_keet_proyectos.clave clave_proyecto,
 					tc_keet_proyectos.etapa etapa_proyecto,

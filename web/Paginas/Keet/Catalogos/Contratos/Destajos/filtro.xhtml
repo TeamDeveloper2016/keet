@@ -74,11 +74,8 @@
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-					<p:dataGrid var="row" value="#{keetCatalogosContratosDestajosFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index"
-											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosDestajosFiltro.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
-											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
-											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
-											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+					<p:dataGrid var="row" value="#{keetCatalogosContratosDestajosFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosDestajosFiltro.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
+											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{row.clave} #{empty row.prototipo? '': '|'} #{row.prototipo}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="destajo" title="Ver detalle del articulo" action="#{keetCatalogosContratosDestajosFiltro.doConceptos}">
@@ -86,13 +83,13 @@
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosDestajosFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
-									<h:outputText value="&lt;b&gt;#{row.etapaContrato}&lt;/b&gt;" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+                  <p:outputLabel value="&lt;b&gt;#{row.nombreContrato}&lt;/b&gt; | Etapa: #{row.etapaContrato}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}" styleClass="janal-color-orange"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
-									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+									<p:outputLabel value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
-									<h:outputText value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.termino}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+									<p:outputLabel value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.termino}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.termino eq '-' ? '' : 'none'}"/>
-									<h:outputText value="&lt;b&gt;Dias construccion:&lt;/b&gt; #{row.diasConstruccion}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+									<p:outputLabel value="&lt;b&gt;Dias construccion:&lt;/b&gt; #{row.diasConstruccion}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.diasConstruccion eq '-' ? '' : 'none'}"/>
 								</p:panelGrid>								
 							</h:panelGrid>
@@ -105,9 +102,9 @@
 						</p:panel>						
 					</p:dataGrid>	 
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolDestajo" var="row" value="#{keetCatalogosContratosDestajosFiltro.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosFiltro.attrs.destajo}" selectionMode="single" paginator="#{keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount gt keetCatalogosContratosDestajosFiltro.lazyDestajo.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosDestajosFiltro.doColorNomina(row)}" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.destajos? '': 'none'}">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolDestajo" var="row" reflow="true" value="#{keetCatalogosContratosDestajosFiltro.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosDestajosFiltro.attrs.destajo}" selectionMode="single" paginator="#{keetCatalogosContratosDestajosFiltro.lazyDestajo.rowCount gt keetCatalogosContratosDestajosFiltro.lazyDestajo.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosDestajosFiltro.doColorNomina(row)}" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.destajos? '': 'none'}">
 						<f:facet name="header">
-							<p:outputLabel id="titular" value="Destajos del (sub)contratista: [#{keetCatalogosContratosDestajosFiltro.attrs.figura.puesto}] #{keetCatalogosContratosDestajosFiltro.attrs.figura.nombreCompleto}" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
+							<p:outputLabel id="titular" value="Destajos: [#{keetCatalogosContratosDestajosFiltro.attrs.figura.puesto}] #{keetCatalogosContratosDestajosFiltro.attrs.figura.nombreCompleto}" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -127,17 +124,17 @@
 							</f:facet>
 							<h:outputText value="#{row['nomina']}"/>
 						</p:column>														
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-6" sortBy="#{row.clave}">
+							<f:facet name="header">
+								<h:outputText value="Contrato"/>
+							</f:facet>
+							<h:outputText value="#{row['clave']}"/>
+						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.lote}">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
-							<h:outputText value="[#{row['clave']}] #{row['lote']}"/>
-						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}">
-							<f:facet name="header">
-								<h:outputText value="Etapa"/>
-							</f:facet>
-							<h:outputText value="#{row['etapa']}"/>
+              <h:outputText value="#{row['lote']}" styleClass="janal-color-blue janal-font-bold"/>
 						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
 							<f:facet name="header">
@@ -149,13 +146,19 @@
 							<f:facet name="header">
 								<h:outputText value="Concepto"/>
 							</f:facet>
-							<h:outputText value="#{row['nombre']}"/>
+              <h:outputText value="#{row['nombre']}" styleClass="janal-color-black janal-font-bold"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.costo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
 							<f:facet name="header">
 								<h:outputText value="Costo"/>
 							</f:facet>
-							<h:outputText value="#{row['costo']}"/>
+							<h:outputText value="$#{row['costo']}"/>
+						</p:column>	
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
+							<f:facet name="header">
+								<h:outputText value="Fecha"/>
+							</f:facet>
+							<h:outputText value="#{row['registro']}"/>
 						</p:column>	
 						<f:facet name="footer">
 							<p:outputLabel value="&lt;span class='janal-color-blue'&gt;Total: &lt;strong&gt;[#{keetCatalogosContratosDestajosFiltro.costoTotal}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>

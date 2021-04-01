@@ -92,8 +92,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		UISelectEntity figura    = null;
     try {
 			initBase();
-			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
+			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
+			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
@@ -122,7 +122,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		try {
 			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
-			this.attrs.put("domicilio", toDomicilio());			
+			this.attrs.put("domicilio", this.toDomicilio());			
 			this.loadEspecialidades();			
 			this.doLoadFiguras();
       params.put("idTipoNomina", "1");
@@ -354,7 +354,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			if(opcionAdicional!= null)				
 				regresar= opcionAdicional.getRetorno().concat(Constantes.REDIRECIONAR);			
 			else
-				regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);			
+				regresar= opcion!= null? opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON): null;			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -377,7 +377,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       columns= new ArrayList<>();
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "destajoPersona": "destajoProveedor", params, columns);
       UIBackingUtilities.resetDataTable("tabla");
 			this.attrs.put("destajos", true);
