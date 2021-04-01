@@ -118,7 +118,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetEstacionesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-col-30">
+						<p:column class="MarAuto Responsive janal-wid-col-31">
 							<f:facet name="header">
 								<h:outputText value="No"/>
 							</f:facet>
@@ -140,7 +140,7 @@
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
-							<h:outputText value="#{keetEstacionesContrato.attrs.idContrato.lote}"/>
+              <h:outputText value="#{keetEstacionesContrato.attrs.idContrato.lote}" styleClass="janal-color-blue janal-font-bold"/>
 						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
@@ -172,9 +172,9 @@
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}" title="Costo: $#{row['costo']}"/>
 						</p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-30">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-31">
 							<f:facet name="header">
-								<h:outputText value=""/>
+                <h:outputText value="Estatus" styleClass="xs-pantalla"/>
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1'? 'circulo-rojo': (row.idEstacionEstatus eq '2'? 'circulo-amarillo': (row.idEstacionEstatus eq '3'? 'circulo-verde': 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1'? 'SIN INICIAR': (row.idEstacionEstatus eq '2'? 'EN PROCESO': (row.idEstacionEstatus eq '3'? 'FINALIZADO': 'CANCELADO'))}"/>
 						</p:column>
