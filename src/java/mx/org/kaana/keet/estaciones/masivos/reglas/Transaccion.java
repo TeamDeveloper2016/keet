@@ -543,7 +543,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									else
 										if(parcial!= null)
 											parcial.setCosto(parcial.getCosto()+ costo);
-									if(item.toLong("nivel")== 5L || (item.toLong("nivel")== 6L && costo> 0 && cantidad> 0)) {
+									if(item.toLong("nivel")== 5L || (item.toLong("nivel")== 6L && cantidad> 0)) {
 										estacion.setNivel(item.toLong("nivel"));
 										estacion.setUltimo(item.toLong("ultimo"));
 										estacion.setClave(estaciones.toCode());

@@ -137,7 +137,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Personal" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosPersonalConsulta.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>
             </f:facet>
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-40">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-col-30">
               <f:facet name="header">
                 <h:outputText value="No"/>
               </f:facet>
@@ -152,7 +152,7 @@
 							<p:outputLabel value="[#{empty row.contratista.toString? row.departamento: row.contratista}] [#{row.puesto}] #{row['nombreCompleto']}" styleClass="janal-wid-100-txt"/>							
               <p:outputLabel value="#{keetCatalogosContratosPersonalConsulta.doCheckIncidente(row)}" styleClass="janal-font-bold janal-color-orange janal-align-right" escape="false"/>
             </p:column>														            						
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.desarrollo}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-11" sortBy="#{row.desarrollo}">
               <f:facet name="header">
                 <h:outputText value="Desarrollo"/>
               </f:facet>

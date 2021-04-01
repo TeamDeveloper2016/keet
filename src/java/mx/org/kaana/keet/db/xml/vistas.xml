@@ -4815,8 +4815,8 @@
 					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
 				where
 					tc_keet_estaciones.clave like '{clave}%'
-				and
-					tc_keet_estaciones.id_estacion_estatus in ({estatus})
+				  and tc_keet_estaciones.id_estacion_estatus in ({estatus})
+          and tc_keet_estaciones.costo&gt; 0
 				order by 
 				  tc_keet_estaciones.clave
 			</select>
