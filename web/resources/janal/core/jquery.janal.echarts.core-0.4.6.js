@@ -377,15 +377,16 @@
           window[id].clear();
           window[id].setOption(value[this.RESERVED_NAMES]);
           window[id].on('click', 'series', function (params) {
-            params.chart = id;
-            $echarts.send(params);
+            params.chart= id;
+            if (typeof(id)=== 'undefined')
+              $echarts.send(params);
           });        
           window[id].on('legendselectchanged', function (params) {
-            params.chart = id;          
-            if ((value.hasOwnProperty($echarts.RESERVED_OPERATION) && value[$echarts.RESERVED_OPERATION] === $echarts.RESERVED_AVERAGE)) {
-               params.operation = $echarts.RESERVED_AVERAGE; 
-            }
-            $echarts.sendLegend(params);
+            params.chart= id;          
+            if ((value.hasOwnProperty($echarts.RESERVED_OPERATION) && value[$echarts.RESERVED_OPERATION] === $echarts.RESERVED_AVERAGE))
+              params.operation = $echarts.RESERVED_AVERAGE; 
+            if (typeof(id)=== 'undefined')
+              $echarts.sendLegend(params);
           });
           window[id].hideLoading();
           this.title(id, value);

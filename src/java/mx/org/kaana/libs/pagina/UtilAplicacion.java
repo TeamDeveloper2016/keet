@@ -61,7 +61,7 @@ public class UtilAplicacion {
   private static final String CLOSE = "jquery.janal.close.core-0.0.5.js";
   private static final String DLGS  = "jquery.janal.precio.core-0.5.2.js";
   private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";
-  private static final String ECHART= "jquery.janal.echarts.core-0.4.4.js";
+  private static final String ECHART= "jquery.janal.echarts.core-0.4.6.js";
 
   public String getTituloSistema() {
     return Configuracion.getInstance().getPropiedad("sistema.titulo").toUpperCase();
