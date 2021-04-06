@@ -23,7 +23,7 @@ public final class Colors implements Serializable {
 	public static final String COLOR_GREEN = "#248823";
 	public static final String COLOR_MARRON= "#800000";
 	private static final long serialVersionUID=4966824514724029183L;
-	private static final int TOP_LIST_COLORS= 15;
+	private static final int TOP_LIST_COLORS= 25;
 	
 	private static List<String> colors;
 	

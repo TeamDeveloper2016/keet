@@ -5,9 +5,105 @@
 <process>
 	<dml> 
 		<unit id="VistaTableroDto">
+			<select id="georreferencia">				
+        select 
+					tc_keet_contratos_lotes.id_contrato_lote as id_key,
+					tc_keet_contratos_lotes.id_contrato_lote,
+				  tc_keet_contratos.id_empresa,
+					tc_keet_contratos.consecutivo,
+					tc_keet_contratos.clave,
+				  tc_keet_contratos_lotes.manzana,
+				  tc_keet_contratos_lotes.lote,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) codigo,
+					tc_keet_contratos.etapa,
+					tc_keet_contratos.ejercicio,
+					tc_keet_contratos.orden as contrato,
+					tc_keet_contratos_lotes.orden,
+					tc_keet_contratos_lotes.latitud,
+					tc_keet_contratos_lotes.longitud,
+          tc_keet_desarrollos.id_desarrollo
+				from 
+					tc_keet_contratos_lotes
+				inner join 
+					tc_keet_contratos on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join 
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				where				  
+					tc_keet_desarrollos.nombres= '{desarrollo}' 
+          and tc_keet_contratos.nombre= '{contrato}'
+				  and tc_keet_contratos_lotes.latitud is not null and tc_keet_contratos_lotes.longitud is not null
+				order by
+				  tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
+			</select>      
+      <select id="contrato">
+        select
+          tc_keet_contratos.id_empresa,
+          tc_keet_contratos.ejercicio,
+          tc_keet_contratos.orden,
+          tc_keet_contratos.clave,
+          tc_keet_contratos.nombre as category,
+          tc_keet_desarrollos.nombres as desarrollo,
+          tc_keet_contratos_lotes.orden as lote
+        from
+          tc_keet_contratos
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+        inner join
+          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join
+          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        where
+          tc_keet_desarrollos.nombres= '{desarrollo}'
+          and tc_keet_contratos.nombre= '{contrato}'
+          and {condicion}
+      </select>       
+      <select id="detalleLotes">
+        select
+          tc_keet_estaciones.id_estacion as id_key,
+          tc_keet_estaciones.clave,
+          tc_keet_estaciones.codigo,
+          tc_keet_estaciones.nombre,
+          tc_keet_estaciones.descripcion,
+          tc_keet_estaciones_estatus.nombre as estatus
+        from 
+          tc_keet_estaciones
+        inner join
+          tc_keet_estaciones_estatus on tc_keet_estaciones.id_estacion_estatus= tc_keet_estaciones_estatus.id_estacion_estatus
+        where
+          tc_keet_estaciones.clave like '{clave}%'
+          and tc_keet_estaciones.nivel>= 5
+        order by
+          tc_keet_estaciones.clave        
+      </select>  
+      <select id="contratado">
+        select
+          tc_keet_contratos.nombre as category,
+          tc_keet_desarrollos.nombres as serie,
+          count(*) as value,
+          tc_keet_contratos.id_empresa,
+          tc_keet_contratos.ejercicio,
+          tc_keet_contratos.orden,
+          tc_keet_contratos.clave,
+          tc_keet_desarrollos.nombres as desarrollo,
+          tc_keet_contratos_lotes.orden as lote
+        from
+          tc_keet_contratos
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato
+        inner join
+          tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join
+          tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        where
+          tc_keet_desarrollos.nombres= '{desarrollo}'
+        group by
+          tc_keet_contratos.clave        
+      </select>  
       <select id="lotes">
 select
-  concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) codigo,
+  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) codigo,
   tc_keet_contratos_lotes.inicio,
 	tc_keet_contratos_lotes.termino,
   tt_keet_estaciones.*
@@ -36,33 +132,35 @@ inner join
   tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato and tt_keet_estaciones.lote= tc_keet_contratos_lotes.orden
       </select>
       <select id="avance">
-select
-  tc_keet_contratos.nombre,
-  concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) codigo,
-  tt_keet_estaciones.*
-from 
- (select
-	 tc_keet_estaciones_estatus.nombre,
-	 convert(substring(tc_keet_estaciones.clave, 1, 3), signed) as id_empresa,
-	 convert(substring(tc_keet_estaciones.clave, 4, 4), signed) as ejercicio,
-	 convert(substring(tc_keet_estaciones.clave, 8, 3), signed) as contrato,
-	 convert(substring(tc_keet_estaciones.clave, 11, 3), signed) as lote,
-	 count(*) as total
-	from 
-		tc_keet_estaciones
-	inner join
-	  tc_keet_estaciones_estatus on tc_keet_estaciones.id_estacion_estatus= tc_keet_estaciones_estatus.id_estacion_estatus
-	where
-		tc_keet_estaciones.clave like '0012021029%'    
-		and tc_keet_estaciones.nivel= 6
-	group by
-	  substring(tc_keet_estaciones.clave, 1, 13), 
-	  tc_keet_estaciones_estatus.nombre
-  ) as tt_keet_estaciones
-inner join
-  tc_keet_contratos on tt_keet_estaciones.id_empresa= tc_keet_contratos.id_empresa and tt_keet_estaciones.ejercicio= tc_keet_contratos.ejercicio and tt_keet_estaciones.contrato= tc_keet_contratos.orden
-inner join
-  tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato and tt_keet_estaciones.lote= tc_keet_contratos_lotes.orden        
+        select
+          tt_keet_estaciones.*,
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as serie,
+          tc_keet_contratos.nombre
+        from 
+         (select
+           tc_keet_estaciones_estatus.nombre as category,
+           count(*) as value,
+           convert(substring(tc_keet_estaciones.clave, 1, 3), signed) as id_empresa,
+           convert(substring(tc_keet_estaciones.clave, 4, 4), signed) as ejercicio,
+           convert(substring(tc_keet_estaciones.clave, 8, 3), signed) as contrato,
+           convert(substring(tc_keet_estaciones.clave, 11, 3), signed) as lote
+          from 
+            tc_keet_estaciones
+          inner join
+            tc_keet_estaciones_estatus on tc_keet_estaciones.id_estacion_estatus= tc_keet_estaciones_estatus.id_estacion_estatus
+          where
+            tc_keet_estaciones.clave like '{clave}%'    
+            and tc_keet_estaciones.nivel= 6
+          group by
+            substring(tc_keet_estaciones.clave, 1, 13), 
+            tc_keet_estaciones_estatus.nombre
+          ) as tt_keet_estaciones
+        inner join
+          tc_keet_contratos on tt_keet_estaciones.id_empresa= tc_keet_contratos.id_empresa and tt_keet_estaciones.ejercicio= tc_keet_contratos.ejercicio and tt_keet_estaciones.contrato= tc_keet_contratos.orden
+        inner join
+          tc_keet_contratos_lotes on tc_keet_contratos.id_contrato= tc_keet_contratos_lotes.id_contrato and tt_keet_estaciones.lote= tc_keet_contratos_lotes.orden
+        order by
+          tt_keet_estaciones.category, serie
       </select> 
       <select id="contrato"> 
 select
@@ -228,6 +326,7 @@ select
         where
           tr_mantic_empresa_personal.id_empresa= 1
           and tr_mantic_empresa_personal.id_activo= 1
+          {condicion}
         group by
           tc_keet_desarrollos.descripcion
       </select>  
@@ -2468,7 +2567,7 @@ select
 					tc_keet_contratos.clave,
 				  tc_keet_contratos_lotes.manzana,
 				  tc_keet_contratos_lotes.lote,
-					concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) codigo,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) codigo,
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.ejercicio,
 					tc_keet_contratos.orden as contrato,
@@ -2494,7 +2593,7 @@ select
 				  tc_keet_contratos_lotes.manzana,
 				  tc_keet_contratos_lotes.lote,
 				  tc_keet_contratos_lotes.id_estacion,
-					concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) codigo,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) codigo,
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.ejercicio,
 					tc_keet_contratos.orden as contrato,
@@ -4899,7 +4998,7 @@ select
 				  and tc_keet_estaciones.id_estacion_estatus in ({estatus})
           and tc_keet_estaciones.costo&gt; 0
 				order by 
-				  tc_keet_estaciones.clave
+				  tc_keet_estaciones.nombre
 			</select>
 			<select id="controles">
 				select
@@ -5013,7 +5112,7 @@ select
 					tc_keet_estaciones.clave like '{clave}%'
 				  and tc_keet_estaciones.id_estacion_estatus in ({estatus})
 				order by 
-				  tc_keet_estaciones.clave
+				  tc_keet_estaciones.nombre
 			</select>
 			<select id="controlesExtras">
 				select
@@ -5915,7 +6014,7 @@ select
 					tc_keet_contratos.clave,
 				  tc_keet_contratos_lotes.manzana,
 				  tc_keet_contratos_lotes.lote,
-					concat('M', tc_keet_contratos_lotes.manzana, "L", tc_keet_contratos_lotes.lote) codigo,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) codigo,
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.ejercicio,
 					tc_keet_contratos.orden as contrato,
@@ -5932,8 +6031,7 @@ select
 					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
 				where				  
 					tc_keet_desarrollos.id_desarrollo= {idDesarrollo} and {condicion}
-				and 
-					tc_keet_contratos_lotes.latitud is not null and tc_keet_contratos_lotes.longitud is not null
+				  and tc_keet_contratos_lotes.latitud is not null and tc_keet_contratos_lotes.longitud is not null
 				order by
 				  tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>

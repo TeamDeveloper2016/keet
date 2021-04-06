@@ -14,12 +14,10 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.acceso.enums.ESecuencia;
-import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Title;
-import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 import mx.org.kaana.libs.echarts.json.ItemSelected;
 import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.formato.Error;
@@ -31,6 +29,7 @@ import mx.org.kaana.libs.echarts.model.Simple;
 import mx.org.kaana.libs.echarts.model.Stacked;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
@@ -47,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Named(value = "kajoolSeguimiento")
 @ViewScoped
-public class Seguimiento extends Comun implements Serializable {
+public class Seguimiento extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID= 5323749709626263802L;
   private static final Log LOG              = LogFactory.getLog(Seguimiento.class);
@@ -124,9 +123,12 @@ public class Seguimiento extends Comun implements Serializable {
   } // doLoad
   
   private void toLoadNombres() {
+    Map<String, Object> params = null;
     try {      
+      params = new HashMap<>();      
+      params.put(Constantes.SQL_CONDICION, " and tc_keet_desarrollos.id_desarrollo is not null");      
       this.desarrollo= new ArrayList<>();
-      this.desarrollos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresDesarrollos", Collections.EMPTY_MAP);
+      this.desarrollos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresDesarrollos", params);
       this.contratista= new ArrayList<>();
       this.contratistas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresContratistas", Collections.EMPTY_MAP);
     } // try
@@ -134,7 +136,10 @@ public class Seguimiento extends Comun implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-  }
+    finally {
+      Methods.clean(params);
+    } // finally
+}
     
   private void toLoadPersonal() {
     try {      
@@ -169,7 +174,8 @@ public class Seguimiento extends Comun implements Serializable {
 			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
 			stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
       stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
-  		this.attrs.put("desarrollo", stack.toJson());
+      stack.toCustomUniqueColorTopTotal("#000000");
+      this.attrs.put("desarrollo", stack.toJson());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -223,6 +229,7 @@ public class Seguimiento extends Comun implements Serializable {
 			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
 			stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
       stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+      stack.toCustomUniqueColorTopTotal("#000000");
   		this.attrs.put("contratista", stack.toJson());
     } // try
     catch (Exception e) {

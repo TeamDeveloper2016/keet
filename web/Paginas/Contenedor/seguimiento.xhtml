@@ -2,7 +2,7 @@
 <!--
  company KAANA
  project KAJOOL (Control system polls)
- date 14/08/2015
+ date 24/03/2021
  time 11:30:04 AM
  author Team Developer 2016 <team.developer@kaana.org.mx>
 -->
@@ -39,7 +39,6 @@
 			 });
        $(document).ready(function () {
          setTimeout("$('#keet-main-header').attr('height', 'inset: 100px;');", 2000);
-         // setTimeout("$('#principal').attr('style', 'inset: 103.194px 0px 0px;');", 2000);
        });  
        
        function onOffSwitchTable(type, active) {
@@ -138,7 +137,7 @@
               <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
                 <i class="fa fa-hospital-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del personal sin seguro<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('desarrollo', false);"></i>
               </div>
-              <p:dataTable lazy="true" id="tablaPersonalDesarrollo" var="row" widgetVar="kajoolTableDesarrollo" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDesarrollo}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+              <p:dataTable lazy="false" id="tablaPersonalDesarrollo" var="row" widgetVar="kajoolTableDesarrollo" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDesarrollo}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                 <p:column styleClass="janal-column-left Responsive">
                   <f:facet name="header">
                     <h:outputText value="Nombre"/>
@@ -203,7 +202,7 @@
               <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
                 <i class="fa fa-hospital-user Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del personal sin seguro<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('contratista', false);"></i>
               </div>
-              <p:dataTable lazy="true" id="tablaPersonalContratista" var="row" widgetVar="kajoolTableContratista" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalContratista}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+              <p:dataTable lazy="false" id="tablaPersonalContratista" var="row" widgetVar="kajoolTableContratista" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalContratista}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                 <p:column styleClass="janal-column-left Responsive">
                   <f:facet name="header">
                     <h:outputText value="Nombre"/>
@@ -235,7 +234,7 @@
                 <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
                   <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Desarrollos disponibles
                 </div>
-                <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolSeguimiento.desarrollos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.desarrollo}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                <p:dataTable lazy="false" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolSeguimiento.desarrollos}" paginator="#{kajoolContratos.desarrollos.size() gt 5}" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.desarrollo}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                   <p:ajax event="rowSelect" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:ajax event="rowUnselect" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:ajax event="rowSelectCheckbox" process="@this tabla" listener="#{kajoolSeguimiento.doUpdateDesarrollo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -310,7 +309,7 @@
                 <div class="Container100 Responsive keet-chart-title janal-box-title-orange">
                   <i class="fa fa-people-carry Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Contratistas activos
                 </div>
-                <p:dataTable lazy="true" id="tablaContratista" var="row" widgetVar="kajoolTableContratista" rowIndexVar="index" value="#{kajoolSeguimiento.contratistas}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.contratista}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                <p:dataTable lazy="false" id="tablaContratista" var="row" widgetVar="kajoolTableContratista" rowIndexVar="index" value="#{kajoolSeguimiento.contratistas}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selection="#{kajoolSeguimiento.contratista}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                   <p:ajax event="rowSelect" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:ajax event="rowUnselect" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:ajax event="rowSelectCheckbox" process="@this tablaContratista" listener="#{kajoolSeguimiento.doUpdateContratista}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -365,7 +364,7 @@
               <div class="Container100 Responsive keet-chart-title janal-box-title-orange">
                 <i class="fa fa-funnel-dollar Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del calculo de nómina<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('destajos', false);"></i>
               </div>
-              <p:dataTable lazy="true" id="tablaPersonalDestajos" var="row" widgetVar="kajoolTableDestajos" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDestajos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+              <p:dataTable lazy="false" id="tablaPersonalDestajos" var="row" widgetVar="kajoolTableDestajos" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDestajos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                 <p:column styleClass="janal-column-left Responsive">
                   <f:facet name="header">
                     <h:outputText value="Concepto"/>
@@ -397,7 +396,7 @@
                 <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
                   <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Personal por departamentos
                 </div>
-                <div class="keet-chart-panel">
+                <div class="keet-mapa-panel">
                   <div id="departamento" class="keet-chart-panel">
                     Cargando gráficas personal por departamento
                   </div>	
@@ -415,7 +414,7 @@
               <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
                 <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del personal<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('departamento', false);"></i>
               </div>
-              <p:dataTable lazy="true" id="tablaPersonalDepartamento" var="row" widgetVar="kajoolTableDepartamento" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDepartamento}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+              <p:dataTable lazy="false" id="tablaPersonalDepartamento" var="row" widgetVar="kajoolTableDepartamento" rowIndexVar="index" value="#{kajoolSeguimiento.attrs.personalDepartamento}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                 <p:column styleClass="janal-column-left Responsive">
                   <f:facet name="header">
                     <h:outputText value="Nombre"/>
@@ -446,13 +445,5 @@
         </div>  
       </div>  
     </div>		
-		<p:notificationBar id="lockDownloadBackup" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="downloadBackup" effectSpeed="slow">
-			<span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('downloadBackup').hide();"><i class="fa fa-lg fa-close"/></span>
-			<p:panelGrid layout="grid" columns="1" style="background: transparent;">
-				<h:outputText value="Administrador Web" styleClass="Fs20"/>
-				<p:spacer height="3px"/>
-				<h:outputText value="#{kajoolSeguimiento.attrs.messageBackup}" escape="false" styleClass="Fs14"/>
-			</p:panelGrid>
-		</p:notificationBar>
   </ui:define>
 </ui:composition>
