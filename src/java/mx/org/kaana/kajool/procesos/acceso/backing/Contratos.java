@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -15,6 +16,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
+import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Title;
@@ -246,6 +248,9 @@ public class Contratos extends IBaseFilter implements Serializable {
           params.put("contrato", itemSelected.getSeriesName());
           params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
           this.contrato= (Entity)DaoFactory.getInstance().toEntity("VistaTableroDto", "contrato", params);
+          columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+          columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+          UIBackingUtilities.toFormatEntity(this.contrato, columns);
           this.toLoadLotes();
           this.toLoadCoordenadas();
           UIBackingUtilities.update("mapa");
@@ -258,16 +263,30 @@ public class Contratos extends IBaseFilter implements Serializable {
           params.put("contrato", this.contrato.toString("category"));
           params.put(Constantes.SQL_CONDICION, "concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote)='"+ itemSelected.getName()+ "'");
           this.contrato= (Entity)DaoFactory.getInstance().toEntity("VistaTableroDto", "contrato", params);
-          String clave= Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("lote").toString(), 3, '0', true);
+          columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+          columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+          UIBackingUtilities.toFormatEntity(this.contrato, columns);
+          String clave= Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("secuencia").toString(), 3, '0', true);
           params.put("clave", clave);      
+          columns.clear();
           columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
           List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "detalle".concat(Cadena.letraCapital(itemSelected.getChart())), params);
           if(items!= null)
             UIBackingUtilities.toFormatEntitySet(items, columns);
           this.attrs.put("tablaDetalle".concat(Cadena.letraCapital(itemSelected.getChart())), items);  
+          UIBackingUtilities.update("avanceLote");
+          UIBackingUtilities.update("detalleLote");
+          UIBackingUtilities.update("especificacion");
           UIBackingUtilities.update("tablaDetalle".concat(Cadena.letraCapital(itemSelected.getChart())));
           UIBackingUtilities.execute("onOffSwitchTable('"+ itemSelected.getChart()+ "', true);");
+          UIBackingUtilities.execute("onOffSwitchTable('mapas', true);");
           UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "'}}});");
+          if(!Objects.equals("local", itemSelected.getSeriesId())) {
+            this.loadEvidencias(this.contrato);
+            this.loadResidentes(this.contrato);
+            this.loadContratistas(this.contrato);
+            this.loadAvances(this.contrato);
+          } // if  
           break;
       } // switch
       if("|contratos|".indexOf(itemSelected.getChart())> 0) {
@@ -288,9 +307,11 @@ public class Contratos extends IBaseFilter implements Serializable {
 		Marker marker             = null;
 		String icon               = null;
 		Map<String, Object> params= null;
+		List<Columna> columns     = null;
     try {
-			this.attrs.put("mostrarDetalle", true);				
-			this.attrs.put("index", 0);				
+			columns= new ArrayList<>();
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
 			this.model= new DefaultMapModel();
 			this.attrs.put("coordenadaCentral", COORDENADA_CENTRAL);
 			params= new HashMap<>();
@@ -298,10 +319,11 @@ public class Contratos extends IBaseFilter implements Serializable {
         params.put("desarrollo", this.contrato.toString("desarrollo"));
         params.put("contrato", this.contrato.toString("category"));
         lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "georreferencia", params, Constantes.SQL_TODOS_REGISTROS);
-        if(!lotes.isEmpty()) {				
+        if(!lotes.isEmpty()) {
+          UIBackingUtilities.toFormatEntitySet(lotes, columns);
           for(Entity lote: lotes) {
             icon  = this.toIcon(lote);
-            marker= new Marker(new LatLng(Double.valueOf(lote.toString("latitud")), Double.valueOf(lote.toString("longitud"))), "Contrato: ".concat(lote.toString("clave")).concat(", Lote: ").concat(lote.toString("codigo")), lote, icon);
+            marker= new Marker(new LatLng(Double.valueOf(lote.toString("latitud")), Double.valueOf(lote.toString("longitud"))), "Contrato: ".concat(lote.toString("nombre")).concat(", clave: ").concat(lote.toString("nombre")).concat(", lote: ").concat(lote.toString("codigo")), lote, icon);
             this.model.addOverlay(marker);
           } // for
           this.attrs.put("coordenadaCentral", lotes.get(0).toString("latitud").concat(",").concat(lotes.get(0).toString("longitud")));				
@@ -312,6 +334,10 @@ public class Contratos extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
   } // toLoadCoordenadas
   
   private String toIcon(Entity mzaLote) throws Exception {
@@ -352,12 +378,15 @@ public class Contratos extends IBaseFilter implements Serializable {
 		Marker marker= null;	
 		try {
 			marker= (Marker) event.getOverlay();
-			this.attrs.put("mostrarDetalle", false);
-			this.attrs.put("index", 1);				
 			this.loadEvidencias((Entity) marker.getData());
 			this.loadResidentes((Entity) marker.getData());
 			this.loadContratistas((Entity) marker.getData());
 			this.loadAvances((Entity) marker.getData());
+      ItemSelected item= new ItemSelected();
+      item.setChart("lotes");
+      item.setName(((Entity)marker.getData()).toString("codigo"));
+      item.setSeriesId("local");
+      this.doRefreshEChartWith(item);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -496,5 +525,30 @@ public class Contratos extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar.toString();
 	} // toClaveEstacion
+
+	public String doCapturaAvances(Entity visitado) {
+		String regresar          = null;    
+		EOpcionesResidente opcion= null;
+		Long idDepartamento      = null;
+    try {
+			if(visitado.toString("puesto").equals("SUBCONTRATISTA"))
+				idDepartamento= Long.valueOf(visitado.toString("idsDepartamento").split(",")[0]);			
+			else
+				idDepartamento= Long.valueOf(visitado.toString("idsDepartamento"));			
+			opcion= ((EOpcionesResidente)this.attrs.get("opcionResidente"));			
+			JsfBase.setFlashAttribute("figura", new UISelectEntity(visitado));
+			JsfBase.setFlashAttribute("idDepartamento", idDepartamento);
+			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
+			JsfBase.setFlashAttribute("opcionResidente", opcion);						
+			JsfBase.setFlashAttribute("opcionAdicional", EOpcionesResidente.GEOREFERENCIA);			
+			regresar= "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro.jsf".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
+	} // doCapturaAvances
   
 }

@@ -124,11 +124,11 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     String regresar        = null;    		
 		Transaccion transaccion= null;		
     try {						
-			if(this.selecteds.length>=1){				
+			if(this.selecteds.length>= 1) {
 				transaccion= new Transaccion(this.loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.REPROCESAR)){
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
-					regresar= doCancelar();
+					regresar= this.doCancelar();
 				} // if
 				else
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Ocurrió un error al realizar el rechazo de los puntos de revision.", ETipoMensaje.ERROR);
@@ -143,7 +143,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     return regresar;
   } // doPagina
 	
-	protected Revision loadRevision(){
+	protected Revision loadRevision() {
 		Revision regresar  = null;
 		Entity figura      = null;
 		Entity seleccionado= null;

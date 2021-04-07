@@ -234,11 +234,11 @@ public class Transaccion extends IBaseTnx {
 						params.put("idEstacionEstatus", toIdEstacionEstatus());
 						params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString()))!= null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : null) - costo);											
 						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoContratista(), true)){							
-							actualizaInicioContratoLote(sesion, false);
+							this.actualizaInicioContratoLote(sesion, false);
 							//params.put("abono".concat(dto.getSemana().toString()), 0D);
 						} // if
 						if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
-							regresar= actualizaEstacionPadre(sesion, estacion, costo, dto.getSemana().toString(), false);											
+							regresar= this.actualizaEstacionPadre(sesion, estacion, costo, dto.getSemana().toString(), false);											
 					} // if				
 				} // if			
 			} // for			

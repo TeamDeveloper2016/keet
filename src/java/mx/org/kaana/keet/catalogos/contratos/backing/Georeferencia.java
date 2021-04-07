@@ -386,4 +386,5 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
 	} // doCapturaAvances
+  
 }

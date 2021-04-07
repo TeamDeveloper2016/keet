@@ -163,7 +163,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 		Transaccion transaccion= null;		
     try {						
 			if(this.selecteds.length>= 1) {				
-				transaccion= new Transaccion(loadRevision(), this.selecteds.length== Integer.valueOf(this.attrs.get("totalRegistros").toString()) ? EEstacionesEstatus.TERMINADO.getKey() : EEstacionesEstatus.EN_PROCESO.getKey());
+				transaccion= new Transaccion(this.loadRevision(), this.selecteds.length== Integer.valueOf(this.attrs.get("totalRegistros").toString()) ? EEstacionesEstatus.TERMINADO.getKey() : EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.PROCESAR)){
 					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= this.doCancelar();
