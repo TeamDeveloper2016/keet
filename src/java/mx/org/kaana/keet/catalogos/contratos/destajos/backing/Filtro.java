@@ -48,6 +48,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	private List<Entity> lotes;
 	private FormatLazyModel lazyDestajo;
 	private Nomina ultima;  
+  private String costoTotal;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
@@ -74,13 +75,14 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	}
 	
 	public String getCostoTotal() {
-    Double costo = 0D;
-		if(this.lazyDestajo!= null)
-			for (IBaseDto item: (List<IBaseDto>)this.lazyDestajo.getWrappedData()) {
-				Entity row= (Entity)item;
-				costo+= new Double(row.toString("total"));
-			} // for	
-		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo);
+    return this.costoTotal;
+//    Double costo = 0D;
+//		if(this.lazyDestajo!= null)
+//			for (IBaseDto item: (List<IBaseDto>)this.lazyDestajo.getWrappedData()) {
+//				Entity row= (Entity)item;
+//				costo+= new Double(row.toString("total"));
+//			} // for	
+//		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo);
 	}
 	
   @PostConstruct
@@ -92,6 +94,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		UISelectEntity figura    = null;
     try {
 			initBase();
+      this.costoTotal= "$ 0.00";
 			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -379,6 +382,9 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "destajoPersona": "destajoProveedor", params, columns);
+      Entity costo= (Entity)DaoFactory.getInstance().toEntity("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "costoPersona": "costoProveedor", params);
+      if(costo!= null && !costo.isEmpty())
+        this.costoTotal= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
       UIBackingUtilities.resetDataTable("tabla");
 			this.attrs.put("destajos", true);
       this.attrs.put("figura", figura);
