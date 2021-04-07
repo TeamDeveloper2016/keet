@@ -164,7 +164,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
     try {						
 			if(this.selecteds.length>= 1) {				
 				transaccion= new Transaccion(this.loadRevision(), this.selecteds.length== Integer.valueOf(this.attrs.get("totalRegistros").toString()) ? EEstacionesEstatus.TERMINADO.getKey() : EEstacionesEstatus.EN_PROCESO.getKey());
-				if(transaccion.ejecutar(EAccion.PROCESAR)){
+				if(transaccion.ejecutar(EAccion.PROCESAR)) {
 					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= this.doCancelar();
 				} // if
@@ -188,7 +188,7 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 		Long idFigura      = -1L;
 		try {
 			regresar= new Revision();
-			figura= (Entity) this.attrs.get("figura");
+			figura  = (Entity) this.attrs.get("figura");
 			seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
 			idFigura= figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");
 			regresar.setIdFigura(idFigura);

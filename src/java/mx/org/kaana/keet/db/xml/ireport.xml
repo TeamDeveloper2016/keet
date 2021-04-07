@@ -312,7 +312,7 @@
           and tc_keet_contratos_destajos_contratistas.id_estacion_estatus= 3
 				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}		
 				order by 
-          tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
+          tc_keet_desarrollos.nombres, tc_keet_contratos_destajos_contratistas.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>
 			<select id="destajoProveedor">
         select 
@@ -353,7 +353,8 @@
 				where 
 				  (tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina} or tc_keet_contratos_destajos_proveedores.id_nomina is null) 
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
-				order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
+				order by 
+          tc_keet_desarrollos.nombres, tc_keet_contratos_destajos_proveedores.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>		
       <select id="destajoResidente">
 				select 

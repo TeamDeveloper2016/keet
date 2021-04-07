@@ -63,22 +63,22 @@ public class Transaccion extends IBaseTnx {
 		Long idUsuario           = -1L;
 		IBaseDto dto             = null;
 		try {
-			switch(accion){
+			switch(accion) {
 				case PROCESAR:									
 					idUsuario= JsfBase.getIdUsuario();
 					this.factorAcumulado= 0D;
 					if(this.revision.getTipo().equals(1L))
-						regresar= processDestajoContratista(sesion, idUsuario);
+						regresar= this.processDestajoContratista(sesion, idUsuario);
 					else
-						regresar= processDestajoSubContratista(sesion, idUsuario);
+						regresar= this.processDestajoSubContratista(sesion, idUsuario);
 					break;						
 				case REPROCESAR:									
 					idUsuario= JsfBase.getIdUsuario();
 					this.factorAcumulado= 0D;
 					if(this.revision.getTipo().equals(1L))
-						regresar= processRechazoContratista(sesion, idUsuario);
+						regresar= this.processRechazoContratista(sesion, idUsuario);
 					else
-						regresar= processRechazoSubContratista(sesion, idUsuario);
+						regresar= this.processRechazoSubContratista(sesion, idUsuario);
 					break;						
 				case SUBIR:
 					for(IBaseDestajoArchivo incidencia: this.documentos){
@@ -87,7 +87,7 @@ public class Transaccion extends IBaseTnx {
 						else
 							dto= (DestajoProveedorArchivo) incidencia;
 						if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
-							toSaveFile(incidencia.getIdArchivo());
+							this.toSaveFile(incidencia.getIdArchivo());
 					} // for
 					break;
 				case AGREGAR:					
@@ -97,9 +97,9 @@ public class Transaccion extends IBaseTnx {
 					idUsuario= JsfBase.getIdUsuario();
 					this.factorAcumulado= 0D;
 					if(this.revision.getTipo().equals(1L))
-						regresar= eliminarConceptoExtraContratista(sesion, idUsuario);
+						regresar= this.eliminarConceptoExtraContratista(sesion, idUsuario);
 					else
-						regresar= eliminarConceptoExtraSubContratista(sesion, idUsuario);
+						regresar= this.eliminarConceptoExtraSubContratista(sesion, idUsuario);
 					break;
 			} // switch
 		} // try
@@ -114,18 +114,18 @@ public class Transaccion extends IBaseTnx {
 	
 	private boolean processDestajoContratista(Session sesion, Long idUsuario) throws Exception {
 		boolean regresar= false;
-		Long key= -1L;
+		Long key        = -1L;
 		TcKeetContratosDestajosContratistasDto dto= null;
 		TcKeetEstacionesDto estacion= null;
-		Map<String, Object>params= null;
-		boolean inicioTrabajo= false;
+		Map<String, Object>params   = null;
+		boolean inicioTrabajo       = false;
 		try {
-			estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());
-			inicioTrabajo= validaInicioTrabajo(sesion, null, true);
+			estacion     = (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());
+			inicioTrabajo= this.validaInicioTrabajo(sesion, null, true);
 			dto= new TcKeetContratosDestajosContratistasDto();		
 			dto.setIdUsuario(idUsuario);
-			dto.setSemana(toSemana());
-			dto.setPeriodo(toPeriodo());
+			dto.setSemana(this.toSemana());
+			dto.setPeriodo(this.toPeriodo());
 			dto.setIdEstacion(this.revision.getIdEstacion());
 			dto.setIdContratoLoteContratista(this.revision.getIdFigura());
 			dto.setIdNomina(null);
@@ -133,21 +133,21 @@ public class Transaccion extends IBaseTnx {
 			dto.setPorcentaje(0D);
 			dto.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
 			key= DaoFactory.getInstance().insert(sesion, dto);
-			if(processPuntosContratistas(sesion, idUsuario, key)){				
+			if(this.processPuntosContratistas(sesion, idUsuario, key)) {				
 				dto.setPorcentaje(this.factorAcumulado);
 				dto.setCosto((estacion.getCosto() * this.factorAcumulado) / 100);
 				//dto.setIdEstacionEstatus(toIdEstacionEstatus(estacion, dto.getCosto(), true));
-				dto.setIdEstacionEstatus(toIdEstacionEstatus());
-				if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
+				dto.setIdEstacionEstatus(this.toIdEstacionEstatus());
+				if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
 					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
 					params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) + dto.getCosto());										
 					if(inicioTrabajo){
-						actualizaInicioContratoLote(sesion, true);
+						this.actualizaInicioContratoLote(sesion, true);
 						//params.put("abono".concat(dto.getSemana().toString()), dto.getCosto());
 					} // if
 					if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
-						regresar= actualizaEstacionPadre(sesion, estacion, dto.getCosto(), dto.getSemana().toString(), true);											
+						regresar= this.actualizaEstacionPadre(sesion, estacion, dto.getCosto(), dto.getSemana().toString(), true);											
 				} // if				
 			} // if
 		} // try
@@ -473,7 +473,7 @@ public class Transaccion extends IBaseTnx {
 				params.put("condicionContratista", idContratoDestajo!= null ? "id_contrato_destajo_contratista != " + idContratoDestajo : Constantes.SQL_VERDADERO);
 				params.put("condicionProveedor", Constantes.SQL_VERDADERO);
 			} // if
-			else{
+      else {
 				params.put("condicionProveedor", idContratoDestajo!= null ? "id_contrato_destajo_proveedor != " + idContratoDestajo : Constantes.SQL_VERDADERO);
 				params.put("condicionContratista", Constantes.SQL_VERDADERO);				
 			} // else
