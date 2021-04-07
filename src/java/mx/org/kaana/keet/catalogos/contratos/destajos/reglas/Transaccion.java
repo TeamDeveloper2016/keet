@@ -142,7 +142,7 @@ public class Transaccion extends IBaseTnx {
 					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
 					params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) + dto.getCosto());										
-					if(inicioTrabajo){
+					if(inicioTrabajo) {
 						this.actualizaInicioContratoLote(sesion, true);
 						//params.put("abono".concat(dto.getSemana().toString()), dto.getCosto());
 					} // if

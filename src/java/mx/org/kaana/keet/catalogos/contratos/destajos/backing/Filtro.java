@@ -448,8 +448,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       if(sendMail)
         this.reporte.doAceptarSimple();			
-			else{
-				if(doVerificarReporte())
+      else {
+				if(this.doVerificarReporte())
 					this.reporte.doAceptar();			
 			} // else			
     } // try
@@ -460,6 +460,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   } // doReporte 	
 
 	public String doColorNomina(Entity row) {
-		return Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
+		return row.toDouble("porcentaje")!= 100D? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
 	}
+  
 }
