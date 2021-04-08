@@ -273,7 +273,7 @@ public class Transaccion extends IBaseTnx {
 			dto= (TcManticIncidentesDto) DaoFactory.getInstance().findById(sesion, TcManticIncidentesDto.class, this.incidente.getIdIncidente());
 			dto.setIdIncidenteEstatus(EEstatusIncidentes.CANCELADA.getIdEstatusInicidente());
 			if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
-				this.incidente.setObservaciones("La incidencia fue cancelada.");
+				this.incidente.setObservaciones("LA INCIDENCIA FUE CANCELADA");
 				regresar= registrarBitacora(sesion, this.incidente.getIdIncidente(), dto.getIdIncidenteEstatus());
 			} // if
 		} // try

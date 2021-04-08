@@ -663,7 +663,7 @@ public class Transaccion extends IBaseTnx {
 				dto.setClave(ETipoPago.EFECTIVO.name());
 				dto.setDescuento("0.00");
 				dto.setPlazo(1L);
-				dto.setObservaciones("Registro tipo de pago default.");
+				dto.setObservaciones("REGISTRO TIPO DE PAGO POR DEFECTO");
 				dto.setIdUsuario(JsfBase.getIdUsuario());
 				regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;
 			} // else

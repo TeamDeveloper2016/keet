@@ -118,7 +118,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:
           this.registroProveedor = new RegistroProveedor();
-					loadCollections();
+          this.registroProveedor.getProveedor().setIdSubcontratista(1L);
+					this.loadCollections();
           break;
         case MODIFICAR:
         case CONSULTAR:

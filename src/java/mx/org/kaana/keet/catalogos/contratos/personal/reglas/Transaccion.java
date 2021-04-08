@@ -86,12 +86,12 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
 							dto.setIdUsuario(JsfBase.getIdUsuario());
 							dto.setIdVigente(1L);
-							dto.setObservaciones("Asignación de empleado al desarrollo " + this.idDesarrollo);
+							dto.setObservaciones("ASIGNACION DE EMPLEADO AL DESARROLLO " + this.idDesarrollo);
 							DaoFactory.getInstance().insert(sesion, dto);
 						} // if
             else {
               dto.setIdDesarrollo(this.idDesarrollo);
-							dto.setObservaciones("Se reasignó el empleado al desarrollo " + this.idDesarrollo);
+							dto.setObservaciones("SE REASIGNO EL EMPLEADO AL DESARROLLO " + this.idDesarrollo);
               dto.setRegistro(LocalDateTime.now());
 							DaoFactory.getInstance().update(sesion, dto);
             } // else
@@ -114,7 +114,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							dto.setIdEmpresaPersona(Long.valueOf(item.getKey()));
 							dto.setIdUsuario(JsfBase.getIdUsuario());
 							dto.setIdVigente(1L);
-							dto.setObservaciones("Asignación de empleado al desarrollo " + this.idDesarrollo);
+							dto.setObservaciones("ASIGNACION DEL EMPLEADO AL DESARROLLO " + this.idDesarrollo);
 							DaoFactory.getInstance().insert(sesion, dto);
 						} // if
 					} // for					

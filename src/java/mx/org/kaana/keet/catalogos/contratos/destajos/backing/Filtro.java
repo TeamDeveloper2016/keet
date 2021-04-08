@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -330,6 +329,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
 			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");			
+			JsfBase.setFlashAttribute("nombreConcepto", "");			
 			if(seleccionado.getKey().equals(Constantes.USUARIO_INACTIVO))				
 				regresar= "galeria".concat(Constantes.REDIRECIONAR);			
 			else
@@ -382,6 +382,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			params.put("idProveedor", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       columns= new ArrayList<>();
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "destajoPersona": "destajoProveedor", params, columns);
@@ -460,7 +461,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   } // doReporte 	
 
 	public String doColorNomina(Entity row) {
-		return row.toDouble("porcentaje")!= 100D? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
+		return !row.toString("porcentaje").equals("100.00")? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
 	}
   
 }

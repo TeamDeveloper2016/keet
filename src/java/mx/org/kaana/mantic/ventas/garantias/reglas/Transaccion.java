@@ -649,7 +649,7 @@ public class Transaccion extends IBaseTnx {
 			registroPago= new TcManticClientesPagosDto();
 			registroPago.setIdClienteDeuda(idClienteDeuda);
 			registroPago.setIdUsuario(JsfBase.getIdUsuario());
-			registroPago.setObservaciones("Pago aplicado a la deuda general del cliente como saldo a favor de una devolucion. Pago general por $".concat(pagoParcial.toString()));
+			registroPago.setObservaciones("PAGO APLICADO A LA DEUDA GENERAL DEL CLIENTE COMO SALDO A FAVOR DE UNA DEVOLUCION. PAGO GENERAL POR $".concat(pagoParcial.toString()));
 			registroPago.setPago(pagoParcial);
 			registroPago.setIdTipoMedioPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 			registroPago.setIdCierre(this.idCierreVigente);				

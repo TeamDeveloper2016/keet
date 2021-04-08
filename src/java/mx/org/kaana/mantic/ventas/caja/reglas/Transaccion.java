@@ -514,7 +514,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		registro.setIdCierreEstatus(1L);
 		registro.setIdDiferencias(2L);
 		registro.setIdUsuario(JsfBase.getIdUsuario());
-		registro.setObservaciones("Apertura de cierre");								
+		registro.setObservaciones("APERTURA DE CIERRE DE CAJA");								
 		cierreNuevo= new Cierre(this.ventaFinalizada.getIdCaja(), 0D, registro, new ArrayList<>(), new ArrayList<>());				
 		if(cierreNuevo.toNewCierreCaja(sesion)){
 			this.isNuevoCierre= true;				

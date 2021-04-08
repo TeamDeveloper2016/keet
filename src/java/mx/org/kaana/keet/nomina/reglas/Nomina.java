@@ -27,6 +27,7 @@ import mx.org.kaana.keet.nomina.beans.Concepto;
 import mx.org.kaana.keet.nomina.enums.ECodigosIncidentes;
 import mx.org.kaana.keet.nomina.enums.EGrupoConceptos;
 import mx.org.kaana.keet.nomina.functions.Redondea;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
@@ -256,7 +257,7 @@ public class Nomina implements Serializable {
 			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			params.put("idEmpresaPersona", idEmpresaPersona);
-			List<TcManticIncidentesDto> incidentes= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcManticIncidentesDto.class, "VistaNominaDto", "incidentes", params);
+			List<TcManticIncidentesDto> incidentes= (List<TcManticIncidentesDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcManticIncidentesDto.class, "VistaNominaDto", "incidentes", params, Constantes.SQL_TODOS_REGISTROS);
 			if(incidentes!= null && !incidentes.isEmpty()) {
 				Long dias= this.toLookForDia(particulares, incidentes, ECodigosIncidentes.PERIODO);
 				this.toLookForEquals(particulares, incidentes, ECodigosIncidentes.FALTA, dias);
@@ -312,7 +313,7 @@ public class Nomina implements Serializable {
 			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
-			List<TcKeetContratosDestajosContratistasDto> lotes= (List<TcKeetContratosDestajosContratistasDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcKeetContratosDestajosContratistasDto.class, "VistaNominaDto", "contratista", params);
+			List<TcKeetContratosDestajosContratistasDto> lotes= (List<TcKeetContratosDestajosContratistasDto>)DaoFactory.getInstance().toEntitySet(this.sesion, TcKeetContratosDestajosContratistasDto.class, "VistaNominaDto", "contratista", params, Constantes.SQL_TODOS_REGISTROS);
 			if(lotes!= null && !lotes.isEmpty()) {
 				for(TcKeetContratosDestajosContratistasDto lote: lotes) {
 					lote.setIdNomina(this.nomina.getIdNomina());
