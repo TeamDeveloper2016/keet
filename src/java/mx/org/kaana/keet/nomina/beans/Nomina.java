@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.nomina.beans;
 
+import java.io.Serializable;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
 
 /**
@@ -10,7 +11,9 @@ import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Nomina extends TcKeetNominasPeriodosDto {
+public class Nomina extends TcKeetNominasPeriodosDto implements Serializable {
+
+  private static final long serialVersionUID = -2675670353289786503L;
 
 	private Long idNomina;
 	private Long idTipoNomina;
@@ -25,10 +28,14 @@ public class Nomina extends TcKeetNominasPeriodosDto {
 	private String observaciones;
 
 	public Nomina() {
-	  this.idNomina= -1L;
+    this(-1L, 1L, 2L);
+	}
+	
+	public Nomina(Long idNomina, Long idNominaEstatus, Long idCompleta) {
+	  this.idNomina= idNomina;
 		this.idTipoNomina= 2L;
-		this.idNominaEstatus= 1L;
-		this.idCompleta= 2L;
+		this.idNominaEstatus= idNominaEstatus;
+		this.idCompleta= idCompleta;
 		this.estatus= "";
 		this.proveedores= 0L;
 		this.personas= 0L;

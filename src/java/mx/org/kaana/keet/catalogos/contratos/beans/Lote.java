@@ -6,7 +6,7 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
-public class Lote extends TcKeetContratosLotesDto implements Comparable{
+public class Lote extends TcKeetContratosLotesDto implements Comparable {
 
 	private static final long serialVersionUID = 5298362168423293347L;	
 	private UISelectEntity ikPrototipo;
@@ -77,4 +77,5 @@ public class Lote extends TcKeetContratosLotesDto implements Comparable{
 			regresar= ((this.getInicio().isBefore(((Lote)o).getInicio())))? -1:1;
 		return regresar;
 	}	
+  
 }

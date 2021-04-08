@@ -92,7 +92,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		Long idDepartamento      = null;
 		UISelectEntity figura    = null;
     try {
-			initBase();
+			this.initBase();
       this.costoTotal= "$ 0.00";
 			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
@@ -120,18 +120,33 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   } // init
 
 	private void loadCatalogos() throws Exception {
+    List<Columna> columns    = null;		
 		Map<String, Object>params= null;
 		try {
+      columns= new ArrayList<>();      
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
 			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", this.toDomicilio());			
 			this.loadEspecialidades();			
 			this.doLoadFiguras();
       params.put("idTipoNomina", "1");
-      this.ultima= (Nomina)DaoFactory.getInstance().toEntity(Nomina.class, "VistaNominaDto", "ultima", params);			
+      List<UISelectEntity> semanas= (List<UISelectEntity>)UIEntity.build("VistaNominaDto", "ultima", params, columns);
+      this.attrs.put("semanas", semanas);
+      if(semanas!= null && !semanas.isEmpty()) {
+        UISelectEntity semana= semanas.get(0);
+        this.ultima= new Nomina(semana.toLong("idNomina"), semana.toLong("idNominaEstatus"), 0L);			
+        this.attrs.put("semana", semanas.get(0));
+      } // if  
+      else {
+        this.attrs.put("semana", new UISelectEntity(-1L));
+        this.ultima= new Nomina();			
+      } // else
 		} // try
     finally {
 			Methods.clean(params);
+			Methods.clean(columns);
 		} // finally
 	} // loadCatalogos	
 	
@@ -377,7 +392,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			  params.put("sortOrder", "order by tc_keet_contratos_destajos_contratistas.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
       else
 			  params.put("sortOrder", "order by tc_keet_contratos_destajos_proveedores.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
-		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
+		  params.put("loNuevo", this.ultima.getIdCompleta()== 0L? figura.toLong("tipo").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
+		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
 			params.put("idProveedor", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
@@ -440,7 +456,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getNombre());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
       params.put("sortOrder", "order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
-		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
+		  params.put("loNuevo", this.ultima.getIdCompleta()== 0L? figura.toLong("tipo").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
+		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
 			params.put("idProveedor", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
@@ -463,5 +480,23 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	public String doColorNomina(Entity row) {
 		return !row.toString("porcentaje").equals("100.00")? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
 	}
+ 
+  public void doUpdateNomina() {
+    try {      
+      List<UISelectEntity> semanas= (List<UISelectEntity>)this.attrs.get("semanas");
+      if(semanas!= null && !semanas.isEmpty()) {
+        int index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
+        if(index>= 0) {
+          UISelectEntity semana= semanas.get(index);
+          this.ultima= new Nomina(semana.toLong("idNomina"), semana.toLong("idNominaEstatus"), new Long(index));			
+          this.attrs.put("semana", semanas.get(index));
+        } // if  
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
   
 }

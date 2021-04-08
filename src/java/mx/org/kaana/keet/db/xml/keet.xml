@@ -3128,9 +3128,9 @@
 				order by
 				  clave, manzana, lote
       </select>
-			<select id="getOrden">
+			<select id="siguiente">
         select      
-				  max(orden)+1 max_orden
+				  max(orden)+ 1 max_orden
         from      
           tc_keet_contratos_lotes
         where 

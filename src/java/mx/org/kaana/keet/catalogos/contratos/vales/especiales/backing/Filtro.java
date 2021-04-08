@@ -344,6 +344,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     try {
       UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");						
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+		  params.put("loNuevo", figura.toLong("tipo").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null");
 		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
 			params.put("idProveedor", figura.getKey().toString().substring(4));

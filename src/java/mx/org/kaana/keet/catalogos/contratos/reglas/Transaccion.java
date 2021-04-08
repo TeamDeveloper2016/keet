@@ -73,24 +73,24 @@ public class Transaccion extends IBaseTnx {
 					this.contrato.getContrato().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
 					this.contrato.getContrato().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 					regresar= DaoFactory.getInstance().insert(sesion, this.contrato.getContrato())>= 1L;
-					Collections.sort(this.contrato.getContrato().getLotes());
-					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
-					for(Lote item:this.contrato.getContrato().getLotes())
-						actualizarLote(sesion, item);
+//					Collections.sort(this.contrato.getContrato().getLotes());
+//					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
+//					for(Lote item:this.contrato.getContrato().getLotes())
+//						this.actualizarLote(sesion, item);
           this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.contrato.getContrato())>= 1L;
-					Collections.sort(this.contrato.getContrato().getLotes());
-					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
-					for(Lote item:this.contrato.getContrato().getLotes())
-						actualizarLote(sesion, item);
+//					Collections.sort(this.contrato.getContrato().getLotes());
+//					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
+//					for(Lote item:this.contrato.getContrato().getLotes())
+//						this.actualizarLote(sesion, item);
           this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
 					break;				
 				case ELIMINAR:
 					for(Lote item:this.contrato.getContrato().getLotes()){
 						item.setAccion(ESql.DELETE);
-						actualizarLote(sesion, item);
+						this.actualizarLote(sesion, item);
 					} // for
 					regresar= DaoFactory.getInstance().delete(sesion, this.contrato.getContrato())>= 1L;
 					break;
@@ -160,7 +160,7 @@ public class Transaccion extends IBaseTnx {
 		Entity entity = null;
 		try {
 			//setea el nuevo orden, debido al ordenamiento por fecha
-			orden= DaoFactory.getInstance().toField("TcKeetContratosLotesDto", "getOrden", item.toMap(), "maxOrden");
+			orden= DaoFactory.getInstance().toField(sesion, "TcKeetContratosLotesDto", "siguiente", item.toMap(), "maxOrden");
 			item.setOrden(orden.toLong(1L));
 			switch(item.getAccion()){
 				case INSERT:
@@ -168,7 +168,7 @@ public class Transaccion extends IBaseTnx {
           item.setIdContratoLoteEstatus(1L);//ver estatus
 					item.setIdContrato(this.contrato.getContrato().getIdContrato());
 					item.setIdUsuario(JsfBase.getIdUsuario());
-					entity= (Entity)DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "getCoordenadasDesarrollo", this.contrato.getContrato().toMap());
+					entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaContratosLotesDto", "getCoordenadasDesarrollo", this.contrato.getContrato().toMap());
 					item.setLatitud(entity.toString("latitud"));
 					item.setLongitud(entity.toString("longitud"));
 					DaoFactory.getInstance().insert(sesion, item);

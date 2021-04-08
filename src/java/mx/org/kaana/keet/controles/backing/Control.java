@@ -49,6 +49,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	private List<Entity> lotes;
 	private FormatLazyModel lazyDestajo;
 	private Nomina ultima;  
+  private String costoTotal;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
@@ -75,13 +76,14 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 	}
 	
 	public String getCostoTotal() {
-    Double costo = 0D;
-		if(this.lazyDestajo!= null)
-			for (IBaseDto item: (List<IBaseDto>)this.lazyDestajo.getWrappedData()) {
-				Entity row= (Entity)item;
-				costo+= new Double(row.toString("total"));
-			} // for	
-		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo);
+    return this.costoTotal;
+//    Double costo = 0D;
+//		if(this.lazyDestajo!= null)
+//			for (IBaseDto item: (List<IBaseDto>)this.lazyDestajo.getWrappedData()) {
+//				Entity row= (Entity)item;
+//				costo+= new Double(row.toString("total"));
+//			} // for	
+//		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo);
 	}
 	
   @PostConstruct
@@ -92,7 +94,8 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 		Long idDepartamento      = null;
 		UISelectEntity figura    = null;
     try {
-			initBase();
+			this.initBase();
+      this.costoTotal= "$ 0.00";
 			opcion= (EOpcionesResidente) JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -377,6 +380,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
 			UISelectEntity figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
 			params.put("sortOrder", "order by tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+		  params.put("loNuevo", "or tc_keet_contratos_destajos_residentes.id_nomina is null");
 		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
@@ -384,6 +388,9 @@ public class Control extends IBaseReporteDestajos implements Serializable {
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", "destajoResidente", params, columns);
+      Entity costo= (Entity)DaoFactory.getInstance().toEntity("VistaNominaConsultasDto", "costoResidente", params);
+      if(costo!= null && !costo.isEmpty())
+        this.costoTotal= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
       UIBackingUtilities.resetDataTable("tabla");
 			this.attrs.put("destajos", true);
     } // try
@@ -434,6 +441,7 @@ public class Control extends IBaseReporteDestajos implements Serializable {
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getNombre());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
       params.put("sortOrder", "order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+		  params.put("loNuevo", "or tc_keet_contratos_destajos_residentes.id_nomina is null");
 		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 4L? -1: this.ultima.getIdNomina());
 			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
