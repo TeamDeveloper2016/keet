@@ -372,6 +372,10 @@ public class Contratos extends IBaseFilter implements Serializable {
           if(!Objects.equals("local", itemSelected.getSeriesId())) {
             this.loadEvidencias(this.contrato);
             this.loadAvances(this.contrato);
+            params.put(Constantes.SQL_CONDICION, " concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote)= '"+ itemSelected.getName()+ "'");
+            Entity lote= (Entity)DaoFactory.getInstance().toEntity("VistaTableroDto", "georreferencia", params);
+            if(lote!= null)
+              this.toIcon(lote);
           } // if  
           break;
       } // switch
@@ -402,6 +406,7 @@ public class Contratos extends IBaseFilter implements Serializable {
       if(this.contrato!= null && !this.contrato.isEmpty()) {
         params.put("desarrollo", this.contrato.toString("desarrollo"));
         params.put("contrato", this.contrato.toString("serie"));
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
         lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "georreferencia", params, Constantes.SQL_TODOS_REGISTROS);
         if(!lotes.isEmpty()) {
           UIBackingUtilities.toFormatEntitySet(lotes, columns);

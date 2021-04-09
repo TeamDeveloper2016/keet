@@ -66,7 +66,7 @@
 					tc_keet_contratos.clave,
 				  tc_keet_contratos_lotes.manzana,
 				  tc_keet_contratos_lotes.lote,
-					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) codigo,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as codigo,
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.ejercicio,
 					tc_keet_contratos.orden as contrato,
@@ -89,6 +89,7 @@
 					tc_keet_desarrollos.nombres= '{desarrollo}' 
           and tc_keet_contratos.nombre= '{contrato}'
 				  and tc_keet_contratos_lotes.latitud is not null and tc_keet_contratos_lotes.longitud is not null
+          and {condicion}
 				order by
 				  tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>      
