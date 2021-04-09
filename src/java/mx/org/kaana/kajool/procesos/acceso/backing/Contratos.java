@@ -64,6 +64,8 @@ public class Contratos extends IBaseFilter implements Serializable {
   private List<Entity> desarrollos;
   private List<Entity> totales;
   private Entity desarrollo;
+  private List<Entity> nominas;
+  private Entity nomina;
   private Entity contrato;
 	private MapModel model;
   private LocalDate fechaPivote;
@@ -82,6 +84,18 @@ public class Contratos extends IBaseFilter implements Serializable {
 
   public void setDesarrollo(Entity desarrollo) {
     this.desarrollo = desarrollo;
+  }
+
+  public List<Entity> getNominas() {
+    return nominas;
+  }
+
+  public Entity getNomina() {
+    return nomina;
+  }
+
+  public void setNomina(Entity nomina) {
+    this.nomina = nomina;
   }
 
   public String getFechaPivote() {
@@ -112,6 +126,7 @@ public class Contratos extends IBaseFilter implements Serializable {
       this.toLoadLotes();
       this.toLoadCoordenadas();
       this.toLoadHorarios();
+      this.toLoadContratistas();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -119,7 +134,8 @@ public class Contratos extends IBaseFilter implements Serializable {
   } // doLoad
   
   private void toLoadNombres() {
-    Map<String, Object> params = null;
+    List<Columna> columns     = null;		
+    Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
       if(JsfBase.isResidente())
@@ -129,6 +145,15 @@ public class Contratos extends IBaseFilter implements Serializable {
       this.desarrollos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresDesarrollos", params);
       if(this.desarrollos!= null && !this.desarrollos.isEmpty())
         this.desarrollo = this.desarrollos.get(0);
+      params.put("idTipoNomina", "1");
+      this.nominas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "ultima", params, 12L);
+      if(this.nominas!= null && !this.nominas.isEmpty()) {
+        columns= new ArrayList<>();      
+        columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
+        columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));  
+        UIBackingUtilities.toFormatEntitySet(this.nominas, columns);
+        this.nomina= this.nominas.get(0);
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -136,6 +161,7 @@ public class Contratos extends IBaseFilter implements Serializable {
     } // catch	
     finally {
       Methods.clean(params);
+			Methods.clean(columns);
     } // finally
   }
     
@@ -166,6 +192,82 @@ public class Contratos extends IBaseFilter implements Serializable {
         this.attrs.put("contratos", "{}");
         this.attrs.put("global", "{}");
       } // else
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toLoadContratistas() {
+    Map<String, Object> params = null;
+    try {      
+      this.attrs.put("nombreNomina", this.nomina!= null && this.nomina.containsKey("nomina")? (String)this.nomina.toString("nomina"): "0000-0");
+      if(this.nomina!= null && !this.nomina.isEmpty()) {
+        params = new HashMap<>();      
+   		  params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "");
+        params.put("idNomina", this.nomina.toLong("idNomina"));      
+        params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
+        Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoPersona", params));
+        if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+          StackModel stack= new StackModel(new Title(), multiple);
+          stack.remove();
+          stack.toCustomFontSize(14);
+          stack.getLegend().setY("85%");
+          stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+          stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+          stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+          stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+          stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+          stack.toCustomUniqueColorTopTotal("#000000");
+          this.attrs.put("contratistas", stack.toJson());
+        } // if
+        else {
+          JsfBase.addMessage("Informativo", "No se tienen nómina para los contratistas ["+ this.attrs.get("nombreNomina")+ "] !");      
+          this.attrs.put("contratistas", "{}");
+        } // else
+      } // if
+      this.toLoadProveedores();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toLoadProveedores() {
+    Map<String, Object> params = null;
+    try {      
+      if(this.nomina!= null && !this.nomina.isEmpty()) {
+        params = new HashMap<>();      
+   		  params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
+        params.put("idNomina", this.nomina.toLong("idNomina"));      
+        params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
+        Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoProveedor", params));
+        if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+          StackModel stack= new StackModel(new Title(), multiple);
+          stack.remove();
+          stack.toCustomFontSize(14);
+          stack.getLegend().setY("85%");
+          stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+          stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+          stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+          stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+          stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+          stack.toCustomUniqueColorTopTotal("#000000");
+          this.attrs.put("proveedores", stack.toJson());
+        } // if
+        else {
+          JsfBase.addMessage("Informativo", "No se tienen nómina para sub-contratistas ["+ this.attrs.get("nombreNomina")+ "] !");      
+          this.attrs.put("proveedores", "{}");
+        } // else
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -717,4 +819,27 @@ public class Contratos extends IBaseFilter implements Serializable {
     UIBackingUtilities.execute("jsEcharts.update('residentes', {group:'00', json:".concat((String)this.attrs.get("residentes")).concat("});"));
   }
 
+  public void doUpdateNominaSelect(SelectEvent event) {  
+    this.toUpdateNomina();
+  }
+  
+  public void doUpdateNominaUnSelect(UnselectEvent event) {  
+    this.toUpdateNomina();
+  }
+  
+  private void toUpdateNomina() {
+    try {      
+      if(this.nomina!= null && !this.nomina.isEmpty()) { 
+        this.toLoadContratistas();
+        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreNomina: '"+ (this.attrs.get("nombreNomina"))+ "'}}});");
+        UIBackingUtilities.execute("jsEcharts.update('contratistas', {group:'00', json:".concat((String)this.attrs.get("contratistas")).concat("});"));
+        UIBackingUtilities.execute("jsEcharts.update('proveedores', {group:'00', json:".concat((String)this.attrs.get("proveedores")).concat("});"));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
 }

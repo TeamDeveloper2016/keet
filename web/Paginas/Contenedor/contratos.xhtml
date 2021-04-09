@@ -24,11 +24,13 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryEchart}"/>
     <script type="text/javascript">
 			Janal.Control.Echarts.names= {
-				items     : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}'}},
+				items     : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}', nombreNomina: '#{kajoolContratos.attrs.nombreNomina}'}},
 				contratos : {json: #{kajoolContratos.attrs.contratos}},
 				global    : {json: #{kajoolContratos.attrs.global}},
 				residentes: {json: #{kajoolContratos.attrs.residentes}},
-				lotes     : {json: #{kajoolContratos.attrs.lotes}}
+				lotes     : {json: #{kajoolContratos.attrs.lotes}},
+				contratistas: {json: #{kajoolContratos.attrs.contratistas}},
+				proveedores : {json: #{kajoolContratos.attrs.proveedores}}
 			};
 			$(function() {
 				 'use strict'			
@@ -247,7 +249,7 @@
         </div>  
       </div>
       <div class="ContainerIndent keet-item-hide avance-lote">
-        <div class="Container70 Responsive overview-box">
+        <div class="Container50 Responsive overview-box">
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-map-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
@@ -282,7 +284,7 @@
             </div>   
           </div>
         </div>  
-        <div class="Container30 Responsive overview-box">					
+        <div class="Container20 Responsive overview-box">					
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-map-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
@@ -309,6 +311,85 @@
           </div>
         </div>  
       </div>
+      <div class="ContainerIndent">        					
+        <div class="Container30 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
+                  <i class="fa fa-dollar Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Nóminas disponibles
+                </div>
+                <p:dataTable lazy="false" id="tablaNomina" var="row" widgetVar="kajoolTableNomina" rowIndexVar="index" value="#{kajoolContratos.nominas}" paginator="#{kajoolContratos.nominas.size() gt 5}" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolContratos.nomina}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
+                  <p:ajax event="rowSelect" process="@this tablaNomina" listener="#{kajoolContratos.doUpdateNominaSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="rowUnselect" process="@this tablaNomina" listener="#{kajoolContratos.doUpdateNominaUnSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:column styleClass="janal-column-left Responsive">
+                    <f:facet name="header">
+                      <h:outputText value="Nomina"/>
+                    </f:facet>
+                    <h:outputText value="#{row.nomina}"/>
+                  </p:column>                    
+                  <p:column styleClass="janal-column-right janal-wid-30 Responsive" >
+                    <f:facet name="header">
+                      <h:outputText value="Inicio"/>
+                    </f:facet>
+                    <h:outputText value="#{row.inicio}"/>
+                  </p:column>                    
+                  <p:column styleClass="janal-column-right janal-wid-30 Responsive" >
+                    <f:facet name="header">
+                      <h:outputText value="Termino"/>
+                    </f:facet>
+                    <h:outputText value="#{row.termino}"/>
+                  </p:column>                    
+                  <f:facet name="footer">
+                    <p:outputLabel value="Total [#{kajoolContratos.nominas.size()}] registros"/>
+                  </f:facet>
+                </p:dataTable>                
+              </p:panel>  
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="">.</span>
+              </div>   
+            </div>
+          </div>  
+        </div>  
+        <div class="Container40 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
+                  <i class="fa fa-users-cog Fs16 janal-color-blue"></i><p:spacer width="8px" height="1px"/>Nómina de los contratistas
+                </div>
+                <div class="keet-chart-panel">
+                  <div id="contratistas" class="keet-chart-panel">
+                    Cargando gráficas nomina de los contratistas
+                  </div>	
+               </div>	              
+              </p:panel>						
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="nombreNomina"/>
+              </div>   
+            </div>
+          </div>
+        </div>  
+        <div class="Container30 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
+                  <i class="fa fa-user-tie Fs16 janal-color-blue"></i><p:spacer width="8px" height="1px"/>Nómina de los sub-contratistas
+                </div>
+                <div class="keet-chart-panel">
+                  <div id="contratistas" class="keet-chart-panel">
+                    Cargando gráficas nomina de los sub-contratistas
+                  </div>	
+               </div>	              
+              </p:panel>						
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="nombreNomina"/>
+              </div>   
+            </div>
+          </div>
+        </div>  
+      </div>        
     </div>		
   </ui:define>
 </ui:composition>
