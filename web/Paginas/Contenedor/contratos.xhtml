@@ -24,9 +24,11 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryEchart}"/>
     <script type="text/javascript">
 			Janal.Control.Echarts.names= {
-				items    : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}'}},
-				contratos: {json: #{kajoolContratos.attrs.contratos}},
-				lotes    : {json: #{kajoolContratos.attrs.lotes}}
+				items     : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}'}},
+				contratos : {json: #{kajoolContratos.attrs.contratos}},
+				global    : {json: #{kajoolContratos.attrs.global}},
+				residentes: {json: #{kajoolContratos.attrs.residentes}},
+				lotes     : {json: #{kajoolContratos.attrs.lotes}}
 			};
 			$(function() {
 				 'use strict'			
@@ -60,6 +62,14 @@
     </style>
   </ui:define>
   <ui:define name="contenido">
+		<pe:remoteCommand name="next" process="@this" actionListener="#{kajoolContratos.doNextNomina}" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="type"/>  
+		</pe:remoteCommand>
+		<pe:remoteCommand name="back" process="@this" actionListener="#{kajoolContratos.doBackNomina}" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="type"/>  
+		</pe:remoteCommand>
 		<pe:remoteCommand name="refreshEChartSingle" process="@this" actionListener="#{kajoolContratos.doRefreshEChartSingle}" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
 			<pe:methodParam name="id"/>  
@@ -84,7 +94,7 @@
         </div>  
       </div>  
       <div class="ContainerIndent">        					
-        <div class="Container30 Responsive overview-box">					
+        <div class="Container20 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
@@ -100,9 +110,9 @@
                     </f:facet>
                     <h:outputText value="#{row.nombre}"/>
                   </p:column>                    
-                  <p:column styleClass="janal-column-right janal-wid-20 Responsive" >
+                  <p:column styleClass="janal-column-right janal-wid-30 Responsive" >
                     <f:facet name="header">
-                      <h:outputText value="Empleados"/>
+                      <h:outputText value="Personal"/>
                     </f:facet>
                     <h:outputText value="#{row.empleados}"/>
                   </p:column>                    
@@ -117,7 +127,7 @@
             </div>
           </div>  
         </div>  
-        <div class="Container70 Responsive overview-box">					
+        <div class="Container80 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
@@ -138,12 +148,31 @@
         </div>  
       </div>  
       <div class="ContainerIndent">        					
-        <div id="keet-switch-chart-lotes" class="Container100 Responsive overview-box">					
+        <div class="Container20 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
                 <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
-                  <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Lotes del contrato con sus conceptos terminados
+                  <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Avance por desarrollo
+                </div>
+                <div class="keet-chart-panel">
+                  <div id="global" class="keet-chart-panel">
+                    Cargando gráficas de los lotes del desarrollo
+                  </div>	
+                </div>	              
+              </p:panel>						
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="nombreDesarrollo"/>
+              </div>   
+            </div>
+          </div>
+        </div>  
+        <div class="Container80 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
+                  <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Avance por contrato 
                 </div>
                 <div class="keet-chart-panel">
                   <div id="lotes" class="keet-chart-panel">
@@ -156,45 +185,10 @@
               </div>   
             </div>
           </div>
-        </div>  
-        <div id="keet-switch-list-lotes" class="Container50 Responsive overview-box keet-item-hide">
-          <div class="ContainerIndent card">
-            <p:panel styleClass="overview-inner-box">
-              <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
-                <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del lote<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('lotes', false);"></i>
-              </div>
-              <p:dataTable lazy="false" id="tablaDetalleLotes" var="row" widgetVar="kajoolTableLote" rowIndexVar="index" value="#{kajoolContratos.attrs.tablaDetalleLotes}" paginator="#{kajoolContratos.attrs.tablaDetalleLotes.size() gt 6}" rowsPerPageTemplate="6" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="6" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
-                <p:column styleClass="janal-wid-15 janal-column-left Responsive">
-                  <f:facet name="header">
-                    <h:outputText value="Código"/>
-                  </f:facet>
-                  <h:outputText value="#{row.codigo}"/>
-                </p:column>
-                <p:column styleClass="Responsive" >
-                  <f:facet name="header">
-                    <h:outputText value="Concepto"/>
-                  </f:facet>
-                  <h:outputText value="#{row.descripcion}"/>
-                </p:column>
-                <p:column styleClass="janal-wid-18 Responsive" >
-                  <f:facet name="header">
-                    <h:outputText value="Estatus"/>
-                  </f:facet>
-                  <h:outputText value="#{row.estatus}"/>
-                </p:column>                    
-                <f:facet name="footer">
-                  <p:outputLabel value="Total [#{kajoolContratos.attrs.tablaDetalleLotes.size()}] registros"/>
-                </f:facet>
-              </p:dataTable>                
-            </p:panel>
-            <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
-              <span id="nombreLotes"/>
-            </div>   
-          </div>
-        </div>  
+        </div> 
       </div>  
       <div class="ContainerIndent">        					
-        <div id="keet-switch-chart-mapas" class="Container100 Responsive overview-box">					
+        <div class="Container60 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-map-box">
@@ -213,30 +207,23 @@
             </div>
           </div>
         </div>  
-        <div id="keet-switch-list-mapas" class="Container20 Responsive overview-box keet-item-hide avance-lote">
-          <div class="ContainerIndent card">
-            <p:panel styleClass="overview-map-box">
-              <div class="Container100 Responsive keet-chart-title janal-box-title-red">
-                <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Datos generales del lote<i class="fa fa-times-circle Fs16 janal-color-white janal-close-header" onclick="onOffSwitchTable('mapas', false);"></i>
-              </div>
-              <p:panelGrid id="detalleLote" layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
-                <p:outputLabel value="Manzana:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.manzana}" styleClass="janal-wid-100-txt janal-color-black" readonly="true"/>
-                <p:outputLabel value="Lote:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.lote}" styleClass="janal-wid-100-txt janal-color-black" readonly="true"/>
-                <p:outputLabel value="Inicio:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.inicio}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
-                <p:outputLabel value="Termino:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.termino}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
-                <p:outputLabel value="Prototipo:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.prototipo}" styleClass="janal-wid-100-txt" readonly="true"/>
-                <p:outputLabel value="Coordenadas"/>
-                <p:inputText value="@#{kajoolContratos.attrs.loteSeleccionado.latitud},#{kajoolContratos.attrs.loteSeleccionado.longitud}" styleClass="janal-wid-100-txt" readonly="true"/>																		
-              </p:panelGrid>
-            </p:panel>  
-            <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
-              <span id="nombreLotes"/>
-            </div>   
+        <div class="Container40 Responsive overview-box">
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-map-box">
+                <div class="Container100 Responsive keet-chart-title">
+                  <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Registro de avance en horarios normal (08 - 18 HRS)
+                </div>
+                <div class="keet-map-panel">
+                  <div id="residentes" class="keet-map-panel">
+                    Cargando gráficas del registro del destajo
+                  </div>	
+                </div>	              
+              </p:panel>
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <i class="fa fa-lg fa-caret-left janal-color-blue" onclick="back('residentes');" style="cursor: pointer;" title="Atras"></i><p:spacer width="8px" height="1px"/><span id="fechaPivote"></span><p:spacer width="8px" height="1px"/><i class="fa fa-lg fa-caret-right janal-color-blue" onclick="next('residentes');" style="cursor: pointer;" title="Adelante"></i>
+              </div>   
+            </div>
           </div>
         </div>  
       </div>
@@ -260,71 +247,65 @@
         </div>  
       </div>
       <div class="ContainerIndent keet-item-hide avance-lote">
-        <div class="Container100 Responsive overview-box">					
-					<div class="Container100 Responsive">					
-						<div class="ContainerIndent card">
-							<p:accordionPanel id="especificacion" activeIndex="0" multiple="false">
-								<p:tab title="Residente(s)">
-                  <p:dataTable lazy="false" id="tablaResidentes" var="row" widgetVar="kajoolTableResidentes" rowIndexVar="index" value="#{kajoolContratos.attrs.residentes}" paginator="#{kajoolContratos.attrs.residentes.size() gt 6}" rowsPerPageTemplate="6" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="6" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
-                    <p:column styleClass="janal-column-left Responsive">
-                      <f:facet name="header">
-                        <h:outputText value="Nombre"/>
-                      </f:facet>
-                      <h:outputText value="#{row.nombreCompleto}"/>
-                    </p:column>
-                    <p:column styleClass="janal-wid-40 Responsive" >
-                      <f:facet name="header">
-                        <h:outputText value="Departamento"/>
-                      </f:facet>
-                      <h:outputText value="#{row.departamento}"/>
-                    </p:column>
-                    <p:column styleClass="janal-wid-18 Responsive" rendered="false">
-                      <f:facet name="header">
-                        <h:outputText value="Puesto"/>
-                      </f:facet>
-                      <h:outputText value="#{row.puesto}"/>
-                    </p:column>                    
-                    <f:facet name="footer">
-                      <p:outputLabel value="Total [#{kajoolContratos.attrs.residentes.size()}] registros"/>
-                    </f:facet>
-                  </p:dataTable>                
-								</p:tab>
-								<p:tab title="Contratista(s) ó Subcontratista(s)">																		
-                  <p:dataTable lazy="false" id="tablaContratistas" var="row" widgetVar="kajoolTableContratistas" rowIndexVar="index" value="#{kajoolContratos.attrs.contratistas}" paginator="#{kajoolContratos.attrs.residentes.size() gt 6}" rowsPerPageTemplate="6" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="6" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
-                    <p:column styleClass="janal-column-left Responsive">
-                      <f:facet name="header">
-                        <h:outputText value="Nombre"/>
-                      </f:facet>
-                      <h:outputText value="#{row.paterno} #{row.materno} #{row.nombres}"/>
-                    </p:column>
-                    <p:column styleClass="janal-wid-40 Responsive" >
-                      <f:facet name="header">
-                        <h:outputText value="Departamento"/>
-                      </f:facet>
-                      <h:outputText value="#{row.departamento}"/>
-                    </p:column>
-                    <p:column styleClass="janal-wid-18 Responsive" rendered="false">
-                      <f:facet name="header">
-                        <h:outputText value="Puesto"/>
-                      </f:facet>
-                      <h:outputText value="#{row.puesto}"/>
-                    </p:column>                    
-                    <p:column styleClass="janal-wid-4 janal-column-center Responsive panel-pencil-position">
-                      <f:facet name="header">
-                        <h:outputText value="Opción" styleClass="xs-pantalla"/>
-                      </f:facet>
-                      <p:commandButton icon="fa fa-pencil" title="Capturar destajo" onstart="return janal.bloquear();" process="@this" action="#{kajoolContratos.doCapturaAvances(row)}" oncomplete="janal.desbloquear();"/>
-                    </p:column>                    
-                    <f:facet name="footer">
-                      <p:outputLabel value="Total [#{kajoolContratos.attrs.contratistas.size()}] registros"/>
-                    </f:facet>
-                  </p:dataTable>                
-								</p:tab>								
-							</p:accordionPanel>									
-              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
-                <span id="nombreLotes"/>
-              </div>   
-            </div>
+        <div class="Container70 Responsive overview-box">
+          <div class="ContainerIndent card">
+            <p:panel styleClass="overview-map-box">
+              <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
+                <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del lote
+              </div>
+              <p:dataTable lazy="false" id="tablaDetalleLotes" var="row" widgetVar="kajoolTableLote" rowIndexVar="index" value="#{kajoolContratos.attrs.tablaDetalleLotes}" paginator="#{kajoolContratos.attrs.tablaDetalleLotes.size() gt 10}" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
+                <p:column styleClass="janal-wid-15 janal-column-left Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row.codigo}"/>
+                </p:column>
+                <p:column styleClass="Responsive" >
+                  <f:facet name="header">
+                    <h:outputText value="Concepto" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-purple': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
+                  </f:facet>
+                  <h:outputText value="#{row.descripcion}" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-purple': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
+                </p:column>
+                <p:column styleClass="janal-wid-18 Responsive" >
+                  <f:facet name="header">
+                    <h:outputText value="Estatus"/>
+                  </f:facet>
+                  <h:outputText value="#{row.estatus}" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-purple': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
+                </p:column>                    
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{kajoolContratos.attrs.tablaDetalleLotes.size()}] registros"/>
+                </f:facet>
+              </p:dataTable>                
+            </p:panel>
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+              <span id="nombreLotes"/>
+            </div>   
+          </div>
+        </div>  
+        <div class="Container30 Responsive overview-box">					
+          <div class="ContainerIndent card">
+            <p:panel styleClass="overview-map-box">
+              <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
+                <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Datos generales del lote
+              </div>
+              <p:panelGrid id="detalleLote" layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                <p:outputLabel value="Manzana:"/>
+                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.manzana}" styleClass="janal-wid-100-txt janal-color-black" readonly="true"/>
+                <p:outputLabel value="Lote:"/>
+                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.lote}" styleClass="janal-wid-100-txt janal-color-black" readonly="true"/>
+                <p:outputLabel value="Inicio:"/>
+                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.inicio}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+                <p:outputLabel value="Termino:"/>
+                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.termino}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+                <p:outputLabel value="Prototipo:"/>
+                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.prototipo}" styleClass="janal-wid-100-txt" readonly="true"/>
+                <p:outputLabel value="Coordenadas"/>
+                <p:inputText value="@#{kajoolContratos.attrs.loteSeleccionado.latitud},#{kajoolContratos.attrs.loteSeleccionado.longitud}" styleClass="janal-wid-100-txt" readonly="true"/>																		
+              </p:panelGrid>
+            </p:panel>  
+            <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+              <span id="nombreLotes"/>
+            </div>   
           </div>
         </div>  
       </div>

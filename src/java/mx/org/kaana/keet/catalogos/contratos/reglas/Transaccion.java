@@ -75,16 +75,16 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().insert(sesion, this.contrato.getContrato())>= 1L;
 //					Collections.sort(this.contrato.getContrato().getLotes());
 //					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
-//					for(Lote item:this.contrato.getContrato().getLotes())
-//						this.actualizarLote(sesion, item);
+					for(Lote item:this.contrato.getContrato().getLotes())
+						this.actualizarLote(sesion, item);
           this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.contrato.getContrato())>= 1L;
 //					Collections.sort(this.contrato.getContrato().getLotes());
 //					DaoFactory.getInstance().updateAll(sesion, TcKeetContratosLotesDto.class, this.contrato.getContrato().toMap(), "limpiaOrden"); // limpia el orden
-//					for(Lote item:this.contrato.getContrato().getLotes())
-//						this.actualizarLote(sesion, item);
+					for(Lote item:this.contrato.getContrato().getLotes())
+						this.actualizarLote(sesion, item);
           this.registraContratoDomicilios(sesion, this.contrato.getContrato().getIdContrato());
 					break;				
 				case ELIMINAR:
@@ -160,8 +160,8 @@ public class Transaccion extends IBaseTnx {
 		Entity entity = null;
 		try {
 			//setea el nuevo orden, debido al ordenamiento por fecha
-			orden= DaoFactory.getInstance().toField(sesion, "TcKeetContratosLotesDto", "siguiente", item.toMap(), "maxOrden");
-			item.setOrden(orden.toLong(1L));
+			// orden= DaoFactory.getInstance().toField(sesion, "TcKeetContratosLotesDto", "siguiente", item.toMap(), "maxOrden");
+			// item.setOrden(orden.toLong(1L));
 			switch(item.getAccion()){
 				case INSERT:
           item.setIdContratoLote(-1L);
@@ -172,7 +172,7 @@ public class Transaccion extends IBaseTnx {
 					item.setLatitud(entity.toString("latitud"));
 					item.setLongitud(entity.toString("longitud"));
 					DaoFactory.getInstance().insert(sesion, item);
-					//cargarPlanos(sesion, (List<TcKeetContratosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toContratos", item.toMap()));
+					//this.cargarPlanos(sesion, (List<TcKeetContratosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toContratos", item.toMap()));
 					break;
 				case UPDATE:
 					DaoFactory.getInstance().update(sesion, item);

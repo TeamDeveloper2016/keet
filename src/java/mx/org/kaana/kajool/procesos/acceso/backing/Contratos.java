@@ -1,6 +1,7 @@
 package mx.org.kaana.kajool.procesos.acceso.backing;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,13 +22,12 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.json.ItemSelected;
-import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.echarts.kind.StackModel;
-import mx.org.kaana.libs.echarts.model.Multiple;
 import mx.org.kaana.libs.echarts.model.Stacked;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -62,9 +62,11 @@ public class Contratos extends IBaseFilter implements Serializable {
 	protected static final String COORDENADA_CENTRAL= "21.8818,-102.291";
 
   private List<Entity> desarrollos;
+  private List<Entity> totales;
   private Entity desarrollo;
   private Entity contrato;
 	private MapModel model;
+  private LocalDate fechaPivote;
 	
 	public MapModel getModel() {
 		return model;
@@ -82,12 +84,18 @@ public class Contratos extends IBaseFilter implements Serializable {
     this.desarrollo = desarrollo;
   }
 
+  public String getFechaPivote() {
+    return Fecha.formatear(Fecha.DIA_FECHA, this.fechaPivote).toUpperCase();
+  }
+
   @PostConstruct
   @Override
   protected void init() {
     try {      
+      this.fechaPivote= LocalDate.now();
       this.attrs.put("hoy", Fecha.getHoyCorreo());
       this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
+      this.totales= new ArrayList<>();
       this.doLoad();
     } // try
     catch (Exception e) {
@@ -103,6 +111,7 @@ public class Contratos extends IBaseFilter implements Serializable {
       this.toLoadContratos();
       this.toLoadLotes();
       this.toLoadCoordenadas();
+      this.toLoadHorarios();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -113,7 +122,10 @@ public class Contratos extends IBaseFilter implements Serializable {
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
-      params.put(Constantes.SQL_CONDICION, " and tc_keet_desarrollos.id_desarrollo is not null");      
+      if(JsfBase.isResidente())
+        params.put(Constantes.SQL_CONDICION, " and tc_keet_desarrollos.id_desarrollo in ("+ this.toLoadDesarrollosResidentes()+ ")");     
+      else
+        params.put(Constantes.SQL_CONDICION, " and tc_keet_desarrollos.id_desarrollo is not null");      
       this.desarrollos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresDesarrollos", params);
       if(this.desarrollos!= null && !this.desarrollos.isEmpty())
         this.desarrollo = this.desarrollos.get(0);
@@ -133,9 +145,9 @@ public class Contratos extends IBaseFilter implements Serializable {
       this.attrs.put("nombreDesarrollo", this.desarrollo!= null && this.desarrollo.containsKey("nombre")? (String)this.desarrollo.toString("nombre"): "xyz");
       params = new HashMap<>();      
       params.put("desarrollo", this.attrs.get("nombreDesarrollo"));      
-			Multiple multiple = new Multiple(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "contratado", params));
+			Stacked multiple = new Stacked(this.toLoadLotesContratos(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "contratados", params)));
       if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
-        BarModel stack= new BarModel(new Title(), multiple);
+        StackModel stack= new StackModel(new Title(), multiple);
         stack.remove();
         stack.toCustomFontSize(14);
         stack.getLegend().setY("85%");
@@ -144,12 +156,15 @@ public class Contratos extends IBaseFilter implements Serializable {
         stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
         stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
         stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+        stack.toCustomUniqueColorTopTotal("#000000");
         this.attrs.put("contratos", stack.toJson());
         this.contrato= multiple.getData().get(multiple.getData().size()- 1);
+        this.toLoadGlobal();
       } // if
       else {
         JsfBase.addMessage("Informativo", "No se tienen contratos para el desarrollo ["+ this.attrs.get("nombreDesarrollo")+ "] !");      
         this.attrs.put("contratos", "{}");
+        this.attrs.put("global", "{}");
       } // else
     } // try
     catch (Exception e) {
@@ -161,15 +176,42 @@ public class Contratos extends IBaseFilter implements Serializable {
     } // finally
   }
   
+  private void toLoadGlobal() {
+    try {      
+			Stacked multiple = new Stacked(this.totales);
+      if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+        StackModel stack= new StackModel(new Title(), multiple);
+        stack.remove();
+        stack.toCustomFontSize(14);
+        stack.getLegend().setY("85%");
+        stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+        stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+        stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+        stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+        stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+        stack.toCustomUniqueColorTopTotal("#000000");
+        this.attrs.put("global", stack.toJson());
+      } // if
+      else {
+        JsfBase.addMessage("Informativo", "No se tienen lotes para el desarrollo ["+ this.attrs.get("nombreDesarrollo")+ "] !");      
+        this.attrs.put("global", "{}");
+      } // else
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
   private void toLoadLotes() {
     Map<String, Object> params = null;
     try {      
       if(this.contrato!= null && !this.contrato.isEmpty()) {
-        this.attrs.put("nombreContrato", (String)this.contrato.toString("category"));
+        this.attrs.put("nombreContrato", (String)this.contrato.toString("serie"));
         String clave= Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true);
         params = new HashMap<>();      
         params.put("clave", clave);      
-        Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "avance", params));
+        Stacked multiple = new Stacked(this.toLoadLotesPorcentajes(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "avance", params)));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
           StackModel stack= new StackModel(new Title(), multiple);
           stack.remove();
@@ -177,8 +219,8 @@ public class Contratos extends IBaseFilter implements Serializable {
           stack.getLegend().setY("85%");
           stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
           stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
-          stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
-          stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+          stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'one-decimal');}");
+          stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'one-decimal');}");
           stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
           stack.toCustomUniqueColorTopTotal("#000000");
           this.attrs.put("lotes", stack.toJson());
@@ -192,6 +234,48 @@ public class Contratos extends IBaseFilter implements Serializable {
         this.attrs.put("nombreContrato", "");
         JsfBase.addMessage("Informativo", "No se tienen lotes para el contrato ["+ this.attrs.get("nombreContrato")+ "] !");      
         this.attrs.put("lotes", "{}");
+      } // else
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  private void toLoadHorarios() {
+    Map<String, Object> params = null;
+    try {      
+      if(this.contrato!= null && !this.contrato.isEmpty()) {
+        params = new HashMap<>();      
+        params.put("desarrollo", this.contrato.toString("desarrollo"));      
+        params.put("fecha", Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaPivote));      
+        if(JsfBase.isResidente())
+          params.put(Constantes.SQL_CONDICION, " and tc_janal_usuarios.id_usuario= "+ JsfBase.getIdUsuario());     
+        else
+          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
+        Stacked multiple = new Stacked(this.toLoadLotesPorcentajes(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "horarios", params)));
+        if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+          StackModel stack= new StackModel(new Title(), multiple);
+          stack.remove();
+          stack.toCustomFontSize(14);
+          stack.getLegend().setY("85%");
+          stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+          stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+          stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'one-decimal');}");
+          stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'one-decimal');}");
+          stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+          stack.toCustomUniqueColorTopTotal("#000000");
+          this.attrs.put("residentes", stack.toJson());
+        } // if
+        else {
+          JsfBase.addMessage("Informativo", "No se realizaron registro de avance ["+ this.getFechaPivote()+ "] !");      
+          this.attrs.put("residentes", "{}");
+        } // else
+      } // if
+      else {
+        this.attrs.put("nombreContrato", "");
+        JsfBase.addMessage("Informativo", "No se realizaron registro de avance ["+ this.getFechaPivote()+ "] !");      
+        this.attrs.put("residentes", "{}");
       } // else
     } // try
     catch (Exception e) {
@@ -244,23 +328,28 @@ public class Contratos extends IBaseFilter implements Serializable {
       params = new HashMap<>();
       switch(itemSelected.getChart()) {
         case "contratos": 
-          params.put("desarrollo", itemSelected.getName());
-          params.put("contrato", itemSelected.getSeriesName());
+          params.put("desarrollo", this.contrato.toString("desarrollo"));
+          params.put("contrato", itemSelected.getName());
           params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-          this.contrato= (Entity)DaoFactory.getInstance().toEntity("VistaTableroDto", "contrato", params);
-          columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
-          columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
-          UIBackingUtilities.toFormatEntity(this.contrato, columns);
-          this.toLoadLotes();
-          this.toLoadCoordenadas();
+          Entity tmp= (Entity)DaoFactory.getInstance().toEntity("VistaTableroDto", "contrato", params);
+          if(tmp!= null) {
+            this.contrato= tmp;
+            columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+            columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+            UIBackingUtilities.toFormatEntity(this.contrato, columns);
+            this.toLoadLotes();
+            this.toLoadCoordenadas();
+          } // if  
+          else
+            JsfBase.addMessage("Informativo", "No se tienen lotes para el contrato !");      
           UIBackingUtilities.update("mapa");
           UIBackingUtilities.execute("jsEcharts.update('lotes', {group:'00', json:".concat((String)this.attrs.get("lotes")).concat("});"));
           UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreContrato:'"+ this.attrs.get("nombreContrato")+ "'}}});");
-          UIBackingUtilities.execute("onOffSwitchTable('lotes', false);");
+          UIBackingUtilities.execute("onOffSwitchTable('mapa', false);");
           break;
         case "lotes": 
           params.put("desarrollo", this.contrato.toString("desarrollo"));
-          params.put("contrato", this.contrato.toString("category"));
+          params.put("contrato", this.contrato.toString("serie"));
           params.put(Constantes.SQL_CONDICION, "concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote)='"+ itemSelected.getName()+ "'");
           this.contrato= (Entity)DaoFactory.getInstance().toEntity("VistaTableroDto", "contrato", params);
           columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
@@ -278,19 +367,14 @@ public class Contratos extends IBaseFilter implements Serializable {
           UIBackingUtilities.update("detalleLote");
           UIBackingUtilities.update("especificacion");
           UIBackingUtilities.update("tablaDetalle".concat(Cadena.letraCapital(itemSelected.getChart())));
-          UIBackingUtilities.execute("onOffSwitchTable('"+ itemSelected.getChart()+ "', true);");
-          UIBackingUtilities.execute("onOffSwitchTable('mapas', true);");
+          UIBackingUtilities.execute("onOffSwitchTable('mapa', true);");
           UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "'}}});");
           if(!Objects.equals("local", itemSelected.getSeriesId())) {
             this.loadEvidencias(this.contrato);
-            this.loadResidentes(this.contrato);
-            this.loadContratistas(this.contrato);
             this.loadAvances(this.contrato);
           } // if  
           break;
       } // switch
-      if("|contratos|".indexOf(itemSelected.getChart())> 0) {
-      } // if 
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -317,7 +401,7 @@ public class Contratos extends IBaseFilter implements Serializable {
 			params= new HashMap<>();
       if(this.contrato!= null && !this.contrato.isEmpty()) {
         params.put("desarrollo", this.contrato.toString("desarrollo"));
-        params.put("contrato", this.contrato.toString("category"));
+        params.put("contrato", this.contrato.toString("serie"));
         lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "georreferencia", params, Constantes.SQL_TODOS_REGISTROS);
         if(!lotes.isEmpty()) {
           UIBackingUtilities.toFormatEntitySet(lotes, columns);
@@ -379,8 +463,6 @@ public class Contratos extends IBaseFilter implements Serializable {
 		try {
 			marker= (Marker) event.getOverlay();
 			this.loadEvidencias((Entity) marker.getData());
-			this.loadResidentes((Entity) marker.getData());
-			this.loadContratistas((Entity) marker.getData());
 			this.loadAvances((Entity) marker.getData());
       ItemSelected item= new ItemSelected();
       item.setChart("lotes");
@@ -439,42 +521,6 @@ public class Contratos extends IBaseFilter implements Serializable {
 			throw e;
 		} // catch		
 	} // doLoadFiles
-	
-	private void loadResidentes(Entity seleccionado) {
-		List<Entity>residentes   = null;
-		Map<String, Object>params= null;
-		try {
-			params= new HashMap<>();
-			params.put("idDesarrollo", seleccionado.toLong("idDesarrollo"));
-			residentes= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "residentes", params);
-			this.attrs.put("residentes", residentes);
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // loadResidentes
-	
-	private void loadContratistas(Entity seleccionado) {
-		List<Entity>contratistas = null;
-		Map<String, Object>params= null;
-		try {
-			params= new HashMap<>();
-			params.put("idContratoLote", seleccionado.getKey());
-			contratistas= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "contratistasAsignado", params);
-			this.attrs.put("contratistas", contratistas);
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // loadContratistas
 	
 	private void loadAvances(Entity seleccionado) {
 		Map<String, Object>params= null;
@@ -550,5 +596,120 @@ public class Contratos extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
 	} // doCapturaAvances
+
+  private String toLoadDesarrollosResidentes() {
+    StringBuilder regresar= new StringBuilder();
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idEmpresaPersona", JsfBase.getAutentifica().getEmpresa().getIdEmpresaPersonal());      
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "residenteDesarrollo", params);
+      if(items!= null && !items.isEmpty())
+        for (Entity item : items) {
+          regresar.append(item.toLong("idDesarrollo")).append(", ");
+        } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar.substring(0, regresar.length()- 2);
+  }
+
+  public List<Entity> toLoadLotesContratos(List<Entity> items) {
+    Map<String, Entity> list= new HashMap<>();
+    Entity index            = null;
+    String nombre           = null;
+    try {      
+      if(items!= null && !items.isEmpty()) {
+        items.remove(items.size()- 1);
+        for (Entity item: items) {
+          if(item.toString("serie")== null) {
+            item.getValue("serie").setData(item.toString("desarrollo"));
+            item.getValue("orden").setData(0L);
+            item.getValue("clave").setData("");
+            nombre= item.toString("desarrollo");
+          } // if  
+//          index= list.get(item.toString("serie"));
+//          if(index== null) {
+//            index= item.clone();
+//            index.getValue("category").setData("CONTRATADOS");
+//            list.put(item.toString("serie"), index);
+//          } // if
+//          else 
+//            index.getValue("value").setData(item.toDouble("value")+ index.toDouble("value"));
+        } // for
+//        for (Entity item: list.values()) {
+//          items.add(item);
+//        } // for
+        this.totales.clear();
+        int count= 0;
+        while(count< items.size()) {
+          if(Objects.equals(items.get(count).toString("serie"), nombre)) {
+            this.totales.add(items.get(count));
+            items.remove(count);
+          } // if
+          else
+            count++;
+        } // while
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(list);
+    } // finally
+    return items;
+  }
   
+  public List<Entity> toLoadLotesPorcentajes(List<Entity> items) {
+    Map<String, Double> list= new HashMap<>();
+    Double index            = null;
+    try {      
+      if(items!= null && !items.isEmpty()) {
+        for (Entity item: items) {
+          index= list.get(item.toString("serie"));
+          if(index== null) 
+            list.put(item.toString("serie"), item.toDouble("value"));
+          else 
+            list.put(item.toString("serie"), index+ item.toDouble("value"));
+        } // for
+        for (Entity item: items) {
+          index= list.get(item.toString("serie"));
+          if(index!= null) {
+            Double value= item.toDouble("value");
+            item.getValue("value").setData(Numero.toRedondearSat(value* 100/ index));
+          } // if
+        } // for
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(list);
+    } // finally
+    return items;
+  }
+
+  public void doNextNomina(String type) {
+    this.fechaPivote= this.fechaPivote.plusDays(1);
+    this.toLoadHorarios();
+    UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {fechaPivote: '"+ (this.getFechaPivote())+ "'}}});");
+    UIBackingUtilities.execute("jsEcharts.update('residentes', {group:'00', json:".concat((String)this.attrs.get("residentes")).concat("});"));
+  }
+  
+  public void doBackNomina(String type) {
+    this.fechaPivote= this.fechaPivote.minusDays(1);
+    this.toLoadHorarios();
+    UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {fechaPivote: '"+ (this.getFechaPivote())+ "'}}});");
+    UIBackingUtilities.execute("jsEcharts.update('residentes', {group:'00', json:".concat((String)this.attrs.get("residentes")).concat("});"));
+  }
+
 }

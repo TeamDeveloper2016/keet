@@ -455,8 +455,11 @@
         case 'double':
           text = data.toLocaleString('es-MX', {style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 2}); // 1,234,567.12
           break;
-        case 'double-one-decimal':
+        case 'one-decimal':
           text = data.toLocaleString('es-MX', {style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 1}); // 1,234,567.1
+          break;
+        case 'symbol':
+          text = data.toLocaleString('es-MX', {style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 1})+ ' %'; // 100.0%
           break;
         case 'money':
           text = data.toLocaleString('es-MX', {style: 'currency', currency: 'USD', minimumFractionDigits: 1, maximumFractionDigits: 2}); // $1,242.50

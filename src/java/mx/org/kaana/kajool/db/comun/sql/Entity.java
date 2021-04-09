@@ -174,7 +174,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
 
   @Override
   public String toString(String name) {
-    Object regresar = toObject(name);
+    Object regresar = this.toObject(name);
     return regresar != null ? regresar.toString() : null;
   }
 
@@ -246,7 +246,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   public Entity clone() {
 		Entity regresar= new Entity();
 		for (String key : this.keySet()) {
-			regresar.put(key, this.get(key));
+			regresar.put(key, this.get(key).clone());
 		} // for
 		return regresar;
 	}	

@@ -15,7 +15,7 @@ import java.util.Random;
 
 public final class Colors implements Serializable {
 
-	public static final String[] SERIES_COLORS= {"#008000", "#ffff00", "#00bcd4", "#e91e63", "#ffb300", "#607d8b", "#ff00ff", "#d2691e", "#f4A460", "#800000", "#778899", "#696969", "#8B4513", "#9ACD32", "#808000", "#3CB371", "#ADFF2F", "#7FFF00", "#6A5ACD", "#9932CC", "#458ADE", "#9370DB", "#FF00FF", "#BDB76B", "#FF7F50", "#FF4500", "#FF8C00", "#DC143C", "#FF69B4", "#2F4F4F", "#F4A460", "#191970", "#556B2F", "#ADFF2F", "#EE82EE", "#BDB76B", "#DC143C"};
+	public static final String[] SERIES_COLORS= {"#ffb300", "#607d8b", "#008000", "#ffff00", "#00bcd4", "#e91e63", "#ff00ff", "#d2691e", "#f4A460", "#800000", "#778899", "#696969", "#8B4513", "#9ACD32", "#808000", "#3CB371", "#ADFF2F", "#7FFF00", "#6A5ACD", "#9932CC", "#458ADE", "#9370DB", "#FF00FF", "#BDB76B", "#FF7F50", "#FF4500", "#FF8C00", "#DC143C", "#FF69B4", "#2F4F4F", "#F4A460", "#191970", "#556B2F", "#ADFF2F", "#EE82EE", "#BDB76B", "#DC143C"};
 	public static final String COLOR_BLACK = "#000000";
 	public static final String COLOR_WHITE = "#FFFFFF";
 	public static final String COLOR_BLUE  = "#0000FF";
