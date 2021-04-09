@@ -403,6 +403,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreDesarrollo:'"+ this.attrs.get("nombreDesarrollo")+ "'}}});");
         UIBackingUtilities.execute("jsEcharts.update('lotes', {group:'00', json:".concat((String)this.attrs.get("lotes")).concat("});"));
         UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreContrato:'"+ this.attrs.get("nombreContrato")+ "'}}});");
+        this.toLoadContratistas();
       } // if  
     } // try
     catch (Exception e) {
