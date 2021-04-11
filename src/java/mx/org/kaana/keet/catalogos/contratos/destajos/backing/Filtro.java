@@ -103,12 +103,12 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       this.attrs.put("destajos", false);				
       this.attrs.put("persona", false);				
       this.attrs.put("proveedor", false);							
-			this.loadCatalogos();			
+			this.toLoadCatalogos();			
 			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null) {
 				idDepartamento= (Long) JsfBase.getFlashAttribute("idDepartamento");
 				figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");
 				this.attrs.put("especialidad", idDepartamento);
-				this.doLoadFiguras();				
+				this.toLoadFiguras();				
 				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));
 			} // if
 			this.doLoad();
@@ -119,7 +119,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos() throws Exception {
+	private void toLoadCatalogos() throws Exception {
     List<Columna> columns    = null;		
 		Map<String, Object>params= null;
 		try {
@@ -129,8 +129,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", this.toDomicilio());			
-			this.loadEspecialidades();			
-			this.doLoadFiguras();
       params.put("idTipoNomina", "1");
       List<UISelectEntity> semanas= (List<UISelectEntity>)UIEntity.build("VistaNominaDto", "ultima", params, columns);
       this.attrs.put("semanas", semanas);
@@ -143,48 +141,91 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         this.attrs.put("semana", new UISelectEntity(-1L));
         this.ultima= new Nomina();			
       } // else
+      this.toLoadContratos();
 		} // try
     finally {
 			Methods.clean(params);
 			Methods.clean(columns);
 		} // finally
-	} // loadCatalogos	
+	} // toLadCatalogos	
 	
-	private void loadEspecialidades() {
+	private void toLoadContratos() {
+    Map<String, Object> params= null;
+		List<UISelectEntity> contratos= null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			contratos= UIEntity.seleccione("VistaTableroDto", "contratos", params, "clave");
+			this.attrs.put("contratos", contratos);
+			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+      this.toLoadManzanas();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+	private void toLoadManzanas() {
+    Map<String, Object> params= null;
+		List<UISelectEntity> manzanas= null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
+			manzanas= UIEntity.seleccione("VistaTableroDto", "manzanas", params, "nombre");
+			this.attrs.put("manzanas", manzanas);
+			this.attrs.put("manzana", UIBackingUtilities.toFirstKeySelectEntity(manzanas));
+      this.toLoadEspecialidades();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+	private void toLoadEspecialidades() {
 		List<UISelectItem>especialidades= null;
 		Map<String, Object>params       = null;
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			//especialidades= UISelect.seleccione("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
 			especialidades= UISelect.build("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("especialidades", especialidades);
 			this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
+      this.toLoadFiguras();
 		} // try
 		finally {
 			Methods.clean(params);
 		} // finally
 	} // loadEspecialidades
 	
-	public void doLoadFiguras() {
+	public void toLoadFiguras() {
 		List<UISelectEntity> figuras= null;
 		Map<String, Object>params   = null;
-		List<Columna> campos        = null;
+		List<Columna> columns       = null;
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put("idDepartamento", this.attrs.get("especialidad"));
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
-			//figuras= UIEntity.seleccione("VistaCapturaDestajosDto", "empleadosAsociados", params, campos, "puesto");
-			figuras= UIEntity.build("VistaCapturaDestajosDto", "empleadosAsociados", params, campos);
+			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
+			columns= new ArrayList<>();
+			columns.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
+			figuras= UIEntity.build("VistaCapturaDestajosDto", "empleadosAsociados", params, columns);
 			this.attrs.put("figuras", figuras);
       UISelectEntity figura= UIBackingUtilities.toFirstKeySelectEntity(figuras);
 			this.attrs.put("figura", figura);
 			this.attrs.put("destajos", false);
-			this.attrs.put("persona", figura== null || figura.isEmpty()? false: figura.toLong("tipo").equals(1L));
-			this.attrs.put("proveedor", figura== null || figura.isEmpty()? false: figura.toLong("tipo").equals(2L));
+			this.attrs.put("persona", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(1L));
+			this.attrs.put("proveedor", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(2L));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -192,10 +233,51 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
-	} // doLoadFiguras
+	} 
 	
+  public void doLoadManzanas() {
+    List<UISelectEntity> contratos= null;    
+		UISelectEntity contrato       = null;
+    try {   
+			contratos= (List<UISelectEntity>)this.attrs.get("contratos");
+			contrato = (UISelectEntity)this.attrs.get("contrato");
+      int index= contratos.indexOf(contrato);
+      if(index>= 0)
+        this.attrs.put("contrato", contratos.get(index));
+      this.toLoadManzanas();
+      this.doLoad();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+	public void doLoadDepartamentos() {
+    List<UISelectEntity> manzanas= null;    
+		UISelectEntity manzana       = null;
+    try {   
+			manzanas= (List<UISelectEntity>)this.attrs.get("manzanas");
+			manzana = (UISelectEntity)this.attrs.get("manzana");
+      int index= manzanas.indexOf(manzana);
+      if(index>= 0)
+        this.attrs.put("manzana", manzanas.get(index));
+      this.toLoadEspecialidades();
+      this.doLoad();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doLoadFiguras() {
+    this.toLoadFiguras();
+    this.doLoad();
+  }
+  
 	private String toDomicilio() {
 		StringBuilder regresar= null;
 		try {
@@ -213,46 +295,70 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		} // catch		
 		return regresar.toString();
 	} // toDomicilio
-	
+
+  public String toLoadCondicion() {
+    StringBuilder regresar = new StringBuilder();
+		UISelectEntity contrato= (UISelectEntity)this.attrs.get("contrato");
+		UISelectEntity manzana = (UISelectEntity)this.attrs.get("manzana");
+		UISelectEntity lote    = (UISelectEntity)this.attrs.get("lote");
+    if(contrato!= null && contrato.getKey()> 0L)
+		  regresar.append("tc_keet_contratos.id_contrato= ").append(contrato.getKey()).append(" and ");
+    if(manzana!= null && manzana.getKey()> 0L) {
+			List<UISelectEntity> manzanas= (List<UISelectEntity>)this.attrs.get("manzanas");
+      int index= manzanas.indexOf(manzana);
+      if(index>= 0)
+         manzana= manzanas.get(index);
+      this.attrs.put("manzana", manzanas.get(index));
+      regresar.append("tc_keet_contratos_lotes.manzana= '").append(manzana.toString("manzana")).append("' and ");
+    } // if  
+    if(lote!= null && lote.getKey()> 0L)
+      regresar.append("tc_keet_contratos_lotes.id_contrato_lote=").append(lote.getKey()).append( " and ");
+    return regresar.length()> 0? regresar.substring(0, regresar.length()- 4): Constantes.SQL_VERDADERO;
+  }
+  
   @Override
   public void doLoad() {
-		Map<String, Object>params         = null;
-    List<Columna> columns             = null;		
-		List<UISelectEntity> figuras      = null;
-		List<UISelectEntity> lotesCriterio= null;
-		UISelectEntity figura             = null;
-		UISelectEntity loteCriterio       = null;
-		String idXml                      = null;
+		Map<String, Object>params   = null;
+    List<Columna> columns       = null;		
+		List<UISelectEntity> figuras= null;
+		List<UISelectEntity> casas  = null;
+		UISelectEntity figura       = null;
+		String idXml                = null;
     try {   
 			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));
-			params= new HashMap<>();
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			params.put("idFigura", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
-			if(this.attrs.get("loteCriterio")!= null && ((UISelectEntity)this.attrs.get("loteCriterio")).getKey()>= 1L)
-				params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=" + ((UISelectEntity)this.attrs.get("loteCriterio")).getKey());			
-			else
-				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      columns= new ArrayList<>();      
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
-      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
-      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
-			idXml= figura.toLong("tipo").equals(1L)? "lotesContratistas": "lotesSubContratistas";
-			this.attrs.put("idTipoFiguraCorreo", figura.toLong("tipo"));
-			this.attrs.put("idFiguraCorreo", figura.getKey() > 0 ? figura.getKey().toString().substring(4) : figura.getKey());
-			this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));
-	    this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);		
-			lotesCriterio= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, "descripcionLote");
-			loteCriterio= UIBackingUtilities.toFirstKeySelectEntity(lotesCriterio);
-			this.attrs.put("lotesCriterio", lotesCriterio);
-			this.attrs.put("loteCriterio", loteCriterio);
-			if(!this.lotes.isEmpty()) { 
-			  UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
-				this.lotes.add(0, this.toLoteDefault());
-				this.toEstatusManzanaLote();
-			} //
-			this.attrs.put("persona", figura.toLong("tipo").equals(1L));
-			this.attrs.put("proveedor", figura.toLong("tipo").equals(2L));
+      figura = (UISelectEntity)this.attrs.get("figura");
+      int index= figuras.indexOf(figura);
+      if(index>= 0) {
+			  figura= figuras.get(index);
+        params  = new HashMap<>();
+        params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+        params.put("idFigura", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
+        params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
+        columns= new ArrayList<>();      
+        columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                  
+        columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
+        columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
+        idXml= figura.toLong("tipo").equals(1L)? "lotesContratistas": "lotesSubContratistas";
+        this.attrs.put("idTipoFiguraCorreo", figura.toLong("tipo"));
+        this.attrs.put("idFiguraCorreo", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
+        this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));
+        this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);		
+        casas= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, "descripcionLote");
+        this.attrs.put("lotes", casas);
+        this.attrs.put("lote", UIBackingUtilities.toFirstKeySelectEntity(casas));
+        if(!this.lotes.isEmpty()) { 
+          UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
+          this.lotes.add(0, this.toLoteDefault());
+          this.toEstatusManzanaLote();
+        } // if
+      } // if  
+      else {
+        this.lotes= new ArrayList<>();		
+        this.attrs.put("lotes", new ArrayList<>());
+        this.attrs.put("lote", new UISelectEntity(-1L));
+      } // else
+			this.attrs.put("persona", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(1L));
+			this.attrs.put("proveedor", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(2L));
 			this.attrs.put("destajos", false);
 			this.attrs.put("figura", figura);
     } // try
@@ -382,31 +488,41 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   } // doCancelar		
 	
 	public void doDestajos() {
-    List<Columna> columns       = null;
-		Map<String, Object>params   = new HashMap<>();
+    List<Columna> columns    = null;
+		Map<String, Object>params= new HashMap<>();
     try {
-      UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");	
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-			figura= figuras.get(figuras.indexOf(figura));
-      if(figura.toLong("tipo").equals(1L))
-			  params.put("sortOrder", "order by tc_keet_contratos_destajos_contratistas.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
-      else
-			  params.put("sortOrder", "order by tc_keet_contratos_destajos_proveedores.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
-		  params.put("loNuevo", this.ultima.getIdCompleta()== 0L? figura.toLong("tipo").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
-		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
-			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
-			params.put("idProveedor", figura.getKey().toString().substring(4));
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-      columns= new ArrayList<>();
-      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "destajoPersona": "destajoProveedor", params, columns);
-      Entity costo= (Entity)DaoFactory.getInstance().toEntity("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "costoPersona": "costoProveedor", params);
-      if(costo!= null && !costo.isEmpty())
-        this.costoTotal= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
-      UIBackingUtilities.resetDataTable("tabla");
-			this.attrs.put("destajos", true);
+      UISelectEntity figura= (UISelectEntity) this.attrs.get("figura");	
+      int index= figuras.indexOf(figura);
+      if(index>= 0) {
+        figura= figuras.get(index);
+        if(figura.toLong("tipo").equals(1L))
+          params.put("sortOrder", "order by tc_keet_contratos_destajos_contratistas.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+        else
+          params.put("sortOrder", "order by tc_keet_contratos_destajos_proveedores.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+        params.put("loNuevo", this.ultima.getIdCompleta()== 0L? figura.toLong("tipo").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
+        params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
+        params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
+        params.put("idProveedor", figura.getKey().toString().substring(4));
+        params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+        params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
+        columns= new ArrayList<>();
+        columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
+        columns.add(new Columna("costo", EFormatoDinamicos.MILES_SIN_DECIMALES));
+        columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+        this.lazyDestajo= new FormatCustomLazy("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "destajoPersona": "destajoProveedor", params, columns);
+        Entity costo= (Entity)DaoFactory.getInstance().toEntity("VistaNominaConsultasDto", figura.toLong("tipo").equals(1L)? "costoPersona": "costoProveedor", params);
+        if(costo!= null && !costo.isEmpty())
+          this.costoTotal= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
+        UIBackingUtilities.resetDataTable("tabla");
+        this.attrs.put("destajos", true);
+      } // if
+      else {
+        this.attrs.put("destajos", false);
+        this.lazyDestajo= null;
+        this.costoTotal = "$ 0.00";
+        JsfBase.addMessage("No se puede consultar el destajo, no hay contratista ó sub-contratista !");
+      } // else
       this.attrs.put("figura", figura);
     } // try
     catch (Exception e) {
@@ -428,48 +544,56 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
+    UISelectEntity figura        = null;
     Parametros comunes           = null;
     boolean isCompleto           = false;
     try {
       isCompleto = tipo.equals("COMPLETO");
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-      UISelectEntity figura= figuras.get(figuras.indexOf((UISelectEntity) this.attrs.get("figura")));			
-      params = new HashMap<>();  
-      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      parametros= comunes.getComunes();
-      if(isCompleto) {
-        reporteSeleccion= figura.toLong("tipo").equals(1L)? EReportes.DESTAJOS_TOTALES_CONTRATISTA: EReportes.DESTAJOS_TOTALES_SUBCONTRATISTA;  
-        parametros.put("REPORTE_TIPO_PERSONA", figura.toLong("tipo").equals(1L)? "CONTRATISTA":"SUBCONTRATISTA"); 
-        parametros.put("REPORTE_FIGURA", figura.toString("nombreCompleto"));
-      }
-      else {
-        reporteSeleccion= figura.toLong("tipo").equals(1L)? EReportes.DESTAJOS_CAT_CONTRATISTA: EReportes.DESTAJOS_CAT_SUBCONTRATISTA;  
-        parametros.put("REPORTE_DESARROLLO", "[".concat(getRegistroDesarrollo().getDesarrollo().getClave()).concat("] ".concat(getRegistroDesarrollo().getDesarrollo().getDescripcion())));
-        parametros.put("REPORTE_DESARROLLO_DOMICILIO", getRegistroDesarrollo().getDomicilio().getCalle().concat(" # ").concat(getRegistroDesarrollo().getDomicilio().getNumeroExterior()));
-        parametros.put("REPORTE_DESARROLLO_CP", getRegistroDesarrollo().getDomicilio().getCodigoPostal()); 
-        parametros.put("REPORTE_FIGURA", figura.toString("puesto").concat(": ").concat(figura.toString("nombreCompleto")));
-      }
-      int index= ((List<UISelectItem>)this.attrs.get("especialidades")).indexOf(new UISelectItem(Long.valueOf(this.attrs.get("especialidad").toString())));
-      parametros.put("REPORTE_DEPARTAMENTO", ((List<UISelectItem>)this.attrs.get("especialidades")).get(index).getLabel());
-      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
-      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
-      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getNombre());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
-      params.put("sortOrder", "order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
-		  params.put("loNuevo", this.ultima.getIdCompleta()== 0L? figura.toLong("tipo").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
-		  params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
-			params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
-			params.put("idProveedor", figura.getKey().toString().substring(4));
-			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
-      this.reporte= JsfBase.toReporte();
-      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      if(sendMail)
-        this.reporte.doAceptarSimple();			
-      else {
-				if(this.doVerificarReporte())
-					this.reporte.doAceptar();			
-			} // else			
+      figura= (UISelectEntity) this.attrs.get("figura");
+      int index= figuras.indexOf(figura);
+      if(index>= 0) {
+        figura= figuras.get(index);			
+        params = new HashMap<>();  
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+        parametros= comunes.getComunes();
+        if(isCompleto) {
+          reporteSeleccion= figura.toLong("tipo").equals(1L)? EReportes.DESTAJOS_TOTALES_CONTRATISTA: EReportes.DESTAJOS_TOTALES_SUBCONTRATISTA;  
+          parametros.put("REPORTE_TIPO_PERSONA", figura.toLong("tipo").equals(1L)? "CONTRATISTA":"SUBCONTRATISTA"); 
+          parametros.put("REPORTE_FIGURA", figura.toString("nombreCompleto"));
+        } // if
+        else {
+          reporteSeleccion= figura.toLong("tipo").equals(1L)? EReportes.DESTAJOS_CAT_CONTRATISTA: EReportes.DESTAJOS_CAT_SUBCONTRATISTA;  
+          parametros.put("REPORTE_DESARROLLO", "[".concat(getRegistroDesarrollo().getDesarrollo().getClave()).concat("] ".concat(getRegistroDesarrollo().getDesarrollo().getDescripcion())));
+          parametros.put("REPORTE_DESARROLLO_DOMICILIO", getRegistroDesarrollo().getDomicilio().getCalle().concat(" # ").concat(getRegistroDesarrollo().getDomicilio().getNumeroExterior()));
+          parametros.put("REPORTE_DESARROLLO_CP", getRegistroDesarrollo().getDomicilio().getCodigoPostal()); 
+          parametros.put("REPORTE_FIGURA", figura.toString("puesto").concat(": ").concat(figura.toString("nombreCompleto")));
+        } // else
+        index= ((List<UISelectItem>)this.attrs.get("especialidades")).indexOf(new UISelectItem(Long.valueOf(this.attrs.get("especialidad").toString())));
+        parametros.put("REPORTE_DEPARTAMENTO", ((List<UISelectItem>)this.attrs.get("especialidades")).get(index).getLabel());
+        parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+        parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
+        parametros.put("NOMBRE_REPORTE", reporteSeleccion.getNombre());
+        parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
+        params.put("sortOrder", "order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+        params.put("loNuevo", this.ultima.getIdCompleta()== 0L? figura.toLong("tipo").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
+        params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
+        params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
+        params.put("idProveedor", figura.getKey().toString().substring(4));
+        params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+        params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
+        this.attrs.put("tituloCorreo", reporteSeleccion.getTitulo());
+        this.reporte= JsfBase.toReporte();
+        this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+        if(sendMail)
+          this.reporte.doAceptarSimple();			
+        else {
+          if(this.doVerificarReporte())
+            this.reporte.doAceptar();			
+        } // else			
+      } // 
+      else
+        JsfBase.addMessage("No se puede generar el reporte del destajo, no hay contratista ó sub-contratista !");
     } // try
     catch(Exception e) {
       Error.mensaje(e);

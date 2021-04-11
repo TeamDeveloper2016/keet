@@ -65,8 +65,8 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 		this.correo = correo;
 	}
 	
-	public void initBase(){
-		this.correos= new ArrayList<>();
+	public void initBase() {
+		this.correos        = new ArrayList<>();
 		this.selectedCorreos= new ArrayList<>();
 	} // initBase
 	
