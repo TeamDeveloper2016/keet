@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -135,13 +136,14 @@ public class Transaccion extends IBaseTnx {
 			key= DaoFactory.getInstance().insert(sesion, dto);
 			if(this.processPuntosContratistas(sesion, idUsuario, key)) {				
 				dto.setPorcentaje(this.factorAcumulado);
-				dto.setCosto((estacion.getCosto() * this.factorAcumulado) / 100);
+				dto.setCosto((estacion.getCosto()* this.factorAcumulado)/ 100);
 				//dto.setIdEstacionEstatus(toIdEstacionEstatus(estacion, dto.getCosto(), true));
 				dto.setIdEstacionEstatus(this.toIdEstacionEstatus());
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
 					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
-					params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) + dto.getCosto());										
+          String columna= "cargo".concat(dto.getSemana().toString());
+					params.put(columna, (estacion.toValue(columna)!= null? ((Double)estacion.toValue(columna)): 0D)+ dto.getCosto());										
 					if(inicioTrabajo) {
 						this.actualizaInicioContratoLote(sesion, true);
 						//params.put("abono".concat(dto.getSemana().toString()), dto.getCosto());
@@ -494,7 +496,7 @@ public class Transaccion extends IBaseTnx {
 		TcKeetContratosLotesDto contratoLote= null;
 		try {
 			contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, idContratoLote);
-			contratoLote.setArranque(inicio ? LocalDate.now() : null);			
+			contratoLote.setArranque(inicio? LocalDate.now(): null);			
 			DaoFactory.getInstance().update(sesion, contratoLote);
 		} // try
 		catch (Exception e) {
@@ -506,30 +508,52 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar                = true;
 		Estaciones estaciones           = null;
 		List<TcKeetEstacionesDto> padres= null;
+    TcKeetEstacionesDto padre       = null;
 		List<TcKeetEstacionesDto> hijos = null;
-		Map<String, Object>params       = null;
-		int count                       = 0;
+		int terminados, iniciar         = 0;
+    Long idEstacionEstatus          = 1L;
+    Double value                    = 0D;
 		try {			
-			params= new HashMap<>();
-			estaciones= new Estaciones();
-			padres= estaciones.toFather(hijo.getClave());			
-			for(TcKeetEstacionesDto padre: padres){
-				count=0;
-				hijos= estaciones.toAllChildren(padre.getClave(), new Long(padre.getNivel()+1L).intValue());
-				for(TcKeetEstacionesDto hijorecord: hijos){
-					if(hijorecord.getIdEstacionEstatus().equals(EEstacionesEstatus.TERMINADO.getKey()))
-						count++;
-				} // for
-				if(hijos.size()>0)
-					params.put("idEstacionEstatus", count== hijos.size() ? EEstacionesEstatus.TERMINADO.getKey() : EEstacionesEstatus.EN_PROCESO.getKey());				
-				else
-					params.put("idEstacionEstatus", this.idEstatus);				
-				if(alta)
-					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana)) != null ? ((Double)padre.toValue("cargo".concat(semana))) : 0D) + total);								
-				else
-					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana)) != null ? ((Double)padre.toValue("cargo".concat(semana))) : 0D) - total);								
-				DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, padre.getIdEstacion(), params);
-			} // for
+			estaciones= new Estaciones(sesion);
+			padres    = estaciones.toFather(hijo.getClave());			
+      if(padres!= null && !padres.isEmpty()) {
+        padres.remove(padres.size()- 1);
+        int index= padres.size()- 1;
+        while(index>= 0) {
+          padre     = padres.get(index);
+          terminados= 0;
+          iniciar   = 0;
+          hijos     = estaciones.toChildren(padre.getClave(), padre.getNivel().intValue(), 1);
+          if(hijos!= null && !hijos.isEmpty()) {
+            for(TcKeetEstacionesDto item: hijos) {
+              switch(item.getIdEstacionEstatus().intValue()) {
+                case 3: // EEstacionesEstatus.TERMINADO
+                  terminados++;
+                  break;
+                case 1: // EEstacionesEstatus.EN_PROCESO
+                  iniciar++;
+                  break;
+              } // switch
+            } // for
+            idEstacionEstatus= terminados== hijos.size()? EEstacionesEstatus.TERMINADO.getKey(): iniciar== hijos.size()? EEstacionesEstatus.INICIAR.getKey(): EEstacionesEstatus.EN_PROCESO.getKey();
+            padre.setIdEstacionEstatus(idEstacionEstatus);
+            String columna= "cargo".concat(semana);
+            if(alta)
+              value= (padre.toValue(columna)!= null? ((Double)padre.toValue(columna)): 0D)+ total;
+            else
+              value= (padre.toValue(columna)!= null? ((Double)padre.toValue(columna)): 0D)- total;
+            Methods.setValue(padre, columna, new Object[] {value});
+            DaoFactory.getInstance().update(sesion, padre);
+            // ACTUALIZAR EL ESTATUS DEL LOTE DEL CONTRATO CON EL AVANCE
+            if(Objects.equals(padre.getNivel(), 4L)) {
+			        TcKeetContratosLotesDto contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, this.revision.getIdContratoLote());
+			        contratoLote.setIdContratoLoteEstatus(Objects.equals(EEstacionesEstatus.TERMINADO.getKey(), idEstacionEstatus)? idEstacionEstatus+ 1L: idEstacionEstatus);			
+			        DaoFactory.getInstance().update(sesion, contratoLote);
+            } // if
+          } // if  
+          index--;
+        } // for
+      } // if
 		} // try
 		catch (Exception e) {			
 			throw e; 
@@ -548,7 +572,7 @@ public class Transaccion extends IBaseTnx {
 		String clave                     = null;
 		try {
 			estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.conceptoExtra.getIdEstacion());
-			estaciones= new Estaciones();			
+			estaciones= new Estaciones(sesion);			
 			list= estaciones.toAllChildren(estacion.getClave(), estacion.getNivel().intValue()+1);			
 			clave= estaciones.toNextKey(list.get(list.size()-1).getClave(), estacion.getNivel().intValue()+1);
 			estacionClon= (TcKeetEstacionesDto) estacion.clone();

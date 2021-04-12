@@ -170,7 +170,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   }
   
 	private void toLoadManzanas() {
-    Map<String, Object> params= null;
+    Map<String, Object> params   = null;
 		List<UISelectEntity> manzanas= null;
     try {      
       params = new HashMap<>();      

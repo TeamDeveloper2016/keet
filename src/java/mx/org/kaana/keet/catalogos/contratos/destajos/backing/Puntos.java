@@ -162,8 +162,8 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
     String regresar        = null;    		
 		Transaccion transaccion= null;		
     try {						
-			if(this.selecteds.length>= 1) {				
-				transaccion= new Transaccion(this.loadRevision(), this.selecteds.length== Integer.valueOf(this.attrs.get("totalRegistros").toString()) ? EEstacionesEstatus.TERMINADO.getKey() : EEstacionesEstatus.EN_PROCESO.getKey());
+			if(this.selecteds.length> 0) {				
+				transaccion= new Transaccion(this.loadRevision(), this.selecteds.length== (Integer)this.attrs.get("totalRegistros")? EEstacionesEstatus.TERMINADO.getKey(): EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.PROCESAR)) {
 					JsfBase.addMessage("Captura de puntos de revisión", "Se realizó la captura de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= this.doCancelar();
@@ -175,25 +175,26 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 				JsfBase.addMessage("Captura de puntos de revisión", "Es necesario seleccionar por lo menos un punto de revisión.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
-			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
+			JsfBase.addMessageError(e);
 		} // catch		
     return regresar;
   } // doAceptar
 	
-	private Revision loadRevision(){
+	private Revision loadRevision() {
 		Revision regresar  = null;
 		Entity figura      = null;
 		Entity seleccionado= null;
 		Long idFigura      = -1L;
 		try {
 			regresar= new Revision();
-			figura  = (Entity) this.attrs.get("figura");
-			seleccionado= (Entity) this.attrs.get("seleccionadoPivote");
-			idFigura= figura.toLong("tipo").equals(1L) ? seleccionado.toLong("idContratoLoteContratista") : seleccionado.toLong("idContratoLoteProveedor");
+			figura  = (Entity)this.attrs.get("figura");
+			seleccionado= (Entity)this.attrs.get("seleccionadoPivote");
+			idFigura= figura.toLong("tipo").equals(1L)? seleccionado.toLong("idContratoLoteContratista"): seleccionado.toLong("idContratoLoteProveedor");
 			regresar.setIdFigura(idFigura);
 			regresar.setTipo(figura.toLong("tipo"));
 			regresar.setIdEstacion(((Entity) this.attrs.get("concepto")).getKey());
+      // AQUI VAN LOS PUNTOS QUE FUERON MARCADOS CON SUS PORCENTAJES
 			regresar.setPuntosRevision(this.selecteds);
 			regresar.setLatitud((String)this.attrs.get("latitud")); 
 			regresar.setLongitud((String)this.attrs.get("longitud"));
@@ -222,8 +223,8 @@ public class Puntos extends IBaseFilterMultiple implements Serializable {
 			regresar= "conceptos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
-			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
+			JsfBase.addMessageError(e);
 		} // catch		
     return regresar;
   } // doCancelar		
