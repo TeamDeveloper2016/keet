@@ -19,6 +19,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.mantenimiento.temas.backing.TemaActivo;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
+import mx.org.kaana.keet.test.Proceso;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
@@ -120,4 +121,17 @@ public class Control extends IBaseAttribute implements Serializable {
     return regresar;
   } // enviarCorreo
 
+  public String doProcesar() {
+    try {
+      Proceso proceso= new Proceso(29L);
+      proceso.ejecutar(EAccion.ACTIVAR);
+      LOG.info("Ok.");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessage(UIMessage.toMessage("error_solicitud"));
+    } // catch   
+    return null;
+  }
+  
 }

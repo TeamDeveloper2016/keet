@@ -255,7 +255,7 @@
               <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
                 <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del lote
               </div>
-              <p:dataTable lazy="false" id="tablaDetalleLotes" var="row" widgetVar="kajoolTableLote" rowIndexVar="index" value="#{kajoolContratos.attrs.tablaDetalleLotes}" paginator="#{kajoolContratos.attrs.tablaDetalleLotes.size() gt 10}" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
+              <p:dataTable lazy="false" id="tablaDetalleLotes" var="row" widgetVar="kajoolTableLote" rowIndexVar="index" value="#{kajoolContratos.attrs.tablaDetalleLotes}" paginator="#{kajoolContratos.attrs.tablaDetalleLotes.size() gt 10}" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}" rowStyleClass="#{kajoolContratos.doColor(row)}">
                 <p:column styleClass="janal-wid-15 janal-column-left Responsive">
                   <f:facet name="header">
                     <h:outputText value="Código"/>
@@ -264,15 +264,15 @@
                 </p:column>
                 <p:column styleClass="Responsive" >
                   <f:facet name="header">
-                    <h:outputText value="Concepto" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-purple': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
+                    <h:outputText value="Concepto"/>
                   </f:facet>
-                  <h:outputText value="#{row.descripcion}" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-purple': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
+                  <h:outputText value="#{row.descripcion}"/>
                 </p:column>
                 <p:column styleClass="janal-wid-18 Responsive" >
                   <f:facet name="header">
                     <h:outputText value="Estatus"/>
                   </f:facet>
-                  <h:outputText value="#{row.estatus}" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-purple': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
+                  <h:outputText value="#{row.estatus}" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-black': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
                 </p:column>                    
                 <f:facet name="footer">
                   <p:outputLabel value="Total [#{kajoolContratos.attrs.tablaDetalleLotes.size()}] registros"/>

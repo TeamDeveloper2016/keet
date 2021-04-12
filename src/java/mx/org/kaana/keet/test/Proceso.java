@@ -5,12 +5,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Variables;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
 
 /**
  * @company KAANA
@@ -19,60 +24,109 @@ import org.apache.commons.logging.LogFactory;
  * @time 03:04:50 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-public class Proceso {
+public class Proceso extends IBaseTnx {
 
   private static final Log LOG = LogFactory.getLog(Proceso.class);
+  private Long idContrato;
   
+  public Proceso(Long idContrato) {
+    this.idContrato= idContrato;
+  }
+
   /**
    * @param args the command line arguments
    */
   public static void main(String[] args) throws Exception {
+    Proceso proceso= new Proceso(28L);
+    proceso.ejecutar(EAccion.ACTIVAR);
+  }
+
+  @Override
+  protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		List<TcKeetEstacionesDto> padres= null;
-    TcKeetEstacionesDto padre       = null;
-		List<TcKeetEstacionesDto> hijos = null;
     Estaciones estaciones           = null;
-		int terminados, iniciar         = 0;
-    Long idEstacionEstatus          = 1L;
 		try {			
-      TcKeetEstacionesDto hijo= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, 53580L);
-			estaciones= new Estaciones();
-			padres    = estaciones.toFather(hijo.getClave());			
-      if(padres!= null && !padres.isEmpty()) {
-        padres.remove(padres.size()- 1);
-        int index= padres.size()- 1;
-        while(index>= 0) {
-          padre     = padres.get(index);
-          terminados= 0;
-          iniciar   = 0;
-          hijos     = estaciones.toChildren(padre.getClave(), padre.getNivel().intValue(), 1);
-          if(hijos!= null && !hijos.isEmpty()) {
-            for(TcKeetEstacionesDto item: hijos) {
-              switch(item.getIdEstacionEstatus().intValue()) {
-                case 3: // EEstacionesEstatus.TERMINADO
-                  terminados++;
-                  break;
-                case 1: // EEstacionesEstatus.EN_PROCESO
-                  iniciar++;
-                  break;
-              } // switch
+      List<TcKeetContratosLotesDto> lotes= (List<TcKeetContratosLotesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKeetContratosLotesDto.class, "TcKeetContratosLotesDto", "byContrato", Variables.toMap("idContrato~"+ this.idContrato));
+      if(lotes!= null && !lotes.isEmpty()) {
+        estaciones= new Estaciones(sesion);
+        for (TcKeetContratosLotesDto lote: lotes) {
+          String clave= "001"+ "2021"+ Cadena.rellenar(this.idContrato.toString(), 3, '0', true)+ Cadena.rellenar(lote.getOrden().toString(), 3, '0', true);
+          padres= estaciones.toChildren(clave, 4);			
+          if(padres!= null && !padres.isEmpty()) {
+            for (TcKeetEstacionesDto padre: padres) {
+              LOG.error("["+ padre.getNivel()+ "] "+ padre.getCodigo()+ " "+ padre.getNombre()+ " "+ padre.getClave());
+              this.partidas(sesion, estaciones, padre, lote.getIdContratoLote());
             } // for
-            idEstacionEstatus= terminados== hijos.size()? EEstacionesEstatus.TERMINADO.getKey(): iniciar== hijos.size()? EEstacionesEstatus.INICIAR.getKey(): EEstacionesEstatus.EN_PROCESO.getKey();
-            padre.setIdEstacionEstatus(idEstacionEstatus);
-           // DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, padre);
-           // ACTUALIZAR EL ESTATUS DEL LOTE DEL CONTRATO CON EL AVANCE
-           if(Objects.equals(padre.getNivel(), 4L)) {
-//			      TcKeetContratosLotesDto contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, this.revision.getIdContratoLote());
-//			      contratoLote.setIdContratoLoteEstatus(Objects.equals(EEstacionesEstatus.TERMINADO.getKey(), idEstacionEstatus)? idEstacionEstatus+ 1L: idEstacionEstatus);			
-//			      DaoFactory.getInstance().update(sesion, contratoLote);
-           } // if
-          } // if  
-          index--;
-        } // for
+          } // if
+        } // for  
       } // if
 		} // try
 		catch (Exception e) {			
 			throw e; 
 		} // catch		
+    return true;
   }
 
+  private void partidas(Session sesion, Estaciones estaciones, TcKeetEstacionesDto padre, Long idContratoLote) throws Exception  {
+		List<TcKeetEstacionesDto> hijos= null;
+		int terminados, iniciar        = 0;
+    Long idEstacionEstatus         = 1L;
+    try {
+      hijos= estaciones.toChildren(padre.getClave(), padre.getNivel().intValue(), 1);
+      if(hijos!= null && !hijos.isEmpty()) {
+        terminados= 0;
+        iniciar   = 0;
+        for(TcKeetEstacionesDto item: hijos) {
+          this.conceptos(sesion, estaciones, item);
+          switch(item.getIdEstacionEstatus().intValue()) {
+            case 3: // EEstacionesEstatus.TERMINADO
+              terminados++;
+              break;
+            case 1: // EEstacionesEstatus.EN_PROCESO
+              iniciar++;
+              break;
+          } // switch
+        } // for
+        idEstacionEstatus= terminados== hijos.size()? EEstacionesEstatus.TERMINADO.getKey(): iniciar== hijos.size()? EEstacionesEstatus.INICIAR.getKey(): EEstacionesEstatus.EN_PROCESO.getKey();
+        padre.setIdEstacionEstatus(idEstacionEstatus);
+        DaoFactory.getInstance().update(sesion, padre);
+        TcKeetContratosLotesDto contratoLote= (TcKeetContratosLotesDto) DaoFactory.getInstance().findById(sesion, TcKeetContratosLotesDto.class, idContratoLote);
+        contratoLote.setIdContratoLoteEstatus(Objects.equals(EEstacionesEstatus.TERMINADO.getKey(), idEstacionEstatus)? idEstacionEstatus+ 1L: idEstacionEstatus);			
+        DaoFactory.getInstance().update(sesion, contratoLote);
+      } // if  
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+  }
+  
+  private void conceptos(Session sesion, Estaciones estaciones, TcKeetEstacionesDto padre) throws Exception  {
+		List<TcKeetEstacionesDto> hijos= null;
+		int terminados, iniciar        = 0;
+    Long idEstacionEstatus         = 1L;
+    try {
+      hijos= estaciones.toChildren(padre.getClave(), padre.getNivel().intValue(), 1);
+      if(hijos!= null && !hijos.isEmpty()) {
+        terminados= 0;
+        iniciar   = 0;
+        for(TcKeetEstacionesDto item: hijos) {
+          switch(item.getIdEstacionEstatus().intValue()) {
+            case 3: // EEstacionesEstatus.TERMINADO
+              terminados++;
+              break;
+            case 1: // EEstacionesEstatus.EN_PROCESO
+              iniciar++;
+              break;
+          } // switch
+        } // for
+        idEstacionEstatus= terminados== hijos.size()? EEstacionesEstatus.TERMINADO.getKey(): iniciar== hijos.size()? EEstacionesEstatus.INICIAR.getKey(): EEstacionesEstatus.EN_PROCESO.getKey();
+        padre.setIdEstacionEstatus(idEstacionEstatus);
+        DaoFactory.getInstance().update(sesion, padre);
+      } // if  
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+  }
+  
 }

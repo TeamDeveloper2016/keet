@@ -842,5 +842,9 @@ public class Contratos extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }
+
+	public String doColor(Entity row) {
+		return row.toString("codigo").startsWith("#")? "janal-tr-error janal-color-white": "";
+	}
   
 }
