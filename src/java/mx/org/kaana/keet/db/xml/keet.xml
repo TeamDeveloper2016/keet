@@ -1771,6 +1771,24 @@
       </select>
     </unit>		
     <unit id="TcKeetEstacionesDto">
+      <select id="totales">
+        select
+          tc_keet_estaciones.id_estacion as id_key,
+          sum(case when tc_keet_estaciones.id_estacion_estatus = 1 then 1 else 0 end) as iniciados,
+          sum(case when tc_keet_estaciones.id_estacion_estatus = 2 then 1 else 0 end) as en_proceso,
+          sum(case when tc_keet_estaciones.id_estacion_estatus = 3 then 1 else 0 end) as terminados,
+          sum(case when tc_keet_estaciones.id_estacion_estatus = 4 then 1 else 0 end) as cancelados,
+          count(*) as total
+        from
+          tc_keet_estaciones         
+        where
+          clave like '{clave}%' 
+          and nivel= {nivel}
+        group by
+          substring(tc_keet_estaciones.clave, 1, {longitud})
+        order by
+           clave        
+      </select>  
       <select id="row">
         select      
           tc_keet_estaciones.id_estacion as id_key,
@@ -1824,8 +1842,7 @@
           tc_keet_estaciones
         where 
           clave like '{clave}%'
-				and
-					nivel &gt;= {nivel}
+				  and nivel &gt;= {nivel}
       </select>
 			 <select id="maxClave">
         select      
@@ -1844,8 +1861,7 @@
           tc_keet_estaciones
         where 
           clave like '{clave}%'
-				and
-					nivel = {nivel}
+				  and nivel = {nivel}
       </select>
 			<delete id="rows">
 				delete

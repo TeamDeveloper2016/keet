@@ -194,7 +194,7 @@ public class Transaccion extends IBaseTnx {
 						//params.put("abono".concat(dto.getSemana().toString()), dto.getCosto());
 					} // if
 					if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
-						regresar= actualizaEstacionPadre(sesion, estacion, dto.getCosto(), dto.getSemana().toString(), true);											
+						regresar= this.actualizaEstacionPadre(sesion, estacion, dto.getCosto(), dto.getSemana().toString(), true);											
 				} // if
 			} // if
 		} // try
@@ -284,7 +284,7 @@ public class Transaccion extends IBaseTnx {
 							//params.put("abono".concat(dto.getSemana().toString()), 0D);
 						} // if
 						if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
-							regresar= actualizaEstacionPadre(sesion, estacion, costo, dto.getSemana().toString(), false);											
+							regresar= this.actualizaEstacionPadre(sesion, estacion, costo, dto.getSemana().toString(), false);											
 					} // if
 				} // if
 			}
@@ -509,33 +509,25 @@ public class Transaccion extends IBaseTnx {
 		Estaciones estaciones           = null;
 		List<TcKeetEstacionesDto> padres= null;
     TcKeetEstacionesDto padre       = null;
-		List<TcKeetEstacionesDto> hijos = null;
-		int terminados, iniciar         = 0;
     Long idEstacionEstatus          = 1L;
     Double value                    = 0D;
+		Map<String, Object>params       = null;
 		try {			
+      params    = new HashMap<>();
 			estaciones= new Estaciones(sesion);
 			padres    = estaciones.toFather(hijo.getClave());			
       if(padres!= null && !padres.isEmpty()) {
         padres.remove(padres.size()- 1);
         int index= padres.size()- 1;
         while(index>= 0) {
-          padre     = padres.get(index);
-          terminados= 0;
-          iniciar   = 0;
-          hijos     = estaciones.toChildren(padre.getClave(), padre.getNivel().intValue(), 1);
-          if(hijos!= null && !hijos.isEmpty()) {
-            for(TcKeetEstacionesDto item: hijos) {
-              switch(item.getIdEstacionEstatus().intValue()) {
-                case 3: // EEstacionesEstatus.TERMINADO
-                  terminados++;
-                  break;
-                case 1: // EEstacionesEstatus.EN_PROCESO
-                  iniciar++;
-                  break;
-              } // switch
-            } // for
-            idEstacionEstatus= terminados== hijos.size()? EEstacionesEstatus.TERMINADO.getKey(): iniciar== hijos.size()? EEstacionesEstatus.INICIAR.getKey(): EEstacionesEstatus.EN_PROCESO.getKey();
+          padre= padres.get(index);
+          String clave= estaciones.toOnlyKey(padre.getClave(), padre.getNivel().intValue()+ 1);
+          params.put("clave", clave);
+          params.put("longitud", clave.length());
+          params.put("nivel", padre.getNivel()+ 1L);
+          Entity row= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetEstacionesDto", "totales", params);
+          if(row!= null && !row.isEmpty()) {
+            idEstacionEstatus= Objects.equals(row.toLong("terminados"), row.toLong("total"))? EEstacionesEstatus.TERMINADO.getKey(): Objects.equals(row.toLong("iniciados"), row.toLong("total"))? EEstacionesEstatus.INICIAR.getKey(): EEstacionesEstatus.EN_PROCESO.getKey();
             padre.setIdEstacionEstatus(idEstacionEstatus);
             String columna= "cargo".concat(semana);
             if(alta)
@@ -558,6 +550,9 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			throw e; 
 		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
 		return regresar;
 	} // actualizaEstacionPadre
 	

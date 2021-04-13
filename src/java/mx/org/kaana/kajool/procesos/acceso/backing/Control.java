@@ -123,7 +123,7 @@ public class Control extends IBaseAttribute implements Serializable {
 
   public String doProcesar() {
     try {
-      Proceso proceso= new Proceso(29L);
+      Proceso proceso= new Proceso(28L);
       proceso.ejecutar(EAccion.ACTIVAR);
       LOG.info("Ok.");
     } // try
