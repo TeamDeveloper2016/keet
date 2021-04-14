@@ -121,26 +121,32 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object>params   = null;
 		boolean inicioTrabajo       = false;
 		try {
+			params= new HashMap<>();
 			estacion     = (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());
 			inicioTrabajo= this.validaInicioTrabajo(sesion, null, true);
-			dto= new TcKeetContratosDestajosContratistasDto();		
-			dto.setIdUsuario(idUsuario);
-			dto.setSemana(this.toSemana());
-			dto.setPeriodo(this.toPeriodo());
-			dto.setIdEstacion(this.revision.getIdEstacion());
-			dto.setIdContratoLoteContratista(this.revision.getIdFigura());
-			dto.setIdNomina(null);
-			dto.setCosto(0D);
-			dto.setPorcentaje(0D);
-			dto.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
-			key= DaoFactory.getInstance().insert(sesion, dto);
+			params.put("idEstacion", this.revision.getIdEstacion());
+			params.put("idContratoLoteContratista", this.revision.getIdFigura());
+      dto= (TcKeetContratosDestajosContratistasDto) DaoFactory.getInstance().toEntity(sesion, TcKeetContratosDestajosContratistasDto.class, "TcKeetContratosDestajosContratistasDto", "destajo", params);
+      if(dto== null) {
+			  dto= new TcKeetContratosDestajosContratistasDto();		
+			  dto.setIdUsuario(idUsuario);
+			  dto.setSemana(this.toSemana());
+			  dto.setPeriodo(this.toPeriodo());
+			  dto.setIdEstacion(this.revision.getIdEstacion());
+			  dto.setIdContratoLoteContratista(this.revision.getIdFigura());
+			  dto.setIdNomina(null);
+			  dto.setCosto(0D);
+			  dto.setPorcentaje(0D);
+			  dto.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
+  			key= DaoFactory.getInstance().insert(sesion, dto);
+      } // if  
+      else
+        key= dto.getKey();
 			if(this.processPuntosContratistas(sesion, idUsuario, key)) {				
-				dto.setPorcentaje(this.factorAcumulado);
-				dto.setCosto((estacion.getCosto()* this.factorAcumulado)/ 100);
-				//dto.setIdEstacionEstatus(toIdEstacionEstatus(estacion, dto.getCosto(), true));
+				dto.setPorcentaje(dto.getPorcentaje()+ this.factorAcumulado);
+				dto.setCosto(dto.getCosto()+ ((estacion.getCosto()* this.factorAcumulado)/ 100));
 				dto.setIdEstacionEstatus(this.toIdEstacionEstatus());
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
-					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
           String columna= "cargo".concat(dto.getSemana().toString());
 					params.put("cargo", estacion.getCargo()+ dto.getCosto());										
