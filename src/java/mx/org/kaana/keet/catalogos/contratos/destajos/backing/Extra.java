@@ -62,8 +62,8 @@ public class Extra extends IBaseAttribute implements Serializable {
 			this.attrs.put("idDepartamento", idDepartamento);      			
 			this.attrs.put("descripcionEstacion", "");      			
 			this.attrs.put("importeEstacion", 0L);      			
-			loadCatalogos();						
-			doLoad();			
+			this.loadCatalogos();						
+			this.doLoad();			
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -71,7 +71,7 @@ public class Extra extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos(){
+	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
 		Map<String, Object>params= null;
@@ -81,7 +81,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
 			this.attrs.put("contrato", contrato);
 			params.clear();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(((Entity)this.attrs.get("seleccionadoPivote")).getKey().toString()));
+			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote="+ ((Entity)this.attrs.get("seleccionadoPivote")).getKey());
 			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
 			this.attrs.put("contratoLote", contratoLote);
 		} // try
@@ -118,7 +118,7 @@ public class Extra extends IBaseAttribute implements Serializable {
     } // finally		
   } // doLoad	  	
 	
-	private String toClaveEstacion(){
+	private String toClaveEstacion() {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
@@ -165,7 +165,7 @@ public class Extra extends IBaseAttribute implements Serializable {
     return regresar;
   } // doPagina
 	
-	private ConceptoExtra loadConceptoExtra(){
+	private ConceptoExtra loadConceptoExtra() {
 		ConceptoExtra regresar        = null;
 		List<UISelectEntity> conceptos= null;
 		UISelectEntity concepto       = null;
@@ -190,6 +190,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 			regresar.setLatitud((String)this.attrs.get("latitud")); 
 			regresar.setLongitud((String)this.attrs.get("longitud"));
 			regresar.setMetros(this.toDistance());
+      regresar.setIdContratoLote(((Entity)this.attrs.get("seleccionadoPivote")).getKey());
 		} // try
 		catch (Exception e) {			
 			throw e;
