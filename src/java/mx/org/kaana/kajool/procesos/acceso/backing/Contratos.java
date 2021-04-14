@@ -471,7 +471,7 @@ public class Contratos extends IBaseFilter implements Serializable {
           UIBackingUtilities.update("especificacion");
           UIBackingUtilities.update("tablaDetalle".concat(Cadena.letraCapital(itemSelected.getChart())));
           UIBackingUtilities.execute("onOffSwitchTable('mapa', true);");
-          UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "'}}});");
+          UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombre"+ Cadena.letraCapital(itemSelected.getChart())+ ":'"+ itemSelected.getName()+ "-"+ this.contrato.toLong("secuencia")+ "'}}});");
           if(!Objects.equals("local", itemSelected.getSeriesId())) {
             this.loadEvidencias(this.contrato);
             this.loadAvances(this.contrato);
