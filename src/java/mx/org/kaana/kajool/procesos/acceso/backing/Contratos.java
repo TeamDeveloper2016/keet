@@ -622,6 +622,8 @@ public class Contratos extends IBaseFilter implements Serializable {
 				importado.put("url", new Value("url", url));
 			} // for
 			this.attrs.put("importados", importados);
+      UIBackingUtilities.update("evidencias");
+      UIBackingUtilities.execute("reloadEvidencias();");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

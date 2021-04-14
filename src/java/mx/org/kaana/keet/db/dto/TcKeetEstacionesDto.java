@@ -282,6 +282,8 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable, Cloneable {
   private Double abono28;
   @Column (name="abono_29")
   private Double abono29;
+  @Column (name="cargo")
+  private Double cargo;
 
   public TcKeetEstacionesDto() {
     this(new Long(-1L));
@@ -291,7 +293,7 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable, Cloneable {
     this(new Long(-1L), 1L, 6L, null, null, 1L, null, 2L, 1L, null, -1L, LocalDate.now(), LocalDate.now(), 1D, 0D,
             0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 
             0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D,
-            0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
+            0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
     setKey(key);
   }
 
@@ -309,7 +311,7 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable, Cloneable {
           Double cargo36, Double cargo37, Double abono10, Double abono11, Double abono12, Double abono13, Double abono14, Double abono15, Double abono16, 
           Double abono17, Double abono18, Double abono19, Double cargo52, Double cargo53, Double cargo54, Double cargo55, Double abono30, Double abono31, 
           Double abono32, Double abono33, Double abono34, Double abono35, Double abono36, Double abono37, Double abono38, Double abono39, Double abono20, 
-          Double abono21, Double abono22) {
+          Double abono21, Double abono22, Double cargo) {
     setInicio(inicio);
     setAbono50(abono50);
     setAbono51(abono51);
@@ -436,6 +438,7 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable, Cloneable {
     setAbono27(abono27);
     setAbono28(abono28);
     setAbono29(abono29);
+    this.cargo= cargo;
   }
 	
   public void setInicio(LocalDate inicio) {
@@ -1457,6 +1460,14 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable, Cloneable {
   	this.idEstacion = key;
   }
 
+  public Double getCargo() {
+    return cargo;
+  }
+
+  public void setCargo(Double cargo) {
+    this.cargo = cargo;
+  }
+
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
@@ -1712,6 +1723,8 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable, Cloneable {
 		regresar.append(getAbono28());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getAbono29());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCargo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -1845,13 +1858,14 @@ public class TcKeetEstacionesDto implements IBaseDto, Serializable, Cloneable {
 		regresar.put("abono27", getAbono27());
 		regresar.put("abono28", getAbono28());
 		regresar.put("abono29", getAbono29());
+		regresar.put("cargo", getCargo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getInicio(), getAbono50(), getAbono51(), getAbono52(), getAbono53(), getAbono54(), getCargo27(), getAbono55(), getCargo28(), getCargo29(), getIdEstacion(), getCargo20(), getCargo21(), getCargo22(), getCargo23(), getCargo24(), getCargo25(), getCargo26(), getUltimo(), getAbono40(), getAbono41(), getAbono42(), getAbono43(), getCargo16(), getAbono44(), getCargo17(), getAbono45(), getCargo18(), getAbono46(), getCargo19(), getAbono47(), getAbono48(), getAbono49(), getCargo10(), getCargo11(), getCargo12(), getNivel(), getCargo13(), getCargo14(), getCargo15(), getCargo50(), getCargo51(), getCargo49(), getCargo41(), getCargo42(), getCargo43(), getCargo44(), getCargo45(), getCargo46(), getCargo47(), getCargo48(), getAbono7(), getAbono6(), getClave(), getAbono5(), getAbono4(), getAbono3(), getAbono2(), getIdEmpaqueUnidadMedida(), getAbono1(), getCargo40(), getCargo2(), getCargo1(), getAbono9(), getAbono8(), getCargo8(), getCargo38(), getCargo7(), getCargo39(), getCargo9(), getCargo4(), getCargo3(), getIdUsuario(), getCargo6(), getIdPlantilla(), getCargo5(), getCargo30(), getCargo31(), getCargo32(), getCargo33(), getCargo34(), getCargo35(), getCargo36(), getCargo37(), getDescripcion(), getAbono10(), getAbono11(), getAbono12(), getAbono13(), getAbono14(), getAbono15(), getAbono16(), getAbono17(), getAbono18(), getAbono19(), getCodigo(), getCargo52(), getCargo53(), getCargo54(), getCantidad(), getCargo55(), getIdEstacionEstatus(), getNombre(), getAbono30(), getAbono31(), getAbono32(), getAbono33(), getAbono34(), getAbono35(), getAbono36(), getAbono37(), getAbono38(), getAbono39(), getTermino(), getCosto(), getAbono20(), getAbono21(), getRegistro(), getAbono22(), getAbono23(), getAbono24(), getAbono25(), getAbono26(), getAbono27(), getAbono28(), getAbono29()
+      getInicio(), getAbono50(), getAbono51(), getAbono52(), getAbono53(), getAbono54(), getCargo27(), getAbono55(), getCargo28(), getCargo29(), getIdEstacion(), getCargo20(), getCargo21(), getCargo22(), getCargo23(), getCargo24(), getCargo25(), getCargo26(), getUltimo(), getAbono40(), getAbono41(), getAbono42(), getAbono43(), getCargo16(), getAbono44(), getCargo17(), getAbono45(), getCargo18(), getAbono46(), getCargo19(), getAbono47(), getAbono48(), getAbono49(), getCargo10(), getCargo11(), getCargo12(), getNivel(), getCargo13(), getCargo14(), getCargo15(), getCargo50(), getCargo51(), getCargo49(), getCargo41(), getCargo42(), getCargo43(), getCargo44(), getCargo45(), getCargo46(), getCargo47(), getCargo48(), getAbono7(), getAbono6(), getClave(), getAbono5(), getAbono4(), getAbono3(), getAbono2(), getIdEmpaqueUnidadMedida(), getAbono1(), getCargo40(), getCargo2(), getCargo1(), getAbono9(), getAbono8(), getCargo8(), getCargo38(), getCargo7(), getCargo39(), getCargo9(), getCargo4(), getCargo3(), getIdUsuario(), getCargo6(), getIdPlantilla(), getCargo5(), getCargo30(), getCargo31(), getCargo32(), getCargo33(), getCargo34(), getCargo35(), getCargo36(), getCargo37(), getDescripcion(), getAbono10(), getAbono11(), getAbono12(), getAbono13(), getAbono14(), getAbono15(), getAbono16(), getAbono17(), getAbono18(), getAbono19(), getCodigo(), getCargo52(), getCargo53(), getCargo54(), getCantidad(), getCargo55(), getIdEstacionEstatus(), getNombre(), getAbono30(), getAbono31(), getAbono32(), getAbono33(), getAbono34(), getAbono35(), getAbono36(), getAbono37(), getAbono38(), getAbono39(), getTermino(), getCosto(), getAbono20(), getAbono21(), getRegistro(), getAbono22(), getAbono23(), getAbono24(), getAbono25(), getAbono26(), getAbono27(), getAbono28(), getAbono29(), getCargo()
     };
     return regresar;
   }

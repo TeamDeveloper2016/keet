@@ -118,7 +118,7 @@ public class UtilAplicacion {
 
   public String getDefaultCss() {
     StringBuilder sb = new StringBuilder();
-    String[] css = {"sentinel-core-1.0.6.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.2.css|sentinel", CSS.concat("|janal"), "all-5.13.4.min.css|janal", "v4-shims-5.13.1.min.css|janal"};
+    String[] css = {"sentinel-core-1.0.7.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.2.css|sentinel", CSS.concat("|janal"), "all-5.13.4.min.css|janal", "v4-shims-5.13.1.min.css|janal"};
     // String[] css = {"sentinel-core-1.0.3.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.2.css|sentinel", CSS.concat("|janal")};
     for (String item : css) {
       String[] values = item.split("[|]");

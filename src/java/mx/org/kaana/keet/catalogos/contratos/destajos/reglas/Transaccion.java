@@ -143,7 +143,8 @@ public class Transaccion extends IBaseTnx {
 					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
           String columna= "cargo".concat(dto.getSemana().toString());
-					params.put(columna, (estacion.toValue(columna)!= null? ((Double)estacion.toValue(columna)): 0D)+ dto.getCosto());										
+					params.put("cargo", estacion.getCargo()+ dto.getCosto());										
+					params.put(columna, (Double)estacion.toValue(columna)+ dto.getCosto());										
 					if(inicioTrabajo) {
 						this.actualizaInicioContratoLote(sesion, true);
 						//params.put("abono".concat(dto.getSemana().toString()), dto.getCosto());
@@ -188,7 +189,9 @@ public class Transaccion extends IBaseTnx {
 				if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
 					params= new HashMap<>();
 					params.put("idEstacionEstatus", dto.getIdEstacionEstatus());
-					params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) + dto.getCosto());					
+          String columna= "cargo".concat(dto.getSemana().toString());
+					params.put("cargo", estacion.getCargo()+ dto.getCosto());
+					params.put(columna, (Double)estacion.toValue(columna)+ dto.getCosto());										
 					if(inicioTrabajo){
 						actualizaInicioContratoLote(sesion, true);
 						//params.put("abono".concat(dto.getSemana().toString()), dto.getCosto());
@@ -234,8 +237,10 @@ public class Transaccion extends IBaseTnx {
 						params.clear();
 						//params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, costo, false));
 						params.put("idEstacionEstatus", toIdEstacionEstatus());
-						params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString()))!= null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : null) - costo);											
-						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoContratista(), true)){							
+            String columna= "cargo".concat(dto.getSemana().toString());
+            params.put("cargo", estacion.getCargo()- costo);
+            params.put(columna, (Double)estacion.toValue(columna)- costo);										
+						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoContratista(), true)) {
 							this.actualizaInicioContratoLote(sesion, false);
 							//params.put("abono".concat(dto.getSemana().toString()), 0D);
 						} // if
@@ -278,8 +283,10 @@ public class Transaccion extends IBaseTnx {
 						params= new HashMap<>();
 						//params.put("idEstacionEstatus", toIdEstacionEstatus(estacion, dto.getCosto(), false));
 						params.put("idEstacionEstatus", toIdEstacionEstatus());
-						params.put("cargo".concat(dto.getSemana().toString()), (estacion.toValue("cargo".concat(dto.getSemana().toString())) != null ? ((Double)estacion.toValue("cargo".concat(dto.getSemana().toString()))) : 0D) - costo);											
-						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoProveedor(), false)){
+            String columna= "cargo".concat(dto.getSemana().toString());
+            params.put("cargo", estacion.getCargo()- costo);
+            params.put(columna, (Double)estacion.toValue(columna)- costo);										
+						if(validaInicioTrabajo(sesion, dto.getIdContratoDestajoProveedor(), false)) {
 							actualizaInicioContratoLote(sesion, false);
 							//params.put("abono".concat(dto.getSemana().toString()), 0D);
 						} // if
@@ -530,11 +537,9 @@ public class Transaccion extends IBaseTnx {
             idEstacionEstatus= Objects.equals(row.toLong("terminados"), row.toLong("total"))? EEstacionesEstatus.TERMINADO.getKey(): Objects.equals(row.toLong("iniciados"), row.toLong("total"))? EEstacionesEstatus.INICIAR.getKey(): EEstacionesEstatus.EN_PROCESO.getKey();
             padre.setIdEstacionEstatus(idEstacionEstatus);
             String columna= "cargo".concat(semana);
-            if(alta)
-              value= (padre.toValue(columna)!= null? ((Double)padre.toValue(columna)): 0D)+ total;
-            else
-              value= (padre.toValue(columna)!= null? ((Double)padre.toValue(columna)): 0D)- total;
+            value= (padre.toValue(columna)!= null? ((Double)padre.toValue(columna)): 0D)+ (alta? total* 1D: total* -1D);
             Methods.setValue(padre, columna, new Object[] {value});
+            padre.setCargo((padre.getCargo()!= null? padre.getCargo(): 0D)+ (alta? total* 1D: total* -1D));
             DaoFactory.getInstance().update(sesion, padre);
             // ACTUALIZAR EL ESTATUS DEL LOTE DEL CONTRATO CON EL AVANCE
             if(Objects.equals(padre.getNivel(), 4L)) {
@@ -575,8 +580,9 @@ public class Transaccion extends IBaseTnx {
 			estacionClon.setClave(clave);
 			estacionClon.setNivel(estacionClon.getNivel()+1);
 			for(int count=0; count<55; count++){
-				Methods.setValue(estacionClon, "cargo".concat(String.valueOf(count+1)), new Object[]{0D});
-				Methods.setValue(estacionClon, "abono".concat(String.valueOf(count+1)), new Object[]{0D});
+				estacionClon.setCargo(0D);
+				Methods.setValue(estacionClon, "cargo".concat(String.valueOf(count+1)), new Object[]{ 0D });
+				Methods.setValue(estacionClon, "abono".concat(String.valueOf(count+1)), new Object[]{ 0D });
 			} // for
 			estacionClon.setNombre(this.conceptoExtra.getDescripcion());
 			estacionClon.setDescripcion(this.conceptoExtra.getDescripcion());
@@ -585,7 +591,8 @@ public class Transaccion extends IBaseTnx {
 			estacionClon.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
 			estacionClon.setCosto(this.conceptoExtra.getImporte());
 			semana= toSemana().toString();
-			Methods.setValue(estacionClon, "cargo".concat(semana), new Object[]{this.conceptoExtra.getImporte()});
+  		estacionClon.setCargo(this.conceptoExtra.getImporte());
+			Methods.setValue(estacionClon, "cargo".concat(semana), new Object[] {this.conceptoExtra.getImporte()});
 			if(DaoFactory.getInstance().insert(sesion, estacionClon)>= 1L){
 				if(actualizaEstacionPadre(sesion, estacionClon, this.conceptoExtra.getImporte(), semana, true)){
 					if(this.conceptoExtra.getTipo().equals(1L))
