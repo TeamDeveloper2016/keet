@@ -3500,6 +3500,17 @@
           id_contrato_destajo_proveedor = {idContratoDestajoProveedor} 
           and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
       </select>
+      <select id="destajo">
+        select      
+					tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor as id_key,
+          tc_keet_contratos_destajos_proveedores.*
+        from      
+          tc_keet_contratos_destajos_proveedores
+        where 
+          id_estacion= {idEstacion}
+				  and id_contrato_destajo_proveedor= {idContratoLoteProveedor}
+          and id_nomina is null
+      </select>
 			<update id="nomina">
 				update 
 				  tc_keet_contratos_destajos_proveedores 
