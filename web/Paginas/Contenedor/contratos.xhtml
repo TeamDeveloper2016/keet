@@ -61,6 +61,7 @@
       .dashboard .overview-map-box { height: 423px; padding: 0px !important; border: transparent; }  
       .dashboard .keet-gauge-panel { width:100%; height: 40px; display:block; padding-top: 20px;}
       .dashboard .overview-gauge-box { height: 53px; padding: 0px !important; border: transparent; }  
+      .ui-carousel .ui-carousel-header .ui-carousel-header-title {width: 70% !important;}
     </style>
   </ui:define>
   <ui:define name="contenido">
@@ -105,7 +106,7 @@
                   <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Desarrollos disponibles
                 </div>
                 <p:dataTable lazy="false" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolContratos.desarrollos}" paginator="#{kajoolContratos.desarrollos.size() gt 5}" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolContratos.desarrollo}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
-                  <p:ajax event="rowSelect" process="@this tabla" listener="#{kajoolContratos.doUpdateDesarrolloSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="rowSelect" process="@this tabla" listener="#{kajoolContratos.doUpdateDesarrolloSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); onOffSwitchTable('mapa', false);"/>
                   <p:ajax event="rowUnselect" process="@this tabla" listener="#{kajoolContratos.doUpdateDesarrolloUnSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:column styleClass="janal-column-left Responsive">
                     <f:facet name="header">
@@ -196,7 +197,7 @@
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-gauge-box">
                 <div class="Container100 Responsive keet-chart-title">
-                  <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Avance del lote
+                  <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Porcentaje de avance
                 </div>
                 <div class="keet-gauge-panel">
 	  							<p:progressBar id="avanceLote" value="#{kajoolContratos.attrs.porcentaje}" labelTemplate="{value}%" displayOnly="true"/>
@@ -214,7 +215,7 @@
           <div class="ContainerIndent card">
             <p:panel styleClass="overview-map-box">
               <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
-                <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle del lote por estación
+                <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle por estación
               </div>
               <p:dataTable lazy="false" id="tablaDetalleLotes" var="row" widgetVar="kajoolTableLote" rowIndexVar="index" value="#{kajoolContratos.attrs.tablaDetalleLotes}" paginator="#{kajoolContratos.attrs.tablaDetalleLotes.size() gt 10}" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}" rowStyleClass="#{kajoolContratos.doColor(row)}">
                 <p:column styleClass="janal-wid-15 janal-column-left Responsive">
@@ -248,7 +249,7 @@
         <div class="Container35 Responsive overview-box">
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
-              <p:carousel id="evidencias" value="#{kajoolContratos.attrs.importados}" headerText="Galería de foto(s) de los destajos" var="item" circular="true" responsive="true" style="margin-top: 6px; height: 435px;" effect="explode" easing="easeOutBounce" styleClass="overview-map-box">
+              <p:carousel id="evidencias" value="#{kajoolContratos.attrs.importados}" headerText="Galería de foto(s) de los destajos" var="item" circular="true" responsive="true" style="margin-top: 6px; height: 435px;" effect="explode" easing="easeOutBounce" styleClass="overview-map-box" numVisible="1" >
                 <p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;" styleClass="border-color-item">																		
                   <p:graphicImage url="#{item.url}" width="280" height="200"/>											
                   <p:panelGrid columns="1" style="width: 100% !important" columnClasses="janal-column-left, janal-column-left">
