@@ -211,6 +211,7 @@ public class Contratos extends IBaseFilter implements Serializable {
    		  params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "");
         params.put("idNomina", this.nomina.toLong("idNomina"));      
         params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
+        params.put("nomina", this.attrs.get("nombreNomina"));
         Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoPersona", params));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
           StackModel stack= new StackModel(new Title(), multiple);
@@ -249,6 +250,7 @@ public class Contratos extends IBaseFilter implements Serializable {
    		  params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
         params.put("idNomina", this.nomina.toLong("idNomina"));      
         params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
+        params.put("nomina", this.attrs.get("nombreNomina"));
         Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoProveedor", params));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
           StackModel stack= new StackModel(new Title(), multiple);
@@ -475,10 +477,7 @@ public class Contratos extends IBaseFilter implements Serializable {
           if(!Objects.equals("local", itemSelected.getSeriesId())) {
             this.loadEvidencias(this.contrato);
             this.loadAvances(this.contrato);
-            params.put(Constantes.SQL_CONDICION, " concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote)= '"+ itemSelected.getName()+ "'");
-            Entity lote= (Entity)DaoFactory.getInstance().toEntity("VistaTableroDto", "georreferencia", params);
-            if(lote!= null)
-              this.toIcon(lote);
+            this.toChagenIconColor(this.contrato);
           } // if  
           break;
       } // switch
@@ -515,7 +514,7 @@ public class Contratos extends IBaseFilter implements Serializable {
           UIBackingUtilities.toFormatEntitySet(lotes, columns);
           for(Entity lote: lotes) {
             icon  = this.toIcon(lote);
-            marker= new Marker(new LatLng(Double.valueOf(lote.toString("latitud")), Double.valueOf(lote.toString("longitud"))), "Contrato: ".concat(lote.toString("nombre")).concat(", clave: ").concat(lote.toString("nombre")).concat(", lote: ").concat(lote.toString("codigo")), lote, icon);
+            marker= new Marker(new LatLng(Double.valueOf(lote.toString("latitud")), Double.valueOf(lote.toString("longitud"))), "Contrato: ".concat(lote.toString("nombre")).concat(", avance: ").concat(String.valueOf(lote.toInteger("porcentaje"))).concat("%, lote: ").concat(lote.toString("codigo")), lote, icon);
             this.model.addOverlay(marker);
           } // for
           this.attrs.put("coordenadaCentral", lotes.get(0).toString("latitud").concat(",").concat(lotes.get(0).toString("longitud")));				
@@ -538,26 +537,35 @@ public class Contratos extends IBaseFilter implements Serializable {
 		String color             = null;
 		Map<String, Object>params= null;
 		Entity estatus           = null;
+    Integer porcentaje       = 0;
 		try {
-			imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("home-{color}-{orden}.png").concat(".jsf?ln=janal");
-			color= EEstacionesEstatus.INICIAR.getColor();
+			imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("janal-{color}-{orden}.png").concat(".jsf?ln=janal");
 			params= new HashMap<>();			
 			params.put("clave", this.toClaveEstacion(mzaLote));
 			estatus= (Entity) DaoFactory.getInstance().toEntity("VistaGeoreferenciaLotesDto", "estatusManzanaLote", params);
 			if(estatus.toString("total")!= null) {
-				this.attrs.put("porcentaje", new Integer(String.valueOf((estatus.toLong("terminado") * 100)/estatus.toLong("total"))));
-				if(estatus.toLong("total").equals(estatus.toLong("terminado")))
-					color= EEstacionesEstatus.TERMINADO.getColor();
-				else if(estatus.toLong("total").equals(estatus.toLong("iniciado")))
-					color= EEstacionesEstatus.INICIAR.getColor();
-				else
-					color= EEstacionesEstatus.EN_PROCESO.getColor();
+        porcentaje= new Integer(String.valueOf((estatus.toLong("terminado") * 100)/estatus.toLong("total")));
+        /* AQUI COLOCAR LOS COLORES BASADOS EN EL PORCENTAJE DE AVANCE */
+				this.attrs.put("porcentaje", porcentaje);
+        if(porcentaje== 0)
+     			color= "red";
+        else  
+          if(porcentaje> 0 && porcentaje<= 20)
+            color= "cyan";
+          else
+            if(porcentaje>= 21 && porcentaje<= 80)
+              color= "orange";
+            else
+              if(porcentaje>= 81 && porcentaje<= 99)
+                color= "yellow";
+              else
+                color= "green"; 
 			} // if	
-			else
-				this.attrs.put("porcentaje", 0);			
 			params.clear();
 			params.put("color", color);
 			params.put("orden", mzaLote.toString("orden"));
+      mzaLote.put("color", new Value("color", color));
+      mzaLote.put("porcentaje", new Value("porcentaje", porcentaje));
 			regresar= Cadena.replaceParams(imagen, params);
 		} // try
 		finally {
@@ -572,6 +580,7 @@ public class Contratos extends IBaseFilter implements Serializable {
 			marker= (Marker) event.getOverlay();
 			this.loadEvidencias((Entity) marker.getData());
 			this.loadAvances((Entity) marker.getData());
+      this.toChagenIconColor((Entity) marker.getData());
       ItemSelected item= new ItemSelected();
       item.setChart("lotes");
       item.setName(((Entity)marker.getData()).toString("codigo"));
@@ -848,5 +857,36 @@ public class Contratos extends IBaseFilter implements Serializable {
 	public String doColor(Entity row) {
 		return row.toString("codigo").startsWith("#")? "janal-tr-error janal-color-white": "";
 	}
+
+  private void toChagenIconColor(Entity entity) throws Exception {
+    String icon  = null;
+    Entity marker= null;
+		String imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("janal-{color}-{orden}.png").concat(".jsf?ln=janal");
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      for (Marker item: this.model.getMarkers()) {
+        marker= (Entity)item.getData();
+  			params.put("color", marker.toString("color"));
+	  		params.put("orden", marker.toLong("orden"));
+        if(Objects.equals(entity.toString("codigo"), marker.toString("codigo"))) {
+  	  		params.put("color", "blue");
+          icon= Cadena.replaceParams(imagen, params);
+          this.attrs.put("porcentaje", marker.toInteger("porcentaje"));
+          this.attrs.put("coordenadaCentral", String.valueOf(item.getLatlng().getLat()).concat(",").concat(String.valueOf(item.getLatlng().getLng())));          
+        } // if
+        else 
+          icon= Cadena.replaceParams(imagen, params);        
+        item.setIcon(icon);
+      } // for
+      UIBackingUtilities.update("mapa");
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
 }

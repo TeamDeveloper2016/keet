@@ -8,7 +8,7 @@
 			<select id="costoPersona">
 				select 
 				  tc_keet_contratos_lotes_contratistas.id_empresa_persona as id_key, 
-          concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt;10, '0', ''), tc_keet_nominas_periodos.orden) as category,
+          ifnull(concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt;10, '0', ''), tc_keet_nominas_periodos.orden), '{nomina}') as category,
 				  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as serie,
 				  sum(tc_keet_contratos_destajos_contratistas.costo) as value
 				from
@@ -49,7 +49,7 @@
 			<select id="costoProveedor">
 				select 
 				  tc_keet_contratos_lotes_proveedores.id_proveedor as id_key, 
-          concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt;10, '0', ''), tc_keet_nominas_periodos.orden) as category,
+          ifnull(concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt;10, '0', ''), tc_keet_nominas_periodos.orden), '{nomina}') as category,
 				  tc_mantic_proveedores.razon_social as serie,
 				  sum(tc_keet_contratos_destajos_proveedores.costo) as value
 				from
@@ -196,6 +196,7 @@
 					tc_keet_contratos_lotes.latitud,
 					tc_keet_contratos_lotes.longitud,
           tc_keet_contratos_lotes.orden as secuencia,
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as codigo,
           tc_keet_prototipos.nombre as prototipo
         from
           tc_keet_contratos

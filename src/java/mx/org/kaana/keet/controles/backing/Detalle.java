@@ -118,7 +118,7 @@ public class Detalle extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
 		Entity estatus           = null;
 		try {
-			imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("home-{color}-{orden}.png").concat(".jsf?ln=janal");
+			imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("janal-{color}-{orden}.png").concat(".jsf?ln=janal");
 			color= EEstacionesEstatus.INICIAR.getColor();
 			params= new HashMap<>();			
 			params.put("clave", this.attrs.get("clave"));

@@ -505,6 +505,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
         params.put("idProveedor", figura.getKey().toString().substring(4));
         params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+        params.put("nomina", "PreNomina");
         params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
         columns= new ArrayList<>();
         columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
