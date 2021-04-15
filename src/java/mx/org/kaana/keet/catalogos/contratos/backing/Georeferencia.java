@@ -153,26 +153,35 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		String color             = null;
 		Map<String, Object>params= null;
 		Entity estatus           = null;
+    Integer porcentaje       = 0;
 		try {
 			imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("janal-{color}-{orden}.png").concat(".jsf?ln=janal");
-			color= EEstacionesEstatus.INICIAR.getColor();
 			params= new HashMap<>();			
-			params.put("clave", toClaveEstacion(mzaLote));
+			params.put("clave", this.toClaveEstacion(mzaLote));
 			estatus= (Entity) DaoFactory.getInstance().toEntity("VistaGeoreferenciaLotesDto", "estatusManzanaLote", params);
 			if(estatus.toString("total")!= null) {
-				this.attrs.put("porcentaje", new Integer(String.valueOf((estatus.toLong("terminado") * 100)/estatus.toLong("total"))));
-				if(estatus.toLong("total").equals(estatus.toLong("terminado")))
-					color= EEstacionesEstatus.TERMINADO.getColor();
-				else if(estatus.toLong("total").equals(estatus.toLong("iniciado")))
-					color= EEstacionesEstatus.INICIAR.getColor();
-				else
-					color= EEstacionesEstatus.EN_PROCESO.getColor();
+        porcentaje= new Integer(String.valueOf((estatus.toLong("terminado") * 100)/estatus.toLong("total")));
+        /* AQUI COLOCAR LOS COLORES BASADOS EN EL PORCENTAJE DE AVANCE */
+				this.attrs.put("porcentaje", porcentaje);
+        if(porcentaje== 0)
+     			color= "red";
+        else  
+          if(porcentaje> 0 && porcentaje<= 20)
+            color= "cyan";
+          else
+            if(porcentaje>= 21 && porcentaje<= 80)
+              color= "orange";
+            else
+              if(porcentaje>= 81 && porcentaje<= 99)
+                color= "yellow";
+              else
+                color= "green"; 
 			} // if	
-			else
-				this.attrs.put("porcentaje", new Integer(0));			
 			params.clear();
 			params.put("color", color);
 			params.put("orden", mzaLote.toString("orden"));
+      mzaLote.put("color", new Value("color", color));
+      mzaLote.put("porcentaje", new Value("porcentaje", porcentaje));
 			regresar= Cadena.replaceParams(imagen, params);
 		} // try
 		finally {
