@@ -307,13 +307,27 @@
                   <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Estatus de los lote(s) con su georreferencia
                 </div>
                 <div class="keet-map-panel">
-                  <p:gmap id="mapa" widgetVar="wMapa" model="#{kajoolContratos.model}" center="#{kajoolContratos.attrs.coordenadaCentral}" zoom="20" type="ROADMAP" style="width:100%; height:500px" streetView="true">
+                  <p:gmap id="mapa" widgetVar="wMapa" model="#{kajoolContratos.model}" center="#{kajoolContratos.attrs.coordenadaCentral}" zoom="19" type="ROADMAP" style="width:100%; height:500px" streetView="true">
                     <p:ajax event="overlaySelect" listener="#{kajoolContratos.onMarkerSelect}"/>
                   </p:gmap>						
                 </div>  
               </p:panel>
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
-                <span id="nombreContrato"/>
+                <span class="janal-icons-header" id="nombreContrato"/>
+                <span style="display: inline-flex; vertical-align: middle;">
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-red.png" width="24" height="24"/>
+                  [ 0% ],
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-cyan.png" width="24" height="24"/>
+                  [ 1-20% ],
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-orange.png" width="24" height="24"/>
+                  [ 21-80% ],
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-yellow.png" width="24" height="24"/>
+                  [ 81-99% ],
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-green.png" width="24" height="24"/>
+                  [ 100% ]
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-blue.png" width="24" height="24"/>
+                  [ Seleccionado ]
+                </span>
               </div>   
             </div>
           </div>
@@ -331,7 +345,7 @@
                   </div>	
                 </div>	              
               </p:panel>
-              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer" style="margin-bottom: 11px;">
                 <i class="fa fa-lg fa-caret-left janal-color-blue" onclick="back('residentes');" style="cursor: pointer;" title="Atras"></i><p:spacer width="8px" height="1px"/><span id="fechaPivote"></span><p:spacer width="8px" height="1px"/><i class="fa fa-lg fa-caret-right janal-color-blue" onclick="next('residentes');" style="cursor: pointer;" title="Adelante"></i>
               </div>   
             </div>
