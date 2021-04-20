@@ -27,6 +27,7 @@ import mx.org.kaana.libs.echarts.kind.StackModel;
 import mx.org.kaana.libs.echarts.model.Stacked;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -188,7 +189,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         this.toLoadGlobal();
       } // if
       else {
-        JsfBase.addMessage("Informativo", "No se tienen contratos para el desarrollo ["+ this.attrs.get("nombreDesarrollo")+ "] !");      
+        // JsfBase.addMessage("Informativo", "No se tienen contratos para el desarrollo ["+ this.attrs.get("nombreDesarrollo")+ "] !");      
         this.attrs.put("contratos", "{}");
         this.attrs.put("global", "{}");
       } // else
@@ -225,10 +226,16 @@ public class Contratos extends IBaseFilter implements Serializable {
           stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
           stack.toCustomUniqueColorTopTotal("#000000");
           this.attrs.put("contratistas", stack.toJson());
+          Double total= 0D;
+          for(Entity item: multiple.getData()) {
+            total+= item.toDouble("value");
+          } // for
+          this.attrs.put("totalProveedores", "Total: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
         } // if
         else {
-          JsfBase.addMessage("Informativo", "No se tienen nómina para los contratistas ["+ this.attrs.get("nombreNomina")+ "] !");      
+          // JsfBase.addMessage("Informativo", "No se tienen nómina para los contratistas ["+ this.attrs.get("nombreNomina")+ "] !");      
           this.attrs.put("contratistas", "{}");
+          this.attrs.put("totalProveedores", "Total: $ 0.00");
         } // else
       } // if
       this.toLoadProveedores();
@@ -264,10 +271,16 @@ public class Contratos extends IBaseFilter implements Serializable {
           stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
           stack.toCustomUniqueColorTopTotal("#000000");
           this.attrs.put("proveedores", stack.toJson());
+          Double total= 0D;
+          for(Entity item: multiple.getData()) {
+            total+= item.toDouble("value");
+          } // for
+          this.attrs.put("totalSubContratistas", "Total: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
         } // if
         else {
-          JsfBase.addMessage("Informativo", "No se tienen nómina para sub-contratistas ["+ this.attrs.get("nombreNomina")+ "] !");      
+          // JsfBase.addMessage("Informativo", "No se tienen nómina para sub-contratistas ["+ this.attrs.get("nombreNomina")+ "] !");      
           this.attrs.put("proveedores", "{}");
+          this.attrs.put("totalSubContratistas", "Total: $ 0.00");
         } // else
       } // if
     } // try
@@ -297,7 +310,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         this.attrs.put("global", stack.toJson());
       } // if
       else {
-        JsfBase.addMessage("Informativo", "No se tienen lotes para el desarrollo ["+ this.attrs.get("nombreDesarrollo")+ "] !");      
+        // JsfBase.addMessage("Informativo", "No se tienen lotes para el desarrollo ["+ this.attrs.get("nombreDesarrollo")+ "] !");      
         this.attrs.put("global", "{}");
       } // else
     } // try
@@ -330,13 +343,13 @@ public class Contratos extends IBaseFilter implements Serializable {
           this.attrs.put("lotes", stack.toJson());
         } // if
         else {
-          JsfBase.addMessage("Informativo", "No se tienen lotes para el contrato ["+ this.attrs.get("nombreContrato")+ "] !");      
+          // JsfBase.addMessage("Informativo", "No se tienen lotes para el contrato ["+ this.attrs.get("nombreContrato")+ "] !");      
           this.attrs.put("lotes", "{}");
         } // else
       } // if
       else {
+        // JsfBase.addMessage("Informativo", "No se tienen lotes para el contrato ["+ this.attrs.get("nombreContrato")+ "] !");      
         this.attrs.put("nombreContrato", "");
-        JsfBase.addMessage("Informativo", "No se tienen lotes para el contrato ["+ this.attrs.get("nombreContrato")+ "] !");      
         this.attrs.put("lotes", "{}");
       } // else
     } // try
@@ -357,7 +370,8 @@ public class Contratos extends IBaseFilter implements Serializable {
           params.put(Constantes.SQL_CONDICION, " and tc_janal_usuarios.id_usuario= "+ JsfBase.getIdUsuario());     
         else
           params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
-        Stacked multiple = new Stacked(this.toLoadLotesPorcentajes(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "horarios", params)));
+        // Stacked multiple = new Stacked(this.toLoadLotesPorcentajes(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "horarios", params)));
+        Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "horarios", params));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
           StackModel stack= new StackModel(new Title(), multiple);
           stack.remove();
@@ -372,13 +386,13 @@ public class Contratos extends IBaseFilter implements Serializable {
           this.attrs.put("residentes", stack.toJson());
         } // if
         else {
-          JsfBase.addMessage("Informativo", "No se realizaron registro de avance ["+ this.getFechaPivote()+ "] !");      
+          // JsfBase.addMessage("Informativo", "No se realizaron registro de avance ["+ this.getFechaPivote()+ "] !");      
           this.attrs.put("residentes", "{}");
         } // else
       } // if
       else {
+        // JsfBase.addMessage("Informativo", "No se realizaron registro de avance ["+ this.getFechaPivote()+ "] !");      
         this.attrs.put("nombreContrato", "");
-        JsfBase.addMessage("Informativo", "No se realizaron registro de avance ["+ this.getFechaPivote()+ "] !");      
         this.attrs.put("residentes", "{}");
       } // else
     } // try
@@ -402,10 +416,9 @@ public class Contratos extends IBaseFilter implements Serializable {
         this.toLoadContratos();
         this.toLoadLotes();
         UIBackingUtilities.execute("jsEcharts.update('contratos', {group:'00', json:".concat((String)this.attrs.get("contratos")).concat("});"));
-        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreDesarrollo:'"+ this.attrs.get("nombreDesarrollo")+ "'}}});");
         UIBackingUtilities.execute("jsEcharts.update('lotes', {group:'00', json:".concat((String)this.attrs.get("lotes")).concat("});"));
-        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreContrato:'"+ this.attrs.get("nombreContrato")+ "'}}});");
         this.toLoadContratistas();
+        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreDesarrollo:'"+ this.attrs.get("nombreDesarrollo")+ "', nombreContrato:'"+ this.attrs.get("nombreContrato")+ "', totalProveedores: '"+ this.attrs.get("totalProveedores")+ "', totalSubContratistas: '"+ this.attrs.get("totalSubContratistas")+ "'}}});");
       } // if  
     } // try
     catch (Exception e) {
@@ -445,8 +458,8 @@ public class Contratos extends IBaseFilter implements Serializable {
             this.toLoadLotes();
             this.toLoadCoordenadas();
           } // if  
-          else
-            JsfBase.addMessage("Informativo", "No se tienen lotes para el contrato !");      
+//          else
+//            JsfBase.addMessage("Informativo", "No se tienen lotes para el contrato !");      
           UIBackingUtilities.update("mapa");
           UIBackingUtilities.execute("jsEcharts.update('lotes', {group:'00', json:".concat((String)this.attrs.get("lotes")).concat("});"));
           UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreContrato:'"+ this.attrs.get("nombreContrato")+ "'}}});");
@@ -843,9 +856,9 @@ public class Contratos extends IBaseFilter implements Serializable {
     try {      
       if(this.nomina!= null && !this.nomina.isEmpty()) { 
         this.toLoadContratistas();
-        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreNomina: '"+ (this.attrs.get("nombreNomina"))+ "'}}});");
         UIBackingUtilities.execute("jsEcharts.update('contratistas', {group:'00', json:".concat((String)this.attrs.get("contratistas")).concat("});"));
         UIBackingUtilities.execute("jsEcharts.update('proveedores', {group:'00', json:".concat((String)this.attrs.get("proveedores")).concat("});"));
+        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreNomina:'"+ this.attrs.get("nombreNomina")+ "', totalProveedores: '"+ this.attrs.get("totalProveedores")+ "', totalSubContratistas: '"+ this.attrs.get("totalSubContratistas")+ "'}}});");
       } // if  
     } // try
     catch (Exception e) {

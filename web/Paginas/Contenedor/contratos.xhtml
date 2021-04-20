@@ -24,7 +24,7 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryEchart}"/>
     <script type="text/javascript">
 			Janal.Control.Echarts.names= {
-				items     : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}', nombreNomina: '#{kajoolContratos.attrs.nombreNomina}'}},
+				items     : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}', nombreNomina: '#{kajoolContratos.attrs.nombreNomina}', totalProveedores: '#{kajoolContratos.attrs.totalProveedores}', totalSubContratistas: '#{kajoolContratos.attrs.totalSubContratistas}'}},
 				contratos : {json: #{kajoolContratos.attrs.contratos}},
 				global    : {json: #{kajoolContratos.attrs.global}},
 				residentes: {json: #{kajoolContratos.attrs.residentes}},
@@ -406,7 +406,8 @@
                </div>	              
               </p:panel>						
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
-                <span id="nombreDesarrollo"/> - <span id="nombreNomina"/>
+                <span id="totalProveedores" class="janal-icons-header"/>
+                <span id="nombreDesarrollo"/> | <span id="nombreNomina"/>
               </div>   
             </div>
           </div>
@@ -419,18 +420,59 @@
                   <i class="fa fa-user-tie Fs16 janal-color-blue"></i><p:spacer width="8px" height="1px"/>Nómina de los sub-contratistas
                 </div>
                 <div class="keet-chart-panel">
-                  <div id="contratistas" class="keet-chart-panel">
+                  <div id="proveedores" class="keet-chart-panel">
                     Cargando gráficas nomina de los sub-contratistas
                   </div>	
                </div>	              
               </p:panel>						
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
-                <span id="nombreDesarrollo"/> - <span id="nombreNomina"/>
+                <span id="totalSubContratistas" class="janal-icons-header"/>
+                <span id="nombreDesarrollo"/> | <span id="nombreNomina"/>
               </div>   
             </div>
           </div>
         </div>  
-      </div>   
+      </div>
+      <div class="ContainerIndent">        					
+        <div class="Container50 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-green">
+                  <i class="fa fa-chart-bar Fs16 janal-color-blue"></i><p:spacer width="8px" height="1px"/>Nómina por contrato de los contratistas
+                </div>
+                <div class="keet-chart-panel">
+                  <div id="contratoContratistas" class="keet-chart-panel">
+                    Cargando gráficas nómina por contrato de los contratistas
+                  </div>	
+               </div>	              
+              </p:panel>						
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="nombreDesarrollo"/> | <span id="nombreNomina"/>
+              </div>   
+            </div>  
+          </div>  
+        </div>  
+        <div class="Container50 Responsive overview-box">					
+					<div class="Container100 Responsive">					
+						<div class="ContainerIndent card">
+              <p:panel styleClass="overview-inner-box">
+                <div class="Container100 Responsive keet-chart-title janal-box-title-green">
+                  <i class="fa fa-chart-area Fs16 janal-color-blue"></i><p:spacer width="8px" height="1px"/>Nómina por contrato de los Sub contratistas
+                </div>
+                <div class="keet-chart-panel">
+                  <div id="contratoProveedores" class="keet-chart-panel">
+                    Cargando gráficas nómina por contrato de los sub-contratistas
+                  </div>	
+               </div>	              
+              </p:panel>						
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="nombreDesarrollo"/> | <span id="nombreNomina"/>
+              </div>   
+            </div>  
+          </div>  
+        </div>  
+      </div>  
     </div>		
   </ui:define>
 </ui:composition>

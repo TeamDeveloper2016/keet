@@ -8,6 +8,7 @@ import com.eteks.parser.CompilationException;
 import com.eteks.parser.CompiledExpression;
 import mx.org.kaana.libs.formato.Error;
 import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
@@ -209,6 +210,12 @@ public class Nomina implements Serializable {
 				// PARA AQUELLOS INCIDENTES ENCONTRADOS BUSCAR EL CONCEPTO CORRESPONDIENTE
 				if(index>= 0) {
 					Concepto concepto= (Concepto)this.personales.get(index).clone();
+          // VERIFICAR SI ES LUNES PARA COBRARLA POR 1.5 DIAS 
+          if(Objects.equals(concepto.getNombre(), "FALTA"))
+            if(Objects.equals(item.getInicio().getDayOfWeek(), DayOfWeek.MONDAY))
+              concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1.5"));
+            else
+              concepto.setFormula(concepto.getFormula().replace("{FACTOR}", "1"));
 					concepto.setFecha(item.getInicio());
 					if(incidente.recuperar())
 						concepto.setFormula(concepto.getFormula().replace("{".concat(incidente.name()).concat("}"), item.getCosto().toString()));

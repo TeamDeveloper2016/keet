@@ -13,7 +13,7 @@
       Janal.Control.fields = {
         'inicio'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'termino'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},             
-        'observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},             
+        'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},             
         'nombre'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'}             
       };					
 			
@@ -40,7 +40,7 @@
 					<p:panelGrid id="panelCriterios" columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-col-250, janal-wid-90, janal-wid-col-38">
 						<p:outputLabel for="nombre" value="Empleado:"/>							
 						<p:autoComplete id="nombre" var="custom" placeholder="ej. Juan Perez Lopez" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesAccion.attrs.nombre}" completeMethod="#{manticIncidentesAccion.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-100" class="janal-wid-100"/>																
-						<p:commandButton id="buscar" styleClass="janal-text-white" icon="fa fa-search" onstart="return janal.bloquear();" process="@this nombre" actionListener="#{manticIncidentesAccion.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+						<p:commandButton id="buscar" styleClass="janal-text-white" icon="fa fa-plus" onstart="return janal.bloquear();" process="@this nombre" actionListener="#{manticIncidentesAccion.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 					</p:panelGrid>
 					<p:spacer height="2px"/>
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticIncidentesAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticIncidentesAccion.attrs.seleccionado}" paginator="#{manticIncidentesAccion.lazyModel.rowCount gt manticIncidentesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
