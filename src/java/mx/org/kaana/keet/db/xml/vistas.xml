@@ -9,7 +9,7 @@
 				select 
 				  tc_keet_contratos_lotes_contratistas.id_empresa_persona as id_key, 
           ifnull(concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt;10, '0', ''), tc_keet_nominas_periodos.orden), '{nomina}') as category,
-				  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as serie,
+				  {corte} as serie,
 				  sum(tc_keet_contratos_destajos_contratistas.costo) as value
 				from
 				  tc_keet_contratos_destajos_contratistas 
@@ -50,7 +50,7 @@
 				select 
 				  tc_keet_contratos_lotes_proveedores.id_proveedor as id_key, 
           ifnull(concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden&lt;10, '0', ''), tc_keet_nominas_periodos.orden), '{nomina}') as category,
-				  tc_mantic_proveedores.razon_social as serie,
+				  {corte} as serie,
 				  sum(tc_keet_contratos_destajos_proveedores.costo) as value
 				from
 				  tc_keet_contratos_destajos_proveedores 

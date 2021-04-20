@@ -213,6 +213,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         params.put("idNomina", this.nomina.toLong("idNomina"));      
         params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
         params.put("nomina", this.attrs.get("nombreNomina"));
+        params.put("corte", "concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)");
         Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoPersona", params));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
           StackModel stack= new StackModel(new Title(), multiple);
@@ -230,14 +231,59 @@ public class Contratos extends IBaseFilter implements Serializable {
           for(Entity item: multiple.getData()) {
             total+= item.toDouble("value");
           } // for
-          this.attrs.put("totalProveedores", "Total: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
+          this.attrs.put("totalContratistas", "TOTAL: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
         } // if
         else {
           // JsfBase.addMessage("Informativo", "No se tienen nómina para los contratistas ["+ this.attrs.get("nombreNomina")+ "] !");      
           this.attrs.put("contratistas", "{}");
-          this.attrs.put("totalProveedores", "Total: $ 0.00");
+          this.attrs.put("totalContratistas", "TOTAL: $ 0.00");
         } // else
+        this.toLoadNominaContratoContratistas();
       } // if
+      this.toLoadProveedores();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toLoadNominaContratoContratistas() {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "");
+      params.put("idNomina", this.nomina.toLong("idNomina"));      
+      params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
+      params.put("nomina", this.attrs.get("nombreNomina"));
+      params.put("corte", "tc_keet_contratos.nombre");
+      Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoPersona", params));
+      if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+        StackModel stack= new StackModel(new Title(), multiple);
+        stack.remove();
+        stack.toCustomFontSize(14);
+        stack.getLegend().setY("85%");
+        stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+        stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+        stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+        stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+        stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+        stack.toCustomUniqueColorTopTotal("#000000");
+        this.attrs.put("contratoContratistas", stack.toJson());
+        Double total= 0D;
+        for(Entity item: multiple.getData()) {
+          total+= item.toDouble("value");
+        } // for
+        this.attrs.put("totalContratoContratistas", "TOTAL: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
+      } // if
+      else {
+        // JsfBase.addMessage("Informativo", "No se tienen nómina para los contratos ["+ this.attrs.get("nombreNomina")+ "] !");      
+        this.attrs.put("contratoContratistas", "{}");
+        this.attrs.put("totalContratoContratistas", "TOTAL: $ 0.00");
+      } // else
       this.toLoadProveedores();
     } // try
     catch (Exception e) {
@@ -258,6 +304,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         params.put("idNomina", this.nomina.toLong("idNomina"));      
         params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
         params.put("nomina", this.attrs.get("nombreNomina"));
+        params.put("corte", "tc_mantic_proveedores.razon_social");
         Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoProveedor", params));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
           StackModel stack= new StackModel(new Title(), multiple);
@@ -275,14 +322,58 @@ public class Contratos extends IBaseFilter implements Serializable {
           for(Entity item: multiple.getData()) {
             total+= item.toDouble("value");
           } // for
-          this.attrs.put("totalSubContratistas", "Total: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
+          this.attrs.put("totalProveedores", "TOTAL: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
         } // if
         else {
           // JsfBase.addMessage("Informativo", "No se tienen nómina para sub-contratistas ["+ this.attrs.get("nombreNomina")+ "] !");      
           this.attrs.put("proveedores", "{}");
-          this.attrs.put("totalSubContratistas", "Total: $ 0.00");
+          this.attrs.put("totalProveedores", "TOTAL: $ 0.00");
         } // else
+        this.toLoadNominaContratoProveedores();
       } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toLoadNominaContratoProveedores() {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("loNuevo", this.nomina.toLong("idNominaEstatus")!= 4L && this.nomina.toLong("idNominaEstatus")!= 5L? "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
+      params.put("idNomina", this.nomina.toLong("idNomina"));      
+      params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
+      params.put("nomina", this.attrs.get("nombreNomina"));
+      params.put("corte", "tc_keet_contratos.nombre");
+      Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoProveedor", params));
+      if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+        StackModel stack= new StackModel(new Title(), multiple);
+        stack.remove();
+        stack.toCustomFontSize(14);
+        stack.getLegend().setY("85%");
+        stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+        stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+        stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+        stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+        stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+        stack.toCustomUniqueColorTopTotal("#000000");
+        this.attrs.put("contratoProveedores", stack.toJson());
+        Double total= 0D;
+        for(Entity item: multiple.getData()) {
+          total+= item.toDouble("value");
+        } // for
+        this.attrs.put("totalContratoProveedores", "TOTAL: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
+      } // if
+      else {
+        // JsfBase.addMessage("Informativo", "No se tienen nómina para sub-contratistas ["+ this.attrs.get("nombreNomina")+ "] !");      
+        this.attrs.put("contratoProveedores", "{}");
+        this.attrs.put("totalContratoProveedores", "TOTAL: $ 0.00");
+      } // else
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -379,8 +470,8 @@ public class Contratos extends IBaseFilter implements Serializable {
           stack.getLegend().setY("85%");
           stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
           stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
-          stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'one-decimal');}");
-          stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'one-decimal');}");
+          stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+          stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
           stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
           stack.toCustomUniqueColorTopTotal("#000000");
           this.attrs.put("residentes", stack.toJson());
@@ -858,7 +949,9 @@ public class Contratos extends IBaseFilter implements Serializable {
         this.toLoadContratistas();
         UIBackingUtilities.execute("jsEcharts.update('contratistas', {group:'00', json:".concat((String)this.attrs.get("contratistas")).concat("});"));
         UIBackingUtilities.execute("jsEcharts.update('proveedores', {group:'00', json:".concat((String)this.attrs.get("proveedores")).concat("});"));
-        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreNomina:'"+ this.attrs.get("nombreNomina")+ "', totalProveedores: '"+ this.attrs.get("totalProveedores")+ "', totalSubContratistas: '"+ this.attrs.get("totalSubContratistas")+ "'}}});");
+        UIBackingUtilities.execute("jsEcharts.update('contratoContratistas', {group:'00', json:".concat((String)this.attrs.get("contratoContratistas")).concat("});"));
+        UIBackingUtilities.execute("jsEcharts.update('contratoProveedores', {group:'00', json:".concat((String)this.attrs.get("contratoProveedores")).concat("});"));
+        UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreNomina:'"+ this.attrs.get("nombreNomina")+ "', totalContratistas: '"+ this.attrs.get("totalContratistas")+ "', totalProveedores: '"+ this.attrs.get("totalProveedores")+ "', totalContratoContratistas: '"+ this.attrs.get("totalContratoContratistas")+ "', totalContratoProveedores: '"+ this.attrs.get("totalContratoProveedores")+ "'}}});");
       } // if  
     } // try
     catch (Exception e) {

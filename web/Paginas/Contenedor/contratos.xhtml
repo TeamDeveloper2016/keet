@@ -24,13 +24,15 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryEchart}"/>
     <script type="text/javascript">
 			Janal.Control.Echarts.names= {
-				items     : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}', nombreNomina: '#{kajoolContratos.attrs.nombreNomina}', totalProveedores: '#{kajoolContratos.attrs.totalProveedores}', totalSubContratistas: '#{kajoolContratos.attrs.totalSubContratistas}'}},
+				items     : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}', nombreNomina: '#{kajoolContratos.attrs.nombreNomina}', totalContratistas: '#{kajoolContratos.attrs.totalContratistas}', totalProveedores: '#{kajoolContratos.attrs.totalProveedores}', totalContratoContratistas: '#{kajoolContratos.attrs.totalContratoContratistas}', totalContratoProveedores: '#{kajoolContratos.attrs.totalContratoProveedores}'}},
 				contratos : {json: #{kajoolContratos.attrs.contratos}},
 				global    : {json: #{kajoolContratos.attrs.global}},
 				residentes: {json: #{kajoolContratos.attrs.residentes}},
 				lotes     : {json: #{kajoolContratos.attrs.lotes}},
 				contratistas: {json: #{kajoolContratos.attrs.contratistas}},
-				proveedores : {json: #{kajoolContratos.attrs.proveedores}}
+				proveedores : {json: #{kajoolContratos.attrs.proveedores}},
+				contratoContratistas: {json: #{kajoolContratos.attrs.contratoContratistas}},
+				contratoProveedores : {json: #{kajoolContratos.attrs.contratoProveedores}}
 			};
 			$(function() {
 				 'use strict'			
@@ -406,7 +408,7 @@
                </div>	              
               </p:panel>						
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
-                <span id="totalProveedores" class="janal-icons-header"/>
+                <span id="totalContratistas" class="janal-icons-header janal-color-blue janal-font-bold"/>
                 <span id="nombreDesarrollo"/> | <span id="nombreNomina"/>
               </div>   
             </div>
@@ -426,7 +428,7 @@
                </div>	              
               </p:panel>						
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
-                <span id="totalSubContratistas" class="janal-icons-header"/>
+                <span id="totalProveedores" class="janal-icons-header janal-color-blue janal-font-bold"/>
                 <span id="nombreDesarrollo"/> | <span id="nombreNomina"/>
               </div>   
             </div>
@@ -448,6 +450,7 @@
                </div>	              
               </p:panel>						
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="totalContratoContratistas" class="janal-icons-header janal-color-blue janal-font-bold"/>
                 <span id="nombreDesarrollo"/> | <span id="nombreNomina"/>
               </div>   
             </div>  
@@ -467,6 +470,7 @@
                </div>	              
               </p:panel>						
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span id="totalContratoProveedores" class="janal-icons-header janal-color-blue janal-font-bold"/>
                 <span id="nombreDesarrollo"/> | <span id="nombreNomina"/>
               </div>   
             </div>  
