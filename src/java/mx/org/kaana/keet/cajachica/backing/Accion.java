@@ -51,8 +51,9 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 			this.attrs.put("opcionResidente", opcion);						
 			this.attrs.put("idDesarrollo", idDesarrollo);      						
 			this.attrs.put("consecutivoP", JsfBase.getFlashAttribute("consecutivo"));      						
-			doLoad();								
-			initPadre();			
+      this.toLoadResidentes();
+			this.doLoad();								
+			this.initPadre();			
 			this.attrs.put("accion", EAccion.AGREGAR);										
 			this.attrs.put("buscaPorCodigo", false);
 			if(!Cadena.isVacio(this.attrs.get("retornoInicial")))
@@ -60,7 +61,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 			else
 				this.attrs.put("retornoInicial", this.attrs.get("retorno"));
 			if(!Cadena.isVacio(this.attrs.get("idGasto")))
-				loadExistente();
+				this.loadExistente();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -89,7 +90,8 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 			this.attrs.put("busquedaTicketAbierto", "");
 			this.attrs.put("decuentoAutorizadoActivo", false);
 			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
-			this.attrs.put("ticketLock", -1L);						
+			this.attrs.put("ticketLock", -1L);		
+      this.accion= EAccion.AGREGAR;
 			super.doLoad();
 		} // try
 		catch (Exception e) {			
@@ -369,4 +371,23 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 		} // catch		
 		return regresar;
 	} // doPendientes
+  
+	private void toLoadResidentes() {
+		List<Entity>residentes   = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+			residentes= DaoFactory.getInstance().toEntitySet("VistaGeoreferenciaLotesDto", "residentes", params);
+			this.attrs.put("residentes", residentes);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadResidentes
+  
 }
