@@ -109,9 +109,9 @@ public class Registro extends IBaseAttribute implements Serializable {
 			condicion= this.toPrepare();
 			condicionProveedor= this.toPrepareProveedor();
 			disponibles= motorBusqueda.toContratistasDisponibles(condicion, condicionProveedor);
-			sDisponibles= toListSelectionIten(disponibles);
+			sDisponibles= this.toListSelectionIten(disponibles);
 			asignados= motorBusqueda.toContratistasAsignados(condicion, condicionProveedor);
-			sAsignados= toListSelectionIten(asignados);
+			sAsignados= this.toListSelectionIten(asignados);
 			this.temporalOrigen= sDisponibles;
 			this.temporalDestino= sAsignados;				
 			this.loadAllEmpleados(sAsignados, sDisponibles);								

@@ -843,7 +843,7 @@ strong { font-weight: bolder; }
 .ui-selectcheckboxmenu-multiple .ui-selectcheckboxmenu-trigger .ui-icon { top: 0% !important;	}
 div.ui-selectonemenu-panel { height: 350px; overflow-y: auto;}
 .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container .ui-inputfield {width: 95%; padding-left: 50px !important;}
-.ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container {width: 98%;}
+.ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-filter-container {width: 94%;}
 
 .janal-box-header-blue {
   color: black; background: rgb(63,94,251); background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(10,252,233,1) 20%, rgba(234,240,239,0.17130602240896353) 35%, rgba(240,245,244,0.01724439775910369) 50%, rgba(234,240,239,0.17130602240896353) 66%, rgba(10,252,233,1) 80%, rgba(63,94,251,1) 100%);  border-radius: 5px;

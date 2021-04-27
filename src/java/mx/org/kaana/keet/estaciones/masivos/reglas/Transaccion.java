@@ -24,6 +24,7 @@ import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
 import mx.org.kaana.keet.db.dto.TrKeetArticuloProveedorClienteDto;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.estaciones.masivos.beans.Control;
 import mx.org.kaana.keet.estaciones.masivos.beans.Estacion;
@@ -389,12 +390,17 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	}
 	
 	private Estacion toConcepto(Session sesion, String clave, String codigo) throws Exception {
+    return this.toConcepto(sesion, clave, codigo, 6L);
+  }
+  
+	private Estacion toConcepto(Session sesion, String clave, String codigo, Long nivel) throws Exception {
 		Estacion regresar         = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("clave", clave);
 			params.put("codigo", codigo);
+			params.put("nivel", nivel);
 			regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "concepto", params);
 		} // try
     catch(Exception e) {
@@ -453,7 +459,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			Semanas semanas= new Semanas();
 			int semana= semanas.getSemana(sesion);
-			Estaciones estaciones= new Estaciones();
+			Estaciones estaciones= new Estaciones(sesion);
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -637,7 +643,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			Semanas semanas= new Semanas();
 			int semana= semanas.getSemana(sesion);
-			Estaciones estaciones= new Estaciones();
+			Estaciones estaciones= new Estaciones(sesion);
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -699,7 +705,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 											concepto.setIdUsuario(JsfBase.getIdUsuario());
 											Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {costo});
 											DaoFactory.getInstance().update(sesion, concepto);
-											
 											// RECUPERAR LA ESTACION PADRE Y REALIZAR LA SUMA O RESTA SEGUN APLIQUE EL COSTO
 											if(estacion== null || !Objects.equals(estacion.getClave(), estaciones.toCode(concepto.getClave(), 5)))
 											  estacion= this.toEstacion(sesion, estaciones.toCode(concepto.getClave(), 5));
@@ -710,7 +715,38 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 											} // if
 	  									LOG.warn(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion());
 										} // if
+                    else {
+                      // SI NO EXISTE EL CONCEPTO SE TIENE QUE AGREGAR AL PADRE Y ACTUALIZAR SALDOS Y ESTATUS
+                      if(estacion!= null) {
+                        TcKeetEstacionesDto clon= (TcKeetEstacionesDto)estacion.clone();
+                        clon.setClave(estaciones.toNextKey(estacion.getClave(), estacion.getNivel().intValue()+ 1, 1));
+                        clon.setNivel(estacion.getNivel()+ 1L);
+                        clon.setUltimo(1L);
+                        clon.setCodigo(codigo);
+                        clon.setNombre(nombre);
+                        clon.setDescripcion(nombre);
+                        clon.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
+                        clon.setIdEstacion(1L);
+                        clon.setCantidad(cantidad);
+                        clon.setCosto(costo);
+                        Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
+                        if(Cadena.isVacio(inicio))
+                          clon.setInicio(contrato.toDate("inicio"));
+                        else
+                          clon.setInicio(Fecha.toLocalDate(inicio));
+                        if(Cadena.isVacio(termino))
+                          clon.setTermino(contrato.toDate("termino"));
+                        else
+                          clon.setTermino(Fecha.toLocalDate(termino));
+                        clon.setIdUsuario(JsfBase.getIdUsuario());
+                        this.toUpdateFathers(sesion, estaciones, clon);
+                        DaoFactory.getInstance().insert(sesion, clon);
+                      } // if
+                    } // else 
 									} // if
+                  else 
+                    if(item!= null && !item.isEmpty() && item.toLong("nivel")== 5L)
+                      estacion= this.toConcepto(sesion, estaciones.toKey(4), codigo, 5L);
 									monitoreo.incrementar();
 								} // if
 								else {
@@ -993,7 +1029,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		String nivlePrototipo              = null;
 		TcKeetPrototiposDto prototipo      = null;
 		try {
-			Estaciones estaciones= new Estaciones();
+			Estaciones estaciones= new Estaciones(sesion);
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -1165,7 +1201,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			Semanas semanas= new Semanas();
 			int semana= semanas.getSemana(sesion);
-			Estaciones estaciones= new Estaciones();
+			Estaciones estaciones= new Estaciones(sesion);
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -1300,7 +1336,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			Semanas semanas= new Semanas();
 			int semana= semanas.getSemana(sesion);
-			Estaciones estaciones= new Estaciones();
+			Estaciones estaciones= new Estaciones(sesion);
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -1508,7 +1544,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			Semanas semanas= new Semanas();
 			int semana= semanas.getSemana(sesion);
-			Estaciones estaciones= new Estaciones();
+			Estaciones estaciones= new Estaciones(sesion);
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -1938,7 +1974,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			Semanas semanas= new Semanas();
 			int semana= semanas.getSemana(sesion);
-			Controles controles= new Controles();
+			Controles controles= new Controles(sesion);
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -2113,7 +2149,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			Semanas semanas= new Semanas();
 			int semana     = semanas.getSemana(sesion);
-			Controles controles= new Controles();
+			Controles controles= new Controles(sesion);
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -2229,5 +2265,28 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
     } // finally
 		return regresar;
 	} // toUpdateControles
-  
+
+  private void toUpdateFathers(Session sesion, Estaciones estaciones, TcKeetEstacionesDto clon) throws Exception {
+    try {      
+      List<TcKeetEstacionesDto> items= estaciones.toFather(clon.getClave());
+      if(items!= null && !items.isEmpty()) {
+        for (TcKeetEstacionesDto item: items) {
+          item.setCosto(Numero.toRedondearSat(item.getCosto()+ clon.getCosto()));
+          item.setIdEstacionEstatus(
+            Objects.equals(EEstacionesEstatus.TERMINADO.getKey(), item.getIdEstacionEstatus())
+            ? EEstacionesEstatus.EN_PROCESO.getKey(): 
+            Objects.equals(EEstacionesEstatus.INICIAR.getKey(), item.getIdEstacionEstatus())
+            ? EEstacionesEstatus.INICIAR.getKey(): 
+            Objects.equals(EEstacionesEstatus.CANCELADO.getKey(), item.getIdEstacionEstatus())
+            ? EEstacionesEstatus.CANCELADO.getKey(): EEstacionesEstatus.EN_PROCESO.getKey()
+          );
+          DaoFactory.getInstance().update(sesion, item);
+        } // for
+      } // if  
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+
 }

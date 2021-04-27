@@ -198,21 +198,24 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 				} // for
 			} // if
 			cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
-			for(UISelectEntity cfdi: cfdis) {
-				if(cfdi.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdUsoCfdi()))
-					this.attrs.put("cfdi", cfdi);
-			} // for
+			if(cfdis!= null && !cfdis.isEmpty()) 
+        for(UISelectEntity cfdi: cfdis) {
+          if(cfdi.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdUsoCfdi()))
+            this.attrs.put("cfdi", cfdi);
+        } // for
 			tiposMedioPagos= (List<UISelectEntity>) this.attrs.get("tiposMedioPagos");
-			for(Entity tiposMedioPago: tiposMedioPagos) {
-				if(tiposMedioPago.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdTipoMedioPago()))
-					this.attrs.put("tipoMedioPago", tiposMedioPago);
-			} // for			
+			if(tiposMedioPagos!= null && !tiposMedioPagos.isEmpty()) 
+        for(Entity tiposMedioPago: tiposMedioPagos) {
+          if(tiposMedioPago.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdTipoMedioPago()))
+            this.attrs.put("tipoMedioPago", tiposMedioPago);
+        } // for			
 			tiposPagos= (List<UISelectEntity>) this.attrs.get("tiposPagos");
-			for(Entity tipoPago: tiposPagos) {
-				if(tipoPago.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdTipoPago()))
-					this.attrs.put("tipoPago", tipoPago);
-			} // for
-			doValidaTipoPago();
+			if(tiposPagos!= null && !tiposPagos.isEmpty()) 
+        for(Entity tipoPago: tiposPagos) {
+          if(tipoPago.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdTipoPago()))
+            this.attrs.put("tipoPago", tipoPago);
+        } // for
+			this.doValidaTipoPago();
 			if(Boolean.valueOf(this.attrs.get("mostrarBanco").toString())) {
 				bancos= (List<UISelectEntity>) this.attrs.get("bancos");
 				for(Entity banco: bancos) {

@@ -58,7 +58,7 @@ public class Timbrado implements Job, Serializable {
 		Transaccion transaccion=null;
 		String correos=null;
 		try {
-			if (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && validateHora()) {
+			if (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && this.validateHora()) {
 				pendientes= this.toFacturasPendientes();
 				for (Facturacion factura: pendientes) {
 					try {
@@ -91,8 +91,8 @@ public class Timbrado implements Job, Serializable {
 		boolean regresar=true;
 		Calendar calendario=null;
 		try {
-			calendario=Calendar.getInstance();
-			regresar=calendario.get(Calendar.HOUR_OF_DAY)>=5&&calendario.get(Calendar.HOUR_OF_DAY)<=23;
+			calendario= Calendar.getInstance();
+			regresar  = calendario.get(Calendar.HOUR_OF_DAY)>= 5 && calendario.get(Calendar.HOUR_OF_DAY)<= 23;
 		} // try
 		catch (Exception e) {
 			throw e;

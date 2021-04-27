@@ -2801,7 +2801,7 @@
 				where
 					tc_keet_estaciones.clave like '{clave}%'
 				  and tc_keet_estaciones.codigo= '{codigo}'
-				  and tc_keet_estaciones.nivel= 6
+				  and tc_keet_estaciones.nivel= {nivel}
 				order by
 					tc_keet_estaciones.clave
 			</select>	
@@ -2826,9 +2826,11 @@
 				where
 				  tc_keet_contratos.id_empresa in ({sucursales})
 				  and tc_keet_contratos.ejercicio>= {ejercicio}
-				  and tc_keet_contratos_lotes.id_contrato_lote_estatus= 1
+				  and tc_keet_contratos_lotes.id_contrato_lote_estatus in (1, 2)
 				order by
-				  tc_keet_contratos.ejercicio desc, tc_keet_contratos.clave, tc_keet_contratos_lotes.orden				
+				  tc_keet_contratos.ejercicio desc, 
+          tc_keet_contratos.clave desc, 
+          tc_keet_contratos_lotes.orden				
 			</select>
 			<select id="lote">
         select 
@@ -2920,7 +2922,7 @@
 				where
 					{condicion}
 				order by 
-					tc_keet_desarrollos.nombres
+					tc_keet_desarrollos.nombres, tc_keet_contratos.registro desc
 			</select>
 			<select id="getCoordenadasDesarrollo">
 				select 
@@ -2977,7 +2979,7 @@
 				where
 					{condicion}
 				order by 
-					tc_keet_desarrollos.nombres
+					tc_keet_desarrollos.nombres, tc_keet_contratos.registro desc
 			</select>
 		</unit>
 		<unit id="VistaDiasFeriadosDto">
@@ -3558,7 +3560,8 @@
         where 
           tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_lotes_contratistas where tc_keet_contratos_lotes_contratistas.id_contrato_lote= {idContratoLote})
 				and 
-					tr_mantic_empresa_personal.id_empresa= {idEmpresa}				  
+					tr_mantic_empresa_personal.id_empresa= {idEmpresa}		
+          and tr_mantic_empresa_personal.id_activo= 1  		  
 				  and {condicion}
 					and tc_mantic_puestos.nombre= 'CONTRATISTA'
 				order by 
@@ -3595,7 +3598,8 @@
 					tc_mantic_proveedores				
         where 
           tc_mantic_proveedores.id_proveedor not in (select id_proveedor from tc_keet_contratos_lotes_proveedores where tc_keet_contratos_lotes_proveedores.id_contrato_lote= {idContratoLote})            
-				  and tc_mantic_proveedores.id_empresa= {idEmpresa}				  
+				  and tc_mantic_proveedores.id_empresa= {idEmpresa}		
+          and tc_mantic_proveedores.id_activo= 1		  
 				  and tc_mantic_proveedores.id_subcontratista= 1
 				  and {condicionProveedor}
 				order by
