@@ -686,63 +686,48 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 										throw new RuntimeException("El archivo contiene un numero de lote incorrecto");
 									Entity item= this.toRubro(sesion, codigo);
 									if(item!= null && !item.isEmpty() && item.toLong("nivel")== 6L) {
+										double diferencia= 0D; 
 										concepto= this.toConcepto(sesion, estaciones.toKey(4), codigo);
 										if(concepto!= null && concepto.isValid()) {
-											double diferencia= costo- concepto.getCosto();
-											concepto.setNombre(nombre);
-											concepto.setDescripcion(nombre);
-											concepto.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
-											concepto.setCantidad(cantidad);
-											concepto.setCosto(costo);
-											if(Cadena.isVacio(inicio))
-												concepto.setInicio(contrato.toDate("inicio"));
-											else
-												concepto.setInicio(Fecha.toLocalDate(inicio));
-											if(Cadena.isVacio(termino))
-												concepto.setTermino(contrato.toDate("termino"));
-											else
-												concepto.setTermino(Fecha.toLocalDate(termino));
-											concepto.setIdUsuario(JsfBase.getIdUsuario());
-											Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {costo});
-											DaoFactory.getInstance().update(sesion, concepto);
-											// RECUPERAR LA ESTACION PADRE Y REALIZAR LA SUMA O RESTA SEGUN APLIQUE EL COSTO
-											if(estacion== null || !Objects.equals(estacion.getClave(), estaciones.toCode(concepto.getClave(), 5)))
-											  estacion= this.toEstacion(sesion, estaciones.toCode(concepto.getClave(), 5));
-											if(estacion!= null) {
-												estacion.setCosto(estacion.getCosto()+ diferencia);
-												Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {estacion.getCosto()});
-												DaoFactory.getInstance().update(sesion, estacion);
-											} // if
-	  									LOG.warn(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion());
-										} // if
+                      diferencia= costo- concepto.getCosto();
+                    } // if
                     else {
                       // SI NO EXISTE EL CONCEPTO SE TIENE QUE AGREGAR AL PADRE Y ACTUALIZAR SALDOS Y ESTATUS
                       if(estacion!= null) {
-                        TcKeetEstacionesDto clon= (TcKeetEstacionesDto)estacion.clone();
-                        clon.setClave(estaciones.toNextKey(estacion.getClave(), estacion.getNivel().intValue()+ 1, 1));
-                        clon.setNivel(estacion.getNivel()+ 1L);
-                        clon.setUltimo(1L);
-                        clon.setCodigo(codigo);
-                        clon.setNombre(nombre);
-                        clon.setDescripcion(nombre);
-                        clon.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
-                        clon.setIdEstacion(1L);
-                        clon.setCantidad(cantidad);
-                        clon.setCosto(costo);
-                        Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
-                        if(Cadena.isVacio(inicio))
-                          clon.setInicio(contrato.toDate("inicio"));
-                        else
-                          clon.setInicio(Fecha.toLocalDate(inicio));
-                        if(Cadena.isVacio(termino))
-                          clon.setTermino(contrato.toDate("termino"));
-                        else
-                          clon.setTermino(Fecha.toLocalDate(termino));
-                        clon.setIdUsuario(JsfBase.getIdUsuario());
-                        this.toUpdateFathers(sesion, estaciones, clon);
-                        DaoFactory.getInstance().insert(sesion, clon);
+                        concepto= (Estacion)estacion.clone();
+                        concepto.setKey(-1L);
+                        concepto.setClave(estaciones.toNextKey(estacion.getClave(), estacion.getNivel().intValue()+ 1, 1));
+                        concepto.setNivel(estacion.getNivel()+ 1L);
+                        concepto.setUltimo(1L);
+                        concepto.setCodigo(codigo);
+                        concepto.setIdEstacionEstatus(1L);
+                        diferencia= costo;
                       } // if
-                    } // else 
+                    } // if
+										if(concepto!= null) {  
+                      concepto.setNombre(nombre);
+                      concepto.setDescripcion(nombre);
+                      concepto.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
+                      concepto.setCantidad(cantidad);
+                      concepto.setCosto(costo);
+                      if(Cadena.isVacio(inicio))
+                        concepto.setInicio(contrato.toDate("inicio"));
+                      else
+                        concepto.setInicio(Fecha.toLocalDate(inicio));
+                      if(Cadena.isVacio(termino))
+                        concepto.setTermino(contrato.toDate("termino"));
+                      else
+                        concepto.setTermino(Fecha.toLocalDate(termino));
+                      concepto.setIdUsuario(JsfBase.getIdUsuario());
+                      Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {costo});
+                      LOG.warn(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion());
+                      // SI NO EXISTE EL CONCEPTO SE TIENE QUE AGREGAR AL PADRE Y ACTUALIZAR SALDOS Y ESTATUS
+                      this.toUpdateFathers(sesion, estaciones, concepto, concepto.isValid(), diferencia);
+  										if(concepto.isValid()) 
+                        DaoFactory.getInstance().update(sesion, concepto);
+                      else
+                        DaoFactory.getInstance().insert(sesion, concepto);
+  									} // if
 									} // if
                   else 
                     if(item!= null && !item.isEmpty() && item.toLong("nivel")== 5L)
@@ -2266,12 +2251,14 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	} // toUpdateControles
 
-  private void toUpdateFathers(Session sesion, Estaciones estaciones, TcKeetEstacionesDto clon) throws Exception {
+  private void toUpdateFathers(Session sesion, Estaciones estaciones, Estacion clon, Boolean clean, Double diferencia) throws Exception {
     try {      
       List<TcKeetEstacionesDto> items= estaciones.toFather(clon.getClave());
       if(items!= null && !items.isEmpty()) {
+        if(clean)
+          items.remove(items.size()- 1);
         for (TcKeetEstacionesDto item: items) {
-          item.setCosto(Numero.toRedondearSat(item.getCosto()+ clon.getCosto()));
+          item.setCosto(Numero.toRedondearSat(item.getCosto()+ diferencia));
           item.setIdEstacionEstatus(
             Objects.equals(EEstacionesEstatus.TERMINADO.getKey(), item.getIdEstacionEstatus())
             ? EEstacionesEstatus.EN_PROCESO.getKey(): 
