@@ -24,7 +24,7 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryEchart}"/>
     <script type="text/javascript">
 			Janal.Control.Echarts.names= {
-				items     : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}', nombreNomina: '#{kajoolContratos.attrs.nombreNomina}', totalContratistas: '#{kajoolContratos.attrs.totalContratistas}', totalProveedores: '#{kajoolContratos.attrs.totalProveedores}', totalContratoContratistas: '#{kajoolContratos.attrs.totalContratoContratistas}', totalContratoProveedores: '#{kajoolContratos.attrs.totalContratoProveedores}'}},
+				items     : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}', nombreResidentePivote: '#{kajoolContratos.attrs.nombreResidentePivote}', nombreNomina: '#{kajoolContratos.attrs.nombreNomina}', totalContratistas: '#{kajoolContratos.attrs.totalContratistas}', totalProveedores: '#{kajoolContratos.attrs.totalProveedores}', totalContratoContratistas: '#{kajoolContratos.attrs.totalContratoContratistas}', totalContratoProveedores: '#{kajoolContratos.attrs.totalContratoProveedores}'}},
 				contratos : {json: #{kajoolContratos.attrs.contratos}},
 				global    : {json: #{kajoolContratos.attrs.global}},
 				residentes: {json: #{kajoolContratos.attrs.residentes}},
@@ -348,7 +348,7 @@
                 </div>	              
               </p:panel>
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer" style="margin-bottom: 11px;">
-                <i class="fa fa-lg fa-caret-left janal-color-blue" onclick="back('residentes');" style="cursor: pointer;" title="Atras"></i><p:spacer width="8px" height="1px"/><span id="fechaPivote"></span><p:spacer width="8px" height="1px"/><i class="fa fa-lg fa-caret-right janal-color-blue" onclick="next('residentes');" style="cursor: pointer;" title="Adelante"></i>
+                <i class="fa fa-lg fa-caret-left janal-color-blue" onclick="back('residentes');" style="cursor: pointer;" title="Atras"></i><p:spacer width="8px" height="1px"/><span id="nombreResidentePivote"></span><p:spacer width="8px" height="1px"/><i class="fa fa-lg fa-caret-right janal-color-blue" onclick="next('residentes');" style="cursor: pointer;" title="Adelante"></i>
               </div>   
             </div>
           </div>

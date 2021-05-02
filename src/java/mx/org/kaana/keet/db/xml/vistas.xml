@@ -87,6 +87,35 @@
 				group by
 				  category, serie        
       </select>  
+			<select id="periodo">
+				select      
+					tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista as id_key,	
+				  if(date_format(tc_keet_contratos_destajos_contratistas.registro, '%H')&gt;= 8 and date_format(tc_keet_contratos_destajos_contratistas.registro, '%H')&lt;= 18, 'NORMAL', 'FUERA') as category,
+				  date_format(tc_keet_contratos_destajos_contratistas.registro, '%d/%m/%Y') as serie,
+				  count(*) as value
+        from      
+          tc_keet_contratos_destajos_contratistas
+				inner join
+					tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
+				inner join  
+					tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+				inner join 
+					tc_keet_contratos on tc_keet_contratos_lotes.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				inner join 
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+        inner join
+					tc_janal_usuarios on tc_keet_contratos_destajos_contratistas.id_usuario= tc_janal_usuarios.id_usuario          
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        where 
+          tc_keet_desarrollos.nombres= '{desarrollo}'
+          and date_format(tc_keet_contratos_destajos_contratistas.registro, '%Y%m%d')&gt;= '{fecha}'
+          and tc_mantic_personas.id_persona= {idPersona}
+        group by
+          category, serie        
+      </select>  
 			<select id="horarios">			
 				select      
 					tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista as id_key,	
@@ -2922,7 +2951,8 @@
 				where
 					{condicion}
 				order by 
-					tc_keet_desarrollos.nombres, tc_keet_contratos.registro desc
+					tc_keet_desarrollos.nombres, 
+          tc_keet_contratos.registro desc
 			</select>
 			<select id="getCoordenadasDesarrollo">
 				select 
@@ -3609,6 +3639,7 @@
 			<select id="residentesDisponible">
 				select      					
 					convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,					
+          tr_mantic_empresa_personal.id_persona,
 					tr_mantic_empresa_personal.id_empresa_persona,
 					tc_keet_departamentos.nombre departamento,
 					tc_mantic_puestos.nombre puesto,
@@ -3620,6 +3651,7 @@
 					tc_mantic_personas.materno,					
 					tc_mantic_personas.rfc,					
 					tc_mantic_personas.curp,
+          concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) nombre_completo,
 					1 tipo
         from                				
 					tr_mantic_empresa_personal
@@ -3631,8 +3663,7 @@
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
         where 
           tr_mantic_empresa_personal.id_empresa_persona not in (select id_empresa_persona from tc_keet_contratos_lotes_residentes where tc_keet_contratos_lotes_residentes.id_contrato_lote= {idContratoLote})
-				and 
-					tr_mantic_empresa_personal.id_empresa= {idEmpresa}				  
+				  and tr_mantic_empresa_personal.id_empresa= {idEmpresa}				  
 				  and {condicion}
 					and tc_mantic_puestos.nombre like 'RESIDENTE%'
 				order by 

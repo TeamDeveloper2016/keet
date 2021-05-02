@@ -306,11 +306,17 @@ public class Nomina implements Serializable {
 
 	private void toLookUpConcepto(List<Concepto> particulares, ECodigosIncidentes concepto, Double value) throws CloneNotSupportedException {
 		// LOS CONCEPTOS DEL CONTRATISTA YA ESTAN CARGADOS SOLO ES ACTUALIZAR LOS VALORES
-		int index= particulares.indexOf(new Concepto(concepto.codigos()));
-		if(index>= 0) {
-			Concepto item= (Concepto)particulares.get(index);
-			item.setFormula(item.getFormula().replace("{".concat(concepto.name()).concat("}"), value.toString()));
-		} // if
+		int index= -1;
+    try {
+      index= particulares.indexOf(new Concepto(concepto.codigos()));
+      if(index>= 0) {
+        Concepto item= (Concepto)particulares.get(index);
+        item.setFormula(item.getFormula().replace("{".concat(concepto.name()).concat("}"), value== null? "0": value.toString()));
+      } // if
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 	}
 	
 	private Double toSueldoContratista(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
@@ -332,7 +338,7 @@ public class Nomina implements Serializable {
 				if(agremiados!= null && !agremiados.isEmpty()) {
 					this.toLookUpConcepto(particulares, ECodigosIncidentes.AGREMIADOS, agremiados.toDouble("agremiados"));
 					this.toLookUpConcepto(particulares, ECodigosIncidentes.SALARIOS, agremiados.toDouble("salarios"));
-					regresar-= agremiados.toDouble("salarios");
+					regresar-= agremiados.toDouble("salarios")== null? 0D: agremiados.toDouble("salarios");
 				} // if
 				regresar-= empleado.getNeto();
 				this.toLookUpConcepto(particulares, ECodigosIncidentes.COMPLEMENTO, regresar);

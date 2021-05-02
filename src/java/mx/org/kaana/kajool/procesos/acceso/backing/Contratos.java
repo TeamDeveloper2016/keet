@@ -29,6 +29,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -70,6 +71,8 @@ public class Contratos extends IBaseFilter implements Serializable {
   private Entity contrato;
 	private MapModel model;
   private LocalDate fechaPivote;
+  private Integer residentePivote;
+  private List<Entity> residentes;
 	
 	public MapModel getModel() {
 		return model;
@@ -108,6 +111,8 @@ public class Contratos extends IBaseFilter implements Serializable {
   protected void init() {
     try {      
       this.fechaPivote= LocalDate.now();
+      this.residentePivote= 0;
+      this.attrs.put("nombreResidentePivote", "");
       this.attrs.put("hoy", Fecha.getHoyCorreo());
       this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
       this.totales= new ArrayList<>();
@@ -122,6 +127,7 @@ public class Contratos extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     try {
+      this.toLoadResidentes();
       this.toLoadNombres();
       this.toLoadContratos();
       this.toLoadLotes();
@@ -130,9 +136,30 @@ public class Contratos extends IBaseFilter implements Serializable {
       this.toLoadContratistas();
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
   } // doLoad
+  
+  private void toLoadResidentes() {
+    Map<String, Object> params= null;
+    try {      
+      params = new HashMap<>();      
+			params.put("idContratoLote", -1L);			
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_activo= 1");
+      this.residentes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaContratosDto", "residentesDisponible", params);
+      if(this.residentes!= null && !this.residentes.isEmpty())
+        this.attrs.put("nombreResidentePivote", this.residentes.get(this.residentePivote).toString("nombreCompleto"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally  
+  }
   
   private void toLoadNombres() {
     List<Columna> columns     = null;		
@@ -455,14 +482,24 @@ public class Contratos extends IBaseFilter implements Serializable {
     try {      
       if(this.contrato!= null && !this.contrato.isEmpty()) {
         params = new HashMap<>();      
-        params.put("desarrollo", this.contrato.toString("desarrollo"));      
-        params.put("fecha", Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaPivote));      
-        if(JsfBase.isResidente())
-          params.put(Constantes.SQL_CONDICION, " and tc_janal_usuarios.id_usuario= "+ JsfBase.getIdUsuario());     
-        else
-          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
+//        params.put("fecha", Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaPivote));   
+//        if(JsfBase.isResidente())
+//          params.put(Constantes.SQL_CONDICION, " and tc_janal_usuarios.id_usuario= "+ JsfBase.getIdUsuario());     
+//        else
+//          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
+        params.put("desarrollo", this.contrato.toString("desarrollo"));  
+        if(this.residentes!= null && !this.residentes.isEmpty())
+          if(JsfBase.isResidente())
+            params.put("idPersona", JsfBase.getIdUsuario());
+          else
+            params.put("idPersona", this.residentes.get(this.residentePivote).toLong("idPersona"));
+        else 
+          params.put("idPersona", JsfBase.getIdUsuario());
+        Periodo periodo= new Periodo();
+        periodo.addDias(-8);
+        params.put("fecha", periodo.toString());   
         // Stacked multiple = new Stacked(this.toLoadLotesPorcentajes(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "horarios", params)));
-        Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "horarios", params));
+        Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "periodo", params));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
           StackModel stack= new StackModel(new Title(), multiple);
           stack.remove();
@@ -921,17 +958,34 @@ public class Contratos extends IBaseFilter implements Serializable {
     return items;
   }
 
+  private void toMoveIndexResidente(Integer index) {
+    if(this.residentes!= null && !this.residentes.isEmpty()) {
+      if((this.residentePivote+ index)>= this.residentes.size())
+        this.residentePivote= 0;
+      else
+        if((this.residentePivote+ index)< 0)
+          this.residentePivote= this.residentes.size()- 1;
+        else
+          this.residentePivote+= index; 
+      this.attrs.put("nombreResidentePivote", this.residentes.get(this.residentePivote).toString("nombreCompleto"));
+    } // if  
+  } 
+  
   public void doNextNomina(String type) {
-    this.fechaPivote= this.fechaPivote.plusDays(1);
+    // this.fechaPivote= this.fechaPivote.plusDays(1);
+    this.toMoveIndexResidente(1);
     this.toLoadHorarios();
-    UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {fechaPivote: '"+ (this.getFechaPivote())+ "'}}});");
+    // UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {fechaPivote: '"+ (this.getFechaPivote())+ "'}}});");
+    UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreResidentePivote: '"+ (this.attrs.get("nombreResidentePivote"))+ "'}}});");
     UIBackingUtilities.execute("jsEcharts.update('residentes', {group:'00', json:".concat((String)this.attrs.get("residentes")).concat("});"));
   }
   
   public void doBackNomina(String type) {
-    this.fechaPivote= this.fechaPivote.minusDays(1);
+//    this.fechaPivote= this.fechaPivote.minusDays(1);
+    this.toMoveIndexResidente(-1);
     this.toLoadHorarios();
-    UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {fechaPivote: '"+ (this.getFechaPivote())+ "'}}});");
+//    UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {fechaPivote: '"+ (this.getFechaPivote())+ "'}}});");
+    UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreResidentePivote: '"+ (this.attrs.get("nombreResidentePivote"))+ "'}}});");
     UIBackingUtilities.execute("jsEcharts.update('residentes', {group:'00', json:".concat((String)this.attrs.get("residentes")).concat("});"));
   }
 
