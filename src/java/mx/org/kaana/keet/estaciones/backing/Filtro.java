@@ -201,7 +201,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doInicio() {
 		JsfBase.setFlashAttribute("current", null);
-		init();
+		this.init();
 	} // doInicio
 
 	protected void loadEmpresas() {

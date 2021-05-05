@@ -2841,6 +2841,7 @@
 				  tc_keet_contratos.id_empresa,
 					tc_keet_contratos.consecutivo,
 					tc_keet_contratos.clave,
+					tc_keet_contratos.nombre,
 				  tc_keet_contratos_lotes.manzana,
 				  tc_keet_contratos_lotes.lote,
 					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) codigo,

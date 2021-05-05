@@ -14,7 +14,8 @@
       Janal.Control.fields = {
         'idDesarrollo': {validaciones: 'libre', mascara: 'libre'},
         'idContrato'  : {validaciones: 'libre', mascara: 'libre'},
-        'idLote'      : {validaciones: 'libre', mascara: 'libre'}
+        'idLote'      : {validaciones: 'libre', mascara: 'libre'},
+        'descripcion' : {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
   </ui:define>
@@ -52,10 +53,13 @@
               </p:selectOneMenu>	
 							<p:outputLabel for="idContrato" value="Contrato:"/>
 							<p:selectOneMenu id="idContrato" value="#{keetEstacionesContrato.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetEstacionesContrato.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
+								<f:selectItems value="#{keetEstacionesContrato.attrs.contratos}" var="one" itemValue="#{one}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
                 <p:ajax event="change" listener="#{keetEstacionesContrato.doLoadLotes}" process="@this" update="idLote" oncomplete="reloadLotes();"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
 								<p:column headerText="Etapa">
 									<h:outputText value="#{item.etapa}"/>
@@ -74,6 +78,8 @@
                   <h:outputText value="#{item.lote}"/>
                 </p:column>
   						</p:selectOneMenu>		             
+              <p:outputLabel for="descripcion" value="Partida o concepto:"/>
+              <p:inputText id="descripcion" value="#{keetEstacionesContrato.attrs.descripcion}" styleClass="janal-wid-100-txt"/>  
             </p:panelGrid>
 	          <p:remoteCommand name="reloadDesarrollos" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
 	          <p:remoteCommand name="reloadContratos" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
@@ -193,7 +199,7 @@
 			<p:contextMenu id="kajoolContextMenu" for="tabla" widgetVar="kajoolContextMenu" >
         <p:menuitem icon="fa fa-edit" action="#{keetEstacionesContrato.doAccion('MODIFICAR')}" value="Modificar" title="Modificar" rendered="#{keetEstacionesContrato.attrs.seleccionado.ultimo eq '1' and keetEstacionesContrato.attrs.seleccionado.idEstacionEstatus eq '1'}"/>
         <p:menuitem icon="fa fa-trash" actionListener="#{keetEstacionesContrato.doAccion('ELIMINAR')}" value="Eliminar" title="Eliminar" update="tabla" process="@this tabla" rendered="#{keetEstacionesContrato.attrs.seleccionado.ultimo eq '1' and keetEstacionesContrato.attrs.seleccionado.idEstacionEstatus eq '1'}"/>
-        <p:separator rendered="#{keetEstacionesContrato.attrs.seleccionado.ultimo eq '1'}"/>
+        <p:separator rendered="#{keetEstacionesContrato.attrs.seleccionado.ultimo eq '1' and keetEstacionesContrato.attrs.seleccionado.idEstacionEstatus eq '1'}"/>
         <p:menuitem icon="fa fa-arrow-up" id="subir" actionListener="#{keetEstacionesContrato.doAccion('SUBIR')}" value="Subir" title="Subir" update="tabla" process="@this tabla" rendered="false"/>
         <p:menuitem icon="fa fa-arrow-down" id="bajar" actionListener="#{keetEstacionesContrato.doAccion('BAJAR')}" value="Bajar" title="Bajar" update="tabla" process="@this tabla" rendered="false"/>
         <p:menuitem icon="fa fa-th-list" action="#{keetEstacionesContrato.doAccion('REGISTRAR')}" ajax="false" value="Descendencia"  title="Agregar descendencia" rendered="#{keetEstacionesContrato.attrs.seleccionado.nivel eq '4' or keetEstacionesContrato.attrs.seleccionado.nivel eq '5'}"/>

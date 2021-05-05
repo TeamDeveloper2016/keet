@@ -22,6 +22,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.keet.estaciones.beans.RegistroEstacion;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.estaciones.reglas.Transaccion;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -57,6 +58,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion= (EAccion)JsfBase.getFlashAttribute("accion");
       this.pivote= JsfBase.getFlashAttribute("pivote")== null? new TcKeetEstacionesDto(): (TcKeetEstacionesDto)JsfBase.getFlashAttribute("pivote");
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       this.attrs.put("isEstacion", JsfBase.getFlashAttribute("isEstacion")== null? Boolean.TRUE: JsfBase.getFlashAttribute("isEstacion"));
       this.attrs.put("idEstacion", JsfBase.getFlashAttribute("idEstacion"));
       this.attrs.put("padre", JsfBase.getFlashAttribute("estacionPadre"));
@@ -91,13 +93,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.estacion.getEstacion().setNivel(((TcKeetEstacionesDto)this.attrs.get("padre")).getNivel()); // nivel hijo
           this.estacion.getEstacion().setCantidad(1D);
           this.estacion.getEstacion().setCosto(0D);
-          this.toLoadRubrosConceptos();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
 					this.estacion= new RegistroEstacion((Long)this.attrs.get("idEstacion"));
           break;
       } // switch
+      this.toLoadRubrosConceptos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -112,13 +114,15 @@ public class Accion extends IBaseAttribute implements Serializable {
     UISelectEntity rubro   = null;
     try {			
       List<UISelectEntity>partidas= (List<UISelectEntity>)this.attrs.get("partidas");
-      partida= partidas.get(partidas.indexOf((UISelectEntity)this.attrs.get("idPartida")));
-      List<UISelectEntity>rubros= (List<UISelectEntity>)this.attrs.get("rubros");
-      if(rubros!= null) { 
-        rubro= rubros.get(rubros.indexOf((UISelectEntity)this.attrs.get("idRubro")));
-        this.estacion.getEstacion().setCodigo(rubro.toString("codigo"));
-        this.estacion.getEstacion().setNombre(rubro.toString("nombre"));
-        this.estacion.getEstacion().setDescripcion(rubro.toString("descripcion"));
+      if(partidas!= null) { 
+        partida= partidas.get(partidas.indexOf((UISelectEntity)this.attrs.get("idPartida")));
+        List<UISelectEntity>rubros= (List<UISelectEntity>)this.attrs.get("rubros");
+        if(rubros!= null && partida!= null && partida.getKey()> 0L) { 
+          rubro= rubros.get(rubros.indexOf((UISelectEntity)this.attrs.get("idRubro")));
+          this.estacion.getEstacion().setCodigo(rubro.toString("codigo"));
+          this.estacion.getEstacion().setNombre(rubro.toString("nombre"));
+          this.estacion.getEstacion().setDescripcion(rubro.toString("descripcion"));
+        } // if  
       } // if  
 			transaccion = new Transaccion(this.estacion, partida);
 			if(transaccion.ejecutar(this.accion)) {
@@ -157,6 +161,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     	partidas= UIEntity.seleccione("VistaEstacionesDto", "partidas", params, columns, Constantes.SQL_TODOS_REGISTROS, "codigo");
       this.attrs.put("partidas", partidas);
       this.attrs.put("idPartida", partidas!= null? UIBackingUtilities.toFirstKeySelectEntity(partidas): new UISelectEntity(-1L));
+      params.put("clave", estaciones.toKey(this.pivote.getClave(), this.pivote.getNivel().intValue()- 1));      
       params.put("nivel", Objects.equals(4L, this.pivote.getNivel())? this.pivote.getNivel()+ 2: this.pivote.getNivel()+ 1);      
     	rubros= UIEntity.seleccione("VistaEstacionesDto", "rubros", params, columns, Constantes.SQL_TODOS_REGISTROS, "codigo");
       this.attrs.put("rubros", rubros);

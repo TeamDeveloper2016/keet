@@ -445,7 +445,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         this.attrs.put("nombreContrato", (String)this.contrato.toString("serie"));
         String clave= Cadena.rellenar(this.contrato.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(this.contrato.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(this.contrato.toLong("orden").toString(), 3, '0', true);
         params = new HashMap<>();      
-        params.put("clave", clave);      
+        params.put("clave", clave);     
         Stacked multiple = new Stacked(this.toLoadLotesPorcentajes(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "avance", params)));
         if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
           StackModel stack= new StackModel(new Title(), multiple);
@@ -927,6 +927,48 @@ public class Contratos extends IBaseFilter implements Serializable {
     return items;
   }
   
+  public List<Entity> toLoadLotesCostoPorcentajes(List<Entity> items) {
+    Map<String, Double> list = new HashMap<>();
+    Map<String, Double> falta= new HashMap<>();
+    Double index             = null;
+    try {      
+      if(items!= null && !items.isEmpty()) {
+        for (Entity item: items) {
+          if(Objects.equals(item.toLong("idEstacionEstatus"), 2L))
+            falta.put(item.toString("serie"), item.toDouble("costo")- item.toDouble("value"));
+          index= list.get(item.toString("serie"));
+          if(index== null) 
+            list.put(item.toString("serie"), item.toDouble("costo"));
+          else 
+            list.put(item.toString("serie"), index+ (item.toDouble("value")> item.toDouble("costo")? item.toDouble("value"): item.toDouble("costo")));
+        } // for
+        int count= 0;
+        for (Entity item: items) {
+          index= list.get(item.toString("serie"));
+          if(index!= null) {
+            Double saldo= 0D;
+            if(falta.containsKey(item.toString("serie")) && Objects.equals(item.toLong("idEstacionEstatus"), 1L)) {
+              saldo= falta.get(item.toString("serie"));
+              falta.remove(item.toString("serie"));
+            } // if  
+            Double value= item.toDouble("value")+ saldo;
+            item.getValue("value").setData(Numero.toRedondearSat(value* 100/ index));
+          } // if
+          count++;
+        } // for
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(list);
+      Methods.clean(falta);
+    } // finally
+    return items;
+  }
+
   public List<Entity> toLoadLotesPorcentajes(List<Entity> items) {
     Map<String, Double> list= new HashMap<>();
     Double index            = null;
