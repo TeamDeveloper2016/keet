@@ -110,7 +110,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.current.setNivel(3L);
 			} // else if
 			else
-				doInicio();
+				this.doInicio();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

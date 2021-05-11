@@ -720,13 +720,19 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
                         concepto.setTermino(Fecha.toLocalDate(termino));
                       concepto.setIdUsuario(JsfBase.getIdUsuario());
                       Methods.setValueSubClass(concepto, "abono"+ semana, new Object[] {costo});
-                      LOG.warn(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion());
-                      // SI NO EXISTE EL CONCEPTO SE TIENE QUE AGREGAR AL PADRE Y ACTUALIZAR SALDOS Y ESTATUS
-                      this.toUpdateFathers(sesion, estaciones, concepto, concepto.isValid(), diferencia);
-  										if(concepto.isValid()) 
-                        DaoFactory.getInstance().update(sesion, concepto);
-                      else
-                        DaoFactory.getInstance().insert(sesion, concepto);
+                      if(Objects.equals(concepto.getIdEstacionEstatus(), 1L)) {
+                        LOG.warn(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion());
+                        // SI NO EXISTE EL CONCEPTO SE TIENE QUE AGREGAR AL PADRE Y ACTUALIZAR SALDOS Y ESTATUS
+                        this.toUpdateFathers(sesion, estaciones, concepto, concepto.isValid(), diferencia);
+                        if(concepto.isValid()) 
+                          DaoFactory.getInstance().update(sesion, concepto);
+                        else
+                          DaoFactory.getInstance().insert(sesion, concepto);
+                      } // if
+                      else {
+                        // AQUI FALTA AGREGAR UNA TABLA PARA VERIFICAR ESTOS CASOS Y REPORTARLOS EN LA PAGINA
+                        LOG.error(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion()+ ", VERIFICAR PORQUE YA ESTA PAGADO");
+                      } // else  
   									} // if
 									} // if
                   else 

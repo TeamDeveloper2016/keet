@@ -27,7 +27,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Gestor;
-import mx.org.kaana.mantic.catalogos.proveedores.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.proveedores.precios.reglas.Transaccion;
 import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticCatalogosProveedoresPreciosFiltro")
@@ -135,8 +135,8 @@ public class Filtro extends IBaseFilter implements Serializable {
     Transaccion transaccion = null;
     try {
       transaccion = new Transaccion(new TcKeetArticulosProveedoresDto(((Entity)this.attrs.get("seleccionado")).getKey()));
-      transaccion.ejecutar(EAccion.ELIMINAR);
-      JsfBase.addMessage("Eliminar precio", "El precio del articulo para el proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+      if(transaccion.ejecutar(EAccion.ELIMINAR))
+        JsfBase.addMessage("Eliminar precio", "El precio del articulo para el proveedor se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

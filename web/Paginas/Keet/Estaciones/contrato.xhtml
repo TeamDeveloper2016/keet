@@ -14,8 +14,7 @@
       Janal.Control.fields = {
         'idDesarrollo': {validaciones: 'libre', mascara: 'libre'},
         'idContrato'  : {validaciones: 'libre', mascara: 'libre'},
-        'idLote'      : {validaciones: 'libre', mascara: 'libre'},
-        'descripcion' : {validaciones: 'libre', mascara: 'libre'}
+        'idLote'      : {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
   </ui:define>
@@ -78,8 +77,8 @@
                   <h:outputText value="#{item.lote}"/>
                 </p:column>
   						</p:selectOneMenu>		             
-              <p:outputLabel for="descripcion" value="Partida o concepto:"/>
-              <p:inputText id="descripcion" value="#{keetEstacionesContrato.attrs.descripcion}" styleClass="janal-wid-100-txt"/>  
+              <p:outputLabel for="descripcion" value="Partida o concepto:" rendered="false"/>
+              <p:inputText id="descripcion" value="#{keetEstacionesContrato.attrs.descripcion}" styleClass="janal-wid-100-txt" rendered="false"/>  
             </p:panelGrid>
 	          <p:remoteCommand name="reloadDesarrollos" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
 	          <p:remoteCommand name="reloadContratos" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>

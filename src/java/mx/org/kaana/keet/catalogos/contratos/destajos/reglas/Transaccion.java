@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.catalogos.contratos.destajos.reglas;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +17,11 @@ import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoProveedorArch
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.ConceptoExtra;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Revision;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseDestajoArchivo;
+import mx.org.kaana.keet.db.dto.TcKeetContratosContratistasArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosProveedoresArchivosDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosPuntosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosRechazosContratistasDto;
@@ -37,14 +40,15 @@ import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
-	private static final Log LOG       = LogFactory.getLog(Transaccion.class);
-  
+	private static final Log LOG= LogFactory.getLog(Transaccion.class);
   
 	private Revision revision;	
 	private Double factorAcumulado;
 	private List<IBaseDestajoArchivo>documentos;	
 	private ConceptoExtra conceptoExtra;
 	private Long idEstatus;
+	private Long idTipoArchivo;
+	private Long idContratoArchivo;
 
 	public Transaccion(Revision revision, Long idEstatus) {
 		this.revision = revision;		
@@ -57,6 +61,11 @@ public class Transaccion extends IBaseTnx {
 
 	public Transaccion(ConceptoExtra conceptoExtra) {
 		this.conceptoExtra= conceptoExtra;
+	}	
+	
+	public Transaccion(Long idTipoArchivo, Long idContratoArchivo) {
+		this.idTipoArchivo= idTipoArchivo;
+		this.idContratoArchivo= idContratoArchivo;
 	}	
 	
 	@Override
@@ -103,6 +112,12 @@ public class Transaccion extends IBaseTnx {
 						regresar= this.eliminarConceptoExtraContratista(sesion, idUsuario);
 					else
 						regresar= this.eliminarConceptoExtraSubContratista(sesion, idUsuario);
+					break;
+				case DEPURAR:
+          if(Objects.equals(this.idTipoArchivo, 1L))
+            this.toDepurarEvidenciaContratista(sesion);
+          else
+            this.toDepurarEvidenciaProveedor(sesion);
 					break;
 			} // switch
 		} // try
@@ -802,5 +817,45 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // eliminarConceptoExtraSubContratista
+ 
+  private boolean toDepurarEvidenciaContratista(Session sesion) throws Exception {
+    boolean regresar= false;
+    try {
+      TcKeetContratosContratistasArchivosDto archivo= (TcKeetContratosContratistasArchivosDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosContratistasArchivosDto.class, this.idContratoArchivo);
+      if(archivo!= null) {
+        File file= new File(archivo.getAlias());
+        if(file.exists())
+          file.delete();
+        else
+          LOG.error("El archivo no existe fisicamente ["+ archivo.getAlias()+ "], verificar porque no existe !");
+        DaoFactory.getInstance().delete(sesion, archivo);
+        regresar= true;
+      } // if
+    } // try  
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+    return regresar;
+  }
+  
+  private boolean toDepurarEvidenciaProveedor(Session sesion) throws Exception {
+    boolean regresar= false;
+    try {
+      TcKeetContratosProveedoresArchivosDto archivo= (TcKeetContratosProveedoresArchivosDto)DaoFactory.getInstance().findById(sesion, TcKeetContratosProveedoresArchivosDto.class, this.idContratoArchivo);
+      if(archivo!= null) {
+        File file= new File(archivo.getAlias());
+        if(file.exists())
+          file.delete();
+        else
+          LOG.error("El archivo no existe fisicamente ["+ archivo.getAlias()+ "], verificar porque no existe !");
+        DaoFactory.getInstance().delete(sesion, archivo);
+        regresar= true;
+      } // if
+    } // try  
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+    return regresar;
+  }
   
 }

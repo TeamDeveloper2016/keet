@@ -3,6 +3,7 @@ package mx.org.kaana.kajool.procesos.acceso.backing;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,6 +135,7 @@ public class Contratos extends IBaseFilter implements Serializable {
       this.toLoadCoordenadas();
       this.toLoadHorarios();
       this.toLoadContratistas();
+      this.toLoadNominaContratistas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -211,6 +213,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
         stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
         stack.toCustomUniqueColorTopTotal("#000000");
+        stack.toCustomColorSerie(Arrays.asList(new String[] {"#29c0c6"}));
         this.attrs.put("contratos", stack.toJson());
         this.contrato= multiple.getData().get(multiple.getData().size()- 1);
         this.toLoadGlobal();
@@ -253,6 +256,7 @@ public class Contratos extends IBaseFilter implements Serializable {
           stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
           stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
           stack.toCustomUniqueColorTopTotal("#000000");
+          stack.toCustomColorSerie(Arrays.asList(new String[] {"#3a64df"}));
           this.attrs.put("contratistas", stack.toJson());
           Double total= 0D;
           for(Entity item: multiple.getData()) {
@@ -268,6 +272,49 @@ public class Contratos extends IBaseFilter implements Serializable {
         this.toLoadNominaContratoContratistas();
       } // if
       this.toLoadProveedores();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toLoadNominaContratistas() {
+    Map<String, Object> params = null;
+    try {      
+      if(this.nomina!= null && !this.nomina.isEmpty()) {
+        params = new HashMap<>();      
+        params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
+        params.put("contrato", this.attrs.get("nombreContrato")); 
+        Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoContratoPersona", params));
+        if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+          StackModel stack= new StackModel(new Title(), multiple);
+          stack.remove();
+          stack.toCustomFontSize(14);
+          stack.getLegend().setY("85%");
+          stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+          stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+          stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+          stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+          stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+          stack.toCustomUniqueColorTopTotal("#000000");
+          stack.toCustomColorSerie(Arrays.asList(new String[] {"#9969ca"}));
+          this.attrs.put("nominaContratistas", stack.toJson());
+          Double total= 0D;
+          for(Entity item: multiple.getData()) {
+            total+= item.toDouble("value");
+          } // for
+          // this.attrs.put("totalContratistas", "TOTAL: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
+        } // if
+        else {
+          this.attrs.put("nominaContratistas", "{}");
+          // this.attrs.put("totalContratistas", "TOTAL: $ 0.00");
+        } // else
+      } // if
+      this.toLoadNominaProveedores();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -299,6 +346,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
         stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
         stack.toCustomUniqueColorTopTotal("#000000");
+        stack.toCustomColorSerie(Arrays.asList(new String[] {"#82de7e"}));
         this.attrs.put("contratoContratistas", stack.toJson());
         Double total= 0D;
         for(Entity item: multiple.getData()) {
@@ -344,6 +392,8 @@ public class Contratos extends IBaseFilter implements Serializable {
           stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
           stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
           stack.toCustomUniqueColorTopTotal("#000000");
+          stack.toCustomColorSerie(Arrays.asList(new String[] {"#82de7e"}));
+          //stack.toCustomColorSerie(Arrays.asList(new String[] {"#3a64df"}));
           this.attrs.put("proveedores", stack.toJson());
           Double total= 0D;
           for(Entity item: multiple.getData()) {
@@ -357,6 +407,48 @@ public class Contratos extends IBaseFilter implements Serializable {
           this.attrs.put("totalProveedores", "TOTAL: $ 0.00");
         } // else
         this.toLoadNominaContratoProveedores();
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toLoadNominaProveedores() {
+    Map<String, Object> params = null;
+    try {      
+      if(this.nomina!= null && !this.nomina.isEmpty()) {
+        params = new HashMap<>();      
+        params.put("idDesarrollo", this.desarrollo!= null? this.desarrollo.getKey(): -1L);
+        params.put("contrato", this.attrs.get("nombreContrato")); 
+        Stacked multiple = new Stacked(DaoFactory.getInstance().toEntitySet("VistaTableroDto", "costoContratoProveedor", params));
+        if(multiple.getData()!= null && !multiple.getData().isEmpty()) {
+          StackModel stack= new StackModel(new Title(), multiple);
+          stack.remove();
+          stack.toCustomFontSize(14);
+          stack.getLegend().setY("85%");
+          stack.getxAxis().getAxisLabel().getTextStyle().setFontSize(12);
+          stack.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+          stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+          stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+          stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
+          stack.toCustomUniqueColorTopTotal("#000000");
+          stack.toCustomColorSerie(Arrays.asList(new String[] {"#9969ca"}));
+          this.attrs.put("nominaProveedores", stack.toJson());
+          Double total= 0D;
+          for(Entity item: multiple.getData()) {
+            total+= item.toDouble("value");
+          } // for
+          // this.attrs.put("totalProveedores", "TOTAL: "+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(total)));
+        } // if
+        else {
+          this.attrs.put("nominaProveedores", "{}");
+          // this.attrs.put("totalProveedores", "TOTAL: $ 0.00");
+        } // else
       } // if
     } // try
     catch (Exception e) {
@@ -389,6 +481,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
         stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
         stack.toCustomUniqueColorTopTotal("#000000");
+        stack.toCustomColorSerie(Arrays.asList(new String[] {"#f4f35c"}));
         this.attrs.put("contratoProveedores", stack.toJson());
         Double total= 0D;
         for(Entity item: multiple.getData()) {
@@ -425,6 +518,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
         stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
         stack.toCustomUniqueColorTopTotal("#000000");
+        stack.toCustomColorSerie(Arrays.asList(new String[] {"#f68c6b"}));
         this.attrs.put("global", stack.toJson());
       } // if
       else {
@@ -458,6 +552,7 @@ public class Contratos extends IBaseFilter implements Serializable {
           stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'one-decimal');}");
           stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
           stack.toCustomUniqueColorTopTotal("#000000");
+          stack.toCustomColorSerie(Arrays.asList(new String[] {"#c3f05f"}));
           this.attrs.put("lotes", stack.toJson());
         } // if
         else {
@@ -511,6 +606,7 @@ public class Contratos extends IBaseFilter implements Serializable {
           stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
           stack.getTooltip().getTextStyle().setColor(Colors.COLOR_WHITE);
           stack.toCustomUniqueColorTopTotal("#000000");
+          stack.toCustomColorSerie(Arrays.asList(new String[] {"#ed4958"}));
           this.attrs.put("residentes", stack.toJson());
         } // if
         else {
@@ -546,6 +642,9 @@ public class Contratos extends IBaseFilter implements Serializable {
         UIBackingUtilities.execute("jsEcharts.update('contratos', {group:'00', json:".concat((String)this.attrs.get("contratos")).concat("});"));
         UIBackingUtilities.execute("jsEcharts.update('lotes', {group:'00', json:".concat((String)this.attrs.get("lotes")).concat("});"));
         this.toLoadContratistas();
+        this.toLoadNominaContratistas();
+        UIBackingUtilities.execute("jsEcharts.update('nominaContratistas', {group:'00', json:".concat((String)this.attrs.get("nominaContratistas")).concat("});"));
+        UIBackingUtilities.execute("jsEcharts.update('nominaProveedores', {group:'00', json:".concat((String)this.attrs.get("nominaProveedores")).concat("});"));
         UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreDesarrollo:'"+ this.attrs.get("nombreDesarrollo")+ "', nombreContrato:'"+ this.attrs.get("nombreContrato")+ "', totalProveedores: '"+ this.attrs.get("totalProveedores")+ "', totalSubContratistas: '"+ this.attrs.get("totalSubContratistas")+ "'}}});");
       } // if  
     } // try
@@ -592,6 +691,9 @@ public class Contratos extends IBaseFilter implements Serializable {
           UIBackingUtilities.execute("jsEcharts.update('lotes', {group:'00', json:".concat((String)this.attrs.get("lotes")).concat("});"));
           UIBackingUtilities.execute("jsEcharts.refresh({items: {json: {nombreContrato:'"+ this.attrs.get("nombreContrato")+ "'}}});");
           UIBackingUtilities.execute("onOffSwitchTable('mapa', false);");
+          this.toLoadNominaContratistas();
+          UIBackingUtilities.execute("jsEcharts.update('nominaContratistas', {group:'00', json:".concat((String)this.attrs.get("nominaContratistas")).concat("});"));
+          UIBackingUtilities.execute("jsEcharts.update('nominaProveedores', {group:'00', json:".concat((String)this.attrs.get("nominaProveedores")).concat("});"));
           break;
         case "lotes": 
           params.put("desarrollo", this.contrato.toString("desarrollo"));

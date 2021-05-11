@@ -30,6 +30,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
@@ -43,6 +44,7 @@ public class Importar extends IBaseImportar implements Serializable {
 
 	private static final long serialVersionUID = 154600879172477099L;
 	List<IBaseDestajoArchivo> documentos;
+  protected String pathImage;
 
 	public List<IBaseDestajoArchivo> getDocumentos() {
 		return documentos;
@@ -51,6 +53,10 @@ public class Importar extends IBaseImportar implements Serializable {
 	public void setDocumentos(List<IBaseDestajoArchivo> documentos) {
 		this.documentos = documentos;
 	}
+
+  public String getImagen() {
+		return this.pathImage.concat(((Entity)this.attrs.get("concepto")).toString("codigo")).concat(".png");
+  }
 		
   @PostConstruct
   @Override
@@ -77,10 +83,13 @@ public class Importar extends IBaseImportar implements Serializable {
 			else
 				this.attrs.put("idContratoLoteProveedor", ((Entity)this.attrs.get("seleccionadoPivote")).toLong("idContratoLoteProveedor"));
 			this.attrs.put("file", ""); 
-			setFile(new Importado());
+			this.setFile(new Importado());
 			this.documentos= new ArrayList<>();
-			loadCatalogos();	
-			doLoad();
+			this.loadCatalogos();	
+			this.doLoad();
+      this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.pathImage= this.pathImage.substring(0, this.pathImage.indexOf(JsfBase.getContext())).concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/puntos/");
+      this.attrs.put("idContratoArchivo", -1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -350,4 +359,26 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch		
     return regresar;
   } // doCancelar		
+  
+  public void doEliminar(Entity row) {
+    this.attrs.put("seleccionado", row);
+  }
+  
+  public void doDepurar() {
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion(((Entity) this.attrs.get("figura")).toLong("tipo"), ((Entity)this.attrs.get("seleccionado")).getKey());
+      if(transaccion.ejecutar(EAccion.DEPURAR)) {
+      	UIBackingUtilities.execute("janal.alert('Se eliminó la evidencia con éxito !');");
+        this.doLoad();
+      } // if  
+      else
+      	UIBackingUtilities.execute("janal.alert('No se pudo eliminar la evidencia!');");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  }
+  
 }

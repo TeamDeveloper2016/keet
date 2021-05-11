@@ -63,27 +63,52 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos" styleClass="janal-wid-100-txt">
 						<p:ajax event="tabChange" listener="#{keetCatalogosContratosDestajosImportar.doTabChange}" process="@this" update="@(.importado)"/>						
+            <p:tab title="Ejemplo [#{keetCatalogosContratosDestajosImportar.attrs.concepto.codigo}]">
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">		
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt janal-column-center">		
+     							<a id="source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{keetCatalogosContratosDestajosImportar.attrs.concepto.codigo}" href="#{keetCatalogosContratosDestajosImportar.imagen}" data-group="icon-image" title="Click para ver más grande la imagen">
+                    <p:graphicImage width="550px" height="320px" cache="false" url="#{keetCatalogosContratosDestajosImportar.imagen}" stream="false" style="cursor:zoom-in;"/>
+                  </a>  
+                </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
+                  <p:outputLabel value="Residente:" styleClass="janal-color-black janal-font-bold"/>
+                  <p:outputLabel value="Cuando sea tomada la fotográfia favor de tener en cuenta las siguientes consideraciones"/>
+                  <ul>
+                    <li>La fotografía no <span class='janal-font-bold'>aparezcan</span> personas</li>
+                    <li>La fotografía no este <span class='janal-font-bold'>borrosa</span> la toma</li>
+                    <li>La fotografía tiene que ser <span class='janal-font-bold'>a color</span></li>
+                    <li>La fotografía debe ser tomada en formato <span class='janal-font-bold'>horizontal</span></li>
+                    <li>La distancia del minima del objeto a fotográfiar debe de ser entre <span class='janal-font-bold'>3 a 5 metros</span></li>
+                    <li>La imagen debe de tener una resolución mínima de <span class='janal-font-bold'>800x1200 pixeles</span></li>
+                    <li>La fotografía debe de ser tomada con el telefono particular</li>
+                  </ul>
+                  <p:outputLabel value="En caso de que no cumpla con estas caracteristicas repertir las veces que sea necesario !"/>
+                  <p:outputLabel value="Criterio:" styleClass="janal-color-black janal-font-bold"/>
+                  <p:outputLabel value="Esto es algo particular a la fotografía que se requiera especificar sobre los elementos que deban de aparecer"/>
+                </p:panelGrid>  
+              </p:panelGrid>  
+            </p:tab>
             <p:tab title="General">							
-							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">		
 								<p:outputLabel value="Código:"/>
 								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.concepto.codigo}" styleClass="janal-wid-100-txt" disabled="true"/>								
 								<p:outputLabel value="Concepto:"/>
 								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.concepto.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>								
 								<p:outputLabel value="Paquete:"/>
 								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.concepto.descripcion}" styleClass="janal-wid-100-txt" disabled="true"/>								
-								<p:separator/>
+                <p:spacer width="1px"/><p:separator/>
 								<p:outputLabel value="Contrato:"/>
 								<p:inputText value="[ #{keetCatalogosContratosDestajosImportar.attrs.contrato.clave} ] #{keetCatalogosContratosDestajosImportar.attrs.contrato.etapa} M#{keetCatalogosContratosDestajosImportar.attrs.contratoLote.manzana}L#{keetCatalogosContratosDestajosImportar.attrs.contratoLote.lote}" styleClass="janal-wid-100-txt" disabled="true"/>
-								<p:outputLabel value="Proyecto:"/>
-								<p:inputText value="[#{keetCatalogosContratosDestajosImportar.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosImportar.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" disabled="true"/>								
+								<p:outputLabel value="Proyecto:" rendered="false"/>
+								<p:inputText value="[#{keetCatalogosContratosDestajosImportar.attrs.contrato.claveProyecto}] #{keetCatalogosContratosDestajosImportar.attrs.contrato.etapaProyecto}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>
 								<p:outputLabel value="Desarrollo:"/>																		
 								<p:inputText value="[#{keetCatalogosContratosDestajosImportar.attrs.contrato.claveDesarrollo}] #{keetCatalogosContratosDestajosImportar.attrs.contrato.nombreDesarrollo}" styleClass="janal-wid-100-txt" disabled="true"/>								
-								<p:separator/>
-                <p:outputLabel value="Domicilio:"/>
-								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" disabled="true"/>
-								<p:outputLabel value="Cliente:"/>																		
-								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" disabled="true"/>								
-								<p:separator/>
+                <p:spacer width="1px" rendered="false"/><p:separator rendered="false"/>
+                <p:outputLabel value="Domicilio:" rendered="false"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.contrato.domicilio}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>
+								<p:outputLabel value="Cliente:" rendered="false"/>																		
+								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.contrato.razonSocial}" styleClass="janal-wid-100-txt" disabled="true" rendered="false"/>								
+								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel value="Empleado:"/>
 								<p:inputText value="#{keetCatalogosContratosDestajosImportar.attrs.figura.nombreCompleto}" styleClass="janal-wid-100-txt" disabled="true"/>
 								<p:outputLabel value="Puesto:"/>
@@ -113,10 +138,11 @@
 								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
-								<p:column  styleClass="janal-wid-col-40 janal-column-center">
+								<p:column  styleClass="janal-wid-col-80 janal-column-center">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 										<p:fileDownload value="#{keetCatalogosContratosDestajosImportar.doFileDownload(row)}" />
 									</p:commandButton>
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" actionListener="#{keetCatalogosContratosDestajosImportar.doEliminar(row)}" oncomplete="PF('dialogoConfirmacion').show();" process="@this" update="confirmacion"/>
 								</p:column>
 							</p:dataTable>
 						</p:tab>						            						            																																																
@@ -134,8 +160,13 @@
 										<p:outputLabel value="&lt;b&gt;Empleado:&lt;/b&gt; #{item.nombrePersona}" class="pad-description" escape="false"/>
 										<p:outputLabel value="&lt;b&gt;Puesto:&lt;/b&gt; #{item.puesto}" class="pad-description" escape="false"/>
 										<p:separator/>
-										<p:outputLabel value="&lt;b&gt;Usuario:&lt;/b&gt; #{item.nombreUsuario}" class="pad-description" escape="false"/>
-										<p:outputLabel value="&lt;b&gt;Registro:&lt;/b&gt; #{item.registro}" class="pad-description" escape="false"/>
+                    <p:panelGrid columns="2" columnClasses="janal-wid-90, janal-wid-10 janal-column-right">
+                      <p:panelGrid columns="1" columnClasses="janal-wid-90, janal-wid-10">
+                        <p:outputLabel value="&lt;b&gt;Usuario:&lt;/b&gt; #{item.nombreUsuario}" class="pad-description" escape="false"/>
+                        <p:outputLabel value="&lt;b&gt;Registro:&lt;/b&gt; #{item.registro}" class="pad-description" escape="false"/>
+                      </p:panelGrid>  
+                      <p:commandButton icon="fa fa-trash" title="Eliminar" actionListener="#{keetCatalogosContratosDestajosImportar.doEliminar(item)}" oncomplete="PF('dialogoConfirmacion').show();" process="@this" update="confirmacion"/>
+                    </p:panelGrid>  
 									</p:panelGrid>									
 								</p:panelGrid>							
 							</p:carousel>
@@ -182,6 +213,16 @@
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCatalogosContratosDestajosImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
-	<ui:define name="dialogos">
-	</ui:define>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la evidencia ?" />
+  <ui:param name="accionConfirmacion" value="#{keetCatalogosContratosDestajosImportar}"/>
+  <ui:param name="updateComponent" value="contenedorGrupos contenedorGrupos:importados contenedorGrupos:tabla"/>
+  <ui:param name="eventoConfirmacion" value="doDepurar"/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <h:panelGrid columns="2">
+      <br/>
+      <p:outputLabel value="Nombre: &lt;span class='janal-font-bold'&gt;#{keetCatalogosContratosDestajosImportar.attrs.seleccionado.nombre}&lt;/span&gt;" escape="false"/>
+    </h:panelGrid>			
+  </ui:define>
+  
 </ui:composition>
