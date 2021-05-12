@@ -5333,6 +5333,7 @@
 					tc_keet_rubros.codigo,
 					tc_keet_rubros.nombre,
           tc_keet_rubros.id_evidencia,
+          tc_keet_rubros.criterio,
 					tc_keet_rubros.orden
 				from 
 					tc_keet_puntos_paquetes
@@ -5457,6 +5458,8 @@
 					tc_keet_rubros_grupos.id_rubro_grupo,
 					tc_keet_rubros_grupos.id_rubro,
 					tc_keet_rubros.codigo,
+          tc_keet_rubros.id_evidencia,
+          tc_keet_rubros.criterio,
 					tc_keet_rubros.orden
 				from 
 					tc_keet_puntos_paquetes
