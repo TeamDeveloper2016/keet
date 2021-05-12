@@ -30,7 +30,6 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
@@ -200,7 +199,7 @@ public class Importar extends IBaseImportar implements Serializable {
       /*UPLOAD*/
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), idArchivo));
   		this.attrs.put("file", this.getFile().getName());	
-			this.documentos.add(toDestajoArchivo(idArchivo, figura.toLong("tipo")));
+			this.documentos.add(this.toDestajoArchivo(idArchivo, figura.toLong("tipo")));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -226,7 +225,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // toClaveEstacion	
 	
 	private IBaseDestajoArchivo toDestajoArchivo(Long idArchivo, Long tipo) throws Exception{												
-		return tipo.equals(1L) ? toDestajoContratistaArchivo(idArchivo, tipo) : toDestajoProveedorArchivo(idArchivo, tipo);
+		return tipo.equals(1L) ? this.toDestajoContratistaArchivo(idArchivo, tipo): this.toDestajoProveedorArchivo(idArchivo, tipo);
 	} // toPrototipoArchivo
 	
 	private IBaseDestajoArchivo toDestajoContratistaArchivo(Long idArchivo, Long tipo) throws Exception{					
@@ -246,7 +245,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			(String)this.attrs.get("observaciones"), // observaciones 			
 			Configuracion.getInstance().getPropiedadSistemaServidor("destajos").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // alias
 			toIdContratoDestajoFigura(), // idContratoDestajoContratista
-			this.getFile().getOriginal() // nombre
+			this.getFile().getOriginal(), // nombre
+      ((Entity)this.attrs.get("concepto")).toString("codigo")
 		); 		
 		return regresar;
 	} // toDestajoContratistaArchivo
@@ -268,7 +268,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), // idTipoArchivo						
 			(String)this.attrs.get("observaciones"), // observaciones 						
 			Configuracion.getInstance().getPropiedadSistemaServidor("destajos").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // alias
-			this.getFile().getOriginal() // nombre
+			this.getFile().getOriginal(), // nombre
+      ((Entity)this.attrs.get("concepto")).toString("codigo")
 		); // estatus	
 		return regresar;
 	} // toDestajoProveedorArchivo	

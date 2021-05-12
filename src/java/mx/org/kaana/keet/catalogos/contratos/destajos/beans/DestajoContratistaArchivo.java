@@ -13,8 +13,8 @@ public class DestajoContratistaArchivo extends TcKeetContratosContratistasArchiv
 	private String concepto;
 	private String consecutivo;
 
-	public DestajoContratistaArchivo(Long idArchivo, Long tipo, String especialidad, String concepto, String consecutivo, Long idContratoContratistaArchivo, String archivo, LocalDateTime eliminado, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, String observaciones, String alias, Long idContratoDestajoContratista, String nombre) {
-		super(idContratoContratistaArchivo, archivo, eliminado, ruta, tamanio, idUsuario, idTipoArchivo, observaciones, alias, idContratoDestajoContratista, nombre);
+	public DestajoContratistaArchivo(Long idArchivo, Long tipo, String especialidad, String concepto, String consecutivo, Long idContratoContratistaArchivo, String archivo, LocalDateTime eliminado, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, String observaciones, String alias, Long idContratoDestajoContratista, String nombre, String codigo) {
+		super(idContratoContratistaArchivo, archivo, eliminado, ruta, tamanio, idUsuario, idTipoArchivo, observaciones, alias, idContratoDestajoContratista, nombre, codigo);
 		this.idArchivo   = idArchivo;
 		this.tipo        = tipo;
 		this.especialidad= especialidad;

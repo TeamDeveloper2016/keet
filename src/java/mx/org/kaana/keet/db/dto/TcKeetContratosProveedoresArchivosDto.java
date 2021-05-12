@@ -51,6 +51,8 @@ public class TcKeetContratosProveedoresArchivosDto implements IBaseDto, Serializ
   private String alias;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="codigo")
+  private String codigo;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -59,11 +61,11 @@ public class TcKeetContratosProveedoresArchivosDto implements IBaseDto, Serializ
   }
 
   public TcKeetContratosProveedoresArchivosDto(Long key) {
-    this(null, new Long(-1L), null, LocalDateTime.now(), null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, LocalDateTime.now(), null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetContratosProveedoresArchivosDto(Long idContratoDestajoProveedor, Long idContratoProveedorArchivo, String archivo, LocalDateTime eliminado, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, String observaciones, String alias, String nombre) {
+  public TcKeetContratosProveedoresArchivosDto(Long idContratoDestajoProveedor, Long idContratoProveedorArchivo, String archivo, LocalDateTime eliminado, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, String observaciones, String alias, String nombre, String codigo) {
     setIdContratoDestajoProveedor(idContratoDestajoProveedor);
     setIdContratoProveedorArchivo(idContratoProveedorArchivo);
     setArchivo(archivo);
@@ -76,6 +78,7 @@ public class TcKeetContratosProveedoresArchivosDto implements IBaseDto, Serializ
     setAlias(alias);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
+    this.codigo= codigo;
   }
 	
   public void setIdContratoDestajoProveedor(Long idContratoDestajoProveedor) {
@@ -174,6 +177,14 @@ public class TcKeetContratosProveedoresArchivosDto implements IBaseDto, Serializ
     return registro;
   }
 
+  public String getCodigo() {
+    return codigo;
+  }
+
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -211,6 +222,8 @@ public class TcKeetContratosProveedoresArchivosDto implements IBaseDto, Serializ
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCodigo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -230,6 +243,7 @@ public class TcKeetContratosProveedoresArchivosDto implements IBaseDto, Serializ
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("alias", getAlias());
 		regresar.put("nombre", getNombre());
+		regresar.put("codigo", getCodigo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -237,7 +251,7 @@ public class TcKeetContratosProveedoresArchivosDto implements IBaseDto, Serializ
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdContratoDestajoProveedor(), getIdContratoProveedorArchivo(), getArchivo(), getEliminado(), getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getObservaciones(), getAlias(), getNombre(), getRegistro()
+      getIdContratoDestajoProveedor(), getIdContratoProveedorArchivo(), getArchivo(), getEliminado(), getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getObservaciones(), getAlias(), getNombre(), getRegistro(), getCodigo()
     };
     return regresar;
   }
