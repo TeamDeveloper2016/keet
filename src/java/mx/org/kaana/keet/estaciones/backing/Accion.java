@@ -114,10 +114,11 @@ public class Accion extends IBaseAttribute implements Serializable {
     UISelectEntity rubro   = null;
     try {			
       List<UISelectEntity>partidas= (List<UISelectEntity>)this.attrs.get("partidas");
-      if(partidas!= null) { 
+      if(partidas!= null)
         partida= partidas.get(partidas.indexOf((UISelectEntity)this.attrs.get("idPartida")));
-        List<UISelectEntity>rubros= (List<UISelectEntity>)this.attrs.get("rubros");
-        if(rubros!= null && partida!= null && partida.getKey()> 0L) { 
+      if(Objects.equals(this.accion, EAccion.AGREGAR)) {
+        List<UISelectEntity> rubros= (List<UISelectEntity>)this.attrs.get("rubros");
+        if(rubros!= null) { 
           rubro= rubros.get(rubros.indexOf((UISelectEntity)this.attrs.get("idRubro")));
           this.estacion.getEstacion().setCodigo(rubro.toString("codigo"));
           this.estacion.getEstacion().setNombre(rubro.toString("nombre"));
@@ -166,6 +167,9 @@ public class Accion extends IBaseAttribute implements Serializable {
     	rubros= UIEntity.seleccione("VistaEstacionesDto", "rubros", params, columns, Constantes.SQL_TODOS_REGISTROS, "codigo");
       this.attrs.put("rubros", rubros);
       attrs.put("idRubro", rubros!= null? UIBackingUtilities.toFirstKeySelectEntity(rubros): new UISelectEntity(-1L));
+      if(Objects.equals(((TcKeetEstacionesDto)this.attrs.get("padre")).getNivel(), 4L)) {
+        
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
