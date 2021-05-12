@@ -20,6 +20,7 @@ import mx.org.kaana.keet.controles.reglas.Controles;
 import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosLotesDto;
 import mx.org.kaana.keet.db.dto.TcKeetControlesDto;
+import mx.org.kaana.keet.db.dto.TcKeetErroresEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetMaterialesDto;
 import mx.org.kaana.keet.db.dto.TcKeetPrototiposDto;
@@ -731,6 +732,16 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
                       } // if
                       else {
                         // AQUI FALTA AGREGAR UNA TABLA PARA VERIFICAR ESTOS CASOS Y REPORTARLOS EN LA PAGINA
+                        TcKeetErroresEstacionesDto error= new TcKeetErroresEstacionesDto(
+                          concepto.getIdEstacionEstatus(), // Long idEstacionEstatus, 
+                          costo, // Double costo, 
+                          JsfBase.getIdUsuario(), // Long idUsuario, 
+                          raiz.getIdEstacion(), // Long idRaiz,
+                          concepto.getIdEstacion(), // Long idEstacion, 
+                          this.masivo.getAlias(), // String alias, 
+                          -1L // Long idErrorEstacion
+                        );
+                        DaoFactory.getInstance().insert(sesion, error);
                         LOG.error(count+ ".-  <"+ concepto.getNivel()+ "> ["+ concepto.getClave()+ "] ("+ concepto.getCodigo()+ ") {"+ concepto.getCosto()+ "} "+ concepto.getDescripcion()+ ", VERIFICAR PORQUE YA ESTA PAGADO");
                       } // else  
   									} // if

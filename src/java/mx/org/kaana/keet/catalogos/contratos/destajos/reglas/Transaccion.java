@@ -93,7 +93,7 @@ public class Transaccion extends IBaseTnx {
 						regresar= this.processRechazoSubContratista(sesion, idUsuario);
 					break;						
 				case SUBIR:
-					for(IBaseDestajoArchivo incidencia: this.documentos){
+					for(IBaseDestajoArchivo incidencia: this.documentos) {
 						if(incidencia.getTipo().equals(1L))
 							dto= (DestajoContratistaArchivo) incidencia;
 						else

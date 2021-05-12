@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetErroresEstacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_errores_estaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_errores_estaciones
+        where      
+          id_error_estacion = {idErrorEstacion}
+      </select>
+    </unit>    
     <unit id="TcKeetTiposGastosDto">
       <select id="row">
         select      
