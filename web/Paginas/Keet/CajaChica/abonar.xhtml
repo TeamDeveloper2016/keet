@@ -11,6 +11,7 @@
 	<ui:define name="librerias">		
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
+				'importe': {validaciones: 'requerido|flotante', mascara: 'libre'},
 				'observaciones': {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};				
 		    	
@@ -69,8 +70,8 @@
 							</div>
 						</p:tab>																							
 					</p:accordionPanel>
-					<p:outputLabel value="Importe:"/>
-					<p:inputNumber id="importe" value="#{keetCajaChicaAbonar.attrs.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt"/>
+					<p:outputLabel for="importe" value="Importe:"/>
+          <p:inputNumber id="importe" value="#{keetCajaChicaAbonar.attrs.importe}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" inputStyleClass="janal-wid-100-txt"/>
 					<p:outputLabel for="observaciones" value="Observaciones:"/>
 					<p:inputTextarea id="observaciones" value="#{keetCajaChicaAbonar.attrs.observaciones}" rows="4" styleClass="janal-wid-100-txt"/>
 				</div>

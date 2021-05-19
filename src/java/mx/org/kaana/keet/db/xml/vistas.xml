@@ -7743,17 +7743,17 @@
 				from
 					tc_keet_cajas_chicas_cierres
 				inner join
-					tc_keet_cajas_chicas ON tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+					tc_keet_cajas_chicas on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
 				inner join
-					tc_keet_nominas_periodos ON tc_keet_cajas_chicas_cierres.id_nomina_periodo = tc_keet_nominas_periodos.id_nomina_periodo
+					tc_keet_nominas_periodos on tc_keet_cajas_chicas_cierres.id_nomina_periodo = tc_keet_nominas_periodos.id_nomina_periodo
 				inner join
-					tc_keet_desarrollos ON tc_keet_cajas_chicas.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+					tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo = tc_keet_desarrollos.id_desarrollo
 				inner join 
 				  tc_mantic_clientes on tc_keet_desarrollos.id_cliente = tc_mantic_clientes.id_cliente
 				inner join 
 					tc_mantic_empresas on tc_mantic_clientes.id_empresa = tc_mantic_empresas.id_empresa
 				inner join
-					tc_keet_cajas_chicas_cierres_estatus ON tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus = tc_keet_cajas_chicas_cierres_estatus.id_caja_chica_cierre_estatus
+					tc_keet_cajas_chicas_cierres_estatus on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus = tc_keet_cajas_chicas_cierres_estatus.id_caja_chica_cierre_estatus
 				where
 					{condicion}
 				{sortOrder}
@@ -7784,7 +7784,7 @@
 				inner join 
 				  tc_keet_cajas_chicas_cierres on tc_keet_gastos.id_caja_chica_cierre = tc_keet_cajas_chicas_cierres.id_caja_chica_cierre
 				inner join
-					tc_keet_cajas_chicas ON tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+					tc_keet_cajas_chicas on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
 				where 
 					tc_keet_gastos.id_caja_chica_cierre= {idCajaChicaCierre}
 				order by 

@@ -44,6 +44,7 @@ public class Abonar extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));						
 			this.attrs.put("opcionResidente", opcion);						
 			this.attrs.put("idDesarrollo", idDesarrollo);      			
+			this.attrs.put("importe", 1D);      			
 			if(Cadena.isVacio(this.attrs.get("idCajaChicaCierre")))
 				loadCajaChicaCierre();
 			doLoad();											
