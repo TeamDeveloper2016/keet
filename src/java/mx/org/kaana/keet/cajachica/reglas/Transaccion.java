@@ -95,59 +95,59 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar         = true;
 		Map<String, Object>params= null;		
 		try {
-			switch(accion){
+			switch(accion) {
 				case AGREGAR:												
-					regresar= procesarGasto(sesion);					
+					regresar= this.procesarGasto(sesion);					
 					break;			
 				case MODIFICAR:
-					regresar= confirmarGasto(sesion);		
+					regresar= this.confirmarGasto(sesion);		
 					break;								
 				case SUBIR:
-					for(ArchivoGasto archivogasto: this.documentos){
-						if(DaoFactory.getInstance().insert(sesion, archivogasto)>=1L)
-							toSaveFile(archivogasto.getIdArchivo());
+					for(ArchivoGasto archivogasto: this.documentos) {
+						if(DaoFactory.getInstance().insert(sesion, archivogasto)>= 1L)
+							this.toSaveFile(archivogasto.getIdArchivo());
 					} // for
 					break;
 				case ACTIVAR:
-					regresar= realizarCierre(sesion);
+					regresar= this.realizarCierre(sesion);
 					break;
 				case ASIGNAR:
-					regresar= abonarCaja(sesion);
+					regresar= this.abonarCaja(sesion);
 					break;
 				case REGISTRAR:
-					regresar= revisarGasto(sesion);
+					regresar= this.revisarGasto(sesion);
 					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
 			throw new Exception(e);
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 		return regresar;
 	}	// ejecutar	
 	
-	private boolean procesarGasto(Session sesion) throws Exception{
+	private boolean procesarGasto(Session sesion) throws Exception {
 		boolean regresar        = false;		
 		TcKeetGastosDto gastoDto= null;		
 		Siguiente siguiente     = null;		
 		try {
-			if(this.gasto.getIdGasto() <= 0L){
-				siguiente= toSiguiente(sesion);			
-				gastoDto= loadGasto(siguiente);		
+			if(this.gasto.getIdGasto() <= 0L) {
+				siguiente= this.toSiguiente(sesion);			
+				gastoDto = this.loadGasto(siguiente);		
 				this.idGasto= DaoFactory.getInstance().insert(sesion, gastoDto);
 			} // if
-			else{
+      else {
 				gastoDto= (TcKeetGastosDto) DaoFactory.getInstance().findById(sesion, TcKeetGastosDto.class, this.gasto.getIdGasto());
 				gastoDto.setArticulos(this.gasto.getTotalArticulos()-1L);
 				gastoDto.setImporte(toImporte());
 				DaoFactory.getInstance().update(sesion, gastoDto);
 				this.idGasto= this.gasto.getIdGasto();
 			} // else							
-			if(this.idGasto>= 1L){
+			if(this.idGasto>= 1L) {
 				if(registrarBitacora(sesion, EEstatusGastos.DISPONIBLE.getKey()))
-					regresar= registrarDetalle(sesion);													
+					regresar= this.registrarDetalle(sesion);													
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -156,7 +156,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // procesarVale
 	
-	private TcKeetGastosDto loadGasto(Siguiente siguiente) throws Exception{
+	private TcKeetGastosDto loadGasto(Siguiente siguiente) throws Exception {
 		TcKeetGastosDto regresar= null;				
 		try {
 			regresar= new TcKeetGastosDto();						
@@ -178,7 +178,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadVale
 	
-	private Double toImporte(){
+	private Double toImporte() {
 		Double regresar= 0D;
 		for(Articulo articulo: this.gasto.getArticulos())
 			regresar= regresar + articulo.getImporte();
@@ -234,7 +234,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 	
-	private boolean registrarBitacora(Session sesion, Long idEstatus) throws Exception{
+	private boolean registrarBitacora(Session sesion, Long idEstatus) throws Exception {
 		boolean regresar               = false;
 		TcKeetGastosBitacoraDto bitacora= null;
 		try {
@@ -251,14 +251,14 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // registrarBitacora
 	
-	private boolean registrarDetalle(Session sesion) throws Exception{
+	private boolean registrarDetalle(Session sesion) throws Exception {
 		boolean regresar               = true;
 		TcKeetGastosDetallesDto detalle= null;
 		try {
 			if(this.gasto.getIdGasto() >= 1L)
 				DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TcKeetGastosDetallesDto", "rows", Variables.toMap("idGasto~".concat(this.idGasto.toString())));			
-			for(Articulo recordDetalle: this.gasto.getArticulos()){
-				if(recordDetalle.isValid()){
+			for(Articulo recordDetalle: this.gasto.getArticulos()) {
+				if(recordDetalle.isValid()) {
 					detalle= new TcKeetGastosDetallesDto();										
 					detalle.setIdGasto(this.idGasto);
 					detalle.setIdArticulo(recordDetalle.getIdArticulo());				
@@ -281,21 +281,21 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // registrarDetalle		
 	
-	private boolean confirmarGasto(Session sesion) throws Exception{
-		boolean regresar     = false;
-		TcKeetGastosDto gasto= null;
+	private boolean confirmarGasto(Session sesion) throws Exception {
+		boolean regresar    = false;
+		TcKeetGastosDto item= null;
 		try {
-			gasto= (TcKeetGastosDto) DaoFactory.getInstance().findById(sesion, TcKeetGastosDto.class, this.idGasto);
-			if(this.ok){
-				gasto.setIdGastoEstatus(EEstatusGastos.ACEPTADO.getKey());
-				if(DaoFactory.getInstance().update(sesion, gasto)>= 1L){
+			item= (TcKeetGastosDto) DaoFactory.getInstance().findById(sesion, TcKeetGastosDto.class, this.idGasto);
+			if(this.ok) {
+				item.setIdGastoEstatus(EEstatusGastos.ACEPTADO.getKey());
+				if(DaoFactory.getInstance().update(sesion, item)>= 1L) {
 					if(registrarBitacora(sesion, EEstatusGastos.ACEPTADO.getKey()))
-						regresar= afectarCaja(sesion, gasto.getIdCajaChicaCierre(), gasto.getImporte());
+						regresar= afectarCaja(sesion, item.getIdCajaChicaCierre(), item.getImporte());
 				} // if
 			} // if
 			else{
-				gasto.setIdGastoEstatus(EEstatusGastos.CANCELADO.getKey());
-				if(DaoFactory.getInstance().update(sesion, gasto)>= 1L)
+				item.setIdGastoEstatus(EEstatusGastos.CANCELADO.getKey());
+				if(DaoFactory.getInstance().update(sesion, item)>= 1L)
 					regresar= registrarBitacora(sesion, EEstatusGastos.CANCELADO.getKey());
 			} // else
 		} // try
@@ -305,7 +305,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // confirmarGasto
 	
-	private boolean afectarCaja(Session sesion, Long idCaja, Double importe) throws Exception{
+	private boolean afectarCaja(Session sesion, Long idCaja, Double importe) throws Exception {
 		boolean regresar                = false;
 		TcKeetCajasChicasCierresDto caja= null; 
 		try {
@@ -322,7 +322,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} //afectarCaja
 	
-	private boolean registrarBitacoraCaja(Session sesion, Long idCajaCierre, Long idEstatus) throws Exception{
+	private boolean registrarBitacoraCaja(Session sesion, Long idCajaCierre, Long idEstatus) throws Exception {
 		boolean regresar= false;
 		TcKeetCajasChicasCierresBitacoraDto bitacora= null;
 		try {
@@ -339,7 +339,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // registrarBitacoraCaja
 	
-	private boolean abonarCaja(Session sesion) throws Exception{
+	private boolean abonarCaja(Session sesion) throws Exception {
 		boolean regresar                  = false;
 		TcKeetCajasChicasCierresDto cierre= null;
 		TcKeetGastosDto abono             = null;
@@ -348,13 +348,13 @@ public class Transaccion extends IBaseTnx {
 			cierre= (TcKeetCajasChicasCierresDto) DaoFactory.getInstance().findById(sesion, TcKeetCajasChicasCierresDto.class, this.idCajaChicaCierre);
 			cierre.setAcumulado(cierre.getAcumulado() - this.cantidad);			
 			cierre.setDisponible(cierre.getDisponible() - this.cantidad);			
-			if(DaoFactory.getInstance().update(sesion, cierre)>= 1L){
-				if(registrarBitacoraCaja(sesion, this.idCajaChicaCierre, EEstatusCajasChicas.PARCIALIZADO.getKey())){
+			if(DaoFactory.getInstance().update(sesion, cierre)>= 1L) {
+				if(registrarBitacoraCaja(sesion, this.idCajaChicaCierre, EEstatusCajasChicas.PARCIALIZADO.getKey())) {
 					siguiente= toSiguiente(sesion);
 					abono= loadAbono(siguiente);
 					this.idGasto= DaoFactory.getInstance().insert(sesion, abono);
-					if(this.idGasto>= 1L){
-						if(registrarBitacora(sesion, EEstatusGastos.ACEPTADO.getKey())){
+					if(this.idGasto>= 1L) {
+						if(registrarBitacora(sesion, EEstatusGastos.ACEPTADO.getKey())) {
 							regresar= registraDetalleAbono(sesion);
 						} // if
 					} // if
@@ -367,7 +367,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // abonarCaja
 	
-	private TcKeetGastosDto loadAbono(Siguiente siguiente) throws Exception{
+	private TcKeetGastosDto loadAbono(Siguiente siguiente) throws Exception {
 		TcKeetGastosDto regresar= null;				
 		try {
 			regresar= new TcKeetGastosDto();						
@@ -389,7 +389,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadAbono
 	
-	private boolean registraDetalleAbono(Session sesion) throws Exception{		
+	private boolean registraDetalleAbono(Session sesion) throws Exception {		
 		boolean regresar               = false;
 		TcKeetGastosDetallesDto detalle= null;
 		try {			
@@ -412,7 +412,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // registraDetalleAbono		
 	
-	private boolean realizarCierre(Session sesion) throws Exception{
+	private boolean realizarCierre(Session sesion) throws Exception {
 		boolean regresar                  = false;
 		TcKeetCajasChicasCierresDto cierre= null;
 		TcKeetCajasChicasCierresDto nuevo= null;
@@ -420,16 +420,16 @@ public class Transaccion extends IBaseTnx {
 			cierre= (TcKeetCajasChicasCierresDto) DaoFactory.getInstance().findById(sesion, TcKeetCajasChicasCierresDto.class, this.idCajaChicaCierre);
 			cierre.setIdCajaChicaCierreEstatus(EEstatusCajasChicas.TERMINADO.getKey());
 			cierre.setTermino(LocalDateTime.now());
-			if(DaoFactory.getInstance().update(sesion, cierre)>= 1L){
-				if(registrarBitacoraCaja(sesion, cierre.getIdCajaChicaCierre(), EEstatusCajasChicas.TERMINADO.getKey())){
-					if(this.idAfectaNomina.equals(1L)){
+			if(DaoFactory.getInstance().update(sesion, cierre)>= 1L) {
+				if(registrarBitacoraCaja(sesion, cierre.getIdCajaChicaCierre(), EEstatusCajasChicas.TERMINADO.getKey())) {
+					if(this.idAfectaNomina.equals(1L)) {
 						registrarInicidenciaNomina(sesion);
 					} // if
 					//if(cierre.getDisponible()<0)
 						//registrarInicidenciaGasto(sesion, cierre.getDisponible());					
 					nuevo= loadCierre(sesion, cierre.getIdCajaChica(), cierre.getDisponible());
-					if(DaoFactory.getInstance().insert(sesion, nuevo)>= 1L){
-						if(registrarBitacoraCaja(sesion, nuevo.getIdCajaChicaCierre(), EEstatusCajasChicas.INICIADO.getKey())){
+					if(DaoFactory.getInstance().insert(sesion, nuevo)>= 1L) {
+						if(registrarBitacoraCaja(sesion, nuevo.getIdCajaChicaCierre(), EEstatusCajasChicas.INICIADO.getKey())) {
 							regresar= actualizarGastos(sesion, cierre.getIdCajaChicaCierre(), nuevo.getIdCajaChicaCierre());
 						} // if
 					} // if
@@ -442,7 +442,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // realizarCierre
 	
-	private TcKeetCajasChicasCierresDto loadCierre(Session sesion, Long idCajaChica, Double disponible) throws Exception{
+	private TcKeetCajasChicasCierresDto loadCierre(Session sesion, Long idCajaChica, Double disponible) throws Exception {
 		TcKeetCajasChicasCierresDto regresar= null;
 		Siguiente siguiente                 = null;
 		Semanas semana                      = null;
@@ -472,7 +472,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadCierre
 	
-	private boolean actualizarGastos(Session sesion, Long idCajaAnterior, Long idCajaNuevo) throws Exception{
+	private boolean actualizarGastos(Session sesion, Long idCajaAnterior, Long idCajaNuevo) throws Exception {
 		boolean regresar         = false;
 		Map<String, Object>params= null;
 		try {
@@ -487,7 +487,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // actualizarGastos
 	
-	private void registrarInicidenciaNomina(Session sesion) throws Exception{		
+	private void registrarInicidenciaNomina(Session sesion) throws Exception {		
 		TcManticIncidentesDto dto= null;
 		Long key                 = -1L;
 		Siguiente consecutivo    = null;
@@ -515,7 +515,7 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 	} // registrarInicidenciaNomina
 	
-	private void registrarInicidenciaGasto(Session sesion, Double costo) throws Exception{
+	private void registrarInicidenciaGasto(Session sesion, Double costo) throws Exception {
 		TcManticIncidentesDto dto= null;
 		Long key                 = -1L;
 		Siguiente consecutivo    = null;
@@ -562,7 +562,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 	
-	private boolean registrarBitacoraIncidente(Session sesion, Long idIncidente, Long idEstatus) throws Exception{
+	private boolean registrarBitacoraIncidente(Session sesion, Long idIncidente, Long idEstatus) throws Exception {
 		boolean regresar                 = false;
 		TcManticIncidentesBitacoraDto dto= null;
 		try {
@@ -579,7 +579,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // registrarBitacora
 	
-	private boolean revisarGasto(Session sesion) throws Exception{
+	private boolean revisarGasto(Session sesion) throws Exception {
 		boolean regresar        = false;
 		TcKeetGastosDto gastoDto= null;
 		try {

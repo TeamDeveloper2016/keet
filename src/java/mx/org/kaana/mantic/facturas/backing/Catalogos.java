@@ -216,7 +216,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
             this.attrs.put("tipoPago", tipoPago);
         } // for
 			this.doValidaTipoPago();
-			if(Boolean.valueOf(this.attrs.get("mostrarBanco").toString())) {
+			if(!Cadena.isVacio(this.attrs.get("mostrarBanco")) && (Boolean)this.attrs.get("mostrarBanco")) {
 				bancos= (List<UISelectEntity>) this.attrs.get("bancos");
 				for(Entity banco: bancos) {
 					if(banco.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdBanco()))
@@ -986,7 +986,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 	public void doValidaTipoPago() {
 		Long tipoPago= -1L;
 		try {
-			tipoPago= Long.valueOf(this.attrs.get("tipoMedioPago").toString());
+			tipoPago= Cadena.isVacio(this.attrs.get("tipoMedioPago"))?ETipoMediosPago.EFECTIVO.getIdTipoMedioPago(): Long.valueOf(this.attrs.get("tipoMedioPago").toString());
 			this.attrs.put("mostrarBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoPago));
 		} // try
 		catch (Exception e) {

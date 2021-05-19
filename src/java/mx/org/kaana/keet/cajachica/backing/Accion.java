@@ -154,9 +154,9 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
     String regresar        = null;    		
 		Transaccion transaccion= null;				
     try {											
-			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()){				
+			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
 				transaccion= new Transaccion(loadGasto());
-				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))){
+				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);										
 					regresar= doCancelar();
 					if(Cadena.isVacio(this.attrs.get("retorno")))
@@ -179,9 +179,9 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
     String regresar        = null;    		
 		Transaccion transaccion= null;				
     try {											
-			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()){				
+			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
 				transaccion= new Transaccion(loadGasto());
-				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))){
+				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);					
 					JsfBase.setFlashAttribute("idGasto", transaccion.getIdGasto());
 					JsfBase.setFlashAttribute("retorno", "accion");										
@@ -202,7 +202,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
     return regresar;
   } // doPagina  
 	
-	private Gasto loadGasto(){
+	private Gasto loadGasto() {
 		Gasto regresar= null;		
 		try {
 			regresar= new Gasto();									
@@ -217,7 +217,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 		return regresar;
 	} // loadVale
 	
-	private void toSetFlash(){		
+	private void toSetFlash() {		
 		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));											
 		JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));											
 	} // toSetFlash
@@ -354,7 +354,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 		}
 	}
 	
-	public String doPendientes(){
+	public String doPendientes() {
 		String regresar          = null;
 		EOpcionesResidente opcion= null;
 		try {
@@ -389,5 +389,41 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 			Methods.clean(params);
 		} // finally
 	} // loadResidentes
+ 
+	@Override
+  public void doFindArticulo(Integer index) {
+		try {
+    	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
+	    UISelectEntity articulo  = (UISelectEntity)this.attrs.get("articulo");
+	    UISelectEntity encontrado= (UISelectEntity)this.attrs.get("encontrado");
+			if(encontrado!= null) {
+				articulo= encontrado;
+				this.attrs.remove("encontrado");
+			} // else
+			else 
+				if(articulo== null)
+					articulo= new UISelectEntity(new Entity(-1L));
+				else
+					if(articulos.indexOf(articulo)>= 0) 
+						articulo= articulos.get(articulos.indexOf(articulo));
+					else
+						articulo= articulos.get(0);
+//			if(articulo.size()> 1) {
+//				int position= this.getAdminOrden().getArticulos().indexOf(new ArticuloVenta(articulo.toLong("idArticulo"), this.isCostoLibre()));
+//				if(articulo.size()> 1 && position>= 0) {
+//					if(index!= position)
+//						UIBackingUtilities.execute("jsArticulos.exists('"+ articulo.toString("propio")+ "', '"+ articulo.toString("nombre")+ "', "+ position+ ");");
+//				} // if	
+//				else
+//					this.toMoveData(articulo, index);
+//			} // else
+//			else 
+					this.toMoveData(articulo, index);
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	} 
   
 }

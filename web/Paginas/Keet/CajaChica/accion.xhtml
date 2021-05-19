@@ -176,9 +176,9 @@
                       </f:facet>
                     </p:autoComplete>		
                     <div style="flex: 1;">  
-                      <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{not kajoolUtilAplicacion.isMobile}"/>
-                      <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary" rendered="#{not kajoolUtilAplicacion.isMobile}"/>
-                      <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{not kajoolUtilAplicacion.isMobile}"/>
+                      <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                      <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                      <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
                     </div>  
                   </div>  
                 </div>  

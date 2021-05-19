@@ -48,9 +48,9 @@ public class Resumen extends IBaseFilter implements Serializable {
 			this.attrs.put("opcionResidente", opcion);			
 			this.attrs.put("idDesarrollo", idDesarrollo);      									
 			this.attrs.put("acciones", false);      									
-			loadCatalogos();						
-			loadCajaChica();
-			doLoad();					
+			this.loadCatalogos();						
+			this.loadCajaChica();
+			this.doLoad();					
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -115,6 +115,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));						
 			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
+			campos.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
 			campos.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));			
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_gasto=".concat(this.attrs.get("idGasto").toString()));				
