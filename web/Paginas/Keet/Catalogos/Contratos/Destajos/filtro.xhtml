@@ -167,7 +167,7 @@
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosDestajosFiltro.doReporte('DESARROLLO')}" oncomplete="janal.desbloquear();" update="descargar"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-envelope-o" title="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosDestajosFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
 						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.nomina}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.nomina}">
 							<f:facet name="header">
 								<h:outputText value="Nómina"/>
 							</f:facet>

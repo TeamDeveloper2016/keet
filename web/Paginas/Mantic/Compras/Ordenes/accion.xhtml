@@ -63,6 +63,7 @@
       }      
       
       function triggerLocalEvent(index, keyCode) {
+        janal.console("triggerLocalEvent: index="+ index+ ", keyCode= "+ keyCode);
         $("#contenedorGrupos\\:tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('focus'));
         $("#contenedorGrupos\\:tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('keydown', {which: keyCode}));
       }

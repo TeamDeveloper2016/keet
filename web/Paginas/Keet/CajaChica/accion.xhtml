@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Captura del detalle del gasto #{keetCajaChicaAccion.attrs.consecutivoP}"/>	
 	<ui:define name="librerias">
-		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryValesJs}"/>
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryValesJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 								
 				'nombres'   : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
@@ -39,8 +39,9 @@
 			}	// execute
       
       function triggerLocalEvent(index, keyCode) {
-        $("#contenedorGrupos\\:tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('focus'));
-        $("#contenedorGrupos\\:tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('keydown', {which: keyCode}));
+        janal.console("triggerLocalEvent: index="+ index+ ", keyCode= "+ keyCode);
+        $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('focus'));
+        $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('keyup', {which: keyCode}));
       }
 		</script>   
 		<style type="text/css">
@@ -187,7 +188,7 @@
 							<f:facet name="header">
 								<h:outputText value="Articulo"/>
 							</f:facet>
-							<p:inputText id="nombres" value="#{row['nombre']}" styleClass="key-event-sat janal-wid-articulo filas"/>
+              <p:inputText id="nombres" value="#{row['nombre']}" styleClass="key-event-sat janal-wid-articulo filas" style="display:#{row['idArticulo'] eq -1? 'none': ''}"/>
 						</p:column>																				
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 							<f:facet name="header">

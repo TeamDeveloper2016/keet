@@ -1657,8 +1657,11 @@
 				case 124: //[_] VK_PIPE
 					key= 220;
 					break;
+        default:
+          key= this.keyCode? this.keyCode: this.which;
+          break;
 			} // switch
-			if([106, 107, 189, 111, 191, 206, 209, 220].indexOf(key)>= 0 && ['j','k','o'].indexOf(press) < 0)
+			if([106, 107, 189, 111, 191, 206, 209, 220].indexOf(key)>= 0 && ['j','k','o'].indexOf(press)< 0)
 				item.value= item.value.substring(0, item.value.length- 1);
 			return key;			
 		}
