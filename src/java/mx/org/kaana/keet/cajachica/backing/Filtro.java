@@ -339,6 +339,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.CONSULTA_GASTO);
 			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.toLong("idDesarrollo"));
 			JsfBase.setFlashAttribute("idGasto", seleccionado.getKey());
+			JsfBase.setFlashAttribute("idRechazaGasto", true);
 			JsfBase.setFlashAttribute("retorno", "filtro");
 	  } // try
 		catch (Exception e) {

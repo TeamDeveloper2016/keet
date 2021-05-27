@@ -31,14 +31,15 @@ public class Consulta extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;				
 	private List<Entity> gastos;	
+	private List<Entity> acumulados;	
 
 	public List<Entity> getGastos() {
 		return gastos;
 	}
 
-	public void setGastos(List<Entity> gastos) {
-		this.gastos = gastos;
-	}
+  public List<Entity> getAcumulados() {
+    return acumulados;
+  }
 
   @PostConstruct
   @Override
@@ -187,10 +188,18 @@ public class Consulta extends IBaseFilter implements Serializable {
 			params.put("idCajaChica", ((Entity)this.attrs.get("cajaChica")).getKey());
 			this.gastos= DaoFactory.getInstance().toEntitySet("VistaGastosDto", "gastos", params);				
 			this.attrs.put("totalRegistros", this.gastos.size());			
-			if(!this.gastos.isEmpty()){ 
+			if(!this.gastos.isEmpty()) { 
 				UIBackingUtilities.toFormatEntitySet(this.gastos, campos);
 				this.toEstatusVale();
 			} // if
+			this.acumulados= DaoFactory.getInstance().toEntitySet("VistaGastosDto", "acumulados", params);				
+      campos.clear();
+			campos.add(new Columna("gastos", EFormatoDinamicos.MILES_SIN_DECIMALES));
+			campos.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+			campos.add(new Columna("cancelado", EFormatoDinamicos.MILES_CON_DECIMALES));
+			if(!this.acumulados.isEmpty()) { 
+				UIBackingUtilities.toFormatEntitySet(this.acumulados, campos);
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);

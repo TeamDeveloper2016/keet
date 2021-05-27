@@ -290,13 +290,15 @@ public class Transaccion extends IBaseTnx {
 				item.setIdGastoEstatus(EEstatusGastos.ACEPTADO.getKey());
 				if(DaoFactory.getInstance().update(sesion, item)>= 1L) {
 					if(registrarBitacora(sesion, EEstatusGastos.ACEPTADO.getKey()))
-						regresar= afectarCaja(sesion, item.getIdCajaChicaCierre(), item.getImporte());
+						regresar= this.afectarCaja(sesion, item.getIdCajaChicaCierre(), item.getImporte());
 				} // if
 			} // if
-			else{
+      else {
 				item.setIdGastoEstatus(EEstatusGastos.CANCELADO.getKey());
-				if(DaoFactory.getInstance().update(sesion, item)>= 1L)
-					regresar= registrarBitacora(sesion, EEstatusGastos.CANCELADO.getKey());
+				if(DaoFactory.getInstance().update(sesion, item)>= 1L) {
+					if(this.registrarBitacora(sesion, EEstatusGastos.CANCELADO.getKey()));
+            regresar= this.afectarCaja(sesion, item.getIdCajaChicaCierre(), item.getImporte()* -1D);
+        } // if  
 			} // else
 		} // try
 		catch (Exception e) {			
@@ -310,8 +312,8 @@ public class Transaccion extends IBaseTnx {
 		TcKeetCajasChicasCierresDto caja= null; 
 		try {
 			caja= (TcKeetCajasChicasCierresDto) DaoFactory.getInstance().findById(sesion, TcKeetCajasChicasCierresDto.class, idCaja);
-			caja.setAcumulado(caja.getAcumulado() + importe);
-			caja.setDisponible(caja.getDisponible() - importe);			
+			caja.setAcumulado(caja.getAcumulado()+ importe);
+			caja.setDisponible(caja.getDisponible()- importe);			
 			caja.setIdCajaChicaCierreEstatus(EEstatusCajasChicas.PARCIALIZADO.getKey());
 			if(DaoFactory.getInstance().update(sesion, caja)>= 1L)
 				regresar= registrarBitacoraCaja(sesion, idCaja, EEstatusCajasChicas.PARCIALIZADO.getKey());
@@ -423,14 +425,14 @@ public class Transaccion extends IBaseTnx {
 			if(DaoFactory.getInstance().update(sesion, cierre)>= 1L) {
 				if(registrarBitacoraCaja(sesion, cierre.getIdCajaChicaCierre(), EEstatusCajasChicas.TERMINADO.getKey())) {
 					if(this.idAfectaNomina.equals(1L)) {
-						registrarInicidenciaNomina(sesion);
+						this.registrarInicidenciaNomina(sesion);
 					} // if
 					//if(cierre.getDisponible()<0)
 						//registrarInicidenciaGasto(sesion, cierre.getDisponible());					
-					nuevo= loadCierre(sesion, cierre.getIdCajaChica(), cierre.getDisponible());
+					nuevo= this.loadCierre(sesion, cierre.getIdCajaChica(), cierre.getDisponible());
 					if(DaoFactory.getInstance().insert(sesion, nuevo)>= 1L) {
 						if(registrarBitacoraCaja(sesion, nuevo.getIdCajaChicaCierre(), EEstatusCajasChicas.INICIADO.getKey())) {
-							regresar= actualizarGastos(sesion, cierre.getIdCajaChicaCierre(), nuevo.getIdCajaChicaCierre());
+							regresar= this.actualizarGastos(sesion, cierre.getIdCajaChicaCierre(), nuevo.getIdCajaChicaCierre());
 						} // if
 					} // if
 				} // if
@@ -447,7 +449,7 @@ public class Transaccion extends IBaseTnx {
 		Siguiente siguiente                 = null;
 		Semanas semana                      = null;
 		try {
-			siguiente= toSiguienteCierre(sesion);
+			siguiente= this.toSiguienteCierre(sesion);
 			regresar= new TcKeetCajasChicasCierresDto();
 			regresar.setIdCajaChica(idCajaChica);
 			regresar.setEjercicio(Long.valueOf(Fecha.getAnioActual()));

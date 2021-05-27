@@ -3207,6 +3207,7 @@
           tc_keet_contratos.id_contrato id_key,
           tc_keet_contratos.id_contrato,
           tc_keet_contratos.clave,
+          tc_keet_contratos.nombre,
           tc_keet_contratos.no_viviendas,
           tc_keet_contratos.etapa,
           tc_mantic_clientes.razon_social,
@@ -7609,6 +7610,28 @@
 				where
 				  tc_keet_gastos_archivos.id_gasto= {idGasto}
 			</select>
+			<select id="acumulados">
+        select
+          tc_mantic_personas.id_persona as id_key,
+          concat(tc_mantic_personas.nombres, ' ',if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) persona,
+          count(*) as gastos,
+          sum(if(tc_keet_gastos.id_gasto_estatus!= 3, tc_keet_gastos.importe, 0)) as total,
+			    sum(if(tc_keet_gastos.id_gasto_estatus= 3, tc_keet_gastos.importe, 0)) as cancelado
+        from
+          tc_keet_gastos     
+        inner join
+          tc_keet_gastos_detalles on tc_keet_gastos.id_gasto = tc_keet_gastos_detalles.id_gasto     
+        inner join
+          tc_janal_usuarios on tc_keet_gastos.id_usuario= tc_janal_usuarios.id_usuario
+        inner join				
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+        where
+          tc_keet_gastos.id_caja_chica_cierre= {idCajaChica}
+        group by
+          tc_mantic_personas.id_persona    
+        order by
+          tc_mantic_personas.rfc        
+      </select>  
 			<select id="gastos">
 				select 
 					tc_keet_gastos.id_gasto as id_key,
@@ -7622,28 +7645,21 @@
 					tc_keet_gastos.importe,
 					tc_keet_gastos.id_abono,
 					tc_keet_gastos.id_gasto_estatus,
+          concat(tc_mantic_personas.nombres, ' ',if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) residente,
 					tc_keet_gastos.registro
 				from
 					tc_keet_gastos
 				inner join
-					tc_keet_gastos_detalles ON tc_keet_gastos.id_gasto = tc_keet_gastos_detalles.id_gasto
+					tc_keet_gastos_detalles on tc_keet_gastos.id_gasto = tc_keet_gastos_detalles.id_gasto
+        inner join
+          tc_janal_usuarios on tc_keet_gastos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
 				where 
 					tc_keet_gastos.id_caja_chica_cierre= {idCajaChica}
-				and 
-					{condicion}
+				  and {condicion}
 				group by 
-					tc_keet_gastos.id_gasto,
-					tc_keet_gastos.id_empresa,
-					tc_keet_gastos.id_caja_chica_cierre,
-					tc_keet_gastos.id_empresa_persona,
-					tc_keet_gastos.consecutivo,
-					tc_keet_gastos.ejercicio,
-					tc_keet_gastos.orden,
-					tc_keet_gastos.articulos,
-					tc_keet_gastos.importe,
-					tc_keet_gastos.id_abono,
-					tc_keet_gastos.id_gasto_estatus,
-					tc_keet_gastos.registro
+					tc_keet_gastos.id_gasto
 				order by 
 				  tc_keet_gastos.consecutivo desc
 			</select>
@@ -7665,8 +7681,7 @@
 					tc_keet_gastos				
 				where 
 					tc_keet_gastos.id_caja_chica_cierre= {idCajaChica}
-				and 
-					tc_keet_gastos.consecutivo like '%{consecutivo}'				
+				  and tc_keet_gastos.consecutivo like '%{consecutivo}'				
 			</select>
 			<select id="conceptos">
 				select 
@@ -8057,20 +8072,7 @@
 					tc_mantic_requisiciones.id_enviar,  
 				  tc_mantic_empresas.clave,  
 				  tc_mantic_empresas.nombre,  
-					tc_mantic_requisiciones.consecutivo,  															
-				  tc_mantic_requisiciones_estatus.nombre,
-					tc_mantic_requisiciones.id_requisicion_estatus,
-					tc_mantic_requisiciones.registro,
-					tc_mantic_requisiciones.observaciones,
-					tc_mantic_requisiciones.fecha_pedido,
-					tc_mantic_requisiciones.fecha_entregada,
-					tc_mantic_requisiciones_estatus.estatus_asociados, 					
-					tc_mantic_personas.cuenta,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
-					tc_keet_desarrollos.clave,
-					tc_keet_desarrollos.nombres,
-					tc_mantic_proveedores.id_proveedor,
-					tc_mantic_proveedores.razon_social
+					tc_mantic_requisiciones.consecutivo
 				{sortOrder}
 			</select>
 			<select id="preciosArticulo">

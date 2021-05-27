@@ -102,7 +102,7 @@ public class Georeferencia extends IBaseFilter implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_proyectos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
-			params.put("sortOrder", "");
+			params.put("sortOrder", "order by tc_keet_contratos.registro desc");
 			contratos= UIEntity.seleccione("VistaContratosDto", "lazy", params, "clave");
 			this.attrs.put("contratos", contratos);
 			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));

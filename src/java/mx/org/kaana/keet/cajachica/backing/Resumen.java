@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -45,9 +46,10 @@ public class Resumen extends IBaseFilter implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));			
 			this.attrs.put("retornoInicial", JsfBase.getFlashAttribute("retornoInicial"));			
 			this.attrs.put("consecutivo", JsfBase.getFlashAttribute("consecutivo"));      						
+			this.attrs.put("idRechazaGasto", JsfBase.getFlashAttribute("idRechazaGasto")!= null? (Boolean)JsfBase.getFlashAttribute("idRechazaGasto"): false);
 			this.attrs.put("opcionResidente", opcion);			
 			this.attrs.put("idDesarrollo", idDesarrollo);      									
-			this.attrs.put("acciones", false);      									
+			this.attrs.put("acciones", true);      									
 			this.loadCatalogos();						
 			this.loadCajaChica();
 			this.doLoad();					
@@ -72,7 +74,11 @@ public class Resumen extends IBaseFilter implements Serializable {
 			gasto= (Entity) DaoFactory.getInstance().toEntity("VistaTcKeetGastosDto", "row", params);
 			this.attrs.put("gasto", gasto);			
 			this.attrs.put("idCajaChicaCierre", gasto.toString("idCajaChicaCierre"));
-			this.attrs.put("acciones", !gasto.toLong("idGastoEstatus").equals(EEstatusGastos.DISPONIBLE.getKey()));
+			this.attrs.put("acciones", gasto.toLong("idGastoEstatus").equals(EEstatusGastos.DISPONIBLE.getKey()));
+			this.attrs.put("rechazar", 
+                     ((Objects.equals(gasto.toLong("idGastoEstatus"), EEstatusGastos.DISPONIBLE.getKey()) || 
+                      Objects.equals(gasto.toLong("idGastoEstatus"), EEstatusGastos.ACEPTADO.getKey()))
+                      && (Boolean)this.attrs.get("idRechazaGasto")));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -137,7 +143,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 		Transaccion transaccion= null;
     try {					
 			transaccion= new Transaccion(((Entity)this.attrs.get("gasto")).getKey(), true);
-			if(transaccion.ejecutar(EAccion.MODIFICAR)){			
+			if(transaccion.ejecutar(EAccion.MODIFICAR)) {
 				JsfBase.addMessage("Aceptar gasto", "El gasto fue aceptado correctamente.", ETipoMensaje.INFORMACION);
 				regresar= doCancelar();
 				JsfBase.setFlashAttribute("idGasto", null);			

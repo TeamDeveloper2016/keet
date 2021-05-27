@@ -1037,7 +1037,7 @@
 			$('div[id$='+ this.panels+ ']').hide();
 			$('div[id$='+ this.itemtips+ ']').hide();
 			$('#source-image').attr('href', $('#icon-image').attr('src'));
-			setTimeout('$articulos.lastCursorAt();', 500); 
+			// setTimeout('$articulos.lastCursorAt();', 500); 
 		},
 		clientes: function(name) {
 			console.log('jsVentas.clientes: '+ $(name).val());

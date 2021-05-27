@@ -39,7 +39,7 @@
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																															
 								<p:outputLabel for="cortes" value="Corte de caja:"/>
 								<p:selectOneMenu id="cortes" value="#{keetCajaChicaConsulta.attrs.corte}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this apanelBusqueda" listener="#{keetCajaChicaConsulta.doLoadCorte}" update="tabla apanelBusqueda" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this apanelBusqueda" listener="#{keetCajaChicaConsulta.doLoadCorte}" update="tabla apanelBusqueda totales" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{keetCajaChicaConsulta.attrs.cortes}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo}"/>									
 									<p:column headerText="Consecutivo">
 										<h:outputText value="#{item.consecutivo}"/>
@@ -103,9 +103,7 @@
 					<p:spacer height="3px"/>
 					<p:dataGrid id="tabla" var="row" value="#{keetCajaChicaConsulta.gastos}" columns="4" layout="grid" rowIndexVar="index"
 											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCajaChicaConsulta.attrs.totalRegistros gt Constantes.REGISTROS_POR_PAGINA}"
-											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
-											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
-											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.consecutivo}" style="text-align:center; border: 0px;">							
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCajaChicaConsulta.doResumen}">
@@ -113,6 +111,7 @@
 									<f:setPropertyActionListener value="#{row}" target="#{keetCajaChicaConsulta.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">																		
+									<h:outputText value="&lt;b&gt;Persona:&lt;/b&gt; #{row.residente}" escape="false"/>
 									<h:outputText value="&lt;b&gt;Articulos:&lt;/b&gt; #{row.articulos}" escape="false"/>
 									<h:outputText value="&lt;b&gt;Fecha:&lt;/b&gt; #{row.registro}" escape="false"/>									
 								</p:panelGrid>								
@@ -126,7 +125,44 @@
 								</div>	
 							</f:facet>
 						</p:panel>						
-					</p:dataGrid>	 											
+					</p:dataGrid>	
+					<p:spacer height="3px"/>
+          <p:dataTable lazy="false" id="totales" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{keetCajaChicaConsulta.acumulados}" paginator="#{keetCajaChicaConsulta.acumulados.size() gt 5}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-wid-100-txt" selectionMode="single" selection="#{keetCajaChicaConsulta.attrs.selected}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+            <f:facet name="header">
+              <p:outputLabel value="Gastos totales por residente" styleClass="janal-icons-header janal-text-white"/>
+              <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'totales')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'totales')" oncomplete="janal.desbloquear()"/>
+              </p:menuButton>
+            </f:facet>
+            <p:column styleClass="janal-column-left Responsive">
+              <f:facet name="header">
+                <h:outputText value="Persona"/>
+              </f:facet>
+              <h:outputText value="#{row.persona}"  />
+            </p:column>                    
+            <p:column styleClass="janal-column-right ColWid15 Responsive" >
+              <f:facet name="header">
+                <h:outputText value="Tickets"/>
+              </f:facet>
+              <h:outputText value="#{row.gastos}"/>
+            </p:column>                    
+            <p:column styleClass="janal-column-right ColWid15 Responsive" >
+              <f:facet name="header">
+                <h:outputText value="Gastado"/>
+              </f:facet>
+              <h:outputText value="$ #{row.total}"/>
+            </p:column>                    
+            <p:column styleClass="janal-column-right ColWid15 Responsive" >
+              <f:facet name="header">
+                <h:outputText value="Cancelado"/>
+              </f:facet>
+              <h:outputText value="$ #{row.cancelado}"/>
+            </p:column>                    
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetCajaChicaConsulta.acumulados.size()}] registros"/>
+            </f:facet>
+          </p:dataTable>
         </div>
       </div>
     </div>		           				
