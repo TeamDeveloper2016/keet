@@ -42,8 +42,9 @@ import org.primefaces.event.TabChangeEvent;
 public class Importar extends IBaseImportar implements Serializable {
 
 	private static final long serialVersionUID = 154600879172477099L;
-	List<IBaseDestajoArchivo> documentos;
+	private List<IBaseDestajoArchivo> documentos;
   protected String pathImage;
+  private List<Entity> images;
 
 	public List<IBaseDestajoArchivo> getDocumentos() {
 		return documentos;
@@ -55,6 +56,10 @@ public class Importar extends IBaseImportar implements Serializable {
 
   public String getImagen() {
 		return this.pathImage.concat(((Entity)this.attrs.get("concepto")).toString("codigo")).concat(".png");
+  }
+
+  public List<Entity> getImages() {
+    return images;
   }
 		
   @PostConstruct
@@ -84,11 +89,11 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("file", ""); 
 			this.setFile(new Importado());
 			this.documentos= new ArrayList<>();
-			this.loadCatalogos();	
-			this.doLoad();
       this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.pathImage= this.pathImage.substring(0, this.pathImage.indexOf(JsfBase.getContext())).concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/puntos/");
       this.attrs.put("idContratoArchivo", -1L);
+			this.loadCatalogos();	
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -96,7 +101,7 @@ public class Importar extends IBaseImportar implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos(){
+	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
 		Map<String, Object>params= null;
@@ -109,12 +114,20 @@ public class Importar extends IBaseImportar implements Serializable {
 			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(((Entity)this.attrs.get("seleccionadoPivote")).getKey().toString()));
 			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
 			this.attrs.put("contratoLote", contratoLote);
+      params.clear();
+      params.put("idRubro", ((Entity)this.attrs.get("concepto")).toLong("idRubro"));
+      this.images= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKeetRubrosFotosDto", "fotos", params);
+      if(this.images!= null && !this.images.isEmpty())
+        for (Entity item : this.images) {
+          String nombre= this.pathImage.concat(item.toString("nombre"));
+          item.getValue("nombre").setData(nombre);
+        } // for
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally	
 	} // loadCatalogos	

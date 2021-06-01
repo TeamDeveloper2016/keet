@@ -7,6 +7,36 @@
   </model>
 
   <dml>
+    <unit id="TcKeetRubrosFotosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_rubros_fotos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_rubros_fotos
+        where      
+          nombre = '{nombre}'
+      </select>
+      <select id="fotos">
+        select      
+          tc_keet_rubros_fotos.id_rubro_foto as id_key,
+          codigo,
+          nombre
+        from      
+          tc_keet_rubros_fotos
+        where      
+          id_rubro= {idRubro}
+        order by
+          id_rubro
+      </select>
+    </unit>    
     <unit id="TcKeetErroresEstacionesDto">
       <select id="row">
         select      

@@ -188,7 +188,7 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenuGasto" oncomplete="PF('kajoolTableGastos').writeSelections();PF('kajoolContextMenuGasto').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header">
 							<div style="position: absolute;">
-								<p:outputLabel value="[#{keetCajaChicaFiltro.attrs.seleccionadoCaja.nombres} #{keetCajaChicaFiltro.attrs.seleccionadoCaja.ejercicio}-#{keetCajaChicaFiltro.attrs.seleccionadoCaja.semana}] Desglose de abonos y gastos de la caja chica" styleClass="janal-text-white janal-wid-100-txt janal-column-left"/>
+								<p:outputLabel value="[#{keetCajaChicaFiltro.attrs.seleccionadoCaja.nombres} #{keetCajaChicaFiltro.attrs.seleccionadoCaja.ejercicio}-#{keetCajaChicaFiltro.attrs.seleccionadoCaja.semana} ] Desglose de abonos y gastos de la caja chica" styleClass="janal-text-white janal-wid-100-txt janal-column-left"/>
 							</div>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfGastos', 'tablaGastos')" oncomplete="janal.desbloquear()"/>
