@@ -5252,8 +5252,7 @@
           tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 				where 
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
-				and 
-					{condicion}
+				  and {condicion}
 			</select>
 			<select id="lotesSubContratistas">
 				select 
@@ -5280,8 +5279,7 @@
           tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 				where 
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_proveedores.id_proveedor={idFigura}
-				and 
-					{condicion}
+				  and {condicion}
 			</select>
 			<select id="lotesResidentes">
 				select 
@@ -6014,10 +6012,10 @@
 			</select>
 			<select id="estatusManzanaLote">
 				select
-					sum(iniciado) iniciado,
-					sum(en_proceso) en_proceso,
-					sum(terminado) terminado,
-					(sum(iniciado)+sum(en_proceso)+sum(terminado)) total
+					sum(iniciado) as iniciado,
+					sum(en_proceso) as en_proceso,
+					sum(terminado) as terminado,
+					(sum(iniciado)+ sum(en_proceso)+ sum(terminado)) as total
 				from(
 				select 
 					case when tc_keet_estaciones.id_estacion_estatus= 1 then 1 else 0 end iniciado,
@@ -6045,21 +6043,16 @@
 				where
 					tc_keet_puntos_grupos.id_departamento={idDepartamento}
 				group by
-					tc_keet_puntos_paquetes.id_punto_grupo,   
-					tc_keet_puntos_grupos.id_departamento,
-					tc_keet_puntos_grupos.grupo,
-					tc_keet_puntos_grupos.descripcion,
-					tc_keet_rubros_grupos.id_rubro_grupo,
-					tc_keet_rubros_grupos.id_rubro,
-					tc_keet_rubros.codigo,
-					tc_keet_rubros.nombre,
-					tc_keet_rubros.orden
-				) principal
+          tc_keet_puntos_paquetes.id_punto_grupo,
+          tc_keet_rubros_grupos.id_rubro_grupo,
+          tc_keet_rubros_grupos.id_rubro        
+				) as principal
 				inner join
 					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
 				where
 					tc_keet_estaciones.clave like '{clave}%'
-				)final
+          and tc_keet_estaciones.costo&gt; 0
+				) as final
 			</select>
 			<select id="estatusControlManzanaLote">
 				select
@@ -7645,16 +7638,16 @@
 					tc_keet_gastos.importe,
 					tc_keet_gastos.id_abono,
 					tc_keet_gastos.id_gasto_estatus,
-          concat(tc_mantic_personas.nombres, ' ',if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) residente,
+          concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
 					tc_keet_gastos.registro
 				from
 					tc_keet_gastos
 				inner join
-					tc_keet_gastos_detalles on tc_keet_gastos.id_gasto = tc_keet_gastos_detalles.id_gasto
+					tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
         inner join
           tc_janal_usuarios on tc_keet_gastos.id_usuario= tc_janal_usuarios.id_usuario
 				inner join				
-					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
 				where 
 					tc_keet_gastos.id_caja_chica_cierre= {idCajaChica}
 				  and {condicion}
@@ -7739,22 +7732,47 @@
 			</select>	
 		</unit>
 		<unit id="VistaCierresCajasChicasDto">
+			<select id="detalle">
+				select 
+					tc_keet_gastos_detalles.id_gasto_detalle as id_key,
+          concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
+					tc_keet_gastos.consecutivo,
+					tc_keet_gastos_detalles.nombre,
+					tc_keet_gastos_detalles.importe,
+					tc_keet_gastos.registro
+				from
+				  tc_keet_cajas_chicas_cierres
+				inner join
+					tc_keet_gastos on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= tc_keet_gastos.id_caja_chica_cierre
+				inner join
+					tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
+        inner join
+          tc_janal_usuarios on tc_keet_gastos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				where 
+					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
+				group by 
+					tc_keet_gastos_detalles.id_gasto_detalle
+				order by 
+				  concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno))
+      </select>  
 			<select id="lazy">
 				select
-					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre AS id_key,
-					tc_mantic_empresas.nombre sucursal,
+					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre as id_key,
+					tc_mantic_empresas.nombre as sucursal,
 					tc_keet_desarrollos.id_desarrollo,
 					tc_keet_desarrollos.clave,
 					tc_keet_desarrollos.nombres,
 					tc_keet_cajas_chicas_cierres.ejercicio,
-					tc_keet_nominas_periodos.orden semana,
+					tc_keet_nominas_periodos.orden as semana,
 					tc_keet_cajas_chicas_cierres.termino,
 					tc_keet_cajas_chicas_cierres.registro,
-					tc_keet_cajas_chicas_cierres.saldo inicial,
-					tc_keet_cajas_chicas_cierres.acumulado gastado,
+					tc_keet_cajas_chicas_cierres.saldo as inicial,
+					tc_keet_cajas_chicas_cierres.acumulado as gastado,
 					tc_keet_cajas_chicas_cierres.disponible,
 					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus,
-					tc_keet_cajas_chicas_cierres_estatus.nombre estatus
+					tc_keet_cajas_chicas_cierres_estatus.nombre as estatus
 				from
 					tc_keet_cajas_chicas_cierres
 				inner join

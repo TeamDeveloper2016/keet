@@ -100,9 +100,12 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
+    						<p:menuitem icon="fa fa-lock" process="@this tabla" action="#{keetCajaChicaFiltro.doCierreGlobal}" value="Cierre de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+                <p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>								
 							</p:menuButton>							
+   						<p:commandButton styleClass="xs-pantalla" icon="fa fa-lock" title="Cierre de caja" process="@this tabla" action="#{keetCajaChicaFiltro.doCierreGlobal}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>							
             </f:facet>	            
@@ -124,13 +127,13 @@
               </f:facet>
               <h:outputText value="#{row['nombres']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-7 janal-column-center">
+            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center">
               <f:facet name="header">
                 <h:outputText value="Semana"/>
               </f:facet>
               <h:outputText value="#{row['ejercicio']} - #{row['semana']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.termino}">
+            <p:column class="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.termino}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Cierre"/>
               </f:facet>
@@ -166,7 +169,7 @@
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{keetCajaChicaFiltro.toColor(row)}.png" title="#{row.estatus}"/>								
 						</p:column>						
-            <p:column class="MarAuto Responsive janal-wid-5">              														
+            <p:column class="MarAuto Responsive janal-wid-5 janal-column-center">              														
 							<p:commandButton icon="fa fa-search" actionListener="#{keetCajaChicaFiltro.doGastos(row)}" title="Consultar gastos" update="tablaGastos tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>	
             </p:column>
 						<f:facet name="footer">
@@ -215,7 +218,7 @@
               </f:facet>
               <h:outputText value="#{row['residente']}"/>
             </p:column>		                                                
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.articulos}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.articulos}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Articulos"/>
               </f:facet>

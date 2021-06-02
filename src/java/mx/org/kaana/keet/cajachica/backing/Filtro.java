@@ -169,7 +169,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // doLoadEstatus
 	
-	private void loadEjercicios(){		
+	private void loadEjercicios() {		
 		List<UISelectItem> ejercicios= null;
 		List<UISelectItem> semanas   = null;
 		try {						
@@ -177,8 +177,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("ejercicios", ejercicios);
 			this.attrs.put("ejercicio", UIBackingUtilities.toFirstKeySelectItem(ejercicios));
 			semanas= new ArrayList<>();
-			for(int count=0; count<53; count++)
-				semanas.add(new UISelectItem(new Long(count+1), "Semana ".concat(String.valueOf(count+1))));
+      if(ejercicios!= null && ejercicios.size()> 1)
+			  for(int count= 0; count< 53; count++)
+				  semanas.add(new UISelectItem(new Long(count+ 1), "Semana ".concat(String.valueOf(count+ 1))));
 			semanas.add(0, new UISelectItem(-1L, "SELECCIONE"));
 			this.attrs.put("semanas", semanas);
 			this.attrs.put("semana", UIBackingUtilities.toFirstKeySelectItem(semanas));
@@ -191,20 +192,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-    List<Columna> campos      = null;
+    List<Columna> columns     = null;
 		Map<String, Object> params= null;
     try {			
-      campos = new ArrayList<>();
-      campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("inicial", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      campos.add(new Columna("gastado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      campos.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));            
-      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      campos.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      columns = new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("gastado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));            
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			params= this.toPrepare();
       params.put("sortOrder", "");
-      this.lazyModel = new FormatCustomLazy("VistaCierresCajasChicasDto", params, campos);
+      this.lazyModel = new FormatCustomLazy("VistaCierresCajasChicasDto", params, columns);
 			this.lazyModelGastos= null;
 			this.lazyModelMateriales= null;
       UIBackingUtilities.resetDataTable();			
@@ -219,7 +220,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 	
@@ -303,6 +304,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // doGastos
 	
+  public String doCierreGlobal() {
+		try {
+			JsfBase.setFlashAttribute("retorno", "filtro");
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
+		return "global".concat(Constantes.REDIRECIONAR);    
+  }
+  
   public String doCierre() {
 		Entity seleccionado= null;
 		try {
