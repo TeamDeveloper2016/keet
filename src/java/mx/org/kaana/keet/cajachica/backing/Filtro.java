@@ -40,6 +40,7 @@ import mx.org.kaana.keet.cajachica.reglas.Transaccion;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;	
+  
 	private FormatLazyModel lazyModelGastos;
 	private FormatLazyModel lazyModelMateriales;
 	private LocalDate fechaInicio;

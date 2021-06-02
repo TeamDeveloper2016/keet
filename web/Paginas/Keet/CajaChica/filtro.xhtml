@@ -106,7 +106,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>							
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-col-40">
+            <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">
                 <h:outputText value="No."/>
               </f:facet>
@@ -118,19 +118,19 @@
               </f:facet>
               <h:outputText value="#{row['sucursal']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombres}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.nombres}">
               <f:facet name="header">
                 <h:outputText value="Desarrollo"/>
               </f:facet>
               <h:outputText value="#{row['nombres']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-5 janal-column-center">
+            <p:column class="MarAuto Responsive janal-wid-7 janal-column-center">
               <f:facet name="header">
                 <h:outputText value="Semana"/>
               </f:facet>
               <h:outputText value="#{row['ejercicio']} - #{row['semana']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.termino}">
+            <p:column class="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.termino}">
               <f:facet name="header">
                 <h:outputText value="Cierre"/>
               </f:facet>
@@ -148,7 +148,7 @@
               </f:facet>
               <h:outputText value="$#{row['inicial']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.gastado}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.gastado}">
               <f:facet name="header">
                 <h:outputText value="Por reponer"/>
               </f:facet>
@@ -160,17 +160,17 @@
               </f:facet>
               <h:outputText value="$#{row['disponible']}"/>
             </p:column>		       
-						<p:column class="MarAuto Responsive janal-column-icon">
+						<p:column class="MarAuto Responsive janal-wid-5 janal-column-center">
 							<f:facet name="header">
 								<h:outputText value=""/>
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{keetCajaChicaFiltro.toColor(row)}.png" title="#{row.estatus}"/>								
 						</p:column>						
-            <p:column class="MarAuto Responsive janal-column-icon">              														
+            <p:column class="MarAuto Responsive janal-wid-5">              														
 							<p:commandButton icon="fa fa-search" actionListener="#{keetCajaChicaFiltro.doGastos(row)}" title="Consultar gastos" update="tablaGastos tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>	
             </p:column>
 						<f:facet name="footer">
-							<p:outputLabel value="Total [#{keetCajaChicaFiltro.lazyModel== null ? 0: keetCajaChicaFiltro.lazyModel.rowCount}] registros"/>
+							<p:outputLabel value="Total [#{keetCajaChicaFiltro.lazyModel== null? 0: keetCajaChicaFiltro.lazyModel.rowCount}] registros"/>
 						</f:facet>
           </p:dataTable>    
 					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
@@ -197,7 +197,7 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfGastos', 'tablaGastos')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsGastos', 'tablaGastos')" oncomplete="janal.desbloquear()"/>							
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-col-40">
+            <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">
                 <h:outputText value="No."/>
               </f:facet>
@@ -209,13 +209,13 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		            
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.residente}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.residente}">
               <f:facet name="header">
                 <h:outputText value="Residente"/>
               </f:facet>
               <h:outputText value="#{row['residente']}"/>
             </p:column>		                                                
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.articulos}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.articulos}">
               <f:facet name="header">
                 <h:outputText value="Articulos"/>
               </f:facet>
@@ -227,7 +227,7 @@
               </f:facet>
               <h:outputText value="$#{row['importe']}"/>
             </p:column>		       						
-						<p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.registro}">
+						<p:column class="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
@@ -245,7 +245,7 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-						<p:column class="MarAuto Responsive janal-column-icon">
+						<p:column class="MarAuto Responsive janal-wid-5 janal-column-center">
 							<f:facet name="header">
                 <h:outputText value="Imagen"/>
               </f:facet>
@@ -253,13 +253,13 @@
 								<p:graphicImage id="icon-image" cache="false" url="#{row.imagen}" width="26" height="22" stream="false" style="cursor:zoom-in;"/>
 							</a>	
 						</p:column> 
-						<p:column class="MarAuto Responsive janal-column-icon">
+						<p:column class="MarAuto Responsive janal-wid-5 janal-column-center">
 							<f:facet name="header">
 								<h:outputText value="Revisado"/>
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.revisado eq '1' ? 'circulo-verde' : 'circulo-rojo'}.png" title="#{row.revisado eq '1' ? 'Revisado' : 'Sin revisar'}"/>								
 						</p:column>						
-            <p:column class="MarAuto Responsive janal-column-icon">              							
+            <p:column class="MarAuto Responsive janal-wid-5">              							
 							<p:commandButton icon="fa fa-search" actionListener="#{keetCajaChicaFiltro.doMateriales(row)}" title="Consultar materiales" update="tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>																						
             </p:column>
 						<f:facet name="footer">
@@ -289,19 +289,19 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfMateriales', 'tablaMateriales')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsMateriales', 'tablaMateriales')" oncomplete="janal.desbloquear()"/>							
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-col-40">
+            <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">
                 <h:outputText value="No."/>
               </f:facet>
               <h:outputText value="#{index+ 1}.-"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
               <h:outputText value="#{row['codigo']}"/>
             </p:column>		            
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombre}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Concepto"/>
               </f:facet>
@@ -319,19 +319,19 @@
               </f:facet>
               <h:outputText value="#{row['unidadMedida']}"/>
             </p:column>		            
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
               <h:outputText value="#{row['costo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
-						<p:column class="MarAuto Responsive janal-wid-8 janal-column-center" sortBy="#{row.registro}">
+						<p:column class="MarAuto Responsive janal-wid-15 janal-column-center" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
