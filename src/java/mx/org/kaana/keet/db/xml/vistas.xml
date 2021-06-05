@@ -6020,7 +6020,7 @@
 				select 
 					case when tc_keet_estaciones.id_estacion_estatus= 1 then 1 else 0 end iniciado,
 					case when tc_keet_estaciones.id_estacion_estatus= 2 then 1 else 0 end en_proceso,
-					case when tc_keet_estaciones.id_estacion_estatus= 3 then 1 else 0 end terminado  
+					case when (tc_keet_estaciones.id_estacion_estatus= 3 or tc_keet_estaciones.id_estacion_estatus= 4) then 1 else 0 end terminado  
 				from(  
 				select
 					tc_keet_puntos_paquetes.id_punto_grupo,  
@@ -7754,8 +7754,58 @@
 					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
 				group by 
 					tc_keet_gastos_detalles.id_gasto_detalle
-				order by 
-				  concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno))
+				{sortOrder}
+      </select>  
+			<select id="reponer">
+				select
+					tc_mantic_empresas.id_empresa as id_key,
+					sum(tc_keet_cajas_chicas_cierres.acumulado) as total
+				from
+					tc_keet_cajas_chicas_cierres
+				inner join
+					tc_keet_cajas_chicas on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+				inner join
+					tc_keet_nominas_periodos on tc_keet_cajas_chicas_cierres.id_nomina_periodo = tc_keet_nominas_periodos.id_nomina_periodo
+				inner join
+					tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				inner join 
+				  tc_mantic_clientes on tc_keet_desarrollos.id_cliente = tc_mantic_clientes.id_cliente
+				inner join 
+					tc_mantic_empresas on tc_mantic_clientes.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tc_keet_cajas_chicas_cierres_estatus on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus = tc_keet_cajas_chicas_cierres_estatus.id_caja_chica_cierre_estatus
+				where
+					{condicion}
+				{sortOrder}        
+      </select>  
+      <select id="residentes">  
+				select
+					tr_mantic_empresa_personal.id_empresa_persona as id_key,
+					concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
+					sum(tc_keet_gastos.importe) as total
+				from
+					tc_keet_cajas_chicas_cierres
+				inner join
+					tc_keet_cajas_chicas on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+				inner join
+					tc_keet_nominas_periodos on tc_keet_cajas_chicas_cierres.id_nomina_periodo = tc_keet_nominas_periodos.id_nomina_periodo
+				inner join
+					tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				inner join 
+				  tc_mantic_clientes on tc_keet_desarrollos.id_cliente = tc_mantic_clientes.id_cliente
+				inner join 
+					tc_mantic_empresas on tc_mantic_clientes.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tc_keet_cajas_chicas_cierres_estatus on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus = tc_keet_cajas_chicas_cierres_estatus.id_caja_chica_cierre_estatus
+				inner join 
+				  tc_keet_gastos on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= tc_keet_gastos.id_caja_chica_cierre
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_gastos.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				where
+					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
+				{sortOrder}        
       </select>  
 			<select id="lazy">
 				select
@@ -7776,17 +7826,17 @@
 				from
 					tc_keet_cajas_chicas_cierres
 				inner join
-					tc_keet_cajas_chicas on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+					tc_keet_cajas_chicas on tc_keet_cajas_chicas.id_caja_chica= tc_keet_cajas_chicas_cierres.id_caja_chica
 				inner join
-					tc_keet_nominas_periodos on tc_keet_cajas_chicas_cierres.id_nomina_periodo = tc_keet_nominas_periodos.id_nomina_periodo
+					tc_keet_nominas_periodos on tc_keet_cajas_chicas_cierres.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
 				inner join
-					tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+					tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				inner join 
-				  tc_mantic_clientes on tc_keet_desarrollos.id_cliente = tc_mantic_clientes.id_cliente
+				  tc_mantic_clientes on tc_keet_desarrollos.id_cliente= tc_mantic_clientes.id_cliente
 				inner join 
-					tc_mantic_empresas on tc_mantic_clientes.id_empresa = tc_mantic_empresas.id_empresa
+					tc_mantic_empresas on tc_mantic_clientes.id_empresa= tc_mantic_empresas.id_empresa
 				inner join
-					tc_keet_cajas_chicas_cierres_estatus on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus = tc_keet_cajas_chicas_cierres_estatus.id_caja_chica_cierre_estatus
+					tc_keet_cajas_chicas_cierres_estatus on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus= tc_keet_cajas_chicas_cierres_estatus.id_caja_chica_cierre_estatus
 				where
 					{condicion}
 				{sortOrder}
@@ -7799,13 +7849,13 @@
 					tc_keet_gastos.articulos,
 					tc_keet_gastos.registro,
 					tc_keet_gastos.revisado,
-					concat(tc_mantic_personas.nombres, ' ',if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) residente,
-					tc_keet_gastos_estatus.nombre estatus,
+					concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
+					tc_keet_gastos_estatus.nombre as estatus,
 					tc_keet_gastos_estatus.id_gasto_estatus,
-					if(tc_keet_gastos.id_abono= 1, 'SI', 'NO') abono,
+					if(tc_keet_gastos.id_abono= 1, 'SI', 'NO') as abono,
 					tc_keet_cajas_chicas.id_desarrollo,
-					ifnull((select concat(ruta, archivo) imagen from tc_keet_gastos_archivos where tc_keet_gastos_archivos.id_gasto = tc_keet_gastos.id_gasto limit 1), '') ruta,
-					concat('{pathImage}', ifnull((select concat(ruta, archivo) imagen from tc_keet_gastos_archivos where tc_keet_gastos_archivos.id_gasto = tc_keet_gastos.id_gasto limit 1), '')) imagen
+					ifnull((select concat(ruta, archivo) imagen from tc_keet_gastos_archivos where tc_keet_gastos_archivos.id_gasto = tc_keet_gastos.id_gasto limit 1), '') as ruta,
+					concat('{pathImage}', ifnull((select concat(ruta, archivo) imagen from tc_keet_gastos_archivos where tc_keet_gastos_archivos.id_gasto = tc_keet_gastos.id_gasto limit 1), '')) as imagen
 				from 
 					tc_keet_gastos
 				inner join 
@@ -7823,6 +7873,21 @@
 				order by 
 				  tc_keet_gastos.consecutivo desc
 			</select>			
+      <select id="semanas">
+				select
+					tc_keet_cajas_chicas_cierres.id_nomina_periodo as id_key,
+          tc_keet_nominas_periodos.orden
+				from
+					tc_keet_cajas_chicas_cierres
+				inner join
+					tc_keet_nominas_periodos on tc_keet_cajas_chicas_cierres.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
+				where
+				  tc_keet_nominas_periodos.ejercicio= {ejercicio}
+			  group by
+			    tc_keet_cajas_chicas_cierres.id_nomina_periodo	   
+        order by
+          tc_keet_cajas_chicas_cierres.id_nomina_periodo desc   
+      </select>
 		</unit>
 		<unit id="VistaGastosDetallesDto">
 			<select id="detalle">

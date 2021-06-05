@@ -188,7 +188,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doLoadEstatus
+	} // loadEjercicios
 	
   @Override
   public void doLoad() {
@@ -198,13 +198,13 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("gastado", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("disponible", EFormatoDinamicos.NUMERO_CON_DECIMALES));            
+      columns.add(new Columna("inicial", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("gastado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));            
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			params= this.toPrepare();
-      params.put("sortOrder", "");
+      params.put("sortOrder", "order by tc_keet_desarrollos.nombres");
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasChicasDto", params, columns);
 			this.lazyModelGastos= null;
 			this.lazyModelMateriales= null;
@@ -256,7 +256,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
 			campos = new ArrayList<>();
       campos.add(new Columna("residente", EFormatoDinamicos.MAYUSCULAS));      
-      campos.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
+      campos.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
       campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			params= new HashMap<>();
 			params.put("idCajaChicaCierre", seleccionado.getKey());
@@ -286,7 +286,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));      
       campos.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));      
       campos.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
-      campos.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
+      campos.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
       campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_gastos_detalles.id_gasto=" + seleccionado.getKey());

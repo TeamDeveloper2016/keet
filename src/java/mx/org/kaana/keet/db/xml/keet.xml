@@ -764,7 +764,8 @@
 			</select>
 			<select id="ejercicios">
 				select 
-				  ejercicio as id_key, ejercicio 
+				  ejercicio as id_key, 
+          ejercicio 
 				from 
 				  tc_keet_gastos 
 				group by 

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Cierre general de caja chica"/>	
+	<ui:define name="librerias">
+		<script type="text/javascript">			
+			Janal.Control.fields = {				 								
+				'observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+			};				    								
+			
+      function execute() {				
+				var ok= janal.execute();
+				if(ok) 
+					janal.bloquear();				
+				return ok;
+			}	// execute		
+		</script>   
+		<style type="text/css">
+			.janal-total-compra {
+				font-size: 30px !important;
+				font-weight: bold !important;
+				font-style: italic;	
+			}			
+		</style>
+	</ui:define>
+	<ui:define name="contenido">								
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:accordionPanel id="criterios" activeIndex="1" multiple="true">																			
+						<p:tab title="Semanas vigentes">
+							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+								<p:outputLabel value="Ejercicio:"/>
+                <p:selectOneMenu id="ejercicio" value="#{keetCajaChicaPagar.attrs.ejercicio}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{keetCajaChicaPagar.attrs.ejercicios}"/>                
+                </p:selectOneMenu>
+								<p:outputLabel value="Semana:"/>
+                <p:selectOneMenu id="semana" value="#{keetCajaChicaPagar.attrs.semana}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{keetCajaChicaPagar.attrs.semanas}"/>                
+                </p:selectOneMenu>
+							</p:panelGrid>										
+						</p:tab>			
+          </p:accordionPanel>  
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCajaChicaPagar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaPagar.attrs.seleccionado}" selectionMode="single" paginator="#{keetCajaChicaPagar.lazyModel.rowCount gt keetCajaChicaPagar.lazyModel.pageSize}" rowIndexVar="index" reflow="true">            
+            <p:ajax event="rowToggle" listener="#{keetCajaChicaPagar.onRowToggle}" update="tablaDetalle" /> 
+            <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections();" process="tabla" skipChildren="false"/>
+						<f:facet name="header">
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla');" oncomplete="janal.desbloquear();"/>								
+							</p:menuButton>							
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla');" oncomplete="janal.desbloquear();"/>							
+            </f:facet>
+            <p:column class="MarAuto Responsive janal-wid-3">
+              <f:facet name="header">
+                <h:outputText value="No."/>
+              </f:facet>
+              <h:outputText value="#{index+ 1}.-"/>
+            </p:column>		
+						<p:column style="width:24px" exportable="false">  
+							<p:rowToggler/>  
+						</p:column>              
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.sucursal}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['sucursal']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{row.nombres}">
+              <f:facet name="header">
+                <h:outputText value="Desarrollo"/>
+              </f:facet>
+              <h:outputText value="#{row['nombres']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center">
+              <f:facet name="header">
+                <h:outputText value="Semana"/>
+              </f:facet>
+              <h:outputText value="#{row['ejercicio']} - #{row['semana']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.termino}" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="Cierre"/>
+              </f:facet>
+              <h:outputText value="#{row['termino']}"/>
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.inicial}">
+              <f:facet name="header">
+                <h:outputText value="Inicial"/>
+              </f:facet>
+              <h:outputText value="$#{row['inicial']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.gastado}">
+              <f:facet name="header">
+                <h:outputText value="Por reponer"/>
+              </f:facet>
+              <h:outputText value="$#{row['gastado']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.disponible}">
+              <f:facet name="header">
+                <h:outputText value="Saldo"/>
+              </f:facet>
+              <h:outputText value="$#{row['disponible']}"/>
+            </p:column>		       
+						<p:column class="MarAuto Responsive janal-wid-5 janal-column-center">
+							<f:facet name="header">
+								<h:outputText value=""/>
+							</f:facet>
+							<h:graphicImage library="janal" name="icon/semaforos/#{keetCajaChicaPagar.toColor(row)}.png" title="#{row.estatus}"/>								
+						</p:column>						
+						<p:rowExpansion>
+							<p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableGasto" var="row" value="#{keetCajaChicaPagar.lazyModelGasto}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCajaChicaPagar.lazyModelGasto.rowCount gt keetCajaChicaPagar.lazyModelGasto.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">								
+								<p:column class="janal-column-left MarAuto Responsive janal-wid-5">
+									<f:facet name="header">
+										<h:outputText value="No"/>
+									</f:facet>
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>														
+								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.residente}">
+									<f:facet name="header">
+										<h:outputText value="Residente"/>
+									</f:facet>
+									<h:outputText value="#{row['residente']}"/>
+								</p:column>														
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+									<f:facet name="header">
+										<h:outputText value="Consecutivo"/>
+									</f:facet>
+									<h:outputText value="#{row['consecutivo']}"/>
+								</p:column>																							
+                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+									<f:facet name="header">
+										<h:outputText value="Articulo"/>
+									</f:facet>
+									<h:outputText value="#{row['nombre']}"/>
+								</p:column>																							
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+									<f:facet name="header">
+										<h:outputText value="Importe"/>
+									</f:facet>
+									<h:outputText value="#{row['importe']}"/>
+								</p:column>																				
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.regitro}">
+									<f:facet name="header">
+										<h:outputText value="Fecha"/>
+									</f:facet>
+									<h:outputText value="#{row['registro']}"/>
+								</p:column>						
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{keetCajaChicaPagar.lazyModelGasto== null? 0: keetCajaChicaPagar.lazyModelGasto.rowCount}] registros"/>
+								</f:facet>
+              </p:dataTable>
+            </p:rowExpansion>  
+						<f:facet name="footer">
+							<p:outputLabel value="&lt;span class='janal-color-blue'&gt;Total: &lt;strong&gt;[#{keetCajaChicaPagar.costoTotal}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+							<p:outputLabel value="Total [#{keetCajaChicaPagar.lazyModel== null? 0: keetCajaChicaPagar.lazyModel.rowCount}] registros"/>
+						</f:facet>
+          </p:dataTable>    
+          <p:dataTable lazy="true" id="tablaResidentes" widgetVar="kajoolTableResidentes" var="row" value="#{keetCajaChicaPagar.lazyModelResidentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaPagar.attrs.residente}" selectionMode="single" paginator="#{keetCajaChicaPagar.lazyModelResidentes.rowCount gt keetCajaChicaPagar.lazyModelResidentes.pageSize}" rowIndexVar="index" reflow="true">            
+            <p:ajax event="rowSelect" oncomplete="PF('kajoolTableResidentes').writeSelections();" process="tabla" skipChildren="false"/>
+						<f:facet name="header">
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlx', 'tablaResidentes');" oncomplete="janal.desbloquear();"/>								
+							</p:menuButton>							
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlx', 'tablaResidentes');" oncomplete="janal.desbloquear();"/>							
+            </f:facet>
+            <p:column class="MarAuto Responsive janal-wid-3">
+              <f:facet name="header">
+                <h:outputText value="No."/>
+              </f:facet>
+              <h:outputText value="#{index+ 1}.-"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{row.residente}">
+              <f:facet name="header">
+                <h:outputText value="Residente"/>
+              </f:facet>
+              <h:outputText value="#{row['residente']}"/>
+            </p:column>		          
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.total}">
+              <f:facet name="header">
+                <h:outputText value="Total"/>
+              </f:facet>
+              <h:outputText value="#{row['total']}"/>
+            </p:column>		          
+						<f:facet name="footer">
+							<p:outputLabel value="Total [#{keetCajaChicaPagar.lazyModelResidentes== null? 0: keetCajaChicaPagar.lazyModelResidentes.rowCount}] registros"/>
+						</f:facet>
+          </p:dataTable>    
+				</div>
+			</div>
+		</div>						
+    <h:commandLink id="dataXlx">
+      <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tablaResidentes" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+    </h:commandLink>			
+	</ui:define>    
+	<ui:define name="acciones">		
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCajaChicaPagar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCajaChicaPagar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>						
+	</ui:define>		
+</ui:composition>
