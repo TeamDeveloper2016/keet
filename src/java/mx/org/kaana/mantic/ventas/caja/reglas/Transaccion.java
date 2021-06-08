@@ -1187,7 +1187,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		bitacora.setIdApartadoEstatus(apartado.getIdApartadoEstatus());
 		bitacora.setRegistro(LocalDateTime.now());
 		bitacora.setIdUsuario(JsfBase.getIdUsuario());
-		bitacora.setJustificacion("Pago realizado desde el modulo de cajas por la cantidad" + abonado);
+		bitacora.setJustificacion("PAGO REALIZADO DESDE EL MODULO DE CAJA POR LA CANTIDAD "+ abonado);
 		regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;		
 		return regresar;
   } // insertarBitacora

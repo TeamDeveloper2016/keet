@@ -217,7 +217,7 @@ public class Transaccion extends IBaseTnx {
 			idEmpresaPersona= DaoFactory.getInstance().insert(sesion, this.persona.getEmpresaPersona());
 			if(idEmpresaPersona>= 1L){
 				if(registrarIncidencia(sesion, idEmpresaPersona)){
-					if(registrarIncidencia(sesion, idEmpresaPersona, this.persona.getEmpresaPersona().getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), this.persona.getEmpresaPersona().getIdActivo().equals(1L) ? "Activar deposito." : "Inactivar deposito."))	
+					if(registrarIncidencia(sesion, idEmpresaPersona, this.persona.getEmpresaPersona().getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), this.persona.getEmpresaPersona().getIdActivo().equals(1L) ? "ACTIVAR DEPOSITO" : "INACTIVAR DEPOSITO"))	
 						regresar= registraDeudor(sesion, idEmpresaPersona);
 				} // if
 			} // if
@@ -370,14 +370,14 @@ public class Transaccion extends IBaseTnx {
 			for(String key: old.keySet()) {
 				if(!Objects.equal(old.get(key),tmp.get(key))) {
 					if(key.equals("idActivo")){
-						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Reingreso de empleado." : "Baja de empleado.");						
+						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "REINGRESO DEL EMPLEADO" : "BAJA DEL EMPLEADO");						
 						if(empresaPersonal.getIdActivo().equals(1L))
 							empresaPersonal.setIngreso(LocalDate.now());
 						else
 							empresaPersonal.setBaja(LocalDate.now());
 					} // if
 					if(key.equals("idNomina"))
-						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "Activar deposito." : "Inactivar deposito.");						
+						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "ACTIVAR DEPOSITO" : "INACTIVAR DEPOSITO");						
 					if(key.equals("idPuesto") && ((Long)old.get("idPuesto")).equals(toIdContratista(sesion))){
 						if(!cleanPersonalAsignado(sesion, empresaPersonal.getIdEmpresaPersona())){
 							empresaPersonal.setIdPuesto(empresaPersonalOld.getIdPuesto());

@@ -332,7 +332,7 @@ public class Transaccion extends IBaseTnx {
 					valeDto.setCantidad(toCantidad());
 					valeDto.setCosto(toCosto());
 					if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L){
-						this.vale.setJustificacion("Regeneración del vale");
+						this.vale.setJustificacion("REGENERACION DEL VALE");
 						if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
 							regresar= registrarDetalle(sesion, semana.toString());					
 							registrarPadres(sesion);

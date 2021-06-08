@@ -7781,6 +7781,7 @@
       <select id="residentes">  
 				select
 					tr_mantic_empresa_personal.id_empresa_persona as id_key,
+					tr_mantic_empresa_personal.id_empresa_persona,
 					concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
 					sum(tc_keet_gastos.importe) as total
 				from
@@ -7805,6 +7806,7 @@
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
 				where
 					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
+          and {condicion}
 				{sortOrder}        
       </select>  
 			<select id="lazy">

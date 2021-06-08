@@ -75,7 +75,7 @@ public class Transaccion extends IBaseTnx {
 			bitacora.setIdUsuario(JsfBase.getIdUsuario());
 			bitacora.setIdVale(this.idVale);
 			bitacora.setIdValeEstatus(idEstatus);
-			bitacora.setJustificacion("Autorización/Rechazo de vale: ".concat(Cadena.isVacio(this.justificacion) ? EEstatusVales.fromId(idEstatus).getNombre() : this.justificacion));
+			bitacora.setJustificacion("AUTORIZACION/RECHAZO DEL VALE: ".concat(Cadena.isVacio(this.justificacion) ? EEstatusVales.fromId(idEstatus).getNombre() : this.justificacion));
 			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 		} // try
 		catch (Exception e) {			

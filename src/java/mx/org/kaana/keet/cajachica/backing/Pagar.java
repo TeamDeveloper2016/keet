@@ -27,7 +27,6 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import org.primefaces.event.ToggleEvent;
@@ -69,8 +68,8 @@ public class Pagar extends IBaseFilter implements Serializable {
 			this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());						
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
-			this.loadEjercicios();
-			this.doLoad();											
+      this.attrs.put("idAfectaNomina", 2L);
+			this.toLoadEjercicios();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -101,6 +100,13 @@ public class Pagar extends IBaseFilter implements Serializable {
       Entity costo= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasChicasDto", "reponer", params);
       if(costo!= null && !costo.isEmpty())
         this.costoTotal= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
+      // DETERMINAR SI LAS CAJAS CHICAS SE DEBEN DE CERRAR O NO
+      if(!Cadena.isVacio(this.attrs.get("semana")))
+        params.put(Constantes.SQL_CONDICION, "tc_keet_nominas_periodos.id_nomina_periodo= "+ this.attrs.get("semana")+ " and tc_keet_cajas_chicas_cierres.acumulado> 0 and tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus in (1, 2)");
+      else  
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);      
+      Entity procesar= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasChicasDto", "reponer", params);
+      this.attrs.put("procesar", procesar!= null && !procesar.isEmpty() && procesar.toLong("total")!= null);
       this.toLoadGastosResidente();
     } // try
     catch (Exception e) {
@@ -113,21 +119,14 @@ public class Pagar extends IBaseFilter implements Serializable {
 		} // finally	
   } // doLoad	  	
 
-	private void loadEjercicios() {		
+	private void toLoadEjercicios() {		
 		List<UISelectItem> ejercicios= null;
-		List<UISelectItem> semanas   = null;
 		Map<String, Object>params    = new HashMap<>();
 		try {						
 			ejercicios= UISelect.build("TcKeetGastosDto", "ejercicios", Collections.EMPTY_MAP, "ejercicio", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("ejercicios", ejercicios);
 			this.attrs.put("ejercicio", UIBackingUtilities.toFirstKeySelectItem(ejercicios));
-			semanas= new ArrayList<>();
-      if(ejercicios!= null && ejercicios.size()> 0) {
-        params.put("ejercicio", ejercicios.get(0).getValue());
-  			semanas= UISelect.build("VistaCierresCajasChicasDto", "semanas", params, "orden", EFormatoDinamicos.MAYUSCULAS);
-      } // if  
-			this.attrs.put("semanas", semanas);
-			this.attrs.put("semana", UIBackingUtilities.toFirstKeySelectItem(semanas));
+      this.doLoadSemanas();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -136,20 +135,35 @@ public class Pagar extends IBaseFilter implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally	
-	} // loadEjercicios
+	} // toLoadEjercicios
+  
+	public void doLoadSemanas() {		
+		List<UISelectItem> semanas= null;
+		Map<String, Object>params = new HashMap<>();
+		try {						
+      params.put("ejercicio", this.attrs.get("ejercicio"));
+			semanas= UISelect.build("VistaCierresCajasChicasDto", "semanas", params, "orden", EFormatoDinamicos.MAYUSCULAS);
+      if(semanas== null)
+			  semanas= new ArrayList<>();
+			this.attrs.put("semanas", semanas);
+			this.attrs.put("semana", UIBackingUtilities.toFirstKeySelectItem(semanas));
+      this.doLoad();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally	
+	} // doLoadSemanas
   
 	public String doAceptar() {
-    String regresar                = null;    		
-		Transaccion transaccion        = null;	
-		UISelectEntity residente       = null;
-		UISelectEntity seleccionado    = null;
-		List<UISelectEntity> residentes= null;
+    String regresar        = null;    		
+		Transaccion transaccion= null;	
     try {									
-			seleccionado= (UISelectEntity) this.attrs.get("residente");
-			residentes= (List<UISelectEntity>) this.attrs.get("residentes");
-			residente= residentes.get(residentes.indexOf(seleccionado));
-			transaccion= new Transaccion(Long.valueOf(this.attrs.get("idCajaChicaCierre").toString()), Double.valueOf(this.attrs.get("importe").toString()), this.attrs.get("observaciones").toString(), Long.valueOf(this.attrs.get("idAfectaNomina").toString()), (Long)this.attrs.get("idDesarrollo"), residente.toLong("idEmpresaPersona"));
-			if(transaccion.ejecutar(EAccion.ACTIVAR)){
+			transaccion = new Transaccion((Long)this.attrs.get("semana"), (Long)this.attrs.get("idAfectaNomina"), (String)this.attrs.get("observaciones"));
+			if(transaccion.ejecutar(EAccion.PROCESAR)) {
 				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta.", ETipoMensaje.INFORMACION);									
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);
 			} // if
@@ -161,7 +175,7 @@ public class Pagar extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina  	
+  } // doAceptar  	
 		
 	public String doCancelar() {
     String regresar= null;    		
@@ -193,7 +207,6 @@ public class Pagar extends IBaseFilter implements Serializable {
         columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
         params.put("sortOrder", "order by tc_mantic_personas.nombres");
         params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: (Long)this.attrs.get("semana"));      
-        // params.put("idNominaPeriodo", seleccionado.toLong("idNominaPeriodo"));      
         this.lazyModelGasto= new FormatCustomLazy("VistaCierresCajasChicasDto", "detalle", params, columns);
         UIBackingUtilities.resetDataTable("tablaDetalle");			        
       } // if
@@ -217,6 +230,7 @@ public class Pagar extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa_persona");
       params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: (Long)this.attrs.get("semana"));      
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       this.lazyModelResidentes= new FormatCustomLazy("VistaCierresCajasChicasDto", "residentes", params, columns);
       UIBackingUtilities.resetDataTable("tablaResidentes");			        
 		} // try

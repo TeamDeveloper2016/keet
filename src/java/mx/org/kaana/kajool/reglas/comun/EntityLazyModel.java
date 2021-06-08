@@ -96,7 +96,7 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 
 	@Override
 	public Object getRowKey(IBaseDto dto) {
-		return dto.getKey();
+		return dto!= null && dto.toValue("idKey")!= null? dto.getKey(): null;
 	} // getRowKey
 
 	@Override

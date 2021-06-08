@@ -665,11 +665,14 @@
     <unit id="TcKeetCajasChicasDto">
       <select id="row">
         select      
-          *
+          tc_keet_cajas_chicas.id_caja_chica as id_key,
+          tc_keet_cajas_chicas.*
         from      
           tc_keet_cajas_chicas
         where 
           {condicion} 
+        order by
+          id_desarrollo
       </select>
       <select id="identically">
         select      
@@ -683,7 +686,8 @@
 		<unit id="TcKeetCajasChicasCierresDto">
       <select id="row">
         select      
-          *
+          tc_keet_cajas_chicas_cierres.id_caja_chica_cierre as id_key,
+          tc_keet_cajas_chicas_cierres.*
         from      
           tc_keet_cajas_chicas_cierres
         where 
@@ -696,6 +700,19 @@
           tc_keet_cajas_chicas_cierres
         where      
           consecutivo = '{consecutivo}'
+      </select>
+      <select id="ultima">
+        select      
+          tc_keet_cajas_chicas_cierres.id_caja_chica_cierre as id_key,
+          tc_keet_cajas_chicas_cierres.*
+        from      
+          tc_keet_cajas_chicas_cierres
+        where 
+          id_caja_chica= {idCajaChica}
+          and id_caja_chica_cierre_estatus in (1, 2)
+          and id_nomina_periodo= {idNominaPeriodo}
+        order by
+          registro desc
       </select>
 			<select id="siguiente">
         select
@@ -772,7 +789,22 @@
 				  ejercicio
 			</select>
 			<update id="disponibles">
-				update tc_keet_gastos set id_caja_chica_cierre={idCajaNuevo} where id_caja_chica_cierre={idCajaAnterior} and id_gasto_estatus=1
+				update 
+         tc_keet_gastos 
+        set 
+          id_caja_chica_cierre={idCajaNuevo} 
+        where 
+          id_caja_chica_cierre={idCajaAnterior} 
+          and id_gasto_estatus=1
+			</update>
+			<update id="aplicado">
+				update 
+         tc_keet_gastos 
+        set 
+          id_gasto_estatus= 4
+        where 
+          id_caja_chica_cierre={idCajaAnterior} 
+          and id_gasto_estatus= 2
 			</update>
     </unit>
     <unit id="TcKeetGastosDetallesDto">

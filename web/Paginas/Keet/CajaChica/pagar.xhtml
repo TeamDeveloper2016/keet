@@ -38,10 +38,12 @@
 							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Ejercicio:"/>
                 <p:selectOneMenu id="ejercicio" value="#{keetCajaChicaPagar.attrs.ejercicio}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this ejercicio" update="semana tabla nomina tablaResidentes" listener="#{keetCajaChicaPagar.doLoadSemanas}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                   <f:selectItems value="#{keetCajaChicaPagar.attrs.ejercicios}"/>                
                 </p:selectOneMenu>
 								<p:outputLabel value="Semana:"/>
-                <p:selectOneMenu id="semana" value="#{keetCajaChicaPagar.attrs.semana}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="semana" value="#{keetCajaChicaPagar.attrs.semana}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
+                  <p:ajax event="change" process="@this ejercicio" update="tabla nomina tablaResidentes" listener="#{keetCajaChicaPagar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                   <f:selectItems value="#{keetCajaChicaPagar.attrs.semanas}"/>                
                 </p:selectOneMenu>
 							</p:panelGrid>										
@@ -166,7 +168,18 @@
 							<p:outputLabel value="&lt;span class='janal-color-blue'&gt;Total: &lt;strong&gt;[#{keetCajaChicaPagar.costoTotal}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
 							<p:outputLabel value="Total [#{keetCajaChicaPagar.lazyModel== null? 0: keetCajaChicaPagar.lazyModel.rowCount}] registros"/>
 						</f:facet>
-          </p:dataTable>    
+          </p:dataTable>  
+          <p:accordionPanel id="nomina" activeIndex="0" multiple="true" rendered="#{keetCajaChicaPagar.attrs.procesar}">
+						<p:tab title="Generales">
+              <p:outputLabel for="idAfectaNomina" value="Vía nomina:"/>
+              <p:selectOneMenu id="idAfectaNomina" value="#{keetCajaChicaPagar.attrs.idAfectaNomina}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
+                <f:selectItem itemValue="1" itemLabel="SI"/>                
+                <f:selectItem itemValue="2" itemLabel="NO"/>                
+              </p:selectOneMenu>
+              <p:outputLabel for="observaciones" value="Observaciones:"/>
+              <p:inputTextarea id="observaciones" value="#{keetCajaChicaPagar.attrs.observaciones}" rows="4" styleClass="janal-wid-100-txt"/>
+            </p:tab>
+          </p:accordionPanel>  
           <p:dataTable lazy="true" id="tablaResidentes" widgetVar="kajoolTableResidentes" var="row" value="#{keetCajaChicaPagar.lazyModelResidentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaPagar.attrs.residente}" selectionMode="single" paginator="#{keetCajaChicaPagar.lazyModelResidentes.rowCount gt keetCajaChicaPagar.lazyModelResidentes.pageSize}" rowIndexVar="index" reflow="true">            
             <p:ajax event="rowSelect" oncomplete="PF('kajoolTableResidentes').writeSelections();" process="tabla" skipChildren="false"/>
 						<f:facet name="header">
@@ -206,11 +219,11 @@
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()" disabled="#{not keetCajaChicaPagar.attrs.procesar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCajaChicaPagar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()" disabled="#{not keetCajaChicaPagar.attrs.procesar}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCajaChicaPagar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
 		</div>						
 	</ui:define>		

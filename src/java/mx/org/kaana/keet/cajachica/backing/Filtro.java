@@ -89,17 +89,17 @@ public class Filtro extends IBaseFilter implements Serializable {
  
 	private void loadCatalog() {		
     try {			
-			this.loadEmpresas();
+			this.toLoadEmpresas();
 			this.doLoadDesarrollos();
-			this.loadEstatus();
-			this.loadEjercicios();
+			this.toLoadEstatus();
+			this.toLoadEjercicios();
     } // try
     catch (Exception e) {
       throw e;
     } // catch       
 	} // loadCatalog
 	
-	private void loadEmpresas() {
+	private void toLoadEmpresas() {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {
@@ -150,7 +150,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 	} // doLoadDesarrollos	
 	
-	private void loadEstatus(){		
+	private void toLoadEstatus(){		
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;
 		try {			
@@ -169,18 +169,32 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // doLoadEstatus
 	
-	private void loadEjercicios() {		
+	private void toLoadEjercicios() {		
 		List<UISelectItem> ejercicios= null;
-		List<UISelectItem> semanas   = null;
+		Map<String, Object>params    = new HashMap<>();
 		try {						
-			ejercicios= UISelect.seleccione("TcKeetGastosDto", "ejercicios", Collections.EMPTY_MAP, "ejercicio", EFormatoDinamicos.MAYUSCULAS);			
+			ejercicios= UISelect.build("TcKeetGastosDto", "ejercicios", Collections.EMPTY_MAP, "ejercicio", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("ejercicios", ejercicios);
 			this.attrs.put("ejercicio", UIBackingUtilities.toFirstKeySelectItem(ejercicios));
-			semanas= new ArrayList<>();
-      if(ejercicios!= null && ejercicios.size()> 1)
-			  for(int count= 0; count< 53; count++)
-				  semanas.add(new UISelectItem(new Long(count+ 1), "Semana ".concat(String.valueOf(count+ 1))));
-			semanas.add(0, new UISelectItem(-1L, "SELECCIONE"));
+      this.doLoadSemanas();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally	
+	} // toLoadEjercicios
+  
+	public void doLoadSemanas() {		
+		List<UISelectItem> semanas= null;
+		Map<String, Object>params = new HashMap<>();
+		try {						
+      params.put("ejercicio", this.attrs.get("ejercicio"));
+			semanas= UISelect.build("VistaCierresCajasChicasDto", "semanas", params, "orden", EFormatoDinamicos.MAYUSCULAS);
+      if(semanas== null)
+			  semanas= new ArrayList<>();
 			this.attrs.put("semanas", semanas);
 			this.attrs.put("semana", UIBackingUtilities.toFirstKeySelectItem(semanas));
 		} // try
@@ -188,8 +202,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // loadEjercicios
-	
+		finally {
+			Methods.clean(params);
+		} // finally	
+	} // doLoadSemanas
+  
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
@@ -238,7 +255,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && !this.attrs.get("ejercicio").equals("-1"))
 		  sb.append("(tc_keet_cajas_chicas_cierres.ejercicio= '").append(this.attrs.get("ejercicio")).append("') and ");		
 		if(!Cadena.isVacio(this.attrs.get("semana")) && !this.attrs.get("semana").equals("-1"))
-		  sb.append("(tc_keet_nominas_periodos.orden= ").append(this.attrs.get("semana")).append(") and ");		
+		  sb.append("(tc_keet_nominas_periodos.id_nomina_periodo= ").append(this.attrs.get("semana")).append(") and ");		
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -311,7 +328,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 		} // catch
-		return "global".concat(Constantes.REDIRECIONAR);    
+		return "pagar".concat(Constantes.REDIRECIONAR);    
   }
   
   public String doCierre() {
