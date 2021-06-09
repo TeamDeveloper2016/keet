@@ -22,7 +22,11 @@ import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoContratistaAr
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.DestajoProveedorArchivo;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseDestajoArchivo;
 import mx.org.kaana.keet.catalogos.contratos.destajos.reglas.Transaccion;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
+import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
+import mx.org.kaana.keet.enums.EEstacionesEstatus;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
+import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
@@ -75,10 +79,10 @@ public class Importar extends IBaseImportar implements Serializable {
 			idDesarrollo= (Long) JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("idDesarrollo", idDesarrollo);
-			this.attrs.put("figura", (Entity) JsfBase.getFlashAttribute("figura"));
-			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
-			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));
-			this.attrs.put("concepto", (Entity)JsfBase.getFlashAttribute("concepto"));      			
+			this.attrs.put("figura", JsfBase.getFlashAttribute("figura"));
+			this.attrs.put("seleccionadoPivote", JsfBase.getFlashAttribute("seleccionado"));
+			this.attrs.put("idDepartamento", JsfBase.getFlashAttribute("idDepartamento"));
+			this.attrs.put("concepto", JsfBase.getFlashAttribute("concepto"));      			
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);
 			this.attrs.put("idEstacion", ((Entity)this.attrs.get("concepto")).getKey());
 			this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
@@ -257,7 +261,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), // idTipoArchivo			
 			(String)this.attrs.get("observaciones"), // observaciones 			
 			Configuracion.getInstance().getPropiedadSistemaServidor("destajos").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // alias
-			toIdContratoDestajoFigura(), // idContratoDestajoContratista
+			this.toIdContratoDestajoFigura(), // idContratoDestajoContratista
 			this.getFile().getOriginal(), // nombre
       ((Entity)this.attrs.get("concepto")).toString("codigo")
 		); 		
@@ -287,7 +291,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		return regresar;
 	} // toDestajoProveedorArchivo	
 	
-	private Long toIdContratoDestajoFigura() throws Exception{
+	private Long toIdContratoDestajoFigura() throws Exception {
 		Entity destajoFigura     = null;
 		Map<String, Object>params= null;
 		Long regresar            = -1L;
@@ -296,7 +300,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			params= new HashMap<>();
 			params.put("idEstacion", this.attrs.get("idEstacion"));			
 			params.put("idEstacionEstatus", 4L);			
-			if(((Entity) this.attrs.get("figura")).toLong("tipo").equals(1L)){
+			if(((Entity) this.attrs.get("figura")).toLong("tipo").equals(1L)) {
 				idXml= "TcKeetContratosDestajosContratistasDto";
 				params.put("idContratoLoteContratista", this.attrs.get("idContratoLoteContratista"));			
 			} // if
@@ -305,6 +309,12 @@ public class Importar extends IBaseImportar implements Serializable {
 				params.put("idContratoLoteProveedor", this.attrs.get("idContratoLoteProveedor"));
 			} // else
 			destajoFigura= (Entity) DaoFactory.getInstance().toEntity(idXml, "evidenciaDestajo", params);
+      if(destajoFigura== null) {
+        if(((Entity) this.attrs.get("figura")).toLong("tipo").equals(1L))
+          destajoFigura= new Entity(this.toInsertarDestajoContratista());
+        else
+          destajoFigura= new Entity(this.toInsertarDestajoProveedor());
+      } // if
 			regresar= destajoFigura.getKey();
 		} // try
 		catch (Exception e) {			
@@ -387,12 +397,69 @@ public class Importar extends IBaseImportar implements Serializable {
         this.doLoad();
       } // if  
       else
-      	UIBackingUtilities.execute("janal.alert('No se pudo eliminar la evidencia!');");
+      	UIBackingUtilities.execute("janal.alert('No se pudo eliminar la evidencia !');");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
   }
+
+  private Long toInsertarDestajoContratista() {
+    Long regresar= -1L;
+    try {      
+      TcKeetContratosDestajosContratistasDto dto= new TcKeetContratosDestajosContratistasDto();		
+      dto.setIdUsuario(JsfBase.getIdUsuario());
+      dto.setSemana(this.toSemana());
+      dto.setPeriodo(1L);
+      dto.setIdEstacion((Long)this.attrs.get("idEstacion"));
+      dto.setIdContratoLoteContratista((Long)this.attrs.get("idContratoLoteContratista"));
+      dto.setIdNomina(null);
+      dto.setCosto(0D);
+      dto.setPorcentaje(0D);
+      dto.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
+      regresar= DaoFactory.getInstance().insert(dto);      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }  
+  
+  private Long toInsertarDestajoProveedor() {
+    Long regresar= -1L;
+    try {      
+      TcKeetContratosDestajosProveedoresDto dto= new TcKeetContratosDestajosProveedoresDto();		
+      dto.setIdUsuario(JsfBase.getIdUsuario());
+      dto.setSemana(this.toSemana());
+      dto.setPeriodo(1L);
+      dto.setIdEstacion((Long)this.attrs.get("idEstacion"));
+      dto.setIdContratoLoteProveedor((Long)this.attrs.get("idContratoLoteProveedor"));
+      dto.setIdNomina(null);
+      dto.setCosto(0D);
+      dto.setPorcentaje(0D);
+      dto.setIdEstacionEstatus(EEstacionesEstatus.INICIAR.getKey());
+      regresar= DaoFactory.getInstance().insert(dto);      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }  
+  
+	private Long toSemana() throws Exception {
+		Long regresar  = -1L;
+		Semanas semanas= null;
+		try {
+			semanas= new Semanas();
+			regresar= semanas.getSemanaEnCurso();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toSemana
   
 }

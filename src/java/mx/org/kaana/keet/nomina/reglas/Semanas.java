@@ -78,7 +78,7 @@ public class Semanas {
 	  Long regresar               = 1L;		
 		TcKeetNominasPeriodosDto dto= null;
 		try {			
-			dto= getSemanaEnCursoDto();
+			dto= this.getSemanaEnCursoDto();
 			if(dto!= null && dto.isValid())
 				regresar= dto.getOrden();
 		} // try

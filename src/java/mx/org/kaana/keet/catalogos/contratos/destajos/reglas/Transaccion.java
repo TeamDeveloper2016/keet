@@ -436,7 +436,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toSemana
 	
-	private Long toPeriodo(){
+	private Long toPeriodo() {
 		return 1L;
 	} // toPeriodo	
 	
