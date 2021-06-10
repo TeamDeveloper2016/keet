@@ -262,7 +262,7 @@
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.revisado eq '1' ? 'circulo-verde' : 'circulo-rojo'}.png" title="#{row.revisado eq '1' ? 'Revisado' : 'Sin revisar'}"/>								
 						</p:column>						
-            <p:column class="MarAuto Responsive janal-wid-5">              							
+            <p:column class="MarAuto Responsive janal-wid-5 janal-column-center">              							
 							<p:commandButton icon="fa fa-search" actionListener="#{keetCajaChicaFiltro.doMateriales(row)}" title="Consultar materiales" update="tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>																						
             </p:column>
 						<f:facet name="footer">

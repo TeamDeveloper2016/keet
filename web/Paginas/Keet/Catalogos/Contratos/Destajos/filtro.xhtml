@@ -173,11 +173,17 @@
 							</f:facet>
 							<h:outputText value="#{row['nomina']}" styleClass="#{row.porcentaje eq '100.00'? '': 'janal-color-white'}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.clave}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.contrato}">
 							<f:facet name="header">
 								<h:outputText value="Contrato"/>
 							</f:facet>
-							<h:outputText value="#{row['clave']}" styleClass="#{row.porcentaje eq '100.00'? '': 'janal-color-white'}"/>
+							<h:outputText value="#{row['contrato']}" styleClass="#{row.porcentaje eq '100.00'? '': 'janal-color-white'}"/>
+						</p:column>														
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.prototipo}">
+							<f:facet name="header">
+								<h:outputText value="Prototipo"/>
+							</f:facet>
+							<h:outputText value="#{row['prototipo']}" styleClass="#{row.porcentaje eq '100.00'? '': 'janal-color-white'}"/>
 						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-6" sortBy="#{row.lote}">
 							<f:facet name="header">

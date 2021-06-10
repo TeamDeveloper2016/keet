@@ -279,8 +279,10 @@
 				  tc_keet_contratos.consecutivo,
 				  tc_keet_desarrollos.nombres as desarrollo,
 				  tc_keet_contratos.clave,
+          tc_keet_contratos.nombre as contrato,
 				  tc_keet_contratos.etapa,
 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_prototipos.nombre as prototipo,
 				  tc_keet_estaciones.codigo,
 				  tc_keet_rubros.nombre,
 				  tc_keet_contratos_destajos_contratistas.porcentaje,
@@ -293,6 +295,8 @@
 				  tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista
 				inner join
 				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 				inner join
 				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
 				inner join
@@ -323,8 +327,10 @@
 				  tc_keet_contratos.consecutivo,
 				  tc_keet_desarrollos.nombres as desarrollo,
 				  tc_keet_contratos.clave,
+				  tc_keet_contratos.nombre as contrato,
 				  tc_keet_contratos.etapa,
 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_prototipos.nombre as prototipo,
 				  tc_keet_estaciones.codigo,
 				  tc_keet_rubros.nombre,
 				  tc_keet_contratos_destajos_proveedores.porcentaje,
@@ -337,6 +343,8 @@
 				  tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
 				inner join
 				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 				inner join
 				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
 				inner join

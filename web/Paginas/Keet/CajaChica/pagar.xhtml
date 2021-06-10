@@ -53,6 +53,7 @@
             <p:ajax event="rowToggle" listener="#{keetCajaChicaPagar.onRowToggle}" update="tablaDetalle" /> 
             <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections();" process="tabla" skipChildren="false"/>
 						<f:facet name="header">
+              <p:outputLabel value="Estatus que guardan las cajas chicas por desarrollo según semana de referencia" styleClass="janal-icons-header janal-text-white"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla');" oncomplete="janal.desbloquear();"/>								
 							</p:menuButton>							
@@ -97,7 +98,7 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.inicial}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.inicial}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Inicial"/>
               </f:facet>
@@ -109,7 +110,7 @@
               </f:facet>
               <h:outputText value="$#{row['gastado']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.disponible}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.disponible}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Saldo"/>
               </f:facet>
@@ -183,6 +184,7 @@
           <p:dataTable lazy="true" id="tablaResidentes" widgetVar="kajoolTableResidentes" var="row" value="#{keetCajaChicaPagar.lazyModelResidentes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaPagar.attrs.residente}" selectionMode="single" paginator="#{keetCajaChicaPagar.lazyModelResidentes.rowCount gt keetCajaChicaPagar.lazyModelResidentes.pageSize}" rowIndexVar="index" reflow="true">            
             <p:ajax event="rowSelect" oncomplete="PF('kajoolTableResidentes').writeSelections();" process="tabla" skipChildren="false"/>
 						<f:facet name="header">
+              <p:outputLabel value="Importes gastos por residente según la semana de referencia" styleClass="janal-icons-header janal-text-white"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlx', 'tablaResidentes');" oncomplete="janal.desbloquear();"/>								
 							</p:menuButton>							

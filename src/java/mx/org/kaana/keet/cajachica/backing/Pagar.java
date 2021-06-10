@@ -207,6 +207,7 @@ public class Pagar extends IBaseFilter implements Serializable {
         columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
         params.put("sortOrder", "order by tc_mantic_personas.nombres");
         params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: (Long)this.attrs.get("semana"));      
+        params.put("idDesarrollo", seleccionado.toLong("idDesarrollo"));      
         this.lazyModelGasto= new FormatCustomLazy("VistaCierresCajasChicasDto", "detalle", params, columns);
         UIBackingUtilities.resetDataTable("tablaDetalle");			        
       } // if

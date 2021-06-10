@@ -1986,6 +1986,7 @@
 				  tc_keet_contratos.consecutivo,
 				  tc_keet_desarrollos.nombres as desarrollo,
 				  tc_keet_contratos.clave,
+				  tc_keet_contratos.nombre as contrato,
 				  tc_keet_contratos.etapa,
 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
 				  tc_keet_estaciones.codigo,
@@ -1993,6 +1994,7 @@
 				  tc_keet_contratos_destajos_contratistas.porcentaje,
 				  tc_keet_contratos_destajos_contratistas.costo,
 				  tc_keet_contratos_destajos_contratistas.costo as total,
+          tc_keet_prototipos.nombre as prototipo,
 				  tc_keet_contratos_destajos_contratistas.registro
 				from
 				  tc_keet_contratos_destajos_contratistas 
@@ -2002,6 +2004,8 @@
           tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratos_lotes_contratistas.id_empresa_persona
         inner join
           tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote     
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
         inner join
           tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato     
         inner join
@@ -2065,6 +2069,7 @@
 				  tc_keet_contratos.consecutivo,
 				  tc_keet_desarrollos.nombres as desarrollo,
 				  tc_keet_contratos.clave,
+          tc_keet_contratos.nombre as contrato,
 				  tc_keet_contratos.etapa,
 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
 				  tc_keet_controles.codigo,
@@ -2072,6 +2077,7 @@
 				  tc_keet_contratos_destajos_residentes.porcentaje,
 				  tc_keet_contratos_destajos_residentes.costo,
 				  tc_keet_contratos_destajos_residentes.costo as total,
+          tc_keet_prototipos.nombre as prototipo,
 				  tc_keet_contratos_destajos_residentes.registro
 				from
 				  tc_keet_contratos_destajos_residentes 
@@ -2079,6 +2085,8 @@
 				  tc_keet_contratos_lotes_residentes on tc_keet_contratos_destajos_residentes.id_contrato_lote_residente= tc_keet_contratos_lotes_residentes.id_contrato_lote_residente
 				inner join
 				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_residentes.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 				inner join
 				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
 				inner join
@@ -2139,6 +2147,7 @@
 				  tc_keet_contratos.consecutivo,
 				  tc_keet_desarrollos.nombres as desarrollo,
 				  tc_keet_contratos.clave,
+          tc_keet_contratos.nombre as contrato,
 				  tc_keet_contratos.etapa,
 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
 				  tc_keet_estaciones.codigo,
@@ -2146,6 +2155,7 @@
 				  tc_keet_contratos_destajos_proveedores.porcentaje,
 				  tc_keet_contratos_destajos_proveedores.costo,
 				  tc_keet_contratos_destajos_proveedores.costo as total,
+          tc_keet_prototipos.nombre as prototipo,
 				  tc_keet_contratos_destajos_proveedores.registro
 				from
 				  tc_keet_contratos_destajos_proveedores 
@@ -2153,6 +2163,8 @@
 				  tc_keet_contratos_lotes_proveedores on tc_keet_contratos_destajos_proveedores.id_contrato_lote_proveedor= tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor
 				inner join
 				  tc_keet_contratos_lotes on tc_keet_contratos_lotes_proveedores.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
 				inner join
 				  tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
 				inner join
@@ -5318,7 +5330,7 @@
 					tc_keet_estaciones.id_estacion_estatus,
 					tc_keet_estaciones.costo,
           tc_keet_estaciones.costo as importe,
-          ifnull(tc_keet_contratos_contratistas_archivos.codigo, '0') as imagen,
+          ifnull(tc_keet_contratos_contratistas_archivos.codigo, ifnull(tc_keet_contratos_proveedores_archivos.codigo, '0')) as imagen,
 					principal.*
 				from(  
 				select
@@ -5352,14 +5364,8 @@
 				group by
 					tc_keet_puntos_paquetes.id_punto_grupo,   
 					tc_keet_puntos_grupos.id_departamento,
-					tc_keet_departamentos.nombre,
-					tc_keet_puntos_grupos.grupo,
-					tc_keet_puntos_grupos.descripcion,
 					tc_keet_rubros_grupos.id_rubro_grupo,
-					tc_keet_rubros_grupos.id_rubro,
-					tc_keet_rubros.codigo,
-					tc_keet_rubros.nombre,
-					tc_keet_rubros.orden
+					tc_keet_rubros.codigo
 				) principal
 				inner join
 					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
@@ -5367,6 +5373,10 @@
           tc_keet_contratos_destajos_contratistas on tc_keet_estaciones.id_estacion = tc_keet_contratos_destajos_contratistas.id_estacion
         left join
           tc_keet_contratos_contratistas_archivos on tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista= tc_keet_contratos_contratistas_archivos.id_contrato_destajo_contratista and tc_keet_contratos_contratistas_archivos.codigo= tc_keet_estaciones.codigo
+        left join
+          tc_keet_contratos_destajos_proveedores on tc_keet_estaciones.id_estacion = tc_keet_contratos_destajos_proveedores.id_estacion         
+        left join
+          tc_keet_contratos_proveedores_archivos on tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor= tc_keet_contratos_proveedores_archivos.id_contrato_destajo_proveedor and tc_keet_contratos_proveedores_archivos.codigo= tc_keet_estaciones.codigo     
 				where
 					tc_keet_estaciones.clave like '{clave}%'
 				  and tc_keet_estaciones.id_estacion_estatus in ({estatus})
@@ -7742,6 +7752,8 @@
 					tc_keet_gastos.registro
 				from
 				  tc_keet_cajas_chicas_cierres
+        inner join
+          tc_keet_cajas_chicas on tc_keet_cajas_chicas_cierres.id_caja_chica= tc_keet_cajas_chicas.id_caja_chica
 				inner join
 					tc_keet_gastos on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= tc_keet_gastos.id_caja_chica_cierre
 				inner join
@@ -7752,6 +7764,7 @@
 					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
 				where 
 					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
+          and tc_keet_cajas_chicas.id_desarrollo= {idDesarrollo}
 				group by 
 					tc_keet_gastos_detalles.id_gasto_detalle
 				{sortOrder}
@@ -7807,6 +7820,8 @@
 				where
 					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
           and {condicion}
+        group by
+          tr_mantic_empresa_personal.id_empresa_persona           
 				{sortOrder}        
       </select>  
 			<select id="lazy">

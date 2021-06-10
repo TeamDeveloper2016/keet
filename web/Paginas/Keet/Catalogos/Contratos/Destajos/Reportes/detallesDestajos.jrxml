@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="detallesDestajos" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="87b4fed9-394a-4622-9b66-d3ac17cffe2f">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
@@ -74,6 +74,8 @@
 	<field name="COSTO" class="java.math.BigDecimal"/>
 	<field name="DESARROLLO" class="java.lang.String"/>
 	<field name="NOMBRE" class="java.lang.String"/>
+	<field name="PROTOTIPO" class="java.lang.String"/>
+	<field name="CONTRATO" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -104,14 +106,14 @@
 						<rightPen lineWidth="1.25"/>
 					</box>
 					<staticText>
-						<reportElement x="186" y="0" width="80" height="15" forecolor="#FFFFFF" uuid="d9a753fd-e76d-4a6e-b96f-9e7900b6378e"/>
+						<reportElement x="206" y="0" width="60" height="15" forecolor="#FFFFFF" uuid="d9a753fd-e76d-4a6e-b96f-9e7900b6378e"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
-						<text><![CDATA[Etapa]]></text>
+						<text><![CDATA[Prototipo]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="81" y="0" width="105" height="15" forecolor="#FFFFFF" uuid="a33fa8ba-b5c2-4223-9c72-d5be548d4456"/>
+						<reportElement x="81" y="0" width="125" height="15" forecolor="#FFFFFF" uuid="a33fa8ba-b5c2-4223-9c72-d5be548d4456"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -351,11 +353,11 @@
 	<detail>
 		<band height="15" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="186" y="0" width="80" height="14" uuid="11b5b5cf-baa8-49fb-9627-b455d81bf3ab"/>
+				<reportElement mode="Transparent" x="206" y="0" width="60" height="14" uuid="11b5b5cf-baa8-49fb-9627-b455d81bf3ab"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{ETAPA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{PROTOTIPO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement x="346" y="0" width="226" height="14" uuid="66f6c5ba-96ee-41dc-a4b3-0a5429d722eb"/>
@@ -379,11 +381,11 @@
 				<textFieldExpression><![CDATA[$F{NOMINA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="81" y="1" width="105" height="14" uuid="996bb403-980c-4b6e-a68b-e793d535517d"/>
+				<reportElement mode="Transparent" x="81" y="1" width="125" height="14" uuid="996bb403-980c-4b6e-a68b-e793d535517d"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["["+$F{CLAVE}+"]"+$F{LOTE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["["+$F{CONTRATO}+"]"+$F{LOTE}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="14" width="752" height="1" forecolor="#999999" uuid="c0dcb0ea-ede2-49ea-861e-e6f3ea76162c"/>
