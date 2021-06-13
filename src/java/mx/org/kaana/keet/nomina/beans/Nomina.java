@@ -28,7 +28,7 @@ public class Nomina extends TcKeetNominasPeriodosDto implements Serializable {
 	private String observaciones;
 
 	public Nomina() {
-    this(-1L, 1L, 2L);
+    this(-1L, 1L, 1L);
 	}
 	
 	public Nomina(Long idNomina, Long idNominaEstatus, Long idCompleta) {

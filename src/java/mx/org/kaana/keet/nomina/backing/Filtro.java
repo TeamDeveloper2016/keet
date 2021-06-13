@@ -139,7 +139,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				case AGREGAR:
 				  regresar= "accion".concat(Constantes.REDIRECIONAR);
 					break;
-				case REPROCESAR:
+				case CALCULAR:
 				  regresar= "progreso".concat(Constantes.REDIRECIONAR);
 					break;
 				case CONSULTAR: // personas

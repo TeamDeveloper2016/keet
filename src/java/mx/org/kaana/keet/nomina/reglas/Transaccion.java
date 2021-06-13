@@ -146,6 +146,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 					} // switch
 					this.toAddNewNomina(sesion);
 					break;
+				case CALCULAR:
+					this.reprocesarPersonas(sesion);
+					this.toAddNewNomina(sesion);
+					break;
 				case REPROCESAR:
 					this.persona(sesion);
 					break;
@@ -164,9 +168,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 					break;
 				case COMPLEMENTAR:
 					if(this.idTipoFigura.equals(1L))
-						regresar= agregarPersonaContacto(sesion);
+						regresar= this.agregarPersonaContacto(sesion);
 					else
-						regresar= agregarProveedorContacto(sesion);
+						regresar= this.agregarProveedorContacto(sesion);
 					break;
 			} // switch
 		} // try

@@ -37,6 +37,7 @@ public class Progreso extends IBaseAttribute implements Serializable {
   private static final long serialVersionUID = 8793667741599428311L;
 
 	private Monitoreo monitoreo;	
+	private EAccion accion;	
 	
   @PostConstruct
   @Override
@@ -45,6 +46,7 @@ public class Progreso extends IBaseAttribute implements Serializable {
     try {
       params= new HashMap<>(); 
 			Long idNomina= (Long)JsfBase.getFlashAttribute("idNomina");
+			this.accion  = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.attrs.put("idNomina", idNomina);
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.monitoreo= JsfBase.getAutentifica().getMonitoreo();
@@ -97,7 +99,7 @@ public class Progreso extends IBaseAttribute implements Serializable {
 		try {		
 			Long idNomina= (Long)this.attrs.get("idNomina");
  			transaccion= new Transaccion(idNomina, JsfBase.getAutentifica());
-			if(transaccion.ejecutar(EAccion.AGREGAR))
+			if(transaccion.ejecutar(this.accion))
 				JsfBase.addMessage("Se procesó la nómina con éxito.", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("Ocurrió un error en el proceso de nómina.", ETipoMensaje.ALERTA);	
