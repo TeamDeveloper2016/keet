@@ -6,7 +6,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/accion.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
 	<ui:param name="titulo" value="Cierre general de caja chica"/>	
 	<ui:define name="librerias">
 		<script type="text/javascript">			
@@ -42,9 +42,18 @@
                   <f:selectItems value="#{keetCajaChicaPagar.attrs.ejercicios}"/>                
                 </p:selectOneMenu>
 								<p:outputLabel value="Semana:"/>
-                <p:selectOneMenu id="semana" value="#{keetCajaChicaPagar.attrs.semana}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
+                <p:selectOneMenu id="semana" value="#{keetCajaChicaPagar.attrs.semana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" process="@this ejercicio" update="tabla nomina tablaResidentes" listener="#{keetCajaChicaPagar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                  <f:selectItems value="#{keetCajaChicaPagar.attrs.semanas}"/>                
+                  <f:selectItems value="#{keetCajaChicaPagar.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.ejericio}  #{empty element.orden or element.orden eq ''? '': '-'} #{element.orden}"/>
+                  <p:column headerText="Semana" styleClass="janal-column-center">
+                    <h:outputText value="#{item.orden}"/>
+                  </p:column>   
+                  <p:column headerText="Inicio" styleClass="janal-column-center">
+                    <h:outputText value="#{item.inicio}"/>
+                  </p:column>   
+                  <p:column headerText="Termino" styleClass="janal-column-center">
+                    <h:outputText value="#{item.termino}"/>
+                  </p:column>   
                 </p:selectOneMenu>
 							</p:panelGrid>										
 						</p:tab>			
@@ -56,8 +65,11 @@
               <p:outputLabel value="Estatus que guardan las cajas chicas por desarrollo según semana de referencia" styleClass="janal-icons-header janal-text-white"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla');" oncomplete="janal.desbloquear();"/>								
+                <p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" actionListener="#{keetCajaChicaPagar.doReporte()}" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								
 							</p:menuButton>							
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla');" oncomplete="janal.desbloquear();"/>							
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doReporte()}" oncomplete="janal.desbloquear();"/>
             </f:facet>
             <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">
@@ -187,8 +199,11 @@
               <p:outputLabel value="Importes gastos por residente según la semana de referencia" styleClass="janal-icons-header janal-text-white"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">								
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlx', 'tablaResidentes');" oncomplete="janal.desbloquear();"/>								
+                <p:separator/>
+								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" actionListener="#{keetCajaChicaPagar.doReporte()}" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								
 							</p:menuButton>							
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlx', 'tablaResidentes');" oncomplete="janal.desbloquear();"/>							
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doReporte()}" oncomplete="janal.desbloquear();"/>
             </f:facet>
             <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">
@@ -218,15 +233,17 @@
     <h:commandLink id="dataXlx">
       <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tablaResidentes" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
     </h:commandLink>			
+    <hr class="ui-widget-content"/>
+    <div class="janal-line-button">
+      <div class="lg-pantalla">
+        <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()" disabled="#{not keetCajaChicaPagar.attrs.procesar}"/>
+        <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCajaChicaPagar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+      </div>	
+      <div class="xs-pantalla">
+        <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()" disabled="#{not keetCajaChicaPagar.attrs.procesar}"/>
+        <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCajaChicaPagar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+      </div>						
+    </div>  
 	</ui:define>    
-	<ui:define name="acciones">		
-		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()" disabled="#{not keetCajaChicaPagar.attrs.procesar}"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetCajaChicaPagar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
-		</div>	
-		<div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetCajaChicaPagar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()" disabled="#{not keetCajaChicaPagar.attrs.procesar}"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetCajaChicaPagar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
-		</div>						
-	</ui:define>		
+	<ui:param name="lineaSeparacion" value="false"/>
 </ui:composition>

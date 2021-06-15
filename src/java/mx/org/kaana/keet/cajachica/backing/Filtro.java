@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.enums.EEstatusCajasChicas;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
@@ -34,6 +35,9 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
 
 @Named(value = "keetCajaChicaFiltro")
 @ViewScoped
@@ -45,6 +49,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private FormatLazyModel lazyModelMateriales;
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
+  protected Reporte reporte;
+
+	public Reporte getReporte() {
+		return reporte;
+	}
 
 	public FormatLazyModel getLazyModelGastos() {
 		return lazyModelGastos;
@@ -150,7 +159,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 	} // doLoadDesarrollos	
 	
-	private void toLoadEstatus(){		
+	private void toLoadEstatus() {		
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;
 		try {			
@@ -220,6 +229,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));            
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("final", EFormatoDinamicos.FECHA_CORTA));      
 			params= this.toPrepare();
       params.put("sortOrder", "order by tc_keet_desarrollos.nombres");
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasChicasDto", params, columns);
@@ -396,7 +407,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return EEstatusCajasChicas.fromId(row.toLong("idCajaChicaCierreEstatus")).getSemaforo();
 	} // toColor
 	
-	public void doRevisar(){
+	public void doRevisar() {
 		Entity seleccionado    = null;
 		Transaccion transaccion= null;
 		try {
@@ -412,4 +423,51 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doRevisar
+  
+	public void doReporte(Entity row) throws Exception {    
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;    
+    Map<String, Object>params    = null;
+    Parametros comunes           = null;
+		try {		  
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      reporteSeleccion= EReportes.CAJA_CHICA;
+      params = new HashMap<>();
+      params.put("idNominaPeriodo", Cadena.isVacio(row)? -1L: row.toLong("idNominaPeriodo"));
+      this.reporte= JsfBase.toReporte();
+      parametros  = comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
+      parametros.put("REPORTE_FIGURA", "CORTE GENERAL");
+      parametros.put("REPORTE_DEPARTAMENTO", JsfBase.getAutentifica().getPersona().getNombreCompleto());
+      if(Cadena.isVacio(row))
+        parametros.put("REPORTE_PERIODO", "");
+      else
+        parametros.put("REPORTE_PERIODO", row.toString("inicio")+ " al "+ row.toString("final"));
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      if(this.doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte 
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		if(this.reporte.getTotal()> 0L) {
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else {
+			UIBackingUtilities.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
+  
 }

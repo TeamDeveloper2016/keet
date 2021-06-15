@@ -496,10 +496,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       int index= figuras.indexOf(figura);
       if(index>= 0) {
         figura= figuras.get(index);
-        if(figura.toLong("tipo").equals(1L))
-          params.put("sortOrder", "order by tc_keet_contratos_destajos_contratistas.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
-        else
-          params.put("sortOrder", "order by tc_keet_contratos_destajos_proveedores.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+        params.put("sortOrder", "order by tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
         params.put("loNuevo", this.ultima.getIdCompleta()== 0L? figura.toLong("tipo").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
         params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
         params.put("idEmpresaPersona", figura.getKey().toString().substring(4));
@@ -576,7 +573,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
         parametros.put("NOMBRE_REPORTE", reporteSeleccion.getNombre());
         parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
-        params.put("sortOrder", "order by tc_keet_desarrollos.nombres, tc_keet_contratos.etapa, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+        params.put("sortOrder", "order by tc_keet_desarrollos.nombres, tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
         params.put("loNuevo", this.ultima.getIdCompleta()== 0L? figura.toLong("tipo").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
         params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
         params.put("idEmpresaPersona", figura.getKey().toString().substring(4));

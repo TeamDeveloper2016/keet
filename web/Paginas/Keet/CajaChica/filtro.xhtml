@@ -51,7 +51,7 @@
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetCajaChicaFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetCajaChicaFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" listener="#{keetCajaChicaFiltro.doLoadDesarrollos}" process="@this" update="desarrollo"/>
-                <f:selectItems value="#{keetCajaChicaFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}  #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre} #{element.nombre}"/>
+                <f:selectItems value="#{keetCajaChicaFiltro.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave}  #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -171,6 +171,7 @@
 						</p:column>						
             <p:column class="MarAuto Responsive janal-wid-5 janal-column-center">              														
 							<p:commandButton icon="fa fa-search" actionListener="#{keetCajaChicaFiltro.doGastos(row)}" title="Consultar gastos" update="tablaGastos tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>	
+							<p:commandButton icon="fa fa-file-pdf-o" actionListener="#{keetCajaChicaFiltro.doReporte(row)}" title="Reporte" update="tablaGastos tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>	
             </p:column>
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{keetCajaChicaFiltro.lazyModel== null? 0: keetCajaChicaFiltro.lazyModel.rowCount}] registros"/>

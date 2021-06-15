@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
@@ -96,7 +95,14 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 
 	@Override
 	public Object getRowKey(IBaseDto dto) {
-		return dto!= null && dto.toValue("idKey")!= null? dto.getKey(): null;
+    Object regresar= null;
+    try {
+      regresar= dto!= null && dto.getKey()!= null? dto.getKey(): null;
+		} // try
+		catch(Exception e) {
+			LOG.error("dto ["+ dto+ "] no tiene definido un campo idKey");
+		} // catch
+		return regresar;
 	} // getRowKey
 
 	@Override

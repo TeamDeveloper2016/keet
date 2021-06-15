@@ -70,7 +70,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
       regresar = this.get("idKey").toLong();
     if (regresar == null)
       for (String key: keySet()) {
-        if (key.indexOf("idKey") >= 0) {
+        if (key.indexOf("idKey")>= 0) {
           if ( this.get(key).getData() instanceof String)
             regresar = Numero.getLong(this.get(key).toString());
           else

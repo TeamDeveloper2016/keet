@@ -71,10 +71,11 @@ public enum EReportes implements IReportAttribute{
   DESTAJOS_TOTALES_RESIDENTE("VistaNominaConsultasReportesDto", "destajoResidente", "Avance del resindente de obra", "/Paginas/Keet/Controles/Reportes/destajosPersona", EFormatos.PDF, "avances_residentes_desarrollos", "/Paginas/Keet/Controles/control"),
   NOMINA_LISTADO("VistaNominaReportesDto", "listadoNomina", "Listado nómina", "/Paginas/Keet/Nominas/Reportes/nominaEmpresa", EFormatos.PDF, "nomina", "/Paginas/Keet/Nominas/filtro"),
   PUNTOS_CONTROL("VistaPuntosControlReporteDto", "principal", "Puntos de revisión", "/Paginas/Keet/Catalogos/PuntosControl/Reportes/puntosRevision", EFormatos.PDF, "puntos_control", "/Paginas/Keet/Catalogos/PuntosControl/filtro"),
-  ESTACIONES("VistaReportesEstaciones", "estaciones", "Estaciones", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "estaciones", "/Paginas/Keet/Estaciones/contrato"),
-  PROTOTIPOS("VistaReportesEstaciones", "estaciones", "Estaciones", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "estaciones_prototipo", "/Paginas/Keet/Estaciones/contrato"),
-  MATERIALES("VistaReportesEstaciones", "materiales", "Materiales", "/Paginas/Keet/Materiales/Reportes/materiales", EFormatos.PDF, "materiales", "/Paginas/Keet/Materiales/filtro"),
-  CONTROLES("VistaReportesEstaciones", "controles", "Controles", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "controles", "/Paginas/Keet/Estaciones/contrato");
+  ESTACIONES("VistaReportesEstacionesDto", "estaciones", "Estaciones", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "estaciones", "/Paginas/Keet/Estaciones/contrato"),
+  PROTOTIPOS("VistaReportesEstacionesDto", "estaciones", "Estaciones", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "estaciones_prototipo", "/Paginas/Keet/Estaciones/contrato"),
+  MATERIALES("VistaReportesEstacionesDto", "materiales", "Materiales", "/Paginas/Keet/Materiales/Reportes/materiales", EFormatos.PDF, "materiales", "/Paginas/Keet/Materiales/filtro"),
+  CONTROLES("VistaReportesEstacionesDto", "controles", "Controles", "/Paginas/Keet/Estaciones/Reportes/estaciones", EFormatos.PDF, "controles", "/Paginas/Keet/Estaciones/contrato"),
+  CAJA_CHICA("VistaReportesCajaChicaDto", "detalle", "Listado de gastos de caja chica", "/Paginas/Keet/CajaChica/Reportes/detalleCajaChica", EFormatos.PDF, "caja_chica", "/Paginas/Keet/CajaChica/filtro");
 		
 	private final String proceso;
   private final String idXml;

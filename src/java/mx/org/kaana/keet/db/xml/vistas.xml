@@ -7831,12 +7831,15 @@
 			<select id="lazy">
 				select
 					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre as id_key,
+					tc_keet_nominas_periodos.id_nomina_periodo,
 					tc_mantic_empresas.nombre as sucursal,
 					tc_keet_desarrollos.id_desarrollo,
 					tc_keet_desarrollos.clave,
 					tc_keet_desarrollos.nombres,
 					tc_keet_cajas_chicas_cierres.ejercicio,
 					tc_keet_nominas_periodos.orden as semana,
+					tc_keet_nominas_periodos.inicio,
+					tc_keet_nominas_periodos.termino as final,
 					tc_keet_cajas_chicas_cierres.termino,
 					tc_keet_cajas_chicas_cierres.registro,
 					tc_keet_cajas_chicas_cierres.saldo as inicial,
@@ -7897,7 +7900,10 @@
       <select id="semanas">
 				select
 					tc_keet_cajas_chicas_cierres.id_nomina_periodo as id_key,
-          tc_keet_nominas_periodos.orden
+          tc_keet_nominas_periodos.ejericio,
+          tc_keet_nominas_periodos.orden,
+          tc_keet_nominas_periodos.inicio,
+          tc_keet_nominas_periodos.termino
 				from
 					tc_keet_cajas_chicas_cierres
 				inner join

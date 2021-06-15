@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="detallesDestajos" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="87b4fed9-394a-4622-9b66-d3ac17cffe2f">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="1"/>
+	<property name="ireport.x" value="158"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
@@ -283,11 +283,11 @@
 				</graphicElement>
 			</line>
 			<textField pattern="">
-				<reportElement x="333" y="65" width="217" height="9" uuid="1d51bab9-5ed9-4365-8b8b-c742c9649c3e"/>
+				<reportElement x="333" y="65" width="217" height="17" uuid="1d51bab9-5ed9-4365-8b8b-c742c9649c3e"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="7" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["CORREOS: "+$P{REPORTE_EMPRESA_EMAILS}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["CORREOS: carlos.calderon@cafuconstrucciones.com, jjose.fuentes@cafuconstrucciones.com"]]></textFieldExpression>
 			</textField>
 			<frame>
 				<reportElement x="557" y="15" width="195" height="67" uuid="34754ae1-0b39-49f9-b736-30aaeba041dd"/>

@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
 import mx.org.kaana.keet.enums.EEstatusCajasChicas;
 import mx.org.kaana.libs.Constantes;
@@ -26,9 +27,14 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 
@@ -41,7 +47,12 @@ public class Pagar extends IBaseFilter implements Serializable {
 	protected FormatLazyModel lazyModelGasto;
 	protected FormatLazyModel lazyModelResidentes;
   private String costoTotal;
+  protected Reporte reporte;
 
+	public Reporte getReporte() {
+		return reporte;
+	}
+  
   public FormatLazyModel getLazyModelGasto() {
     return lazyModelGasto;
   }
@@ -92,7 +103,7 @@ public class Pagar extends IBaseFilter implements Serializable {
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_HORA_CORTA));      
       params.put("sortOrder", "order by tc_keet_desarrollos.nombres");
       if(!Cadena.isVacio(this.attrs.get("semana")))
-        params.put(Constantes.SQL_CONDICION, "tc_keet_nominas_periodos.id_nomina_periodo= "+ this.attrs.get("semana")+ " and tc_keet_cajas_chicas_cierres.acumulado> 0");
+        params.put(Constantes.SQL_CONDICION, "tc_keet_nominas_periodos.id_nomina_periodo= "+ ((UISelectEntity)this.attrs.get("semana")).getKey()+ " and tc_keet_cajas_chicas_cierres.acumulado> 0");
       else  
         params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasChicasDto", params, columns);
@@ -102,7 +113,7 @@ public class Pagar extends IBaseFilter implements Serializable {
         this.costoTotal= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
       // DETERMINAR SI LAS CAJAS CHICAS SE DEBEN DE CERRAR O NO
       if(!Cadena.isVacio(this.attrs.get("semana")))
-        params.put(Constantes.SQL_CONDICION, "tc_keet_nominas_periodos.id_nomina_periodo= "+ this.attrs.get("semana")+ " and tc_keet_cajas_chicas_cierres.acumulado> 0 and tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus in (1, 2)");
+        params.put(Constantes.SQL_CONDICION, "tc_keet_nominas_periodos.id_nomina_periodo= "+ ((UISelectEntity)this.attrs.get("semana")).getKey()+ " and tc_keet_cajas_chicas_cierres.acumulado> 0 and tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus in (1, 2)");
       else  
         params.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);      
       Entity procesar= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasChicasDto", "reponer", params);
@@ -138,15 +149,19 @@ public class Pagar extends IBaseFilter implements Serializable {
 	} // toLoadEjercicios
   
 	public void doLoadSemanas() {		
-		List<UISelectItem> semanas= null;
-		Map<String, Object>params = new HashMap<>();
+		List<UISelectEntity> semanas= null;
+		Map<String, Object>params   = new HashMap<>();
+		List<Columna> columns       = null;
 		try {						
       params.put("ejercicio", this.attrs.get("ejercicio"));
-			semanas= UISelect.build("VistaCierresCajasChicasDto", "semanas", params, "orden", EFormatoDinamicos.MAYUSCULAS);
+			columns= new ArrayList<>();
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+      semanas= (List<UISelectEntity>) UIEntity.seleccione("VistaCierresCajasChicasDto", "semanas", params, columns, "ejercicio");
       if(semanas== null)
 			  semanas= new ArrayList<>();
 			this.attrs.put("semanas", semanas);
-			this.attrs.put("semana", UIBackingUtilities.toFirstKeySelectItem(semanas));
+			this.attrs.put("semana", UIBackingUtilities.toFirstKeySelectEntity(semanas));
       this.doLoad();
 		} // try
 		catch (Exception e) {
@@ -155,6 +170,7 @@ public class Pagar extends IBaseFilter implements Serializable {
 		} // catch		
 		finally {
 			Methods.clean(params);
+      Methods.clean(columns);
 		} // finally	
 	} // doLoadSemanas
   
@@ -162,7 +178,7 @@ public class Pagar extends IBaseFilter implements Serializable {
     String regresar        = null;    		
 		Transaccion transaccion= null;	
     try {									
-			transaccion = new Transaccion((Long)this.attrs.get("semana"), (Long)this.attrs.get("idAfectaNomina"), (String)this.attrs.get("observaciones"));
+			transaccion = new Transaccion(((UISelectEntity)this.attrs.get("semana")).getKey(), (Long)this.attrs.get("idAfectaNomina"), (String)this.attrs.get("observaciones"));
 			if(transaccion.ejecutar(EAccion.PROCESAR)) {
 				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta.", ETipoMensaje.INFORMACION);									
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);
@@ -206,7 +222,7 @@ public class Pagar extends IBaseFilter implements Serializable {
         columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
         columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
         params.put("sortOrder", "order by tc_mantic_personas.nombres");
-        params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: (Long)this.attrs.get("semana"));      
+        params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: ((UISelectEntity)this.attrs.get("semana")).getKey());      
         params.put("idDesarrollo", seleccionado.toLong("idDesarrollo"));      
         this.lazyModelGasto= new FormatCustomLazy("VistaCierresCajasChicasDto", "detalle", params, columns);
         UIBackingUtilities.resetDataTable("tablaDetalle");			        
@@ -230,7 +246,7 @@ public class Pagar extends IBaseFilter implements Serializable {
       columns.add(new Columna("residente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa_persona");
-      params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: (Long)this.attrs.get("semana"));      
+      params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: ((UISelectEntity)this.attrs.get("semana")).getKey());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
       this.lazyModelResidentes= new FormatCustomLazy("VistaCierresCajasChicasDto", "residentes", params, columns);
       UIBackingUtilities.resetDataTable("tablaResidentes");			        
@@ -245,4 +261,50 @@ public class Pagar extends IBaseFilter implements Serializable {
 		} // finally	
 	} // toLoadGastosResidente
  
+	public void doReporte() throws Exception {    
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;    
+    Map<String, Object>params    = null;
+    Parametros comunes           = null;
+		try {		  
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      reporteSeleccion= EReportes.CAJA_CHICA;
+      params = new HashMap<>();
+      params.put("idNominaPeriodo", Cadena.isVacio(this.attrs.get("semana"))? -1L: ((UISelectEntity)this.attrs.get("semana")).getKey());
+      this.reporte= JsfBase.toReporte();
+      parametros  = comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("REPORTE_TITULO", reporteSeleccion.getTitulo());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
+      parametros.put("REPORTE_FIGURA", "CORTE GENERAL");
+      parametros.put("REPORTE_DEPARTAMENTO", JsfBase.getAutentifica().getPersona().getNombreCompleto());
+      if(Cadena.isVacio(this.attrs.get("semana")))
+        parametros.put("REPORTE_PERIODO", "");
+      else
+        parametros.put("REPORTE_PERIODO", ((UISelectEntity)this.attrs.get("semana")).toString("inicio")+ " al "+ ((UISelectEntity)this.attrs.get("semana")).toString("termino"));
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      if(this.doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte 
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		if(this.reporte.getTotal()> 0L) {
+			UIBackingUtilities.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else {
+			UIBackingUtilities.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
+  
 }

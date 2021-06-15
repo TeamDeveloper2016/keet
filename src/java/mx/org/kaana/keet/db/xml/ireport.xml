@@ -6,6 +6,47 @@
   <model>
   </model>
   <dml>
+    <unit id="VistaReportesCajaChicaDto">
+      <select id="detalle">
+        select
+					tc_keet_gastos_detalles.id_gasto_detalle as id_key,
+					concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as nomina,
+					concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
+					tc_keet_desarrollos.nombres as desarrollo,
+					tc_keet_gastos_detalles.codigo,
+					tc_keet_gastos_detalles.nombre as partida,
+					tc_keet_gastos_detalles.cantidad,
+					tc_keet_gastos_detalles.costo,
+					tc_keet_gastos_detalles.importe as total
+				from
+					tc_keet_cajas_chicas_cierres
+				inner join
+					tc_keet_cajas_chicas on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
+				inner join
+					tc_keet_nominas_periodos on tc_keet_cajas_chicas_cierres.id_nomina_periodo = tc_keet_nominas_periodos.id_nomina_periodo
+				inner join
+					tc_keet_desarrollos on tc_keet_cajas_chicas.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				inner join 
+				  tc_mantic_clientes on tc_keet_desarrollos.id_cliente = tc_mantic_clientes.id_cliente
+				inner join 
+					tc_mantic_empresas on tc_mantic_clientes.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tc_keet_cajas_chicas_cierres_estatus on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus = tc_keet_cajas_chicas_cierres_estatus.id_caja_chica_cierre_estatus
+				inner join 
+				  tc_keet_gastos on tc_keet_cajas_chicas_cierres.id_caja_chica_cierre= tc_keet_gastos.id_caja_chica_cierre
+				inner join 
+				  tc_keet_gastos_detalles on tc_keet_gastos.id_gasto= tc_keet_gastos_detalles.id_gasto
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_gastos.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				where
+					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
+        order by
+          tc_mantic_personas.id_persona,
+          tc_keet_desarrollos.id_desarrollo
+      </select>
+    </unit>
     <unit id="VistaReportesPrestamosDto">
       <select id="resumenPrestamos">
         select
@@ -495,7 +536,7 @@
         order by tc_keet_puntos_grupos.id_punto_grupo, tc_keet_departamentos.id_departamento, tc_keet_puntos_controles.orden asc
       </select>
     </unit>
-    <unit id="VistaReportesEstaciones">
+    <unit id="VistaReportesEstacionesDto">
       <select id="controles">
         select 
           * 
