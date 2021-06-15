@@ -153,7 +153,7 @@ public class Reporte extends BaseReportes implements Serializable{
   } // doAceptar
 	
 	public void doAceptarSimple() throws Exception {
-		doAceptarSimple(JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper")), JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator), JsfBase.getRealPath());
+		this.doAceptarSimple(JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper")), JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator), JsfBase.getRealPath());
 	} // doAceptarSimple
 	
 	public void doAceptarSimple(String source, String imagenes, String path) throws Exception {
@@ -165,7 +165,7 @@ public class Reporte extends BaseReportes implements Serializable{
         this.nombre=this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
         this.nombre= Cadena.reemplazarCaracter(this.nombre, '/', File.separatorChar);      
       } // if
-			String sql=Dml.getInstance().getSelect(this.ireporte.getProceso(), this.ireporte.getIdXml(), this.ireporte.getParams());
+			String sql= Dml.getInstance().getSelect(this.ireporte.getProceso(), this.ireporte.getIdXml(), this.ireporte.getParams());
 			this.ireporte.getParametros().put(Constantes.REPORTE_VERSION, Configuracion.getInstance().getPropiedad("sistema.version"));
 			this.ireporte.getParametros().put(Constantes.REPORTE_SQL, sql);
 			this.ireporte.getParametros().put(Constantes.REPORTE_REGISTROS, this.total);

@@ -538,7 +538,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	} // doReporte	
 	
 	@Override
-   public void doReporte(String tipo, boolean sendMail) throws Exception {    
+  public void doReporte(String tipo, boolean sendMail) throws Exception {    
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
@@ -557,7 +557,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         parametros= comunes.getComunes();
         if(isCompleto) {
           reporteSeleccion= figura.toLong("tipo").equals(1L)? EReportes.DESTAJOS_TOTALES_CONTRATISTA: EReportes.DESTAJOS_TOTALES_SUBCONTRATISTA;  
-          parametros.put("REPORTE_TIPO_PERSONA", figura.toLong("tipo").equals(1L)? "CONTRATISTA":"SUBCONTRATISTA"); 
+          parametros.put("REPORTE_TIPO_PERSONA", figura.toLong("tipo").equals(1L)? "CONTRATISTA": "SUBCONTRATISTA"); 
           parametros.put("REPORTE_FIGURA", figura.toString("nombreCompleto"));
         } // if
         else {

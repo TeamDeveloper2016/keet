@@ -169,7 +169,7 @@
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{keetCajaChicaFiltro.toColor(row)}.png" title="#{row.estatus}"/>								
 						</p:column>						
-            <p:column class="MarAuto Responsive janal-wid-5 janal-column-center">              														
+            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center">              														
 							<p:commandButton icon="fa fa-search" actionListener="#{keetCajaChicaFiltro.doGastos(row)}" title="Consultar gastos" update="tablaGastos tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>	
 							<p:commandButton icon="fa fa-file-pdf-o" actionListener="#{keetCajaChicaFiltro.doReporte(row)}" title="Reporte" update="tablaGastos tablaMateriales" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>	
             </p:column>

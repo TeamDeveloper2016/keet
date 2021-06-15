@@ -223,35 +223,46 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 		MotorBusquedaCatalogos motor                 = null; 
 		List<PersonaTipoContacto>contactosPersona    = null;
 		List<ProveedorTipoContacto>contactosProveedor= null;
-		Correo correoAdd                             = null;
+		Correo correo                                = null;
 		try {
-			motor= new MotorBusqueda(-1L, Long.valueOf(this.attrs.get("idFiguraCorreo").toString()));
+			motor= new MotorBusqueda(-1L, Long.valueOf((String)this.attrs.get("idFiguraCorreo")));
 			LOG.warn("Inicializando listas de correos y seleccionados");
 			this.correos.clear();
 			this.selectedCorreos.clear();			
-			if((Long.valueOf(this.attrs.get("idTipoFiguraCorreo").toString())).equals(1L)){
-				contactosPersona= motor.toPersonaContacto(Long.valueOf(this.attrs.get("idFiguraCorreo").toString()));				
-				LOG.warn("Total de contactos" + contactosPersona.size());
-				for(PersonaTipoContacto contacto: contactosPersona){
-					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_PERSONAL.getKey())){
-						correoAdd= new Correo(contacto.getIdPersonaTipoContacto(), contacto.getValor().toUpperCase());
-						getCorreos().add(correoAdd);		
-						getSelectedCorreos().add(correoAdd);
+			if((Long.valueOf((String)this.attrs.get("idTipoFiguraCorreo"))).equals(1L)) {
+				contactosPersona= motor.toPersonaContacto(Long.valueOf((String)this.attrs.get("idFiguraCorreo")));
+				LOG.warn("Total de contactos: " + contactosPersona.size());
+				for(PersonaTipoContacto contacto: contactosPersona) {
+					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_PERSONAL.getKey())) {
+						correo= new Correo(contacto.getIdPersonaTipoContacto(), contacto.getValor().toUpperCase());
+						this.getCorreos().add(correo);		
+						this.getSelectedCorreos().add(correo);
 					} // if
 				} // for
 			} // if
-			else{
+      else {
 				contactosProveedor= motor.toProveedoresTipoContacto();
-				LOG.warn("Total de contactos" + contactosProveedor.size());
+				LOG.warn("Total de contactos: " + contactosProveedor.size());
 				for(ProveedorTipoContacto contacto: contactosProveedor){
-					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-						correoAdd= new Correo(contacto.getIdProveedorTipoContacto(), contacto.getValor().toUpperCase());
-						getCorreos().add(correoAdd);		
-						getSelectedCorreos().add(correoAdd);
+					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
+						correo= new Correo(contacto.getIdProveedorTipoContacto(), contacto.getValor().toUpperCase());
+						this.getCorreos().add(correo);		
+						this.getSelectedCorreos().add(correo);
 					} // if
 				} // for
 			} // else			
-			LOG.warn("Agregando correo default");
+			if(this.attrs.get("idDesarrollo")!= null && (Long)this.attrs.get("idDesarrollo")> 0L) {
+				contactosPersona= motor.toResidenteContacto((Long)this.attrs.get("idDesarrollo"));
+				LOG.warn("Total de residentes: " + contactosPersona.size());
+				for(PersonaTipoContacto contacto: contactosPersona) {
+					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_PERSONAL.getKey())) {
+						correo= new Correo(contacto.getIdPersonaTipoContacto(), contacto.getValor().toUpperCase());
+						this.getCorreos().add(correo);		
+						this.getSelectedCorreos().add(correo);
+					} // if
+				} // for
+      } // if
+			LOG.warn("Agregando correo por defecto");
 			getCorreos().add(new Correo(-1L, ""));
 		} // try
 		catch (Exception e) {

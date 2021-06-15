@@ -6504,6 +6504,45 @@
 				  and tr_mantic_empresa_personal.id_activo= 1
 				  and tc_mantic_puestos.nombre like 'RESIDENTE%'				
 			</select>
+			<select id="residentesTipoContacto">				
+				select      
+					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,									
+          tr_mantic_persona_tipo_contacto.*
+        from      
+          tc_keet_contratos_personal
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join 
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona = tr_mantic_persona_tipo_contacto.id_persona
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+        where 
+          tc_keet_contratos_personal.id_desarrollo= {idDesarrollo}
+				  and tr_mantic_empresa_personal.id_activo= 1
+				  and tc_mantic_puestos.nombre like 'RESIDENTE%'				
+			</select>
+			<select id="contactosNotificar">				
+				select      
+					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,									
+          tr_mantic_persona_tipo_contacto.*
+        from      
+          tc_keet_contratos_personal
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join 
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona = tr_mantic_persona_tipo_contacto.id_persona
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+        where 
+          (tc_keet_contratos_personal.id_desarrollo= {idDesarrollo}
+				  and tr_mantic_empresa_personal.id_activo= 1
+				  and tc_mantic_puestos.nombre like 'RESIDENTE%') 
+          or (tc_mantic_personas.id_persona = {idPersona})
+			</select>
 			<select id="contratistasAsignado">
 				select contratistas.* from (
 				select      
@@ -7900,7 +7939,7 @@
       <select id="semanas">
 				select
 					tc_keet_cajas_chicas_cierres.id_nomina_periodo as id_key,
-          tc_keet_nominas_periodos.ejericio,
+          tc_keet_nominas_periodos.ejercicio,
           tc_keet_nominas_periodos.orden,
           tc_keet_nominas_periodos.inicio,
           tc_keet_nominas_periodos.termino

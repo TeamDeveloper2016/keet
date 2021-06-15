@@ -165,6 +165,23 @@ public abstract class MotorBusquedaCatalogos {
 		return regresar;
 	} // toLocalidad
 	
+	public List<PersonaTipoContacto> toResidenteContacto(Long idDesarrollo) throws Exception{
+		List<PersonaTipoContacto> regresar= null;
+		Map<String, Object>params         = null;
+		try {
+			params= new HashMap<>();
+			params.put("idDesarrollo", idDesarrollo);
+			regresar= DaoFactory.getInstance().toEntitySet(PersonaTipoContacto.class, "VistaGeoreferenciaLotesDto", "residentesTipoContacto", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  } // toResidenteContacto
+  
 	public List<PersonaTipoContacto> toPersonaContacto(Long idPersona) throws Exception{
 		List<PersonaTipoContacto> regresar= null;
 		Map<String, Object>params    = null;
@@ -258,4 +275,5 @@ public abstract class MotorBusquedaCatalogos {
 		} // finally
 		return regresar;
 	} // toProveedoresTipoContacto
+  
 }
