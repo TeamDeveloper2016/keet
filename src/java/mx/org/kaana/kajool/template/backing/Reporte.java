@@ -32,6 +32,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reportes.scriptlets.JuntarPdfs;
 import mx.org.kaana.xml.Dml;
+import org.hibernate.Session;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -53,7 +54,7 @@ public class Reporte extends BaseReportes implements Serializable{
 
 	@PostConstruct
 	@Override
-	protected void init() {
+	public void init() {
 		try {
 			this.formatos     = new ArrayList<>();
 			this.total        = 0L;
@@ -64,9 +65,7 @@ public class Reporte extends BaseReportes implements Serializable{
 			this.habilitarXls = Boolean.toString(true);
       this.prefijo      = Constantes.ARCHIVO_PATRON_NOMBRE;
       this.fileName     = "";
-      //doLoadReport();
-      //this.cron = false;
-			llenarFormatos();	
+			this.llenarFormatos();	
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -310,6 +309,47 @@ public class Reporte extends BaseReportes implements Serializable{
     // return new DefaultStreamedContent(stream, contentType, getArchivo());	
     return DefaultStreamedContent.builder().contentType(contentType).name(getArchivo()).stream(()-> stream).build();
 	}
+
+	public void toProcess(Session sesion) throws Exception {
+		this.toProcess(sesion, JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper")), JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator), JsfBase.getRealPath());
+	} // doAceptarSimple
+	
+	public void toProcess(Session sesion, String source, String imagenes, String path) throws Exception {
+		mx.org.kaana.libs.reportes.scriptlets.Reporte generar= null;		
+		InputStream input= null;
+		try {
+			this.loadResourceFileJasper(this.ireporte.getParametros());        
+      if(this.nombre.equals("")) {
+        this.nombre=this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
+        this.nombre= Cadena.reemplazarCaracter(this.nombre, '/', File.separatorChar);      
+      } // if
+			String sql= Dml.getInstance().getSelect(this.ireporte.getProceso(), this.ireporte.getIdXml(), this.ireporte.getParams());
+			this.ireporte.getParametros().put(Constantes.REPORTE_VERSION, Configuracion.getInstance().getPropiedad("sistema.version"));
+			this.ireporte.getParametros().put(Constantes.REPORTE_SQL, sql);
+			this.ireporte.getParametros().put(Constantes.REPORTE_REGISTROS, this.total);
+			this.ireporte.getParametros().put(Constantes.REPORTE_IMAGENES, imagenes);
+			this.ireporte.getParametros().put(Constantes.REPORTE_TITULOS, this.idTitulos);      
+      this.ireporte.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+File.separator.length()));
+			input = SearchFileJar.getInstance().toInputStream(this.ireporte.getJrxml().concat(".jasper"));
+			generar= this.reporteConnection(source, this.fileName, path);
+			if(this.ireporte.getJrxml().startsWith(Constantes.NOMBRE_DE_APLICACION)) 
+				generar.procesar(sesion, this.idFormato, input);
+			else 
+				generar.procesar(sesion, this.idFormato);			
+			if (UIBackingUtilities.getCurrentInstance()!= null)
+				UIBackingUtilities.addCallbackParam("janalOK", true);
+			if (previsualizar) {
+				this.ireporte.setParams((Map<String, Object>) ((HashMap)ireporte.getParams()).clone());
+				this.attrs.put("reportePrevisualizar", JsfBase.getContext().concat("/").concat(this.getNombre()).concat("?pfdrid_c=true"));
+				this.attrs.put("reporteFileName", this.fileName);
+				UIBackingUtilities.update("dlgPrevisualizar");
+				UIBackingUtilities.execute("PF('dialogoPrevisualizar').show();");
+			} // if
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+	} // toProcess
   
   public void clean() {
     this.ijuntar= null;

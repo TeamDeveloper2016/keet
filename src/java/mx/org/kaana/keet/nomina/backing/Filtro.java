@@ -332,5 +332,26 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
 	} // doVerificarReporte	
 
+  public void doNotifica() {
+		Entity seleccionado      = null;
+		Map<String, Object>params= null;
+		Transaccion transaccion  = null;
+	  try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+ 			transaccion = new Transaccion(seleccionado.getKey());
+			if(transaccion.ejecutar(EAccion.TRANSFORMACION)) 			
+			  JsfBase.addMessage("Notificar", "Se notificó de estatus de forma correcta", ETipoMensaje.INFORMACION);			
+      else
+			  JsfBase.addMessage("Notificar", "Error", ETipoMensaje.INFORMACION);			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
 }
 	

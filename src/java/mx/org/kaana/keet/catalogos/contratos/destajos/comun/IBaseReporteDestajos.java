@@ -13,7 +13,6 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
@@ -72,7 +71,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 	
 	public void doSendMail(String reporte) {		
 		Map<String, Object> params= null;
-		String[] emails           = null;
+		String emails             = null;
 		List<Attachment> files    = null; 
 		IBaseAttachment notificar = null;
 		Attachment attachments    = null;
@@ -86,7 +85,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 						sb.append(mail.getDescripcion()).append(",");
 				} // for
 			} // if
-			emails= new String[]{(sb.length()> 0? sb.substring(0, sb.length()- 1) : "")};		
+			emails= sb.length()> 0? sb.substring(0, sb.length()- 1) : "";
 			params.put("header", "...");
 			params.put("footer", "...");
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());			
@@ -99,19 +98,17 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			files.add(attachments);
 			files.add(new Attachment("logo", ECorreos.ADMINISTRACION.getImages().concat("logo.png"), true));
 			params.put("attach", attachments.getId());
-			for (String item: emails) {
-				try {
-					if(!Cadena.isVacio(item)) {
-					  notificar= new IBaseAttachment(ECorreos.ADMINISTRACION, ECorreos.ADMINISTRACION.getEmail(), item, ECorreos.ADMINISTRACION.getBackup(), "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
-					  LOG.info("Enviando correo a la cuenta: " + item);
-					  notificar.send();
-					} // if	
-				} // try
-				finally {
-				  if(attachments.getFile().exists()) 
-   	  	    LOG.info("Eliminando archivo temporal: " + attachments.getAbsolute());				  
-				} // finally	
-			} // for
+      try {
+        if(!Cadena.isVacio(emails)) {
+          notificar= new IBaseAttachment(ECorreos.ADMINISTRACION, ECorreos.ADMINISTRACION.getEmail(), emails, ECorreos.ADMINISTRACION.getBackup(), "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
+          LOG.info("Enviando correo a la cuenta: " + emails);
+          notificar.send();
+        } // if	
+      } // try
+      finally {
+        if(attachments.getFile().exists()) 
+          LOG.info("Eliminando archivo temporal: " + attachments.getAbsolute());				  
+      } // finally	
 	  	LOG.info("Se envio el correo de forma exitosa");
 			if(sb.length()> 0)
 		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
@@ -229,7 +226,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			LOG.warn("Inicializando listas de correos y seleccionados");
 			this.correos.clear();
 			this.selectedCorreos.clear();			
-			if((Long.valueOf((String)this.attrs.get("idTipoFiguraCorreo"))).equals(1L)) {
+			if(((Long)this.attrs.get("idTipoFiguraCorreo")).equals(1L)) {
 				contactosPersona= motor.toPersonaContacto(Long.valueOf((String)this.attrs.get("idFiguraCorreo")));
 				LOG.warn("Total de contactos: " + contactosPersona.size());
 				for(PersonaTipoContacto contacto: contactosPersona) {
@@ -277,4 +274,5 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 		Methods.clean(this.correos);
 		Methods.clean(this.selectedCorreos);
 	}	// finalize
+  
 }

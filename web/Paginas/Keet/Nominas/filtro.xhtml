@@ -199,14 +199,16 @@
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="personas" action="#{keetNominasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Empleados" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:menuitem id="proveedores" action="#{keetNominasFiltro.doAccion('LISTAR')}" icon="fa fa-search" ajax="false" value="Subcontratistas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() lt 4? '': 'none'}"/>
             <p:menuitem id="reprocesar" action="#{keetNominasFiltro.doAccion('REPROCESAR')}" icon="fa fa-refresh" ajax="false" value="Re-procesar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() lt 4? '': 'none'}" />										
 						<p:separator rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() eq 2 or keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() eq 3}"/>
 						<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() eq 2 or keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() eq 3}"/>
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
-            <p:menuitem id="exportar" action="#{keetNominasFiltro.doExportar}" icon="fa fa-cloud-download" ajax="false" value="Exportar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>										
+            <p:menuitem id="exportar" action="#{keetNominasFiltro.doExportar}" icon="fa fa-cloud-download" ajax="false" value="Exportar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
 						<p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
-            <p:menuitem actionListener="#{keetNominasFiltro.doReporte}" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
+            <p:menuitem actionListener="#{keetNominasFiltro.doReporte}" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear();" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
+            <p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+            <p:menuitem actionListener="#{keetNominasFiltro.doNotifica()}" icon="fa fa-refresh" value="Notificar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"  style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
           </p:contextMenu>
         </div>
       </div>

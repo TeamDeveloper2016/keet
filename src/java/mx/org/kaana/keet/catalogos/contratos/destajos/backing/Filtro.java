@@ -557,7 +557,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         parametros= comunes.getComunes();
         if(isCompleto) {
           reporteSeleccion= figura.toLong("tipo").equals(1L)? EReportes.DESTAJOS_TOTALES_CONTRATISTA: EReportes.DESTAJOS_TOTALES_SUBCONTRATISTA;  
-          parametros.put("REPORTE_TIPO_PERSONA", figura.toLong("tipo").equals(1L)? "CONTRATISTA": "SUBCONTRATISTA"); 
+          parametros.put("REPORTE_TIPO_PERSONA", figura.toLong("tipo").equals(1L)? "DESTAJO CONTRATISTA": "DESTAJO SUBCONTRATISTA"); 
           parametros.put("REPORTE_FIGURA", figura.toString("nombreCompleto"));
         } // if
         else {

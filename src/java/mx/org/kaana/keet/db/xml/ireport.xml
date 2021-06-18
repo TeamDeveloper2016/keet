@@ -403,7 +403,7 @@
 					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo 
 				where 
 				  (tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina}  {loNuevo}) 
-          and tc_keet_contratos_lotes_proveedores.id_estacion_estatus in (2, 3)
+          and tc_keet_contratos_destajos_proveedores.id_estacion_estatus in (2, 3)
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
           and {condicion}
 				order by 

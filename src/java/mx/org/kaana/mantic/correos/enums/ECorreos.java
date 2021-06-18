@@ -1,7 +1,5 @@
 package mx.org.kaana.mantic.correos.enums;
 
-import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.TcConfiguraciones;
 
 /**
@@ -22,7 +20,8 @@ public enum ECorreos {
 	VENTAS        ("/mx/org/kaana/keet/correos/templates/ventas.html", "resources/janal/img/sistema/", "correo.ventas.user.produccion", "correo.ventas.pass.produccion", "ventas@cafu.jvmhost.net", "Ventas CAFU.", ""),
 	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "resources/janal/img/sistema/", "correo.compras.user.produccion", "correo.compras.pass.produccion", "compras@cafu.jvmhost.net", "Compras CAFU.", ""),
 	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", ""),
-	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", "");
+	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", ""),
+  DESTAJOS      ("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", "carlos.calderon@cafuconstrucciones.com, jjose.fuentes@cafuconstrucciones.com");
 	 
 	private String template;
 	private String images;

@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.nomina.reglas;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,10 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
@@ -26,15 +29,22 @@ import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.keet.nomina.enums.ECodigosIncidentes;
 import mx.org.kaana.keet.nomina.enums.ENominaEstatus;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.apache.commons.logging.Log;
@@ -171,6 +181,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 						regresar= this.agregarPersonaContacto(sesion);
 					else
 						regresar= this.agregarProveedorContacto(sesion);
+					break;
+				case TRANSFORMACION:
+          this.notificar(sesion, false);
 					break;
 			} // switch
 		} // try
@@ -328,8 +341,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 				this.toTakeOutPersonas(sesion);
         if(Objects.equals(this.nomina.getIdCompleta(), 1L))
 				  this.reprocesarProveedores(sesion, monitoreo);
-				if(count> 0 && this.nomina.getIdNominaEstatus()< ENominaEstatus.CALCULADA.getIdKey())
+				if(count> 0 && this.nomina.getIdNominaEstatus()< ENominaEstatus.CALCULADA.getIdKey()) {
 					this.bitacora(sesion, ENominaEstatus.CALCULADA.getIdKey());
+          this.notificar(sesion, true);
+        } // if
 			} // if
 		} // try
 		finally {
@@ -779,5 +794,142 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		} // finally
 		return regresar;
 	} // toProveedorTipoContacto
+
+  private void notificar(Session sesion, boolean notifica) {
+    Map<String, Object> params= new HashMap<>();
+    StringBuilder sb          = new StringBuilder();
+    Reporte jasper            = null; 
+		try {
+      params.put("idNomina", this.idNomina);
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaTableroDto", "notificar", params);
+      Long idDesarrollo = -1L;
+      jasper            = new Reporte();	
+      jasper.init();      
+      for (Entity item : items) {
+        if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
+          params.put("idDesarrollo", item.toLong("idDesarrollo"));
+          List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaGeoreferenciaLotesDto", "residentesTipoContacto", params);
+          sb.delete(0, sb.length());
+          if(correos!= null && !correos.isEmpty())
+            for (Entity email: correos) {
+              if(Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO.getKey()) || Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO_PERSONAL.getKey())) 
+                sb.append(email.toString("valor")).append(", ");
+            } // for
+          sb.delete(sb.length()- 2, sb.length());
+          idDesarrollo= item.toLong("idDesarrollo");
+        } // for
+        List<Entity> correos= null;
+        if(Objects.equals(item.toLong("idTipoFigura"), 1L)) {
+          params.put(Constantes.SQL_CONDICION, "id_persona="+ item.getKey());
+          correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TrManticPersonaTipoContactoDto", "row", params);
+        } // if
+        else {
+          params.put(Constantes.SQL_CONDICION, "id_proveedor="+ item.getKey());
+          correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TrManticProveedorTipoContactoDto", "row", params);
+        } // else
+        StringBuilder emails= new StringBuilder();
+        if(correos!= null && !correos.isEmpty())
+          for (Entity email: correos) {
+            if(Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO.getKey()) || Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO_PERSONAL.getKey())) 
+              emails.append(email.toString("valor")).append(", ");
+          } // for
+        emails.append(sb.toString());
+        if(emails.length()> 0) {
+          if(notifica)
+            this.toSendMail(sesion, jasper, emails.toString(), item);
+          else
+            this.toSendMail(sesion, jasper, "jimenez76@yahoo.com", item);
+        } // if  
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      jasper= null;
+    } // finally
+  }
+  
+	public void toSendMail(Session sesion, Reporte jasper, String correos, Entity sujeto) {		
+		Map<String, Object> params= null;
+		String titulo             = "Destajos realizados de la nómina "+ sujeto.toString("nomina")+ " periodo "+ sujeto.toString("periodo");
+		List<Attachment> files    = null; 
+		IBaseAttachment notificar = null;
+		Attachment attachments    = null;
+		try {
+			params= new HashMap<>();
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());			
+			params.put("personalDestajo", sujeto.toString("contratista"));
+			params.put("correo", ECorreos.DESTAJOS.getEmail());		
+			this.toReporte(sesion, jasper, sujeto);
+			params.put("tipo", "Reporte - "+ titulo);			
+			attachments= new Attachment(jasper.getNombre(), false);
+			files= new ArrayList<>();
+			files.add(attachments);
+			files.add(new Attachment("logo", ECorreos.DESTAJOS.getImages().concat("logo.png"), true));
+			params.put("attach", attachments.getId());
+      try {
+        if(!Cadena.isVacio(correos)) {
+          notificar= new IBaseAttachment(ECorreos.DESTAJOS, ECorreos.DESTAJOS.getEmail(), correos, ECorreos.DESTAJOS.getBackup(), "CAFU - ".concat(titulo), params, files);
+          LOG.info("Enviando correo a la cuenta: "+ correos);
+          notificar.send();
+        } // if	
+      } // try
+      finally {
+        if(attachments.getFile().exists()) 
+          LOG.info("Eliminando archivo temporal: " + attachments.getAbsolute());				  
+      } // finally	
+	  	LOG.info("Se envio el correo de forma exitosa");
+			if(correos.length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally
+	} // toSendMail
+
+  public void toReporte(Session sesion, Reporte jasper, Entity figura) throws Exception {    
+		Map<String, Object>parametros= null;
+		EReportes seleccion          = null;    
+    Map<String, Object>params    = null;
+    Parametros comunes           = null;
+    try {
+      params = new HashMap<>();  
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      parametros= comunes.getComunes();
+      seleccion= figura.toLong("idTipoFigura").equals(1L)? EReportes.DESTAJOS_TOTALES_CONTRATISTA: EReportes.DESTAJOS_TOTALES_SUBCONTRATISTA;  
+      parametros.put("REPORTE_TIPO_PERSONA", figura.toLong("idTipoFigura").equals(1L)? "DESTAJO CONTRATISTA": "DESTAJO SUBCONTRATISTA"); 
+      parametros.put("REPORTE_FIGURA", figura.toString("contratista"));
+      parametros.put("REPORTE_DEPARTAMENTO", figura.toString("departamento"));
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("REPORTE_TITULO", seleccion.getTitulo());
+      parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
+      params.put("sortOrder", "order by tc_keet_desarrollos.nombres, tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+      // params.put("loNuevo", figura.toLong("idTipoFigura").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null");
+      params.put("loNuevo", "");
+      params.put("idNomina", this.idNomina);
+      params.put("idEmpresaPersona", figura.toLong("idEmpresaPersona"));
+      params.put("idProveedor", figura.getKey());
+      params.put("idDesarrollo", figura.toLong("idDesarrollo"));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros));		
+      jasper.toProcess(sesion);
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // toReporte 	  
   
 }
