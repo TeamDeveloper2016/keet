@@ -358,7 +358,7 @@
 				  and tc_keet_contratos_lotes_contratistas.id_empresa_persona= {idEmpresaPersona}		
           and {condicion}
 				order by 
-          tc_keet_desarrollos.nombres, tc_keet_contratos_destajos_contratistas.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
+          tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>
 			<select id="destajoProveedor">
         select 
@@ -407,7 +407,7 @@
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
           and {condicion}
 				order by 
-          tc_keet_desarrollos.nombres, tc_keet_contratos_destajos_proveedores.registro desc, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
+          tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>		
       <select id="destajoResidente">
 				select 

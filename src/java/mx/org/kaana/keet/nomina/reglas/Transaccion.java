@@ -10,9 +10,11 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
@@ -33,6 +35,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -796,51 +799,58 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	} // toProveedorTipoContacto
 
   private void notificar(Session sesion, boolean notifica) {
+    List<Columna> columns     = null;		
     Map<String, Object> params= new HashMap<>();
     StringBuilder sb          = new StringBuilder();
     Reporte jasper            = null; 
 		try {
+      columns= new ArrayList<>();      
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
       params.put("idNomina", this.idNomina);
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaTableroDto", "notificar", params);
-      Long idDesarrollo = -1L;
-      jasper            = new Reporte();	
-      jasper.init();      
-      for (Entity item : items) {
-        if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
-          params.put("idDesarrollo", item.toLong("idDesarrollo"));
-          List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaGeoreferenciaLotesDto", "residentesTipoContacto", params);
-          sb.delete(0, sb.length());
+      if(items!= null && !items.isEmpty()) {
+        UIBackingUtilities.toFormatEntitySet(items, columns);
+        Long idDesarrollo = -1L;
+        jasper            = new Reporte();	
+        jasper.init();      
+        for (Entity item : items) {
+          if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
+            params.put("idDesarrollo", item.toLong("idDesarrollo"));
+            List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaGeoreferenciaLotesDto", "residentesTipoContacto", params);
+            sb.delete(0, sb.length());
+            if(correos!= null && !correos.isEmpty())
+              for (Entity email: correos) {
+                if(Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO.getKey()) || Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO_PERSONAL.getKey())) 
+                  sb.append(email.toString("valor")).append(", ");
+              } // for
+            sb.delete(sb.length()- 2, sb.length());
+            idDesarrollo= item.toLong("idDesarrollo");
+          } // for
+          List<Entity> correos= null;
+          if(Objects.equals(item.toLong("idTipoFigura"), 1L)) {
+            params.put(Constantes.SQL_CONDICION, "id_persona="+ item.getKey());
+            correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TrManticPersonaTipoContactoDto", "row", params);
+          } // if
+          else {
+            params.put(Constantes.SQL_CONDICION, "id_proveedor="+ item.getKey());
+            correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TrManticProveedorTipoContactoDto", "row", params);
+          } // else
+          StringBuilder emails= new StringBuilder();
           if(correos!= null && !correos.isEmpty())
             for (Entity email: correos) {
               if(Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO.getKey()) || Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO_PERSONAL.getKey())) 
-                sb.append(email.toString("valor")).append(", ");
+                emails.append(email.toString("valor")).append(", ");
             } // for
-          sb.delete(sb.length()- 2, sb.length());
-          idDesarrollo= item.toLong("idDesarrollo");
+          emails.append(sb.toString());
+          if(emails.length()> 0) {
+  //          if(notifica)
+              this.toSendMail(sesion, jasper, emails.toString(), item);
+  //          else
+  //            this.toSendMail(sesion, jasper, "jimenez76@yahoo.com", item);
+          } // if  
         } // for
-        List<Entity> correos= null;
-        if(Objects.equals(item.toLong("idTipoFigura"), 1L)) {
-          params.put(Constantes.SQL_CONDICION, "id_persona="+ item.getKey());
-          correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TrManticPersonaTipoContactoDto", "row", params);
-        } // if
-        else {
-          params.put(Constantes.SQL_CONDICION, "id_proveedor="+ item.getKey());
-          correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TrManticProveedorTipoContactoDto", "row", params);
-        } // else
-        StringBuilder emails= new StringBuilder();
-        if(correos!= null && !correos.isEmpty())
-          for (Entity email: correos) {
-            if(Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO.getKey()) || Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO_PERSONAL.getKey())) 
-              emails.append(email.toString("valor")).append(", ");
-          } // for
-        emails.append(sb.toString());
-        if(emails.length()> 0) {
-          if(notifica)
-            this.toSendMail(sesion, jasper, emails.toString(), item);
-          else
-            this.toSendMail(sesion, jasper, "jimenez76@yahoo.com", item);
-        } // if  
-      } // for
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -848,13 +858,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     } // catch	
     finally {
       Methods.clean(params);
+      Methods.clean(columns);
       jasper= null;
     } // finally
   }
   
 	public void toSendMail(Session sesion, Reporte jasper, String correos, Entity sujeto) {		
 		Map<String, Object> params= null;
-		String titulo             = "Destajos realizados de la nómina "+ sujeto.toString("nomina")+ " periodo "+ sujeto.toString("periodo");
+		String titulo             = "Destajos realizados de la nómina "+ sujeto.toString("nomina")+ " periodo "+ sujeto.toString("inicio")+ " al "+ sujeto.toString("termino");
 		List<Attachment> files    = null; 
 		IBaseAttachment notificar = null;
 		Attachment attachments    = null;
@@ -915,7 +926,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       parametros.put("REPORTE_TITULO", seleccion.getTitulo());
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
-      params.put("sortOrder", "order by tc_keet_desarrollos.nombres, tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
+      params.put("sortOrder", "order by tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
       // params.put("loNuevo", figura.toLong("idTipoFigura").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null");
       params.put("loNuevo", "");
       params.put("idNomina", this.idNomina);
