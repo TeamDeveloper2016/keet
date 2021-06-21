@@ -75,14 +75,14 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // toArchivos
 	
-	public void depuracion(Session sesion) throws Exception{
+	public void depuracion(Session sesion) throws Exception {
 		File file= null;
 		try {
-			for(TcManticArchivosDto fileDepuracion: this.files){
+			for(TcManticArchivosDto fileDepuracion: this.files) {
 				file= new File(fileDepuracion.getAlias());
 				try {
-					if(file.exists()){
-						if(file.delete()){					
+					if(file.exists()) {
+						if(file.delete()) {					
 							fileDepuracion.setIdEliminado(FILE_ELIMINADO);
 							DaoFactory.getInstance().update(sesion, fileDepuracion);
 						} // if

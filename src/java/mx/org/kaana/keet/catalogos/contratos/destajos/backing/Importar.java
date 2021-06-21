@@ -46,6 +46,7 @@ import org.primefaces.event.TabChangeEvent;
 public class Importar extends IBaseImportar implements Serializable {
 
 	private static final long serialVersionUID = 154600879172477099L;
+  
 	private List<IBaseDestajoArchivo> documentos;
   protected String pathImage;
   private List<Entity> images;
@@ -159,17 +160,22 @@ public class Importar extends IBaseImportar implements Serializable {
     }// finally		
   } // doLoad		
 	
-	private void doLoadFiles(){
+	private void doLoadFiles() {
 		List<Entity>importados= null;		
 		String dns            = null;
 		String url            = null;
 		try {
 			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
 			importados= (List<Entity>) this.attrs.get("importados");
-			for(Entity importado: importados){
-				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
-				importado.put("url", new Value("url", url));
-			} // for
+      if(importados!= null && !importados.isEmpty()) {
+        for(Entity importado: importados){
+          url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
+          importado.put("url", new Value("url", url));
+        } // for
+        UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:observaciones', value: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}}])");
+      } // if 
+      else
+        UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:observaciones', value: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'}}])");
 			this.attrs.put("importados", importados);
 		} // try
 		catch (Exception e) {
@@ -212,11 +218,14 @@ public class Importar extends IBaseImportar implements Serializable {
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize = event.getFile().getSize();						
-			idArchivo= toRegisterFile("destajos");		
+			idArchivo= this.toRegisterFile("destajos");		
       /*UPLOAD*/
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), idArchivo));
   		this.attrs.put("file", this.getFile().getName());	
 			this.documentos.add(this.toDestajoArchivo(idArchivo, figura.toLong("tipo")));
+      if(this.documentos!= null && !this.documentos.isEmpty()) {
+        UIBackingUtilities.execute("janal.renovates([{id: 'contenedorGrupos\\\\:observaciones', value: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}}])");
+      } // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -241,11 +250,11 @@ public class Importar extends IBaseImportar implements Serializable {
 		return regresar.toString();
 	} // toClaveEstacion	
 	
-	private IBaseDestajoArchivo toDestajoArchivo(Long idArchivo, Long tipo) throws Exception{												
+	private IBaseDestajoArchivo toDestajoArchivo(Long idArchivo, Long tipo) throws Exception {												
 		return tipo.equals(1L) ? this.toDestajoContratistaArchivo(idArchivo, tipo): this.toDestajoProveedorArchivo(idArchivo, tipo);
 	} // toPrototipoArchivo
 	
-	private IBaseDestajoArchivo toDestajoContratistaArchivo(Long idArchivo, Long tipo) throws Exception{					
+	private IBaseDestajoArchivo toDestajoContratistaArchivo(Long idArchivo, Long tipo) throws Exception {					
 		DestajoContratistaArchivo regresar= new DestajoContratistaArchivo(
 			idArchivo, // idAchivo
 			tipo, // tipo
@@ -268,7 +277,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		return regresar;
 	} // toDestajoContratistaArchivo
 	
-	private IBaseDestajoArchivo toDestajoProveedorArchivo(Long idArchivo, Long tipo) throws Exception{	
+	private IBaseDestajoArchivo toDestajoProveedorArchivo(Long idArchivo, Long tipo) throws Exception {	
 		DestajoProveedorArchivo regresar= new DestajoProveedorArchivo(
 			idArchivo, // idAchivo
 			tipo, // tipo
@@ -352,6 +361,8 @@ public class Importar extends IBaseImportar implements Serializable {
     String regresar        = null;
 		Transaccion transaccion= null;
 		try {
+      if(this.documentos.isEmpty()) 
+        this.documentos.add(this.toDestajoJustificacion(((Entity)this.attrs.get("figura")).toLong("tipo")));
 			transaccion= new Transaccion(this.documentos);
       if(transaccion.ejecutar(EAccion.SUBIR)) {
       	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");
@@ -461,5 +472,55 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch		
 		return regresar;
 	} // toSemana
+
+	private IBaseDestajoArchivo toDestajoJustificacion(Long tipo) throws Exception {												
+		return tipo.equals(1L) ? this.toDestajoContratistaJustificacion(tipo): this.toDestajoProveedorJustificacion(tipo);
+	} // toDestajoJustificacion
+	
+	private IBaseDestajoArchivo toDestajoContratistaJustificacion(Long tipo) throws Exception {
+		DestajoContratistaArchivo regresar= new DestajoContratistaArchivo(
+			1L, // idAchivo sin-foto.png
+			tipo, // tipo
+			((Entity)this.attrs.get("concepto")).toString("departamento"), // especialidad
+			((Entity)this.attrs.get("concepto")).toString("nombre"), // concepto			
+			this.toClaveEstacion(), // consecutivo
+			-1L,
+			"sin-foto.png", // archivo			
+			null, // eliminado
+			"", // ruta			
+			24214L, // tamanio 			
+			JsfBase.getIdUsuario(), // idUsuario			
+			1L, // idTipoArchivo			
+			(String)this.attrs.get("observaciones"), // observaciones 			
+			Configuracion.getInstance().getPropiedadSistemaServidor("destajos").concat("sin-foto.png"), // alias
+			this.toIdContratoDestajoFigura(), // idContratoDestajoContratista
+			"sin-foto.png", // nombre
+      ((Entity)this.attrs.get("concepto")).toString("codigo")
+		); 		
+		return regresar;
+	} // toDestajoContratistaJustificacion
+	
+	private IBaseDestajoArchivo toDestajoProveedorJustificacion(Long tipo) throws Exception {	
+		DestajoProveedorArchivo regresar= new DestajoProveedorArchivo(
+			1L, // idAchivo sin-foto.png
+			tipo, // tipo
+			((Entity)this.attrs.get("concepto")).toString("departamento"), // especialidad
+			((Entity)this.attrs.get("concepto")).toString("nombre"), // concepto			
+			this.toClaveEstacion(), // consecutivo
+			this.toIdContratoDestajoFigura(), // idContratoDestajoProveedor
+			-1L,						
+			"sin-foto.png", // archivo						
+			null, // eliminado			
+			"", // ruta						
+			24214L, // tamanio 						
+			JsfBase.getIdUsuario(), // idUsuario						
+			1L, // idTipoArchivo						
+			(String)this.attrs.get("observaciones"), // observaciones 						
+			Configuracion.getInstance().getPropiedadSistemaServidor("destajos").concat("sin-foto.png"), // alias
+			"sin-foto.png", // nombre
+      ((Entity)this.attrs.get("concepto")).toString("codigo")
+		); // estatus	
+		return regresar;
+	} // toDestajoProveedorJustificacion	
   
 }

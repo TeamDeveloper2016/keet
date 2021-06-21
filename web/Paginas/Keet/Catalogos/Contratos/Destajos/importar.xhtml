@@ -19,7 +19,7 @@
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
+				'contenedorGrupos\\:observaciones': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
 			};						
 			
 			function start() {
@@ -124,13 +124,14 @@
 								<p:column styleClass="janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   								
-								<p:column styleClass="janal-wid-20 janal-column-center" headerText="Consecutivo">
+                <p:column styleClass="janal-wid-20 janal-column-center" headerText="Consecutivo" rendered="false">
 									<h:outputText value="#{row.consecutivo}"/>
 								</p:column>   								
-								<p:column styleClass="janal-wid-20" headerText="Código">
+								<p:column styleClass="janal-wid-10" headerText="Código">
 									<h:outputText value="#{row.codigo}"/>
 								</p:column>   																
 								<p:column headerText="Concepto">
+                  <i class="fa fa-fw fa-comments janal-color-blue janal-icons-header" title="Observaciones: #{row['observaciones']}"></i>
 									<h:outputText value="#{row.concepto}"/>
 								</p:column> 								
 								<p:column headerText="Especialidad">
@@ -139,10 +140,10 @@
 								<p:column headerText="Usuario">
 									<h:outputText value="#{row.nombreUsuario}"/>
 								</p:column>    
-								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
+								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
-								<p:column  styleClass="janal-wid-col-80 janal-column-center">
+								<p:column styleClass="janal-wid-col-80 janal-column-center">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 										<p:fileDownload value="#{keetCatalogosContratosDestajosImportar.doFileDownload(row)}" />
 									</p:commandButton>
@@ -157,7 +158,7 @@
                   <p:graphicImage url="#{item.url}" width="550" height="250" title="Click para ver más grande la imagen" style="cursor:pointer;" onclick="$('#tabla\\:#{item.idKey}\\:source-image').click();"/>
 									<p:panelGrid columns="1" style="width: 100% !important" columnClasses="janal-column-left, janal-column-left">
 										<p:outputLabel value="&lt;b&gt;Nombre:&lt;/b&gt; #{item.nombre}" class="pad-description" escape="false"/>										
-										<p:outputLabel value="&lt;b&gt;Consecutivo:&lt;/b&gt; #{item.consecutivo}" class="pad-description" escape="false"/>
+										<p:outputLabel value="&lt;b&gt;Justificación:&lt;/b&gt; #{item.observaciones}" class="pad-description janal-color-blue" escape="false"/>
 										<p:outputLabel value="&lt;b&gt;Concepto:&lt;/b&gt; #{item.concepto}" class="pad-description" escape="false"/>
 										<p:outputLabel value="&lt;b&gt;Especialidad:&lt;/b&gt; #{item.especialidad}" class="pad-description" escape="false"/>
 										<p:separator/>
@@ -176,7 +177,7 @@
 							</p:carousel>
 						</p:tab>
 						<p:tab title="Importar">														
-							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:outputLabel for="observaciones" value="Justificación:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetCatalogosContratosDestajosImportar.attrs.observaciones}" onblur="processDataFile();"/>
 							<p:remoteCommand name="processDataFile" process="@this contenedorGrupos:observaciones"/>
 							<p:spacer height="5px"/>	

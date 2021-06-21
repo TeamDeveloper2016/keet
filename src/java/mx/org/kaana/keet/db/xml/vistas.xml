@@ -5049,6 +5049,7 @@
 			<select id="importadosContratista">
 				select 
 					tc_keet_contratos_contratistas_archivos.id_contrato_contratista_archivo as id_key,
+          tc_keet_contratos_contratistas_archivos.codigo,
 					tc_keet_contratos_contratistas_archivos.nombre,
 					tc_keet_contratos_contratistas_archivos.archivo,
 					tc_keet_contratos_contratistas_archivos.ruta,
@@ -5091,6 +5092,7 @@
 			<select id="importadosProveedor">
 				select 
 					tc_keet_contratos_proveedores_archivos.id_contrato_proveedor_archivo as id_key,
+					tc_keet_contratos_proveedores_archivos.codigo,
 					tc_keet_contratos_proveedores_archivos.nombre,
 					tc_keet_contratos_proveedores_archivos.archivo,
 					tc_keet_contratos_proveedores_archivos.ruta,
