@@ -73,19 +73,25 @@ public class Conceptos extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos(){
+	private void loadCatalogos() {
 		Entity contrato          = null;
 		Entity contratoLote      = null;
 		Map<String, Object>params= null;
 		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato=".concat(((Entity)this.attrs.get("seleccionadoPivote")).toString("idContrato")));
-			contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
-			this.attrs.put("contrato", contrato);
-			params.clear();
-			params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote=".concat(((Entity)this.attrs.get("seleccionadoPivote")).getKey().toString()));
-			contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
-			this.attrs.put("contratoLote", contratoLote);
+      Entity seleccion= (Entity)this.attrs.get("seleccionadoPivote");
+      if(seleccion!= null && seleccion.containsKey("idContrato")) {
+			  params= new HashMap<>();
+			  params.put(Constantes.SQL_CONDICION, "tc_keet_contratos.id_contrato= ".concat(seleccion.toString("idContrato")));
+			  contrato= (Entity) DaoFactory.getInstance().toEntity("VistaContratosLotesDto", "principal", params);
+			  this.attrs.put("contrato", contrato);
+			  params.put(Constantes.SQL_CONDICION, "tc_keet_contratos_lotes.id_contrato_lote= "+ seleccion.getKey());
+			  contratoLote= (Entity) DaoFactory.getInstance().toEntity("TcKeetContratosLotesDto", "row", params);
+			  this.attrs.put("contratoLote", contratoLote);
+      } // if
+      else {
+			  this.attrs.put("contrato", new Entity());
+        this.attrs.put("contratoLote", new Entity());
+      } // if
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

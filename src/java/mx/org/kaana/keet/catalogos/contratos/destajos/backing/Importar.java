@@ -485,7 +485,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			((Entity)this.attrs.get("concepto")).toString("nombre"), // concepto			
 			this.toClaveEstacion(), // consecutivo
 			-1L,
-			"sin-foto.png", // archivo			
+			Archivo.toFormatNameFile("sin-foto", ".png"), // archivo			
 			null, // eliminado
 			"", // ruta			
 			24214L, // tamanio 			
@@ -509,7 +509,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.toClaveEstacion(), // consecutivo
 			this.toIdContratoDestajoFigura(), // idContratoDestajoProveedor
 			-1L,						
-			"sin-foto.png", // archivo						
+			Archivo.toFormatNameFile("sin-foto", ".png"), // archivo						
 			null, // eliminado			
 			"", // ruta						
 			24214L, // tamanio 						

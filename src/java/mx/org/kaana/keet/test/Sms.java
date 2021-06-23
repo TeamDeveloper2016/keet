@@ -24,10 +24,10 @@ public class Sms {
     Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
     //+19292654422 
-     Message message = Message.creator(
+     Message message = Message.creator( 
                 new com.twilio.type.PhoneNumber("whatsapp:+5214492090586"),
                 new com.twilio.type.PhoneNumber("whatsapp:+14155238886"),
-                "Este mensaje fue enviado por mi *aplicación*")
+                "Hola como estas ? este mensaje fue enviado por mi *aplicación*")
             .create();
     System.out.println(message.getSid());
     System.out.println(message.getBody());    

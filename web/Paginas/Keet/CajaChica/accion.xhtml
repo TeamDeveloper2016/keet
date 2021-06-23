@@ -197,11 +197,11 @@
 							<p:outputLabel value="#{row['cantidad']}"/>
 							<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 						</p:column>		
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+						<p:column class="MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
 								<h:outputText value="Unidad"/>
 							</f:facet>
-							<p:outputLabel value="#{row['unidadMedida']}"/>
+              <p:outputLabel value="#{row['unidadMedida']}" title="Código: [#{row['propio']}]"/>
 						</p:column>		
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 							<f:facet name="header">

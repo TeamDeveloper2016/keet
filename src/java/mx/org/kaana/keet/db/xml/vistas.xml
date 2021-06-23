@@ -2850,9 +2850,9 @@
 				  '00111100' as sat,
 				  tc_keet_estaciones.nombre,
 				  0 as cantidad,
-				  round(tc_keet_contratos_destajos_proveedores.costo, 2) as subtotal,
-				  round(tc_keet_contratos_destajos_proveedores.costo* 0.16, 2) as iva,
-				  round(tc_keet_contratos_destajos_proveedores.costo* 1.16, 2) as total
+				  round(sum(tc_keet_contratos_destajos_proveedores.costo), 2) as subtotal,
+				  round(sum(tc_keet_contratos_destajos_proveedores.costo* 0.16), 2) as iva,
+				  round(sum(tc_keet_contratos_destajos_proveedores.costo* 1.16), 2) as total
 			  from
 				  tc_keet_contratos_lotes_proveedores
 			  inner join
@@ -2869,6 +2869,9 @@
 			    tc_keet_contratos_destajos_proveedores.id_nomina is null
 				  and tc_keet_contratos_lotes_proveedores.id_proveedor= {idProveedor}		
           and tc_keet_contratos_destajos_proveedores.costo> 0
+        group by
+				  tc_keet_rubros.id_rubro,
+				  tc_keet_contratos_lotes.id_contrato_lote
 		    order by
 			    lote, tc_keet_estaciones.codigo				
 			</select>					

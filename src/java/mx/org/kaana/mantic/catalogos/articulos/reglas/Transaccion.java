@@ -151,7 +151,7 @@ public class Transaccion extends Facturama {
 			if(!Cadena.isVacio(name)) {
 				tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+ 1, name.length()).toUpperCase()).getIdTipoImagen();
 				regresar.setNombre(name);				
-				regresar.setArchivo(Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length())), "IMG"));
+				regresar.setArchivo(Archivo.toFormatNameFile("IMG", idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length()))));
 				regresar.setIdTipoImagen(tipoImagen);
 				regresar.setIdUsuario(JsfBase.getIdUsuario());				
 				regresar.setTamanio(this.importado.getFileSize());

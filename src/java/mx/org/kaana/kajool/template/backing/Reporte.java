@@ -87,7 +87,7 @@ public class Reporte extends BaseReportes implements Serializable{
     this.total    = ireporte instanceof IReporteDataSource ? 1L : toSize();		
     this.prefijo  = prefijo;
     this.idFormato= ireporte.getFormato();
-    this.fileName = Cadena.isVacio(nombre) ? Archivo.toFormatNameFile(ireporte.getNombre(), this.prefijo) : nombre;
+    this.fileName = Cadena.isVacio(nombre) ? Archivo.toFormatNameFile(this.prefijo, ireporte.getNombre()): nombre;
 		this.nombre   = this.idFormato.toPath().concat(this.fileName).concat(".").concat(this.idFormato.name().toLowerCase());
 	} // toAsiganarReporte
 
@@ -97,7 +97,7 @@ public class Reporte extends BaseReportes implements Serializable{
       this.total= 1L;
       this.idTitulos= 0L;		
       this.prefijo  = Constantes.ARCHIVO_PATRON_NOMBRE;
-      this.fileName = Archivo.toFormatNameFile(ijuntar.getNombre(), this.prefijo);
+      this.fileName = Archivo.toFormatNameFile(this.prefijo, ijuntar.getNombre());
       this.nombre   = this.idFormato.toPath().concat(this.fileName).concat(".").concat(this.idFormato.name().toLowerCase());
     } // try
     catch(Exception e) {

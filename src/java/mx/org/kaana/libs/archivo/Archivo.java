@@ -200,7 +200,7 @@ public final class Archivo {
     return regresar.toString();    
   }
 
-	public static String toFormatNameFile(String sufijo, String prefijo) {
+	public static String toFormatNameFile(String prefijo, String sufijo) {
     StringBuilder regresar = new StringBuilder();
     regresar.append(Cadena.isVacio(prefijo)? Constantes.ARCHIVO_PATRON_NOMBRE: prefijo.toUpperCase());
     regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
