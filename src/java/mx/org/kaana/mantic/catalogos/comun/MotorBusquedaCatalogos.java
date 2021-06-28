@@ -171,7 +171,7 @@ public abstract class MotorBusquedaCatalogos {
 		try {
 			params= new HashMap<>();
 			params.put("idDesarrollo", idDesarrollo);
-			regresar= DaoFactory.getInstance().toEntitySet(PersonaTipoContacto.class, "VistaGeoreferenciaLotesDto", "residentesTipoContacto", params, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(PersonaTipoContacto.class, "VistaNominaConsultasDto", "residentesTipoContacto", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {		
 			throw e;

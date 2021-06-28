@@ -74,11 +74,11 @@ public class Reporte extends BaseReportes implements Serializable{
 	} // init
 
 	public void toAsignarReporte(IReporte ireporte) {
-    toAsignarReporte(ireporte, Constantes.ARCHIVO_PATRON_NOMBRE, "");
+    this.toAsignarReporte(ireporte, Constantes.ARCHIVO_PATRON_NOMBRE, "");
   } // toAsignarReporte
   
 	public void toAsignarReporte(IReporte ireporte, String nombre) {
-		toAsignarReporte(ireporte, Constantes.ARCHIVO_PATRON_NOMBRE, nombre);
+		this.toAsignarReporte(ireporte, Constantes.ARCHIVO_PATRON_NOMBRE, nombre);
 	} // toAsignarReporte
 	
 	public void toAsignarReporte(IReporte ireporte, String prefijo, String nombre) {
@@ -87,7 +87,7 @@ public class Reporte extends BaseReportes implements Serializable{
     this.total    = ireporte instanceof IReporteDataSource ? 1L : toSize();		
     this.prefijo  = prefijo;
     this.idFormato= ireporte.getFormato();
-    this.fileName = Cadena.isVacio(nombre) ? Archivo.toFormatNameFile(this.prefijo, ireporte.getNombre()): nombre;
+    this.fileName = Cadena.isVacio(nombre)? Archivo.toFormatNameFile(this.prefijo, ireporte.getNombre()): nombre;
 		this.nombre   = this.idFormato.toPath().concat(this.fileName).concat(".").concat(this.idFormato.name().toLowerCase());
 	} // toAsiganarReporte
 

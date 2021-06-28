@@ -251,7 +251,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			);
 			transaccion= new Transaccion(seleccionado.getKey(), JsfBase.getAutentifica(), bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) 			
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);			
+				JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);			
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
 		} // try
@@ -340,7 +340,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
  			transaccion = new Transaccion(seleccionado.getKey());
 			if(transaccion.ejecutar(EAccion.TRANSFORMACION)) 			
-			  JsfBase.addMessage("Notificar", "Se notificó de estatus de forma correcta", ETipoMensaje.INFORMACION);			
+			  JsfBase.addMessage("Notificar", "Se notificó por corre de forma correcta", ETipoMensaje.INFORMACION);			
+      else
+			  JsfBase.addMessage("Notificar", "Error", ETipoMensaje.INFORMACION);			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  public void doWhatsup() {
+		Entity seleccionado      = null;
+		Map<String, Object>params= null;
+		Transaccion transaccion  = null;
+	  try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+ 			transaccion = new Transaccion(seleccionado.getKey());
+			if(transaccion.ejecutar(EAccion.MOVIMIENTOS)) 			
+			  JsfBase.addMessage("Notificar", "Se notificó por whatsup de forma correcta", ETipoMensaje.INFORMACION);			
       else
 			  JsfBase.addMessage("Notificar", "Error", ETipoMensaje.INFORMACION);			
     } // try

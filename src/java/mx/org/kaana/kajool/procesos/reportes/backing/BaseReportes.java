@@ -86,6 +86,10 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
     this.nombre= nombre;
   }
 
+  public String getAlias() {
+    return this.fileName.concat(".").concat(this.idFormato.name().toLowerCase());
+  }
+  
   public Long getTotal() {
     return total;
   }

@@ -1807,6 +1807,42 @@
 			</select>
 		</unit>
 		<unit id="VistaNominaConsultasDto">
+			<select id="residentesTipoContacto">				
+				select      
+					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,									
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as residente, 
+          tr_mantic_persona_tipo_contacto.*
+        from      
+          tc_keet_contratos_personal
+				inner join 
+					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join 
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona = tr_mantic_persona_tipo_contacto.id_persona
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+        where 
+          tr_mantic_empresa_personal.id_activo= 1
+          and tc_keet_contratos_personal.id_desarrollo= {idDesarrollo} 
+          and tc_mantic_puestos.nombre like 'RESIDENTE%'
+        union all   
+				select      
+					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,									
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as residente, 
+          tr_mantic_persona_tipo_contacto.*
+        from      
+          tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				inner join 
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona = tr_mantic_persona_tipo_contacto.id_persona
+				inner join	
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+        where 
+          tr_mantic_empresa_personal.id_activo= 1
+          and tc_mantic_puestos.id_puesto in (8, 10)
+			</select>
 			<select id="totalDestajoContratista">
        select
           tc_keet_contratos_lotes_contratistas.id_empresa_persona as id_key,
@@ -6615,28 +6651,10 @@
 				  and tr_mantic_empresa_personal.id_activo= 1
 				  and tc_mantic_puestos.nombre like 'RESIDENTE%'				
 			</select>
-			<select id="residentesTipoContacto">				
-				select      
-					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,									
-          tr_mantic_persona_tipo_contacto.*
-        from      
-          tc_keet_contratos_personal
-				inner join 
-					tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
-				inner join 
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
-				inner join 
-					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona = tr_mantic_persona_tipo_contacto.id_persona
-				inner join	
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
-        where 
-          tc_keet_contratos_personal.id_desarrollo= {idDesarrollo}
-				  and tr_mantic_empresa_personal.id_activo= 1
-				  and tc_mantic_puestos.nombre like 'RESIDENTE%'				
-			</select>
 			<select id="contactosNotificar">				
 				select      
-					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,									
+					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,				
+          concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as residente, 					
           tr_mantic_persona_tipo_contacto.*
         from      
           tc_keet_contratos_personal
@@ -7233,7 +7251,7 @@
 				from (
 					select 
 						convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
-						concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ', tc_mantic_personas.materno) as nombre_completo, 
+						concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre_completo, 
 						tc_mantic_puestos.nombre as puesto,
 						1 as tipo  
 					from 
@@ -8305,7 +8323,7 @@
 					tc_mantic_requisiciones.fecha_entregada,
 					tc_mantic_requisiciones_estatus.estatus_asociados, 					
 					tc_mantic_personas.cuenta,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre,
 					tc_keet_desarrollos.clave clave_desarrollo,
 					tc_keet_desarrollos.nombres nombre_desarrollo,
 					tc_mantic_proveedores.id_proveedor,

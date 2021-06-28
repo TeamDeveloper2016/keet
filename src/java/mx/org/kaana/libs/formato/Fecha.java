@@ -637,28 +637,41 @@ public  class Fecha {
 	
 	public static LocalDateTime toLocalDateTime(String date, String time) {
 		// date equals 2018-11-01 and time equals 23:59:59
-		LocalDateTime regresar= LocalDateTime.of(
-			Integer.parseInt(date.substring(0, 4)),
-			Integer.parseInt(date.substring(5, 7)),
-			Integer.parseInt(date.substring(8, 10)),
-			Integer.parseInt(time.substring(0, 2)),
-			Integer.parseInt(time.substring(3, 5)),
-			Integer.parseInt(time.substring(6, 8))
-		);
+    LocalDateTime regresar= LocalDateTime.now();
+    try {
+      regresar= LocalDateTime.of(
+        Integer.parseInt(date.substring(0, 4)),
+        Integer.parseInt(date.substring(5, 7)),
+        Integer.parseInt(date.substring(8, 10)),
+        Integer.parseInt(time.substring(0, 2)),
+        Integer.parseInt(time.substring(3, 5)),
+        Integer.parseInt(time.substring(6, 8))
+      );
+    } // try
+    catch(Exception e) {
+      regresar= LocalDateTime.now();
+    } // catch
 		return regresar;
 	}
 
 	public static LocalDateTime toLocalDateTime(String date) {
-    // date equals 2019-12-10T18:24:31
-    //             0123456789012345678
-		LocalDateTime regresar= LocalDateTime.of(
-			Integer.parseInt(date.substring(0, 4)),
-			Integer.parseInt(date.substring(5, 7)),
-			Integer.parseInt(date.substring(8, 10)),
-			Integer.parseInt(date.substring(11, 13)),
-			Integer.parseInt(date.substring(14, 16)),
-			Integer.parseInt(date.substring(17, 19))
-		);
+    // date equals 2019-12-10T18:24:31.961Z
+    //             012345678901234567890123
+    LocalDateTime regresar= LocalDateTime.now();
+    try {
+      regresar= LocalDateTime.of(
+        Integer.parseInt(date.substring(0, 4)),
+        Integer.parseInt(date.substring(5, 7)),
+        Integer.parseInt(date.substring(8, 10)),
+        Integer.parseInt(date.substring(11, 13)),
+        Integer.parseInt(date.substring(14, 16)),
+        Integer.parseInt(date.substring(17, 19)),
+        Integer.parseInt(date.substring(20, 23))
+      );
+    } // try
+    catch(Exception e) {
+      regresar= LocalDateTime.now();
+    } // catch
 		return regresar;
   }
   

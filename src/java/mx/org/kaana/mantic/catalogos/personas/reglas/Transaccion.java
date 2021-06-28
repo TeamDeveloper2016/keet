@@ -24,6 +24,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBanco;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBeneficiario;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
@@ -496,7 +497,12 @@ public class Transaccion extends IBaseTnx {
             break;
         } // switch
         if (validate) 
-          count++;        
+          count++;      
+        // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
+        if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
+          Cafu cafu= new Cafu(this.persona.getPersona().getNombres()+ " "+ (this.persona.getPersona().getPaterno()!= null? this.persona.getPersona().getPaterno(): "")+ " "+ (this.persona.getPersona().getMaterno()!= null? this.persona.getPersona().getMaterno(): ""), dto.getValor());
+          cafu.doSendMessage(sesion);
+        } // if
       } // for		
       regresar = count == this.persona.getPersonasTiposContacto().size();
     } // try

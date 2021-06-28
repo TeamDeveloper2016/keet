@@ -7,6 +7,51 @@
   </model>
 
   <dml>
+    <unit id="TcManticTiposMensajesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_mensajes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_mensajes
+        where      
+          nombre = '{nombre}'
+      </select>
+      </unit>    
+    <unit id="TcManticMensajesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_mensajes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_mensajes
+        where      
+          wa_id = '{waId}' and id = '{id}'
+      </select>
+      <select id="existe">
+        select      
+          tc_mantic_mensajes.id_mensaje as id_key,
+          tc_mantic_mensajes.*
+        from      
+          tc_mantic_mensajes
+        where      
+          telefono = '{celular}' and id_tipo_mensaje = {idTipoMensaje}
+      </select>
+    </unit>    
     <unit id="TcManticFacturasGruposDto">
       <select id="row">
         select      
@@ -2915,7 +2960,6 @@
          delete from tr_mantic_persona_domicilio where id_persona = {idPersona}
       </delete>  
     </unit>
-    
     <unit id="TrManticPersonaTipoContactoDto">
       <select id="row">
         select      
@@ -2938,6 +2982,19 @@
           max(id_persona_tipo_contacto) maximo
         from      
           tr_mantic_persona_tipo_contacto
+      </select>
+			<select id="whatsup">
+        select      
+          tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,
+          tr_mantic_persona_tipo_contacto.valor
+        from      
+          tr_mantic_persona_tipo_contacto
+        where
+          id_persona in ({idPersona})
+          and id_tipo_contacto in (6, 7, 8)
+          and id_preferido= 1
+        order by
+          id_tipo_contacto, orden
       </select>
 			<delete id="rows">
          delete from tr_mantic_persona_tipo_contacto where id_persona = {idPersona}
@@ -3631,6 +3688,19 @@
           max(id_cliente_tipo_contacto) maximo
         from      
           tr_mantic_cliente_tipo_contacto
+      </select>
+			<select id="whatsup">
+        select      
+          tr_mantic_cliente_tipo_contacto.id_cliente_tipo_contacto as id_key,
+          tr_mantic_cliente_tipo_contacto.valor
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where
+          id_cliente in ({idCliente})
+          and id_tipo_contacto in (6, 7, 8)
+          and id_preferido= 1
+        order by
+          id_tipo_contacto, orden
       </select>
 			<delete id="rows">
         delete from tr_mantic_cliente_tipo_contacto where id_cliente= {idCliente}

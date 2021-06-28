@@ -34,7 +34,9 @@ import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 @Named(value = "kajoolAccesoControl")
 public class Control extends IBaseAttribute implements Serializable {
 
-  private static final long serialVersionUID = 5323749709626263801L;
+  private static final long serialVersionUID= 5323749709626263801L;
+  private static final String IMOX_TOKEN    = "IMOX_TOKEN";
+  
   private Cliente cliente;
   
   @Inject 
@@ -62,7 +64,11 @@ public class Control extends IBaseAttribute implements Serializable {
   public void setTemaActivo(TemaActivo temaActivo) {
     this.temaActivo = temaActivo;
   }
-
+ 
+  public String getImox() {
+    return System.getenv(IMOX_TOKEN);
+  }
+  
   public String doIngresar() {
     String regresar= null;
     Acceso acceso  = null;  

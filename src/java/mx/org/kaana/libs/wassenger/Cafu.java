@@ -1,0 +1,371 @@
+package mx.org.kaana.libs.wassenger;
+
+import com.google.gson.Gson;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import mx.org.kaana.libs.formato.Error;
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.reflection.Methods;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 25/06/2021
+ *@time 09:55:07 AM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+public final class Cafu implements Serializable {
+
+  private static final long serialVersionUID= -6510759858245467836L;
+  private static final Log LOG              = LogFactory.getLog(Cafu.class);
+  
+  private static final String IMOX_TOKEN    = "IMOX_TOKEN";
+  private static final String BODY_MESSAGE  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, somos de *CAFU* Construcciones, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación.\\n\\nCAFU Construcciones S.A. de C.V.\"";
+  private static final String BODY_DESTAJO  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del *{periodo}*, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\nCAFU Construcciones S.A. de C.V.\"";
+  private static final String BODY_RESIDENTE= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar el reporte de los destajos de los *contratistas* de la nómina *{nomina}* del *{periodo}*, hacer clic en los siguientes enlaces:\\n{reporte}Si tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\nCAFU Construcciones S.A. de C.V.\"";
+  private static final String PATH_REPORT   = "{numero}.- {contratista}; destajo https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\n";
+  private static final int LENGTH_CELL_PHONE= 10;
+
+  private String token;
+  private String nombre;
+  private String celular;
+  private String reporte;
+  private String nomina;
+  private String periodo;
+  private Map<String, Object> contratistas;
+
+  public Cafu(String nombre, String celular) {
+    this(nombre, celular, "", "", Collections.EMPTY_MAP);
+  }
+  
+  public Cafu(String nombre, String celular, String reporte, String nomina, String periodo) {
+    this(nombre, celular, nomina, periodo, Collections.EMPTY_MAP);
+    this.reporte= reporte;
+  }
+
+  public Cafu(String nomina, String periodo, Map<String, Object> contratistas) {
+    this("", "", nomina, periodo, contratistas);
+  }
+  
+  public Cafu(String nombre, String celular, String nomina, String periodo, Map<String, Object> contratistas) {
+    this.nombre = Cadena.nombrePersona(nombre);
+    this.celular= this.clean(celular);
+    this.nomina = nomina;
+    this.periodo= periodo;
+    this.token  = System.getenv(IMOX_TOKEN);
+    this.contratistas= contratistas;
+    this.prepare();
+  }
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getCelular() {
+    return celular;
+  }
+
+  public void setCelular(String celular) {
+    this.celular = celular;
+  }
+
+  public String getReporte() {
+    return reporte;
+  }
+
+  public void setReporte(String reporte) {
+    this.reporte = reporte;
+  }
+
+  public Map<String, Object> getContratistas() {
+    return contratistas;
+  }
+
+  public void setContratistas(Map<String, Object> contratistas) {
+    this.contratistas = contratistas;
+  }
+
+  @Override
+  public String toString() {
+    return "Message{" + "celular=" + celular + ", reporte=" + reporte + '}';
+  }
+  
+  private String clean(String number) {
+    StringBuilder regresar= new StringBuilder();
+    if(number!= null) 
+      for (int x= 0; x< number.length(); x++) {
+        if(number.charAt(x)>= '0' && number.charAt(x)<= '9') 
+          regresar.append(number.charAt(x));
+      } // for
+    return regresar.toString();
+  }
+
+  public void doSendMessage() {
+    this.doSendMessage(null);
+  }
+  
+  public void doSendMessage(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Value value    = null; 
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("saludo", this.toSaludo());
+        params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
+        if(sesion!= null)
+          value= (Value)DaoFactory.getInstance().toField(sesion, "TcManticMensajesDto", "existe", params, "idKey");
+        else
+          value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
+        if(value== null) {
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message  = gson.fromJson(response.getBody(), Message.class);
+            if(message!= null)
+              message.init();
+            else
+              message= new Message();
+          } // if  
+          else {
+            LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+          } // else  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.BIENVENIDA.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // if  
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  }
+  
+  public void doSendDestajo() {
+    this.doSendDestajo(null);
+  }
+  
+  public void doSendDestajo(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("nomina", this.nomina);
+        params.put("periodo", this.periodo);
+        params.put("saludo", this.toSaludo());
+        HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+        .header("Content-Type", "application/json")
+        .header("Token", this.token)
+        .body("{"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}")
+        .asString();
+        // LOG.warn(response);
+        if(Objects.equals(response.getStatus(), 201)) {
+          LOG.warn("Enviado: "+ response.getBody());
+          Gson gson= new Gson();
+          message= gson.fromJson(response.getBody(), Message.class);
+          if(message!= null) 
+            message.init();
+          else
+            message= new Message();
+        } // if  
+        else {
+          LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+          message= new Message();
+        } // if  
+        message.setTelefono(this.celular);
+        message.setIdSendStatus(new Long(response.getStatus()));
+        message.setSendStatus(response.getStatusText());
+        message.setIdTipoMensaje(ETypeMessage.CONTRATISTA.getId());
+        message.setIdUsuario(JsfBase.getIdUsuario());
+        if(sesion!= null)
+          DaoFactory.getInstance().insert(sesion, message);
+        else
+          DaoFactory.getInstance().insert(message);
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  }
+
+  public void doSendResidentes(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("nomina", this.nomina);
+        params.put("periodo", this.periodo);
+        params.put("saludo", this.toSaludo());
+        HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+        .header("Content-Type", "application/json")
+        .header("Token", this.token)
+        .body("{"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}")
+        .asString();
+        if(Objects.equals(response.getStatus(), 201)) {
+          LOG.warn("Enviado: "+ response.getBody());
+          Gson gson= new Gson();
+          message= gson.fromJson(response.getBody(), Message.class);
+          if(message!= null) 
+            message.init();
+          else
+            message= new Message();
+        } // if  
+        else {
+          LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+          message= new Message();
+        } // if  
+        message.setTelefono(this.celular);
+        message.setIdSendStatus(new Long(response.getStatus()));
+        message.setSendStatus(response.getStatusText());
+        message.setIdTipoMensaje(ETypeMessage.CONTRATISTA.getId());
+        message.setIdUsuario(JsfBase.getIdUsuario());
+        if(sesion!= null)
+          DaoFactory.getInstance().insert(sesion, message);
+        else
+          DaoFactory.getInstance().insert(message);
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  }
+
+  private void prepare() {
+    StringBuilder archivos= new StringBuilder();
+    if(this.contratistas!= null && !this.contratistas.isEmpty()) {
+      Map<String, Object> params = null;
+      try {        
+        params= new HashMap<>();        
+        int count= 1;
+        for (String key: this.contratistas.keySet()) {
+          params.put("numero", count++);
+          params.put("contratista", key);
+          params.put("reporte", this.contratistas.get(key));
+          archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
+        } // for
+      } // try
+      catch (Exception e) {
+        Error.mensaje(e);
+      } // catch	
+      finally {
+        Methods.clean(params);
+      } // finally
+      this.reporte= archivos.toString();
+    } // if  
+  }
+  
+  public void doSendDemo() {
+    Map<String, Object> params = new HashMap<>();        
+    try {
+      params.put("nombre", this.nombre);
+      params.put("celular", this.celular);
+      params.put("reporte", this.reporte);
+      params.put("nomina", this.nomina);
+      params.put("periodo", this.periodo);
+      params.put("saludo", this.toSaludo());
+      LOG.info("{"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
+      LOG.info("{"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
+      LOG.info("{"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private String toSaludo() {
+    String regresar= null;
+    Calendar calendar= Calendar.getInstance();
+    int hour= calendar.get(Calendar.HOUR_OF_DAY);
+    if(hour>= 5 && hour< 12)
+      regresar= "Buenos días";
+    else
+      if(hour>= 12 && hour< 19)
+        regresar= "Buenas tardes";
+      else 
+        regresar= "Buenas noches";
+    return regresar;
+  }
+        
+  public static void main(String ... args) {
+//    String nombres[]  = {"Carlos Calderon Solano", "Juan José Fuentes Ramirez España", "Christopher Castro Jiménez"};
+//    String celulares[]= {"4491813810", "4491152255", "4491087126"};
+//    Cafu message= new Cafu("Alejandro Jiménez García", "449-209-05-86", "CAFU_2021062410492325_orden_de_compra_detalle.pdf", "2021-20", "15/06/2021 al 30/06/2021");
+//    message.doSendMessage();
+//    for (int x= 0; x < nombres.length; x++) {
+//      message.setNombre(nombres[x]);
+//      message.setCelular(celulares[x]);
+//      // message.doSendDemo();
+//      message.doSendMessage();
+//      // message.doSendDestajo();
+//    } // for
+//    String body= "{\"id\":\"60d607099faa17d7ac70f63d\",\"waId\":\"3EB06320796368264337\",\"phone\":\"+5214492090586\",\"wid\":\"5214492090586@c.us\",\"status\":\"queued\",\"deliveryStatus\":\"queued\",\"createdAt\":\"2021-06-25T16:40:41.225Z\",\"deliverAt\":\"2021-06-25T16:40:41.206Z\",\"message\":\"Hola _Alejandro jiménez garcía_,\nBuenos días, te hacemos llegar el reporte de los destajos de la nómina *2021-20* del *15/06/2021 al 30/06/2021*, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/CAFU_2021062410492325_orden_de_compra_detalle.pdf\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte.\nCAFU Construcciones S.A.\",\"priority\":\"normal\",\"retentionPolicy\":\"plan_defaults\",\"retry\":{\"count\":0},\"webhookStatus\":\"pending\",\"media\":{\"format\":\"native\"},\"device\":\"60d4987e48b592aa82f09e92\"}";
+//    Gson gson= new Gson();
+//    Message message= gson.fromJson(body, Message.class);
+//    if(message!= null)
+//      message.init();
+//    LOG.info(message);
+    Map<String, Object> params= new HashMap<>();
+    params.put("Alex Jímenez", "uno.pdf");
+    params.put("Axel Jímenez", "dos.pdf");
+    params.put("Yanely Jímenez", "tres.pdf");
+    params.put("Yaretzy Jímenez", "cuatro.pdf");
+    Cafu cafu= new Cafu("Alejandro Jimenez", "4492090586", "2021-23", "*21/06/2021* al *30/06/2021*", params);
+    LOG.info(cafu.getReporte());
+    cafu.doSendDemo();
+  }  
+  
+}

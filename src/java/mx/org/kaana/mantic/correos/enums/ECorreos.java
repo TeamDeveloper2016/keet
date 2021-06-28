@@ -21,7 +21,7 @@ public enum ECorreos {
 	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "resources/janal/img/sistema/", "correo.compras.user.produccion", "correo.compras.pass.produccion", "compras@cafu.jvmhost.net", "Compras CAFU.", ""),
 	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", ""),
 	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", ""),
-  DESTAJOS      ("/mx/org/kaana/keet/correos/templates/destajos.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafuconstrucciones.com", "Administración CAFU.", "carlos.calderon@cafuconstrucciones.com, jjose.fuentes@cafuconstrucciones.com, jimenez76@yahoo.com");
+  DESTAJOS      ("/mx/org/kaana/keet/correos/templates/destajos.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafuconstrucciones.com", "Administración CAFU.", "jimenez76@yahoo.com");
 	 
 	private String template;
 	private String images;

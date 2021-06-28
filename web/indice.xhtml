@@ -75,6 +75,7 @@
 					<p:spacer width="3%"/>
 					<p:commandButton id="enviar" tabindex="3" value="Reiniciar contraseña" onstart="return validar()" actionListener="#{kajoolAccesoControl.doVerificarCuenta}" process="@this recuperar curp" update="recuperar curp"  disabled="#{kajoolUtilAplicacion.lockUserStarted}"/>
 					<p:spacer height="1"/>
+          <!--p:outputLabel value="IMOX: #{kajoolAccesoControl.imox}"/-->
 				</p:panelGrid>
 			</div>
   		Servidor:<p:clock pattern="HH:mm:ss dd/MM/yyyy" mode="server"/><br/>

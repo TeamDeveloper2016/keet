@@ -36,6 +36,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -173,6 +174,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 				  if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 					  this.nomina.setIdNominaEstatus(this.bitacora.getIdNominaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.nomina)>= 1L;
+            this.notificar(sesion, true);
 						// CAMBIAR EL ESTATUS A TODOS LOS INCIDENTES Y REGISTAR EN SUS RESPECTIVA BITACORA 
             this.closeIncidentes(sesion);	
 						this.toOpenNewNomina(sesion);
@@ -187,6 +189,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 					break;
 				case TRANSFORMACION:
           this.notificar(sesion, false);
+					break;
+				case MOVIMIENTOS:
+          this.message(sesion, false);
 					break;
 			} // switch
 		} // try
@@ -346,7 +351,6 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 				  this.reprocesarProveedores(sesion, monitoreo);
 				if(count> 0 && this.nomina.getIdNominaEstatus()< ENominaEstatus.CALCULADA.getIdKey()) {
 					this.bitacora(sesion, ENominaEstatus.CALCULADA.getIdKey());
-          this.notificar(sesion, true);
         } // if
 			} // if
 		} // try
@@ -817,7 +821,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         for (Entity item : items) {
           if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
             params.put("idDesarrollo", item.toLong("idDesarrollo"));
-            List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaGeoreferenciaLotesDto", "residentesTipoContacto", params);
+            List<Entity> correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaConsultasDto", "residentesTipoContacto", params);
             sb.delete(0, sb.length());
             if(correos!= null && !correos.isEmpty())
               for (Entity email: correos) {
@@ -892,9 +896,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       } // try
       finally {
         if(attachments.getFile().exists()) 
-          LOG.info("Eliminando archivo temporal: " + attachments.getAbsolute());				  
+          LOG.info("Eliminando archivo temporal: "+ jasper.getNombre());				  
       } // finally	
-	  	LOG.info("Se envio el correo de forma exitosa");
 			if(correos.length()> 0)
 		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
 			else
@@ -927,14 +930,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       parametros.put("NOMBRE_REPORTE", seleccion.getNombre());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));
       params.put("sortOrder", "order by tc_keet_contratos.clave, tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote");
-      // params.put("loNuevo", figura.toLong("idTipoFigura").equals(1L)? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "or tc_keet_contratos_destajos_proveedores.id_nomina is null");
       params.put("loNuevo", "");
       params.put("idNomina", this.idNomina);
       params.put("idEmpresaPersona", figura.toLong("idEmpresaPersona"));
       params.put("idProveedor", figura.getKey());
       params.put("idDesarrollo", figura.toLong("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros));		
+      String nombre= figura.toLong("idTipoFigura")+ Cadena.rellenar("-"+ figura.getKey(), 4, '0', true)+ "-"+ figura.toString("nomina");
+      jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros), nombre);		
       jasper.toProcess(sesion);
     } // try
     catch(Exception e) {
@@ -942,5 +945,126 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       JsfBase.addMessageError(e);			
     } // catch	
   } // toReporte 	  
+  
+  private void message(Session sesion, boolean notifica) {
+    List<Columna> columns     = null;		
+    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> residentes= new HashMap<>();
+    Reporte jasper            = null; 
+    String nombre             = null; 
+    Map<String, Object> contratistas= new HashMap<>();
+		try {
+      columns= new ArrayList<>();      
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));    
+      params.put("idNomina", this.idNomina);
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaTableroDto", "notificar", params);
+      if(items!= null && !items.isEmpty()) {
+        UIBackingUtilities.toFormatEntitySet(items, columns);
+        Long idDesarrollo= -1L;
+        jasper           = new Reporte();	
+        jasper.init();      
+        for (Entity item : items) {
+          if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
+            params.put("idDesarrollo", item.toLong("idDesarrollo"));
+            List<Entity> celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaConsultasDto", "residentesTipoContacto", params);
+            residentes.clear();
+            // VERIFICAR SI SE RECUPERA EL NOMBRE DEL RESIDENTE PARA ENVIAR LOS MENSAJES ACUMULADOS DE TODOS LOS CONTRATISTAS
+            if(celulares!= null && !celulares.isEmpty())
+              for (Entity celular: celulares) {
+                if(Objects.equals(celular.toLong("idPreferido"), 1L) && (Objects.equals(celular.toLong("idTipoContacto"), ETiposContactos.CELULAR.getKey()) || Objects.equals(celular.toLong("idTipoContacto"), ETiposContactos.CELULAR_NEGOCIO.getKey()) || Objects.equals(celular.toLong("idTipoContacto"), ETiposContactos.CELULAR_PERSONAL.getKey()))) 
+                  residentes.put(item.toString("residente"), celular.toString("valor"));
+              } // for
+            idDesarrollo= item.toLong("idDesarrollo");
+            // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE LOS CONTRATISTAS
+            this.toNotificarResidentes(sesion, residentes, contratistas, item);
+            contratistas.clear();
+          } // for
+          List<Entity> correos= null;
+          if(Objects.equals(item.toLong("idTipoFigura"), 1L)) {
+            params.put(Constantes.SQL_CONDICION, "id_persona="+ item.getKey());
+            correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TrManticPersonaTipoContactoDto", "row", params);
+          } // if
+          else {
+            params.put(Constantes.SQL_CONDICION, "id_proveedor="+ item.getKey());
+            correos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TrManticProveedorTipoContactoDto", "row", params);
+          } // else
+          String celular= null;
+          if(correos!= null && !correos.isEmpty())
+            for (Entity email: correos) {
+              if(Objects.equals(email.toLong("idPreferido"), 1L) && (Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CELULAR.getKey()) || Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CELULAR_NEGOCIO.getKey()) || Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CELULAR_PERSONAL.getKey()))) 
+                celular= email.toString("valor");
+            } // for
+          if(notifica) {
+            if(celular!= null) 
+              nombre= this.toWhatsup(sesion, jasper, celular, item);
+          } // if  
+          else
+            nombre= this.toWhatsup(sesion, jasper, "4492090586", item);
+          contratistas.put(item.toString("contratista"), nombre);
+        } // for
+        // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE LOS CONTRATISTAS
+        this.toNotificarResidentes(sesion, residentes, contratistas, items.get(0));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+      Methods.clean(contratistas);
+      jasper= null;
+    } // finally
+  }
+
+	public String toWhatsup(Session sesion, Reporte jasper, String contratista, Entity sujeto) {		
+    String regresar= "";
+		Cafu notificar = null;
+		try {
+			this.toReporte(sesion, jasper, sujeto);
+      try {
+        notificar= new Cafu(sujeto.toString("contratista"), contratista, jasper.getAlias(), sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
+        LOG.info("Enviando mensaje por whatsup al celular: "+ contratista);
+        notificar.doSendDestajo(sesion);
+        regresar= jasper.getAlias();
+      } // try
+      finally {
+        LOG.info("Eliminando archivo temporal: "+ jasper.getNombre());				  
+      } // finally	
+			if(contratista.length()> 0)
+		    JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+    return regresar;
+	} // toWhatsup
+  
+	public void toNotificarResidentes(Session sesion, Map<String, Object> residentes, Map<String, Object> contratistas, Entity sujeto) {		
+		Cafu notificar = null;
+		try {
+      // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
+      notificar= new Cafu(sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", contratistas);
+      for (String residente: residentes.keySet()) {
+        notificar.setNombre(Cadena.nombrePersona(residente));
+        notificar.setCelular((String)residentes.get(residente));
+        LOG.info("Enviando correo a la cuenta: "+ residente);
+        notificar.doSendResidentes(sesion);
+      } // for
+			if(!residentes.isEmpty())
+		    JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} // toWhatsup
   
 }

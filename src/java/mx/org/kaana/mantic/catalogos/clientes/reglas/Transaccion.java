@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.clientes.reglas;
 
+import com.google.common.base.Objects;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
+import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteBanca;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
@@ -467,7 +469,7 @@ public class Transaccion extends Facturama {
     boolean regresar     = false;
     try {
       for (ClienteTipoContacto clienteTipoContacto : this.registroCliente.getClientesTiposContacto()) {
-				if(clienteTipoContacto.getValor()!= null && !Cadena.isVacio(clienteTipoContacto.getValor())){
+				if(clienteTipoContacto.getValor()!= null && !Cadena.isVacio(clienteTipoContacto.getValor())) {
 					if(clienteTipoContacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) && validateOrden){
 						clienteTipoContacto.setOrden(1L);
 						validateOrden= false;
@@ -488,12 +490,16 @@ public class Transaccion extends Facturama {
 							break;
 					} // switch
 					orden++;
+          // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
+          if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
+            Cafu cafu= new Cafu(this.registroCliente.getCliente().getRazonSocial(), dto.getValor());
+            cafu.doSendMessage(sesion);
+          } // if
 				} // if
 				else
 					validate= true;
-        if (validate) {
+        if (validate) 
           count++;
-        }
       } // for		
       regresar = count == this.registroCliente.getClientesTiposContacto().size();
     } // try    
