@@ -265,7 +265,7 @@ public final class Cafu implements Serializable {
         message.setTelefono(this.celular);
         message.setIdSendStatus(new Long(response.getStatus()));
         message.setSendStatus(response.getStatusText());
-        message.setIdTipoMensaje(ETypeMessage.CONTRATISTA.getId());
+        message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
         message.setIdUsuario(JsfBase.getIdUsuario());
         if(sesion!= null)
           DaoFactory.getInstance().insert(sesion, message);
