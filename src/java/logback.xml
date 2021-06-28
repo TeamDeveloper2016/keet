@@ -1,27 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
-    <Encoding>ISO-8859-1</Encoding>
-    <Append>true</Append>
-    <File>/home/cafujvmh/appservers/apache-tomcat-8.5.20/logs/aplication-kaana-log.txt</File>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%-5p: %d{dd/MMM/yyyy HH:mm:ss,SSS} [%t] %c %x - %m%n</pattern>
     </encoder>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-      <level>INFO</level>
+      <level>DEBUG</level>
     </filter>
-    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <maxIndex>10</maxIndex>
-      <FileNamePattern>/home/cafujvmh/appservers/apache-tomcat-8.5.20/logs/aplication-kaana-log.txt.%i</FileNamePattern>
-    </rollingPolicy>
-    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      <MaxFileSize>10MB</MaxFileSize>
-    </triggeringPolicy>
   </appender>
   <logger name="org.hibernate.type" level="TRACE"/>
   <logger name="org.hibernate.SQL" level="INFO"/>
-  <root level="ERROR">
-    <appender-ref ref="LOGFILE"/>
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
   </root>
 </configuration>

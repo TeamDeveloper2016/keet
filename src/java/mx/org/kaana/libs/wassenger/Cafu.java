@@ -164,6 +164,8 @@ public final class Cafu implements Serializable {
           else
             DaoFactory.getInstance().insert(message);
         } // if  
+        else 
+          LOG.warn("Ya había sido notificado este celular por whatsup ["+ this.celular+ "]");
       } // try
       catch(Exception e) {
         Error.mensaje(e);
