@@ -14,14 +14,14 @@ import com.twilio.rest.api.v2010.account.Message;
 
 public class Sms {
 
-  public static final String ACCOUNT_SID= "AC227cacebc522f1bdd4960991127ad969";
-  public static final String AUTH_TOKEN = "f83b146628a025cb2ebd3d0f3d35cbd7";  
+  public static final String ACCOUNT_SID= "TWILIO_SID";
+  public static final String AUTH_TOKEN = "TWILIO_TOKEN";  
   
   /**
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-    Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+    Twilio.init(System.getenv(ACCOUNT_SID), System.getenv(AUTH_TOKEN));
 
     //+19292654422 
      Message message = Message.creator( 
