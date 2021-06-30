@@ -99,14 +99,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 			if(this.attrs.get("idPrototipo")!=null && ((UISelectEntity)this.attrs.get("idPrototipo")).getKey()>0L){
 				prototipo= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, ((UISelectEntity)this.attrs.get("idPrototipo")).getKey());
 				this.current= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, prototipo.getIdEstacion());
-				actualizarChildren(1);
+				this.actualizarChildren(1);
 			} // if
 			else if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
 				nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
 				this.current= new TcKeetEstacionesDto();
 				this.current.setClave(this.estaciones.toCode(nodo));
 				this.current.setNivel(1L);
-				actualizarChildren(1,2);
+				this.actualizarChildren(1,2);
 				this.current.setNivel(3L);
 			} // else if
 			else
@@ -124,7 +124,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Transaccion transaccion= null;
     try {
       eaccion = EAccion.valueOf(accion.toUpperCase());
-			switch(eaccion){
+			switch(eaccion) {
 				case REGISTRAR:
 				  this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null? this.current: ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
 					eaccion= EAccion.AGREGAR;
@@ -144,7 +144,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				case ELIMINAR:
 					transaccion= new Transaccion(new RegistroEstacion(((TcKeetEstacionesDto) this.attrs.get("seleccionado")).getKey()));
 					if (transaccion.ejecutar(eaccion)){
-					  actualizarChildren(0);
+					  this.actualizarChildren(0);
 						JsfBase.addMessage("La estación se ".concat(eaccion.getTitle()).concat(" correctamente."));
 					} // if
 				break;

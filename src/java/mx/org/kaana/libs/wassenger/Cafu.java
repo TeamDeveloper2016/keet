@@ -12,8 +12,10 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,9 +36,9 @@ public final class Cafu implements Serializable {
   
   private static final String IMOX_TOKEN    = "IMOX_TOKEN";
   private static final String BODY_MESSAGE  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, somos de *CAFU* Construcciones, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación.\\n\\nCAFU Construcciones\"";
-  private static final String BODY_DESTAJO  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del *{periodo}*, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\nCAFU Construcciones\"";
-  private static final String BODY_RESIDENTE= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar los reportes de los destajos de los *contratistas* de la nómina *{nomina}* del *{periodo}*, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar los reportes de cada contratista.\\n\\nCAFU Construcciones\"";
-  private static final String PATH_REPORT   = "{numero}.- {contratista}; destajo https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\n";
+  private static final String BODY_DESTAJO  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\nCAFU Construcciones\"";
+  private static final String BODY_RESIDENTE= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar los reportes de los destajos de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\nCAFU Construcciones\"";
+  private static final String PATH_REPORT   = "{numero}.- {contratista}; https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE= 10;
 
   private String token;
@@ -136,33 +138,37 @@ public final class Cafu implements Serializable {
         else
           value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
         if(value== null) {
-          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
-          .header("Content-Type", "application/json")
-          .header("Token", this.token)
-          .body("{"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}")
-          .asString();
-          if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
-            Gson gson= new Gson();
-            message  = gson.fromJson(response.getBody(), Message.class);
-            if(message!= null)
-              message.init();
-            else
+          if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+            LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
+          else {  
+            HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+            .header("Content-Type", "application/json")
+            .header("Token", this.token)
+            .body("{"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}")
+            .asString();
+            if(Objects.equals(response.getStatus(), 201)) {
+              LOG.warn("Enviado: "+ response.getBody());
+              Gson gson= new Gson();
+              message  = gson.fromJson(response.getBody(), Message.class);
+              if(message!= null)
+                message.init();
+              else
+                message= new Message();
+            } // if  
+            else {
+              LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
-          } // if  
-          else {
-            LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
-            message= new Message();
+            } // else  
+            message.setTelefono(this.celular);
+            message.setIdSendStatus(new Long(response.getStatus()));
+            message.setSendStatus(response.getStatusText());
+            message.setIdTipoMensaje(ETypeMessage.BIENVENIDA.getId());
+            message.setIdUsuario(JsfBase.getIdUsuario());
+            if(sesion!= null)
+              DaoFactory.getInstance().insert(sesion, message);
+            else
+              DaoFactory.getInstance().insert(message);
           } // else  
-          message.setTelefono(this.celular);
-          message.setIdSendStatus(new Long(response.getStatus()));
-          message.setSendStatus(response.getStatusText());
-          message.setIdTipoMensaje(ETypeMessage.BIENVENIDA.getId());
-          message.setIdUsuario(JsfBase.getIdUsuario());
-          if(sesion!= null)
-            DaoFactory.getInstance().insert(sesion, message);
-          else
-            DaoFactory.getInstance().insert(message);
         } // if  
         else 
           LOG.warn("Ya había sido notificado este celular por whatsup ["+ this.celular+ "]");
@@ -193,33 +199,37 @@ public final class Cafu implements Serializable {
         params.put("nomina", this.nomina);
         params.put("periodo", this.periodo);
         params.put("saludo", this.toSaludo());
-        HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
-        .header("Content-Type", "application/json")
-        .header("Token", this.token)
-        .body("{"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}")
-        .asString();
-        if(Objects.equals(response.getStatus(), 201)) {
-          LOG.warn("Enviado: "+ response.getBody());
-          Gson gson= new Gson();
-          message= gson.fromJson(response.getBody(), Message.class);
-          if(message!= null) 
-            message.init();
-          else
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else
+              message= new Message();
+          } // if  
+          else {
+            LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
-        } // if  
-        else {
-          LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
-          message= new Message();
-        } // if  
-        message.setTelefono(this.celular);
-        message.setIdSendStatus(new Long(response.getStatus()));
-        message.setSendStatus(response.getStatusText());
-        message.setIdTipoMensaje(ETypeMessage.CONTRATISTA.getId());
-        message.setIdUsuario(JsfBase.getIdUsuario());
-        if(sesion!= null)
-          DaoFactory.getInstance().insert(sesion, message);
-        else
-          DaoFactory.getInstance().insert(message);
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.CONTRATISTA.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
       } // try
       catch(Exception e) {
         Error.mensaje(e);
@@ -243,33 +253,37 @@ public final class Cafu implements Serializable {
         params.put("nomina", this.nomina);
         params.put("periodo", this.periodo);
         params.put("saludo", this.toSaludo());
-        HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
-        .header("Content-Type", "application/json")
-        .header("Token", this.token)
-        .body("{"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}")
-        .asString();
-        if(Objects.equals(response.getStatus(), 201)) {
-          LOG.warn("Enviado: "+ response.getBody());
-          Gson gson= new Gson();
-          message= gson.fromJson(response.getBody(), Message.class);
-          if(message!= null) 
-            message.init();
-          else
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else
+              message= new Message();
+          } // if  
+          else {
+            LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
         } // if  
-        else {
-          LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
-          message= new Message();
-        } // if  
-        message.setTelefono(this.celular);
-        message.setIdSendStatus(new Long(response.getStatus()));
-        message.setSendStatus(response.getStatusText());
-        message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
-        message.setIdUsuario(JsfBase.getIdUsuario());
-        if(sesion!= null)
-          DaoFactory.getInstance().insert(sesion, message);
-        else
-          DaoFactory.getInstance().insert(message);
       } // try
       catch(Exception e) {
         Error.mensaje(e);

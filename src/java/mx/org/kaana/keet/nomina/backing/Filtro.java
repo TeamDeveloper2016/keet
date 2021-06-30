@@ -33,6 +33,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EExportacionXls;
@@ -372,6 +373,18 @@ public class Filtro extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+  
+  public void doNotificar() {
+String nombres[]  = {"JOSE FELICIANO RAMOS SANTOYO"};
+String celulares[]= {"4493651872"};
+    Cafu message= new Cafu("Alejandro Jiménez García", "449-209-05-86");
+    for (int x= 0; x < nombres.length; x++) {
+      message.setNombre(nombres[x]);
+      message.setCelular(celulares[x]);
+      message.doSendMessage();
+    } // for
+
   }
   
 }
