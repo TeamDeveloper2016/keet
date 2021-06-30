@@ -491,6 +491,11 @@ public class Transaccion extends IBaseTnx {
           case INSERT:
             dto.setIdPersonaTipoContacto(-1L);
             validate = registrar(sesion, dto);
+            // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
+            if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
+              Cafu cafu= new Cafu(this.persona.getPersona().getNombres()+ " "+ (this.persona.getPersona().getPaterno()!= null? this.persona.getPersona().getPaterno(): "")+ " "+ (this.persona.getPersona().getMaterno()!= null? this.persona.getPersona().getMaterno(): ""), dto.getValor());
+              cafu.doSendMessage(sesion);
+            } // if
             break;
           case UPDATE:
             validate = actualizar(sesion, dto);
@@ -498,11 +503,6 @@ public class Transaccion extends IBaseTnx {
         } // switch
         if (validate) 
           count++;      
-        // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
-        if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
-          Cafu cafu= new Cafu(this.persona.getPersona().getNombres()+ " "+ (this.persona.getPersona().getPaterno()!= null? this.persona.getPersona().getPaterno(): "")+ " "+ (this.persona.getPersona().getMaterno()!= null? this.persona.getPersona().getMaterno(): ""), dto.getValor());
-          cafu.doSendMessage(sesion);
-        } // if
       } // for		
       regresar = count == this.persona.getPersonasTiposContacto().size();
     } // try
@@ -767,4 +767,5 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // clearPersonalAsignado
+  
 }

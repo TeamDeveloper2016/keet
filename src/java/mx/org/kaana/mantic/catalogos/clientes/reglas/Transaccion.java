@@ -484,17 +484,17 @@ public class Transaccion extends Facturama {
 						case INSERT:
 							dto.setIdClienteTipoContacto(-1L);
 							validate = registrar(sesion, dto);
+              // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
+              if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
+                Cafu cafu= new Cafu(this.registroCliente.getCliente().getRazonSocial(), dto.getValor());
+                cafu.doSendMessage(sesion);
+              } // if
 							break;
 						case UPDATE:
 							validate = actualizar(sesion, dto);
 							break;
 					} // switch
 					orden++;
-          // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
-          if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
-            Cafu cafu= new Cafu(this.registroCliente.getCliente().getRazonSocial(), dto.getValor());
-            cafu.doSendMessage(sesion);
-          } // if
 				} // if
 				else
 					validate= true;

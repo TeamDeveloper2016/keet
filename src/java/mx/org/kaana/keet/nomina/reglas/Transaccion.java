@@ -938,7 +938,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       String nombre= figura.toLong("idTipoFigura")+ Cadena.rellenar(""+ figura.getKey(), 5, '0', true)+ "-"+ figura.toString("nomina");
       jasper.toAsignarReporte(new ParametrosReporte(seleccion, params, parametros), nombre);		
       regresar= jasper.getAlias();
-      String name= JsfBase.getRealPath("").concat(regresar);
+      String name= JsfBase.getRealPath(jasper.getNombre());
       File file= new File(name);
       if(!file.exists())
         jasper.toProcess(sesion);
@@ -1033,7 +1033,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           LOG.info("Eliminando archivo temporal: "+ jasper.getNombre());				  
         } // finally	
         if(contratista.length()> 0)
-          JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa.", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa ["+ contratista+ "] !", ETipoMensaje.INFORMACION);
         else
           JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
@@ -1057,7 +1057,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         notificar.doSendResidentes(sesion);
       } // for
 			if(!residentes.isEmpty())
-		    JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa.", ETipoMensaje.INFORMACION);
+		    JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa "+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
 			else
 		    JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
 		} // try // try
