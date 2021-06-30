@@ -236,7 +236,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	} // loadPuestos
 	
-	private void loadContratistas(){
+	private void loadContratistas() {
 		List<UISelectEntity>contratistas= null;		
 		List<Columna> columns           = null;
 		try {
@@ -283,13 +283,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.loadCollections();
 					if(!this.registroPersona.getPersonasDomicilio().isEmpty()){
 						this.registroPersona.setPersonaDomicilioSeleccion(this.registroPersona.getPersonasDomicilio().get(0));
-						doConsultarPersonaDomicilio();
+						this.doConsultarPersonaDomicilio();
 					} // if
 					if(!this.registroPersona.getPersonasBeneficiarios().isEmpty()){
 						this.registroPersona.setPersonaBeneficiarioSeleccion(this.registroPersona.getPersonasBeneficiarios().get(0));	
-						doConsultarBeneficiario();
+						this.doConsultarBeneficiario();
 					} // if					
 					this.attrs.put("idEmpresa", new UISelectEntity(this.registroPersona.getIdEmpresa()));					
+          if(this.registroPersona.getIdContratista()== null)
+            this.registroPersona.setIdContratista(-1L);
           break;
       } // switch
 			this.registroPersona.getPersona().setEstilo(TEMA);

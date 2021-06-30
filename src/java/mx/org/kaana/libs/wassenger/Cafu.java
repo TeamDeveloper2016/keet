@@ -33,9 +33,9 @@ public final class Cafu implements Serializable {
   private static final Log LOG              = LogFactory.getLog(Cafu.class);
   
   private static final String IMOX_TOKEN    = "IMOX_TOKEN";
-  private static final String BODY_MESSAGE  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, somos de *CAFU* Construcciones, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación.\\n\\nCAFU Construcciones S.A. de C.V.\"";
-  private static final String BODY_DESTAJO  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del *{periodo}*, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\nCAFU Construcciones S.A. de C.V.\"";
-  private static final String BODY_RESIDENTE= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar el reporte de los destajos de los *contratistas* de la nómina *{nomina}* del *{periodo}*, hacer clic en los siguientes enlaces:\\n{reporte}Si tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\nCAFU Construcciones S.A. de C.V.\"";
+  private static final String BODY_MESSAGE  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, somos de *CAFU* Construcciones, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación.\\n\\nCAFU Construcciones\"";
+  private static final String BODY_DESTAJO  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del *{periodo}*, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\nCAFU Construcciones\"";
+  private static final String BODY_RESIDENTE= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar los reportes de los destajos de los *contratistas* de la nómina *{nomina}* del *{periodo}*, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar los reportes de cada contratista.\\n\\nCAFU Construcciones\"";
   private static final String PATH_REPORT   = "{numero}.- {contratista}; destajo https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE= 10;
 
@@ -198,7 +198,6 @@ public final class Cafu implements Serializable {
         .header("Token", this.token)
         .body("{"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}")
         .asString();
-        // LOG.warn(response);
         if(Objects.equals(response.getStatus(), 201)) {
           LOG.warn("Enviado: "+ response.getBody());
           Gson gson= new Gson();

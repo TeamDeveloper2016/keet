@@ -89,24 +89,24 @@ public class Transaccion extends Facturama {
     try {			
       switch (accion) {
         case AGREGAR:
-          regresar = procesarCliente(sesion);
+          regresar = this.procesarCliente(sesion);
           break;
         case MODIFICAR:
-          regresar = actualizarCliente(sesion);
+          regresar = this.actualizarCliente(sesion);
           break;
         case ELIMINAR:
-          regresar = eliminarCliente(sesion);
+          regresar = this.eliminarCliente(sesion);
           break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
 					break;
 				case REGISTRAR:
 					regresar= true;
-					toUpdateDeleteFile(sesion);
+					this.toUpdateDeleteFile(sesion);
 					break;
 				case SUBIR:
 					regresar= true;
-					toUpdateDeleteFilePago(sesion);
+					this.toUpdateDeleteFilePago(sesion);
 					break;
       } // switch
       if (!regresar) {

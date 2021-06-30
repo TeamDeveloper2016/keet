@@ -81,13 +81,13 @@ public class Transaccion extends IBaseTnx {
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro de la persona");
 			switch(accion){
 				case AGREGAR:
-					regresar = procesarPersona(sesion);					
+					regresar = this.procesarPersona(sesion);					
 					break;
 				case MODIFICAR:
-					regresar = actualizarPersona(sesion);					
+					regresar = this.actualizarPersona(sesion);					
 					break;				
 				case ELIMINAR:
-					regresar = eliminarPersona(sesion);					
+					regresar = this.eliminarPersona(sesion);					
 					break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
@@ -118,8 +118,8 @@ public class Transaccion extends IBaseTnx {
     Long idPersona  = -1L;
     try {
       this.messageError = "Error al registrar el articulo";
-      if (eliminarRegistros(sesion)) {
-				toCuenta();
+      if (this.eliminarRegistros(sesion)) {
+				this.toCuenta();
 				this.persona.getPersona().setContrasenia(BouncyEncryption.encrypt(this.persona.getPersona().getPaterno()));
 				this.persona.getPersona().setCuenta(this.cuenta);
         this.persona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
