@@ -27,8 +27,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Gestor;
-import mx.org.kaana.mantic.catalogos.proveedores.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.catalogos.proveedores.convenios.reglas.Transaccion;
 import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticCatalogosProveedoresConveniosFiltro")

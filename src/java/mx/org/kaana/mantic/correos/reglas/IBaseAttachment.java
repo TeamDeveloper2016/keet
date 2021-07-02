@@ -6,7 +6,9 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.correos.beans.Attachment;
@@ -73,7 +75,10 @@ public class IBaseAttachment extends IBaseMail implements Serializable {
 		StringBuilder content= new StringBuilder(Cadena.replaceHtml(html, this.params));
 		LOG.info("----------------------------------------------------------------------------------------");
 		LOG.info(content.toString());
-    this.send(content.toString());
+    if(Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO))
+      LOG.warn(content.toString());
+    else 
+      this.send(content.toString());
 	}
 	
 }

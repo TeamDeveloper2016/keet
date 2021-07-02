@@ -5302,8 +5302,9 @@
 				from (
 					select 
 						convert(concat(9000,tr_mantic_empresa_personal.id_empresa_persona), unsigned integer) as id_key,
-						concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ', tc_mantic_personas.materno) nombre_completo, 
+						concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) nombre_completo, 
 						tc_mantic_puestos.nombre puesto,
+            tc_mantic_personas.id_persona,
 						1 tipo  
 					from 
 						tc_keet_proyectos
@@ -5331,6 +5332,7 @@
 						convert(concat(8000,tc_mantic_proveedores.id_proveedor), unsigned integer) as id_key,    
 						tc_mantic_proveedores.razon_social nombre_completo,
 						'SUBCONTRATISTA' puesto,  
+            tc_mantic_proveedores.id_proveedor as id_persona,
 						2 tipo  
 					from 
 						tc_keet_proyectos

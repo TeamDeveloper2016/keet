@@ -197,4 +197,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     return regresar;
   } // doPagina
+  
 }

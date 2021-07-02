@@ -888,8 +888,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       try {
         if(!Cadena.isVacio(correos)) {
           notificar= new IBaseAttachment(ECorreos.DESTAJOS, ECorreos.DESTAJOS.getEmail(), correos, ECorreos.DESTAJOS.getBackup(), "CAFU - ".concat(titulo), params, files);
-          LOG.info("Enviando correo a la cuenta: "+ correos);
           notificar.send();
+          LOG.info("Enviando correo a la cuenta: "+ correos);
         } // if	
       } // try
       finally {
@@ -1000,7 +1000,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
               if(Objects.equals(telefono.toLong("idPreferido"), 1L) && (Objects.equals(telefono.toLong("idTipoContacto"), ETiposContactos.CELULAR.getKey()) || Objects.equals(telefono.toLong("idTipoContacto"), ETiposContactos.CELULAR_NEGOCIO.getKey()) || Objects.equals(telefono.toLong("idTipoContacto"), ETiposContactos.CELULAR_PERSONAL.getKey()))) 
                 celular= telefono.toString("valor");
             } // for
-          contratistas.put(item.toString("contratista"), this.toSendWessage(sesion, jasper, celular, item));
+          contratistas.put(item.toString("contratista"), this.toSendMessage(sesion, jasper, celular, item));
         } // for
         // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE LOS CONTRATISTAS
         this.toNotificarResidentes(sesion, residentes, contratistas, items.get(0));
@@ -1018,7 +1018,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     } // finally
   }
 
-	public String toSendWessage(Session sesion, Reporte jasper, String contratista, Entity sujeto) {		
+	public String toSendMessage(Session sesion, Reporte jasper, String contratista, Entity sujeto) {		
     String regresar= "";
 		Cafu notificar = null;
 		try {

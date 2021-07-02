@@ -210,7 +210,7 @@
             <p:menuitem actionListener="#{keetNominasFiltro.doReporte}" icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear();" process="@this tabla" style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>					
             <p:separator style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
             <p:menuitem actionListener="#{keetNominasFiltro.doNotifica()}" icon="fa fa-envelope-open-text" value="Notificar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"  style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
-            <p:menuitem actionListener="#{keetNominasFiltro.doWhatsup()}" icon="fa fa-whatsapp" value="Whastup" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"  style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
+            <p:menuitem actionListener="#{keetNominasFiltro.doWhatsup()}" icon="fa fa-whatsapp" value="Whatsup" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"  style="display: #{keetNominasFiltro.attrs.seleccionado.idNominaEstatus.toLong() gt 1? '': 'none'}"/>
           </p:contextMenu>
         </div>
       </div>

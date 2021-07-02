@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -13,6 +14,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -34,15 +36,22 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.enums.ETiposContactos;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDateTime;
 
 @Named(value = "keetCatalogosContratosDestajosFiltro")
 @ViewScoped
 public class Filtro extends IBaseReporteDestajos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;			
+  private static final Log LOG = LogFactory.getLog(Filtro.class);
+  
 	private RegistroDesarrollo registroDesarrollo;		
 	private List<Entity> lotes;
 	private FormatLazyModel lazyDestajo;
@@ -548,8 +557,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     try {
       isCompleto = tipo.equals("COMPLETO");
 			List<UISelectEntity> figuras= (List<UISelectEntity>) this.attrs.get("figuras");
-      figura= (UISelectEntity) this.attrs.get("figura");
-      int index= figuras.indexOf(figura);
+      int index= figuras.indexOf((UISelectEntity) this.attrs.get("figura"));
       if(index>= 0) {
         figura= figuras.get(index);			
         params = new HashMap<>();  
@@ -619,6 +627,75 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
+  }
+ 
+  public void doWhatsup() {
+    Map<String, Object> params= null;
+    String contratista        = null;
+    UISelectEntity figura     = null;
+    UISelectEntity semana     = null;  
+    try {      
+      params = new HashMap<>();      
+      List<UISelectEntity> figuras= (List<UISelectEntity>)this.attrs.get("figuras");
+      int index= figuras.indexOf((UISelectEntity)this.attrs.get("figura"));
+      if(index>= 0) {
+        figura= figuras.get(index);			
+        List<Entity> celulares= null;
+        if(Objects.equals(figura.toLong("tipo"), 1L)) {
+          params.put(Constantes.SQL_CONDICION, "id_persona="+ figura.toLong("idPersona"));
+          celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticPersonaTipoContactoDto", "row", params);
+        } // if
+        else {
+          params.put(Constantes.SQL_CONDICION, "id_proveedor="+ figura.toLong("idPersona"));
+          celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticProveedorTipoContactoDto", "row", params);
+        } // else
+        if(celulares!= null && !celulares.isEmpty())
+          for (Entity telefono: celulares) {
+            if(Objects.equals(telefono.toLong("idPreferido"), 1L) && (Objects.equals(telefono.toLong("idTipoContacto"), ETiposContactos.CELULAR.getKey()) || Objects.equals(telefono.toLong("idTipoContacto"), ETiposContactos.CELULAR_NEGOCIO.getKey()) || Objects.equals(telefono.toLong("idTipoContacto"), ETiposContactos.CELULAR_PERSONAL.getKey()))) 
+              contratista= telefono.toString("valor");
+          } // for      
+        this.doReporte("DESARROLLO", true);
+        if(contratista!= null) {
+          List<UISelectEntity> semanas= (List<UISelectEntity>)this.attrs.get("semanas");
+          if(semanas!= null && !semanas.isEmpty())  {
+            index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
+            if(index>= 0) 
+              semana= semanas.get(index);
+            else {
+              semana= new UISelectEntity(-1L);
+              semana.put("nomina", new Value("nomina", "0000-00"));
+              semana.put("inicio", new Value("inicio", LocalDateTime.now()));
+              semana.put("termino", new Value("termino", LocalDateTime.now()));
+            } // if
+          } // if
+          try {
+            Cafu notificar= new Cafu(
+              figura.toString("nombreCompleto"), 
+              contratista, 
+              this.reporte.getAlias(), 
+              semana.toString("nomina"), 
+              "*"+ semana.toString("inicio")+ "* al *"+ semana.toString("termino")+ "*"
+            );
+            LOG.info("Enviando mensaje por whatsup al celular: "+ contratista);
+            notificar.doSendDestajo();
+          } // try
+          finally {
+            LOG.info("Eliminando archivo temporal: "+ this.reporte.getNombre());				  
+          } // finally	
+          if(contratista.length()> 0)
+            JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa ["+ contratista+ "] !", ETipoMensaje.INFORMACION);
+          else
+            JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+        } // if  
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
 }

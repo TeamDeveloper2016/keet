@@ -161,6 +161,7 @@
 								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosDestajosFiltro.doReporte('DESARROLLO')}" oncomplete="janal.desbloquear();" update="descargar"/>
 								<p:separator/>
 								<p:menuitem icon="fa fa-envelope-o" value="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosDestajosFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                <p:menuitem icon="fa fa-whatsapp" value="Whatsup" actionListener="#{keetCatalogosContratosDestajosFiltro.doWhatsup()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>

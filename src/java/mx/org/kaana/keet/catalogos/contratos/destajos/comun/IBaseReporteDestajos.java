@@ -180,7 +180,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			Methods.clean(files);
 		} // finally
 	} // doSendMail
-	
+  
 	public abstract void doReporte(String nombre, boolean sendMail) throws Exception;
 	
 	public boolean doVerificarReporte() {
