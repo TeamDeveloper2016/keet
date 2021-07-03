@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.cajachica.reglas;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -26,6 +27,8 @@ import mx.org.kaana.keet.enums.EEstatusGastos;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.nomina.reglas.Semanas;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -65,8 +68,9 @@ public class Transaccion extends IBaseTnx {
 		this(idGasto, null, ok);
 	}
 	
-	public Transaccion(Gasto gasto) {
+	public Transaccion(Gasto gasto, List<ArchivoGasto> documentos) {
 		this(-1L, gasto);
+    this.documentos= documentos;
 	}	
 	
 	public Transaccion(Long idGasto, Gasto gasto) {
@@ -92,15 +96,15 @@ public class Transaccion extends IBaseTnx {
 		this.idDesarrollo     = idDesarrollo;
 		this.idEmpresaPersona = idEmpresaPersona;
 	}
+  
+	public Transaccion(List<ArchivoGasto> documentos) {
+		this.documentos = documentos;
+	}	
 	
 	public Long getIdGasto() {
 		return idGasto;
 	}	
 
-	public Transaccion(List<ArchivoGasto> documentos) {
-		this.documentos = documentos;
-	}	
-	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar         = true;
@@ -114,9 +118,9 @@ public class Transaccion extends IBaseTnx {
 					regresar= this.confirmarGasto(sesion);		
 					break;								
 				case SUBIR:
-					for(ArchivoGasto archivogasto: this.documentos) {
-						if(DaoFactory.getInstance().insert(sesion, archivogasto)>= 1L)
-							this.toSaveFile(archivogasto.getIdArchivo());
+					for(ArchivoGasto item: this.documentos) {
+						if(DaoFactory.getInstance().insert(sesion, item)>= 1L)
+							this.toSaveFile(item.getIdArchivo());
 					} // for
 					break;
 				case ACTIVAR:
@@ -149,7 +153,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			if(this.gasto.getIdGasto() <= 0L) {
 				siguiente= this.toSiguiente(sesion);			
-				gastoDto = this.loadGasto(siguiente);		
+				gastoDto = this.toLoadGasto(siguiente);		
 				this.idGasto= DaoFactory.getInstance().insert(sesion, gastoDto);
 			} // if
       else {
@@ -163,6 +167,7 @@ public class Transaccion extends IBaseTnx {
 				if(registrarBitacora(sesion, EEstatusGastos.DISPONIBLE.getKey()))
 					regresar= this.registrarDetalle(sesion);													
 			} // if
+      this.processFiles(sesion, gastoDto);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -170,7 +175,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // procesarVale
 	
-	private TcKeetGastosDto loadGasto(Siguiente siguiente) throws Exception {
+	private TcKeetGastosDto toLoadGasto(Siguiente siguiente) throws Exception {
 		TcKeetGastosDto regresar= null;				
 		try {
 			regresar= new TcKeetGastosDto();						
@@ -190,7 +195,7 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch				
 		return regresar;
-	} // loadVale
+	} // toLoadGasto
 	
 	private Double toImporte() {
 		Double regresar= 0D;
@@ -314,6 +319,7 @@ public class Transaccion extends IBaseTnx {
             regresar= this.afectarCaja(sesion, item.getIdCajaChicaCierre(), item.getImporte()* -1D);
         } // if  
 			} // else
+      this.processFiles(sesion, item);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -663,6 +669,33 @@ public class Transaccion extends IBaseTnx {
       Methods.clean(params);
     } // finally
     return regresar;
+  }
+ 
+  private void processFiles(Session sesion, TcKeetGastosDto dto) throws Exception {
+    String pattern= "/".concat(Cadena.rellenar("9", 4, '9', true)).concat(Cadena.rellenar("0", 6, '0', true)).concat("/");
+    try {
+      if(this.documentos!= null && !this.documentos.isEmpty()) {
+        String path= Configuracion.getInstance().getPropiedadSistemaServidor("gastos").concat(this.documentos.get(0).getRuta().replace(pattern, "/".concat(dto.getConsecutivo()).concat("/")));
+        File file  = new File(path);		
+        if (!file.exists())
+          file.mkdirs();
+        for(ArchivoGasto item: this.documentos) {
+          item.setIdGasto(dto.getIdGasto());
+          item.setConsecutivo(dto.getConsecutivo());
+          item.setImporte(dto.getImporte());
+          item.setArticulos(dto.getArticulos());
+          item.setRuta(item.getRuta().replace(pattern, "/".concat(dto.getConsecutivo()).concat("/")));
+          String old= item.getAlias();
+          item.setAlias(item.getAlias().replace(pattern, "/".concat(dto.getConsecutivo()).concat("/")));
+          Archivo.copyDeleteSource(old, item.getAlias(), true);
+          if(DaoFactory.getInstance().insert(sesion, item)>= 1L)
+            this.toSaveFile(item.getIdArchivo());
+        } // for
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
   }
   
 }

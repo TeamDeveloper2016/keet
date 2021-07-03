@@ -133,6 +133,8 @@ public final class Archivo {
       } // while
       inStream.close();
       outStream.close();
+			if(delete)
+				afile.delete();			
     } // try
     catch (IOException e) {
       Error.mensaje(e);
@@ -162,7 +164,7 @@ public final class Archivo {
     catch (IOException e) {
       Error.mensaje(e);
     } // catch
-		finally{
+		finally {
 			if(afile!= null)
 				afile.delete();			
 		} // finally

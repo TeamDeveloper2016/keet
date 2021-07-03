@@ -50,7 +50,7 @@ public class Importar extends IBaseImportar implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Importar.class);
 	private static final long serialVersionUID= 2672741451185244787L;  
-	List<ArchivoGasto> documentos;	
+	private List<ArchivoGasto> documentos;	
 
 	public List<ArchivoGasto> getDocumentos() {
 		return documentos;
@@ -75,8 +75,9 @@ public class Importar extends IBaseImportar implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());						
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
 			this.attrs.put("file", ""); 
-			setFile(new Importado());
+			this.setFile(new Importado());
 			this.documentos= new ArrayList<>();
+      this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/").concat("gastos").concat("/"));						
 			this.loadCatalogos();			
     } // try // try
     catch (Exception e) {
@@ -157,11 +158,11 @@ public class Importar extends IBaseImportar implements Serializable {
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize = event.getFile().getSize();						
-			idArchivo= toRegisterFile("gastos");		
+			idArchivo= this.toRegisterFile("gastos");		
       /*UPLOAD*/
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), idArchivo));
   		this.attrs.put("file", this.getFile().getName());	
-			this.documentos.add(toGastoArchivo(idArchivo));
+			this.documentos.add(this.toGastoArchivo(idArchivo));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -171,10 +172,11 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
 	} // doFileUpload		
 	
-	private ArchivoGasto toGastoArchivo(Long idArchivo){				
+	private ArchivoGasto toGastoArchivo(Long idArchivo) {				
 		Entity gasto= (Entity) this.attrs.get("gasto");
-		ArchivoGasto regresar= null;		
-		regresar= new ArchivoGasto(
+  	String dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
+		String url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
+		ArchivoGasto regresar= regresar= new ArchivoGasto(
 			idArchivo, // idAchivo
 			gasto.toString("consecutivo"), // consecutivo
 			gasto.toDouble("importe"), // importe
@@ -188,7 +190,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), // idTipoArchivo			
 			Configuracion.getInstance().getPropiedadSistemaServidor("gastos").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // alias
 			-1L, // idgastoArchivo 
-			this.getFile().getOriginal() // nombre
+			this.getFile().getOriginal(), // nombre
+      url.concat(this.getFile().getRuta()).concat(this.getFile().getName())// url      
 		); 
 		return regresar;
 	} // toGastoArchivo
@@ -229,7 +232,7 @@ public class Importar extends IBaseImportar implements Serializable {
     return regresar;
 	} // doAceptar
 	
-	private EFormatos getFileType(String fileName){
+	private EFormatos getFileType(String fileName) {
 		EFormatos regresar= EFormatos.FREE;
 		try {
 			if(fileName.contains(".")){
@@ -248,4 +251,5 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
     return regresar;
 	} // getFileType	
+  
 }

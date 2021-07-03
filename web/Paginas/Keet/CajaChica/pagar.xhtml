@@ -43,8 +43,11 @@
                 </p:selectOneMenu>
 								<p:outputLabel value="Semana:"/>
                 <p:selectOneMenu id="semana" value="#{keetCajaChicaPagar.attrs.semana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this ejercicio" update="tabla nomina tablaResidentes" listener="#{keetCajaChicaPagar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                  <f:selectItems value="#{keetCajaChicaPagar.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.ejericio}  #{empty element.orden or element.orden eq ''? '': '-'} #{element.orden}"/>
+                  <p:ajax event="change" process="@this ejercicio" update="tabla nomina tablaResidentes aceptar aceptarIcon" listener="#{keetCajaChicaPagar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <f:selectItems value="#{keetCajaChicaPagar.attrs.semanas}" var="element" itemValue="#{element}" itemLabel="#{element.ejercicio} #{empty element.orden or element.orden eq '-1'? '': '-'} #{empty element.orden or element.orden eq '-1'? '': element.orden}"/>
+                  <p:column headerText="Ejercicio" styleClass="janal-column-center">
+                    <h:outputText value="#{item.ejercicio}"/>
+                  </p:column>   
                   <p:column headerText="Semana" styleClass="janal-column-center">
                     <h:outputText value="#{item.orden}"/>
                   </p:column>   

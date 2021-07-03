@@ -87,7 +87,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.fechaFin= LocalDate.of(Fecha.getAnioActual(), Fecha.getMesActual()+1, 15);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());   
-			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/").concat("gastos").concat("/"));						
+			this.attrs.put("pathPivote", (Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/").concat("gastos").concat("/"));						
 			this.loadCatalog();      
     } // try
     catch (Exception e) {

@@ -158,6 +158,7 @@ public final class Cafu implements Serializable {
             else {
               LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
             } // else  
             message.setTelefono(this.celular);
             message.setIdSendStatus(new Long(response.getStatus()));
@@ -213,12 +214,15 @@ public final class Cafu implements Serializable {
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
               message.init();
-            else
+            else {
               message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
+            } // else  
           } // if  
           else {
             LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
           } // if  
           message.setTelefono(this.celular);
           message.setIdSendStatus(new Long(response.getStatus()));
@@ -267,12 +271,15 @@ public final class Cafu implements Serializable {
             message= gson.fromJson(response.getBody(), Message.class);
             if(message!= null) 
               message.init();
-            else
+            else {
               message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
+            } // else  
           } // if  
           else {
             LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
           } // if  
           message.setTelefono(this.celular);
           message.setIdSendStatus(new Long(response.getStatus()));

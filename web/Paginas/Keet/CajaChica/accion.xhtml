@@ -7,7 +7,9 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Captura del detalle del gasto #{keetCajaChicaAccion.attrs.consecutivoP}"/>	
+	<ui:param name="titulo" value="Captura del detalle del gasto #{keetCajaChicaAccion.attrs.consecutivo}"/>	
+  <ui:param name="janalBackingPage" value="#{keetCajaChicaAccion}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryValesJs}"/>
 		<script type="text/javascript">			
@@ -82,7 +84,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:accordionPanel id="criterios" activeIndex="2" multiple="true">																			
+          <p:accordionPanel id="criterios" multiple="true" activeIndex="2">
 						<p:tab title="Desarrollo [#{keetCajaChicaAccion.attrs.desarrollo.clave}] #{keetCajaChicaAccion.attrs.desarrollo.nombres}">
 							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Razon social:"/>
@@ -91,7 +93,7 @@
 								<p:inputText value="#{keetCajaChicaAccion.attrs.desarrollo.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>								
 							</p:panelGrid>										
 						</p:tab>			
-						<p:tab title="Residente(s)">
+            <p:tab title="Residente(s)" rendered="false">
               <p:dataTable lazy="false" id="tablaResidentes" var="row" widgetVar="kajoolTableResidentes" rowIndexVar="index" value="#{keetCajaChicaAccion.attrs.residentes}" paginator="#{keetCajaChicaAccion.attrs.residentes.size() gt 6}" rowsPerPageTemplate="6" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="6" styleClass="janal-content-table janal-wid-100" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
                 <p:column styleClass="janal-column-left Responsive">
                   <f:facet name="header">
@@ -140,7 +142,32 @@
 									</p:panelGrid>										
 								</p:panelGrid>										
 							</div>									
-						</p:tab>																	
+						</p:tab>				
+            <p:tab title="Evidencias, fotografía">
+							<p:fileUpload listener="#{keetCajaChicaAccion.doFileUpload}" onstart="return janal.execute()" skinSimple="true" 
+							  mode="advanced" process="@this" update="@(.importado)" label="Selecciona JPG/PNG/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="6291456"
+								multiple="false" allowTypes="#{keetCajaChicaAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100-txt janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 6 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetCajaChicaAccion.attrs.formatos}"/>														
+							<p:dataTable id="importado" var="row" value="#{keetCajaChicaAccion.documentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-3" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   								
+								<p:column headerText="Tamaño" styleClass="janal-column-right janal-wid-12">
+									<h:outputText value="#{row.tamanio} KB"/>
+								</p:column>   								
+								<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-6">
+                  <a class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="#{row.url}" title="Click para ver más grande la imagen" style="display: #{row.nombre eq '' ? 'none': ''}">
+                    <p:graphicImage id="icon-image" cache="false" url="#{row.url}" width="26" height="22" stream="false" style="cursor:zoom-in;"/>
+                  </a>	
+								</p:column>   								
+								<p:column styleClass="janal-column-center janal-wid-3">
+                  <p:commandButton icon="fa fa-trash" process="@this" update="importado" actionListener="#{keetCajaChicaAccion.doDelete(row)}" title="Eliminar"/>
+								</p:column>   								
+							</p:dataTable>              
+						</p:tab>				
 					</p:accordionPanel>																																		
 					<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCajaChicaAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
 						<p:column class="MarAuto Responsive janal-wid-3">
@@ -176,9 +203,10 @@
                       </f:facet>
                     </p:autoComplete>		
                     <div style="flex: 1;">  
-                      <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
-                      <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
-                      <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                      <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary"/>
+                      <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary"/>
+                      <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary"/>
+                      <!--  rendered="#{kajoolUtilAplicacion.isMobile}"-->
                     </div>  
                   </div>  
                 </div>  

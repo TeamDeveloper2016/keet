@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.cajachica.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,28 +14,49 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.cajachica.beans.ArchivoGasto;
 import mx.org.kaana.keet.cajachica.beans.Gasto;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.enums.ETipoVenta;
+import mx.org.kaana.mantic.facturas.backing.Catalogos;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.FileUploadEvent;
 
 @Named(value = "keetCajaChicaAccion")
 @ViewScoped
-public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos implements Serializable {
+public class Accion extends Catalogos implements Serializable {
 
 	private static final long serialVersionUID= 2847354766000406350L;  			
+  private static final Log LOG = LogFactory.getLog(Accion.class);
 	
+	private List<ArchivoGasto> documentos;	
+
+	public List<ArchivoGasto> getDocumentos() {
+		return documentos;
+	}
+
+	public void setDocumentos(List<ArchivoGasto> documentos) {
+		this.documentos = documentos;
+	}	
+  
   @PostConstruct
   @Override
   protected void init() {		
@@ -50,7 +72,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 			this.attrs.put("idGasto", JsfBase.getFlashAttribute("idGasto"));						
 			this.attrs.put("opcionResidente", opcion);						
 			this.attrs.put("idDesarrollo", idDesarrollo);      						
-			this.attrs.put("consecutivoP", JsfBase.getFlashAttribute("consecutivo"));      						
+			this.attrs.put("consecutivo", JsfBase.getFlashAttribute("consecutivo"));      						
       this.toLoadResidentes();
 			this.doLoad();								
 			this.initPadre();			
@@ -61,7 +83,11 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 			else
 				this.attrs.put("retornoInicial", this.attrs.get("retorno"));
 			if(!Cadena.isVacio(this.attrs.get("idGasto")))
-				this.loadExistente();
+				this.toLoadExistente();
+			this.setFile(new Importado());
+      this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
+			this.documentos= new ArrayList<>();
+      this.attrs.put("pathPivote", (Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/").concat("gastos").concat("/"));						
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -69,7 +95,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
     } // catch		
   } // init
 
-	private void initPadre() throws Exception{
+	private void initPadre() throws Exception {
 		try {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
@@ -130,7 +156,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 		} // finally	
   } // doLoad	  	
 	
-	private void loadExistente() throws Exception{
+	private void toLoadExistente() throws Exception {
 		List<ArticuloVenta> material= null;
 		Map<String, Object>params   = null;
 		try {
@@ -155,10 +181,10 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 		Transaccion transaccion= null;				
     try {											
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
-				transaccion= new Transaccion(loadGasto());
+				transaccion= new Transaccion(this.toLoadGasto(), this.documentos);
 				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);										
-					regresar= doCancelar();
+					regresar= this.doCancelar();
 					if(Cadena.isVacio(this.attrs.get("retorno")))
 						regresar= "accion".concat(Constantes.REDIRECIONAR);											
 				} // if
@@ -180,7 +206,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 		Transaccion transaccion= null;				
     try {											
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
-				transaccion= new Transaccion(loadGasto());
+				transaccion= new Transaccion(this.toLoadGasto(), this.documentos);
 				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);					
 					JsfBase.setFlashAttribute("idGasto", transaccion.getIdGasto());
@@ -202,7 +228,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
     return regresar;
   } // doPagina  
 	
-	private Gasto loadGasto() {
+	private Gasto toLoadGasto() throws Exception {
 		Gasto regresar= null;		
 		try {
 			regresar= new Gasto();									
@@ -215,7 +241,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 			throw e;
 		} // catch		
 		return regresar;
-	} // loadVale
+	} // toLoadGasto
 	
 	private void toSetFlash() {		
 		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));											
@@ -235,6 +261,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 				regresar= opcion.getRetorno().concat(Constantes.REDIRECIONAR_AMPERSON);						
 			else
 				regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+      this.doGlobalEvent(true);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -408,22 +435,128 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 						articulo= articulos.get(articulos.indexOf(articulo));
 					else
 						articulo= articulos.get(0);
-//			if(articulo.size()> 1) {
-//				int position= this.getAdminOrden().getArticulos().indexOf(new ArticuloVenta(articulo.toLong("idArticulo"), this.isCostoLibre()));
-//				if(articulo.size()> 1 && position>= 0) {
-//					if(index!= position)
-//						UIBackingUtilities.execute("jsArticulos.exists('"+ articulo.toString("propio")+ "', '"+ articulo.toString("nombre")+ "', "+ position+ ");");
-//				} // if	
-//				else
-//					this.toMoveData(articulo, index);
-//			} // else
-//			else 
-					this.toMoveData(articulo, index);
+			this.toMoveData(articulo, index);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
 	} 
+ 
+	public void doFileUpload(FileUploadEvent event) {				
+		StringBuilder path= new StringBuilder();  
+		StringBuilder temp= new StringBuilder();  
+		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
+    File result       = null;		
+		Long fileSize     = 0L;			
+		Long idArchivo    = 0L;			
+		try {			
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("gastos"));
+      temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
+      temp.append("/");			
+      temp.append(Fecha.getAnioActual());
+      temp.append("/");      
+      temp.append(Cadena.rellenar("9", 4, '9', true));
+      temp.append(Cadena.rellenar("0", 6, '0', true));
+      temp.append("/");      
+			path.append(temp.toString());
+			result= new File(path.toString());		
+			if (!result.exists())
+				result.mkdirs();
+      path.append(nameFile);
+			result = new File(path.toString());
+			if (result.exists())
+				result.delete();			      
+			Archivo.toWriteFile(result, event.getFile().getInputStream());
+			fileSize = event.getFile().getSize();						
+			idArchivo= this.toRegisterFile("gastos");		
+      /*UPLOAD*/
+			this.setFile(new Importado(nameFile, event.getFile().getContentType(), this.getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), idArchivo));
+  		this.attrs.put("file", this.getFile().getName());	
+			this.documentos.add(this.toGastoArchivo(idArchivo));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			if(result!= null)
+			  result.delete();
+		} // catch
+	} // doFileUpload	
+ 
+	private ArchivoGasto toGastoArchivo(Long idArchivo) {				
+  	String dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
+		String url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
+		ArchivoGasto regresar= new ArchivoGasto(
+			idArchivo, // idAchivo
+			null, // consecutivo
+			0D, // importe
+			0L, // articulos
+			-1L, // idGasto
+			this.getFile().getName(), // archivo
+			null, // eliminado
+			this.getFile().getRuta(), // ruta
+			this.getFile().getFileSize(), // tamanio 
+			JsfBase.getIdUsuario(), // idUsuario
+			this.getFile().getFormat().getIdTipoArchivo()< 0L ? 1L : this.getFile().getFormat().getIdTipoArchivo(), // idTipoArchivo			
+			Configuracion.getInstance().getPropiedadSistemaServidor("gastos").concat(this.getFile().getRuta()).concat(this.getFile().getName()), // alias
+			-1L, // idGastoArchivo 
+			this.getFile().getOriginal(), // nombre
+      url.concat(this.getFile().getRuta()).concat(this.getFile().getName())// url      
+		); 
+		return regresar;
+	} // toGastoArchivo
+ 
+	private EFormatos getFileType(String fileName) {
+		EFormatos regresar= EFormatos.FREE;
+		try {
+			if(fileName.contains(".")){
+			  fileName= fileName.split("\\.")[fileName.split("\\.").length-1].toUpperCase();
+				if (fileName.equals(EFormatos.PDF.name()))
+					regresar= EFormatos.PDF;
+				if (fileName.equals(EFormatos.ZIP.name()))
+					regresar= EFormatos.ZIP;
+				if (fileName.equals(EFormatos.DWG.name()))
+					regresar= EFormatos.DWG;
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+    return regresar;
+	} // getFileType	
+  
+  public void doDelete(ArchivoGasto item) {
+    try {
+      int index= this.documentos.indexOf(item);
+      if(index>= 0) {
+        this.documentos.remove(index);
+        File file= new File(item.getAlias());
+        if(file.exists())
+          file.delete();
+      } // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  }
+
+  @Override
+  public void doGlobalEvent(Boolean isViewException) {
+		super.doGlobalEvent(isViewException);
+    try {
+  		if(isViewException && this.documentos!= null && this.documentos.size()> 0)
+        for (ArchivoGasto item: this.documentos) {
+          File file= new File(item.getAlias());
+          if(!item.isValid() && file.exists())
+            file.delete();
+        } // for
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  }
   
 }

@@ -1049,17 +1049,21 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		Cafu notificar = null;
 		try {
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
-      notificar= new Cafu(sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", contratistas);
-      for (String residente: residentes.keySet()) {
-        notificar.setNombre(Cadena.nombrePersona(residente));
-        notificar.setCelular((String)residentes.get(residente));
-        LOG.info("Enviando mensaje de whatsup al celular: "+ residente);
-        notificar.doSendResidentes(sesion);
-      } // for
-			if(!residentes.isEmpty())
-		    JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa "+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
-			else
-		    JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+      if(residentes!= null && !residentes.isEmpty()) {
+        residentes.put("Alejandro Jiménez García", "4492090586");
+        residentes.put("Christopher Castro Jiménez", "4491087126");
+        notificar= new Cafu(sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", contratistas);
+        for (String residente: residentes.keySet()) {
+          notificar.setNombre(Cadena.nombrePersona(residente));
+          notificar.setCelular((String)residentes.get(residente));
+          LOG.info("Enviando mensaje de whatsup al celular: "+ residente);
+          notificar.doSendResidentes(sesion);
+        } // for
+        if(!residentes.isEmpty())
+          JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa "+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
+        else
+          JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+      } // if  
 		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);
