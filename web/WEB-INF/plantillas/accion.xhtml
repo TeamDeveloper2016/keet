@@ -58,7 +58,7 @@
 				}			
 			</style>		
     </h:head>
-    <h:body class="ui-widget-content" onload="$('div.janal-menu-header').attr('style', 'display: -webkit-box;margin-top: -3px;');">
+    <h:body class="ui-widget-content" onload="$('div.janal-menu-header').attr('style', 'display: -webkit-box;margin-top: -3px;');" onunload="#{empty(janalBackingPage)? '': 'executeGlobalException(true);'}">
       <p:layout fullPage="true">
         <p:layoutUnit position="north" styleClass="janal-header-page" style="border:0;" resizable="false" gutter="0">
           <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/> 

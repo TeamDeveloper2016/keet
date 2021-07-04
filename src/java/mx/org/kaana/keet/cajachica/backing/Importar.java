@@ -77,7 +77,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("file", ""); 
 			this.setFile(new Importado());
 			this.documentos= new ArrayList<>();
-      this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/").concat("gastos").concat("/"));						
+      this.attrs.put("pathPivote", Configuracion.getInstance().getEtapaServidor().name().toLowerCase().concat("/").concat("gastos").concat("/"));						
 			this.loadCatalogos();			
     } // try // try
     catch (Exception e) {
@@ -86,7 +86,7 @@ public class Importar extends IBaseImportar implements Serializable {
     } // catch		    
   } // init
 	
-	private void loadCatalogos() throws Exception{
+	private void loadCatalogos() throws Exception {
 		Entity desarrollo        = null;
 		Entity gasto             = null;		
 		Entity cajaChica         = null;		
@@ -117,18 +117,24 @@ public class Importar extends IBaseImportar implements Serializable {
 	
 	@Override
 	public void doLoad() {
-		List<Columna> columns= null;
+  	String dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
+		String url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
 		try {
 			columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-		  this.attrs.put("importados", UIEntity.build("VistaGastosDto", "importados", this.attrs, columns));
+      params.put("idGasto", this.attrs.get("idGasto"));
+      params.put("url", url);
+		  this.attrs.put("importados", UIEntity.build("VistaGastosDto", "importados", params, columns));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
     finally {
+      Methods.clean(params);
       Methods.clean(columns);
     }// finally
 	} // doLoad
@@ -251,5 +257,36 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
     return regresar;
 	} // getFileType	
+ 
+  public void doDelete(ArchivoGasto item) {
+    try {
+      int index= this.documentos.indexOf(item);
+      if(index>= 0) {
+        this.documentos.remove(index);
+        File file= new File(item.getAlias());
+        if(file.exists())
+          file.delete();
+      } // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  }
+
+  public void doGlobalEvent(Boolean isViewException) {
+    try {
+  		if(isViewException && this.documentos!= null && this.documentos.size()> 0)
+        for (ArchivoGasto item: this.documentos) {
+          File file= new File(item.getAlias());
+          if(!item.isValid() && file.exists())
+            file.delete();
+        } // for
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  }
   
 }

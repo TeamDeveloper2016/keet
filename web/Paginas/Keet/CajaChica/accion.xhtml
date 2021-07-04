@@ -158,7 +158,7 @@
 								<p:column headerText="Tamaño" styleClass="janal-column-right janal-wid-12">
 									<h:outputText value="#{row.tamanio} KB"/>
 								</p:column>   								
-								<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-6">
+								<p:column headerText="Foto" styleClass="janal-column-center janal-wid-6">
                   <a class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="#{row.url}" title="Click para ver más grande la imagen" style="display: #{row.nombre eq '' ? 'none': ''}">
                     <p:graphicImage id="icon-image" cache="false" url="#{row.url}" width="26" height="22" stream="false" style="cursor:zoom-in;"/>
                   </a>	
@@ -203,10 +203,10 @@
                       </f:facet>
                     </p:autoComplete>		
                     <div style="flex: 1;">  
-                      <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary"/>
-                      <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary"/>
-                      <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary"/>
-                      <!--  rendered="#{kajoolUtilAplicacion.isMobile}"-->
+                      <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                      <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                      <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                      <!--  -->
                     </div>  
                   </div>  
                 </div>  

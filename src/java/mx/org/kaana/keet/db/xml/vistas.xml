@@ -7775,7 +7775,8 @@
 					tc_keet_gastos_archivos.id_tipo_archivo,
 					tc_keet_gastos.consecutivo,
 					tc_keet_gastos.importe,
-					tc_keet_gastos.articulos
+					tc_keet_gastos.articulos,
+          concat('{url}', tc_keet_gastos_archivos.ruta, tc_keet_gastos_archivos.archivo) as url
 				from
 					tc_keet_gastos_archivos
 				inner join 
