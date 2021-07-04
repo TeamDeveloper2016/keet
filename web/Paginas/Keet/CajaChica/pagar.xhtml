@@ -185,7 +185,7 @@
 							<p:outputLabel value="Total [#{keetCajaChicaPagar.lazyModel== null? 0: keetCajaChicaPagar.lazyModel.rowCount}] registros"/>
 						</f:facet>
           </p:dataTable>  
-          <p:accordionPanel id="nomina" activeIndex="0" multiple="true" rendered="#{keetCajaChicaPagar.attrs.procesar}">
+          <p:accordionPanel id="nomina" activeIndex="0" multiple="true" style="display:#{keetCajaChicaPagar.attrs.procesar? '': 'none'}">
 						<p:tab title="Generales">
               <p:outputLabel for="idAfectaNomina" value="Vía nomina:"/>
               <p:selectOneMenu id="idAfectaNomina" value="#{keetCajaChicaPagar.attrs.idAfectaNomina}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" converter="javax.faces.Long">
