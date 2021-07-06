@@ -10,7 +10,7 @@ package mx.org.kaana.libs.wassenger;
 
 public enum ETypeMessage {
   
-  BIENVENIDA(1L), PROVEEDOR(2L), CLIENTE(3L), CONTRATISTA(4L), RESIDENTE(5L);
+  BIENVENIDA(1L), PROVEEDOR(2L), CLIENTE(3L), CONTRATISTA(4L), RESIDENTE(5L), ADMINISTRADOR(6L);
   
   private final Long id;
   

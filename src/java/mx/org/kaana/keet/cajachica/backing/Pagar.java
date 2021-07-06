@@ -186,7 +186,7 @@ public class Pagar extends IBaseFilter implements Serializable {
         int index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
         if(index>= 0)
 			    semana= semanas.get(index);
-        UIBackingUtilities.execute("janal.alert('Se realiz\\u00F3 con exito el cierre de caja chica de la semana ["+ semana.toLong("ejercicio")+ "-"+ semana.toLong("orden")+ "]');");
+        UIBackingUtilities.execute("janal.alert('Se realiz\\u00F3 el cierre de caja chica de la semana ["+ semana.toLong("ejercicio")+ "-"+ semana.toLong("orden")+ "]');");
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);
 			} // if
 			else
@@ -318,5 +318,17 @@ public class Pagar extends IBaseFilter implements Serializable {
 		} // else
     return regresar;
 	} // doVerificarReporte	
+ 
+  public void doWhatsup() {
+ 		Transaccion transaccion= null;	
+    try {									
+			transaccion = new Transaccion(((UISelectEntity)this.attrs.get("semana")).getKey(), -1L, "");
+			transaccion.ejecutar(EAccion.MOVIMIENTOS);
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+ }
   
 }

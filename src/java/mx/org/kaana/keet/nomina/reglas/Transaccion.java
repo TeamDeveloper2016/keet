@@ -1060,7 +1060,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           notificar.doSendResidentes(sesion);
         } // for
         if(!residentes.isEmpty())
-          JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa "+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa ["+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
         else
           JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  

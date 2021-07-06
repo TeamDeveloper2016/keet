@@ -7966,11 +7966,35 @@
 					{condicion}
 				{sortOrder}        
       </select>  
+      <select id="administradores">  
+        select
+          tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,
+          tc_mantic_personas.id_persona,
+          concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as persona,
+          tr_mantic_persona_tipo_contacto.valor
+        from
+          tc_mantic_personas   
+        inner join
+          tc_janal_usuarios on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+        inner join
+          tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona
+        where
+          tr_mantic_persona_tipo_contacto.id_tipo_contacto in (6, 7, 8)  
+          and tr_mantic_persona_tipo_contacto.id_preferido= 1
+          and tc_janal_usuarios.id_perfil= 5
+        order by
+          tc_mantic_personas.id_persona,   
+          tr_mantic_persona_tipo_contacto.id_tipo_contacto        
+      </select>  
       <select id="residentes">  
 				select
 					tr_mantic_empresa_personal.id_empresa_persona as id_key,
+          tc_mantic_personas.id_persona,
 					tr_mantic_empresa_personal.id_empresa_persona,
 					concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
+          concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as nomina,
+          tc_keet_nominas_periodos.inicio,
+          tc_keet_nominas_periodos.termino,
 					sum(tc_keet_gastos.importe) as total
 				from
 					tc_keet_cajas_chicas_cierres
