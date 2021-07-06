@@ -180,7 +180,13 @@ public class Pagar extends IBaseFilter implements Serializable {
     try {									
 			transaccion = new Transaccion(((UISelectEntity)this.attrs.get("semana")).getKey(), (Long)this.attrs.get("idAfectaNomina"), (String)this.attrs.get("observaciones"));
 			if(transaccion.ejecutar(EAccion.PROCESAR)) {
-				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta.", ETipoMensaje.INFORMACION);									
+				JsfBase.addMessage("Cierre de caja chica", "Se realizó el cierre de caja chica de forma correcta.", ETipoMensaje.INFORMACION);
+        UISelectEntity semana= null;
+        List<UISelectEntity> semanas= (List<UISelectEntity>)this.attrs.get("semanas");
+        int index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
+        if(index>= 0)
+			    semana= semanas.get(index);
+        UIBackingUtilities.execute("janal.alert('Se realiz\\u00F3 con exito el cierre de caja chica de la semana ["+ semana.toLong("ejercicio")+ "-"+ semana.toLong("orden")+ "]');");
 				regresar= "filtro".concat(Constantes.REDIRECIONAR);
 			} // if
 			else
@@ -281,8 +287,14 @@ public class Pagar extends IBaseFilter implements Serializable {
       parametros.put("REPORTE_DEPARTAMENTO", JsfBase.getAutentifica().getPersona().getNombreCompleto());
       if(Cadena.isVacio(this.attrs.get("semana")))
         parametros.put("REPORTE_PERIODO", "");
-      else
-        parametros.put("REPORTE_PERIODO", ((UISelectEntity)this.attrs.get("semana")).toString("inicio")+ " al "+ ((UISelectEntity)this.attrs.get("semana")).toString("termino"));
+      else {
+        UISelectEntity semana= null;
+        List<UISelectEntity> semanas= (List<UISelectEntity>)this.attrs.get("semanas");
+        int index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
+        if(index>= 0)
+			    semana= semanas.get(index);
+        parametros.put("REPORTE_PERIODO", semana.toString("inicio")+ " al "+ semana.toString("termino"));
+      } // else  
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       if(this.doVerificarReporte())
         this.reporte.doAceptar();			

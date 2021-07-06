@@ -449,7 +449,7 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					//if(cierre.getDisponible()<0)
 						//registrarInicidenciaGasto(sesion, JsfBase.getAutentifica().getPersona().getIdEmpresaPersona(), cierre.getDisponible());					
-					nuevo= this.toLoadNuevoCierre(sesion, cierre.getIdCajaChica(), cierre.getDisponible());
+					nuevo= this.toLoadNuevoCierre(sesion, cierre.getIdCajaChica(), cierre.getDisponible(), cierre.getIdNominaPeriodo());
 					if(DaoFactory.getInstance().insert(sesion, nuevo)>= 1L) {
 						if(registrarBitacoraCaja(sesion, nuevo.getIdCajaChicaCierre(), EEstatusCajasChicas.INICIADO.getKey())) {
 							regresar= this.actualizarGastos(sesion, cierre.getIdCajaChicaCierre(), nuevo.getIdCajaChicaCierre());
@@ -464,7 +464,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // realizarCierre
 	
-	private TcKeetCajasChicasCierresDto toLoadNuevoCierre(Session sesion, Long idCajaChica, Double disponible) throws Exception {
+	private TcKeetCajasChicasCierresDto toLoadNuevoCierre(Session sesion, Long idCajaChica, Double disponible, Long idNominaPeriodo) throws Exception {
 		TcKeetCajasChicasCierresDto regresar= null;
 		Siguiente siguiente                 = null;
 		Semanas semana                      = null;
@@ -486,7 +486,7 @@ public class Transaccion extends IBaseTnx {
 			regresar.setNomina(this.cantidad);
 			regresar.setIdEmpresaPersona(this.idEmpresaPersona);
 			semana= new Semanas();
-			regresar.setIdNominaPeriodo(semana.getSemanaEnCursoDto().getIdNominaPeriodo());
+			regresar.setIdNominaPeriodo(semana.getSemanaSiguiente(idNominaPeriodo).getIdNominaPeriodo());
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -640,7 +640,7 @@ public class Transaccion extends IBaseTnx {
         } // else  
         this.idEmpresaPersona= JsfBase.getAutentifica().getPersona().getIdEmpresaPersona();
         this.cantidad        = 0D;
-        TcKeetCajasChicasCierresDto nuevo= this.toLoadNuevoCierre(sesion, activa.getIdCajaChica(), activa.getSaldo());
+        TcKeetCajasChicasCierresDto nuevo= this.toLoadNuevoCierre(sesion, activa.getIdCajaChica(), activa.getSaldo(), this.idCajaChicaCierre);
         if(DaoFactory.getInstance().insert(sesion, nuevo)>= 1L) {
           this.registrarBitacoraCaja(sesion, nuevo.getIdCajaChicaCierre(), EEstatusCajasChicas.INICIADO.getKey());
           if(activa.isValid()) {

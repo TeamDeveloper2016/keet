@@ -105,6 +105,41 @@ public class Semanas {
 		return regresar;
 	} // getSemanaEnCursoDto
 	
+	public TcKeetNominasPeriodosDto getSemanaSiguiente() {
+	  TcKeetNominasPeriodosDto regresar= null;
+		Map<String, Object>params        = null;
+		try {
+      LocalDate siguiente= LocalDate.now();
+			params= new HashMap<>();
+			params.put("fecha", siguiente.plusDays(7).toString());
+			regresar= (TcKeetNominasPeriodosDto) DaoFactory.getInstance().toEntity(TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "semanaEnCurso", params);			
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally		
+		return regresar;
+	} // getSemanaEnCursoDto
+	
+	public TcKeetNominasPeriodosDto getSemanaSiguiente(Long idNominaPeriodo) {
+	  TcKeetNominasPeriodosDto regresar= null;
+		Map<String, Object>params        = null;
+		try {
+			params= new HashMap<>();
+			params.put("idNominaPeriodo", idNominaPeriodo);
+			regresar= (TcKeetNominasPeriodosDto) DaoFactory.getInstance().toEntity(TcKeetNominasPeriodosDto.class, "TcKeetNominasPeriodosDto", "siguiente", params);			
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally		
+		return regresar;
+	} // getSemanaEnCursoDto
+	
 	public int getSemana() throws Exception {
 	  int regresar= 1;
 		Map<String, Object> params=null;

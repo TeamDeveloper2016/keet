@@ -1231,6 +1231,14 @@
 				  date_format(inicio, '%Y%m%d')&lt;= date_format('{fecha}','%Y%m%d')
   			  and date_format(termino, '%Y%m%d')&gt;= date_format('{fecha}','%Y%m%d')
       </select>			
+      <select id="siguiente">
+        select      
+          tc_keet_nominas_periodos.*
+        from      
+          tc_keet_nominas_periodos
+				where
+				  id_nomina_periodo&gt;{idNominaPeriodo}
+      </select>			
     </unit>		
 		<unit id="TcKeetContratosLotesContratistasDto">
       <select id="row">

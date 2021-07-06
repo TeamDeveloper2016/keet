@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="detalleCajaChica" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="152"/>
+	<property name="ireport.x" value="1453"/>
+	<property name="ireport.y" value="488"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -74,15 +74,17 @@
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
-	<variable name="TOTAL_DESTAJOS" class="java.lang.Long" calculation="Sum">
+	<variable name="TOTAL_DESTAJOS" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
-		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		<initialValueExpression><![CDATA[0D]]></initialValueExpression>
 	</variable>
 	<variable name="DESARROLLO_TOTAL" class="java.lang.Double" resetType="Group" resetGroup="DESARROLLO" calculation="Sum">
 		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+		<initialValueExpression><![CDATA[0D]]></initialValueExpression>
 	</variable>
 	<variable name="RESIDENTE_TOTAL" class="java.lang.Double" resetType="Group" resetGroup="RESIDENTE" calculation="Sum">
 		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+		<initialValueExpression><![CDATA[0D]]></initialValueExpression>
 	</variable>
 	<group name="RESIDENTE">
 		<groupExpression><![CDATA[$F{RESIDENTE}]]></groupExpression>
@@ -108,7 +110,7 @@
 						</textElement>
 						<textFieldExpression><![CDATA["Total del residente: $ "]]></textFieldExpression>
 					</textField>
-					<textField evaluationTime="Group" evaluationGroup="RESIDENTE" pattern="#,##0.00" isBlankWhenNull="true">
+					<textField evaluationTime="Auto" pattern="#,##0.00" isBlankWhenNull="true">
 						<reportElement mode="Opaque" x="599" y="0" width="77" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="92c6ec81-da67-4e17-a9a3-bc8ba31152d0"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
@@ -194,7 +196,7 @@
 						</textElement>
 						<textFieldExpression><![CDATA["Total del desarrollo: $ "]]></textFieldExpression>
 					</textField>
-					<textField evaluationTime="Group" evaluationGroup="RESIDENTE" pattern="#,##0.00" isBlankWhenNull="true">
+					<textField evaluationTime="Auto" pattern="#,##0.00" isBlankWhenNull="true">
 						<reportElement mode="Opaque" x="662" y="0" width="89" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="fff743a5-f231-446d-9d65-cabb041fdbc2"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="false"/>
@@ -479,7 +481,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Total:]]></text>
+				<text><![CDATA[Total general:]]></text>
 			</staticText>
 		</band>
 	</summary>
