@@ -59,7 +59,7 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100-txt">		
                 <p:outputLabel for="idCliente" value="Cliente:"/>
 								<p:selectOneMenu id="idCliente" disabled="true"  value="#{keetCatalogosPrototiposImportar.prototipo.prototipo.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+									<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '|'} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -109,7 +109,7 @@
 							<p:outputLabel for="especialidad" value="Especialidad:"/>
 							<p:selectOneMenu id="especialidad" value="#{keetCatalogosPrototiposImportar.attrs.especialidad}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt import-local-file">
 								<f:selectItems value="#{keetCatalogosPrototiposImportar.attrs.especialidades}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.nombre}"/>
-								<p:ajax event="change" process="@this especialidad" listener="#{keetCatalogosPrototiposImportar.doActualizaPlanos}" update="plano" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="change" process="@this especialidad" listener="#{keetCatalogosPrototiposImportar.doActualizaPlanos}" update="plano" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadPlanos();"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>      
@@ -147,6 +147,7 @@
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
 							</p:dataTable>
+              <p:remoteCommand name="reloadPlanos" process="@this" update="plano"/>
 						</p:tab>
 					</p:tabView>
 				</div>

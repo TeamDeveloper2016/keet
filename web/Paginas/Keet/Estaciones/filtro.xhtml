@@ -8,11 +8,6 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Estaciones de los prototipos" />
-  <ui:define name="librerias">
-    <script type="text/javascript">
-
-    </script>		
-  </ui:define>
   <ui:define name="contenido">
     <div class="janal-align-right xs-pantalla janal-wid-100">
       <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
@@ -25,8 +20,8 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetEstacionesFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" listener="#{keetEstacionesFiltro.doLoadClientes()}" process="@this" update="panelBusqueda" />
-								<f:selectItems value="#{keetEstacionesFiltro.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? ' ': '|'} #{element.titulo}"/>
+                <p:ajax event="change" listener="#{keetEstacionesFiltro.doLoadClientes()}" process="@this" update="idCliente idPrototipo" />
+								<f:selectItems value="#{keetEstacionesFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? ' ': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
@@ -36,8 +31,8 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="idCliente" value="Cliente:"/>
 							<p:selectOneMenu id="idCliente" value="#{keetEstacionesFiltro.attrs.cliente}" var="item" converter="janal.convertidor.Entity"  styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetEstacionesFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? ' ': '|'} #{element.razonSocial}"/>
-								<p:ajax event="change" listener="#{keetEstacionesFiltro.doLoadPrototipos}" process="@this" update="panelBusqueda" />
+								<f:selectItems value="#{keetEstacionesFiltro.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? ' ': '|'} #{element.razonSocial}"/>
+								<p:ajax event="change" listener="#{keetEstacionesFiltro.doLoadPrototipos}" process="@this" update="idPrototipo" />
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
@@ -48,13 +43,13 @@
 									<h:outputText value="#{item.razonSocial}"/>
 								</p:column>   
 							</p:selectOneMenu>
-								<p:outputLabel for="idPrototipo" value="Prototipo:"/>
-								<p:selectOneMenu id="idPrototipo" value="#{keetEstacionesFiltro.attrs.idPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-									<f:selectItems value="#{keetEstacionesFiltro.attrs.prototipos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>  
-								</p:selectOneMenu>		             
+							<p:outputLabel for="idPrototipo" value="Prototipo:"/>
+							<p:selectOneMenu id="idPrototipo" value="#{keetEstacionesFiltro.attrs.idPrototipo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
+								<f:selectItems value="#{keetEstacionesFiltro.attrs.prototipos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>  
+							</p:selectOneMenu>		             
             </p:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right">
@@ -135,19 +130,18 @@
 							<p:outputLabel value="Total [#{keetEstacionesFiltro.hijos==null?0:keetEstacionesFiltro.hijos.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" for="tabla" widgetVar="kajoolContextMenu" >
+            <p:menuitem icon="fa fa-edit" action="#{keetEstacionesFiltro.doAccion('MODIFICAR')}"  value="Modificar"  title="Modificar opción de menú" />
+            <p:menuitem icon="fa fa-trash" actionListener="#{keetEstacionesFiltro.doAccion('ELIMINAR')}"  value="Eliminar"  title="Eliminar opción de menú" update="tabla" process="@this,tabla"/>
+            <p:separator/>
+            <p:menuitem icon="fa fa-arrow-up" id="subir" actionListener="#{keetEstacionesFiltro.doAccion('SUBIR')}" value="Subir" title="Subir opción" update="tabla" process="@this,tabla"/>
+            <p:menuitem icon="fa fa-arrow-down" id="bajar" actionListener="#{keetEstacionesFiltro.doAccion('BAJAR')}" value="Bajar" title="Bajar opción" update="tabla" process="@this,tabla"/>
+            <p:menuitem icon="fa fa-th-list" action="#{keetEstacionesFiltro.doAccion('REGISTRAR')}" ajax="false" value="Descendencia"  title="Agregar descendencia"/>             				
+            <p:menuitem icon="fa fa-tasks" action="#{keetEstacionesFiltro.doAccion('LISTAR')}" ajax="false" value="Estructura"  title="Ver estructura"/>
+            <p:menuitem icon="fa fa-file-pdf-o" id ="repProt" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetEstacionesFiltro.doReporte('PROTOTIPOS')}" rendered="#{keetEstacionesFiltro.attrs.seleccionado.nivel eq '4'}" oncomplete="janal.desbloquear();" update="descargar"/>		
+          </p:contextMenu>
 				</div>
 			</div>	
-			<p:contextMenu id="kajoolContextMenu" for="tabla" widgetVar="kajoolContextMenu" >
-        <p:menuitem icon="fa fa-edit" action="#{keetEstacionesFiltro.doAccion('MODIFICAR')}"  value="Modificar"  title="Modificar opción de menú" />
-        <p:menuitem icon="fa fa-trash" actionListener="#{keetEstacionesFiltro.doAccion('ELIMINAR')}"  value="Eliminar"  title="Eliminar opción de menú" update="tabla" process="@this,tabla"/>
-        <p:separator/>
-        <p:menuitem icon="fa fa-arrow-up" id="subir" actionListener="#{keetEstacionesFiltro.doAccion('SUBIR')}" value="Subir" title="Subir opción" update="tabla" process="@this,tabla"/>
-        <p:menuitem icon="fa fa-arrow-down" id="bajar" actionListener="#{keetEstacionesFiltro.doAccion('BAJAR')}" value="Bajar" title="Bajar opción" update="tabla" process="@this,tabla"/>
-        <p:menuitem icon="fa fa-th-list" action="#{keetEstacionesFiltro.doAccion('REGISTRAR')}" ajax="false" value="Descendencia"  title="Agregar descendencia"/>             				
-        <p:menuitem icon="fa fa-tasks" action="#{keetEstacionesFiltro.doAccion('LISTAR')}" ajax="false" value="Estructura"  title="Ver estructura"/>
-        <p:menuitem icon="fa fa-file-pdf-o" id ="repProt" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetEstacionesFiltro.doReporte('PROTOTIPOS')}" rendered="#{keetEstacionesFiltro.attrs.seleccionado.nivel eq '4'}" oncomplete="janal.desbloquear();" update="descargar"/>		
-      </p:contextMenu>
-
     </div>		           				
   </ui:define>    
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la estacion?" />

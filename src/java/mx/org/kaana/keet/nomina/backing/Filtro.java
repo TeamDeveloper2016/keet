@@ -376,11 +376,11 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
   
   public void doNotificar() {
-    String nombres[]  = {"JOSE FELICIANO RAMOS SANTOYO"};
-    String celulares[]= {"4493651872"};
+    String nombres[]  = {"WENDY MORAN GUTIERREZ"};
+    String celulares[]= {"3317605835"};
     Cafu message= new Cafu("Alejandro Jiménez García", "449-209-05-86");
     for (int x= 0; x < nombres.length; x++) {
-      message.setNombre(nombres[x]);
+      message.setNombre(Cadena.nombrePersona(nombres[x]));
       message.setCelular(celulares[x]);
       message.doSendMessage();
     } // for

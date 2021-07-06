@@ -71,11 +71,14 @@
 								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:separator/>
+								<p:menuitem icon="fa fa-cloud-upload" value="Importar" action="#{keetCatalogosPrototiposFiltro.doUpload()}" title="Importar estaciones" onstart="return janal.bloquear()"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" action="#{keetCatalogosPrototiposFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-history" title="Carga masiva" action="#{keetCatalogosPrototiposFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetCatalogosPrototiposFiltro.doUpload()}" onstart="return janal.bloquear()"/>
             </f:facet>												
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
               <f:facet name="header">
@@ -112,13 +115,13 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="consultar" action="#{keetCatalogosPrototiposFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="consultar" action="#{keetCatalogosPrototiposFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{keetCatalogosPrototiposFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="modificar" action="#{keetCatalogosPrototiposFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
 						<p:separator/>
-            <p:menuitem id="importar" action="#{keetCatalogosPrototiposFiltro.doAccion('SUBIR')}" icon="fa fa-external-link" ajax="false" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="estaciones" action="#{keetCatalogosPrototiposFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-list-alt" ajax="false" value="Estaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="importar" action="#{keetCatalogosPrototiposFiltro.doAccion('SUBIR')}" icon="fa fa-external-link" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="estaciones" action="#{keetCatalogosPrototiposFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-list-alt" value="Estaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
           </p:contextMenu>
         </div>
       </div>

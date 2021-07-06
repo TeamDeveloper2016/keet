@@ -227,8 +227,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally				
 	} // loadEmpresas
 	
-	
-	public void doLoadPrototipos(){
+	public void doLoadPrototipos() {
 		UISelectEntity cliente= null;
 	  try {
 			cliente = (UISelectEntity)this.attrs.get("cliente");

@@ -80,7 +80,7 @@
                 <p:dataTable id="tablaConstructivos" rowIndexVar="index" var="constructivo" value="#{keetCatalogosPrototiposAccion.prototipo.constructivos}" rows="6" paginator="false" reflow="true" rowKey="#{constructivo.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Tipo de sistema" class="janal-wid-30">										
                     <p:selectOneMenu value="#{constructivo.ikConstructivo}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-											<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.constructivos}"  var="element" itemValue="#{element}" itemLabel="#{element.grupo} - #{element.descripcion}"/>
+											<f:selectItems value="#{keetCatalogosPrototiposAccion.attrs.constructivos}" var="element" itemValue="#{element}" itemLabel="#{element.grupo} - #{element.descripcion}"/>
 											<p:column headerText="Grupo">
 												<h:outputText value="#{item.grupo}"/>
 											</p:column>      

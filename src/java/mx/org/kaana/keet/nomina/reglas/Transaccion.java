@@ -35,6 +35,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.wassenger.Cafu;
@@ -80,6 +81,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 	private Long idFigura;
 	private Long idTipoFigura;
 	private Correo correo;
+	private String texto;
 	
 	public Transaccion(Long idNomina) {
 		this(idNomina, new Autentifica());
@@ -150,6 +152,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 					switch(this.nomina.getIdNominaEstatus().intValue()) {
 						case 1:  // INICIADA
 							this.procesarPersonas(sesion, "todos");
+              this.grupo(sesion);
 							break;
 						case 2:  // ENPROCESO
 							// this.procesarPersonas(sesion, "algunos");
@@ -323,6 +326,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params.put(Constantes.SQL_CONDICION, Objects.equals(this.nomina.getIdCompleta(), 2L)? " (tr_mantic_empresa_personal.id_contratista is null and tr_mantic_empresa_personal.id_puesto!= 6) ": Constantes.SQL_VERDADERO);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", proceso, params);
 			if(personal!= null && !personal.isEmpty()) {
+        this.texto= Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, personal.size())+ " persona(s) y ";
   			monitoreo.setTotal(new Long(personal.size()));
 	  		monitoreo.setId("NOMINA DEL PERSONAL");				
 				int count= 1;
@@ -430,6 +434,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params.put("idNomina", this.idNomina);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "proveedores", params, Constantes.SQL_TODOS_REGISTROS);
 			if(personal!= null && !personal.isEmpty()) {
+        this.texto= this.texto+ Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, personal.size())+ " proveedor(es) ";
 				int count= 1;
 				for (Entity persona: personal) {
 					proveedor= this.existProveedor(sesion, persona.toLong("idProveedor"));
@@ -1064,11 +1069,31 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         else
           JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
-		} // try // try
+		} // try 
 		catch(Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
 	} // toNotificarResidentes
+
+  public void grupo(Session sesion) {
+    try {
+			Semanas semanas= new Semanas();
+			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
+      Cafu notificar= new Cafu("compañero(s)", "@g.us", this.texto, 
+        periodo.getEjercicio()+ "-"+ periodo.getOrden(), 
+        "*"+ 
+        Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getInicio())+ 
+        "* al *"+ 
+        Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
+        "*");
+      LOG.info("Enviando mensaje por whatsup al grupo de CAFU");
+      notificar.doSendCorteNomina(sesion);
+		} // try 
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+  }
   
 }

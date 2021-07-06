@@ -16,7 +16,6 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
-import mx.org.kaana.keet.estaciones.beans.Estacion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -25,6 +24,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 
 @Named(value = "keetCatalogosPrototiposFiltro")
 @ViewScoped
@@ -112,20 +112,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 				  regresar= "accion".concat(Constantes.REDIRECIONAR);
 					break;
 				case COMPLEMENTAR:
-					if(((Entity) this.attrs.get("seleccionado")).toLong("idEstacion")== null) {//agregar estacion
-					  regresar= "/Paginas/Keet/Estaciones/accion".concat(Constantes.REDIRECIONAR);
-						estacionDto= new TcKeetEstacionesDto();
-						estacionDto.setNivel(3L);
-						estacionDto.setClave("0012020999");//calcular
-						JsfBase.setFlashAttribute("idEstacion",  -1L);
-						JsfBase.setFlashAttribute("estacionPadre", estacionDto);
-						JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
-					} // if
-					else{
+					if(((Entity) this.attrs.get("seleccionado")).toLong("idEstacion")!= null) {//agregar estacion
 						estacionDto= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, ((Entity) this.attrs.get("seleccionado")).toLong("idEstacion"));
 						JsfBase.setFlashAttribute("estacionProcess", estacionDto);
 						regresar= "/Paginas/Keet/Estaciones/filtro".concat(Constantes.REDIRECIONAR);
-					} // else
+					} // if
+          else {
+            JsfBase.addMessage("Prototipo", "No se tiene asignado una plantilla de estaciones / conceptos");
+//					  regresar= "/Paginas/Keet/Estaciones/accion".concat(Constantes.REDIRECIONAR);
+//						estacionDto= new TcKeetEstacionesDto();
+//						estacionDto.setNivel(3L);
+//						estacionDto.setClave("0012020999");//calcular
+//						JsfBase.setFlashAttribute("idEstacion",  -1L);
+//						JsfBase.setFlashAttribute("estacionPadre", estacionDto);
+//						JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
+					} // if
 					break;
 			} // switch
     } // try
@@ -210,4 +211,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     //JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PROVEEDORES.getId());
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	} // doMasivo
+  
+	public String doUpload() {
+		JsfBase.setFlashAttribute("ikContratoLote", -1L);
+		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PLANTILLAS.getId());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Prototipos/filtro");
+		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
+	}
+  
 }
