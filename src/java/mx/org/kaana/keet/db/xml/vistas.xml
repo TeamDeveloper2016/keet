@@ -3077,6 +3077,32 @@
 				order by
 					tc_keet_estaciones.clave
 			</select>	
+			<select id="contratos">
+        select 
+					tc_keet_contratos.id_contrato as id_key,
+					tc_keet_contratos.id_contrato,
+				  tc_keet_contratos.id_empresa,
+					tc_keet_contratos.consecutivo,
+					tc_keet_contratos.clave,
+					tc_keet_contratos.nombre,
+					tc_keet_contratos.etapa,
+					tc_keet_contratos.ejercicio,
+					tc_keet_contratos.orden as contrato
+				from 
+					tc_keet_contratos
+				inner join 
+					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				where
+				  tc_keet_contratos.id_empresa in ({sucursales})
+				  and tc_keet_contratos.ejercicio>= {ejercicio}
+				  and tc_keet_contratos_lotes.id_contrato_lote_estatus in (1, 2)
+        group by
+          tc_keet_contratos.id_contrato
+ 				order by
+				  tc_keet_contratos.ejercicio desc, 
+          tc_keet_contratos.clave desc, 
+          tc_keet_contratos_lotes.orden	        
+      </select>
 			<select id="lotes">
         select 
 					tc_keet_contratos_lotes.id_contrato_lote as id_key,
@@ -3100,6 +3126,7 @@
 				  tc_keet_contratos.id_empresa in ({sucursales})
 				  and tc_keet_contratos.ejercicio>= {ejercicio}
 				  and tc_keet_contratos_lotes.id_contrato_lote_estatus in (1, 2)
+          and tc_keet_contratos.id_contrato= {idContrato}
 				order by
 				  tc_keet_contratos.ejercicio desc, 
           tc_keet_contratos.clave desc, 

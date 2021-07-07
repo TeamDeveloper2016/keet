@@ -1080,7 +1080,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     try {
 			Semanas semanas= new Semanas();
 			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
-      Cafu notificar= new Cafu("compañero(s)", "@g.us", this.texto, 
+      Cafu notificar= new Cafu("compañero(s)", Cafu.IMOX_GROUP, this.texto, 
         periodo.getEjercicio()+ "-"+ periodo.getOrden(), 
         "*"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getInicio())+ 

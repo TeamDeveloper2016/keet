@@ -182,10 +182,10 @@
 							</f:facet>							
               <div class="ui-grid-row janal-grid-row">
                 <div style="display: flex;">
-                  <div class="ui-grid-col-12" style="padding-right: 14px; flex: 0 0 #{kajoolUtilAplicacion.isMobile? '60%': '100%'} !important">
+                  <div class="ui-grid-col-12" style="flex: 1 1 #{kajoolUtilAplicacion.isMobile? '70%': '100%'} !important">
                     <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                     <p:inputText id="locks" value="0" style="display:none"/>
-                    <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-codigo" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{custom}" value="#{keetCajaChicaAccion.attrs.articulo}" completeMethod="#{keetCajaChicaAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="3" maxResults="10">
+                    <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" styleClass="#{kajoolUtilAplicacion.isMobile? 'janal-wid-100-txt': 'janal-wid-codigo'}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{custom}" value="#{keetCajaChicaAccion.attrs.articulo}" completeMethod="#{keetCajaChicaAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="3" maxResults="10">
                       <p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
                       <p:ajax event="focus" process="@this" listener="#{keetCajaChicaAccion.doActualizaImage(row['idArticulo'], row['nombre'])}" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
                       <f:facet name="itemtip">
@@ -202,12 +202,12 @@
                         </h:panelGrid>
                       </f:facet>
                     </p:autoComplete>		
-                    <div style="flex: 1;">  
-                      <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
-                      <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
-                      <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
-                      <!--  -->
-                    </div>  
+                  </div>                      
+                  <div style="flex: 1 1 #{kajoolUtilAplicacion.isMobile? '30%': '0%'};" class="janal-column-right">  
+                    <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                    <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                    <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                    <!--   -->
                   </div>  
                 </div>  
               </div>  

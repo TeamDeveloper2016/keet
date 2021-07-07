@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -220,7 +221,6 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doCompleto
 
 	public void doChangeTipo() {
-		// this.attrs.put("lotes", null);
 		switch(this.masivo.getIdTipoMasivo().intValue()) {
 			case 9: 
 				this.categoria= ECargaMasiva.ESTACIONES;
@@ -333,28 +333,24 @@ public class Importar extends IBaseImportar implements Serializable {
 	private void toLoadContratosLotes() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
-		List<UISelectEntity> lotes= null;
+		List<UISelectEntity> contratos= null;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			columns.add(new Columna("lote", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
  			params.put("ejercicio", Fecha.getAnioActual()- 1);
-			if(this.attrs.get("lotes")== null)
-			  lotes= UIEntity.build("VistaContratosLotesDto", "lotes", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			if(this.attrs.get("contratos")== null)
+			  contratos= UIEntity.build("VistaContratosLotesDto", "contratos", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			else
-				lotes= (List<UISelectEntity>)this.attrs.get("lotes");
-  		this.attrs.put("lotes", lotes);
-			if(this.attrs.get("ikContratoLote")!= null) {
-				int index= lotes.indexOf(new UISelectEntity((Long)this.attrs.get("ikContratoLote")));
-				if(index>= 0)
-					this.attrs.put("izContratoLote", new Object[] {lotes.get(index)});
-				else
-					this.attrs.put("izContratoLote", new Object[] {lotes.get(0)});
-			  this.attrs.put("ikContratoLote", null);
-			} // if
-			else
-  		  this.attrs.put("izContratoLote", new Object[] {lotes.get(0)});
+				contratos= (List<UISelectEntity>)this.attrs.get("contratos");
+  		this.attrs.put("contratos", contratos);
+      if(contratos!= null && !contratos.isEmpty())
+        this.attrs.put("idContrato", contratos.get(0));
+      else
+        this.attrs.put("idContrato", new UISelectEntity(-1L));
+      params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());
+      this.doLoadLotes();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -548,5 +544,39 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // finally
 		return regresar;
 	}
-	
+
+  public void doLoadLotes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		List<UISelectEntity> lotes= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("lote", EFormatoDinamicos.MAYUSCULAS));
+ 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+ 			params.put("ejercicio", Fecha.getAnioActual()- 1);
+      params.put("idContrato", ((UISelectEntity)this.attrs.get("idContrato")).getKey());
+  	  lotes= UIEntity.build("VistaContratosLotesDto", "lotes", params, columns, Constantes.SQL_TODOS_REGISTROS);
+  		this.attrs.put("lotes", lotes);
+			if(this.attrs.get("ikContratoLote")!= null) {
+				int index= lotes.indexOf(new UISelectEntity((Long)this.attrs.get("ikContratoLote")));
+				if(index>= 0)
+					this.attrs.put("izContratoLote", new Object[] {lotes.get(index)});
+				else
+					this.attrs.put("izContratoLote", new Object[] {lotes.get(0)});
+			  this.attrs.put("ikContratoLote", null);
+			} // if
+			else
+  		  this.attrs.put("izContratoLote", new Object[] {lotes.get(0)});
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+  }
+  
 }

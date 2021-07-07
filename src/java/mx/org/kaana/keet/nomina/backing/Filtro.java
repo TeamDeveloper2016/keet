@@ -376,8 +376,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
   
   public void doNotificar() {
-    String nombres[]  = {"WENDY MORAN GUTIERREZ"};
-    String celulares[]= {"3317605835"};
+    String nombres[]  = {"ARMANDO CALDERON OROZCO"};
+    String celulares[]= {"4424312527"};
     Cafu message= new Cafu("Alejandro Jiménez García", "449-209-05-86");
     for (int x= 0; x < nombres.length; x++) {
       message.setNombre(Cadena.nombrePersona(nombres[x]));
