@@ -2,6 +2,7 @@ package mx.org.kaana.keet.estaciones.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.keet.estaciones.reglas.MotorBusqueda;
+import mx.org.kaana.libs.formato.Error;
 
 public class RegistroEstacion implements Serializable {
 
@@ -14,7 +15,7 @@ public class RegistroEstacion implements Serializable {
 	}
 
 	public RegistroEstacion(Long idEstacion) {
-		this.estacion = init(idEstacion);
+		this.estacion = this.init(idEstacion);
 	}
 
 	public Estacion getEstacion() {
@@ -26,7 +27,7 @@ public class RegistroEstacion implements Serializable {
 	}
 	
 	private Estacion init(Long idEstacion) {
-    Estacion regresar= null;
+    Estacion regresar  = null;
 		MotorBusqueda motor= null;
 		try {
 			if(idEstacion> 0L) {
@@ -38,9 +39,14 @@ public class RegistroEstacion implements Serializable {
 			} // else
 		} // try
 		catch (Exception e) {			
-			mx.org.kaana.libs.formato.Error.mensaje(e);			
+			Error.mensaje(e);			
 		} // catch		
 		return regresar;
 	} // init
-	
+
+  public Estacion toLoad(Long idEstacion) {
+    this.estacion= this.init(idEstacion);
+    return this.estacion;
+  } 
+  
 }

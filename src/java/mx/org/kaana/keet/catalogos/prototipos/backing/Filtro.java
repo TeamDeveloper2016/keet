@@ -2,6 +2,7 @@ package mx.org.kaana.keet.catalogos.prototipos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
+import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -25,6 +27,10 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 
 @Named(value = "keetCatalogosPrototiposFiltro")
 @ViewScoped
@@ -32,17 +38,32 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
+	private Estaciones estaciones;
+  private TreeNode raiz;
+  private Map<String, Entity> especialidades;
+
+  public TreeNode getRaiz() {
+    return raiz;
+  }
+
+  public void setRaiz(TreeNode raiz) {
+    this.raiz = raiz;
+  }
+   
   @PostConstruct
   @Override
   protected void init() {
     try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			if(JsfBase.getFlashAttribute("idPrototipoProcess")!= null){
+			if(JsfBase.getFlashAttribute("idPrototipoProcess")!= null) {
 				this.attrs.put("idPrototipoProcess", JsfBase.getFlashAttribute("idPrototipoProcess"));
 				this.doLoad();
 				this.attrs.put("idPrototipoProcess", null);
 			} // if
       this.loadEmpresas();
+      this.estaciones= new Estaciones();
+      this.especialidades= new HashMap<>();             
+      this.toLoadEspecialidades();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -218,5 +239,74 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Prototipos/filtro");
 		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
+ 
+  public void doShowEstaciones(Entity row) {
+    try {
+      TcKeetEstacionesDto father= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, row.toLong("idEstacion"));
+      this.raiz= new DefaultTreeNode(father, null);
+      this.toLoadItemsEstacion(father, this.raiz);
+    } // try  
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doShowConceptos(NodeExpandEvent event) {
+    this.toLoadItemsEstacion((TcKeetEstacionesDto)event.getTreeNode().getData(), event.getTreeNode());
+  }
+  
+  public void doSelectEstacion(NodeSelectEvent event) {
+    this.toLoadItemsEstacion((TcKeetEstacionesDto)event.getTreeNode().getData(), event.getTreeNode());
+  }  
+  
+  private void toLoadEspecialidades() {
+    try {      
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaPrototiposDto", "departamentos", Collections.EMPTY_MAP, -1L);
+      this.especialidades.clear();
+      if(items!= null && !items.isEmpty())
+        for (Entity item: items) {
+          this.especialidades.put(item.toString("codigo"), item);
+        } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+          
+  private void toLoadItemsEstacion(TcKeetEstacionesDto father, TreeNode node) {
+    try {
+      if(father!= null && father.getNivel()< 6 && node.getChildCount()<= 0) {
+        List<TcKeetEstacionesDto> hijos= this.estaciones.toChildren(0, father.getClave(), father.getNivel().intValue()+ 1, 0);
+        int count= 1;
+        for (TcKeetEstacionesDto item: hijos) {
+          item.setUltimo(new Long(count));
+          if(this.especialidades.containsKey(item.getCodigo())) {
+            Entity entity= this.especialidades.get(item.getCodigo());
+            String nombre= entity.toString("departamento");
+            item.setCodigo("["+ nombre+ "] "+ item.getCodigo());
+            // item.setDescripcion("janal-"+ Cadena.eliminaCaracter(Cadena.toNormalizer(nombre), ' ').toLowerCase()+ "-color");
+            item.setDescripcion("janal-"+ entity.toLong("idDepartamento")+ "-color");
+          } // if  
+          else
+            item.setDescripcion("");
+          new DefaultTreeNode(item, node);    
+          count++;
+        } // for
+      } // if
+    } // try  
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+
+  @Override
+  protected void finalize() throws Throwable {
+    super.finalize(); 
+    Methods.clean(this.especialidades);
+  }
+ 
   
 }

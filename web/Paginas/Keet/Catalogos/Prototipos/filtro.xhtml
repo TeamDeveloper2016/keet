@@ -15,6 +15,47 @@
         'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
     </script>		
+    <style type="text/css">
+      .janal-panel-content {
+        width : 250px;
+        height: 70px;
+      }
+      .janal-1-color .ui-treenode-content {background-color: #749CEC !important; color: black;}
+      .janal-2-color .ui-treenode-content {background-color: #C28BD0 !important; color: black;}
+      .janal-3-color .ui-treenode-content {background-color: #8BD0BB !important; color: black;}
+      .janal-4-color .ui-treenode-content {background-color: #EAECEE !important; color: black;}
+      .janal-5-color .ui-treenode-content {background-color: #E8DAEF !important; color: black;}
+      .janal-6-color .ui-treenode-content {background-color: #C5CAE9 !important; color: black;}
+      .janal-7-color .ui-treenode-content {background-color: #CE93D8 !important; color: black;}
+      .janal-8-color .ui-treenode-content {background-color: #66FF00 !important; color: black;}
+      .janal-9-color .ui-treenode-content {background-color: #CCFF99 !important; color: black;}
+      .janal-10-color .ui-treenode-content {background-color: #FFFF99 !important; color: black;}
+      .janal-11-color .ui-treenode-content {background-color: #FF99FF !important; color: black;}
+      .janal-12-color .ui-treenode-content {background-color: #99CC99 !important; color: black;}
+      .janal-13-color .ui-treenode-content {background-color: #CE93D8 !important; color: black;}
+      .janal-14-color .ui-treenode-content {background-color: #EAEDED !important; color: black;}
+      .janal-15-color .ui-treenode-content {background-color: #FBEEE6 !important; color: black;}
+      .janal-16-color .ui-treenode-content {background-color: #D6EAF8 !important; color: black;}
+      .janal-17-color .ui-treenode-content {background-color: #A9DFBF !important; color: black;}
+      .janal-18-color .ui-treenode-content {background-color: #D7BDE2 !important; color: black;}
+      .janal-19-color .ui-treenode-content {background-color: #E5E7E9 !important; color: black;}
+      .janal-20-color .ui-treenode-content {background-color: #F8C471 !important; color: black;}
+      .janal-21-color .ui-treenode-content {background-color: #C39BD3 !important; color: black;}
+      .janal-22-color .ui-treenode-content {background-color: #F0B27A !important; color: black;}
+      .janal-23-color .ui-treenode-content {background-color: #AAB7B8 !important; color: black;}
+      .janal-24-color .ui-treenode-content {background-color: #F5B041 !important; color: black;}
+      .janal-25-color .ui-treenode-content {background-color: #52BE80 !important; color: black;}
+      .janal-26-color .ui-treenode-content {background-color: #85929E !important; color: black;}
+      .janal-27-color .ui-treenode-content {background-color: #F4D03F !important; color: black;}
+      .janal-28-color .ui-treenode-content {background-color: #8BD0BB !important; color: black;}
+      .janal-29-color .ui-treenode-content {background-color: #85C1E9 !important; color: black;}
+      .janal-30-color .ui-treenode-content {background-color: #D4E157 !important; color: black;}
+      .janal-31-color .ui-treenode-content {background-color: #BCAAA4 !important; color: black;}
+      .janal-32-color .ui-treenode-content {background-color: #FF8A65 !important; color: black;}
+      .janal-33-color .ui-treenode-content {background-color: #607D8B !important; color: black;}
+      .janal-34-color .ui-treenode-content {background-color: #8BC34A !important; color: black;}
+      .janal-35-color .ui-treenode-content {background-color: #9FA8DA !important; color: black;}
+    </style>  
   </ui:define>
   <ui:define name="contenido">
     <div class="janal-align-right xs-pantalla janal-wid-100">
@@ -64,7 +105,7 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosPrototiposFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosPrototiposFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosPrototiposFiltro.lazyModel.rowCount gt keetCatalogosPrototiposFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosPrototiposFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosPrototiposFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosPrototiposFiltro.lazyModel.rowCount gt keetCatalogosPrototiposFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem value="Agregar" action="#{keetCatalogosPrototiposFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" ajax="false"/>						
@@ -80,25 +121,25 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetCatalogosPrototiposFiltro.doUpload()}" onstart="return janal.bloquear()"/>
             </f:facet>												
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
               <h:outputText value="#{row['clave']}"/>
             </p:column>														
-            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.razonSocial}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="Cliente"/>
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>	      
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.descripcion}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.descripcion}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Descripcion" />
               </f:facet>
@@ -110,8 +151,11 @@
               </f:facet>
               <h:outputText value="#{row['metros2']}"/>
             </p:column>
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5" exportable="false">
+              <p:commandButton icon="fa fa-search" process="@this tabla" update="estructura" actionListener="#{keetCatalogosPrototiposFiltro.doShowEstaciones(row)}" title="Estaciones" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{empty row.idEstacion}"/>
+						</p:column>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{keetCatalogosPrototiposFiltro.lazyModel==null?0:keetCatalogosPrototiposFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{keetCatalogosPrototiposFiltro.lazyModel== null? 0: keetCatalogosPrototiposFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
@@ -123,9 +167,29 @@
             <p:menuitem id="importar" action="#{keetCatalogosPrototiposFiltro.doAccion('SUBIR')}" icon="fa fa-external-link" value="Importar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="estaciones" action="#{keetCatalogosPrototiposFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-list-alt" value="Estaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
           </p:contextMenu>
+          <p:spacer height="3px"/>
         </div>
       </div>
     </div>		           				
+    <p:panelGrid id="estructura" columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100" style="display: #{empty keetCatalogosPrototiposFiltro.raiz? 'none': ''}">
+      <p:tree id="arbol" value="#{keetCatalogosPrototiposFiltro.raiz}" var="row" selectionMode="single" selection="#{keetCatalogosPrototiposFiltro.attrs.seleccionado}" dynamic="true" orientation="horizontal">
+        <p:ajax event="expand" process="@this" update="@this" listener="#{keetCatalogosPrototiposFiltro.doShowConceptos}"/>
+        <p:ajax event="select" process="@this" update="@this" listener="#{keetCatalogosPrototiposFiltro.doSelectEstacion}"/>
+        <p:treeNode styleClass="#{row.descripcion}">
+          <div class="janal-panel-content">
+            <p:panelGrid columns="2" style="background: transparent;" styleClass="janal-wid-100" columnClasses="janal-wid-97 janal-column-left, janal-wid-3 janal-column-right">
+              <p:outputLabel value="#{row.codigo}" styleClass="janal-color-black janal-font-bold"/>
+              <p:outputLabel value="#{row.ultimo}" styleClass="janal-color-blue janal-font-bold"/>
+            </p:panelGrid>
+            <p:separator/>
+            <p:panelGrid columns="2" style="background: transparent;" styleClass="janal-wid-100" columnClasses="janal-wid-97 janal-column-left, janal-wid-3 janal-column-right">
+              <p:outputLabel value="#{row.nombre}" styleClass="janal-color-black"/>
+              <p:outputLabel value="#{row.nivel eq '6'? '$': ''}#{row.nivel eq '6'? row.costo: ''}" styleClass="janal-color-black janal-font-bold"/>
+            </p:panelGrid>  
+          </div>
+        </p:treeNode>
+      </p:tree>  
+    </p:panelGrid>
   </ui:define>    
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el prorotipo?" />
   <ui:param name="accionConfirmacion" value="#{keetCatalogosPrototiposFiltro}"/>

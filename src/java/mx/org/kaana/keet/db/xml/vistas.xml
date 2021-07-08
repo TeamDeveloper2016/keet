@@ -4116,6 +4116,25 @@
 			</select>	
 		</unit>
     <unit id="VistaPrototiposDto">
+			<select id="departamentos">
+				select
+					tc_keet_rubros.id_rubro as id_key,  
+					tc_keet_rubros.id_rubro,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_departamentos.nombre departamento
+				from 
+					tc_keet_rubros
+				inner join
+					tc_keet_rubros_grupos on tc_keet_rubros.id_rubro = tc_keet_rubros_grupos.id_rubro
+				inner join 
+					tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo = tc_keet_puntos_grupos.id_punto_grupo
+				inner join
+					tc_keet_departamentos on tc_keet_puntos_grupos.id_departamento = tc_keet_departamentos.id_departamento				
+				order by
+				 tc_keet_rubros.id_rubro        
+      </select>  
 			<select id="lazy">
 				select 
           tc_keet_prototipos.id_prototipo as id_key,
@@ -6393,10 +6412,8 @@
 					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
         where 
           tc_keet_puntos_grupos.id_departamento= {idDepartamento}
-				and 
-					tc_keet_puntos_grupos.id_extra= {idExtra}	
-				and 
-				  tc_keet_rubros.id_rubro not in (
+				  and tc_keet_puntos_grupos.id_extra= {idExtra}	
+  				and tc_keet_rubros.id_rubro not in (
 				select					
 					principal.id_rubro
 				from(  

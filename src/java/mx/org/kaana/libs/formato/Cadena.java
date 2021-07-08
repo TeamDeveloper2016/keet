@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.Prioridad;
+import org.apache.poi.common.usermodel.fonts.FontHeader;
 
 
 public final class Cadena {
@@ -1109,7 +1110,17 @@ public static String sinAcentos(String cadena){
 		} // catch
 		return regresar;
 	} // ajustarDecimales
-  
+
+	public static String toNormalizer(String text) {
+		return java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
+	}
+	
+	public static boolean toEqualsString(String source, String target) {
+		source= source.replaceAll(Constantes.CLEAN_STR, "").trim();
+		target= target.replaceAll(Constantes.CLEAN_STR, "").trim();
+		return source.equals(target);
+	}
+
   public static void main(String[] args) {
     String sql= "select\n" +
 "          tc_imagenes.id_imagen id_key, \n" +
@@ -1175,16 +1186,7 @@ public static String sinAcentos(String cadena){
     
     System.out.println(Cadena.ajustarDecimales("12987.127", 2));
     System.out.println("Hola*+ \"e+sto\" es. uña pr-ue$ba/de ||(#302@)''{}".replaceAll("[^a-zA-Z0-9 ñÑ\"\\.\\(\\)\\#\\+*-_$]+", ""));
+    System.out.println(Cadena.eliminaCaracter(Cadena.toNormalizer("ADMINISTRATIVO DE OBRA"), ' ').toLowerCase());
   }
-	
-	public static String toNormalizer(String text) {
-		return java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
-	}
-	
-	public static boolean toEqualsString(String source, String target) {
-		source= source.replaceAll(Constantes.CLEAN_STR, "").trim();
-		target= target.replaceAll(Constantes.CLEAN_STR, "").trim();
-		return source.equals(target);
-	}
-
+	  
 }

@@ -165,7 +165,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion  
 	
 	protected void actualizarChildren(int nivel) throws Exception {
-		actualizarChildren(nivel, 0);
+		this.actualizarChildren(nivel, 0);
 	}
 	
 	protected void actualizarChildren(int nivel, int incremento) throws Exception {
@@ -191,7 +191,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void doVisitado(TcKeetEstacionesDto estacion) {
 		try {
 			this.current= estacion;
-			actualizarChildren(1);
+			this.actualizarChildren(1);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -16,7 +16,15 @@ public class MotorBusqueda implements Serializable{
 	public MotorBusqueda(Long idEstacion) {
 		this.idEstacion = idEstacion;
 	}
-	
+
+  public Long getIdEstacion() {
+    return idEstacion;
+  }
+
+  public void setIdEstacion(Long idEstacion) {
+    this.idEstacion = idEstacion;
+  }
+  
 	public Estacion toEstacion() throws Exception {
 		Estacion regresar       = null;
 		Map<String, Object>params= null;
