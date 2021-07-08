@@ -160,7 +160,7 @@ public final class Cafu implements Serializable {
                 message= new Message();
             } // if  
             else {
-              LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
               message.setMessage(" {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
             } // else  
@@ -176,7 +176,7 @@ public final class Cafu implements Serializable {
           } // else  
         } // if  
         else 
-          LOG.warn("Ya había sido notificado este celular por whatsup ["+ this.celular+ "]");
+          LOG.warn("[doSendMessage] Ya había sido notificado este celular por whatsup ["+ this.celular+ "]");
       } // try
       catch(Exception e) {
         Error.mensaje(e);
@@ -186,62 +186,58 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
   }
 
   public void doSendCorteNomina(Session sesion) {
-    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
-      Message message= null;
-      Map<String, Object> params = new HashMap<>();        
-      try {
-        params.put("nombre", this.nombre);
-        params.put("celular", this.celular);
-        params.put("reporte", this.reporte);
-        params.put("nomina", this.nomina);
-        params.put("periodo", this.periodo);
-        params.put("saludo", this.toSaludo());
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
-          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_NOMINA, params, true)+ "}");
-        else {  
-          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
-          .header("Content-Type", "application/json")
-          .header("Token", this.token)
-          .body("{"+ Cadena.replaceParams(BODY_NOMINA, params, true)+ "}")
-          .asString();
-          if(Objects.equals(response.getStatus(), 201)) {
-            LOG.warn("Enviado: "+ response.getBody());
-            Gson gson= new Gson();
-            message  = gson.fromJson(response.getBody(), Message.class);
-            if(message!= null)
-              message.init();
-            else
-              message= new Message();
-          } // if  
-          else {
-            LOG.error("No se puedo enviar el mensaje por whatsup al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
-            message= new Message();
-            message.setMessage(" {"+ Cadena.replaceParams(BODY_NOMINA, params, true)+ "}");
-          } // else  
-          message.setTelefono(this.celular);
-          message.setIdSendStatus(new Long(response.getStatus()));
-          message.setSendStatus(response.getStatusText());
-          message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
-          message.setIdUsuario(JsfBase.getIdUsuario());
-          if(sesion!= null)
-            DaoFactory.getInstance().insert(sesion, message);
+    Message message= null;
+    Map<String, Object> params = new HashMap<>();        
+    try {
+      params.put("nombre", this.nombre);
+      params.put("celular", this.celular);
+      params.put("reporte", this.reporte);
+      params.put("nomina", this.nomina);
+      params.put("periodo", this.periodo);
+      params.put("saludo", this.toSaludo());
+      if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_NOMINA, params, true)+ "}");
+      else {  
+        HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+        .header("Content-Type", "application/json")
+        .header("Token", this.token)
+        .body("{"+ Cadena.replaceParams(BODY_NOMINA, params, true)+ "}")
+        .asString();
+        if(Objects.equals(response.getStatus(), 201)) {
+          LOG.warn("Enviado: "+ response.getBody());
+          Gson gson= new Gson();
+          message  = gson.fromJson(response.getBody(), Message.class);
+          if(message!= null)
+            message.init();
           else
-            DaoFactory.getInstance().insert(message);
+            message= new Message();
+        } // if  
+        else {
+          LOG.error("[doSendCorteNomina] No se puedo enviar el mensaje por whatsup al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+          message= new Message();
+          message.setMessage(" {"+ Cadena.replaceParams(BODY_NOMINA, params, true)+ "}");
         } // else  
-      } // try
-      catch(Exception e) {
-        Error.mensaje(e);
-      } // catch
-      finally {
-        Methods.clean(params);
-      } // finally
-    } // if
-    else 
-      LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+        message.setTelefono(this.celular);
+        message.setIdSendStatus(new Long(response.getStatus()));
+        message.setSendStatus(response.getStatusText());
+        message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
+        message.setIdUsuario(JsfBase.getIdUsuario());
+        if(sesion!= null)
+          DaoFactory.getInstance().insert(sesion, message);
+        else
+          DaoFactory.getInstance().insert(message);
+      } // else  
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
   public void doSendDestajo() {
@@ -279,7 +275,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendDestajo] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
           } // if  
@@ -302,7 +298,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendDestajo]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
   }
 
   public void doSendResidentes(Session sesion) {
@@ -336,7 +332,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
           } // if  
@@ -359,7 +355,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
   }
 
   public void doSendGasto(Session sesion) {
@@ -393,7 +389,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
           } // if  
@@ -416,7 +412,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
   }
   
   public void doSendCajaChica(Session sesion) {
@@ -450,7 +446,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
           } // if  
@@ -473,7 +469,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
   }
   
   private void prepare() {
@@ -534,12 +530,60 @@ public final class Cafu implements Serializable {
         regresar= "Buenas noches";
     return regresar;
   }
-        
+
+  public void doSendSaludo() {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("saludo", this.toSaludo());
+        params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message  = gson.fromJson(response.getBody(), Message.class);
+            if(message!= null)
+              message.init();
+            else
+              message= new Message();
+          } // if  
+          else {
+            LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
+          } // else  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.BIENVENIDA.getId());
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  }
+  
   public static void main(String ... args) {
 //    String nombres[]  = {"Carlos Calderon Solano", "Juan José Fuentes Ramirez España", "Christopher Castro Jiménez"};
 //    String celulares[]= {"4491813810", "4491152255", "4491087126"};
-//    Cafu message= new Cafu("Alejandro Jiménez García", "449-209-05-86", "CAFU_2021062410492325_orden_de_compra_detalle.pdf", "2021-20", "15/06/2021 al 30/06/2021");
-//    message.doSendMessage();
+    Cafu message= new Cafu("Alejandro Jiménez García", "449-209-05-86", "holix.pdf", "2021-20", "15/06/2021 al 30/06/2021");
+    message.doSendSaludo();
 //    for (int x= 0; x < nombres.length; x++) {
 //      message.setNombre(nombres[x]);
 //      message.setCelular(celulares[x]);
@@ -553,14 +597,14 @@ public final class Cafu implements Serializable {
 //    if(message!= null)
 //      message.init();
 //    LOG.info(message);
-    Map<String, Object> params= new HashMap<>();
-    params.put("Alex Jímenez", "uno.pdf");
-    params.put("Axel Jímenez", "dos.pdf");
-    params.put("Yanely Jímenez", "tres.pdf");
-    params.put("Yaretzy Jímenez", "cuatro.pdf");
-    Cafu cafu= new Cafu("Alejandro Jimenez", "4492090586", "2021-23", "*21/06/2021* al *30/06/2021*", params);
-    LOG.info(cafu.getReporte());
-    cafu.doSendDemo();
+//    Map<String, Object> params= new HashMap<>();
+//    params.put("Alex Jímenez", "uno.pdf");
+//    params.put("Axel Jímenez", "dos.pdf");
+//    params.put("Yanely Jímenez", "tres.pdf");
+//    params.put("Yaretzy Jímenez", "cuatro.pdf");
+//    Cafu cafu= new Cafu("Alejandro Jimenez", "4492090586", "2021-23", "*21/06/2021* al *30/06/2021*", params);
+//    LOG.info(cafu.getReporte());
+//    cafu.doSendDemo();
   }  
   
 }

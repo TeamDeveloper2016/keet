@@ -975,6 +975,9 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         jasper.init();      
         for (Entity item: items) {
           if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
+            // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE LOS CONTRATISTAS
+            if(!Objects.equals(idDesarrollo, -1L)) 
+              this.toNotificarResidentes(sesion, residentes, contratistas, item);
             params.put("idDesarrollo", item.toLong("idDesarrollo"));
             List<Entity> celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaConsultasDto", "residentesTipoContacto", params);
             residentes.clear();
@@ -984,9 +987,6 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
                 if(Objects.equals(celular.toLong("idPreferido"), 1L) && (Objects.equals(celular.toLong("idTipoContacto"), ETiposContactos.CELULAR.getKey()) || Objects.equals(celular.toLong("idTipoContacto"), ETiposContactos.CELULAR_NEGOCIO.getKey()) || Objects.equals(celular.toLong("idTipoContacto"), ETiposContactos.CELULAR_PERSONAL.getKey()))) 
                   residentes.put(celular.toString("residente"), celular.toString("valor"));
               } // for
-            // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE LOS CONTRATISTAS
-            if(!Objects.equals(idDesarrollo, -1L)) 
-              this.toNotificarResidentes(sesion, residentes, contratistas, item);
             contratistas.clear();
             idDesarrollo= item.toLong("idDesarrollo");
           } // for

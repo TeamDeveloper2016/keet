@@ -20,6 +20,7 @@ import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.estaciones.reglas.Estaciones;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -245,6 +246,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       TcKeetEstacionesDto father= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, row.toLong("idEstacion"));
       this.raiz= new DefaultTreeNode(father, null);
       this.toLoadItemsEstacion(father, this.raiz);
+      for (TreeNode node: this.raiz.getChildren()) {
+        this.toLoadItemsEstacion((TcKeetEstacionesDto)node.getData(), node);
+      } // for
     } // try  
     catch (Exception e) {
       Error.mensaje(e);

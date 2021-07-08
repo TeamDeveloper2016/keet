@@ -55,6 +55,9 @@
       .janal-33-color .ui-treenode-content {background-color: #607D8B !important; color: black;}
       .janal-34-color .ui-treenode-content {background-color: #8BC34A !important; color: black;}
       .janal-35-color .ui-treenode-content {background-color: #9FA8DA !important; color: black;}
+      .ui-tree-horizontal .ui-treenode-parent .ui-treenode-content {
+        white-space: normal;
+      }
     </style>  
   </ui:define>
   <ui:define name="contenido">
@@ -177,14 +180,14 @@
         <p:ajax event="select" process="@this" update="@this" listener="#{keetCatalogosPrototiposFiltro.doSelectEstacion}"/>
         <p:treeNode styleClass="#{row.descripcion}">
           <div class="janal-panel-content">
-            <p:panelGrid columns="2" style="background: transparent;" styleClass="janal-wid-100" columnClasses="janal-wid-97 janal-column-left, janal-wid-3 janal-column-right">
+            <p:panelGrid columns="2" style="background: transparent;" styleClass="janal-wid-100" columnClasses="janal-wid-80 janal-column-left, janal-wid-20 janal-column-right">
               <p:outputLabel value="#{row.codigo}" styleClass="janal-color-black janal-font-bold"/>
               <p:outputLabel value="#{row.ultimo}" styleClass="janal-color-blue janal-font-bold"/>
             </p:panelGrid>
             <p:separator/>
-            <p:panelGrid columns="2" style="background: transparent;" styleClass="janal-wid-100" columnClasses="janal-wid-97 janal-column-left, janal-wid-3 janal-column-right">
+            <p:panelGrid columns="2" style="background: transparent;" styleClass="janal-wid-100" columnClasses="janal-wid-80 janal-column-left, janal-wid-80 janal-column-right">
               <p:outputLabel value="#{row.nombre}" styleClass="janal-color-black"/>
-              <p:outputLabel value="#{row.nivel eq '6'? '$': ''}#{row.nivel eq '6'? row.costo: ''}" styleClass="janal-color-black janal-font-bold"/>
+              <p:outputLabel value="$#{row.costo}" styleClass="janal-color-black janal-font-bold"/>
             </p:panelGrid>  
           </div>
         </p:treeNode>
