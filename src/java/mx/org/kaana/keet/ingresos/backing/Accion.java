@@ -620,6 +620,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
+      params.put("idTipo", 1);
       switch(tipo) {
         case SERIES:  
           params.put(Constantes.SQL_CONDICION, "id_serie="+ (idKey== null? -1L: idKey));

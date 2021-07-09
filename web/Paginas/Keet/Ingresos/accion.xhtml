@@ -26,11 +26,11 @@
 				'contenedorGrupos\\:idCliente'        : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idContrato'       : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:factura'          : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:fechaFactura'     : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:fechaRecepcion'   : {validaciones: 'requerido|fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaFactura"})', mascara: 'fecha', grupo: 'general', individual: true},
-				'contenedorGrupos\\:importe'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', individual: true, grupo: 'general'},			
-				'contenedorGrupos\\:observaciones'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'contenedorGrupos\\:comentarios'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+				'contenedorGrupos\\:fechaFactura'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:fechaRecepcion'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:importe'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
+				'contenedorGrupos\\:observaciones'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:comentarios'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
 			};
 			
     	$(document).ready(function() {
@@ -111,7 +111,7 @@
 								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
 								<p:selectOneMenu id="idDesarrollo" value="#{keetIngresosAccion.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetIngresosAccion.doUpdateCliente}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();"/>
-									<f:selectItems value="#{keetIngresosAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+									<f:selectItems value="#{keetIngresosAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -123,14 +123,17 @@
 								<p:inputText id="idCliente" value="#{keetIngresosAccion.attrs.cliente}" styleClass="todos janal-wid-100-txt" readonly="true"/>
                 <p:outputLabel for="idContrato" value="Contrato:"/>
                 <p:selectOneMenu id="idContrato" value="#{keetIngresosAccion.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetIngresosAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.etapa or one.etapa eq ''? '': '|'} #{one.etapa}"/>
-									<p:column headerText="Clave">
+									<f:selectItems value="#{keetIngresosAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
+                  <p:column headerText="Clave" styleClass="janal-wid-10">
 										<p:outputLabel value="#{list.clave}"/>
 									</p:column>   
-									<p:column headerText="Etapa">
+									<p:column headerText="Nombre">
+										<p:outputLabel value="#{list.nombre}"/>
+									</p:column>   
+									<p:column headerText="Etapa" styleClass="janal-wid-10">
 										<p:outputLabel value="#{list.etapa}"/>
 									</p:column>   
-									<p:column styleClass="janal-column-right" headerText="No. viviendas">
+									<p:column styleClass="janal-wid-15 janal-column-right" headerText="No. viviendas">
 										<p:outputLabel value="#{list.noViviendas}"/>
 									</p:column>   
 								</p:selectOneMenu>																						
@@ -141,13 +144,13 @@
     							<p:inputText id="idSerie" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ikSerie.clave}" readonly="true"/>
                   <p:inputText id="idTipoComprobante" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ikTipoComprobante.nombre}" readonly="true"/>
                 </p:panelGrid>
-								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94 janal-color-blue" styleClass="janal-wid-100 involucrados" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" readonly="true"/>
+								<p:outputLabel for="fechaFactura" value="Facturado:"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-96 janal-color-blue" styleClass="recalculo janal-wid-100 involucrados" value="#{keetIngresosAccion.comprobante.timbrado}" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true" locale="es" readonly="true"/>
 								<p:outputLabel for="importe" value="Importe:"/>
                 <p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="$ #{keetIngresosAccion.doMiles(keetIngresosAccion.ingreso.total)}" readonly="true"/>
-								<p:spacer width="1px"/><p:separator rendered="false"/>
-                <p:outputLabel for="fechaRecepcion" value="Fecha pago:" rendered="false"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" rendered="false"/>
+								<p:spacer width="1px"/><p:separator/>
+                <p:outputLabel for="fechaRecepcion" value="Fecha:"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-96" styleClass="janal-wid-100" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="es"/>
               </p:panelGrid>
               <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
               <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>

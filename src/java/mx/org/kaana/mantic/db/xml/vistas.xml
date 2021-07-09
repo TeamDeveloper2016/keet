@@ -2336,6 +2336,7 @@
 					if(tc_mantic_facturas.id_facturama is null, if(tc_mantic_ventas.id_manual= 1, 1, 0), 1) facturado,
 					if(tc_mantic_facturas.id_factura_estatus is null, 1, tc_mantic_facturas.id_factura_estatus) id_factura_estatus,
 					tc_mantic_ventas.id_tipo_documento,
+          tc_keet_tipos_comprobantes.nombre as comprobante,
           tc_keet_series.nombre as serie,
           tc_mantic_ventas.id_tipo_comprobante,
           tc_mantic_ventas.fecha_pago,
@@ -2348,7 +2349,9 @@
 					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
 				inner join 
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
-				inner join 
+        inner join
+          tc_keet_tipos_comprobantes on tc_mantic_ventas.id_tipo_comprobante= tc_keet_tipos_comprobantes.id_tipo_comprobante
+				left join 
 					tc_keet_series on tc_mantic_ventas.id_serie= tc_keet_series.id_serie
 				inner join 
 					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus

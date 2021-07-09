@@ -127,7 +127,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Long idTipoComprobante;
   @Column (name="saldo")
   private Double saldo;
-  @Column (name="fechaPago")
+  @Column (name="fecha_pago")
   private LocalDateTime fechaPago;
   @Column (name="id_tipo_moneda")
   private Long idTipoMoneda;

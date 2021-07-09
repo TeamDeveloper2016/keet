@@ -637,7 +637,7 @@ public  class Fecha {
 	
 	public static LocalDateTime toLocalDateTime(String date, String time) {
 		// date equals 2018-11-01 and time equals 23:59:59
-    LocalDateTime regresar= LocalDateTime.now();
+    LocalDateTime regresar= null;
     try {
       regresar= LocalDateTime.of(
         Integer.parseInt(date.substring(0, 4)),
@@ -666,8 +666,10 @@ public  class Fecha {
         Integer.parseInt(date.substring(11, 13)),
         Integer.parseInt(date.substring(14, 16)),
         Integer.parseInt(date.substring(17, 19)),
-        Integer.parseInt(date.substring(20, 23))
+        0
       );
+      if(date.length()> 20) 
+        regresar.plusNanos(Integer.parseInt(date.substring(20, 23)));
     } // try
     catch(Exception e) {
       regresar= LocalDateTime.now();
