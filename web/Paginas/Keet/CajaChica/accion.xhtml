@@ -14,6 +14,7 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryValesJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 								
+				'idTipoMedioPago': {validaciones: 'requerido', mascara: 'libre'},				
 				'nombres'   : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
 				'cantidades': {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'},
 				'precios'   : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'}
@@ -166,7 +167,19 @@
 								<p:column styleClass="janal-column-center janal-wid-3">
                   <p:commandButton icon="fa fa-trash" process="@this" update="importado" actionListener="#{keetCajaChicaAccion.doDelete(row)}" title="Eliminar"/>
 								</p:column>   								
-							</p:dataTable>              
+							</p:dataTable>   
+              <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">
+                <p:outputLabel for="idTipoMedioPago" value="Metodo de pago:" styleClass="janal-wid-100"/>
+                <p:selectOneMenu id="idTipoMedioPago" value="#{keetCajaChicaAccion.adminOrden.orden.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{keetCajaChicaAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>                   
+                </p:selectOneMenu>
+              </p:panelGrid>  
 						</p:tab>				
 					</p:accordionPanel>																																		
 					<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCajaChicaAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">

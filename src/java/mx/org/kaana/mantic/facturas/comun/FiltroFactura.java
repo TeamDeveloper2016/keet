@@ -264,7 +264,7 @@ public abstract class FiltroFactura extends IBaseTicket {
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idContrato")) && !this.attrs.get("idContrato").toString().equals("-1"))
-  		sb.append("(tc_mantic_ventas.id_contratro= ").append(this.attrs.get("idContrato")).append(") and ");
+  		sb.append("(tc_mantic_ventas.id_contrato= ").append(this.attrs.get("idContrato")).append(") and ");
 		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
 	 	  sb.append("tc_mantic_ventas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
 		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))

@@ -28,6 +28,7 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
   private List<Parcial> disponibles;
   private List<IActions> documentos;
   private Long facturas;
+  private UISelectEntity ikTipoMedioPago;
 
 	public FacturaFicticia() {
 		this(-1L);
@@ -48,6 +49,7 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
     this.setIdSincronizado(2L);			
     this.documentos= new ArrayList<>();
     this.facturas  = 0L;
+    this.setIkTipoMedioPago(new UISelectEntity(1L));
 	}	
   
   public UISelectEntity getIkSerie() {
@@ -158,6 +160,16 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 
   public void setFacturas(Long facturas) {
     this.facturas = facturas;
+  }
+
+  public UISelectEntity getIkTipoMedioPago() {
+    return ikTipoMedioPago;
+  }
+
+  public void setIkTipoMedioPago(UISelectEntity ikTipoMedioPago) {
+    this.ikTipoMedioPago = ikTipoMedioPago;
+		if(this.ikTipoMedioPago!= null)
+		  this.setIdTipoMedioPago(this.ikTipoMedioPago.getKey());
   }
 
 	@Override

@@ -201,9 +201,10 @@ public class Transaccion extends IBaseTnx {
 			regresar.setIdUsuario(JsfBase.getIdUsuario());	
 			regresar.setArticulos(this.gasto.getTotalArticulos()-1L);
 			regresar.setIdCajaChicaCierre(this.gasto.getIdCajaChicaCierre());
+			regresar.setIdTipoMedioPago(this.gasto.getIdTipoMedioPago());
 			regresar.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			regresar.setIdEmpresaPersona(JsfBase.getAutentifica().getPersona().getIdEmpresaPersona());
-			regresar.setImporte(toImporte());
+			regresar.setImporte(this.toImporte());
 			regresar.setIdGastoEstatus(EEstatusGastos.DISPONIBLE.getKey());
 		} // try
 		catch (Exception e) {			

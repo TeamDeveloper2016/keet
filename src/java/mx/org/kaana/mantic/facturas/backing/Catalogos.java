@@ -141,7 +141,6 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 
 	@Override
   public void doLoad() {
-		Long idCliente             = -1L;
 		Long idClienteDomicilio    = -1L;
 		TcManticFacturasDto factura= null;
 		this.saldoCliente          = new SaldoCliente();

@@ -5,21 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 
-public class Gasto implements Serializable{
+public class Gasto implements Serializable {
 	
 	private static final long serialVersionUID = 1597828955111977704L;
 	private Long idGasto;
 	private Long idCajaChicaCierre;	
+	private Long idTipoMedioPago;	
 	private List<Articulo> articulos;
 
 	public Gasto() {
-		this(-1L, new ArrayList<>(), -1L);
+		this(-1L, new ArrayList<>(), -1L, 1L);
 	}
 	
-	public Gasto(Long idCajaChicaCierre, List<Articulo> articulos, Long idGasto) {
+	public Gasto(Long idCajaChicaCierre, List<Articulo> articulos, Long idGasto, Long idTipoMedioPago) {
 		this.idCajaChicaCierre= idCajaChicaCierre;
 		this.articulos        = articulos;
 		this.idGasto          = idGasto;
+    this.idTipoMedioPago  = idTipoMedioPago;
 	}
 
 	public Long getIdCajaChicaCierre() {
@@ -52,4 +54,13 @@ public class Gasto implements Serializable{
 		else
 			return 0L;
 	}
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+  
 }

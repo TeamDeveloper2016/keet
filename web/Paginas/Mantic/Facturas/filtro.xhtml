@@ -75,7 +75,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticFacturasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<p:ajax event="change" listener="#{manticFacturasFiltro.doLoadDesarrollos}" process="@this" update="idDesarrollo"/>
+								<p:ajax event="change" listener="#{manticFacturasFiltro.doLoadDesarrollos}" process="@this" update="idDesarrollo idCliente idContrato"/>
                 <f:selectItems value="#{manticFacturasFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '|'} #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -107,7 +107,7 @@
               </p:selectOneMenu>
 							<p:outputLabel for="idContrato" value="Contrato:"/>
               <p:selectOneMenu id="idContrato" value="#{manticFacturasFiltro.attrs.idContrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticFacturasFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <f:selectItems value="#{manticFacturasFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

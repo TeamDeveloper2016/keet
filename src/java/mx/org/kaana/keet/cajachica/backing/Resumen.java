@@ -24,6 +24,9 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 
 @Named(value = "keetCajaChicaResumen")
@@ -50,6 +53,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 			this.attrs.put("opcionResidente", opcion);			
 			this.attrs.put("idDesarrollo", idDesarrollo);      									
 			this.attrs.put("acciones", true);      									
+      this.attrs.put("pathPivote", Configuracion.getInstance().getEtapaServidor().name().toLowerCase().concat("/").concat("gastos").concat("/"));						
 			this.loadCatalogos();						
 			this.loadCajaChica();
 			this.doLoad();					
@@ -72,7 +76,8 @@ public class Resumen extends IBaseFilter implements Serializable {
 			params.clear();
 			params.put(Constantes.SQL_CONDICION, "tc_keet_gastos.id_gasto=".concat(this.attrs.get("idGasto").toString()));
 			gasto= (Entity) DaoFactory.getInstance().toEntity("VistaTcKeetGastosDto", "row", params);
-			this.attrs.put("gasto", gasto);			
+			this.attrs.put("gasto", gasto);		
+      this.toLoadTiposPagos();
 			this.attrs.put("idCajaChicaCierre", gasto.toString("idCajaChicaCierre"));
 			this.attrs.put("acciones", gasto.toLong("idGastoEstatus").equals(EEstatusGastos.DISPONIBLE.getKey()));
 			this.attrs.put("rechazar", 
@@ -197,4 +202,50 @@ public class Resumen extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("opcionResidente", this.attrs.get("opcionResidente"));											
 		JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));											
 	} // toSetFlash		
+  
+	private void toLoadTiposPagos() {
+		List<UISelectEntity> tiposMediosPagos= null;
+		Map<String, Object>params            = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
+      if(tiposMediosPagos!= null && !tiposMediosPagos.isEmpty()) {
+        int index= tiposMediosPagos.indexOf(new UISelectEntity(((Entity)this.attrs.get("gasto")).toLong("idTipoMedioPago")));
+        if(index>= 0)
+          this.attrs.put("idTipoMedioPago", tiposMediosPagos.get(index));          
+        else
+          this.attrs.put("idTipoMedioPago", UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
+      } // if
+      this.doLoadImportados();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toLoadTiposPagos
+  
+	public void doLoadImportados() {
+  	String dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
+		String url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat("/").concat((String)this.attrs.get("pathPivote"));
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		try {
+			columns= new ArrayList<>();      
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      params.put("idGasto", this.attrs.get("idGasto"));
+      params.put("url", url);
+		  this.attrs.put("importados", UIEntity.build("VistaGastosDto", "importados", params, columns));
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    }// finally
+	} // doLoadImportados
+  
 }

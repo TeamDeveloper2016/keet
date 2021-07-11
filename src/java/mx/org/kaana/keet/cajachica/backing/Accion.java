@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -35,6 +36,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.facturas.backing.Catalogos;
+import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -99,7 +101,7 @@ public class Accion extends Catalogos implements Serializable {
 		try {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
-			setPrecio(ETipoVenta.MENUDEO.getNombreCampo());			
+			this.setPrecio(ETipoVenta.MENUDEO.getNombreCampo());			
 			this.attrs.put("idVenta", -1L);
       this.attrs.put("accion", EAccion.AGREGAR);      
       this.attrs.put("idCliente", -1L);			
@@ -119,6 +121,7 @@ public class Accion extends Catalogos implements Serializable {
 			this.attrs.put("ticketLock", -1L);		
       this.accion= EAccion.AGREGAR;
 			super.doLoad();
+      this.toLoadTiposPagos();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -175,6 +178,30 @@ public class Accion extends Catalogos implements Serializable {
 		} // finally
 	} // loadExistente
 	
+	private void toLoadTiposPagos() {
+		List<UISelectEntity> tiposMediosPagos= null;
+		Map<String, Object>params            = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
+      if(tiposMediosPagos!= null && !tiposMediosPagos.isEmpty())
+        if(Objects.equals(this.accion, EAccion.AGREGAR))
+          ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
+        else {
+          int index= tiposMediosPagos.indexOf(((FacturaFicticia)this.getAdminOrden().getOrden()).getIkTipoMedioPago());
+          if(index>= 0)
+            ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkTipoMedioPago(tiposMediosPagos.get(index));          
+          else
+            ((FacturaFicticia)this.getAdminOrden().getOrden()).setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
+        } // else
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toLoadTiposPagos
+  
 	@Override
 	public String doAceptar() {
     String regresar        = null;    		
@@ -183,16 +210,16 @@ public class Accion extends Catalogos implements Serializable {
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
 				transaccion= new Transaccion(this.toLoadGasto(), this.documentos);
 				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
-					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);										
+					JsfBase.addMessage("Caja chica", "Se registró el gasto de caja chica de forma correcta.", ETipoMensaje.INFORMACION);										
 					regresar= this.doCancelar();
 					if(Cadena.isVacio(this.attrs.get("retorno")))
 						regresar= "accion".concat(Constantes.REDIRECIONAR);											
 				} // if
 				else
-					JsfBase.addMessage("Captura de materiales", "Ocurrió un error al realizar la captura de material.", ETipoMensaje.ERROR);			
+					JsfBase.addMessage("Caja chica", "Ocurrió un error al realizar la captura del gasto.", ETipoMensaje.ERROR);			
 			} // if
 			else
-				JsfBase.addMessage("Captura de materiales", "No se han capturado materiales.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Caja chica", "No se han capturado el gasto.", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -208,7 +235,7 @@ public class Accion extends Catalogos implements Serializable {
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
 				transaccion= new Transaccion(this.toLoadGasto(), this.documentos);
 				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
-					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);					
+					JsfBase.addMessage("Caja chica", "Se registró el gasto de caja chica de forma correcta.", ETipoMensaje.INFORMACION);					
 					JsfBase.setFlashAttribute("idGasto", transaccion.getIdGasto());
 					JsfBase.setFlashAttribute("retorno", "accion");										
 					JsfBase.setFlashAttribute("retornoInicial", this.attrs.get("retornoInicial"));										
@@ -216,10 +243,10 @@ public class Accion extends Catalogos implements Serializable {
 					regresar= "resumen".concat(Constantes.REDIRECIONAR);
 				} // if
 				else
-					JsfBase.addMessage("Captura de materiales", "Ocurrió un error al realizar la captura de material.", ETipoMensaje.ERROR);			
+					JsfBase.addMessage("Caja chica", "Ocurrió un error al registrar el gasto.", ETipoMensaje.ERROR);			
 			} // if
 			else
-				JsfBase.addMessage("Captura de materiales", "No se han capturado materiales.", ETipoMensaje.ERROR);			
+				JsfBase.addMessage("Caja chica", "No se han capturado el gasto.", ETipoMensaje.ERROR);			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -236,6 +263,7 @@ public class Accion extends Catalogos implements Serializable {
 			regresar.setArticulos(this.getAdminOrden().getArticulos());			
 			if(!Cadena.isVacio(this.attrs.get("idGasto")))
 				regresar.setIdGasto(Long.valueOf(this.attrs.get("idGasto").toString()));
+      regresar.setIdTipoMedioPago(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdTipoMedioPago());
 		} // try
 		catch (Exception e) {			
 			throw e;
