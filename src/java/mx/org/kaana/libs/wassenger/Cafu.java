@@ -41,7 +41,8 @@ public final class Cafu implements Serializable {
   private static final String BODY_RESIDENTE  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\nCAFU Construcciones\"";
   private static final String BODY_GASTO_CHICA= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\nCAFU Construcciones\"";
   private static final String BODY_CAJA_CHICA = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\nCAFU Construcciones\"";
-  private static final String BODY_NOMINA     = "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *14:00 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina.\\n\\nCAFU Construcciones\"";
+  private static final String BODY_OPEN_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *14:00 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina.\\n\\nCAFU Construcciones\"";
+  private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos y de gasto de caja chica se vera reflejado para la siguiente nómina ó _semana_.\\n\\nCAFU Construcciones\"";
   private static final String PATH_REPORT     = "{numero}.- {contratista}; https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE  = 10;
 
@@ -200,12 +201,12 @@ public final class Cafu implements Serializable {
       params.put("periodo", this.periodo);
       params.put("saludo", this.toSaludo());
       if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
-        LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_NOMINA, params, true)+ "}");
+        LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}");
       else {  
         HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
         .header("Content-Type", "application/json")
         .header("Token", this.token)
-        .body("{"+ Cadena.replaceParams(BODY_NOMINA, params, true)+ "}")
+        .body("{"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}")
         .asString();
         if(Objects.equals(response.getStatus(), 201)) {
           LOG.warn("Enviado: "+ response.getBody());
@@ -219,7 +220,58 @@ public final class Cafu implements Serializable {
         else {
           LOG.error("[doSendCorteNomina] No se puedo enviar el mensaje por whatsup al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
           message= new Message();
-          message.setMessage(" {"+ Cadena.replaceParams(BODY_NOMINA, params, true)+ "}");
+          message.setMessage(" {"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}");
+        } // else  
+        message.setTelefono(this.celular);
+        message.setIdSendStatus(new Long(response.getStatus()));
+        message.setSendStatus(response.getStatusText());
+        message.setIdTipoMensaje(ETypeMessage.RESIDENTE.getId());
+        message.setIdUsuario(JsfBase.getIdUsuario());
+        if(sesion!= null)
+          DaoFactory.getInstance().insert(sesion, message);
+        else
+          DaoFactory.getInstance().insert(message);
+      } // else  
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  public void doSendCierreNomina(Session sesion) {
+    Message message= null;
+    Map<String, Object> params = new HashMap<>();        
+    try {
+      params.put("nombre", this.nombre);
+      params.put("celular", this.celular);
+      params.put("reporte", this.reporte);
+      params.put("nomina", this.nomina);
+      params.put("periodo", this.periodo);
+      params.put("saludo", this.toSaludo());
+      if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+        LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}");
+      else {  
+        HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+        .header("Content-Type", "application/json")
+        .header("Token", this.token)
+        .body("{"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}")
+        .asString();
+        if(Objects.equals(response.getStatus(), 201)) {
+          LOG.warn("Enviado: "+ response.getBody());
+          Gson gson= new Gson();
+          message  = gson.fromJson(response.getBody(), Message.class);
+          if(message!= null)
+            message.init();
+          else
+            message= new Message();
+        } // if  
+        else {
+          LOG.error("[doSendCirreNomina] No se puedo enviar el mensaje por whatsup al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+          message= new Message();
+          message.setMessage(" {"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}");
         } // else  
         message.setTelefono(this.celular);
         message.setIdSendStatus(new Long(response.getStatus()));

@@ -13,6 +13,7 @@
 					concat(tc_keet_nominas_periodos.ejercicio, '-', tc_keet_nominas_periodos.orden) as nomina,
 					concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as residente,
 					tc_keet_desarrollos.nombres as desarrollo,
+          tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
 					tc_keet_gastos_detalles.codigo,
 					tc_keet_gastos_detalles.nombre as partida,
 					tc_keet_gastos_detalles.cantidad,
@@ -40,6 +41,8 @@
 					tr_mantic_empresa_personal on tc_keet_gastos.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
 				inner join 
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				inner join 
+          tc_mantic_tipos_medios_pagos on tc_keet_gastos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 				where
 					tc_keet_cajas_chicas_cierres.id_nomina_periodo= {idNominaPeriodo}
         order by

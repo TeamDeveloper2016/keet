@@ -180,6 +180,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 						regresar= DaoFactory.getInstance().update(sesion, this.nomina)>= 1L;
             this.notificar(sesion);
             this.message(sesion);
+            this.cierre(sesion);
 						// CAMBIAR EL ESTATUS A TODOS LOS INCIDENTES Y REGISTAR EN SUS RESPECTIVA BITACORA 
             this.closeIncidentes(sesion);	
 						this.toOpenNewNomina(sesion);
@@ -1089,6 +1090,26 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         "*");
       LOG.info("Enviando mensaje por whatsup al grupo de CAFU");
       notificar.doSendCorteNomina(sesion);
+		} // try 
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+  }
+  
+  public void cierre(Session sesion) {
+    try {
+			Semanas semanas= new Semanas();
+			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
+      Cafu notificar= new Cafu("compañero(s)", Cafu.IMOX_GROUP, "", 
+        periodo.getEjercicio()+ "-"+ periodo.getOrden(), 
+        "*"+ 
+        Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getInicio())+ 
+        "* al *"+ 
+        Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
+        "*");
+      LOG.info("Enviando mensaje por whatsup al grupo de CAFU");
+      notificar.doSendCierreNomina(sesion);
 		} // try 
 		catch(Exception e) {
 			Error.mensaje(e);

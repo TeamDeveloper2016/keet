@@ -298,7 +298,7 @@ public class Transaccion extends IBaseTnx {
 					detalle.setIdGasto(this.idGasto);
 					detalle.setIdArticulo(recordDetalle.getIdArticulo());				
 					detalle.setCodigo(recordDetalle.getPropio());
-					detalle.setNombre(recordDetalle.getNombre());
+					detalle.setNombre(recordDetalle.getNombre().toUpperCase());
 					detalle.setCantidad(recordDetalle.getCantidad());
 					detalle.setUnidadMedida(recordDetalle.getUnidadMedida());
 					detalle.setCosto(recordDetalle.getCosto());															

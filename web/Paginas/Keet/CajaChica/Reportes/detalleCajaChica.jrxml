@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="detalleCajaChica" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="1453"/>
-	<property name="ireport.y" value="488"/>
+	<property name="ireport.x" value="902"/>
+	<property name="ireport.y" value="512"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -71,6 +71,7 @@
 	<field name="DESARROLLO" class="java.lang.String"/>
 	<field name="RESIDENTE" class="java.lang.String"/>
 	<field name="CANTIDAD" class="java.math.BigDecimal"/>
+	<field name="TIPO_MEDIO_PAGO" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -141,14 +142,7 @@
 						<rightPen lineWidth="1.25"/>
 					</box>
 					<staticText>
-						<reportElement x="81" y="0" width="90" height="15" forecolor="#FFFFFF" uuid="5c3d2aa8-2cda-4e95-8e6d-dff7c60f01f1"/>
-						<textElement textAlignment="Center" verticalAlignment="Middle">
-							<font fontName="Arial Narrow" size="10" isBold="true"/>
-						</textElement>
-						<text><![CDATA[Codigo]]></text>
-					</staticText>
-					<staticText>
-						<reportElement x="171" y="0" width="309" height="15" forecolor="#FFFFFF" uuid="77998c7d-b3c0-498b-acb8-02bb2b883d00"/>
+						<reportElement x="80" y="0" width="332" height="15" forecolor="#FFFFFF" uuid="77998c7d-b3c0-498b-acb8-02bb2b883d00"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -162,7 +156,7 @@
 						<text><![CDATA[Nómina]]></text>
 					</staticText>
 					<staticText>
-						<reportElement x="480" y="0" width="92" height="15" forecolor="#FFFFFF" uuid="72f30ad7-cf94-459d-8264-55b6a746490d"/>
+						<reportElement x="500" y="0" width="72" height="15" forecolor="#FFFFFF" uuid="72f30ad7-cf94-459d-8264-55b6a746490d"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="10" isBold="true"/>
 						</textElement>
@@ -183,6 +177,13 @@
 						<text><![CDATA[Total]]></text>
 					</staticText>
 				</frame>
+				<staticText>
+					<reportElement x="412" y="16" width="88" height="15" forecolor="#FFFFFF" uuid="e085a9c0-509c-4d6a-aee4-5b312ca73764"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Medio pago]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -374,14 +375,21 @@
 	<detail>
 		<band height="15" splitType="Stretch">
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="480" y="1" width="92" height="14" uuid="2a37ed52-56b6-4f2c-981b-d0cbfc5a4b80"/>
+				<reportElement x="500" y="1" width="72" height="14" uuid="2a37ed52-56b6-4f2c-981b-d0cbfc5a4b80"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CANTIDAD}]]></textFieldExpression>
 			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="412" y="1" width="88" height="14" uuid="9a29fbdd-f0ef-4e37-b51e-d7d904bffa49"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO_MEDIO_PAGO}]]></textFieldExpression>
+			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="171" y="1" width="309" height="14" uuid="36b14542-8416-4294-b245-7e30c7105268"/>
+				<reportElement x="80" y="1" width="332" height="14" uuid="36b14542-8416-4294-b245-7e30c7105268"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
@@ -393,13 +401,6 @@
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMINA}]]></textFieldExpression>
-			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="81" y="1" width="90" height="14" uuid="fef2b799-99fd-42cb-a68d-dbdbb26a0581"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="9" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{CODIGO}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="1" width="752" height="1" forecolor="#999999" uuid="cdaaf896-444c-430b-a9d7-e7918ab549a2"/>
