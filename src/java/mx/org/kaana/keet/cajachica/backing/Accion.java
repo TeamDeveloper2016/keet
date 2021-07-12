@@ -260,10 +260,10 @@ public class Accion extends Catalogos implements Serializable {
 		try {
 			regresar= new Gasto();									
 			regresar.setIdCajaChicaCierre(((Entity)this.attrs.get("cajaChica")).getKey());			
-			regresar.setArticulos(this.getAdminOrden().getArticulos());			
-			if(!Cadena.isVacio(this.attrs.get("idGasto")))
-				regresar.setIdGasto(Long.valueOf(this.attrs.get("idGasto").toString()));
       regresar.setIdTipoMedioPago(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdTipoMedioPago());
+			regresar.setArticulos(this.getAdminOrden().getArticulos());			
+			if(!Cadena.isVacio(this.attrs.get("idGasto"))) 
+				regresar.setIdGasto(Long.valueOf(this.attrs.get("idGasto").toString()));
 		} // try
 		catch (Exception e) {			
 			throw e;

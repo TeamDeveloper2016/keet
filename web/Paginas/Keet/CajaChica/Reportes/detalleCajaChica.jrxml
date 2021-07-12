@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="detalleCajaChica" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="fe623c7c-31e4-48d0-b987-b7aec5cb9c93">
 	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="902"/>
-	<property name="ireport.y" value="512"/>
+	<property name="ireport.x" value="1453"/>
+	<property name="ireport.y" value="184"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -87,6 +87,10 @@
 		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
 		<initialValueExpression><![CDATA[0D]]></initialValueExpression>
 	</variable>
+	<variable name="MEDIO_PAGO_TOTAL" class="java.lang.Double" resetType="Group" resetGroup="TIPO_MEDIO_PAGO" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+		<initialValueExpression><![CDATA[0D]]></initialValueExpression>
+	</variable>
 	<group name="RESIDENTE">
 		<groupExpression><![CDATA[$F{RESIDENTE}]]></groupExpression>
 		<groupHeader>
@@ -101,18 +105,18 @@
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="20">
+			<band height="17">
 				<frame>
-					<reportElement mode="Opaque" x="0" y="4" width="752" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="37d600f9-a063-491b-8efc-cdac9b968f93"/>
-					<textField evaluationTime="Group" evaluationGroup="RESIDENTE" pattern="" isBlankWhenNull="true">
-						<reportElement mode="Opaque" x="460" y="0" width="139" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="954a39cf-ff81-4f57-a7c1-795b9984055d"/>
+					<reportElement mode="Opaque" x="0" y="0" width="752" height="16" forecolor="#000000" backcolor="#FFFFFF" uuid="37d600f9-a063-491b-8efc-cdac9b968f93"/>
+					<textField pattern="" isBlankWhenNull="true">
+						<reportElement mode="Opaque" x="314" y="1" width="285" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="954a39cf-ff81-4f57-a7c1-795b9984055d"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
-						<textFieldExpression><![CDATA["Total del residente: $ "]]></textFieldExpression>
+						<textFieldExpression><![CDATA["TOTAL DEL "+ $F{RESIDENTE}+ " : $ "]]></textFieldExpression>
 					</textField>
 					<textField evaluationTime="Auto" pattern="#,##0.00" isBlankWhenNull="true">
-						<reportElement mode="Opaque" x="599" y="0" width="77" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="92c6ec81-da67-4e17-a9a3-bc8ba31152d0"/>
+						<reportElement mode="Opaque" x="599" y="1" width="77" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="92c6ec81-da67-4e17-a9a3-bc8ba31152d0"/>
 						<textElement textAlignment="Center" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="true"/>
 						</textElement>
@@ -122,12 +126,59 @@
 			</band>
 		</groupFooter>
 	</group>
+	<group name="TIPO_MEDIO_PAGO">
+		<groupExpression><![CDATA[$F{TIPO_MEDIO_PAGO}]]></groupExpression>
+		<groupHeader>
+			<band height="14">
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement mode="Opaque" x="0" y="0" width="752" height="14" forecolor="#666666" backcolor="#CCCCCC" uuid="baeec735-2660-4438-a389-f394364d8ed4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["             MEDIO DE PAGO : "+$F{TIPO_MEDIO_PAGO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="16">
+				<frame>
+					<reportElement mode="Opaque" x="0" y="0" width="752" height="16" forecolor="#000000" backcolor="#CCCCCC" uuid="cf1a2064-79a6-4b27-960c-826f5b0da7e7"/>
+				</frame>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement mode="Opaque" x="374" y="2" width="245" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="fc7b61e3-3e2a-4eee-8d17-b25a58416350"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["TOTAL EN "+ $F{TIPO_MEDIO_PAGO}+ " : $ "]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Auto" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement mode="Opaque" x="619" y="2" width="89" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="2e1fde74-2801-4b81-b357-eec5ce062237"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{MEDIO_PAGO_TOTAL}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="625" y="0" width="90" height="1" uuid="8f75af90-43c0-437b-a031-02247bc53d81"/>
+					<graphicElement>
+						<pen lineWidth="1.75" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="625" y="2" width="90" height="1" uuid="0efacfda-390c-490c-8426-f2f9628dfbac"/>
+					<graphicElement>
+						<pen lineWidth="1.75" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
 	<group name="DESARROLLO">
 		<groupExpression><![CDATA[$F{DESARROLLO}]]></groupExpression>
 		<groupHeader>
 			<band height="33">
 				<textField pattern="" isBlankWhenNull="true">
-					<reportElement mode="Opaque" x="0" y="0" width="752" height="14" forecolor="#000000" backcolor="#CCCCCC" uuid="96bd2f95-7f1a-4651-8d4d-022ebc5abde8"/>
+					<reportElement mode="Opaque" x="0" y="0" width="752" height="14" forecolor="#000000" backcolor="#666666" uuid="96bd2f95-7f1a-4651-8d4d-022ebc5abde8"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="true"/>
 					</textElement>
@@ -190,12 +241,12 @@
 			<band height="18">
 				<frame>
 					<reportElement mode="Opaque" x="0" y="4" width="752" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="a9e6f51d-624c-4760-8f13-618f755c251d"/>
-					<textField evaluationTime="Group" evaluationGroup="RESIDENTE" pattern="" isBlankWhenNull="true">
-						<reportElement mode="Opaque" x="572" y="0" width="90" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="5b0e44ff-c02d-4880-b84a-fb6be7fbead3"/>
+					<textField pattern="" isBlankWhenNull="true">
+						<reportElement mode="Opaque" x="412" y="0" width="250" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="5b0e44ff-c02d-4880-b84a-fb6be7fbead3"/>
 						<textElement textAlignment="Right" verticalAlignment="Middle">
 							<font fontName="Arial Narrow" size="9" isBold="false"/>
 						</textElement>
-						<textFieldExpression><![CDATA["Total del desarrollo: $ "]]></textFieldExpression>
+						<textFieldExpression><![CDATA["TOTAL DE "+ $F{DESARROLLO}+ " : $"]]></textFieldExpression>
 					</textField>
 					<textField evaluationTime="Auto" pattern="#,##0.00" isBlankWhenNull="true">
 						<reportElement mode="Opaque" x="662" y="0" width="89" height="14" forecolor="#000000" backcolor="#FFFFFF" uuid="fff743a5-f231-446d-9d65-cabb041fdbc2"/>
@@ -478,11 +529,11 @@
 				<textFieldExpression><![CDATA[$V{TOTAL_DESTAJOS}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="553" y="4" width="108" height="15" forecolor="#000000" uuid="4043065d-d9be-48cf-909f-a9a6f5762375"/>
+				<reportElement x="440" y="4" width="221" height="15" forecolor="#000000" uuid="4043065d-d9be-48cf-909f-a9a6f5762375"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Total general:]]></text>
+				<text><![CDATA[TOTAL GENERAL DE CAJA CHICA:]]></text>
 			</staticText>
 		</band>
 	</summary>
