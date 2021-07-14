@@ -15,8 +15,13 @@
 				text-decoration: underline;
 				margin-right: 5px;
 			}
-			.manzana-lote-font {
+			.amanzana-lote-font {
 				font-size: 3.0vw !important;
+				font-weight: bold !important;
+				color: blue;
+			}
+			.bmanzana-lote-font {
+				font-size: 9.0vw !important;
 				font-weight: bold !important;
 				color: blue;
 			}
@@ -88,15 +93,19 @@
 							</div>
 							<div class="xs-pantalla">
 								<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
-									<p:outputLabel value="Inicial:"/>
-									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
-									<p:outputLabel value="Por reponer:"/>
-									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
-									<p:outputLabel value="Disponible:"/>
-									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
-									<p:outputLabel value="Pendiente:"/>										
-									<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>																																																			
-								</p:panelGrid>										
+  								<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-50 janal-column-center, janal-fix-50 janal-column-center">
+	  								<p:outputLabel value="Inicial:"/>
+			  						<p:outputLabel value="Por reponer:"/>
+		  							<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.saldo}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>																
+				  					<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.acumulado}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>								
+                  </p:panelGrid>  
+  								<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-50 janal-column-center, janal-fix-50 janal-column-center">
+  									<p:outputLabel value="Disponible:"/>
+		  							<p:outputLabel value="Pendiente:"/>										
+	  								<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.disponible}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>								
+			  						<p:inputText value="#{keetCajaChicaConsulta.attrs.cajaChica.pendiente}" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" readonly="true"/>																																																			
+				  				</p:panelGrid>										
+                </p:panelGrid>  
 							</div>
 						</p:tab>
 					</p:accordionPanel>						
@@ -107,7 +116,8 @@
 						<p:panel header="#{row.consecutivo}" style="text-align:center; border: 0px;">							
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCajaChicaConsulta.doResumen}">
-									<p:outputLabel value="$#{row.importe}" class="manzana-lote-font" style="cursor: pointer;"/>
+                  <p:outputLabel value="$#{row.importe}" styleClass="lg-pantalla amanzana-lote-font" style="cursor: pointer;"/>
+									<p:outputLabel value="$#{row.importe}" styleClass="xs-pantalla bmanzana-lote-font" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCajaChicaConsulta.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">																		
@@ -134,6 +144,8 @@
                 <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'totales')" oncomplete="janal.desbloquear()"/>
                 <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'totales')" oncomplete="janal.desbloquear()"/>
               </p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'totales')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'totales')" oncomplete="janal.desbloquear()"/>
             </f:facet>
             <p:column styleClass="janal-column-left Responsive">
               <f:facet name="header">

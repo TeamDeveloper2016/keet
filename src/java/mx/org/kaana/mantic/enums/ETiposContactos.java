@@ -21,7 +21,8 @@ public enum ETiposContactos {
 	CORREO_3,
 	CORREO_4;
 
-	public Long getKey(){
+	public Long getKey() {
 		return this.ordinal() + 1L;
 	}
+	
 }
