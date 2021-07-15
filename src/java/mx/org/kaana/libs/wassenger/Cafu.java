@@ -117,10 +117,13 @@ public final class Cafu implements Serializable {
   private String clean(String number) {
     StringBuilder regresar= new StringBuilder();
     if(number!= null) 
-      for (int x= 0; x< number.length(); x++) {
-        if(number.charAt(x)>= '0' && number.charAt(x)<= '9') 
-          regresar.append(number.charAt(x));
-      } // for
+      if(number.contains("@"))
+        regresar.append(number);
+      else 
+        for (int x= 0; x< number.length(); x++) {
+          if(number.charAt(x)>= '0' && number.charAt(x)<= '9') 
+            regresar.append(number.charAt(x));
+        } // for
     return regresar.toString();
   }
 

@@ -207,8 +207,9 @@ public class Accion extends Catalogos implements Serializable {
     String regresar        = null;    		
 		Transaccion transaccion= null;				
     try {											
-			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
-				transaccion= new Transaccion(this.toLoadGasto(), this.documentos);
+      Gasto gasto= this.toLoadGasto();
+			if(gasto!= null && !this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {				
+				transaccion= new Transaccion(gasto, this.documentos);
 				if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 					JsfBase.addMessage("Caja chica", "Se registró el gasto de caja chica de forma correcta.", ETipoMensaje.INFORMACION);										
 					regresar= this.doCancelar();
@@ -258,12 +259,14 @@ public class Accion extends Catalogos implements Serializable {
 	private Gasto toLoadGasto() throws Exception {
 		Gasto regresar= null;		
 		try {
-			regresar= new Gasto();									
-			regresar.setIdCajaChicaCierre(((Entity)this.attrs.get("cajaChica")).getKey());			
-      regresar.setIdTipoMedioPago(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdTipoMedioPago());
-			regresar.setArticulos(this.getAdminOrden().getArticulos());			
-			if(!Cadena.isVacio(this.attrs.get("idGasto"))) 
-				regresar.setIdGasto(Long.valueOf(this.attrs.get("idGasto").toString()));
+			if(!Cadena.isVacio(this.attrs.get("cajaChica")) && !((Entity)this.attrs.get("cajaChica")).isEmpty()) {
+  			regresar= new Gasto();									
+        regresar.setIdCajaChicaCierre(((Entity)this.attrs.get("cajaChica")).getKey());			
+        regresar.setIdTipoMedioPago(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdTipoMedioPago());
+        regresar.setArticulos(this.getAdminOrden().getArticulos());			
+        if(!Cadena.isVacio(this.attrs.get("idGasto"))) 
+          regresar.setIdGasto(Long.valueOf(this.attrs.get("idGasto").toString()));
+      } // if  
 		} // try
 		catch (Exception e) {			
 			throw e;

@@ -7790,8 +7790,7 @@
 					tc_keet_cajas_chicas_cierres on tc_keet_cajas_chicas.id_caja_chica = tc_keet_cajas_chicas_cierres.id_caja_chica
 				where 
 					tc_keet_cajas_chicas.id_desarrollo= {idDesarrollo}
-				and 
-					tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus in (1,2)
+				  and tc_keet_cajas_chicas_cierres.id_caja_chica_cierre_estatus in (1,2)
 			</select>			
 			<select id="findCajaChicaCierre">
 				select

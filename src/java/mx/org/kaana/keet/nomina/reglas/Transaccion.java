@@ -618,10 +618,19 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params=new HashMap<>();
 			params.put("idNomina", this.nomina.getIdNomina());
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetNominasProveedoresDto", "proveedores", params);
-			this.nomina.setProveedores(entity.toLong("proveedores"));
-			this.nomina.setSubtotal(entity.toDouble("subtotal"));
-			this.nomina.setIva(entity.toDouble("iva"));
-			this.nomina.setTotal(entity.toDouble("total"));
+      if(entity!= null && !entity.isEmpty()) {
+        this.nomina.setProveedores(entity.toLong("proveedores"));
+        this.nomina.setSubtotal(entity.toDouble("subtotal"));
+        this.nomina.setIva(entity.toDouble("iva"));
+        this.nomina.setTotal(entity.toDouble("total"));
+      } // if
+      else {
+        this.nomina.setProveedores(0L);
+        this.nomina.setSubtotal(0D);
+        this.nomina.setIva(0D);
+        this.nomina.setTotal(0D);
+      } // if
+      
 		} // try
 		finally {
 			Methods.clean(params);
