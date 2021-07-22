@@ -23,11 +23,11 @@ public class Retencion extends TcKeetContratosRetencionesDto implements Serializ
   }
 
   public Retencion(Long key) {
-    this(null, key, null, null, null, null, null, null, 0D);
+    this(null, key, null, null, null, null, null, null, 0D, 5D);
   }
 
-  public Retencion(String descripcion, Long idContratoRetencion, Long idUsuario, Long idContrato, String alias, Long orden, String nombre, String campo, Double porecentaje) {
-    super(descripcion, idContratoRetencion, idUsuario, idContrato, alias, orden, nombre, campo, porecentaje);
+  public Retencion(String descripcion, Long idContratoRetencion, Long idUsuario, Long idContrato, String alias, Long orden, String nombre, String campo, Double porecentaje, Double limite) {
+    super(descripcion, idContratoRetencion, idUsuario, idContrato, alias, orden, nombre, campo, porecentaje, limite);
     this.importe= 0D;
     this.activo = Boolean.FALSE;
   }

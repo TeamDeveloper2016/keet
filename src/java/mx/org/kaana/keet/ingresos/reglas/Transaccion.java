@@ -15,7 +15,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.keet.db.dto.TcManticClientesDeudasBitacoraDto;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -26,6 +25,7 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasArchivosDto;
@@ -121,9 +121,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
           } // if
 					break;
 				case MODIFICAR:
-					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-          this.toFillArticulos(sesion);
-     	    this.toUpdateDeleteXml(sesion);	
+          regresar= this.toUpdateDeuda(sesion);
 					break;				
 				case ELIMINAR:
   				params.put("idFactura", this.orden.getIdFactura());
@@ -370,7 +368,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     if(deuda!= null) {
       deuda.setIdClienteDeudaEstatus(5L); // CANCELADA
 		  DaoFactory.getInstance().update(sesion, deuda);		
-      TcManticClientesDeudasBitacoraDto registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
+      TcManticClientesDeudasBitacoraDto registro= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());
       DaoFactory.getInstance().insert(sesion, registro);		
     } // if
     else
@@ -397,7 +395,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       deuda.setLimite(this.toLimiteCredito(sesion));
       deuda.setIdClienteDeudaEstatus(EEstatusClientesDeudas.INICIAL.getIdClienteDeudaEstatus()); // INICIADA
       DaoFactory.getInstance().insert(sesion, deuda);		
-      registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
+      registro= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());
       DaoFactory.getInstance().insert(sesion, registro);		
 			TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
 			cliente.setSaldo(cliente.getSaldo()+ this.orden.getTotal());
@@ -407,7 +405,37 @@ public class Transaccion extends IBaseTnx implements Serializable {
       throw e;
     } // catch	
 	} // registrarDeuda  
-  
+
+  protected boolean toUpdateDeuda(Session sesion) throws Exception {
+    boolean regresar= false;
+    TcManticClientesDeudasDto deuda           = null;
+    TcManticClientesDeudasBitacoraDto registro= null;
+    Map<String, Object> params                = null;
+    try {
+      params = new HashMap<>();      
+      params.put("idVenta", this.orden.getIdVenta());      
+      params.put("idCliente", this.orden.getIdCliente());      
+      deuda = (TcManticClientesDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, "TcManticClientesDeudasDto", "deudaVenta", params);
+      deuda.setRetencion1(this.orden.getRetencion1());
+      deuda.setRetencion2(this.orden.getRetencion2());
+      deuda.setRetencion3(this.orden.getRetencion3());
+      deuda.setRetencion4(this.orden.getRetencion4());
+      deuda.setRetencion5(this.orden.getRetencion5());
+      deuda.setRetencion6(this.orden.getRetencion6());
+      deuda.setRetencion7(this.orden.getRetencion7());
+      DaoFactory.getInstance().update(sesion, deuda);
+      registro= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "SE ACTUALIZARON LAS RETENCIONES", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());
+      regresar= DaoFactory.getInstance().insert(sesion, registro)>= 1L;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  } // toUpdateDeuda  
+
 	public LocalDate toLimiteCredito(Session sesion) throws Exception {
 		TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
 		Long addDias= cliente.getPlazoDias();			

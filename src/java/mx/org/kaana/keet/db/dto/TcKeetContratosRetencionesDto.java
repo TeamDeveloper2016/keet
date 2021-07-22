@@ -47,6 +47,8 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
   private String campo;
   @Column (name="porcentaje")
   private Double porcentaje;
+  @Column (name="limite")
+  private Double limite;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -55,11 +57,11 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetContratosRetencionesDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, null, null, 10D);
     setKey(key);
   }
 
-  public TcKeetContratosRetencionesDto(String descripcion, Long idContratoRetencion, Long idUsuario, Long idContrato, String alias, Long orden, String nombre, String campo, Double porcentaje) {
+  public TcKeetContratosRetencionesDto(String descripcion, Long idContratoRetencion, Long idUsuario, Long idContrato, String alias, Long orden, String nombre, String campo, Double porcentaje, Double limite) {
     setDescripcion(descripcion);
     setIdContratoRetencion(idContratoRetencion);
     setIdUsuario(idUsuario);
@@ -70,6 +72,7 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
     setCampo(campo);
     setPorcentaje(porcentaje);
     setRegistro(LocalDateTime.now());
+    this.limite= limite;
   }
 	
   public void setDescripcion(String descripcion) {
@@ -152,6 +155,14 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Double getLimite() {
+    return limite;
+  }
+
+  public void setLimite(Double limite) {
+    this.limite = limite;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -185,6 +196,8 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPorcentaje());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLimite());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -202,6 +215,7 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("campo", getCampo());
 		regresar.put("porcentaje", getPorcentaje());
+		regresar.put("limite", getLimite());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -209,7 +223,7 @@ public class TcKeetContratosRetencionesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdContratoRetencion(), getIdUsuario(), getIdContrato(), getAlias(), getOrden(), getNombre(), getCampo(), getPorcentaje(), getRegistro()
+      getDescripcion(), getIdContratoRetencion(), getIdUsuario(), getIdContrato(), getAlias(), getOrden(), getNombre(), getCampo(), getPorcentaje(), getLimite(), getRegistro()
     };
     return regresar;
   }

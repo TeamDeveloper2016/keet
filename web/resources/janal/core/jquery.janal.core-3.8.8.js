@@ -174,13 +174,16 @@
 		  var count= 0;
       for(var i= 0; i< s.length; i++) {
         var c= s.charAt(i);
-        if(!this.isDigit(c))
-          return false;
-				else
-					if(!(c==='.' && count=== 0))
-						count++;
+        if(this.isDigit(c)) 
+          continue;
+        else
+					if(c==='.')
+            if(count=== 0)
+						  count++;
+            else
+              return false;
 				  else
-						return false;
+					  return false;
       } // for
       return true;
     }, // isDouble

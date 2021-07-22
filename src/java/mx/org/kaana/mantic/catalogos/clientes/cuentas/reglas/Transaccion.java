@@ -28,7 +28,7 @@ import mx.org.kaana.mantic.catalogos.clientes.reglas.NotificaCliente;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
-import mx.org.kaana.mantic.db.dto.TcManticClientesBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
@@ -141,15 +141,17 @@ public class Transaccion extends Facturama {
 				case COMPLETO:
 					regresar= this.procesarPagoCuentas(sesion);
           for(Entity cuenta: this.cuentas) {
-            this.clienteDeuda = new TcManticClientesDeudasDto(cuenta.getKey());
-            this.idClientePago= cuenta.toLong("idClientePago");
-            if(this.xml!= null) {
-              this.file= this.xml;
-              this.toUpdateDeleteFilePago(sesion);
-            } // if  
-            if(this.pdf!= null) {
-              this.file= this.pdf;
-              this.toUpdateDeleteFilePago(sesion);
+            if(cuenta.toBoolean("activo")) {
+              this.clienteDeuda = new TcManticClientesDeudasDto(cuenta.getKey());
+              this.idClientePago= cuenta.toLong("idClientePago");
+              if(this.xml!= null) {
+                this.file= this.xml;
+                this.toUpdateDeleteFilePago(sesion);
+              } // if  
+              if(this.pdf!= null) {
+                this.file= this.pdf;
+                this.toUpdateDeleteFilePago(sesion);
+              } // if  
             } // if  
           } // for
 					break;
@@ -204,9 +206,9 @@ public class Transaccion extends Facturama {
 					deuda.setSaldo(saldo);
 					deuda.setIdClienteDeudaEstatus(this.saldar? EEstatusClientes.SALDADA.getIdEstatus(): saldo.equals(0D)? EEstatusClientes.FINALIZADA.getIdEstatus(): EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
-          TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-            -1L, // Long idClienteBitacora, 
-            deuda.getIdClienteDeudaEstatus(), // Long idClienteEstatus, 
+          TcManticClientesDeudasBitacoraDto bitacora= new TcManticClientesDeudasBitacoraDto(
+            -1L, // Long idClienteDeudaBitacora, 
+            deuda.getIdClienteDeudaEstatus(), // Long idClienteDeudaEstatus, 
             "SE REGISTRO UN PAGO [".concat(String.valueOf(this.pago.getPago())).concat("]"), // String justificacion, 
             JsfBase.getIdUsuario(), // Long idUsuario, 
             deuda.getIdClienteDeuda() // Long idClienteDeuda
@@ -277,9 +279,9 @@ public class Transaccion extends Facturama {
               params.put("saldo", abono);
               params.put("idClienteEstatus", idEstatus);
               DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, cuenta.getKey(), params);
-              TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-                -1L, // Long idClienteBitacora, 
-                idEstatus, // Long idClienteEstatus, 
+              TcManticClientesDeudasBitacoraDto bitacora= new TcManticClientesDeudasBitacoraDto(
+                -1L, // Long idClienteDeudaBitacora, 
+                idEstatus, // Long idClienteDeudaEstatus, 
                 "SE REGISTRO UN PAGO [".concat(String.valueOf(pagoParcial)).concat("]"), // String justificacion, 
                 JsfBase.getIdUsuario(), // Long idUsuario, 
                 cuenta.getKey() // Long idClienteDeuda
@@ -295,9 +297,9 @@ public class Transaccion extends Facturama {
                 params.put("saldo", 0);
                 params.put("idClienteEstatus", EEstatusClientes.SALDADA.getIdEstatus());
                 DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, cuenta.getKey(), params);
-                TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-                  -1L, // Long idClienteBitacora, 
-                  EEstatusClientes.FINALIZADA.getIdEstatus(), // Long idClienteEstatus, 
+                TcManticClientesDeudasBitacoraDto bitacora= new TcManticClientesDeudasBitacoraDto(
+                  -1L, // Long idClienteDeudaBitacora, 
+                  EEstatusClientes.FINALIZADA.getIdEstatus(), // Long idClienteDeudaEstatus, 
                   null, // String justificacion, 
                   JsfBase.getIdUsuario(), // Long idUsuario, 
                   cuenta.getKey() // Long idClienteDeuda
@@ -369,9 +371,9 @@ public class Transaccion extends Facturama {
               params.put("saldo", abono);
               params.put("idClienteEstatus", idEstatus);
               DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, cuenta.getKey(), params);
-              TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-                -1L, // Long idClienteBitacora, 
-                idEstatus, // Long idClienteEstatus, 
+              TcManticClientesDeudasBitacoraDto bitacora= new TcManticClientesDeudasBitacoraDto(
+                -1L, // Long idClienteDeudaBitacora, 
+                idEstatus, // Long idClienteDeudaEstatus, 
                 "SE REGISTRO UN PAGO [".concat(String.valueOf(pagoParcial)).concat("]"), // String justificacion, 
                 JsfBase.getIdUsuario(), // Long idUsuario, 
                 cuenta.getKey() // Long idClienteDeuda
@@ -387,8 +389,8 @@ public class Transaccion extends Facturama {
                 params.put("saldo", 0);
                 params.put("idClienteEstatus", EEstatusClientes.SALDADA.getIdEstatus());
                 DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, cuenta.getKey(), params);
-                TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-                  -1L, // Long idClienteBitacora, 
+                TcManticClientesDeudasBitacoraDto bitacora= new TcManticClientesDeudasBitacoraDto(
+                  -1L, // Long idClienteDeudaBitacora, 
                   EEstatusClientes.FINALIZADA.getIdEstatus(), // Long idClienteEstatus, 
                   null, // String justificacion, 
                   JsfBase.getIdUsuario(), // Long idUsuario, 
@@ -462,9 +464,9 @@ public class Transaccion extends Facturama {
 						params.put("saldo", abono);
 						params.put("idClienteEstatus", idEstatus);
 						DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
-            TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-              -1L, // Long idClienteBitacora, 
-              idEstatus, // Long idClienteEstatus, 
+            TcManticClientesDeudasBitacoraDto bitacora= new TcManticClientesDeudasBitacoraDto(
+              -1L, // Long idClienteDeudaBitacora, 
+              idEstatus, // Long idClienteDeudaEstatus, 
               "SE REGISTRO UN PAGO [".concat(String.valueOf(pagoParcial)).concat("]"), // String justificacion, 
               JsfBase.getIdUsuario(), // Long idUsuario, 
               deuda.getKey() // Long idClienteDeuda
@@ -500,11 +502,10 @@ public class Transaccion extends Facturama {
 		boolean regresar                     = false;
 		Siguiente orden	                     = null;
 		try {
-      Long idClienteDeuda= deuda.getKey();
 			if(this.toCierreCaja(sesion, pagoParcial)) {
 				registroPago= new TcManticClientesPagosDto();
         registroPago.setIdClientePagoControl(idClientePagoControl);
-				registroPago.setIdClienteDeuda(idClienteDeuda);
+				registroPago.setIdClienteDeuda(deuda.getKey());
 				registroPago.setIdUsuario(JsfBase.getIdUsuario());
 				registroPago.setFechaPago(this.pago.getFechaPago());
 				registroPago.setComentarios(
@@ -526,6 +527,7 @@ public class Transaccion extends Facturama {
 				registroPago.setOrden(orden.getOrden());
 				registroPago.setConsecutivo(orden.getConsecutivo());
 				registroPago.setEjercicio(new Long(Fecha.getAnioActual()));
+				registroPago.setFolio(this.pago.getFolio());
 				regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
         deuda.put("idClientePago", new Value("idClientePago", registroPago.getKey()));
 			} // if
@@ -544,7 +546,7 @@ public class Transaccion extends Facturama {
 			params.put("idCliente", this.idCliente);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_estatus in(1, 2)");			
 			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro asc");
-			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params, Constantes.SQL_TODOS_REGISTROS);			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -697,8 +699,8 @@ public class Transaccion extends Facturama {
             if(!Objects.equals(deuda.getImporte(), deuda.getSaldo()))
               deuda.setIdClienteDeudaEstatus(EEstatusClientes.PARCIALIZADA.getIdEstatus());
           DaoFactory.getInstance().update(sesion, deuda);
-          TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-            -1L, // Long idClienteBitacora, 
+          TcManticClientesDeudasBitacoraDto bitacora= new TcManticClientesDeudasBitacoraDto(
+            -1L, // Long idClienteDeudaBitacora, 
             deuda.getIdClienteDeudaEstatus(), // Long idClienteDeudaEstatus, 
             this.referencia.concat(", SE ELIMINO EL PAGO [").concat(String.valueOf(item.toDouble("abonado"))).concat("]"), // String justificacion, 
             JsfBase.getIdUsuario(), // Long idUsuario, 
@@ -729,9 +731,9 @@ public class Transaccion extends Facturama {
       TcManticClientesDeudasDto deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.idClientePago);
       deuda.setIdClienteDeudaEstatus(EEstatusClientes.CANCELADA.getIdEstatus());
       DaoFactory.getInstance().update(sesion, deuda);
-      TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-        -1L, // Long idClienteBitacora, 
-        deuda.getIdClienteDeudaEstatus(), // Long idClienteEstatus, 
+      TcManticClientesDeudasBitacoraDto bitacora= new TcManticClientesDeudasBitacoraDto(
+        -1L, // Long idClienteDeudaBitacora, 
+        deuda.getIdClienteDeudaEstatus(), // Long idClienteDeudaEstatus, 
         this.referencia, // String justificacion, 
         JsfBase.getIdUsuario(), // Long idUsuario, 
         deuda.getIdClienteDeuda() // Long idClienteDeuda

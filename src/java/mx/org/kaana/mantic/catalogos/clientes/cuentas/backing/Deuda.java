@@ -279,7 +279,7 @@ public class Deuda extends IBaseImportar implements Serializable {
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", params, columns);			
 			cuentas= DaoFactory.getInstance().toEntitySet("VistaClientesDto", "cuentas", params);
-			validaPagoGeneral(cuentas);
+			this.validaPagoGeneral(cuentas);
       UIBackingUtilities.resetDataTable();		      
     } // try
     catch (Exception e) {
@@ -378,7 +378,7 @@ public class Deuda extends IBaseImportar implements Serializable {
 		try {
 			this.attrs.put("registroSeleccionado", (Entity) event.getData());
 			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
-				loadHistorialPagos();			
+				this.loadHistorialPagos();			
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);

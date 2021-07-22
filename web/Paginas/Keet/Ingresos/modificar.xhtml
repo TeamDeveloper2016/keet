@@ -7,8 +7,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{keetIngresosAccion.attrs.nombreAccion} una factura"/>
-  <ui:param name="janalBackingPage" value="#{keetIngresosAccion}"/>
+	<ui:param name="titulo" value="#{keetIngresosModificar.attrs.nombreAccion} una factura"/>
+  <ui:param name="janalBackingPage" value="#{keetIngresosModificar}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
 	<ui:define name="librerias">
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
@@ -42,12 +42,12 @@
 			};
 			
     	$(document).ready(function() {
-        setTimeout("janal.readingMode('#{keetIngresosAccion.attrs.nombreAccion}')", 500);
+        setTimeout("janal.readingMode('#{keetIngresosModificar.attrs.nombreAccion}')", 500);
 				janal.decimals= 4;
       });
 			
       function disabledComponent() {
-        setTimeout("janal.readingMode('#{keetIngresosAccion.attrs.nombreAccion}')", 500);
+        setTimeout("janal.readingMode('#{keetIngresosModificar.attrs.nombreAccion}')", 500);
       }
       
 			function execute() {
@@ -123,23 +123,23 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
-		<p:remoteCommand name="cleanUploadFiles" actionListener="#{keetIngresosAccion.doCancelar}" process="@this"/>
-		<p:remoteCommand name="factura" actionListener="#{keetIngresosAccion.doCheckFolio}" process="@this contenedorGrupos:factura" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-		<p:remoteCommand name="viewDocument" actionListener="#{keetIngresosAccion.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
-		<p:remoteCommand name="viewFile" actionListener="#{keetIngresosAccion.doViewFile}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
+		<p:remoteCommand name="cleanUploadFiles" actionListener="#{keetIngresosModificar.doCancelar}" process="@this"/>
+		<p:remoteCommand name="factura" actionListener="#{keetIngresosModificar.doCheckFolio}" process="@this contenedorGrupos:factura" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+		<p:remoteCommand name="viewDocument" actionListener="#{keetIngresosModificar.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{keetIngresosModificar.doViewFile}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
 		<p:remoteCommand name="temporal" process="@this @(.key-event-before)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>					
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{keetIngresosAccion.doTabChange}" process="@this" update="archivo @(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('panelEmisor').toggle();PF('panelReceptor').toggle(); disabledComponent();"/>						
+            <p:ajax event="tabChange" listener="#{keetIngresosModificar.doTabChange}" process="@this" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('panelEmisor').toggle();PF('panelReceptor').toggle(); disabledComponent();"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
-								<p:selectOneMenu id="idSucursal" value="#{keetIngresosAccion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" listener="#{keetIngresosAccion.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) idDesarrollo idCliente idContrato" oncomplete="reloadDesarrollo();"/>
-									<f:selectItems value="#{keetIngresosAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:selectOneMenu id="idSucursal" value="#{keetIngresosModificar.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
+                  <p:ajax event="change" listener="#{keetIngresosModificar.doLoadDesarrollos}" process="@this idSucursal" update="@(.todos) idDesarrollo idCliente idContrato" oncomplete="reloadDesarrollo();"/>
+									<f:selectItems value="#{keetIngresosModificar.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -148,9 +148,9 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
-								<p:selectOneMenu id="idDesarrollo" value="#{keetIngresosAccion.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetIngresosAccion.doUpdateCliente}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();"/>
-									<f:selectItems value="#{keetIngresosAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
+								<p:selectOneMenu id="idDesarrollo" value="#{keetIngresosModificar.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetIngresosModificar.doUpdateCliente}" update="@(.todos)" oncomplete="janal.desbloquear();reloadContrato();"/>
+									<f:selectItems value="#{keetIngresosModificar.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombres}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -159,11 +159,11 @@
 									</p:column>                   
 								</p:selectOneMenu>
 								<p:outputLabel for="idCliente" value="Cliente:"/>												
-								<p:inputText id="idCliente" value="#{keetIngresosAccion.attrs.cliente}" styleClass="todos janal-wid-100-txt" readonly="true"/>
+								<p:inputText id="idCliente" value="#{keetIngresosModificar.attrs.cliente}" styleClass="todos janal-wid-100-txt" readonly="true"/>
                 <p:outputLabel for="idContrato" value="Contrato:"/>
-                <p:selectOneMenu id="idContrato" value="#{keetIngresosAccion.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idContrato" value="#{keetIngresosModificar.ikContrato}" var="list" converter="janal.convertidor.Entity" styleClass="todos janal-wid-100-txt" effectSpeed="slow" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
 									<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetIngresosAccion.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
+									<f:selectItems value="#{keetIngresosModificar.attrs.contratos}" var="one" itemValue="#{one.key}" itemLabel="#{one.clave} #{empty one.nombre or one.nombre eq ''? '': '|'} #{one.nombre}"/>
                   <p:column headerText="Clave" styleClass="janal-wid-10">
 										<p:outputLabel value="#{list.clave}"/>
 									</p:column>   
@@ -180,19 +180,19 @@
 								<p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="factura" value="No factura:"/>
                 <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-40, janal-wid-30">
-  								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.comprobante.folio}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
-    							<p:inputText id="idSerie" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ikSerie.clave}" readonly="true"/>
-                  <p:inputText id="idTipoComprobante" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosAccion.ikTipoComprobante.nombre}" readonly="true"/>
+                  <p:inputText id="factura" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosModificar.comprobante.folio}" readonly="true"/>
+    							<p:inputText id="idSerie" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosModificar.ikSerie.clave}" readonly="true"/>
+                  <p:inputText id="idTipoComprobante" styleClass="janal-wid-100-txt involucrados janal-color-blue" value="#{keetIngresosModificar.ikTipoComprobante.nombre}" readonly="true"/>
                 </p:panelGrid>
 								<p:outputLabel for="fechaFactura" value="Timbrado:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-95 janal-color-blue" styleClass="recalculo janal-wid-100 involucrados" value="#{keetIngresosAccion.comprobante.timbrado}" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true" locale="es" readonly="true"/>
+                <p:calendar id="fechaFactura" inputStyleClass="janal-wid-100-txt janal-color-blue" styleClass="recalculo janal-wid-100 involucrados" value="#{keetIngresosModificar.comprobante.timbrado}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true" locale="es" readonly="true" disabled="true"/>
 								<p:outputLabel for="importe" value="Importe:"/>
-                <p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="$ #{keetIngresosAccion.doMiles(keetIngresosAccion.ingreso.total)}" readonly="true"/>
+                <p:inputText id="importe" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="$ #{keetIngresosModificar.doMiles(keetIngresosModificar.ingreso.total)}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="fechaRecepcion" value="Fecha:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-95" styleClass="janal-wid-100" value="#{keetIngresosAccion.comprobante.registro}" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="es"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{keetIngresosModificar.comprobante.registro}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="es" disabled="true"/>
               </p:panelGrid>
-              <p:dataTable id="tablaRetenciones" widgetVar="retencionesTable" var="row" value="#{keetIngresosAccion.retenciones}" styleClass="importado" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetIngresosAccion.retenciones.size() gt 7}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idContratoRetencion}" style="#{keetIngresosAccion.retenciones ne null and keetIngresosAccion.retenciones.size() gt 0}">
+              <p:dataTable id="tablaRetenciones" widgetVar="retencionesTable" var="row" value="#{keetIngresosModificar.retenciones}" styleClass="importado" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 100001" paginator="#{keetIngresosModificar.retenciones.size() gt 7}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idContratoRetencion}" style="#{keetIngresosModificar.retenciones ne null and keetIngresosModificar.retenciones.size() gt 0}">
                 <f:facet name="header">
                   <div style="display: flex;">
                     <p:outputLabel value="Retenciones asociadas al contrato" styleClass="janal-text-white"/>
@@ -209,7 +209,7 @@
 										<h:outputText value="Porcentaje"/>
 									</f:facet>
                   <p:inputText id="porcentaje" value="#{row['porcentaje']}" styleClass="janal-wid-98 calculos key-calculos-event janal-column-right">
-                    <p:ajax event="change" process="@this tablaRetenciones" update="@(.calculos)" listener="#{keetIngresosAccion.doRowUpdateCuenta(row, true)}" onstart="return valida('#contenedorGrupos\\:tablaRetenciones\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}');"/>
+                    <p:ajax event="change" process="@this tablaRetenciones" update="@(.calculos)" listener="#{keetIngresosModificar.doRowUpdateCuenta(row, true)}" onstart="return valida('#contenedorGrupos\\:tablaRetenciones\\:#{index}\\:porcentaje', #{row['limite']}, '#{row['nombre']}');"/>
                   </p:inputText>
 								</p:column>											
 								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10">
@@ -217,128 +217,116 @@
 										<h:outputText value="Importe"/>
 									</f:facet>
 									<p:inputText id="importe" value="#{row['importe']}" styleClass="janal-wid-98 calculos key-calculos-event janal-column-right">
-                    <p:ajax event="change" process="@this tablaRetenciones" update="@(.calculos)" listener="#{keetIngresosAccion.doRowUpdateCuenta(row, false)}" onstart="return valida('#tablaRetenciones\\:tablaRetenciones\\:#{index}\\:importe', -1, 'Importe');"/>
+                    <p:ajax event="change" process="@this tablaRetenciones" update="@(.calculos)" listener="#{keetIngresosModificar.doRowUpdateCuenta(row, false)}" onstart="return valida('#tablaRetenciones\\:tablaRetenciones\\:#{index}\\:importe', -1, 'Importe');"/>
                   </p:inputText>
 								</p:column>																				
 								<f:facet name="footer">
-									<p:outputLabel value="Total [#{keetIngresosAccion.retenciones.size()}] registros"/>
+									<p:outputLabel value="Total [#{keetIngresosModificar.retenciones.size()}] registros"/>
 								</f:facet>
 							</p:dataTable>              
               <p:remoteCommand name="reloadContrato" onstart="return janal.bloquear();" process="@this" update="idContrato" oncomplete="janal.desbloquear();"/>
               <p:remoteCommand name="reloadDesarrollo" onstart="return janal.bloquear();" process="@this" update="idDesarrollo" oncomplete="janal.desbloquear();"/>
 						</p:tab>
 						<p:tab title="Importar">
-							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{keetIngresosAccion.diferente? '': 'none'}">
-								<p:outputLabel value="El RFC del cliente [#{keetIngresosAccion.cliente.rfc}] #{keetIngresosAccion.cliente.razonSocial} no coincide con el de la factura [#{keetIngresosAccion.receptor.rfc}] #{keetIngresosAccion.receptor.nombre}" styleClass="janal-color-orange" style="cursor: pointer;"/>
-							</p:panelGrid>	
-							<p:outputLabel for="comentarios" value="Comentarios:" styleClass="janal-wid-100-txt" style="display:#{keetIngresosAccion.consultar};"/><br style="display:#{keetIngresosAccion.consultar};"/>
-							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.attrs.observaciones}" style="display:#{keetIngresosAccion.consultar};"/>
-							<p:spacer height="5px"/>
-              <p:fileUpload id="archivo" listener="#{keetIngresosAccion.doFileUpload}" disabled="#{keetIngresosAccion.ingreso.idDesarrollo lt 1}"
-								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
-								multiple="false" allowTypes="#{keetIngresosAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{keetIngresosAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
-              <p:panelGrid columns="2" styleClass="janal-wid-100 importado" columnClasses="janal-fix-97, janal-fix-3" style="#{(empty keetIngresosAccion.xml) and (empty keetIngresosAccion.pdf)? 'display: none': ''}">
-							  <p:commandLink value="XML importado: #{keetIngresosAccion.xml.ruta}#{keetIngresosAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver XML" style="#{(empty keetIngresosAccion.xml)? 'display: none': ''}"/>
-                <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{keetIngresosAccion.doDeleteXml}" title="Eliminar XML" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty keetIngresosAccion.xml)? 'display: none': ''}"/>
-							  <p:commandLink value="PDF importado: #{keetIngresosAccion.pdf.ruta}#{keetIngresosAccion.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver PDF" style="#{(empty keetIngresosAccion.pdf)? 'display: none': ''}"/>
-                <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{keetIngresosAccion.doDeletePdf}" title="Eliminar PDF" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty keetIngresosAccion.pdf)? 'display: none': ''}"/>
+              <p:panelGrid columns="1" styleClass="janal-wid-100-txt importado" columnClasses="janal-wid-100-txt" style="#{(empty keetIngresosModificar.xml) and (empty keetIngresosModificar.pdf)? 'display: none': ''}">
+							  <p:commandLink value="XML importado: #{keetIngresosModificar.xml.ruta}#{keetIngresosModificar.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver XML" style="#{(empty keetIngresosModificar.xml)? 'display: none': ''}"/>
+							  <p:commandLink value="PDF importado: #{keetIngresosModificar.pdf.ruta}#{keetIngresosModificar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver PDF" style="#{(empty keetIngresosModificar.pdf)? 'display: none': ''}"/>
               </p:panelGrid>  
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-                <p:dataTable id="faltante" var="row" styleClass="importado janal-wid-100-txt" value="#{keetIngresosAccion.attrs.faltantes}" selection="#{keetIngresosAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom" selectionMode="single">
+                <p:dataTable id="faltante" var="row" styleClass="importado janal-wid-100-txt" value="#{keetIngresosModificar.attrs.faltantes}" selection="#{keetIngresosModificar.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom" selectionMode="single">
                   <f:facet name="header">
                     <div style="display: flow-root;">
                       <p:outputLabel value="Partidas cargadas del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
                     </div>	
                   </f:facet>
-                  <p:column class="MarAuto Responsive janal-wid-col-38">
+                  <p:column styleClass="MarAuto Responsive janal-wid-col-38">
                     <f:facet name="header">
                       <h:outputText value="No"/>
                     </f:facet>
                     <h:outputText value="#{index+ 1}.-"/>
                   </p:column>		
-                  <p:column class="janal-column-center MarAuto Responsive janal-wid-8">
+                  <p:column styleClass="MarAuto Responsive janal-wid-8">
                     <f:facet name="header">
                       <h:outputText value="SAT"/>
                     </f:facet>
                     <h:outputText value="#{row['sat']}"/>
                   </p:column>		
-                  <p:column class="janal-column-center MarAuto Responsive janal-wid-6">
+                  <p:column styleClass="MarAuto Responsive janal-wid-6">
                     <f:facet name="header">
                       <h:outputText value="Código"/>
                     </f:facet>
                     <h:outputText value="#{row['codigo']}"/>
                   </p:column>		
-                  <p:column  class="MarAuto Responsive">
+                  <p:column styleClass="MarAuto Responsive">
                     <f:facet name="header">
                       <h:outputText value="Concepto"/>
                     </f:facet>
                     <h:outputText value="#{row['nombre']}"/>
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
                     <f:facet name="header">
                       <h:outputText value="Costo"/>
                     </f:facet>
-                    <h:outputText value="#{keetIngresosAccion.doMiles(row['costo'])}"/>
+                    <h:outputText value="#{keetIngresosModificar.doMiles(row['costo'])}"/>
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
                     <f:facet name="header">
                       <h:outputText value="Cantidad"/>
                     </f:facet>
                     <h:outputText value="#{row['cantidad']}"/>	
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
                     <f:facet name="header">
                       <h:outputText value="Descuento"/>
                     </f:facet>
                     <h:outputText value="#{row['descuento']}"/>
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-5">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-5">
                     <f:facet name="header">
                       <h:outputText value="IVA"/>
                     </f:facet>
                     <h:outputText value="#{row['iva']}"/>
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
                     <f:facet name="header">
                       <h:outputText value="Impuesto"/>
                     </f:facet>
                     <h:outputText value="#{row['impuestos']}"/>
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
                     <f:facet name="header">
                       <h:outputText value="Total"/>
                     </f:facet>
-                    <h:outputText value="#{keetIngresosAccion.doMiles(row['importe'])}"/>
+                    <h:outputText value="#{keetIngresosModificar.doMiles(row['importe'])}"/>
                   </p:column>		
                   <f:facet name="footer">
-                    <p:outputLabel value="Facturado: $ #{keetIngresosAccion.doMiles(keetIngresosAccion.ingreso.total)}" styleClass="importado janal-color-blue janal-font-bold"/>
+                    <p:outputLabel value="Facturado: $ #{keetIngresosModificar.doMiles(keetIngresosModificar.ingreso.total)}" styleClass="importado janal-color-blue janal-font-bold"/>
                   </f:facet>
                 </p:dataTable>
 							</p:panelGrid>	
-							<p:panel header="Emisor" styleClass="involucrados" style="display: #{empty keetIngresosAccion.emisor? 'none': ''}; margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelEmisor">
+							<p:panel header="Emisor" styleClass="involucrados" style="display: #{empty keetIngresosModificar.emisor? 'none': ''}; margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelEmisor">
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								  <p:outputLabel value="Nombre:"/>
-								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.emisor.nombre}" readonly="true"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosModificar.emisor.nombre}" readonly="true"/>
 								  <p:outputLabel value="RFC:"/>
-								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.emisor.rfc}" readonly="true"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosModificar.emisor.rfc}" readonly="true"/>
 								  <p:outputLabel value="Regimen fiscal:"/>
-									<p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.emisor.regimenFiscal}" readonly="true"/>
+									<p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosModificar.emisor.regimenFiscal}" readonly="true"/>
 								</p:panelGrid>
 							</p:panel>
-							<p:panel header="Receptor" styleClass="involucrados" style="display: #{empty keetIngresosAccion.receptor? 'none': ''};margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelReceptor">
+							<p:panel header="Receptor" styleClass="involucrados" style="display: #{empty keetIngresosModificar.receptor? 'none': ''};margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelReceptor">
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								  <p:outputLabel value="Nombre:"/>
-								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.receptor.nombre}" readonly="true"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosModificar.receptor.nombre}" readonly="true"/>
 								  <p:outputLabel value="RFC:"/>
-								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.receptor.rfc}" readonly="true"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosModificar.receptor.rfc}" readonly="true"/>
 								  <p:outputLabel value="Uso CFDI:"/>
-									<p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.receptor.usoCfdi}" readonly="true"/>
+									<p:inputText styleClass="janal-wid-100-txt" value="#{keetIngresosModificar.receptor.usoCfdi}" readonly="true"/>
 								</p:panelGrid>
 							</p:panel>
 						</p:tab>
 						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{keetIngresosAccion.ingreso.observaciones}"/>
+              <p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{keetIngresosModificar.ingreso.observaciones}" readonly="true"/>
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -347,32 +335,32 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetIngresosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" />
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetIngresosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{keetIngresosModificar.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" />
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetIngresosModificar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetIngresosAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetIngresosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetIngresosModificar.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetIngresosModificar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
 		<h:form prependId="true">
 			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
-				<object type="application/pdf" data="#{keetIngresosAccion.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+				<object type="application/pdf" data="#{keetIngresosModificar.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's,
 					 <p:commandLink ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" value=" click ">
-							<p:fileDownload value="#{keetIngresosAccion.doFileDownload}" />
+							<p:fileDownload value="#{keetIngresosModificar.doFileDownload}" />
 					 </p:commandLink>
 					 para descargarlo !.
 				</object>							
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
-					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{keetIngresosAccion.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{keetIngresosModificar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
 			<p:dialog id="dialogoXML" widgetVar="dlgXML" styleClass="viewXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
 				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 370px;">
-          #{keetIngresosAccion.attrs.temporal}
+          #{keetIngresosModificar.attrs.temporal}
 				</pre>
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">

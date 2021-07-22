@@ -111,6 +111,13 @@ public class Filtro extends FiltroFactura implements Serializable {
     return this.toAccion(accion, "/Paginas/Mantic/Facturas/accion");
   }
   
+  public String doModificar() {
+    JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);		
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/filtro");		
+    JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
+    return "/Paginas/Keet/Ingresos/modificar".concat(Constantes.REDIRECIONAR);
+  }
+  
   public String doFactura(String accion) {
     return this.toAccion(accion, "/Paginas/Keet/Ingresos/accion");
   }

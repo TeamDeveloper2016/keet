@@ -106,12 +106,12 @@
           id_empresa_bitacora = {idEmpresaBitacora}
       </select>
     </unit>        
-    <unit id="TcManticClientesBitacoraDto">
+    <unit id="TcManticClientesDeudasBitacoraDto">
       <select id="row">
         select      
           *
         from      
-          tc_mantic_clientes_bitacora
+          tc_mantic_clientes_deudas_bitacora
         where 
           {condicion} 
       </select>
@@ -119,9 +119,9 @@
         select      
           *
         from      
-          tc_mantic_clientes_bitacora
+          tc_mantic_clientes_deudas_bitacora
         where      
-          id_cliente_bitacora = {idClienteBitacora}
+          id_cliente_deuda_bitacora = {idClienteBitacora}
       </select>
     </unit>    
     <unit id="TcManticClientesPagosControlesDto">
@@ -3186,6 +3186,18 @@
         where      
           id_proveedor = {idProveedor} and id_proveedor_tipo_contacto = {idProveedorTipoContacto} and id_tipo_contacto = {idTipoContacto}
       </select>
+      <select id="correos">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_tipo_contacto
+        where      
+          id_proveedor= {idProveedor} 
+          and id_tipo_contacto in (9, 10, 11, 15, 16, 17, 18)
+          and id_preferido= 1
+        order by
+          id_tipo_contacto
+      </select>      
 			<select id="maximo">
         select      
           max(id_proveedor_tipo_contacto) maximo
@@ -3196,7 +3208,6 @@
         delete from tr_mantic_proveedor_tipo_contacto  where  id_proveedor = {idProveedor}
       </delete>  
     </unit>
-    
     <unit id="TrManticProveedorAgenteDto">
       <select id="row">
         select      
@@ -3513,6 +3524,14 @@
         where      
           rfc = '{rfc}' and id_empresa= {idEmpresa}
       </select>
+      <select id="key">
+        select      
+          *
+        from      
+          tc_mantic_proveedores
+        where      
+          id_proveedor= {idProveedor}
+      </select>   
       <select id="igual">
         select      
           tc_mantic_proveedores.id_proveedor as id_key,
@@ -3596,6 +3615,14 @@
           tc_mantic_clientes
         where      
           rfc = '{rfc}' and id_empresa = {idEmpresa}
+      </select>    
+      <select id="key">
+        select      
+          *
+        from      
+          tc_mantic_clientes
+        where      
+          id_cliente= {idCliente}
       </select>    
       <select id="igual">
         select      
@@ -3772,6 +3799,18 @@
           tr_mantic_cliente_tipo_contacto
         where      
           id_cliente = {idCliente} and id_tipo_contacto = {idTipoContacto} and valor = '{valor}'
+      </select>     
+      <select id="correos">
+        select      
+          *
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where      
+          id_cliente= {idCliente} 
+          and id_tipo_contacto in (9, 10, 11, 15, 16, 17, 18)
+          and id_preferido= 1
+        order by
+          id_tipo_contacto
       </select>      
 			<select id="maximo">
         select      
@@ -5610,24 +5649,6 @@
           nombre = '{nombre}'
       </select>
     </unit>
-    <unit id="TcManticClientesDeudasBitacoraDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_clientes_deudas_bitacora
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_clientes_deudas_bitacora
-        where      
-          id_cliente_deuda_bitacora = {idClienteDeudaBitacora}
-      </select>
-    </unit>    
 		<unit id="TcManticFacturasDto">
       <select id="row">
         select      
@@ -5913,6 +5934,14 @@
         where      
           tc_mantic_clientes_pagos_archivos.id_cliente_pago= {idClientePago}
       </select>
+      <update id="rows">
+        update 
+          tc_mantic_clientes_pagos_archivos
+        set
+          id_principal= 2
+        where
+          ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_cliente_pago = {idClientePago} and nombre = '{nombre}'
+      </update>
       <delete id="rows">
         delete from
           tc_mantic_clientes_pagos_archivos

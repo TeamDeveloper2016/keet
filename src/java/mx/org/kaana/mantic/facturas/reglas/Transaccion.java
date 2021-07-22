@@ -22,7 +22,7 @@ import static mx.org.kaana.kajool.enums.ESql.SELECT;
 import static mx.org.kaana.kajool.enums.ESql.UPDATE;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.catalogos.contratos.beans.ContratoDomicilio;
-import mx.org.kaana.keet.db.dto.TcManticClientesDeudasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasBitacoraDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
@@ -827,7 +827,7 @@ public class Transaccion extends Facturama {
       deuda.setLimite(this.toLimiteCredito(sesion));
       deuda.setIdClienteDeudaEstatus(EEstatusClientesDeudas.INICIAL.getIdClienteDeudaEstatus()); // INICIADA
       DaoFactory.getInstance().insert(sesion, deuda);		
-      registro= new TcManticClientesDeudasBitacoraDto(deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda(), -1L);
+      registro= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());
       DaoFactory.getInstance().insert(sesion, registro);
 			TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
 			cliente.setSaldo(cliente.getSaldo()+ importe);

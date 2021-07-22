@@ -37,6 +37,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.keet.ingresos.beans.Retencion;
+import mx.org.kaana.keet.ingresos.enums.EClaveCatalogo;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
@@ -73,14 +74,12 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 
 	private static final Log LOG              = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
-  
-  private enum EClaveCatalogo {MEDIOS_PAGO, TIPOS_PAGOS, USOS_CFDI, SERIES, COMPROBANTES};
-	
-	private EAccion accion;	
-  private Ingreso ingreso;
-  private TcManticFacturasDto comprobante;
-  private TcManticClientesDto cliente;
-  private List<Articulo> articulos;
+
+	protected EAccion accion;	
+  protected Ingreso ingreso;
+  protected TcManticFacturasDto comprobante;
+  protected TcManticClientesDto cliente;
+  protected List<Articulo> articulos;
 	private UISelectEntity ikSerie;
 	private UISelectEntity ikTipoComprobante;
 	private UISelectEntity ikEmpresa;
@@ -800,6 +799,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
             item.setImporte(Numero.toRedondearSat(item.getPorcentaje()* this.ingreso.getTotal()/ 100D));
             Methods.setValue(this.ingreso, item.getCampo(), new Object[] {item.getImporte()});
           } // for
+      this.toApplyRule();
 		} // try 
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -830,6 +830,23 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
+  }
+  
+  private void toApplyRule() {
+    StringBuilder sb= new StringBuilder("janal.renovates([");
+    if(this.retenciones!= null && !this.retenciones.isEmpty()) {
+      for (Retencion item: this.retenciones) {
+        sb.append("{id: '").append(item.getCampo()).append("', value: {multiple: '$', validaciones: 'reqerido|rango({\"min\":0,\"max\":").append(item.getLimite()).append(")})', mascara: 'libre', grupo: 'general'}},");    
+      } // for
+    } // if
+    else {
+      for (int x= 0; x< 8; x++) {
+        sb.append("{id: 'retencion").append(x).append("', value: {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general'}},");    
+      } // for
+    } // else
+    sb.deleteCharAt(sb.length()- 1);
+    sb.append("])");
+    UIBackingUtilities.execute(sb.toString());
   }
   
 }

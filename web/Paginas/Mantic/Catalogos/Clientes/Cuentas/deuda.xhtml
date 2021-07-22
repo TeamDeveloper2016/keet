@@ -87,7 +87,7 @@
               <p:fileUpload id="archivo" listener="#{manticCatalogosClientesCuentasDeuda.doFileUpload}" disabled="#{manticCatalogosClientesCuentasDeuda.attrs.deuda.idDesarrollo.toLong lt 1}"
 								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticCatalogosClientesCuentasDeuda.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosClientesCuentasDeuda.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosClientesCuentasDeuda.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle(); "/>
               <p:panelGrid columns="2" styleClass="janal-wid-100 importado" columnClasses="janal-fix-95, janal-fix-5" style="#{(empty manticCatalogosClientesCuentasDeuda.xml) and (empty manticCatalogosClientesCuentasDeuda.pdf)? 'display: none': ''}">
 							  <p:commandLink value="XML importado: #{manticCatalogosClientesCuentasDeuda.xml.ruta}#{manticCatalogosClientesCuentasDeuda.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver XML" style="#{(empty manticCatalogosClientesCuentasDeuda.xml)? 'display: none': ''}"/>
                 <p:panelGrid columns="2" styleClass="janal-wid-100 importado" columnClasses="janal-fix-50, janal-fix-50" style="#{(empty manticCatalogosClientesCuentasDeuda.xml)? 'display: none': ''}">
@@ -97,8 +97,20 @@
 							  <p:commandLink value="PDF importado: #{manticCatalogosClientesCuentasDeuda.pdf.ruta}#{manticCatalogosClientesCuentasDeuda.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold janal-no-lock" title="Ver PDF" style="#{(empty manticCatalogosClientesCuentasDeuda.pdf)? 'display: none': ''}"/>
                 <p:commandButton icon="fa fa-trash" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" actionListener="#{manticCatalogosClientesCuentasDeuda.doDeletePdf}" title="Eliminar PDF" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="#{(empty manticCatalogosClientesCuentasDeuda.pdf)? 'display: none': ''}"/>
               </p:panelGrid>  
-              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-                <p:dataTable id="faltante" var="row" styleClass="importado janal-wid-100-txt" value="#{manticCatalogosClientesCuentasDeuda.attrs.faltantes}" selection="#{manticCatalogosClientesCuentasDeuda.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom" selectionMode="single">
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt importado">
+                <p:panel header="Datos de la nota de crédito" styleClass="janal-wid-100-txt" toggleable="true" toggleSpeed="500">
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-50 janal-column-center, janal-fix-50 janal-column-center">
+                    <p:outputLabel value="Folio:"/>
+                    <p:outputLabel value="Importe:"/>
+                    <p:inputText styleClass="janal-wid-100-txt janal-color-blue janal-column-center" value="#{manticCatalogosClientesCuentasDeuda.pago.folio}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+                    <p:inputText styleClass="janal-wid-100-txt janal-color-blue janal-column-center" value="$ #{manticCatalogosClientesCuentasDeuda.doMiles(manticCatalogosClientesCuentasDeuda.pago.total)}" readonly="true"/>
+                    <p:outputLabel value="Timbrado:"/>
+                    <p:outputLabel value="Fecha:"/>
+                    <p:calendar inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-center" styleClass="janal-wid-100 involucrados" value="#{manticCatalogosClientesCuentasDeuda.pago.timbrado}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true" locale="es" readonly="true"/>
+                    <p:calendar inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasDeuda.pago.fecha}" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" readonly="true"/>
+                  </p:panelGrid>   
+                </p:panel>
+                <p:dataTable id="faltante" var="row" styleClass="janal-wid-100-txt importado" value="#{manticCatalogosClientesCuentasDeuda.attrs.faltantes}" selection="#{manticCatalogosClientesCuentasDeuda.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom" selectionMode="single">
                   <f:facet name="header">
                     <div style="display: flex;">
                       <p:outputLabel value="Partidas cargadas del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
@@ -217,7 +229,7 @@
                 </p:column>  
                 <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.ticket}">
                   <f:facet name="header">
-                    <h:outputText value="Consecutivo"/>
+                    <h:outputText value="Folio"/>
                   </f:facet>
                   <h:outputText value="#{row['ticket']}"/>
                 </p:column>														
@@ -408,7 +420,7 @@
 				<p:inputTextarea id="observaciones" value="#{manticCatalogosClientesCuentasDeuda.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this referencia saldar banco idEmpresa caja dialogoPago pago observaciones tipoPago" update="contenedorGrupos:tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this referencia saldar banco idEmpresa caja dialogoPago pago observaciones tipoPago" update="contenedorGrupos:tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPago}" onstart="if(janal.partial('dialogo')) {PF('dlgPago').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
@@ -477,7 +489,7 @@
 				<p:inputTextarea id="observacionesGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.observacionesGeneral}" rows="2" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoGeneral saldarGeneral pagoGeneral observacionesGeneral tipoPagoGeneral bancoGeneral referenciaGeneral idEmpresaGeneral cajaGeneral" update="contenedorGrupos:tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoGeneral}" onstart="return janal.partial('dialogoGeneral');" oncomplete="PF('dlgPagoGeneral').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoGeneral saldarGeneral pagoGeneral observacionesGeneral tipoPagoGeneral bancoGeneral referenciaGeneral idEmpresaGeneral cajaGeneral" update="contenedorGrupos:tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoGeneral}" onstart="if(janal.partial('dialogoGeneral')) {PF('dlgPagoGeneral').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagoGeneral').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
@@ -499,7 +511,7 @@
                 </p:column> 
                 <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12">
                   <f:facet name="header">
-                    <h:outputText value="Consecutivo"/>
+                    <h:outputText value="Folio"/>
                   </f:facet>
                   <h:outputText value="#{row['ticket']}"/>
                 </p:column>					
@@ -611,7 +623,7 @@
 				</p:tabView>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-          <p:commandButton id="aceptarSegmento" value="Aceptar" icon="fa fa-check" process="@this dialogoPagoSegmento tabPagosSegmentos" update="contenedorGrupos:tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoSegmento}" onstart="return janal.partial('dialogoSegmento');" oncomplete="PF('dlgPagoSegmento').hide(); janal.desbloquear();" disabled="#{not(manticCatalogosClientesCuentasDeuda.pago.importe gt 0)}"/>
+          <p:commandButton id="aceptarSegmento" value="Aceptar" icon="fa fa-check" process="@this dialogoPagoSegmento tabPagosSegmentos" update="contenedorGrupos:tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoSegmento}" onstart="if(janal.partial('dialogoSegmento')) {PF('dlgPagoSegmento').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();" disabled="#{not(manticCatalogosClientesCuentasDeuda.pago.importe gt 0)}"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagoSegmento').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
@@ -636,7 +648,7 @@
                 </p:column> 
                 <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12">
 									<f:facet name="header">
-										<h:outputText value="Consecutivo"/>
+										<h:outputText value="Folio"/>
 									</f:facet>
 									<h:outputText value="#{row['ticket']}"/>
 								</p:column>					
@@ -743,7 +755,7 @@
 				</p:tabView>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-          <p:commandButton id="aceptarCuenta" value="Aceptar" icon="fa fa-check" process="@this dialogoPagoCuenta tabPagosCuentas" update="contenedorGrupos:tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoCuenta}" onstart="return janal.partial('dialogoCuenta');" oncomplete="PF('dlgPagoCuenta').hide(); janal.desbloquear();" disabled="#{manticCatalogosClientesCuentasDeuda.pago.total ne manticCatalogosClientesCuentasDeuda.pago.importe}"/>
+          <p:commandButton id="aceptarCuenta" value="Aceptar" icon="fa fa-check" process="@this dialogoPagoCuenta tabPagosCuentas" update="contenedorGrupos:tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoCuenta}" onstart="if(janal.partial('dialogoCuenta')) {PF('dlgPagoCuenta').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();" disabled="#{manticCatalogosClientesCuentasDeuda.pago.total ne manticCatalogosClientesCuentasDeuda.pago.importe}"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagoCuenta').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
