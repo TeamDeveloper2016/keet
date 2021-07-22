@@ -7,6 +7,35 @@
   </model>
 
   <dml>
+    <unit id="TcKeetContratosRetencionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_contratos_retenciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_contratos_retenciones
+        where      
+          id_contrato = {idContrato} and orden = {orden}
+      </select>
+      <select id="retenciones">
+        select
+          tc_keet_contratos_retenciones.id_contrato_retencion as id_key,
+          tc_keet_contratos_retenciones.*
+        from
+          tc_keet_contratos_retenciones
+        where
+          id_contrato= {idContrato}  
+        order by
+          orden  
+      </select>  
+    </unit>    
     <unit id="TcKeetRubrosFotosDto">
       <select id="row">
         select      

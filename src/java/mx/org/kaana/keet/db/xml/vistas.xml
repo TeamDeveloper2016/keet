@@ -1819,6 +1819,7 @@
 				select      
 					tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_key,									
 					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as residente, 
+          tc_keet_desarrollos.nombres as desarrollo,
           tr_mantic_persona_tipo_contacto.*
         from      
           tc_keet_contratos_personal
@@ -1829,7 +1830,9 @@
 				inner join 
 					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona = tr_mantic_persona_tipo_contacto.id_persona
 				inner join	
-					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto				
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+				inner join	
+					tc_keet_desarrollos on tc_keet_contratos_personal.id_desarrollo = tc_keet_desarrollos.id_desarrollo
         where 
           tr_mantic_empresa_personal.id_activo= 1
           and tc_keet_contratos_personal.id_desarrollo= {idDesarrollo} 

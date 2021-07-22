@@ -34,12 +34,13 @@ public class Persona implements Serializable, IBaseDto {
   private String claveGrupo;
   private LocalDateTime ultimoAcceso;
 	private Long idEmpresaPersona;
+  private Long idAutoriza;
 
   public Persona() {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 2L);
   }
 
-  public Persona(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idPersona, String nombres, String primerApellido, String segundoApellido, Long idTipoSexo, Long idGrupo, LocalDateTime ultimoAcceso, Long idEmpresaPersona) {
+  public Persona(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idPersona, String nombres, String primerApellido, String segundoApellido, Long idTipoSexo, Long idGrupo, LocalDateTime ultimoAcceso, Long idEmpresaPersona, Long idAutoriza) {
     this.idUsuario = idUsuario;
     this.cuenta = cuenta;
     this.contrasenia = contrasenia;
@@ -55,6 +56,7 @@ public class Persona implements Serializable, IBaseDto {
     this.idTipoSexo = idTipoSexo;  
     this.idGrupo = idGrupo;  
     this.ultimoAcceso = ultimoAcceso;
+    this.idAutoriza = idAutoriza;
   }
 
   public String getClaveGrupo() {
@@ -201,6 +203,14 @@ public class Persona implements Serializable, IBaseDto {
 		this.idEmpresaPersona = idEmpresaPersona;
 	}	
 
+  public Long getIdAutoriza() {
+    return idAutoriza;
+  }
+
+  public void setIdAutoriza(Long idAutoriza) {
+    this.idAutoriza = idAutoriza;
+  }
+  
   @Override
   public Long getKey() {
     return getIdUsuario();

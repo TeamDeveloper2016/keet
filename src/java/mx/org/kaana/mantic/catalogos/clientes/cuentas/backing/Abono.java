@@ -134,7 +134,7 @@ public class Abono extends IBasePagos implements Serializable {
 			pago.setFechaPago((LocalDate)this.attrs.get("fechaPago"));
       pago.setIdTipoMedioPago(((UISelectEntity)this.attrs.get("tipoPago")).getKey());
       tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-      transaccion= new Transaccion(pago, (Long)this.attrs.get("idCliente"), tipoPago ? -1 : ((UISelectEntity)this.attrs.get("banco")).getKey(), tipoPago ? "" : (String)this.attrs.get("referencia"), saldar);
+      transaccion= new Transaccion(pago, (Long)this.attrs.get("idCliente"), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago? -1L: ((UISelectEntity)this.attrs.get("banco")).getKey(), tipoPago ? "" : (String)this.attrs.get("referencia"), saldar);
       if(transaccion.ejecutar(EAccion.AGREGAR)){
         JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
         this.loadClienteDeuda();

@@ -4,7 +4,9 @@ public enum EEstatusClientes {
 
 	INICIADA,
 	PARCIALIZADA,
-	FINALIZADA;
+	FINALIZADA,
+	SALDADA,
+	CANCELADA;
 	
 	public Long getIdEstatus(){
 		return this.ordinal() + 1L;

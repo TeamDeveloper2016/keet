@@ -50,6 +50,8 @@ public class TcManticClientesPagosArchivosDto implements IBaseDto, Serializable 
   private Long idClientePagoArchivo;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="archivo")
+  private String archivo;
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -58,11 +60,11 @@ public class TcManticClientesPagosArchivosDto implements IBaseDto, Serializable 
   }
 
   public TcManticClientesPagosArchivosDto(Long key) {
-    this(null, null, null, null, null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticClientesPagosArchivosDto(String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, Long idClientePago, String alias, Long idClientePagoArchivo, String nombre) {
+  public TcManticClientesPagosArchivosDto(String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, Long idClientePago, String alias, Long idClientePagoArchivo, String nombre, String archivo) {
     setRuta(ruta);
     setTamanio(tamanio);
     setIdUsuario(idUsuario);
@@ -74,6 +76,7 @@ public class TcManticClientesPagosArchivosDto implements IBaseDto, Serializable 
     setIdClientePagoArchivo(idClientePagoArchivo);
     setNombre(nombre);
     setRegistro(LocalDateTime.now());
+    this.archivo= archivo;
   }
 	
   public void setRuta(String ruta) {
@@ -164,6 +167,14 @@ public class TcManticClientesPagosArchivosDto implements IBaseDto, Serializable 
     return registro;
   }
 
+  public String getArchivo() {
+    return archivo;
+  }
+
+  public void setArchivo(String archivo) {
+    this.archivo = archivo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -199,6 +210,8 @@ public class TcManticClientesPagosArchivosDto implements IBaseDto, Serializable 
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getArchivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -217,6 +230,7 @@ public class TcManticClientesPagosArchivosDto implements IBaseDto, Serializable 
 		regresar.put("alias", getAlias());
 		regresar.put("idClientePagoArchivo", getIdClientePagoArchivo());
 		regresar.put("nombre", getNombre());
+		regresar.put("archivo", getArchivo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -224,7 +238,7 @@ public class TcManticClientesPagosArchivosDto implements IBaseDto, Serializable 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getIdClientePago(), getAlias(), getIdClientePagoArchivo(), getNombre(), getRegistro()
+      getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getIdClientePago(), getAlias(), getIdClientePagoArchivo(), getNombre(), getRegistro(), getArchivo()
     };
     return regresar;
   }

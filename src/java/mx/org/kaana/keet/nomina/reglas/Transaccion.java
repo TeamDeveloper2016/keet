@@ -967,11 +967,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   } // toReporte 	  
   
   private void message(Session sesion) {
-    List<Columna> columns     = null;		
-    Map<String, Object> params= new HashMap<>();
+    List<Columna> columns           = null;		
+    Map<String, Object> params      = new HashMap<>();
     Map<String, Object> residentes  = new HashMap<>();
     Reporte jasper                  = null; 
     Map<String, Object> contratistas= new HashMap<>();
+    String desarrollo               = "";
 		try {
       columns= new ArrayList<>();      
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
@@ -987,7 +988,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
             // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE LOS CONTRATISTAS
             if(!Objects.equals(idDesarrollo, -1L)) 
-              this.toNotificarResidentes(sesion, residentes, contratistas, item);
+              this.toNotificarResidentes(sesion, residentes, contratistas, item, desarrollo);
             params.put("idDesarrollo", item.toLong("idDesarrollo"));
             List<Entity> celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaConsultasDto", "residentesTipoContacto", params);
             residentes.clear();
@@ -999,6 +1000,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
               } // for
             contratistas.clear();
             idDesarrollo= item.toLong("idDesarrollo");
+            desarrollo  = item.toString("desarrollo");
           } // for
           List<Entity> celulares= null;
           if(Objects.equals(item.toLong("idTipoFigura"), 1L)) {
@@ -1018,7 +1020,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
           contratistas.put(item.toString("contratista"), this.toSendMessage(sesion, jasper, celular, item));
         } // for
         // NOTIFICAR A TODOS LOS RESIDENTES CON LOS REPORTES GENERADOS DE LOS CONTRATISTAS
-        this.toNotificarResidentes(sesion, residentes, contratistas, items.get(0));
+        this.toNotificarResidentes(sesion, residentes, contratistas, items.get(0), desarrollo);
       } // if  
     } // try
     catch (Exception e) {
@@ -1060,7 +1062,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     return regresar;
 	} // toSendWessage
   
-	public void toNotificarResidentes(Session sesion, Map<String, Object> residentes, Map<String, Object> contratistas, Entity sujeto) {		
+	public void toNotificarResidentes(Session sesion, Map<String, Object> residentes, Map<String, Object> contratistas, Entity sujeto, String desarrollo) {		
 		Cafu notificar = null;
 		try {
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
@@ -1068,6 +1070,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         residentes.put("Alejandro Jiménez García", "4492090586");
         residentes.put("Christopher Castro Jiménez", "4491087126");
         notificar= new Cafu(sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", contratistas);
+        notificar.setDesarrollo(desarrollo);
         for (String residente: residentes.keySet()) {
           notificar.setNombre(Cadena.nombrePersona(residente));
           notificar.setCelular((String)residentes.get(residente));

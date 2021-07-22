@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -34,6 +35,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.ingresos.beans.Ingreso;
+import mx.org.kaana.keet.ingresos.beans.Retencion;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
@@ -46,7 +49,9 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.keet.ingresos.reglas.Transaccion;
 import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
@@ -72,7 +77,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
   private enum EClaveCatalogo {MEDIOS_PAGO, TIPOS_PAGOS, USOS_CFDI, SERIES, COMPROBANTES};
 	
 	private EAccion accion;	
-  private TcManticVentasDto ingreso;
+  private Ingreso ingreso;
   private TcManticFacturasDto comprobante;
   private TcManticClientesDto cliente;
   private List<Articulo> articulos;
@@ -82,6 +87,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 	private UISelectEntity ikDesarrollo;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikContrato;
+  private List<Retencion> retenciones;
 
   public TcManticVentasDto getIngreso() {
     return ingreso;
@@ -160,6 +166,14 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 	public Boolean getDiferente() {
 	  return this.getEmisor()!= null && this.cliente!= null && !this.getReceptor().getRfc().equals(this.cliente.getRfc());
 	}
+
+  public List<Retencion> getRetenciones() {
+    return retenciones;
+  }
+
+  public void setRetenciones(List<Retencion> retenciones) {
+    this.retenciones = retenciones;
+  }
   
 	@PostConstruct
   @Override
@@ -189,7 +203,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.comprobante= new TcManticFacturasDto();
           this.comprobante.setIdUsuario(JsfBase.getIdUsuario());
           this.comprobante.setIntentos(0L);
-          this.ingreso= new TcManticVentasDto(
+          this.ingreso= new Ingreso(
             0D, // Double descuentos, 
             null, // Long idFactura, 
             1L, // Long idCredito, 
@@ -236,7 +250,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-          this.ingreso= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, (Long)this.attrs.get("idVenta"));
+          this.ingreso= (Ingreso)DaoFactory.getInstance().toEntity(Ingreso.class, "TcManticVentasDto", "detalle", Variables.toMap("idVenta".concat("~")+ this.attrs.get("idVenta")));
           if(!Cadena.isVacio(this.ingreso.getIdFactura()))
             this.comprobante= (TcManticFacturasDto)DaoFactory.getInstance().findById(TcManticFacturasDto.class, this.ingreso.getIdFactura());
           else
@@ -248,6 +262,28 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
           this.setIkCliente(new UISelectEntity(new Entity(this.ingreso.getIdCliente())));
           this.setIkContrato(this.ingreso.getIdContrato()== null? new UISelectEntity(-1L): new UISelectEntity(new Entity(this.ingreso.getIdContrato())));
           this.cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, this.ingreso.getIdCliente());
+          // FALTA RECUPERAR LAS RETENCIONES QUE SE ENCUENTRAN EN LA CUENTA POR COBRAR
+          Map<String, Object> params= new HashMap<>();
+          params.put("idVenta", this.ingreso.getIdVenta());
+          params.put("idCliente", this.ingreso.getIdCliente());
+          TcManticClientesDeudasDto deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().toEntity(TcManticClientesDeudasDto.class, "TcManticClientesDeudasDto", "deudaVenta", params);
+          if(deuda!= null) {
+            this.ingreso.setRetencion1(deuda.getRetencion1());
+            this.ingreso.setRetencion2(deuda.getRetencion2());
+            this.ingreso.setRetencion3(deuda.getRetencion3());
+            this.ingreso.setRetencion4(deuda.getRetencion4());
+            this.ingreso.setRetencion5(deuda.getRetencion5());
+            this.ingreso.setRetencion6(deuda.getRetencion6());
+            this.ingreso.setRetencion7(deuda.getRetencion7());
+            this.toLoadBeanRetenciones(false);
+            if(this.retenciones!= null && !this.retenciones.isEmpty())
+              for (Retencion item : this.retenciones) {
+                Double importe= (Double)Methods.getValue(this.ingreso, item.getCampo());
+                item.setImporte(importe);
+                item.setPorcentaje(Numero.toRedondearSat(item.getImporte()* 100D/ this.ingreso.getTotal()));
+              } // for
+          } // if
+          Methods.clean(params);
           break;
       } // switch
       this.toLoadCatalog();
@@ -264,9 +300,9 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     String regresar        = null;
     try {
       if(!Cadena.isVacio((String)this.attrs.get("observaciones"))) {
-        if(this.getXml()!= null)
+        if(this.getXml()!= null && Cadena.isVacio(this.getXml().getObservaciones()))
           this.getXml().setObservaciones((String)this.attrs.get("observaciones")); 
-        if(this.getPdf()!= null)
+        if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
           this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
       } // if
       if(Cadena.isVacio(this.attrs.get("folio"))) {
@@ -279,7 +315,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
                 UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ this.ingreso.getTicket()+ "');");
               else
                 if(!this.accion.equals(EAccion.CONSULTAR)) 
-                  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
+                  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura"), ETipoMensaje.INFORMACION);
             } // if
             else 
               JsfBase.addMessage("Ocurrió un error al registrar la factura !", ETipoMensaje.ERROR);      			
@@ -462,29 +498,36 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         String nameFile= Archivo.toFormatName(this.cliente.getRfc(), event.getFile().getFileName().toUpperCase().substring(event.getFile().getFileName().lastIndexOf(".")));
         this.doFileUpload(event, this.ingreso.getVigencia().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("facturama"), this.cliente.getRfc(), false, 1D, nameFile);
         if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
-          this.ingreso.setDescuentos(0D);
-          this.ingreso.setImpuestos(Numero.getDouble(this.getFactura().getImpuesto().getTraslado().getImporte(), 0D));
-          this.ingreso.setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
-          this.ingreso.setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
-          this.ingreso.setIdTipoMedioPago(this.toClaveCatalogo(EClaveCatalogo.MEDIOS_PAGO, this.getFactura().getFormaPago())); // EFECTIVO, CHEQUE, TRANSFERENCIA getFormaPago(30) 
-          this.ingreso.setIdTipoPago(this.toClaveCatalogo(EClaveCatalogo.TIPOS_PAGOS, this.getFactura().getMetodoPago())); // PUE, PPD, PUE getMetodoPago(PUE)
-          this.ingreso.setIdUsoCfdi(this.toClaveCatalogo(EClaveCatalogo.USOS_CFDI, this.getFactura().getReceptor().getUsoCfdi())); // GO3 getReceptor.getUsoCfi(G02)
-          this.ingreso.setIdSerie(this.toClaveCatalogo(EClaveCatalogo.SERIES, this.getFactura().getSerie())); // A o B
-          this.ingreso.setIdTipoComprobante(this.toClaveCatalogo(EClaveCatalogo.COMPROBANTES, this.getFactura().getTipoDeComprobante())); // I o E
-          this.comprobante.setFolio(this.getFactura().getFolio());
-				  this.comprobante.setSelloCfdi(this.getFactura().getTimbreFiscalDigital().getSelloCfd());
-				  this.comprobante.setSelloSat(this.getFactura().getTimbreFiscalDigital().getSelloSat());
-				  this.comprobante.setCertificadoDigital(this.getFactura().getNoCertificado());
-				  this.comprobante.setCertificadoSat(this.getFactura().getTimbreFiscalDigital().getNoCertificadoSat());
-				  this.comprobante.setFolioFiscal(this.getFactura().getTimbreFiscalDigital().getUuid());
-          this.comprobante.setUltimoIntento(Fecha.toLocalDate(this.getFactura().getTimbreFiscalDigital().getFechaTimbrado()));
-          this.comprobante.setTimbrado(Fecha.toLocalDateTime(this.getFactura().getTimbreFiscalDigital().getFechaTimbrado()));
-          this.comprobante.setRegistro(Fecha.toLocalDateTime(this.getFactura().getFecha()));
-          this.comprobante.setCadenaOriginal(this.toCadenaOriginal(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.getXml().getRuta()).concat(this.getXml().getName())));
-          this.setIkSerie(this.toLeyendas(EClaveCatalogo.SERIES, this.ingreso.getIdSerie()));
-          this.setIkTipoComprobante(this.toLeyendas(EClaveCatalogo.COMPROBANTES, this.ingreso.getIdTipoComprobante()));
-          this.doCheckFolio();
-          this.toReadArticulos();
+          if(Objects.equals("I", this.getFactura().getTipoDeComprobante())) {
+            this.ingreso.setDescuentos(0D);
+            this.ingreso.setImpuestos(Numero.getDouble(this.getFactura().getImpuesto().getTraslado().getImporte(), 0D));
+            this.ingreso.setSubTotal(Numero.getDouble(this.getFactura().getSubTotal(), 0D));
+            this.ingreso.setTotal(Numero.getDouble(this.getFactura().getTotal(), 0D));
+            this.ingreso.setIdTipoMedioPago(this.toClaveCatalogo(EClaveCatalogo.MEDIOS_PAGO, this.getFactura().getFormaPago())); // EFECTIVO, CHEQUE, TRANSFERENCIA getFormaPago(30) 
+            this.ingreso.setIdTipoPago(this.toClaveCatalogo(EClaveCatalogo.TIPOS_PAGOS, this.getFactura().getMetodoPago())); // PUE, PPD, PUE getMetodoPago(PUE)
+            this.ingreso.setIdUsoCfdi(this.toClaveCatalogo(EClaveCatalogo.USOS_CFDI, this.getFactura().getReceptor().getUsoCfdi())); // GO3 getReceptor.getUsoCfi(G02)
+            this.ingreso.setIdSerie(this.toClaveCatalogo(EClaveCatalogo.SERIES, this.getFactura().getSerie())); // A o B
+            this.ingreso.setIdTipoComprobante(this.toClaveCatalogo(EClaveCatalogo.COMPROBANTES, this.getFactura().getTipoDeComprobante())); // I o E
+            this.comprobante.setFolio(this.getFactura().getFolio());
+            this.comprobante.setSelloCfdi(this.getFactura().getTimbreFiscalDigital().getSelloCfd());
+            this.comprobante.setSelloSat(this.getFactura().getTimbreFiscalDigital().getSelloSat());
+            this.comprobante.setCertificadoDigital(this.getFactura().getNoCertificado());
+            this.comprobante.setCertificadoSat(this.getFactura().getTimbreFiscalDigital().getNoCertificadoSat());
+            this.comprobante.setFolioFiscal(this.getFactura().getTimbreFiscalDigital().getUuid());
+            this.comprobante.setUltimoIntento(Fecha.toLocalDate(this.getFactura().getTimbreFiscalDigital().getFechaTimbrado()));
+            this.comprobante.setTimbrado(Fecha.toLocalDateTime(this.getFactura().getTimbreFiscalDigital().getFechaTimbrado()));
+            this.comprobante.setRegistro(Fecha.toLocalDateTime(this.getFactura().getFecha()));
+            this.comprobante.setCadenaOriginal(this.toCadenaOriginal(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.getXml().getRuta()).concat(this.getXml().getName())));
+            this.setIkSerie(this.toLeyendas(EClaveCatalogo.SERIES, this.ingreso.getIdSerie()));
+            this.setIkTipoComprobante(this.toLeyendas(EClaveCatalogo.COMPROBANTES, this.ingreso.getIdTipoComprobante()));
+            this.doCheckFolio();
+            this.toReadArticulos();
+            this.toLoadBeanRetenciones(true);
+          } // if  
+          else {
+            this.doDeleteXml();
+            JsfBase.addMessage("Factura:", "Solo se pueden importar facturas !", ETipoMensaje.ERROR); 
+          } // else  
         } // if
       } // if
       else 
@@ -694,6 +737,42 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     } // finally
   }
  
+  public void doDeleteXml() {
+    if(this.resetXml(Configuracion.getInstance().getPropiedadSistemaServidor("facturama"))) {
+      this.ingreso.setDescuentos(0D);
+      this.ingreso.setImpuestos(0D);
+      this.ingreso.setSubTotal(0D);
+      this.ingreso.setTotal(0D);
+      this.ingreso.setIdTipoMedioPago(1L); // EFECTIVO, CHEQUE, TRANSFERENCIA getFormaPago(30) 
+      this.ingreso.setIdTipoPago(-1L); // PUE, PPD, PUE getMetodoPago(PUE)
+      this.ingreso.setIdUsoCfdi(-1L); // GO3 getReceptor.getUsoCfi(G02)
+      this.ingreso.setIdSerie(-1L); // A o B
+      this.ingreso.setIdTipoComprobante(-1L); // I o E
+      this.comprobante.setFolio("");
+      this.comprobante.setSelloCfdi("");
+      this.comprobante.setSelloSat("");
+      this.comprobante.setCertificadoDigital("");
+      this.comprobante.setCertificadoSat("");
+      this.comprobante.setFolioFiscal("");
+      this.comprobante.setUltimoIntento(LocalDate.now());
+      this.comprobante.setTimbrado(null);
+      this.comprobante.setRegistro(LocalDateTime.now());
+      this.comprobante.setCadenaOriginal(null);
+      this.setIkSerie(new UISelectEntity(1L));
+      this.setIkTipoComprobante(new UISelectEntity(1L));
+      this.articulos.clear();
+      if(this.attrs.get("faltantes")!= null) {
+        List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
+        faltantes.clear();
+        this.attrs.put("faltantes", faltantes);
+      } // if  
+    } // if  
+  }
+  
+  public void doDeletePdf() {
+    this.resetPdf(Configuracion.getInstance().getPropiedadSistemaServidor("facturama"));
+  }
+  
 	@Override
 	protected void finalize() throws Throwable {
 		try {
@@ -704,5 +783,53 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 			super.finalize();
 		} // finally	
 	}
+ 
+	public void toLoadBeanRetenciones(boolean calcular) {
+	  Map<String, Object> params= null;	
+		try {
+			params= new HashMap<>();
+			params.put("idContrato", this.ingreso.getIdContrato());
+			this.retenciones= (List<Retencion>)DaoFactory.getInstance().toEntitySet(Retencion.class, "TcKeetContratosRetencionesDto", "retenciones", params);      
+      UIBackingUtilities.resetDataTable("tablaRetenciones");		
+      if(this.retenciones== null)
+        this.retenciones= new ArrayList<>();        
+      else
+        if(calcular)
+          for (Retencion item: this.retenciones) {
+            item.setPorcentaje(item.getPorcentaje());
+            item.setImporte(Numero.toRedondearSat(item.getPorcentaje()* this.ingreso.getTotal()/ 100D));
+            Methods.setValue(this.ingreso, item.getCampo(), new Object[] {item.getImporte()});
+          } // for
+		} // try 
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch 		
+    finally {
+      Methods.clean(params);
+    } // finally
+	} 
+  
+  public void doRowUpdateCuenta(Retencion row, Boolean porcentaje)  {
+    try { 
+      if(row!= null) {
+        if(!Objects.equals(row.getPorcentaje(), 0D) || !Objects.equals(row.getImporte(), 0D)) {
+          if(porcentaje) {
+            row.setPorcentaje(Numero.toRedondearSat(row.getPorcentaje()));
+            row.setImporte(Numero.toRedondearSat(row.getPorcentaje()* this.ingreso.getTotal()/ 100D));
+          } // if
+          else {
+            row.setImporte(Numero.toRedondearSat(row.getImporte()));
+            row.setPorcentaje(Numero.toRedondearSat(row.getImporte()* 100D/ this.ingreso.getTotal()));
+          } // else
+          Methods.setValue(this.ingreso, row.getCampo(), new Object[] {row.getImporte()});
+        } // if  
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
   
 }

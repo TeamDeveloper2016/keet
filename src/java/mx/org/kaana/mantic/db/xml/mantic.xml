@@ -52,6 +52,96 @@
           telefono = '{celular}' and id_tipo_mensaje = {idTipoMensaje}
       </select>
     </unit>    
+    <unit id="TcManticEmpresasPagosControlesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_controles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_controles
+        where      
+          id_empresa_pago_control = {idEmpresaPagoControl}
+      </select>
+    </unit>
+    <unit id="TcManticEmpresasPagosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_archivos
+        where      
+          ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago} and nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcManticEmpresasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_bitacora
+        where      
+          id_empresa_bitacora = {idEmpresaBitacora}
+      </select>
+    </unit>        
+    <unit id="TcManticClientesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_bitacora
+        where      
+          id_cliente_bitacora = {idClienteBitacora}
+      </select>
+    </unit>    
+    <unit id="TcManticClientesPagosControlesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos_controles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos_controles
+        where      
+          id_cliente_pago_control = {idClientePagoControl}
+      </select>
+    </unit>     
     <unit id="TcManticFacturasGruposDto">
       <select id="row">
         select      
@@ -5786,6 +5876,49 @@
         where      
           ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_cliente_pago = {idClientePago} and nombre = '{nombre}'
       </select>
+			<select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+      <select id="pago">
+        select      
+						tc_mantic_clientes_pagos_archivos.id_cliente_pago_archivo,
+						tc_mantic_clientes_pagos_archivos.id_cliente_pago,
+						tc_mantic_clientes_pagos_archivos.id_tipo_archivo,
+						tc_mantic_clientes_pagos_archivos.nombre,
+						tc_mantic_clientes_pagos_archivos.archivo,
+						tc_mantic_clientes_pagos_archivos.ruta,
+						tc_mantic_clientes_pagos_archivos.alias,
+						tc_mantic_clientes_pagos_archivos.id_principal,
+						tc_mantic_clientes_pagos_archivos.observaciones,
+						tt_mantic_clientes_pagos_archivos.tamanio
+        from (
+          select      
+						tc_mantic_clientes_pagos_archivos.archivo,
+						count(*) as tamanio
+          from      
+            tc_mantic_clientes_pagos_archivos
+          group by
+            tc_mantic_clientes_pagos_archivos.archivo
+        ) as tt_mantic_clientes_pagos_archivos
+        inner join
+          tc_mantic_clientes_pagos_archivos on tt_mantic_clientes_pagos_archivos.archivo= tc_mantic_clientes_pagos_archivos.archivo
+        where      
+          tc_mantic_clientes_pagos_archivos.id_cliente_pago= {idClientePago}
+      </select>
+      <delete id="rows">
+        delete from
+          tc_mantic_clientes_pagos_archivos
+        where
+          id_cliente_pago= {idClientePago}
+      </delete>  
     </unit>
 		<unit id="TcManticRequisicionesEstatusDto">
       <select id="row">

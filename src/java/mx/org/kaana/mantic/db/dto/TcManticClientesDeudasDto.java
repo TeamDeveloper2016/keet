@@ -48,6 +48,20 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   private Long idVenta;
   @Column (name="importe")
   private Double importe;
+  @Column (name="retencion1")
+  private Double retencion1;
+  @Column (name="retencion2")
+  private Double retencion2;
+  @Column (name="retencion3")
+  private Double retencion3;
+  @Column (name="retencion4")
+  private Double retencion4;
+  @Column (name="retencion5")
+  private Double retencion5;
+  @Column (name="retencion6")
+  private Double retencion6;
+  @Column (name="retencion7")
+  private Double retencion7;  
   @Column (name="registro")
   private LocalDateTime registro;
 
@@ -56,11 +70,11 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesDeudasDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, LocalDate.now(), null, null);
+    this(null, null, null, new Long(-1L), null, null, LocalDate.now(), null, null, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
     setKey(key);
   }
 
-  public TcManticClientesDeudasDto(Long idClienteDeudaEstatus, Long idCliente, Long idUsuario, Long idClienteDeuda, String observaciones, Double saldo, LocalDate limite, Long idVenta, Double importe) {
+  public TcManticClientesDeudasDto(Long idClienteDeudaEstatus, Long idCliente, Long idUsuario, Long idClienteDeuda, String observaciones, Double saldo, LocalDate limite, Long idVenta, Double importe, Double retencion1, Double retencion2, Double retencion3, Double retencion4, Double retencion5, Double retencion6, Double retencion7) {
     setIdClienteDeudaEstatus(idClienteDeudaEstatus);
     setIdCliente(idCliente);
     setIdUsuario(idUsuario);
@@ -71,6 +85,13 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     setIdVenta(idVenta);
     setImporte(importe);
     setRegistro(LocalDateTime.now());
+    this.retencion1= retencion1;
+    this.retencion2= retencion2;
+    this.retencion3= retencion3;
+    this.retencion4= retencion4;
+    this.retencion5= retencion5;
+    this.retencion6= retencion6;
+    this.retencion7= retencion7;
   }
 	
   public void setIdClienteDeudaEstatus(Long idClienteDeudaEstatus) {
@@ -153,6 +174,62 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Double getRetencion1() {
+    return retencion1;
+  }
+
+  public void setRetencion1(Double retencion1) {
+    this.retencion1 = retencion1;
+  }
+
+  public Double getRetencion2() {
+    return retencion2;
+  }
+
+  public void setRetencion2(Double retencion2) {
+    this.retencion2 = retencion2;
+  }
+
+  public Double getRetencion3() {
+    return retencion3;
+  }
+
+  public void setRetencion3(Double retencion3) {
+    this.retencion3 = retencion3;
+  }
+
+  public Double getRetencion4() {
+    return retencion4;
+  }
+
+  public void setRetencion4(Double retencion4) {
+    this.retencion4 = retencion4;
+  }
+
+  public Double getRetencion5() {
+    return retencion5;
+  }
+
+  public void setRetencion5(Double retencion5) {
+    this.retencion5 = retencion5;
+  }
+
+  public Double getRetencion6() {
+    return retencion6;
+  }
+
+  public void setRetencion6(Double retencion6) {
+    this.retencion6 = retencion6;
+  }
+
+  public Double getRetencion7() {
+    return retencion7;
+  }
+
+  public void setRetencion7(Double retencion7) {
+    this.retencion7 = retencion7;
+  }
+  
   @Transient
   @Override
   public Long getKey() {
@@ -186,6 +263,20 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRetencion1());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRetencion2());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRetencion3());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRetencion4());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRetencion5());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRetencion6());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRetencion7());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -203,6 +294,13 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
 		regresar.put("limite", getLimite());
 		regresar.put("idVenta", getIdVenta());
 		regresar.put("importe", getImporte());
+		regresar.put("retencion1", getRetencion1());
+		regresar.put("retencion2", getRetencion2());
+		regresar.put("retencion3", getRetencion3());
+		regresar.put("retencion4", getRetencion4());
+		regresar.put("retencion5", getRetencion5());
+		regresar.put("retencion6", getRetencion6());
+		regresar.put("retencion7", getRetencion7());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -210,7 +308,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdClienteDeudaEstatus(), getIdCliente(), getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getSaldo(), getLimite(), getIdVenta(), getImporte(), getRegistro()
+      getIdClienteDeudaEstatus(), getIdCliente(), getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getSaldo(), getLimite(), getIdVenta(), getImporte(), getRegistro(), getRetencion1(), getRetencion2(), getRetencion3(), getRetencion4(), getRetencion5(), getRetencion6(), getRetencion7()
     };
     return regresar;
   }

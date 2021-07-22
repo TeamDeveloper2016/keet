@@ -632,7 +632,8 @@ public class Transaccion extends Facturama {
 					this.idClientePago,	
 					Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()).concat(this.file.getName()),
 					-1L,																				
-					this.file.getName()					
+          this.file.getOriginal(),
+					this.file.getName()
 				);
 				TcManticClientesPagosArchivosDto exists= (TcManticClientesPagosArchivosDto)DaoFactory.getInstance().toEntity(TcManticClientesPagosArchivosDto.class, "TcManticClientesPagosArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());

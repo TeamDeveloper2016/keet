@@ -228,7 +228,8 @@ public class Transaccion extends IBaseTnx {
 									DaoFactory.getInstance().update(sesion, empresaDeuda);
 								} // if
 							} // else
-							pagoPivote= new TcManticEmpresasPagosDto(1L, JsfBase.getIdUsuario(), this.pago.getIdEmpresaDeuda(), this.pago.getObservaciones(), -1L, totalPago, null,  null, null, empresaDeuda.getIdNotaEntrada(), null);
+              /*validar*/
+							// pagoPivote= new TcManticEmpresasPagosDto(1L, JsfBase.getIdUsuario(), this.pago.getIdEmpresaDeuda(), this.pago.getObservaciones(), -1L, totalPago, null,  null, null, empresaDeuda.getIdNotaEntrada(), null, -1L);
 							DaoFactory.getInstance().insert(sesion, pagoPivote);
 						} // if
 					} // if
@@ -272,7 +273,8 @@ public class Transaccion extends IBaseTnx {
 									DaoFactory.getInstance().update(sesion, creditoNota);
 								} // if
 							} // else
-							pagoPivote= new TcManticEmpresasPagosDto(1L, JsfBase.getIdUsuario(), this.pago.getIdEmpresaDeuda(), this.pago.getObservaciones(), -1L, totalPago, notaCredito.getKey(),  null, null, null, null);
+              /*validar*/
+							// pagoPivote= new TcManticEmpresasPagosDto(1L, JsfBase.getIdUsuario(), this.pago.getIdEmpresaDeuda(), this.pago.getObservaciones(), -1L, totalPago, notaCredito.getKey(),  null, null, null, null, -1L);
 							DaoFactory.getInstance().insert(sesion, pagoPivote);
 						} // if
 					} // if

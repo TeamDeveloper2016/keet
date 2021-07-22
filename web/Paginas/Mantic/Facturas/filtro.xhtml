@@ -258,25 +258,25 @@
               </f:facet>
               <h:outputText value="#{row['cliente']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.factura}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.factura}">
               <f:facet name="header">
                 <h:outputText value="Factura"/>
               </f:facet>
               <h:outputText value="#{row['factura']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.comprobante}">
+            <p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.comprobante}">
               <f:facet name="header">
                 <h:outputText value="Comprobante"/>
               </f:facet>
               <h:outputText value="#{row['comprobante']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{row.serie}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-7" sortBy="#{row.serie}">
               <f:facet name="header">
                 <h:outputText value="Serie"/>
               </f:facet>
               <h:outputText value="#{row['serie']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Tipo"/>
               </f:facet>
@@ -313,7 +313,7 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem value="Modificar" action="#{manticFacturasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1' and (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '11')}"/>
+            <p:menuitem value="Modificar" action="#{manticFacturasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1' and manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '11'}"/>
 						<p:menuitem value="Consultar" action="#{manticFacturasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1'}"/>					
             <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear();" process="@this tabla" action="#{manticFacturasFiltro.doMovimientos}"/>
             <!--p:menuitem value="Clonar" icon="fa fa-copy" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '16')}"/-->

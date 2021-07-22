@@ -735,7 +735,7 @@ public class Transaccion extends Facturama {
           params.put("saldo", ((Documento)item.getDto()).getInsoluto());      
           params.put("diferencia", Numero.toRedondearSat(((Documento)item.getDto()).getGlobal()- ((Documento)item.getDto()).getInsoluto()));
           DaoFactory.getInstance().updateAll(sesion, TcManticVentasDto.class, params, "saldo");
-        } // if
+        } // for
     } // try
     catch (Exception e) {
       throw e;
@@ -751,7 +751,8 @@ public class Transaccion extends Facturama {
   
   public void toCheckFacturasPagos(Session sesion, List<Documento> documentos, String leyenda) throws Exception {
     mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion pagos= null;
-    try {      
+    try { 
+      /*validar*/
 		  TcManticClientesPagosDto pago= new TcManticClientesPagosDto();
       pago.setIdUsuario(JsfBase.getIdUsuario());
       pago.setObservaciones(leyenda+ " COMPLEMENTO DE PAGO "+ this.orden.getTicket()+ " ["+ Global.format(EFormatoDinamicos.FECHA_HORA, this.orden.getRegistro())+ "]");
@@ -761,6 +762,7 @@ public class Transaccion extends Facturama {
       pagos= new mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion(
         pago, // TcManticClientesPagosDto pago, 
         this.orden.getIdCliente(), // Long idCliente, 
+        this.orden.getIdEmpresa(), // Long idEmpresa, 
         this.orden.getIdBanco(), // Long idBanco, 
         this.orden.getReferencia(), // String referencia, 
         Collections.EMPTY_LIST, // List<Entity> cuentas, 

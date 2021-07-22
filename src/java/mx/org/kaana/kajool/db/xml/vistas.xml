@@ -19,7 +19,8 @@
 				  id_tipo_sexo, tc_janal_grupos.id_grupo,
 				  tc_janal_grupos.clave as clave_grupo,
 				  tc_janal_usuarios.ultimo_acceso,
-					tr_mantic_empresa_personal.id_empresa_persona
+					tr_mantic_empresa_personal.id_empresa_persona,
+          tc_mantic_personas.id_autoriza
 				from
 					tc_janal_usuarios
 				inner join

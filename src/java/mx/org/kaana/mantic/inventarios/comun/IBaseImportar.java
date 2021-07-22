@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -142,10 +143,10 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			this.toWriteFile(result, event.getFile().getInputStream(), isXml);
 			fileSize= event.getFile().getSize();			
 			if(isXml) {
-			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
 				this.toReadFactura(result, sinIva, tipoDeCambio);
-				this.attrs.put("xml", this.xml.getName());
-			} //
+  	    this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
+			  this.attrs.put("xml", this.xml.getName());
+  		} //
 			else
 			  if(nameFile.endsWith(EFormatos.PDF.name())) {
 			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
@@ -609,5 +610,32 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
 		return regresar;
 	}
+
+  protected boolean resetXml(String path) {
+    boolean regresar= this.xml!= null;
+    if(this.xml!= null) {
+			File result= new File(path.concat(this.xml.getRuta()).concat(this.xml.getName()));		
+			if (!result.exists())
+				result.delete();			      
+			this.factura = null;
+			this.emisor  = null;
+			this.receptor= null;
+      this.xml     = null;
+      this.attrs.put("xml", this.xml);
+    } // if
+    return regresar;
+  }
+  
+  protected boolean resetPdf(String path) {
+    boolean regresar= this.pdf!= null;
+    if(this.pdf!= null) {
+			File result= new File(path.concat(this.pdf.getRuta()).concat(this.pdf.getName()));		
+			if (!result.exists())
+				result.delete();			      
+      this.pdf= null;
+      this.attrs.put("pdf", this.pdf);
+    } // if
+    return regresar;
+  }
   
 }
