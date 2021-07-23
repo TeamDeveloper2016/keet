@@ -248,8 +248,9 @@ public class Transaccion extends IBaseTnx {
 		  for (String matched: fileSearch.getResult()) {
 				String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
 				if(listado.indexOf(new Nombres(name))< 0) {
+          LOG.warn("Factura: delete file: ".concat(matched));
 				  File file= new File(matched);
-				  file.delete();
+				  // file.delete();
 				} // if
       } // for
 		} // if

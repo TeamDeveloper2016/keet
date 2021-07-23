@@ -168,7 +168,7 @@ public class Transaccion extends IBaseTnx {
 			for (TcManticListasPreciosArchivosDto item: list) {
 				LOG.info("Lista archivo: "+ this.lista.getIdListaPrecio().toString()+ " delete file: "+ item.getAlias());
 				File file= new File(item.getAlias());
-				file.delete();
+				// file.delete();
 			} // for
 	}	
   

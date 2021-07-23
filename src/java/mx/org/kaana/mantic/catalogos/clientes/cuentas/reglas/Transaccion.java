@@ -619,7 +619,7 @@ public class Transaccion extends Facturama {
 				if(listado.indexOf(new Nombres(name))< 0) {
 				  File existe= new File(matched);
           if(existe.exists()) {
-            LOG.error("Eliminar archivo: "+ matched);
+            LOG.warn("Factura: delete file: ".concat(matched));
 				    // existe.delete();
           } // if   
 				} // if

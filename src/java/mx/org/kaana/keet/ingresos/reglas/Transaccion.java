@@ -241,7 +241,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				if(listado.indexOf(new Nombres(name))< 0) {
           LOG.warn("Factura: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
 				  File file= new File(matched);
-				  file.delete();
+				  // file.delete();
 				} // if
       } // for
 	}
@@ -342,7 +342,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			for (TcManticFacturasArchivosDto item: list) {
 				LOG.info("Factura: "+ this.orden.getConsecutivo()+ " delete file: "+ item.getAlias());
 				File file= new File(item.getAlias());
-				file.delete();
+				// file.delete();
 			} // for
 	}	
 

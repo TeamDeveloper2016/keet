@@ -408,7 +408,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				if(listado.indexOf(new Nombres(name))< 0) {
           LOG.warn("Nota crédito: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
 				  File file= new File(matched);
-				  file.delete();
+				  // file.delete();
 				} // if
       } // for
 	}
@@ -502,7 +502,7 @@ public class Transaccion extends Inventarios implements Serializable {
 			for (TcManticNotasArchivosDto item: list) {
 				LOG.info("Nota entrada: "+ this.orden.getConsecutivo()+ " delete file: "+ item.getAlias());
 				File file= new File(item.getAlias());
-				file.delete();
+				// file.delete();
 			} // for
 	}	
 
