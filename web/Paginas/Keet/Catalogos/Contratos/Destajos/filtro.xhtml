@@ -91,7 +91,7 @@
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-96, janal-wid-col-30 janal-column-center">
 									<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosDestajosFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-										<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona destajo reporteDestajos lotes" oncomplete="janal.desbloquear(); reloadLotes();"/>
+										<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFiltro.doCasas}" update="tabla mientras proveedor persona destajo reporteDestajos lotes" oncomplete="janal.desbloquear(); reloadLotes();"/>
 										<f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '|'} #{element.nombreCompleto}"/>									
 										<p:column headerText="Puesto">
 											<h:outputText value="#{item.puesto}"/>
@@ -109,9 +109,9 @@
 								</p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100" style="margin-top: -16px !important;">
                   <p:outputLabel for="lotes" value="Lotes:"/>
-                  <p:selectOneMenu id="lotes" value="#{keetCatalogosContratosDestajosFiltro.attrs.lote}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                  <p:selectOneMenu id="lotes" value="#{keetCatalogosContratosDestajosFiltro.attrs.casa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
                     <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear();"/>
-                    <f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.lotes}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
+                    <f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.casas}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
                     <p:column headerText="Lote">
                       <h:outputText value="#{item.descripcionLote}"/>
                     </p:column>   
@@ -144,8 +144,8 @@
 							</h:panelGrid>
 							<f:facet name="footer">
 								<div class="janal-column-right">
-									<span style="display: #{row.iconEstatus eq '' ? '' : 'none'}">Importar imagenes ...</span>									
-									<span style="display: #{row.iconEstatus eq '' ? 'none' : ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" style="display: #{row.iconEstatus eq '' ? 'none' : ''}"/>									
+									<span style="display: #{row.iconEstatus eq '' and row.manzana eq '00N' ? '': 'none'}">Importar evidencias ...</span>									
+                  <span style="display: #{row.iconEstatus eq '' ? 'none': ''}">Estatus: </span><h:graphicImage library="janal" name="icon/semaforos/#{row.iconEstatus}.png" rendered="#{row.iconEstatus ne ''}"/>
 								</div>	
 							</f:facet>
 						</p:panel>						

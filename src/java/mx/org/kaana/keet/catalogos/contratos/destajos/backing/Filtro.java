@@ -117,10 +117,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 				idDepartamento= (Long) JsfBase.getFlashAttribute("idDepartamento");
 				figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");
 				this.attrs.put("especialidad", idDepartamento);
-				this.toLoadFiguras();				
 				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));
 			} // if
-			this.doLoad();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -209,14 +207,14 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			especialidades= UISelect.build("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("especialidades", especialidades);
 			this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
-      this.toLoadFiguras();
+      this.doLoadFiguras();
 		} // try
 		finally {
 			Methods.clean(params);
 		} // finally
 	} // loadEspecialidades
 	
-	public void toLoadFiguras() {
+	public void doLoadFiguras() {
 		List<UISelectEntity> figuras= null;
 		Map<String, Object>params   = null;
 		List<Columna> columns       = null;
@@ -230,11 +228,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
 			figuras= UIEntity.build("VistaCapturaDestajosDto", "empleadosAsociados", params, columns);
 			this.attrs.put("figuras", figuras);
-      UISelectEntity figura= UIBackingUtilities.toFirstKeySelectEntity(figuras);
-			this.attrs.put("figura", figura);
-			this.attrs.put("destajos", false);
-			this.attrs.put("persona", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(1L));
-			this.attrs.put("proveedor", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(2L));
+      this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
+      this.doLoadCasas();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -282,11 +277,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     } // catch	
   }
   
-  public void doLoadFiguras() {
-    this.toLoadFiguras();
-    this.doLoad();
-  }
-  
 	private String toDomicilio() {
 		StringBuilder regresar= null;
 		try {
@@ -309,7 +299,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     StringBuilder regresar = new StringBuilder();
 		UISelectEntity contrato= (UISelectEntity)this.attrs.get("contrato");
 		UISelectEntity manzana = (UISelectEntity)this.attrs.get("manzana");
-		UISelectEntity lote    = (UISelectEntity)this.attrs.get("lote");
+		UISelectEntity lote    = (UISelectEntity)this.attrs.get("casa");
     if(contrato!= null && contrato.getKey()> 0L)
 		  regresar.append("tc_keet_contratos.id_contrato= ").append(contrato.getKey()).append(" and ");
     if(manzana!= null && manzana.getKey()> 0L) {
@@ -325,6 +315,42 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     return regresar.length()> 0? regresar.substring(0, regresar.length()- 4): Constantes.SQL_VERDADERO;
   }
   
+  public void doLoadCasas() {
+		Map<String, Object>params   = null;
+		List<UISelectEntity> figuras= null;
+		List<UISelectEntity> casas  = null;
+		UISelectEntity figura       = null;
+		String idXml                = null;
+    try {   
+			figuras= (List<UISelectEntity>) this.attrs.get("figuras");
+      figura = (UISelectEntity)this.attrs.get("figura");
+      int index= figuras.indexOf(figura);
+      if(index>= 0) {
+			  figura= figuras.get(index);
+        params  = new HashMap<>();
+        params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
+        params.put("idFigura", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
+        params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
+        idXml= figura.toLong("tipo").equals(1L)? "lotesContratistas": "lotesSubContratistas";
+        casas= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, "descripcionLote");
+        this.attrs.put("casas", casas);
+        this.attrs.put("casa", UIBackingUtilities.toFirstKeySelectEntity(casas));
+      } // if  
+      else {
+        this.attrs.put("casas", new ArrayList<>());
+        this.attrs.put("casa", new UISelectEntity(-1L));
+      } // else
+      this.doLoad();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {      
+      Methods.clean(params);
+    } // finally		
+  } // doLoad	
+	
   @Override
   public void doLoad() {
 		Map<String, Object>params   = null;
@@ -354,7 +380,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);		
         casas= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, "descripcionLote");
         this.attrs.put("lotes", casas);
-        this.attrs.put("lote", UIBackingUtilities.toFirstKeySelectEntity(casas));
         if(!this.lotes.isEmpty()) { 
           UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
           this.lotes.add(0, this.toLoteDefault());
@@ -364,7 +389,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       else {
         this.lotes= new ArrayList<>();		
         this.attrs.put("lotes", new ArrayList<>());
-        this.attrs.put("lote", new UISelectEntity(-1L));
       } // else
 			this.attrs.put("persona", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(1L));
 			this.attrs.put("proveedor", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(2L));
