@@ -4963,6 +4963,7 @@
 					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
 				where 				
 					tc_keet_proyectos.id_desarrollo= {idDesarrollo}
+          and tc_keet_contratos_contratistas_archivos.nombre!= 'sin-foto.png'
 				union
 				select 
 					convert(concat(8000,tc_keet_contratos_proveedores_archivos.id_contrato_proveedor_archivo), unsigned integer) as id_key,					
@@ -5006,6 +5007,7 @@
 					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
 				where 					
 					tc_keet_proyectos.id_desarrollo= {idDesarrollo}
+          and tc_keet_contratos_proveedores_archivos.nombre!= 'sin-foto.png'
 			</select>
 			<select id="allImportadosResidentes">
 				select 

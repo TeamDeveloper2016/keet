@@ -482,7 +482,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
 			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");			
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Contratos/Destajos/filtro");			
 			JsfBase.setFlashAttribute("nombreConcepto", "");			
 			if(seleccionado.getKey().equals(Constantes.USUARIO_INACTIVO))				
 				regresar= "galeria".concat(Constantes.REDIRECIONAR);			
@@ -494,7 +494,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return regresar;
-  } // doPagina
+  } // doConceptos
 	
 	public String doCancelar() {
     String regresar                   = null;    
@@ -567,7 +567,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	}
   
 	public void doReporte(String tipo) throws Exception {
-		doReporte(tipo, false);
+		this.doReporte(tipo, false);
 	} // doReporte	
 	
 	@Override

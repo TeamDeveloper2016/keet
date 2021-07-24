@@ -44,7 +44,7 @@ public class Galeria extends IBaseFilter implements Serializable {
 			this.attrs.put("seleccionadoPivote", (Entity) JsfBase.getFlashAttribute("seleccionado"));
 			this.attrs.put("idDepartamento", (Long) JsfBase.getFlashAttribute("idDepartamento"));									
 			this.attrs.put("pathPivote", File.separator.concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/").concat("images").concat("/"));						
-			doLoad();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -62,7 +62,7 @@ public class Galeria extends IBaseFilter implements Serializable {
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));									
 		  this.attrs.put("importados", UIEntity.build("VistaCapturaDestajosDto", "allImportados", this.attrs, columns));
-			doLoadFiles();
+			this.doLoadFiles();
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
