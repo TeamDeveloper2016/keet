@@ -98,8 +98,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   protected void init() {		
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
-		Long idDepartamento      = null;
-		UISelectEntity figura    = null;
+		UISelectEntity figura    = new UISelectEntity(-1L);
     try {
 			this.initBase();
       this.costoTotal= "$ 0.00";
@@ -112,14 +111,19 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       this.attrs.put("destajos", false);				
       this.attrs.put("persona", false);				
       this.attrs.put("proveedor", false);							
-			this.toLoadCatalogos();			
 			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null) {
-				idDepartamento= (Long) JsfBase.getFlashAttribute("idDepartamento");
-				figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");
-				this.attrs.put("especialidad", idDepartamento);
-				this.attrs.put("figura", ((List<UISelectEntity>)this.attrs.get("figuras")).get(((List<UISelectEntity>)this.attrs.get("figuras")).indexOf(figura)));
-			} // if
-    } // try // try
+				figura        = (UISelectEntity) JsfBase.getFlashAttribute("figura");
+				this.attrs.put("idDepartamento", JsfBase.getFlashAttribute("idDepartamento"));
+      } // if
+			this.toLoadCatalogos();			
+			if(figura!= null && figura.getKey()> 0L) {
+        List<UISelectEntity> figuras= (List<UISelectEntity>)this.attrs.get("figuras");
+        int index= figuras.indexOf(figura);
+        if(index>= 0)
+				  this.attrs.put("figura", figuras.get(index));
+      } // if  
+      this.attrs.put("idDepartamento", null);
+    } // try 
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -210,7 +214,15 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
 			especialidades= UISelect.build("VistaCapturaDestajosDto", "especialidades", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("especialidades", especialidades);
-			this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
+      if(especialidades!= null && !especialidades.isEmpty()) {
+        if(this.attrs.get("idDepartamento")!= null) {
+          int index= especialidades.indexOf(new UISelectItem(this.attrs.get("idDepartamento")));
+          if(index>= 0)
+			      this.attrs.put("especialidad", this.attrs.get("idDepartamento"));
+        } // if  
+        else
+			    this.attrs.put("especialidad", UIBackingUtilities.toFirstKeySelectItem(especialidades));
+      } // if  
       this.doLoadFiguras();
 		} // try
 		finally {
@@ -488,6 +500,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 				JsfBase.setFlashAttribute("opcionAdicional", (EOpcionesResidente)this.attrs.get("opcionAdicional"));												
 			JsfBase.setFlashAttribute("seleccionado", seleccionado);												
 			JsfBase.setFlashAttribute("figura", figura);									
+			JsfBase.setFlashAttribute("casa", this.attrs.get("casa"));									
 			JsfBase.setFlashAttribute("idDepartamento", Long.valueOf(this.attrs.get("especialidad").toString()));									
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));				
 			JsfBase.setFlashAttribute("georreferencia", new Point(Numero.getDouble(seleccionado.toString("latitud"), 21.890563), Numero.getDouble(seleccionado.toString("longitud"), -102.252030)));				

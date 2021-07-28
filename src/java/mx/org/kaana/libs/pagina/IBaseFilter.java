@@ -43,4 +43,5 @@ public abstract class IBaseFilter extends IBaseAttribute implements Serializable
 		} // if
 		return regresar;
 	}
+  
 }

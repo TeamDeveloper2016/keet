@@ -59,6 +59,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			idDepartamento= (Long)JsfBase.getFlashAttribute("idDepartamento");	
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("figura", figura);      
+			this.attrs.put("casa", JsfBase.getFlashAttribute("casa"));      
 			this.attrs.put("seleccionadoPivote", seleccionado);      			
 			this.attrs.put("idDesarrollo", idDesarrollo);      
 			this.attrs.put("idDepartamento", idDepartamento);      			
@@ -273,6 +274,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idDesarrollo", this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("idDesarrolloProcess", this.attrs.get("idDesarrollo"));
 			JsfBase.setFlashAttribute("figura", this.attrs.get("figura"));
+			JsfBase.setFlashAttribute("casa", this.attrs.get("casa"));
 			JsfBase.setFlashAttribute("idDepartamento", this.attrs.get("idDepartamento"));									
 			JsfBase.setFlashAttribute("opcionResidente", opcion);			
 			JsfBase.setFlashAttribute("opcionAdicional", this.attrs.get("opcionAdicional"));			

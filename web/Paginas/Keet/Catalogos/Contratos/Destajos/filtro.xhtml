@@ -110,7 +110,7 @@
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100" style="margin-top: -16px !important;">
                   <p:outputLabel for="lotes" value="Lotes:"/>
                   <p:selectOneMenu id="lotes" value="#{keetCatalogosContratosDestajosFiltro.attrs.casa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear();"/>
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFiltro.doLoad}" update="tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reload();"/>
                     <f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.casas}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
                     <p:column headerText="Lote">
                       <h:outputText value="#{item.descripcionLote}"/>
@@ -120,11 +120,11 @@
               </p:panelGrid>										
               <p:remoteCommand name="reloadContratista" process="@this" update="contratista consultas"/>
               <p:remoteCommand name="reloadLotes" process="@this" update="lotes"/>
+              <p:remoteCommand name="reload" process="@this" update="destajo"/>
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-					<p:dataGrid var="row" value="#{keetCatalogosContratosDestajosFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosDestajosFiltro.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
-											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+					<p:dataGrid id="destajo" var="row" value="#{keetCatalogosContratosDestajosFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosDestajosFiltro.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{empty row.prototipo? '': '|'} #{row.prototipo}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="destajo" title="Ver detalle del articulo" action="#{keetCatalogosContratosDestajosFiltro.doConceptos}">
