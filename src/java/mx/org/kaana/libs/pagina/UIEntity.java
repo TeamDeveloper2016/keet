@@ -345,6 +345,10 @@ public final class UIEntity {
 		return seleccione(proceso, id, params, Collections.EMPTY_LIST, name);
 	}
 	
+  public static List<UISelectEntity> seleccione(String proceso, String id, Map<String, Object> params, Long records, String name) {
+		return seleccione(proceso, id, params, Collections.EMPTY_LIST, records, name);
+	}
+	
   public static List<UISelectEntity> todos(String proceso, String id, String name) {
 		Map<String, Object> params= new HashMap<>();
 		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);

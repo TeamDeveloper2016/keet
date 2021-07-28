@@ -85,7 +85,7 @@
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 								<p:outputLabel for="departamento" value="Departamento:"/>
                 <p:selectOneMenu id="departamento" value="#{keetCatalogosContratosDestajosFiltro.attrs.especialidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFiltro.doLoadFiguras}" update="contratista tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadContratista();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFiltro.doLoadFiguras}" update="contratista lotes tabla mientras proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadContratista(); reloadLotes();"/>
 									<f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.especialidades}"/>
 								</p:selectOneMenu>																
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>

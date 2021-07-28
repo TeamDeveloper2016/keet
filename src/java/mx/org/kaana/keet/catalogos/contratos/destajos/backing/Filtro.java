@@ -157,7 +157,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	} // toLadCatalogos	
 	
 	private void toLoadContratos() {
-    Map<String, Object> params= null;
+    Map<String, Object> params    = null;
 		List<UISelectEntity> contratos= null;
     try {      
       params = new HashMap<>();      
@@ -180,6 +180,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     Map<String, Object> params   = null;
 		List<UISelectEntity> manzanas= null;
     try {      
+      if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
+        this.attrs.put("casa", new UISelectEntity(-1L));
       params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
@@ -201,6 +203,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		List<UISelectItem>especialidades= null;
 		Map<String, Object>params       = null;
 		try {
+      if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
+        this.attrs.put("casa", new UISelectEntity(-1L));
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
@@ -219,6 +223,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		Map<String, Object>params   = null;
 		List<Columna> columns       = null;
 		try {
+      if(this.attrs.get("casa")!= null && ((UISelectEntity)this.attrs.get("casa")).getKey()>= 0)
+        this.attrs.put("casa", new UISelectEntity(-1L));
 			params= new HashMap<>();
 			params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
 			params.put("idDepartamento", this.attrs.get("especialidad"));
@@ -332,9 +338,12 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         params.put("idFigura", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
         params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
         idXml= figura.toLong("tipo").equals(1L)? "lotesContratistas": "lotesSubContratistas";
-        casas= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, "descripcionLote");
+        casas= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, Constantes.SQL_TODOS_REGISTROS, "descripcionLote");
         this.attrs.put("casas", casas);
-        this.attrs.put("casa", UIBackingUtilities.toFirstKeySelectEntity(casas));
+//        if(casas!= null && casas.size()> 0)
+//          this.attrs.put("casa", casas.size()- 1);
+//        else
+          this.attrs.put("casa", UIBackingUtilities.toFirstKeySelectEntity(casas));
       } // if  
       else {
         this.attrs.put("casas", new ArrayList<>());
@@ -378,7 +387,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         this.attrs.put("idFiguraCorreo", figura.getKey()> 0? figura.getKey().toString().substring(4): figura.getKey());
         this.attrs.put("figuraNombreCompletoCorreo", figura.toString("nombreCompleto"));
         this.lotes= DaoFactory.getInstance().toEntitySet("VistaCapturaDestajosDto", idXml, params);		
-        casas= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, "descripcionLote");
+        casas= UIEntity.seleccione("VistaCapturaDestajosDto", idXml, params, Constantes.SQL_TODOS_REGISTROS, "descripcionLote");
         this.attrs.put("lotes", casas);
         if(!this.lotes.isEmpty()) { 
           UIBackingUtilities.toFormatEntitySet(this.lotes, columns);	
