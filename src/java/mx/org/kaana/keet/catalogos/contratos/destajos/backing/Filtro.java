@@ -114,15 +114,11 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null) {
 				figura        = (UISelectEntity) JsfBase.getFlashAttribute("figura");
 				this.attrs.put("idDepartamento", JsfBase.getFlashAttribute("idDepartamento"));
+				this.attrs.put("idFigura", figura);
       } // if
 			this.toLoadCatalogos();			
-			if(figura!= null && figura.getKey()> 0L) {
-        List<UISelectEntity> figuras= (List<UISelectEntity>)this.attrs.get("figuras");
-        int index= figuras.indexOf(figura);
-        if(index>= 0)
-				  this.attrs.put("figura", figuras.get(index));
-      } // if  
       this.attrs.put("idDepartamento", null);
+  		this.attrs.put("idFigura", null);
     } // try 
     catch (Exception e) {
       Error.mensaje(e);
@@ -246,7 +242,14 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			columns.add(new Columna("puesto", EFormatoDinamicos.MAYUSCULAS));
 			figuras= UIEntity.build("VistaCapturaDestajosDto", "empleadosAsociados", params, columns);
 			this.attrs.put("figuras", figuras);
-      this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
+      if(figuras!= null && !figuras.isEmpty())
+        if(this.attrs.get("idFigura")!= null) {
+          int index= figuras.indexOf((UISelectEntity)this.attrs.get("idFigura"));
+          if(index>= 0)
+			      this.attrs.put("figura", figuras.get(index));
+        } // if  
+        else
+         this.attrs.put("figura", UIBackingUtilities.toFirstKeySelectEntity(figuras));
       this.doLoadCasas();
 		} // try
 		catch (Exception e) {
