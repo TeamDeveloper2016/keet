@@ -33,7 +33,7 @@
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesUbicacionesFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesUbicacionesFiltro.attrs.empresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" process="@this panelBusqueda" listener="#{manticCatalogosAlmacenesUbicacionesFiltro.doLoadAlmacenes}" update="panelBusqueda" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
-                <f:selectItems value="#{manticCatalogosAlmacenesUbicacionesFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesUbicacionesFiltro.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -127,10 +127,10 @@
 						<p:menuitem id="ubicacion" process="@this tabla" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doOrganigramaIndividual}" icon="fa fa-edit" value="Ubicaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:separator/>			
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesUbicacionesFiltro.doReporte('UBICACIONES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
-				
           </p:contextMenu>
         </div>
       </div>
-    </div>		           				
+    </div>		     
   </ui:define>      
+  <ui:param name="lineaSeparacion" value="false"/>    
 </ui:composition>

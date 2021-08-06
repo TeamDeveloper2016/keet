@@ -41,11 +41,11 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("idPrincipal", 1L);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
-			toLoadEmpresas();
-			doLoadAlmacenes(); 
+			this.toLoadEmpresas();
+			this.doLoadAlmacenes(); 
 			if(JsfBase.getFlashAttribute("idAlmacenUbicacion")!= null){
 				this.attrs.put("idAlmacenUbicacion", JsfBase.getFlashAttribute("idAlmacenUbicacion"));
-				doLoad();
+				this.doLoad();
 				this.attrs.put("idAlmacenUbicacion", null);
 			} // if				
     } // try
@@ -85,11 +85,11 @@ public class Filtro extends Comun implements Serializable {
 		StringBuilder sb= new StringBuilder();		
 		UISelectEntity empresa= (UISelectEntity) this.attrs.get("empresa");
 		UISelectEntity almacen= (UISelectEntity) this.attrs.get("almacen");
-		if(!empresa.getKey().equals(-1L))
+		if(empresa!= null && !empresa.getKey().equals(-1L))
 		  regresar.put("sucursales", empresa.getKey());
 		else
 		  regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(!almacen.getKey().equals(-1L))
+		if(almacen!= null && !almacen.getKey().equals(-1L))
 		  sb.append("tc_mantic_almacenes.id_almacen=").append(almacen.getKey()).append(" and ");
 		if(this.attrs.get("idAlmacenUbicacion")!= null && !Cadena.isVacio(this.attrs.get("idAlmacenUbicacion")))
 			sb.append("tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion=").append(this.attrs.get("idAlmacenUbicacion")).append(" and ");			
