@@ -39,12 +39,12 @@
 							<p:panelGrid id="panelBusqueda" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																																							
 								<p:outputLabel for="departamento" value="Departamento:"/>
 								<p:selectOneMenu id="departamento" value="#{keetCatalogosContratosValesNormalesFiltro.attrs.especialidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosValesNormalesFiltro.doLoadFiguras}" update="contratista tabla  destajo" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosValesNormalesFiltro.doLoadFiguras}" update="tabla destajo contratista lotes" oncomplete="janal.desbloquear(); reloadContratistas();"/>
 									<f:selectItems value="#{keetCatalogosContratosValesNormalesFiltro.attrs.especialidades}"/>
 								</p:selectOneMenu>																
 								<p:outputLabel for="contratista" value="Contratista ó subcontratista:"/>
 								<p:selectOneMenu id="contratista" value="#{keetCatalogosContratosValesNormalesFiltro.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosValesNormalesFiltro.doLoad}" update="tabla  destajo lotes" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosValesNormalesFiltro.doLoad}" update="tabla destajo lotes" oncomplete="janal.desbloquear(); reloadLotes();"/>
 									<f:selectItems value="#{keetCatalogosContratosValesNormalesFiltro.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '|'} #{element.nombreCompleto}"/>									
 									<p:column headerText="Puesto">
 										<h:outputText value="#{item.puesto}"/>
@@ -55,29 +55,35 @@
 								</p:selectOneMenu>									
 								<p:outputLabel for="lotes" value="Lotes:"/>
 								<p:selectOneMenu id="lotes" value="#{keetCatalogosContratosValesNormalesFiltro.attrs.loteCriterio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetCatalogosContratosValesNormalesFiltro.doLoad}" update="tabla  destajo" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetCatalogosContratosValesNormalesFiltro.attrs.lotesCriterio}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
+									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosValesNormalesFiltro.doLoad}" update="tabla destajo" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{keetCatalogosContratosValesNormalesFiltro.attrs.lotesCriterio}" var="element" itemValue="#{element}" itemLabel="#{element.claveContrato} #{element.descripcionLote eq 'SELECCIONE'? '': '|'} #{element.descripcionLote}"/>																		
 									<p:column headerText="Lote">
 										<h:outputText value="#{item.descripcionLote}"/>
 									</p:column>   
+									<p:column headerText="Contrato">
+										<h:outputText value="#{item.claveContrato}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
 								</p:selectOneMenu>
-              </p:panelGrid>										
-						</p:tab>
+              </p:panelGrid>	
+              <p:remoteCommand name="reloadContratistas" onstart="return janal.bloquear();" process="@this" update="contratista lotes" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadLotes" onstart="return janal.bloquear();" process="@this" update="lotes" oncomplete="janal.desbloquear();"/>
+				  	</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
 					<p:dataGrid var="row" value="#{keetCatalogosContratosValesNormalesFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index"
 											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosValesNormalesFiltro.lazyModel.rowCount gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
-											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
-											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
-											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
-						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{row.clave}" style="text-align:center; border: 0px;">
+											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.nombre).concat(']')} #{row.clave}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="destajo" title="Ver detalle del articulo" action="#{keetCatalogosContratosValesNormalesFiltro.doConceptos}">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}, Click para generar vale de materiales" class="manzana-lote-font" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosValesNormalesFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
-									<h:outputText value="&lt;b&gt;#{row.etapaContrato}&lt;/b&gt;" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+                  <h:outputText value="Contrato: &lt;b&gt;#{row.claveContrato}&lt;/b&gt;" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}" styleClass="janal-color-blue"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
 									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>

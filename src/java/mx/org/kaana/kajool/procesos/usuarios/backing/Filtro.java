@@ -79,6 +79,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
     CargaInformacionUsuarios carga = null;
     try {
+      this.attrs.put("estatus", 2L);
       this.criteriosBusqueda = new CriteriosBusqueda();
       carga = new CargaInformacionUsuarios(getCriteriosBusqueda());
       carga.init();
@@ -157,6 +158,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 				sb.append("(date_format(tc_janal_usuarios.ultimo_acceso, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaInicio)).append("') and ");	
 			if(!Cadena.isVacio(this.fechaTermino))
 				sb.append("(date_format(tc_janal_usuarios.ultimo_acceso, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, this.fechaTermino)).append("') and ");	
+			if(!Cadena.isVacio(this.attrs.get("estatus")))
+        if((Long)this.attrs.get("estatus")== 2)
+				  sb.append("tc_janal_usuarios.activo in (0, 1, 2) and ");
+        else
+				  sb.append("tc_janal_usuarios.activo=").append((Long)this.attrs.get("estatus")).append(" and ");
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				sb.append("(tr_mantic_empresa_personal.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");
       if(sb.length()== 0)

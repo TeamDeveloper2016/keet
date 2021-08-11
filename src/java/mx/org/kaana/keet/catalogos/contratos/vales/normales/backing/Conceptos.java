@@ -38,6 +38,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID= 2847354766000406350L;  	
 	private static final Long NIVEL_CONCEPTO  = 6L;
 	private static final String FLUJO_INICIO  = "filtro";
+  
 	private TreeNode treeConceptos;
 	private TreeNode[] selectedNodes;
 	private List<MaterialVale> materiales;
@@ -154,7 +155,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		TreeNode concepto            = null;
 		int total                    = 0;
     try {    			
-			buildMaterial= new BuildMateriales(toClaveEstacion(), Long.valueOf(this.attrs.get("idDepartamento").toString()));
+			buildMaterial= new BuildMateriales(this.toClaveEstacion(), Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			partidas= buildMaterial.toPartidas();			
 			for(MaterialVale recordPartida: partidas){
 				partida= new CheckboxTreeNode("partida", recordPartida, this.treeConceptos);
@@ -186,7 +187,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		int count=0;		
 		try {
 			doLoad();
-			buildMaterial= new BuildMateriales(toClaveEstacion(), Long.valueOf(this.attrs.get("idDepartamento").toString()));
+			buildMaterial= new BuildMateriales(this.toClaveEstacion(), Long.valueOf(this.attrs.get("idDepartamento").toString()));
 			conceptosRegistrados= buildMaterial.toConceptosRegistrados(Long.valueOf(this.attrs.get("idVale").toString()));
 			for(MaterialVale concepto: conceptosRegistrados){
 				for(TreeNode nodePartida: this.treeConceptos.getChildren()){
@@ -361,14 +362,20 @@ public class Conceptos extends IBaseFilter implements Serializable {
 		} // catch		
 	} // loadNodeParents
 	
-	private String toClaveEstacion(){
+	private String toClaveEstacion() {
 		StringBuilder regresar= null;
 		try {			
 			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
-			regresar.append(Fecha.getAnioActual());
-			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
-			regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("orden"), 3, '0', true));
+      if(this.attrs.get("seleccionadoPivote")!= null && !((Entity)this.attrs.get("seleccionadoPivote")).isEmpty()) {
+			  regresar.append(((Entity)this.attrs.get("seleccionadoPivote")).toString("ejercicio"));
+			  regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("ordenContrato"), 3, '0', true));
+			  regresar.append(Cadena.rellenar(((Entity)this.attrs.get("seleccionadoPivote")).toString("orden"), 3, '0', true));
+      } // if  
+      else {
+			  regresar.append(Fecha.getAnioActual());
+			  regresar.append(Cadena.rellenar("9", 6, '9', true));
+      } // else 
 		} // try
 		catch (Exception e) {			
 			throw e;

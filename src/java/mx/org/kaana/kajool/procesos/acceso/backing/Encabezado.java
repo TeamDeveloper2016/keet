@@ -450,12 +450,13 @@ public class Encabezado extends IBaseFilter implements Serializable {
 		String regresar= null;
 		// 0201000000->Bienvenido
 		// 0204000000->Tablero de control
-		for (UsuarioMenu item: JsfBase.getAutentifica().getMenu()) {
-			if("0201000000".equals(item.getClave()) || "0204000000".equals(item.getClave())) {
-				regresar= item.getRuta().concat(Constantes.REDIRECIONAR);
-				break;
-			} // if	
-		} // for
+    if(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getMenu()!= null)
+      for (UsuarioMenu item: JsfBase.getAutentifica().getMenu()) {
+        if("0201000000".equals(item.getClave()) || "0204010000".equals(item.getClave()) || "0204020000".equals(item.getClave())) {
+          regresar= item.getRuta().concat(Constantes.REDIRECIONAR);
+          break;
+        } // if	
+      } // for
 		return regresar;
 	}
 

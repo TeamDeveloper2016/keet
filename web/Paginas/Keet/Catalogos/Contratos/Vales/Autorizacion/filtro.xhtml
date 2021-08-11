@@ -66,9 +66,7 @@
 					<p:spacer height="3px"/>
 					<p:dataGrid id="tabla" var="row" value="#{keetCatalogosContratosValesAutorizacionFiltro.vales}" columns="4" layout="grid" rowIndexVar="index"
 											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosValesAutorizacionFiltro.attrs.totalRegistros gt Constantes.REGISTROS_POR_PAGINA}"
-											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
-											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
-											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.descripcionLote}" style="text-align:center; border: 0px;">							
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{keetCatalogosContratosValesAutorizacionFiltro.doEntrega}">

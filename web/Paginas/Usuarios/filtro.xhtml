@@ -60,6 +60,12 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" />
               <p:outputLabel for="fechaTermino" value="Ultimo ingreso termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" placeholder="ejemplo: 01/01/2020" value="#{kajoolUsuariosFiltro.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" />
+              <p:outputLabel for="estatus" value="Estatus:"/>
+              <p:selectOneMenu id="estatus" value="#{kajoolUsuariosFiltro.attrs.estatus}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+								<f:selectItem itemValue="2" itemLabel="TODOS"/>
+								<f:selectItem itemValue="1" itemLabel="ACTIVO"/>
+								<f:selectItem itemValue="0" itemLabel="NO ACTIVO"/>
+              </p:selectOneMenu>  
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
@@ -118,6 +124,12 @@
               </f:facet>
               <h:outputText value="#{row['ultimoAcceso']}"/>
             </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-2">
+              <f:facet name="header">
+                <p:outputLabel value="" styleClass="xs-pantalla"/>
+              </f:facet>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.activo eq '1'? 'circulo-verde': 'circulo-rojo'}.png" title="#{row.activo eq '1' ? 'ACTIVO': 'NO ACTIVO'}"/>
+            </p:column>  
             <f:facet name="footer">
               <h:outputText value="Total [#{kajoolUsuariosFiltro.lazyModel==null?0:kajoolUsuariosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>

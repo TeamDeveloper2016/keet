@@ -7379,6 +7379,7 @@
 					tc_keet_proyectos.etapa as etapa_proyecto,
 					tc_keet_contratos.orden as orden_contrato,
 					tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista,
+          tc_keet_contratos.nombre,
           tc_keet_contratos.ejercicio
 				from 
 					tc_keet_proyectos
@@ -7404,6 +7405,7 @@
 					tc_keet_proyectos.etapa as etapa_proyecto,
 					tc_keet_contratos.orden as orden_contrato,
 					tc_keet_contratos_lotes_proveedores.id_contrato_lote_proveedor,
+          tc_keet_contratos.nombre,
           tc_keet_contratos.ejercicio
 				from 
 					tc_keet_proyectos

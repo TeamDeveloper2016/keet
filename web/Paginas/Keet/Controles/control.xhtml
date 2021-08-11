@@ -54,8 +54,8 @@
 										</p:column>   
 									</p:selectOneMenu>	
 									<p:panelGrid columns="4" styleClass="janal-wid-100-txt">
-  									<p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar avance" disabled="true" style="display: #{not keetControlesControl.attrs.persona? '': 'none'}"/>
-	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar avance" action="#{keetControlesControl.doDestajos}" process="@this" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetControlesControl.attrs.persona? '': 'none'}"/>
+  									<p:commandButton id="mientras" icon="fa fa-search" title="Consultar avance" disabled="true" style="display: #{not keetControlesControl.attrs.persona? '': 'none'}"/>
+	  								<p:commandButton id="persona" icon="fa fa-search" title="Consultar avance" action="#{keetControlesControl.doDestajos}" process="@this" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetControlesControl.attrs.persona? '': 'none'}"/>
                     <p:commandButton id="reporteDestajos" icon="fa fa-file-pdf-o" title="Avances" action="#{keetControlesControl.doReporte('COMPLETO')}" disabled="#{not keetControlesControl.attrs.persona}" process="@this" update="descargar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" />
 									</p:panelGrid>
 								</p:panelGrid>
