@@ -64,11 +64,27 @@ public class UtilAplicacion {
   private static final String ECHART= "jquery.janal.echarts.core-0.4.8.js";
 
   public String getTituloSistema() {
-    return Configuracion.getInstance().getPropiedad("sistema.titulo").toUpperCase();
+    return Configuracion.getInstance().getEmpresa("titulo").toUpperCase();
   }
 
   public String getTituloCorto() {
-    return Configuracion.getInstance().getPropiedad("sistema.corto");
+    return Configuracion.getInstance().getEmpresa("corto");
+  }
+
+  public String getLogoEmpresa() {
+    return Configuracion.getInstance().getEmpresa("logo");
+  }
+
+  public String getLogoAyudaEmpresa() {
+    return Configuracion.getInstance().getEmpresa("ayuda");
+  }
+
+  public String getLogoFavicon() {
+    return Configuracion.getInstance().getEmpresa("favicon");
+  }
+  
+  public String getLogoIcon() {
+    return Configuracion.getInstance().getEmpresa("icon");
   }
 
   public String getIngresoCurp() {
@@ -182,13 +198,13 @@ public class UtilAplicacion {
       Font font10   = new Font(BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false), 10F);
       Font font12   = new Font(BaseFont.createFont(BaseFont.HELVETICA, "Cp1252", false), 12F);
       servletContext= (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-      Image logo = Image.getInstance(servletContext.getRealPath("").concat(Constantes.RUTA_IMAGENES).concat("logo.png"));
+      Image logo = Image.getInstance(servletContext.getRealPath("").concat(Constantes.RUTA_IMAGENES).concat(Configuracion.getInstance().getEmpresa("logo")));
       logo.scalePercent(12);
       PdfPTable table = new PdfPTable(3);
 			table.getDefaultCell().setBorder(0);
 			table.setWidthPercentage(95f);
       this.addCellImage(table, logo, Element.ALIGN_LEFT, 1, font10);			
-      this.addCellText(table, Configuracion.getInstance().getPropiedad("sistema.titulo"), Element.ALIGN_CENTER, 1, font12);			
+      this.addCellText(table, Configuracion.getInstance().getEmpresa("titulo"), Element.ALIGN_CENTER, 1, font12);			
       this.addCellText(table, Configuracion.getInstance().isEtapaProduccion() ? " " : getServidor(), Element.ALIGN_RIGHT, 1, font10);			
 			Paragraph paragraph = new Paragraph();
       paragraph.add(table);

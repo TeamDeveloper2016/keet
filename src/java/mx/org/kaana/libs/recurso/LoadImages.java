@@ -66,7 +66,7 @@ public final class LoadImages {
 		else {
 		  File file         = new File(name);
 			InputStream stream= new FileInputStream(file);
-			InputStream icono = new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg"));
+			InputStream icono = new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/".concat(Configuracion.getInstance().getEmpresa("icon"))));
 		  return file.exists()? DefaultStreamedContent.builder().contentType("image/jpg").stream(()-> stream).build(): DefaultStreamedContent.builder().contentType("image/svg+xml").stream(()-> icono).build();
 		} // else	
 	} 

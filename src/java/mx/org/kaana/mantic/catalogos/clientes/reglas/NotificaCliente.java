@@ -15,6 +15,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
@@ -139,7 +140,7 @@ public class NotificaCliente implements Serializable {
 			this.toReporteIndividal();
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
-			files.add(new Attachment("logo", this.correo.getImages().concat("logo.png"), Boolean.TRUE));
+			files.add(new Attachment("logo", this.correo.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			for (String item: emails) {
 				try {

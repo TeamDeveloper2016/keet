@@ -157,7 +157,7 @@ public class Timbrado implements Job, Serializable {
 			files=new ArrayList<>();
 			files.add(attachments);
 			files.add(new Attachment(factura, Boolean.FALSE));
-			files.add(new Attachment(Especial.getInstance().getPath(), "logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
+			files.add(new Attachment(Especial.getInstance().getPath(), "logo", ECorreos.FACTURACION.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			emails=new String[]{facturacion.getCorreos()};
 			for (String item : emails) {

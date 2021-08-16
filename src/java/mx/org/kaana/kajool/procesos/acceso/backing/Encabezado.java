@@ -31,6 +31,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
@@ -390,6 +391,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
 			this.attrs.put("codigo", codigo);
 			this.attrs.put("idXml", "porCatalogo");
+			this.attrs.put("icon", Configuracion.getInstance().getEmpresa("icon"));
 			this.doLoadCatalogoArticulos();
 		} // else
 	}

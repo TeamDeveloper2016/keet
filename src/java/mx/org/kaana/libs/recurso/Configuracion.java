@@ -19,7 +19,8 @@ public class Configuracion {
   private static final String DB_PACKAGE    = "db";
 
   private static Configuracion instance;
-  private static Object mutex= null;
+  private static Object mutex  = null;
+  private static String empresa= null;
   private Properties properties;
 
   static {
@@ -27,19 +28,23 @@ public class Configuracion {
   }
 
   private Configuracion() {
-    loadProperties();
+    this.loadProperties();
   }
 
   public static Configuracion getInstance() {
     if (instance == null) {
       synchronized (mutex) {
-        if (instance == null)
+        if (instance == null) 
           instance=new Configuracion();
       } // synchronized
     } // if
     return instance;
   } // getInstance
 
+  public String getEmpresa() {
+    return empresa== null? "keet": empresa;
+  }
+  
   public void reload() {
     try  {
       instance= new Configuracion();
@@ -55,9 +60,18 @@ public class Configuracion {
       this.properties= new Properties();
       // kajool default kajool.properties
       this.properties.load(this.getClass().getResourceAsStream(Settings.getInstance().getCustomProperties()));
-      LOG.info("Se cargo el archivo de default de kajool.properties");
+      LOG.info("Se cargo el archivo por defecto kajool.properties");
       if(is!= null)
         this.properties.load(is);
+      empresa= this.properties.getProperty("sistema.empresa.principal", "keet").toLowerCase();
+      InputStream company= this.getClass().getResourceAsStream("/".concat(empresa).concat(".properties"));
+      if(company!= null) {
+        Properties items= new Properties();
+        items.load(company);
+        for (Object key: items.keySet()) {
+          this.properties.put(key, items.get(key));
+        } // for
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e, "Estar seguro que esta en el CLASSPATH ".concat(Constantes.KAANA_PROPERTIES));
@@ -67,7 +81,7 @@ public class Configuracion {
   public String getPropiedad(String id) {
     String regresar = null;
     try {
-      regresar= getProperties().getProperty(id);
+      regresar= this.getProperties().getProperty(id);
     } // try
     catch (Exception e) {
       LOG.warn("No se pudo leer la propiedad ".concat(id).concat(". !"));
@@ -80,7 +94,7 @@ public class Configuracion {
     int regresar= 0;
     String value= null;
     try {
-      value   = getProperties().getProperty(id);
+      value   = this.getProperties().getProperty(id);
       regresar= Integer.parseInt(value);
     } // try
     catch (Exception e) {
@@ -121,12 +135,6 @@ public class Configuracion {
     return getPropiedad(secion.concat(".").concat(id));
   } // getPropiedad
 
-  public void finalize() {
-    instance.getProperties().clear();
-    instance= null;
-    mutex   = null;
-  } // finalize
-
   private Properties getProperties() {
     return properties;
   } // getProperties
@@ -135,8 +143,8 @@ public class Configuracion {
 		String regresar = null;
 		String propiedad= null;
     try {
-      propiedad = "sistema.".concat(id).concat(".").concat(getEtapaServidor().toLowerCase());			
-      regresar = getProperties().getProperty(propiedad);
+      propiedad= "sistema.".concat(id).concat(".").concat(getEtapaServidor().toLowerCase());			
+      regresar = this.getProperties().getProperty(propiedad);
     } // try
     catch (Exception e) {
       LOG.warn("No se pudo leer la propiedad ".concat(id).concat(". !"));
@@ -163,7 +171,7 @@ public class Configuracion {
 	public EEtapaServidor getEtapaServidor() {
 		EEtapaServidor regresar= null;
     try {
-      regresar = EEtapaServidor.valueOf(getProperties().getProperty("sistema.servidor").toUpperCase());
+      regresar = EEtapaServidor.valueOf(this.getProperties().getProperty("sistema.servidor").toUpperCase());
     }// try
     catch (Exception e) {
       Error.mensaje(e);
@@ -228,4 +236,23 @@ public class Configuracion {
     LOG.warn("Acceso libre [".concat(String.valueOf(Configuracion.getInstance().getPropiedadServidor("sistema.firmarse").equalsIgnoreCase("no"))).concat("]"));
     return Configuracion.getInstance().getPropiedadServidor("sistema.firmarse").equalsIgnoreCase("no");
   } // isFreeAccess
+
+  public String getEmpresa(String id) {
+    String regresar = null;
+    try {
+      regresar= this.getProperties().getProperty("sistema.".concat(empresa).concat(".").concat(id));
+    } // try
+    catch (Exception e) {
+      LOG.warn("No se pudo leer la propiedad ".concat("sistema.").concat(empresa).concat(".").concat(id).concat(". !"));
+      regresar= "";
+    } // catch
+    return regresar;
+  } // getPropiedad
+
+  public void finalize() {
+    instance.getProperties().clear();
+    instance= null;
+    mutex   = null;
+  } // finalize
+  
 }

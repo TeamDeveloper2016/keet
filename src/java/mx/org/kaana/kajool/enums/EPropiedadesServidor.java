@@ -1,5 +1,7 @@
 package mx.org.kaana.kajool.enums;
 
+import mx.org.kaana.libs.recurso.Configuracion;
+
 /**
  *@company KAANA
  *@project KAJOOL (Control system polls)
@@ -10,7 +12,7 @@ package mx.org.kaana.kajool.enums;
 
 public enum EPropiedadesServidor {
 
-	PROPIEDAD_SISTEMA_TITULO      ("sistema.titulo", false),
+	PROPIEDAD_SISTEMA_TITULO      ("sistema.?.titulo", false),
 	PROPIEDAD_SISTEMA_DNS         ("sistema.dns", true),
 	PROPIEDAD_SISTEMA_LOG_ERROR   ("sistema.log.error", true),
 	PROPIEDAD_SISTEMA_CSS         ("sistema.css", false),
@@ -33,7 +35,12 @@ public enum EPropiedadesServidor {
 	}
 	
 	public String getPropiedad() {
-		return propiedad;
+    String regresar= propiedad;
+    if(regresar.contains("?")) {
+      String empresa= Configuracion.getInstance().getEmpresa();
+      regresar= regresar.replace("?", empresa);
+    } // if
+		return regresar;
 	}
 
 	public void setPropiedad(String propiedad) {

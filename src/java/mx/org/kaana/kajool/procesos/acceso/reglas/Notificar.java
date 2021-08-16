@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import mx.org.kaana.libs.correo.Correo;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
@@ -80,10 +81,10 @@ public class Notificar implements Serializable {
     String logoJanal       = null;
     String logoKajool      = null;
 
-    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/logo.png"));
+    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/".concat(Configuracion.getInstance().getEmpresa("logo"))));
     encodedBytes = Base64.encodeBase64(FileUtils.readFileToByteArray(archivoImagen));
     logoJanal = new String(encodedBytes);
-    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/logo.png"));
+    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/".concat(Configuracion.getInstance().getEmpresa("logo"))));
     encodedBytes = Base64.encodeBase64(FileUtils.readFileToByteArray(archivoImagen));
     logoKajool = new String(encodedBytes);
     regresar= new StringBuilder();

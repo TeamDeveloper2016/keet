@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="detallePersona" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="e63aa041-d550-4ff5-bbaa-4be535a8ac84">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<style name="EvenOddRowStyle" mode="Opaque">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{DESARROLLO_COUNT}.intValue() %2 == 0)]]></conditionExpression>
+			<style backcolor="#AFACAC"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{DESARROLLO_COUNT}.intValue() %2 != 0)]]></conditionExpression>
+			<style backcolor="#D4D0D0"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="REPORTE_VERSION" class="java.lang.String">
+		<defaultValueExpression><![CDATA["0.0.0.0"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_ENCUESTA" class="java.lang.String">
+		<defaultValueExpression><![CDATA["IKTAN"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_TITULO" class="java.lang.String">
+		<defaultValueExpression><![CDATA["IKTAN"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_REGISTROS" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[-1]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_SQL" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_IMAGENES" class="java.lang.String">
+		<defaultValueExpression><![CDATA["/home/default/Desarrollo/Plataforma/netbeans/IKTAN/mixto/web/Recursos/Img/Sistema"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_TITULOS" class="java.lang.Long"/>
+	<parameter name="REPORTE_SUBREPORTE" class="java.lang.String"/>
+	<parameter name="ENCUESTA" class="java.lang.String"/>
+	<parameter name="REPORTE_ICON" class="java.lang.String"/>
+	<parameter name="NOMBRE_REPORTE" class="java.lang.String"/>
+	<parameter name="REPORTE_TIPO" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\isabel.esparza\\Documents\\NetBeansProjects\\keet\\web\\Paginas\\Keet\\Nominas\\Reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SQL_UNO" class="java.lang.String"/>
+	<parameter name="SQL_DOS" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_DIRECCION" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_COLONIA" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_CP" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_CONTACTO" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_TELEFONOS" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_EMAILS" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_MUNICIPIO" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_RFC" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_CLAVE" class="java.lang.String"/>
+	<parameter name="SUBREPORTE_1" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+	<parameter name="SUBREPORTE_2" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+	<parameter name="REPORTE_LOGO" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[$P!{REPORTE_SQL}]]>
+	</queryString>
+	<field name="NOMBRE_EMPRESA" class="java.lang.String"/>
+	<field name="NOMINA" class="java.lang.String"/>
+	<field name="DEPARTAMENTO" class="java.lang.String"/>
+	<field name="PUESTO" class="java.lang.String"/>
+	<field name="NSS" class="java.lang.String"/>
+	<field name="NOMBRE_COMPLETO" class="java.lang.String"/>
+	<field name="CONTRATISTA" class="java.lang.String"/>
+	<field name="CLAVE" class="java.lang.String"/>
+	<field name="ID_NOMINA" class="java.math.BigDecimal"/>
+	<field name="ID_EMPRESA_PERSONA" class="java.math.BigDecimal"/>
+	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_PERSONAL" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="TOTAL_SUBCONTRATISTA" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="TOTAL" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="99" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement key="image-1" stretchType="RelativeToTallestObject" x="0" y="0" width="137" height="82" uuid="844dcaa8-dcf9-4b1b-ab0a-5bf55a73c2a7"/>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA[$P{REPORTE_LOGO}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement mode="Transparent" x="139" y="3" width="413" height="28" uuid="07d29b44-31b4-4080-b851-9fd73a19663b"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORTE_TITULO}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="138" y="40" width="415" height="1" uuid="00337e56-2ccf-4e4e-822d-758801565b53"/>
+				<graphicElement>
+					<pen lineWidth="1.75" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="138" y="33" width="415" height="1" uuid="f38acb20-c704-4fdf-84e6-aae8687d36db"/>
+				<graphicElement>
+					<pen lineWidth="4.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="">
+				<reportElement x="140" y="44" width="192" height="9" uuid="8d4fb311-7eb2-4f8d-a062-ce271b9d170c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="335" y="60" width="217" height="9" uuid="24829b36-516a-4c86-957c-bf199290623a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TELS. "+$P{REPORTE_EMPRESA_TELEFONOS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="335" y="68" width="217" height="9" uuid="e0cc20b9-5242-4ef1-b6f7-c8d50337f285"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["EMAILS: "+$P{REPORTE_EMPRESA_EMAILS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="184" y="68" width="148" height="9" uuid="b94f175f-bd79-4d98-865a-8b5939c9b27f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_MUNICIPIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="140" y="68" width="44" height="9" uuid="e60b371d-9999-47fa-a2ff-03feb7994c14"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["C.P. "+$P{REPORTE_EMPRESA_CP}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="335" y="52" width="217" height="9" uuid="92139650-9f35-443e-a6bd-caff5c81396e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RFC: "+$P{REPORTE_EMPRESA_RFC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="140" y="52" width="192" height="9" uuid="e5ab0e5b-8872-4b69-bc9f-1926bd14e376"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DIRECCIÓN: "+$P{REPORTE_EMPRESA_DIRECCION}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="140" y="60" width="192" height="9" uuid="de47523b-3d3b-4308-8132-9d74090fee41"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["COL. "+$P{REPORTE_EMPRESA_COLONIA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="335" y="44" width="217" height="9" uuid="7a19cfa4-de08-421a-b905-e8dbe85bfa9a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CONTACTO: "+$P{REPORTE_EMPRESA_CONTACTO}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement x="555" y="15" width="195" height="67" uuid="4e1fe188-0e45-41d5-aecf-c2444f100c13"/>
+				<box>
+					<topPen lineWidth="1.25"/>
+					<leftPen lineWidth="1.25"/>
+					<bottomPen lineWidth="1.25"/>
+					<rightPen lineWidth="1.25"/>
+				</box>
+				<textField pattern="">
+					<reportElement x="5" y="15" width="185" height="8" uuid="5b2951dd-2187-4a71-b89e-5db245144859"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="6" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["N.S.S: "+$F{NSS}]]></textFieldExpression>
+				</textField>
+				<textField pattern="">
+					<reportElement x="5" y="36" width="185" height="8" uuid="8bf6d7b5-08b6-4069-8831-64dd2379c7ad"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="6" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["SEMANA:  "+$F{NOMINA}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report" pattern="">
+					<reportElement x="5" y="43" width="185" height="8" uuid="5746e53f-ad7d-4e74-8d66-34cccac1f41e"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="6" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["CONTRATISTA: "+$F{CONTRATISTA}]]></textFieldExpression>
+				</textField>
+				<textField pattern="">
+					<reportElement x="5" y="8" width="185" height="8" uuid="035552a6-6758-4bd9-9bb5-7a8eb8ab5050"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="6" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NOMBRE_COMPLETO}]]></textFieldExpression>
+				</textField>
+				<textField pattern="">
+					<reportElement x="5" y="22" width="60" height="8" uuid="a4465b2e-dfed-46a3-9baa-03635f372dd4"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="6" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["CLAVE: "+$F{CLAVE}]]></textFieldExpression>
+				</textField>
+				<textField pattern="">
+					<reportElement x="5" y="29" width="185" height="8" uuid="143a7317-621d-49a6-bdb8-7c3447c4ef37"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="6" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["DEPARTAMENTO:  "+$F{DEPARTAMENTO}]]></textFieldExpression>
+				</textField>
+				<textField pattern="">
+					<reportElement x="65" y="22" width="125" height="8" uuid="40325b8c-40ba-4628-94a6-f66b4e1db555"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="6" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["PUESTO: "+$F{PUESTO}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement mode="Opaque" x="554" y="0" width="197" height="15" forecolor="#FFFFFF" backcolor="#000000" uuid="b9357be5-41c4-4f76-8291-d31b067e6a17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERSONA]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="32" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="752" height="31" isRemoveLineWhenBlank="true" uuid="677c2b49-8283-4f29-89a8-061861096061"/>
+				<subreportParameter name="SUBREPORTE_2">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORTE_2}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SQL_UNO">
+					<subreportParameterExpression><![CDATA[$P{SQL_UNO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SQL_DOS">
+					<subreportParameterExpression><![CDATA[$P{SQL_DOS}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORTE_1}]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement style="Column header" x="500" y="2" width="233" height="20" forecolor="#000000" uuid="f556db0e-4835-440d-984a-3347a0981a43"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="Arial Narrow" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+"/"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement style="Column header" x="0" y="2" width="250" height="20" forecolor="#000000" uuid="52818b8a-a936-47f0-8d87-908ffc41695d"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial Narrow" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORT_SCRIPTLET}.getFecha(7,new Date())]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="733" y="2" width="18" height="20" forecolor="#000000" uuid="a4410479-7e5a-4117-b704-add89e42b0a1"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="Arial Narrow" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="752" height="1" uuid="0ba93aae-250d-434c-ab3f-c31c34fd84b8"/>
+				<graphicElement>
+					<pen lineWidth="1.75" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="">
+				<reportElement x="250" y="2" width="250" height="20" uuid="3dde1397-aa12-4f4e-90a0-4c6e154f122d"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial Narrow" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Versión: "+$P{REPORTE_VERSION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

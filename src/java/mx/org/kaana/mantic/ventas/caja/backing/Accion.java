@@ -35,6 +35,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
@@ -445,7 +446,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			files= new ArrayList<>(); 
 			files.add(attachments);
 			files.add(new Attachment(factura, Boolean.FALSE));
-			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
+			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			//emails= new String[]{"jimenez76@yahoo.com", facturacion.getCorreos()};		
 			emails= new String[]{facturacion.getCorreos()};		

@@ -38,6 +38,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
@@ -898,7 +899,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			attachments= new Attachment(jasper.getNombre(), false);
 			files= new ArrayList<>();
 			files.add(attachments);
-			files.add(new Attachment("logo", ECorreos.DESTAJOS.getImages().concat("logo.png"), true));
+			files.add(new Attachment("logo", ECorreos.DESTAJOS.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), true));
 			params.put("attach", attachments.getId());
       try {
         if(!Cadena.isVacio(correos)) {

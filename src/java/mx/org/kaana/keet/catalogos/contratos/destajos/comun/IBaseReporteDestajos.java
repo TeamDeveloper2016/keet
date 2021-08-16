@@ -15,6 +15,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
@@ -96,7 +97,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			attachments= new Attachment(this.reporte.getNombre(), false);
 			files= new ArrayList<>();
 			files.add(attachments);
-			files.add(new Attachment("logo", ECorreos.ADMINISTRACION.getImages().concat("logo.png"), true));
+			files.add(new Attachment("logo", ECorreos.ADMINISTRACION.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), true));
 			params.put("attach", attachments.getId());
       try {
         if(!Cadena.isVacio(emails)) {
@@ -151,7 +152,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			attachments= new Attachment(this.reporte.getNombre(), false);
 			files= new ArrayList<>();
 			files.add(attachments);
-			files.add(new Attachment("logo", ECorreos.RESIDENTE.getImages().concat("logo.png"), true));
+			files.add(new Attachment("logo", ECorreos.RESIDENTE.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), true));
 			params.put("attach", attachments.getId());
 			for (String item: emails) {
 				try {

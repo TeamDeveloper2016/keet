@@ -31,6 +31,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.MotorBusqueda;
@@ -474,7 +475,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.doReporte("ORDEN_DETALLE", true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
-			files.add(new Attachment("logo", ECorreos.ORDENES_COMPRA.getImages().concat("logo.png"), Boolean.TRUE));
+			files.add(new Attachment("logo", ECorreos.ORDENES_COMPRA.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			for (String item: emails) {
 				try {

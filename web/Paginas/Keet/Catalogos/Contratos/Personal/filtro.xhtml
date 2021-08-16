@@ -57,7 +57,7 @@
 						<p:panel header="#{item.nombres}" style="width:100%;" >
 							<p:panelGrid columns="1" columnClasses="janal-column-center" style="width:100%;">										
 								<p:commandLink id="ayuda" action="#{keetCatalogosContratosPersonalFiltro.doPagina}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
-									<p:graphicImage width="200px" height="130px" library="janal" name="img/sistema/logo.svg"/>
+									<p:graphicImage width="200px" height="130px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>
 									<f:setPropertyActionListener value="#{item}" target="#{keetCatalogosContratosPersonalFiltro.seleccionado}"  />
 								</p:commandLink>										                    
 								<h:outputText value="Clave: #{item.clave}" styleClass="FontBold Fs18 janal-color-blue"/>

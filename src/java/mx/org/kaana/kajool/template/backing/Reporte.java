@@ -169,6 +169,7 @@ public class Reporte extends BaseReportes implements Serializable{
 			this.ireporte.getParametros().put(Constantes.REPORTE_SQL, sql);
 			this.ireporte.getParametros().put(Constantes.REPORTE_REGISTROS, this.total);
 			this.ireporte.getParametros().put(Constantes.REPORTE_IMAGENES, imagenes);
+			this.ireporte.getParametros().put(Constantes.REPORTE_LOGO, imagenes.concat(Configuracion.getInstance().getEmpresa("logo")));
 			this.ireporte.getParametros().put(Constantes.REPORTE_TITULOS, this.idTitulos);      
       this.ireporte.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+File.separator.length()));
 			input = SearchFileJar.getInstance().toInputStream(this.ireporte.getJrxml().concat(".jasper"));
@@ -215,7 +216,8 @@ public class Reporte extends BaseReportes implements Serializable{
         loadResourceFileJasper(definicion.getParametros());
         definicion.getParametros().put(Constantes.REPORTE_SQL, sql);
         definicion.getParametros().put(Constantes.REPORTE_REGISTROS, DaoFactory.getInstance().toSize(definicion.getProceso(), definicion.getIdXml(), definicion.getParams()));
-        definicion.getParametros().put(Constantes.REPORTE_IMAGENES,  JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator));
+        definicion.getParametros().put(Constantes.REPORTE_IMAGENES, JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator));
+        definicion.getParametros().put(Constantes.REPORTE_LOGO, JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator).concat(Configuracion.getInstance().getEmpresa("logo")));
         definicion.getParametros().put(Constantes.REPORTE_TITULOS,   0L);
         source= JsfBase.getRealPath(definicion.getJrxml().concat(".jasper"));
         input = SearchFileJar.getInstance().toInputStream(definicion.getJrxml().concat(".jasper"));
@@ -328,6 +330,7 @@ public class Reporte extends BaseReportes implements Serializable{
 			this.ireporte.getParametros().put(Constantes.REPORTE_SQL, sql);
 			this.ireporte.getParametros().put(Constantes.REPORTE_REGISTROS, this.total);
 			this.ireporte.getParametros().put(Constantes.REPORTE_IMAGENES, imagenes);
+			this.ireporte.getParametros().put(Constantes.REPORTE_LOGO, imagenes.concat(Configuracion.getInstance().getEmpresa("logo")));
 			this.ireporte.getParametros().put(Constantes.REPORTE_TITULOS, this.idTitulos);      
       this.ireporte.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+File.separator.length()));
 			input = SearchFileJar.getInstance().toInputStream(this.ireporte.getJrxml().concat(".jasper"));

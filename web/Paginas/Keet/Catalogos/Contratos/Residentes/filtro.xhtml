@@ -59,7 +59,7 @@
 						<p:panel header="[#{item.clave}] [#{item.claveDesarrollo}] #{item.nombreDesarrollo}" styleClass="janal-wid-100-txt" >
 							<p:panelGrid columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-column-center">										
 								<p:commandLink id="ayuda" action="#{keetCatalogosContratosResidentesFiltro.doLotes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="cursor: hand;">
-									<p:graphicImage width="200px" height="130px" library="janal" name="img/sistema/logo.svg"/>
+									<p:graphicImage width="200px" height="130px" library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoAyudaEmpresa}"/>
 									<f:setPropertyActionListener value="#{item}" target="#{keetCatalogosContratosResidentesFiltro.seleccionado}"/>
 								</p:commandLink>										                    
 								<h:outputText value="&lt;b&gt;Etapa:&lt;/b&gt; #{item.etapa}, &lt;b&gt;Viviendas:&lt;/b&gt; [#{item.noViviendas}]" styleClass="Fs18" escape="false"/>
