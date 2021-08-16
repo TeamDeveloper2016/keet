@@ -44,7 +44,7 @@
 								<p:outputLabel for="contratista" value="Residentes de obra:"/>
 								<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-96, janal-wid-col-30 janal-column-center">
 									<p:selectOneMenu id="contratista" value="#{keetControlesControl.attrs.figura}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetControlesControl.doLoad}" update="tabla mientras persona destajo reporteDestajos lotes" oncomplete="janal.desbloquear(); reloadLotes();"/>
+                    <p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetControlesControl.doLoadCasas}" update="tabla mientras persona destajo reporteDestajos lotes" oncomplete="janal.desbloquear(); reloadLotes();"/>
 										<f:selectItems value="#{keetControlesControl.attrs.figuras}" var="element" itemValue="#{element}" itemLabel="#{element.puesto} #{empty element.nombreCompleto or element.nombreCompleto eq ''? '': '|'} #{element.nombreCompleto}"/>									
 										<p:column headerText="Puesto">
 											<h:outputText value="#{item.puesto}"/>
@@ -59,33 +59,40 @@
                     <p:commandButton id="reporteDestajos" icon="fa fa-file-pdf-o" title="Avances" action="#{keetControlesControl.doReporte('COMPLETO')}" disabled="#{not keetControlesControl.attrs.persona}" process="@this" update="descargar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" />
 									</p:panelGrid>
 								</p:panelGrid>
+                <p:outputLabel for="contratos" value="Contratos:"/>
+                <p:selectOneMenu id="contratos" value="#{keetControlesControl.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetControlesControl.doLoadManzanas}" update="tabla mientras persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadLotes();"/>
+                  <f:selectItems value="#{keetControlesControl.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
 								<p:outputLabel for="lotes" value="Lotes:"/>
-								<p:selectOneMenu id="lotes" value="#{keetControlesControl.attrs.loteCriterio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+								<p:selectOneMenu id="lotes" value="#{keetControlesControl.attrs.casa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this panelBusqueda" listener="#{keetControlesControl.doLoad}" update="tabla mientras persona destajo reporteDestajos" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{keetControlesControl.attrs.lotesCriterio}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
+									<f:selectItems value="#{keetControlesControl.attrs.casas}" var="element" itemValue="#{element}" itemLabel="#{element.descripcionLote}"/>																		
 									<p:column headerText="Lote">
 										<h:outputText value="#{item.descripcionLote}"/>
 									</p:column>   
 								</p:selectOneMenu>
               </p:panelGrid>			
-              <p:remoteCommand name="reloadContratista" onstart="return janal.bloquear();" process="@this" update="contratista" oncomplete="janal.desbloquear();"/>
-              <p:remoteCommand name="reloadLotes" onstart="return janal.bloquear();" process="@this" update="lotes" oncomplete="janal.desbloquear();"/>
+              <p:remoteCommand name="reloadContratista" process="@this" update="contratista"/>
+              <p:remoteCommand name="reloadLotes" process="@this" update="lotes"/>
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-					<p:dataGrid var="row" value="#{keetControlesControl.lotes}" columns="4" layout="grid" rowIndexVar="index"
-											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetControlesControl.lazyModel.rowCount gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
-											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
-											paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
-											rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
-						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{row.clave} #{empty row.prototipo? '': '|'} #{row.prototipo}" style="text-align:center; border: 0px;">
+					<p:dataGrid id="destajo" var="row" value="#{keetControlesControl.lotes}" columns="4" layout="grid" rowIndexVar="index" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetControlesControl.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{row.prototipo}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="destajo" title="Ver detalle del articulo" action="#{keetControlesControl.doConceptos}">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" styleClass="manzana-lote-font janal-color-blue" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetControlesControl.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
-									<h:outputText value="&lt;b&gt;#{row.etapaContrato}&lt;/b&gt;" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
+									<h:outputText value="Contrato: &lt;b&gt;#{row.nombre}&lt;/b&gt;" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
 									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>

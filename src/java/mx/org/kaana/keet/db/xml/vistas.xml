@@ -5354,6 +5354,7 @@
           tc_keet_departamentos on tr_mantic_empresa_personal.id_departamento = tc_keet_departamentos.id_departamento
         where 
           tc_keet_proyectos.id_desarrollo={idDesarrollo}
+          and {condicion}
         group by 
           tc_keet_departamentos.id_departamento,
           tc_keet_departamentos.descripcion, 
@@ -5518,6 +5519,7 @@
 					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
 					tc_keet_contratos.clave clave_contrato,
 					tc_keet_contratos.etapa etapa_contrato,
+					tc_keet_contratos.nombre,
 					tc_keet_proyectos.clave clave_proyecto,
 					tc_keet_proyectos.etapa etapa_proyecto,
 					tc_keet_contratos.orden orden_contrato,

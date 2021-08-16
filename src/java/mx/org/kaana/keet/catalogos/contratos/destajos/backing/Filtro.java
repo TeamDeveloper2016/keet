@@ -272,7 +272,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       if(index>= 0)
         this.attrs.put("contrato", contratos.get(index));
       this.toLoadManzanas();
-      this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
