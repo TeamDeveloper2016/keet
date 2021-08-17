@@ -290,11 +290,11 @@
 				inner join  
 					tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
 				inner join 
-					tc_keet_contratos on tc_keet_contratos_lotes.id_contrato = tc_keet_contratos_lotes.id_contrato
+					tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
 				inner join 
 					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 				inner join 
-					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         inner join
 					tc_janal_usuarios on tc_keet_contratos_destajos_contratistas.id_usuario= tc_janal_usuarios.id_usuario          
 				inner join
@@ -319,7 +319,7 @@
 				inner join  
 					tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote
 				inner join 
-					tc_keet_contratos on tc_keet_contratos_lotes.id_contrato = tc_keet_contratos_lotes.id_contrato
+					tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato
 				inner join 
 					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 				inner join 

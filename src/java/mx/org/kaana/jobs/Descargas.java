@@ -26,7 +26,7 @@ public class Descargas implements Job, Serializable {
 			if(Configuracion.getInstance().isEtapaDesarrollo() && (Especial.getInstance().getPath()== null ? JsfBase.getRealPath() : Especial.getInstance().getPath()).contains(BUILD)) {
 				manager= new Manager();
 				if(manager.execute())
-					LOG.info("Se realizo el proceso de descarga de respaldo de forma correcta.");
+					LOG.info("Se realizó el proceso de descarga de respaldo de forma correcta.");
 				else
 					LOG.info("Ocurrio un error al realizar la descarga del respaldo.");				
 			} // if

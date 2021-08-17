@@ -78,13 +78,13 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					if(dto!= null){						
 					  regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;
 						if(regresar)
-							depurarRespaldos(sesion);
+							this.depurarRespaldos(sesion);
 					} // if
 					break;
 				case REGISTRAR:
 					regresar= DaoFactory.getInstance().insert(sesion, this.descarga)>= 1L;
 					if(regresar)
-						depurarDescargas(sesion);					
+						this.depurarDescargas(sesion);					
 					break;
 				case BAJAR:
 					TcManticControlRespaldosDto control= new TcManticControlRespaldosDto(JsfBase.getIdUsuario(), this.respaldo.getIdRespaldo(), -1L);
@@ -110,8 +110,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		StringBuilder name= new StringBuilder();
 		Calendar calendar = Calendar.getInstance();
 		sb.append(Configuracion.getInstance().getPropiedadSistemaServidor("respaldos"));
-		//sb.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
-		//sb.append("/");
 		sb.append(Calendar.getInstance().get(Calendar.YEAR));
 		sb.append("/");
 		sb.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
@@ -127,22 +125,24 @@ public class Transaccion extends IBaseTnx implements Serializable {
     name.append(".");
     path.append(name.toString().concat(EFormatos.SQL.name().toLowerCase()));
 		// C:\Software\Server\MariaDB-10_1\bin\mysqldump -h 127.0.0.1 -u mantic --password=mantic --compact --databases mantic --add-drop-table --complete-insert --extended-insert --skip-comments -r d:/temporal/hola.sql
-		String server= "";
+		String server= Configuracion.getInstance().getPropiedadServidor("user.db.backup");
+    /*
 		switch(Configuracion.getInstance().getEtapaServidor()) {
 			case DESARROLLO:
-  			server= "C:/Software/Server/MariaDB-10_1/bin/mysqldump -h 127.0.0.1 -u mantic --password=mantic --databases mantic ";
+  			server= "C:/Software/MariaDB-10_3_13/bin/mysqldump -h 127.0.0.1 -u keet_admin --password=admin_keet --databases keet ";
 				break;
 			case PRUEBAS:
-        server= "mysqldump -h localhost -u cafujvmh_track --password=20track20 --databases cafujvmh_testing ";
+        server= "mysqldump -h localhost -u cafujvmh_track --password=20track20 --databases cafujvmh_track ";
 				break;
 			case CAPACITACION:
-        server= "mysqldump -h localhost -u cafujvmh_track --password=20track20 --databases cafujvmh_testing ";
+        server= "mysqldump -h localhost -u cafujvmh_tester --password=20tester20 --databases cafujvmh_training ";
 				break;
 			case PRODUCCION:
-        server= "mysqldump -h localhost -u cafujvmh_track --password=20track20 --databases cafujvmh_testing ";
+        server= "mysqldump -h localhost -u cafujvmh_super --password=20super20 --databases cafujvmh_production ";
 				break;
 		} // swtich
-		LOG.info("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
+    */
+		LOG.error("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
 		Process runtimeProcess = Runtime.getRuntime().exec(server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
 		LOG.info("Proceso en ejecucion ...");
 		int processComplete = runtimeProcess.waitFor();
@@ -155,7 +155,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			zip.setDebug(true);
 			zip.setEliminar(false);
 			int token= Configuracion.getInstance().getPropiedadSistemaServidor("respaldos").length();
-   		LOG.info("Compactar archivo: "+ sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()));
+   		LOG.error("Compactar archivo: "+ sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()));
 			zip.compactar(sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()), token, files);
 			File file= new File(zip.getNombre());
 			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), FacesContext.getCurrentInstance()== null || FacesContext.getCurrentInstance().getExternalContext()== null || FacesContext.getCurrentInstance().getExternalContext().getRequest()== null || JsfBase.getAutentifica()== null? 
@@ -165,19 +165,19 @@ public class Transaccion extends IBaseTnx implements Serializable {
    		LOG.info("Eliminar archivo: "+ files[0]);
 		} // if
 		else
-		  new RuntimeException("Ocurrio un error al realizar el resplado de la base de datos");
+		  throw new RuntimeException("Ocurrio un error al realizar el resplado de la base de datos");
 		return regresar;
 	}
 	
 	private void depurarRespaldos(Session sesion) throws Exception{
 		List<Entity> respaldos= null;
 		try {
-			respaldos= toAllRespaldos(sesion);
+			respaldos= this.toAllRespaldos(sesion);
 			if(!respaldos.isEmpty()){
 				for(int count=0; count< respaldos.size(); count++){
 					if(count>= 15){
-						if(desactivarRespaldo(sesion, respaldos.get(count)))
-							deleteFile(respaldos.get(count));
+						if(this.desactivarRespaldo(sesion, respaldos.get(count)))
+							this.deleteFile(respaldos.get(count));
 					} // if
 				} // for
 			} // if
@@ -191,12 +191,12 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private void depurarDescargas(Session sesion) throws Exception{
 		List<Entity> descargas= null;
 		try {
-			descargas= toAllDescargas(sesion);
-			if(!descargas.isEmpty()){
+			descargas= this.toAllDescargas(sesion);
+			if(!descargas.isEmpty()) {
 				for(int count=0; count< descargas.size(); count++){
 					if(count>= 30){
 						if(desactivarDescarga(sesion, descargas.get(count)))
-							deleteFileDescarga(descargas.get(count));
+							this.deleteFileDescarga(descargas.get(count));
 					} // if
 				} // for
 			} // if

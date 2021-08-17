@@ -276,20 +276,14 @@ shortcut.add("Shift+C", function() {
 
 shortcut.add("Ctrl+M", function() {
 	janal.console('Shortcut lista de precios de los articulos:');
-	if(janal.session() && PF('dlgListaPrecios') && !PF('dlgListaPrecios').isVisible())
-	  PF('dlgListaPrecios').show();
 });
 
 shortcut.add("Ctrl+K", function() {
 	janal.console('Shortcut catalogos de articulos de los proveedores:');
-	if(janal.session() && PF('dlgCatalogoArticulos') && !PF('dlgCatalogoArticulos').isVisible())
-	  PF('dlgCatalogoArticulos').show();
 });
 
 shortcut.add("Shift+f9", function() {
 	janal.console('Shortcut registro de faltantes:');
-	if(janal.session() && PF('dlgFaltantes') && !PF('dlgFaltantes').isVisible())
-	  PF('dlgFaltantes').show();
 });
 
 shortcut.add("Shift+f10", function() {
@@ -375,18 +369,6 @@ shortcut.add("escape", function() {
 	if(janal.session() && PF('dlgVerificador') && PF('dlgVerificador').isVisible()) {
 	  PF('dlgVerificador').hide();
   } // if
-	if(janal.session() && PF('dlgListaPrecios') && PF('dlgListaPrecios').isVisible()) {
-	  PF('dlgListaPrecios').hide();
-	}// if
-	if(janal.session() && PF('dlgFaltantes') && PF('dlgFaltantes').isVisible()) {
-	  PF('dlgFaltantes').hide();
-  } // if
-	if(janal.session() && PF('dlgListaPrecios') && PF('dlgListaPrecios').isVisible()) {
-	  PF('dlgListaPrecios').hide();
-	} // if	
-	if(janal.session() && PF('dlgCatalogoArticulos') && PF('dlgCatalogoArticulos').isVisible()) {
-	  PF('dlgCatalogoArticulos').hide();
-	} // if	
 	if(janal.session() && PF('dlgEjecutar') && PF('dlgEjecutar').isVisible()) {
 		PF('dlgEjecutar').hide();
 	} // if

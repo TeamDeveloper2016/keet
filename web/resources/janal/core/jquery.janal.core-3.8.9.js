@@ -63,7 +63,7 @@
       $control.console('Janal.Control.Function.init');
       if(typeof(root)!== 'undefined')
         this.root   = root;
-      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.3.8.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.6.0.js']);
+      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.3.9.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.6.0.js']);
       //$control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.3.8.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js']);
       $control.console('Janal.Control.Function.init resource loaded');
     },
@@ -1426,10 +1426,12 @@
 	  	setTimeout("$('#"+ name+ "').click();", 50);
 		},
 		notificacion: function() {
-			if(typeof(PF('retiroEfectivo'))!== 'undefined') {
+      /*
+			 if(typeof(PF('retiroEfectivo'))!== 'undefined') {
 				PF('retiroEfectivo').show();
 			};
 			setTimeout("PF('retiroEfectivo').hide();", 15000);
+      */
 		},
 		tableId: function(name) {
 			return $('#'+ name+ $janal.TABLE_RESERVE);

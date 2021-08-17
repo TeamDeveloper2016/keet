@@ -29,7 +29,6 @@ import mx.org.kaana.libs.echarts.model.Simple;
 import mx.org.kaana.libs.echarts.model.Stacked;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
@@ -46,7 +45,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Named(value = "kajoolSeguimiento")
 @ViewScoped
-public class Seguimiento extends IBaseFilter implements Serializable {
+public class Seguimiento extends Respaldos implements Serializable {
 
   private static final long serialVersionUID= 5323749709626263802L;
   private static final Log LOG              = LogFactory.getLog(Seguimiento.class);
@@ -97,6 +96,8 @@ public class Seguimiento extends IBaseFilter implements Serializable {
       this.attrs.put("personalDesarrollo", new ArrayList<>());
       this.attrs.put("personalContratista", new ArrayList<>());
       this.doLoad();
+			if(JsfBase.isAdminEncuestaOrAdmin())
+			  this.checkDownloadBackup();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

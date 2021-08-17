@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,8 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticControlRespaldosDto;
+import mx.org.kaana.mantic.db.dto.TcManticRespaldosDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.SelectEvent;
@@ -58,7 +61,7 @@ import org.primefaces.model.map.Marker;
 
 @Named(value = "kajoolContratos")
 @ViewScoped
-public class Contratos extends IBaseFilter implements Serializable {
+public class Contratos extends Respaldos implements Serializable {
 
   private static final long serialVersionUID= 5323749709626263802L;
   private static final Log LOG              = LogFactory.getLog(Contratos.class);
@@ -118,6 +121,8 @@ public class Contratos extends IBaseFilter implements Serializable {
       this.attrs.put("pathPivote", "/".concat((Configuracion.getInstance().getEtapaServidor().name().toLowerCase())).concat("/images/"));
       this.totales= new ArrayList<>();
       this.doLoad();
+			if(JsfBase.isAdminEncuestaOrAdmin())
+			  this.checkDownloadBackup();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -174,7 +179,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         params.put(Constantes.SQL_CONDICION, " and tc_keet_desarrollos.id_desarrollo is not null");      
       this.desarrollos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresDesarrollos", params);
       if(this.desarrollos!= null && !this.desarrollos.isEmpty())
-        this.desarrollo = this.desarrollos.get(0);
+        this.desarrollo = this.desarrollos.get(this.desarrollos.size()> 1? 1: 0);
       params.put("idTipoNomina", "1");
       this.nominas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "ultima", params, 12L);
       if(this.nominas!= null && !this.nominas.isEmpty()) {
@@ -182,7 +187,7 @@ public class Contratos extends IBaseFilter implements Serializable {
         columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));                  
         columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));  
         UIBackingUtilities.toFormatEntitySet(this.nominas, columns);
-        this.nomina= this.nominas.get(0);
+        this.nomina= this.nominas.get(this.nominas.size()> 1? 1: 0);
       } // if  
     } // try
     catch (Exception e) {

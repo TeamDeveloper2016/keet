@@ -146,7 +146,7 @@
                   <div id="contratos" class="keet-chart-panel">
                     Cargando gráficas contratos por desarrollo
                   </div>	
-               </div>	              
+                </div>	              
               </p:panel>						
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
                 <span id="nombreDesarrollo"/>
@@ -520,5 +520,13 @@
         </div>  
       </div>  
     </div>		
+		<p:notificationBar id="lockDownloadBackup" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="downloadBackup" effectSpeed="slow">
+			<span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('downloadBackup').hide();"><i class="fa fa-lg fa-close"/></span>
+			<p:panelGrid layout="grid" columns="1" style="background: transparent;">
+				<h:outputText value="Administrador Web" styleClass="Fs20"/>
+				<p:spacer height="3px"/>
+				<h:outputText value="#{kajoolContratos.attrs.messageBackup}" escape="false" styleClass="Fs14"/>
+			</p:panelGrid>
+		</p:notificationBar>
   </ui:define>
 </ui:composition>

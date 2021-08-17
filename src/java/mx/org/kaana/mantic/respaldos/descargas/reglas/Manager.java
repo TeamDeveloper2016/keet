@@ -34,9 +34,9 @@ public class Manager implements Serializable{
 		boolean regresar   = false;		
 		Respuesta respuesta= null;
 		try {			
-			respuesta= toPeticion(EServicios.ARGENTINA.getNombre());
+			respuesta= this.toPeticion(EServicios.ARGENTINA.getNombre());
 			if(respuesta.getCodigo().equals(ERespuesta.CORRECTO.getCodigo()))
-				regresar= validaUltimoRespaldo();			
+				regresar= this.validaUltimoRespaldo();			
 			else
 				LOG.info(respuesta.getDescripcion());
 		} // try
@@ -124,7 +124,7 @@ public class Manager implements Serializable{
 		return regresar;
 	} // download
 	
-	private FtpProperties loadProperties(){
+	private FtpProperties loadProperties() {
 		FtpProperties regresar= null;
 		String[] host         = null;		
 		String user           = null;		
@@ -144,7 +144,7 @@ public class Manager implements Serializable{
 	} // loadProperties
 	
 	private Respuesta toPeticion(String nombre) throws Exception{
-		return toPeticion(nombre, new Object[]{});
+		return this.toPeticion(nombre, new Object[]{});
 	} // toPeticion
 	
 	private Respuesta toPeticion(String nombre, Object[] params) throws Exception{

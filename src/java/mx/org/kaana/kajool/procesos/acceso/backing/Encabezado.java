@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,154 +174,27 @@ public class Encabezado extends IBaseFilter implements Serializable {
   }	
 
   public void doFaltanteArticulo() {
-		try {
-			if(this.faltante.getIdArticulo()> 0L) {
-				TcManticFaltantesDto existe= (TcManticFaltantesDto)DaoFactory.getInstance().findFirst(TcManticFaltantesDto.class, "existe", this.faltante.toMap());
-				if(existe== null) {
-					if(DaoFactory.getInstance().insert(this.faltante)> 0L) {
-						JsfBase.addMessage("Agregado:", "El articulo fue agregado a la relación de faltantes. !", ETipoMensaje.INFORMACION);
-						this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, this.faltante.getIdEmpresa());
-					} // if	
-				}	// if
-				else {
-					existe.setRegistro(LocalDateTime.now());
-					existe.setCantidad(existe.getCantidad()+ this.faltante.getCantidad());
-					if(DaoFactory.getInstance().update(existe)> 0L) {
-						JsfBase.addMessage("Agregado:", "El articulo fue actualizado en la relación de faltantes. !", ETipoMensaje.INFORMACION);
-						this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, this.faltante.getIdEmpresa());
-					} // if	
-				} // else	
-			} // if
-			else
-				JsfBase.addMessage("Aviso:", "No se ha seleccionado un articulo, por favor seleccione. !", ETipoMensaje.INFORMACION);
-			this.doLoadFaltantes();
-			UIBackingUtilities.update("@(.faltantes)");
-		} // try
-	  catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
 	}
 	
   public void doReplaceFaltante() {
-		try {
-    	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
-	    UISelectEntity articulo= (UISelectEntity)this.attrs.get("articulo");
-			if(articulo== null)
-			  articulo= new UISelectEntity(new Entity(-1L));
-			else
-				if(articulos.indexOf(articulo)>= 0) 
-					articulo= articulos.get(articulos.indexOf(articulo));
-			  else
-			    articulo= articulos.get(0);
-			if(articulo.size()> 0) {
-			  this.faltante.setIdArticulo(articulo.toLong("idArticulo"));
-			  this.faltante.setCodigo(articulo.toString("propio"));
-			  this.faltante.setNombre(articulo.toString("nombre"));
-			} // if	
-		} // try
-	  catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
 	}
 	
 	public void doStartLoadFaltantes() {
-		if(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getEmpresa()!= null && JsfBase.getAutentifica().getEmpresa().getIdEmpresa()!= null && JsfBase.getAutentifica().getEmpresa().getIdEmpresa()> 0L) {
-			this.faltante.setIdUsuario(JsfBase.getIdUsuario());
-			this.faltante.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-		} // if
-		this.doLoadFaltantes();
 	}
 	
 	public void doLoadFaltantes() {
-    List<Columna> columns= null;
-    try {
-			Long idSucursal= this.faltante.getIdEmpresa()== null? -1L: this.faltante.getIdEmpresa();
-			this.attrs.put("idSucursal", idSucursal);
-			if(Cadena.isVacio(this.attrs.get("lookForFaltantes")))
-			  this.attrs.put("codigoPerdido", "");
-			else {
-				String nombre= ((String)this.attrs.get("lookForFaltantes")).replaceAll(Constantes.CLEAN_SQL, "").trim();
-				this.attrs.put("codigoPerdido", nombre.toUpperCase());
-			} // else
-      columns = new ArrayList<>();
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			if(this.lazyFaltantes!= null)
-				Methods.clean(this.lazyFaltantes);
-      this.lazyFaltantes = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "registrados", this.attrs, 50L);
-      UIBackingUtilities.toFormatEntitySet(this.lazyFaltantes, columns);
-      UIBackingUtilities.resetDataTable("faltantesTabla");
-    } // try
-    catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    finally {
-      Methods.clean(columns);
-    } // finally			
+    
 	}
 
 	public void doUpdateArticulos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-		boolean buscaPorCodigo    = false;
-    try {
-			columns= new ArrayList<>();
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			String search= new String((String)this.attrs.get("codigoFaltantes")); 
-			if(!Cadena.isVacio(search)) {
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				buscaPorCodigo= search.startsWith(".");
-				if(buscaPorCodigo)
-					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-			} // if	
-			else
-				search= "WXYZ";
-  		params.put("codigo", search);
-  		params.put("idArticuloTipo", "1");	
-			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
-			else
-        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
-		} // try
-	  catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    }// finally
+
 	}	
 	
 	public List<UISelectEntity> doCompleteArticulo(String query) {
-		this.attrs.put("codigoFaltantes", query);
-    this.doUpdateArticulos();		
-		return (List<UISelectEntity>)this.attrs.get("articulos");
+    return Collections.EMPTY_LIST;
 	}	
 
   public void doEliminarFaltante() {
-		try {
-			Entity eliminado= (Entity)this.attrs.get("eliminado");
-			if(DaoFactory.getInstance().delete(TcManticFaltantesDto.class, eliminado.getKey())> 0L)
-				JsfBase.addMessage("Eliminado:", "El articulo fue eliminado de la relación de faltantes. !", ETipoMensaje.INFORMACION);
-			UIBackingUtilities.execute("$('#codigosFaltantes').focus();");
-			UIBackingUtilities.update("@(.faltantes)");
-		} // try
-	  catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
 	}	
 	
 	public String doCleanChars(String text) {

@@ -16,9 +16,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends IBaseTnx {
 
-	
 	private static final Log LOG              = LogFactory.getLog(Transaccion.class);
 	private static final Long FILE_DEPURACION= 1L;
 	private static final Long FILE_ELIMINADO = 3L;
@@ -38,13 +37,13 @@ public class Transaccion extends IBaseTnx{
 		try {
 			switch(accion){
 				case DEPURAR:
-					this.files= toArchivos(sesion);
+					this.files= this.toArchivos(sesion);
 					if(!this.files.isEmpty())
-						depuracion(sesion);
+						this.depuracion(sesion);
 					break;
 				case PROCESAR:
 					if(!this.files.isEmpty())
-						depuracion(sesion);
+						this.depuracion(sesion);
 					break;
 			} // switch
 		} // try
@@ -58,7 +57,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // ejecutar	
 	
-	private List<TcManticArchivosDto> toArchivos(Session sesion) throws Exception{
+	private List<TcManticArchivosDto> toArchivos(Session sesion) throws Exception {
 		List<TcManticArchivosDto> regresar= null;
 		Map<String, Object>params         = null;
 		try {
@@ -88,7 +87,7 @@ public class Transaccion extends IBaseTnx{
 						} // if
 					} // if
 					else
-						LOG.info("No se encontro el archivo: " + fileDepuracion.getAlias());
+						LOG.info("No se encontró el archivo: " + fileDepuracion.getAlias());
 				} // try
 				catch (Exception e) {					
 					Error.mensaje(e);					

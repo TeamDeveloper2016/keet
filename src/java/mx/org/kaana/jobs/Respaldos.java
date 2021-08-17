@@ -31,7 +31,7 @@ public class Respaldos implements Job, Serializable {
 			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
 				transaccion= new Transaccion();
 				if(transaccion.ejecutar(EAccion.AGREGAR))
-					LOG.info("Se realizo el respaldo de la BD de forma correcta");
+					LOG.info("Se realizó el respaldo de la BD de forma correcta");
 				else
 					LOG.error("Ocurrio un error al realizar el respaldo de la BD");				
 			} // if

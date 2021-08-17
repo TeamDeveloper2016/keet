@@ -96,7 +96,7 @@ public class Tablero extends Comun implements Serializable {
       this.loadContadoresGenerales();
       this.toMensajesNoLeidos(); 
 			if(JsfBase.isAdminEncuestaOrAdmin())
-			  this.checkDonwloadBackup();
+			  this.checkDownloadBackup();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -951,7 +951,7 @@ public class Tablero extends Comun implements Serializable {
 		} // finally
 	} // doLoadVentasEmpleado	
 	
-  private void checkDonwloadBackup() {
+  private void checkDownloadBackup() {
 	  Map<String, Object> params= null;
 		try {
 		  params=new HashMap<>();
@@ -977,5 +977,6 @@ public class Tablero extends Comun implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally	
-	} // checkDonwloadBackup
+	} // checkDownloadBackup
+  
 }
