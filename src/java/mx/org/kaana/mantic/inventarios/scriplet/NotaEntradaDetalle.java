@@ -10,6 +10,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Letras;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reportes.scriptlets.BarraProgreso;
 import net.sf.jasperreports.engine.JRScriptletException;
 
@@ -30,7 +31,7 @@ public class NotaEntradaDetalle extends BarraProgreso implements Serializable {
       hints.put(EncodeHintType.MARGIN, 0); /* default = 4 */
       if(!getFieldValue("TOTAL_FINAL").toString().isEmpty())
         setVariableValue("LETRAS", letras.getMoneda(getFieldValue("TOTAL_FINAL").toString(), Boolean.FALSE));
-      matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).concat("-").concat("http://cafu.jvmhost.net/"), BarcodeFormat.QR_CODE, 400, 400, hints);
+      matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).concat("-").concat(Configuracion.getInstance().getPropiedadServidor("sistema.dns")), BarcodeFormat.QR_CODE, 400, 400, hints);
       setVariableValue("CODE_QR", MatrixToImageWriter.toBufferedImage(matrix));
     } // try
     catch (Exception e) {

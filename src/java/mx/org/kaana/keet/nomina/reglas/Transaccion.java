@@ -894,6 +894,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());			
 			params.put("personalDestajo", sujeto.toString("contratista"));
 			params.put("correo", ECorreos.DESTAJOS.getEmail());		
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.toReporte(sesion, jasper, sujeto);
 			params.put("tipo", "Reporte - "+ titulo);			
 			attachments= new Attachment(jasper.getNombre(), false);
@@ -903,7 +905,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params.put("attach", attachments.getId());
       try {
         if(!Cadena.isVacio(correos)) {
-          notificar= new IBaseAttachment(ECorreos.DESTAJOS, ECorreos.DESTAJOS.getEmail(), correos, ECorreos.DESTAJOS.getBackup(), "CAFU - ".concat(titulo), params, files);
+          notificar= new IBaseAttachment(ECorreos.DESTAJOS, ECorreos.DESTAJOS.getEmail(), correos, ECorreos.DESTAJOS.getBackup(), Configuracion.getInstance().getEmpresa("titulo").concat(" - ").concat(titulo), params, files);
           notificar.send();
           LOG.info("Enviando correo a la cuenta: "+ correos);
         } // if	

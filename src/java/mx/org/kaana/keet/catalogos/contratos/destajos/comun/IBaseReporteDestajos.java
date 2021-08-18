@@ -91,7 +91,9 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			params.put("footer", "...");
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());			
 			params.put("personalDestajo", this.attrs.get("figuraNombreCompletoCorreo"));
-			params.put("correo", ECorreos.ADMINISTRACION.getEmail());			
+			params.put("correo", ECorreos.ADMINISTRACION.getEmail());
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.doReporte(reporte, true);
 			params.put("tipo", "Reporte - ".concat(this.attrs.get("tituloCorreo").toString()));			
 			attachments= new Attachment(this.reporte.getNombre(), false);
@@ -101,7 +103,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			params.put("attach", attachments.getId());
       try {
         if(!Cadena.isVacio(emails)) {
-          notificar= new IBaseAttachment(ECorreos.ADMINISTRACION, ECorreos.ADMINISTRACION.getEmail(), emails, ECorreos.ADMINISTRACION.getBackup(), "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
+          notificar= new IBaseAttachment(ECorreos.ADMINISTRACION, ECorreos.ADMINISTRACION.getEmail(), emails, ECorreos.ADMINISTRACION.getBackup(), Configuracion.getInstance().getEmpresa("titulo").concat(" - ").concat(this.attrs.get("tituloCorreo").toString()), params, files);
           LOG.info("Enviando correo a la cuenta: " + emails);
           notificar.send();
         } // if	
@@ -146,7 +148,9 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			params.put("footer", "...");
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());			
 			params.put("personalDestajo", this.attrs.get("figuraNombreCompletoCorreo"));
-			params.put("correo", ECorreos.RESIDENTE.getEmail());			
+			params.put("correo", ECorreos.RESIDENTE.getEmail());
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.doReporte(reporte, true);
 			params.put("tipo", "Reporte - ".concat(this.attrs.get("tituloCorreo").toString()));			
 			attachments= new Attachment(this.reporte.getNombre(), false);
@@ -157,7 +161,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  notificar= new IBaseAttachment(ECorreos.RESIDENTE, ECorreos.RESIDENTE.getEmail(), item, ECorreos.RESIDENTE.getBackup(), "CAFU - ".concat(this.attrs.get("tituloCorreo").toString()), params, files);
+					  notificar= new IBaseAttachment(ECorreos.RESIDENTE, ECorreos.RESIDENTE.getEmail(), item, ECorreos.RESIDENTE.getBackup(), Configuracion.getInstance().getEmpresa("titulo").concat(" - ").concat(this.attrs.get("tituloCorreo").toString()), params, files);
 					  LOG.info("Enviando correo a la cuenta: " + item);
 					  notificar.send();
 					} // if	

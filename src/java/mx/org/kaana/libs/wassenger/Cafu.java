@@ -36,13 +36,13 @@ public final class Cafu implements Serializable {
   
   private static final String IMOX_TOKEN      = "IMOX_TOKEN";
   public static final String IMOX_GROUP       = "5214491813810-1598307650@g.us";
-  private static final String BODY_MESSAGE    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de *CAFU* Construcciones, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación (_soy un chatbot asociado al sistema_).\\n\\nCAFU Construcciones\"";
-  private static final String BODY_DESTAJO    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\nCAFU Construcciones\"";
-  private static final String BODY_RESIDENTE  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos *{desarrollo}* de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\nCAFU Construcciones\"";
-  private static final String BODY_GASTO_CHICA= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\nCAFU Construcciones\"";
-  private static final String BODY_CAJA_CHICA = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\nCAFU Construcciones\"";
-  private static final String BODY_OPEN_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *12:30 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina (_soy un chatbot asociado al sistema_).\\n\\nCAFU Construcciones\"";
-  private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos se vera reflejado para la siguiente nómina ó _semana_ (_soy un chatbot asociado al sistema_).\\n\\nCAFU Construcciones\"";
+  private static final String BODY_MESSAGE    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de {empresa}, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación (_soy un chatbot asociado al sistema_).";
+  private static final String BODY_DESTAJO    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\n{empresa}\"";
+  private static final String BODY_RESIDENTE  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos *{desarrollo}* de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\n{empresa}\"";
+  private static final String BODY_GASTO_CHICA= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\n{empresa}\"";
+  private static final String BODY_CAJA_CHICA = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\n{empresa}\"";
+  private static final String BODY_OPEN_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *12:30 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina (_soy un chatbot asociado al sistema_).\\n\\n{empresa}\"";
+  private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos se vera reflejado para la siguiente nómina ó _semana_ (_soy un chatbot asociado al sistema_).\\n\\n{empresa}\"";
   private static final String PATH_REPORT     = "{numero}.- {contratista}; https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE  = 10;
 
@@ -53,6 +53,7 @@ public final class Cafu implements Serializable {
   private String nomina;
   private String periodo;
   private String desarrollo;
+  private String empresa;
   private Map<String, Object> contratistas;
 
   public Cafu(String nombre, String celular) {
@@ -77,6 +78,7 @@ public final class Cafu implements Serializable {
     this.contratistas= contratistas;
     this.desarrollo= "";
     this.prepare();
+    this.empresa= Configuracion.getInstance().getEmpresa("titulo");
   }
 
   public String getNombre() {
@@ -150,6 +152,7 @@ public final class Cafu implements Serializable {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
         params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
         if(sesion!= null)
           value= (Value)DaoFactory.getInstance().toField(sesion, "TcManticMensajesDto", "existe", params, "idKey");
@@ -213,6 +216,7 @@ public final class Cafu implements Serializable {
       params.put("nomina", this.nomina);
       params.put("periodo", this.periodo);
       params.put("saludo", this.toSaludo());
+      params.put("empresa", this.empresa);
       if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
         LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}");
       else {  
@@ -264,6 +268,7 @@ public final class Cafu implements Serializable {
       params.put("nomina", this.nomina);
       params.put("periodo", this.periodo);
       params.put("saludo", this.toSaludo());
+      params.put("empresa", this.empresa);
       if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
         LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}");
       else {  
@@ -320,6 +325,7 @@ public final class Cafu implements Serializable {
         params.put("nomina", this.nomina);
         params.put("periodo", this.periodo);
         params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
         else {  
@@ -378,6 +384,7 @@ public final class Cafu implements Serializable {
         params.put("periodo", this.periodo);
         params.put("desarrollo", this.desarrollo);
         params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
         else {  
@@ -435,6 +442,7 @@ public final class Cafu implements Serializable {
         params.put("nomina", this.nomina);
         params.put("periodo", this.periodo);
         params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
         else {  
@@ -492,6 +500,7 @@ public final class Cafu implements Serializable {
         params.put("nomina", this.nomina);
         params.put("periodo", this.periodo);
         params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
         else {  
@@ -571,6 +580,7 @@ public final class Cafu implements Serializable {
       params.put("nomina", this.nomina);
       params.put("periodo", this.periodo);
       params.put("saludo", this.toSaludo());
+      params.put("empresa", this.empresa);
       LOG.info("{"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
       LOG.info("{"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
       LOG.info("{"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
@@ -605,6 +615,7 @@ public final class Cafu implements Serializable {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
         params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
@@ -657,7 +668,7 @@ public final class Cafu implements Serializable {
 //      message.doSendMessage();
 //      // message.doSendDestajo();
 //    } // for
-//    String body= "{\"id\":\"60d607099faa17d7ac70f63d\",\"waId\":\"3EB06320796368264337\",\"phone\":\"+5214492090586\",\"wid\":\"5214492090586@c.us\",\"status\":\"queued\",\"deliveryStatus\":\"queued\",\"createdAt\":\"2021-06-25T16:40:41.225Z\",\"deliverAt\":\"2021-06-25T16:40:41.206Z\",\"message\":\"Hola _Alejandro jiménez garcía_,\nBuenos días, te hacemos llegar el reporte de los destajos de la nómina *2021-20* del *15/06/2021 al 30/06/2021*, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/CAFU_2021062410492325_orden_de_compra_detalle.pdf\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte.\nCAFU Construcciones S.A.\",\"priority\":\"normal\",\"retentionPolicy\":\"plan_defaults\",\"retry\":{\"count\":0},\"webhookStatus\":\"pending\",\"media\":{\"format\":\"native\"},\"device\":\"60d4987e48b592aa82f09e92\"}";
+//    String body= "{\"id\":\"60d607099faa17d7ac70f63d\",\"waId\":\"3EB06320796368264337\",\"phone\":\"+5214492090586\",\"wid\":\"5214492090586@c.us\",\"status\":\"queued\",\"deliveryStatus\":\"queued\",\"createdAt\":\"2021-06-25T16:40:41.225Z\",\"deliverAt\":\"2021-06-25T16:40:41.206Z\",\"message\":\"Hola _Alejandro jiménez garcía_,\nBuenos días, te hacemos llegar el reporte de los destajos de la nómina *2021-20* del *15/06/2021 al 30/06/2021*, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/CAFU_2021062410492325_orden_de_compra_detalle.pdf\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte.\nIMOX soluciones\",\"priority\":\"normal\",\"retentionPolicy\":\"plan_defaults\",\"retry\":{\"count\":0},\"webhookStatus\":\"pending\",\"media\":{\"format\":\"native\"},\"device\":\"60d4987e48b592aa82f09e92\"}";
 //    Gson gson= new Gson();
 //    Message message= gson.fromJson(body, Message.class);
 //    if(message!= null)

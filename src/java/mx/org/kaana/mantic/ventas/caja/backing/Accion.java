@@ -439,7 +439,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Factura");			
 			params.put("razonSocial", facturacion.getRazonSocial());
-			params.put("correo", ECorreos.FACTURACION.getEmail());			
+			params.put("correo", ECorreos.FACTURACION.getEmail());	
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			factura= toXml(facturacion.getIdFactura());
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true, facturacion.getIdVenta(), facturacion.getIdFactura(), facturacion.getIdFacturama(), facturacion.getSelloSat(), facturacion.getIdCliente());
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
@@ -453,7 +455,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "", "CAFU Construcciones - Factura", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "", Configuracion.getInstance().getEmpresa("titulo").concat(" - Factura"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

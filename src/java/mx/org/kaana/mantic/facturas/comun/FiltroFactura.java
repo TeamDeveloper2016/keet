@@ -123,7 +123,9 @@ public abstract class FiltroFactura extends IBaseTicket {
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Factura");			
 			params.put("razonSocial", seleccionado.toString("cliente"));
-			params.put("correo", ECorreos.FACTURACION.getEmail());			
+			params.put("correo", ECorreos.FACTURACION.getEmail());	
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			factura= this.toXml(seleccionado.toLong("idFactura"));
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
@@ -134,7 +136,7 @@ public abstract class FiltroFactura extends IBaseTicket {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "", "CAFU Construcciones - Factura", params, files, ECorreos.FACTURACION.getAlias());
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "", Configuracion.getInstance().getEmpresa("titulo").concat(" - Factura"), params, files, ECorreos.FACTURACION.getAlias());
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

@@ -136,7 +136,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	private String toWriteInvitacion(String nombre, String puesto) throws MalformedURLException, IOException, IOException {
 		String regresar= Constantes.RUTA_TEMPORALES.concat(Archivo.toFormatNameFile("fegems")).concat(".jpg");
 		//final BufferedImage image = ImageIO.read(new File(JsfBase.getRealPath(ECorreos.FACTURACION.getImages().concat("invitacion.jpg"))));
-		final BufferedImage image = ImageIO.read(new URL("https://cafu.jvmhost.net/KEET/resources/janal/img/correo/invitacion.jpg"));
+		final BufferedImage image = ImageIO.read(new URL("https://"+ Configuracion.getInstance().getEmpresa()+ ".jvmhost.net/KEET/resources/janal/img/correo/invitacion.jpg"));
    	Graphics g = image.getGraphics();
     g.setColor(new Color(157, 197, 23));
 		final int width= 693;
@@ -166,6 +166,8 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			params.put("invitado", "M.C. Team Developer 2016");
 			params.put("puesto", "Subsecretario de Obras Públicas");
 			params.put("correo", "jimenez76@yahoo.com");
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			for (String item: correos) {
 				String image   = this.toWriteInvitacion((String)params.get("invitado"), (String)params.get("puesto"));
 				Attachment user= new Attachment(image, Boolean.TRUE);
@@ -196,7 +198,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	}	
 	
 	public static void main(String ... args) throws MalformedURLException, IOException, IOException {
-		final BufferedImage image = ImageIO.read(new URL("https://cafu.jvmhost.net/KEET/resources/janal/img/correo/invitacion.jpg"));
+		final BufferedImage image = ImageIO.read(new URL("https://"+ Configuracion.getInstance().getEmpresa()+ ".jvmhost.net/KEET/resources/janal/img/correo/invitacion.jpg"));
    	Graphics g = image.getGraphics();
     g.setColor(new Color(157, 197, 23));
 		final int width= 895;

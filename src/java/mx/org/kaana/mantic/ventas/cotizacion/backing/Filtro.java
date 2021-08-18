@@ -428,6 +428,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 			//2.- RECUPERAR LA RAZON SOCIAL DEL PROVEEDOR
 			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", ECorreos.COTIZACIONES.getEmail());
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			//3.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
 			this.doReporte("COTIZACION_DETALLE", Boolean.TRUE);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
@@ -437,7 +439,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, ECorreos.COTIZACIONES.getEmail(), item, ECorreos.COTIZACIONES.getBackup(), "CAFU Construcciones - Cotización", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, ECorreos.COTIZACIONES.getEmail(), item, ECorreos.COTIZACIONES.getBackup(), Configuracion.getInstance().getEmpresa("titulo").concat(" - Cotización"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

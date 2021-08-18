@@ -13,8 +13,8 @@ import mx.org.kaana.libs.formato.Cadena;
  */
 public enum ESucursales {
 
-	SUCURSAL_A(30000L, "Constructora CAFU", 1560L, "HACIENDAS DE AGUASCALIENTES"),
-	SUCURSAL_B(21500L, "Constructora CAFURBA", 1200L, "HACIENDAS DE AGUASCALIENTES");
+	SUCURSAL_A(30000L, "CAFU Constructora", 1560L, "HACIENDAS DE AGUASCALIENTES"),
+	SUCURSAL_B(21500L, "CAFURBA Constructora", 1200L, "HACIENDAS DE AGUASCALIENTES");
 	
 	private Long utilidad;
 	private Long ventas;

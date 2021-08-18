@@ -151,6 +151,8 @@ public class Timbrado implements Job, Serializable {
 			params.put("tipo", "Factura");
 			params.put("razonSocial", facturacion.getRazonSocial());
 			params.put("correo", ECorreos.FACTURACION.getEmail());
+			params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			factura=toXml(facturacion.getIdFactura());
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", facturacion);
 			Attachment attachments=new Attachment(Especial.getInstance().getPath().substring(0, Especial.getInstance().getPath().length()-1), this.reporte.getNombre(), Boolean.FALSE, true);
@@ -163,7 +165,7 @@ public class Timbrado implements Job, Serializable {
 			for (String item : emails) {
 				try {
 					if (!Cadena.isVacio(item)) {
-						IBaseAttachment notificar=new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "", "Constructora CAFU - Factura", params, files);
+						IBaseAttachment notificar=new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "", Configuracion.getInstance().getEmpresa("titulo").concat(" - Factura"), params, files);
 						LOG.info("Enviando correo a la cuenta: "+item);
 						notificar.send();
 					} // if	

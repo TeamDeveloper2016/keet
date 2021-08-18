@@ -963,7 +963,9 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Factura");			
 			params.put("razonSocial", cliente);
-			params.put("correo", ECorreos.FACTURACION.getEmail());			
+			params.put("correo", ECorreos.FACTURACION.getEmail());	
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			factura= toXml(idFactura);
 			this.doReporte(idFactura, idFicticia, idCliente);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
@@ -974,7 +976,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "", "CAFU Construcciones - Factura", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "", Configuracion.getInstance().getEmpresa("titulo").concat(" - Factura"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

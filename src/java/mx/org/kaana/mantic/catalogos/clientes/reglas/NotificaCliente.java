@@ -137,6 +137,8 @@ public class NotificaCliente implements Serializable {
 			params.put("tipo", "Estado de Cuenta");
 			params.put("razonSocial", this.razonSocial);
 			params.put("correo", this.correo.getEmail());
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.toReporteIndividal();
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
@@ -145,7 +147,7 @@ public class NotificaCliente implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(this.correo, this.correo.getEmail(), item, "imox.soluciones.web@gmail.com", "CAFU Construcciones - Estado de cuenta", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(this.correo, this.correo.getEmail(), item, "imox.soluciones.web@gmail.com", Configuracion.getInstance().getEmpresa("titulo").concat(" - Estado de cuenta"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

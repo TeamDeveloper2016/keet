@@ -471,7 +471,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Orden de compra");			
 			params.put("razonSocial", seleccionado.toString("proveedor"));
-			params.put("correo", ECorreos.ORDENES_COMPRA.getEmail());			
+			params.put("correo", ECorreos.ORDENES_COMPRA.getEmail());		
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.doReporte("ORDEN_DETALLE", true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
@@ -480,7 +482,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.ORDENES_COMPRA, ECorreos.ORDENES_COMPRA.getEmail(), item, ECorreos.ORDENES_COMPRA.getBackup(), "CAFU Construcciones - Orden de compra", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.ORDENES_COMPRA, ECorreos.ORDENES_COMPRA.getEmail(), item, ECorreos.ORDENES_COMPRA.getBackup(), Configuracion.getInstance().getEmpresa("titulo").concat(" - Orden de compra"), params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

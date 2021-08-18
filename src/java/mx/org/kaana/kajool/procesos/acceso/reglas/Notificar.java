@@ -136,7 +136,7 @@ public class Notificar implements Serializable {
     regresar.append("Administrador KAJOOL");
     regresar.append("</td></tr>");
     regresar.append("<tr><td>");
-    regresar.append("<img alt=\"Constructora CAFU\" width=\"277\" height=\"80\" src=\"data:image/png;base64,");
+    regresar.append("<img alt=\"").append(Configuracion.getInstance().getEmpresa("titulo")).append("\" width=\"277\" height=\"80\" src=\"data:image/png;base64,");
     regresar.append(logoJanal);
     regresar.append("\" /> </td> ");
     regresar.append("\" />");

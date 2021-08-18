@@ -683,13 +683,14 @@ public class Saldos extends IBaseFilter implements Serializable {
 		String[] emails= {(sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
 		List<Attachment> files= new ArrayList<>(); 
 		try {
-																																			
 			params.put("header", "...");
 			params.put("footer", "...");
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Estado de Cuenta");
 			params.put("razonSocial", seleccionado.toString("razonSocial"));
 			params.put("correo", ECorreos.CUENTAS.getEmail());
+      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
+      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.toReporteEspecial(true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
