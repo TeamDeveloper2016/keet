@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.catalogos.articulos.reglas;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
@@ -12,6 +13,10 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
+import static mx.org.kaana.kajool.enums.ESql.DELETE;
+import static mx.org.kaana.kajool.enums.ESql.INSERT;
+import static mx.org.kaana.kajool.enums.ESql.SELECT;
+import static mx.org.kaana.kajool.enums.ESql.UPDATE;
 import mx.org.kaana.keet.db.dto.TcKeetFamiliasDto;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
@@ -23,6 +28,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
+import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloImagen;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloProveedor;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Descuento;
 import mx.org.kaana.mantic.catalogos.articulos.beans.DescuentoEspecial;
@@ -97,7 +103,7 @@ public class Transaccion extends Facturama {
 						regresar= DaoFactory.getInstance().delete(sesion, TcManticImagenesDto.class, this.articulo.getArticulo().getIdImagen())>= 1L;
 					break;
 				case ASIGNAR:
-					regresar= asignarImagen(sesion);
+					regresar= this.asignarImagen(sesion);
 					break;
 				case PROCESAR:
 					art= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo());
@@ -115,19 +121,19 @@ public class Transaccion extends Facturama {
 	} // ejecutar
 	
 	private boolean asignarImagen(Session sesion) throws Exception{
-		boolean regresar             = false;
-		TcManticImagenesDto image    = null;
-		TcManticArticulosDto articulo= null;
-		int count                    = 0;
-		Long idImage                 = -1L;
+		boolean regresar         = false;
+		TcManticImagenesDto image= null;
+		TcManticArticulosDto item= null;
+		int count                = 0;
+		Long idImage             = -1L;
 		try {
-			image= loadImageImportado(this.seleccionados[0].toLong("idArticulo"));
+			image  = this.loadImageImportado(this.seleccionados[0].toLong("idArticulo"));
 			idImage= DaoFactory.getInstance().insert(sesion, image);
-			if(idImage >= 1L){
-				for(Entity seleccionado: this.seleccionados){
-					articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, seleccionado.toLong("idArticulo"));
-					articulo.setIdImagen(idImage);
-					DaoFactory.getInstance().update(sesion, articulo);
+			if(idImage >= 1L) {
+				for(Entity seleccionado: this.seleccionados) {
+					item= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, seleccionado.toLong("idArticulo"));
+					item.setIdImagen(idImage);
+					DaoFactory.getInstance().update(sesion, item);
 					count++;
 				} // for
 				regresar= count== this.seleccionados.length;
@@ -190,20 +196,20 @@ public class Transaccion extends Facturama {
 		try {						
 			params= new HashMap<>();
 			params.put("idArticulo", this.articulo.getIdArticulo());
-			if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosCodigosDto.class, params)> -1L){
-				if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosEspecificacionesDto.class, params)> -1L){
-					if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDescuentosDto.class, params)> -1L){
-						if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloGrupoDescuentoDto.class, params)> -1L){
-							if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPrecioSugeridoDto.class, params)> -1L){
-								if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloProveedorDto.class, params)> -1L){
-									if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloTipoVentaDto.class, params)> -1L){
-										if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDimencionesDto.class, params)> -1L){
-											//if(DaoFactory.getInstance().deleteAll(sesion, TcManticImagenesDto.class, params)> -1L){
-											if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TrManticArticuloPresentacionDto", "rows", params)> -1L){
-												regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo())>= 1L;
-												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && !Configuracion.getInstance().isEtapaDesarrollo())
-													eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
-				}	}	}	}	}	}	}	} } // if		
+			if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosCodigosDto.class, params)> -1L) {
+				if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosEspecificacionesDto.class, params)> -1L) {
+					if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDescuentosDto.class, params)> -1L) {
+						if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloGrupoDescuentoDto.class, params)> -1L) {
+							if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPrecioSugeridoDto.class, params)> -1L) {
+								if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloProveedorDto.class, params)> -1L) {
+									if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloTipoVentaDto.class, params)> -1L) {
+										if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDimencionesDto.class, params)> -1L) {
+											if(this.toDeleteImagenes(sesion, this.articulo.getIdArticulo())) {
+											  if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TrManticArticuloPresentacionDto", "rows", params)> -1L){
+												  regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo())>= 1L;
+												  if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && !Configuracion.getInstance().isEtapaDesarrollo())
+													  this.eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
+				}	}	}	}	}	}	}	} } } // if		
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -235,13 +241,11 @@ public class Transaccion extends Facturama {
 
 	@Override
 	public boolean procesarArticulo(Session sesion) throws Exception{
-		boolean regresar         = false;
-		TcManticImagenesDto image= null;
-		Long idArticulo          = -1L;
-		Long idImagen            = -1L;
-		Long idCategoria         = null;
+		boolean regresar= false;
+		Long idArticulo = -1L;
+		Long idCategoria= null;
 		try {			
-			if(eliminarRegistros(sesion)) {
+			if(this.eliminarRegistros(sesion)) {
 				this.messageError= "Error al registrar el articulo.\nVerificar que el articulo no se encuentre registrado.";
 				this.articulo.getArticulo().setIdRedondear(this.articulo.isRedondear()? ACTIVO : INACTIVO);
 				this.articulo.getArticulo().setIdUsuario(JsfBase.getIdUsuario());
@@ -275,13 +279,9 @@ public class Transaccion extends Facturama {
 											} // if
 											else
 												regresar= true;
-											if(regresar){					
-												if(!Cadena.isVacio(this.articulo.getImportado().getName())) {
-													image= loadImage(sesion, null, idArticulo);												
-													idImagen= DaoFactory.getInstance().insert(sesion, image);
-													this.articulo.getArticulo().setIdImagen(idImagen);
-													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
-					} } } } } } } }	} // if												
+											if(regresar) 
+                        this.toUpdateImages(sesion, idArticulo);
+					} } } } } }	} // if												
 				if(idArticulo > -1 && this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && !Configuracion.getInstance().isEtapaDesarrollo())
 					registraArticuloFacturama(sesion, idArticulo);
 			} // if
@@ -307,14 +307,14 @@ public class Transaccion extends Facturama {
 	} // registraArticuloFacturama
 	
 	private void actualizarArticuloFacturama(Session sesion, Long idArticulo){		
-		CFDIGestor gestor       = null;
-		ArticuloFactura articulo= null;
+		CFDIGestor gestor   = null;
+		ArticuloFactura item= null;
 		try {
 			gestor= new CFDIGestor(idArticulo);
-			articulo= gestor.toArticuloFactura(sesion);			
-			setArticulo(articulo);
-			if(articulo.getIdFacturama()!= null)
-				updateArticulo(sesion);
+			item= gestor.toArticuloFactura(sesion);			
+			setArticulo(item);
+			if(item.getIdFacturama()!= null)
+				this.updateArticulo(sesion);
 			else
 				super.procesarArticulo(sesion);
 		} // try
@@ -326,7 +326,7 @@ public class Transaccion extends Facturama {
 	private void eliminarArticuloFacturama(Session sesion, String idArticulo){						
 		try {			
 			if(idArticulo!= null)
-				removeArticulo(sesion, idArticulo);
+				this.removeArticulo(sesion, idArticulo);
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
@@ -334,8 +334,6 @@ public class Transaccion extends Facturama {
 	} // actualizarArticuloFacturama
 	
 	private boolean actualizarArticulo(Session sesion) throws Exception{
-		TcManticImagenesDto image                = null;
-		Long idImagen                            = -1L;
 		TcManticArticulosDimencionesDto dimencion= null;
 		boolean regresar                         = false;
 		Long idArticulo                          = -1L;
@@ -354,22 +352,10 @@ public class Transaccion extends Facturama {
 											if(regresar) {
 												this.articulo.getArticulo().setActualizado(LocalDateTime.now());
 											  this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
-												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L) && this.articulo.isImagen();
-												if(regresar) { 				
-													if(DaoFactory.getInstance().update(sesion, this.loadImage(sesion, this.articulo.getArticulo().getIdImagen(), idArticulo))>= 0L)
-														regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
-												} // if 
-												else if(!Cadena.isVacio(this.articulo.getImportado().getName()) && (this.articulo.getArticulo().getIdImagen()== null || this.articulo.getArticulo().getIdImagen().equals(-1L))){
-													image= this.loadImage(sesion, null, idArticulo);												
-													idImagen= DaoFactory.getInstance().insert(sesion, image);
-													this.articulo.getArticulo().setIdImagen(idImagen);
-													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
-												}				
-												else							
-													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
+                        this.toUpdateImages(sesion, idArticulo);
 												sesion.flush();
 												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L) && !Configuracion.getInstance().isEtapaDesarrollo())
-													actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());												
+													this.actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());												
 			} } } } } } } } }			
 		} // try
 		catch (Exception e) {			
@@ -380,56 +366,6 @@ public class Transaccion extends Facturama {
 		} // finally
 		return regresar;
 	} // actualizarArticulo			
-	
-	private TcManticImagenesDto loadImage(Session sesion, Long idImagen, Long idArticulo) throws Exception {
-		TcManticImagenesDto regresar= null;
-		Long tipoImagen             = null;
-		String name                 = null;
-		File result                 = null;
-		String pathPivote           = null;
-		try {
-			if(idImagen!= null && this.articulo.isImagen()){
-				regresar= (TcManticImagenesDto) DaoFactory.getInstance().findById(sesion, TcManticImagenesDto.class, idImagen);
-				pathPivote= regresar.getAlias();
-			} // if
-			else
-				regresar= new TcManticImagenesDto();
-			name= this.articulo.getImportado().getName();
-			if(!Cadena.isVacio(name)) {
-				tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+ 1, name.length()).toUpperCase()).getIdTipoImagen();
-				regresar.setNombre(name);				
-				regresar.setArchivo(Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length())), "IMG"));
-				regresar.setIdTipoImagen(tipoImagen);
-				regresar.setIdUsuario(JsfBase.getIdUsuario());				
-				regresar.setTamanio(this.articulo.getImportado().getFileSize());
-				regresar.setRuta(this.articulo.getImportado().getRuta());			
-				String path= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
-				regresar.setAlias(path.concat(regresar.getArchivo()));
-				result= new File(path.concat(regresar.getNombre()));			
-				if(result.exists()) {
-					Archivo.copy(path.concat(this.articulo.getImportado().getName()), path.concat(regresar.getArchivo()), true);												
-					new File(path.concat(this.articulo.getImportado().getName())).delete();
-					if(pathPivote!= null ){
-						result= new File(pathPivote);
-						if(result.exists())
-							result.delete();
-					} // if
-				} // if
-				else if(pathPivote!= null){					
-					result= new File(pathPivote);			
-					if(result.exists()) 
-						Archivo.copyDeleteSource(pathPivote, path.concat(regresar.getArchivo()), true);									
-				} // else
-			} // if
-		} // try
-		catch (Exception e) {						
-			throw e;
-		} // catch		
-		finally{
-			this.messageError= "Error al registrar imagen del articulo";			
-		} // finally
-		return regresar;
-	} // loadImage
 	
 	private boolean eliminarRegistros(Session sesion) throws Exception{
 		boolean regresar= true;
@@ -583,7 +519,7 @@ public class Transaccion extends Facturama {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			this.messageError= "Error al registrar descuentos, verifique que no haya duplicados";
 		} // finally
 		return regresar;
@@ -779,5 +715,120 @@ public class Transaccion extends Facturama {
 		} // finally
 		return regresar;
 	} // toSiguienteClave
+ 
+  private void toUpdateImages(Session sesion, Long idArticulo) throws Exception {
+    try {      
+      int count= 0;
+      for (ArticuloImagen item: this.articulo.getImagenes()) {
+        switch(item.getSqlAccion()) {
+          case SELECT:
+            break;
+          case INSERT:
+            if(item.getIdImagen()== null || item.getIdImagen()<= 0L) {
+              String name= item.getImportado().getName();
+              String file= Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length())), "IMG");
+				      Long tipo  = ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+ 1, name.length()).toUpperCase()).getIdTipoImagen();
+              TcManticImagenesDto imagen= new TcManticImagenesDto(
+                file, // String archivo, 
+                item.getImportado().getRuta(), // String ruta, 
+                item.getImportado().getFileSize(), // Long tamanio, 
+                JsfBase.getIdUsuario(), // Long idUsuario, 
+                -1L, // Long idImagen, 
+                tipo, // Long idTipoImagen, 
+                name, // String nombre, 
+                item.getImportado().getRuta().concat(file) // String alias
+              ); 
+              item.setIdImagen(DaoFactory.getInstance().insert(sesion, imagen));
+              item.setIdArticulo(idArticulo);
+              item.setIdUsuario(JsfBase.getIdUsuario());
+              item.setCosto(this.articulo.getArticulo().getPrecio());
+              item.setMenudeo(this.articulo.getArticulo().getMenudeo());
+              DaoFactory.getInstance().insert(sesion, item);
+              File archivo= new File(imagen.getRuta().concat(imagen.getNombre()));			
+              if(archivo.exists()) {
+                Archivo.copy(imagen.getRuta().concat(imagen.getNombre()), imagen.getRuta().concat(imagen.getArchivo()), true);												
+                archivo.delete();
+              } // if
+              item.setSqlAccion(ESql.UPDATE);
+            } // if
+            break;
+          case UPDATE:
+            item.setCosto(this.articulo.getArticulo().getPrecio());
+            item.setMenudeo(this.articulo.getArticulo().getMenudeo());
+            DaoFactory.getInstance().update(sesion, item);
+            break;
+          case DELETE:
+            DaoFactory.getInstance().delete(sesion, item);
+            if(this.deleteImagen(sesion, item.getIdImagen())) {
+              DaoFactory.getInstance().delete(sesion, new TcManticImagenesDto(item.getIdImagen()));
+              File file= new File(item.getOriginal());
+              if(file.exists())
+                file.delete();
+            } // if  
+            break;
+        } //
+        if(Objects.equals(item.getIdPrincipal(), 1L)) {
+          this.articulo.getArticulo().setIdImagen(item.getIdImagen());
+          count++;
+        } // if  
+      } // for
+      if(Objects.equals(count, 0)) 
+        this.articulo.getArticulo().setIdImagen(null);
+      DaoFactory.getInstance().update(sesion, this.articulo.getArticulo());
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  } 
+
+	public boolean deleteImagen(Session sesion, Long idImagen) throws Exception {
+		boolean regresar         = false;
+		List<Entity> articulos   = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idImagen", idImagen);
+			articulos= DaoFactory.getInstance().toEntitySet(sesion, "TcManticArticulosDto", "findImage", params);
+			regresar = articulos!=null && (articulos.isEmpty() || articulos.size()<= 1);
+		} // try
+		catch (Exception e) {						
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // deleteImagen 	
+
+  private boolean toDeleteImagenes(Session sesion, Long idArticulo) throws Exception {
+    boolean regresar          = false;
+    Map<String, Object>params = null;
+    List<ArticuloImagen> items= null;
+    try {
+			params= new HashMap<>();
+			params.put("idArticulo", idArticulo);
+      items= (List<ArticuloImagen>)DaoFactory.getInstance().toEntitySet(sesion, ArticuloImagen.class, "TcManticArticulosImagenesDto", "imagenes", params);
+  		if(items!= null && !items.isEmpty()) {
+        for (ArticuloImagen item: items) {
+          DaoFactory.getInstance().delete(sesion, item);
+          if(this.deleteImagen(sesion, item.getIdImagen())) {
+            DaoFactory.getInstance().delete(sesion, new TcManticImagenesDto(item.getIdImagen()));
+            File file= new File(item.getOriginal());
+            if(file.exists())
+              file.delete();
+          } // if  
+        } // for
+      } // if  
+      regresar= true;
+		} // try
+		catch (Exception e) {						
+			throw e;
+		} // catch		
+    finally {
+			Methods.clean(params);
+			Methods.clean(items);
+    } // finally
+    return regresar;
+  } 
   
 }

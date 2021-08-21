@@ -102,7 +102,7 @@ public class Extra extends IBaseAttribute implements Serializable {
 			params= new HashMap<>();
 			params.put("idDepartamento", this.attrs.get("idDepartamento"));
 			params.put("idExtra", EBooleanos.SI.getIdBooleano());
-			params.put("clave", toClaveEstacion());
+			params.put("clave", this.toClaveEstacion());
 			params.put("nivel", NIVEL_ESPECIALIDAD);
 			puntosGrupos= UIEntity.seleccione("VistaRubrosDto", "byDepartamentoExtra", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "codigo");
 			this.attrs.put("conceptos", puntosGrupos);									

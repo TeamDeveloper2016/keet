@@ -46,9 +46,11 @@
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
     <div class="ui-g ui-grid-row janal-grid-row keet-top-content">
 			<div class="ui-g-1 janal-content-center janal-column-center">
-				<p:commandLink action="#{kajoolEncabezado.doMovePageStart()}" title="Ir a la página de inicio">
-					<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="35"/>
-				</p:commandLink>	
+        <div style="width: 4% !important; text-align: center; #{kajoolUtilAplicacion.logoIcon eq 'gylvi.svg'? 'margin-top: 7px;': ''}">
+				  <p:commandLink action="#{kajoolEncabezado.doMovePageStart()}" title="Ir a la página de inicio">
+					  <p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="35" style="#{kajoolUtilAplicacion.logoIcon eq 'gylvi.svg'? 'width: 105px !important;': ''}"/>
+				  </p:commandLink>	
+        </div>  
 			</div>	
 			<div class="ui-g-11 janal-content-center">
         <div class="ui-g ui-grid-row janal-grid-row">

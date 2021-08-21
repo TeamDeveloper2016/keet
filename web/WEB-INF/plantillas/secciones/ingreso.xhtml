@@ -18,8 +18,8 @@
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
     <div class="ui-g ui-grid-row janal-grid-row keet-top-content">
 			<div class="ui-g-1 janal-content-center janal-column-center">
-				<div style="width: 4% !important; text-align: center">
-					<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="30"/>
+				<div style="width: 4% !important; text-align: center; #{kajoolUtilAplicacion.logoIcon eq 'gylvi.svg'? 'margin-top: 7px;': ''}">
+					<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="30" style="#{kajoolUtilAplicacion.logoIcon eq 'gylvi.svg'? 'width: 105px !important;': ''}"/>
 				</div>	
 			</div>	
 			<div class="ui-g-11 janal-content-center">

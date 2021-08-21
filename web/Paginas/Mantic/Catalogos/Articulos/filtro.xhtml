@@ -232,10 +232,10 @@
 								  <p:graphicImage id="icon-image" cache="false" value="#{manticCatalogosArticulosFiltro.doPrepareImage(row)}" width="26" height="22" stream="false" rendered="#{row.idImagen.toLong ne 0}" style="cursor:zoom-in;"/>
 								</a>	
 							</p:column>   
-							<p:column headerText="Vigente" class="janal-column-center MarAuto Responsive janal-wid-col-38">
+							<p:column headerText="Vigente" class="janal-column-center MarAuto Responsive janal-wid-3">
 								<h:graphicImage library="janal" name="icon/semaforos/#{row.idVigente eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Articulo #{row.idVigente eq '1' ? 'vigente': 'deshabilitado'}"/>
 							</p:column>
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-3">
 								<h:graphicImage library="janal" name="icon/semaforos/#{row.idFacturama eq '-1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Articulo #{row.idFacturama eq '-1' ? 'NO': ''} registrado en facturama"/>
 							</p:column>
 							<f:facet name="footer">

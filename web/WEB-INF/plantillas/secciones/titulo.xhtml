@@ -16,8 +16,8 @@
   </script>
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;" style="margin-top: 1px !important;">
     <div class="ui-grid-row janal-grid-row">
-			<div style="width: 4% !important; text-align: center">
-				<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="30"/>
+			<div style="width: 4% !important; text-align: center; #{kajoolUtilAplicacion.logoIcon eq 'gylvi.svg'? 'margin-top: 7px;': ''}">
+				<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="30" style="#{kajoolUtilAplicacion.logoIcon eq 'gylvi.svg'? 'width: 105px !important;': ''}"/>
 			</div>	
   		<div class="ui-grid-col-12">
 				<div class="ui-grid-row janal-grid-row">

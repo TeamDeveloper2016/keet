@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
@@ -50,10 +51,10 @@ public class RegistroArticulo implements Serializable {
 	private ContadoresListas contadores;
 	private Long countIndice;
 	private List<IBaseDto> deleteList;
-	private Importado importado;
 	private Long idTipoArticulo;
 	private Boolean idBarras;
 	private Boolean idVigente;
+  private List<ArticuloImagen> imagenes;
 	private boolean imagen;
 
 	public RegistroArticulo() {
@@ -76,7 +77,7 @@ public class RegistroArticulo implements Serializable {
 		this.contadores  = new ContadoresListas();
 		this.countIndice = 0L;
 		this.deleteList  = new ArrayList<>();
-		this.importado   = new Importado();
+    this.imagenes    = new ArrayList<>();
 		init();		
 	}
 	
@@ -95,13 +96,13 @@ public class RegistroArticulo implements Serializable {
 		this.contadores          = new ContadoresListas();
 		this.countIndice         = 0L;
 		this.deleteList          = new ArrayList<>();
-		this.importado           = new Importado();
 		this.articuloDimencion   = articuloDimencion;
 		this.articulo.setSat(Constantes.CODIGO_SAT);
 		this.idTipoArticulo      = idTipoArticulo;
 		this.idBarras            = idBarras;
 		this.imagen              = imagen;
 		this.idVigente           = idVigente;
+    this.imagenes            = new ArrayList<>();
 	}
 
 	public Long getIdArticulo() {
@@ -200,14 +201,6 @@ public class RegistroArticulo implements Serializable {
 		this.clienteDescuentoSeleccion = clienteDescuentoSeleccion;
 	}
 
-	public Importado getImportado() {
-		return importado;
-	}
-
-	public void setImportado(Importado importado) {
-		this.importado = importado;
-	}		
-
 	public PrecioSugerido getPrecioSugeridoSeleccion() {
 		return precioSugeridoSeleccion;
 	}
@@ -276,7 +269,15 @@ public class RegistroArticulo implements Serializable {
 			this.articulo.setIdVigente(idVigente? 1L : 2L);
 	}
 
-	public boolean isImagen() {
+  public List<ArticuloImagen> getImagenes() {
+    return imagenes;
+  }
+
+  public void setImagenes(List<ArticuloImagen> imagenes) {
+    this.imagenes = imagenes;
+  }
+  
+	public boolean getImagen() {
 		return imagen;
 	}
 
@@ -314,10 +315,10 @@ public class RegistroArticulo implements Serializable {
 			this.articulosTiposVenta= motor.toArticulosTipoVenta();
 			this.clientesDescuentos= motor.toArticulosDescuentosEspeciales();
 			this.especificaciones= motor.toArticulosEspecificaciones();
-			this.importado= motor.toArticuloImagen(this.articulo.getIdImagen());
 			this.preciosSugeridos= motor.toArticulosPreciosSugeridos();
 			if(!this.articulosCodigos.isEmpty())
 				this.observaciones= this.articulosCodigos.get(0).getObservaciones();
+      motor.toArticuloImagenes(this.imagenes);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -544,27 +545,25 @@ public class RegistroArticulo implements Serializable {
 	} // doEliminarEspecificacion
 	
 	public void doFileUpload(FileUploadEvent event) {
-		String genericPath= null;  
-		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
-    File result       = null;		
-		Long fileSize     = 0L;
-		File filePath     = null;
+		String path    = null;  
+		String nameFile= Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
+    File result    = null;		
+		Long fileSize  = 0L;
+		File filePath  = null;
 		try {
-			if (this.importado != null && !Cadena.isVacio(this.importado.getName())) 
-				doCancelar();
-			genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
-			result= new File(genericPath.concat(nameFile));		
-			filePath= new File(genericPath);
+			path= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
+			result= new File(path.concat(nameFile));		
+			filePath= new File(path);
 			if (!filePath.exists())
 				filePath.mkdirs();
 			if (result.exists())
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();
-      /*UPLOAD*/
-			this.importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, genericPath, "", event.getFile().getFileName(), -1L);      
-			this.toMessageImage();		
+			Importado importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.JPG, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, path, path.concat(nameFile), event.getFile().getFileName().toUpperCase(), -1L);      
+			this.toMessageImage(importado);		
 			this.articulo.setIdImagen(-1L);
+      this.addImagen(importado);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -586,36 +585,11 @@ public class RegistroArticulo implements Serializable {
 		return regresar;
 	} // validaImagenComun 	
 	
-	public void doDeleteFile() {
-		String genericPath= null;		
-		File image        = null;
-		File imageContent = null;
-		try {
-			if (this.importado != null && !Cadena.isVacio(this.importado.getName())) {
-				genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
-				image= new File(genericPath.concat(this.importado.getName()));
-				if(image.exists())
-					image.delete();
-				imageContent= new File(genericPath.concat(this.importado.getContent()));
-				if(imageContent.exists())
-					imageContent.delete();
-			} // if			
-		} // try
-		catch (Exception e) {			
-			Error.mensaje(e);
-			throw e;
-		} // catch		
-		finally{						
-			image= null;			
-			imageContent= null;			
-		} // finally
-	} // doDeleteFile
-	
-	private void toMessageImage() {
+	private void toMessageImage(Importado importado) {
 		FacesMessage msg= null;
 		String detail   = null;
 		try {
-			detail= toDetailMessage();
+			detail= toDetailMessage(importado);
 			msg=new FacesMessage("Actualización de versiones", detail);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} // try
@@ -624,16 +598,16 @@ public class RegistroArticulo implements Serializable {
 		} // catch				     
 	} // toMessageImage
 	
-	private String toDetailMessage() {
+	private String toDetailMessage(Importado importado) {
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("Nombre: ");
-		regresar.append(this.importado.getName());
-		regresar.append("\nTamaño: ");
-		regresar.append(this.importado.getSize());
-		regresar.append(this.importado.getMedicion());
-		regresar.append(" \nContenido: ");
-		regresar.append(this.importado.getContent());
-		regresar.append("\nEl archivo fue importado con éxito.");
+		regresar.append(importado.getName());
+		regresar.append(" Tamaño: ");
+		regresar.append(importado.getSize());
+		regresar.append(importado.getMedicion());
+		regresar.append(" Contenido: ");
+		regresar.append(importado.getContent());
+		regresar.append("; importado con éxito.");
 		return regresar.toString();
 	} // toDetailMessage
 	
@@ -645,20 +619,6 @@ public class RegistroArticulo implements Serializable {
 			throw e;
 		} // catch		
 	} // addDeleteList
-	
-	public void doCancelar() {
-		File result= null;
-		try {
-			if (this.importado != null && !Cadena.isVacio(this.importado.getName())) {
-				result= new File(JsfBase.getRealPath().concat("Temporal").concat(File.separator).concat("Img").concat(File.separator).concat(this.importado.getName()));
-				if (result.exists())
-					result.delete();
-			} // if						
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch		
-	} // doCancelar
 	
 	public void doSeleccionarPrincipal(ArticuloCodigo principal) {
 		try {
@@ -672,4 +632,112 @@ public class RegistroArticulo implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	}
+  
+  public void addImagen(Importado importado) {
+    this.imagenes.add(new ArticuloImagen(importado));
+    int count= 0;
+    long max = 0;
+    for (ArticuloImagen item: this.imagenes) {
+      if(!item.getSqlAccion().equals(ESql.DELETE) && Objects.equals(item.getIdPrincipal(), 1L)) 
+        count++;
+      if(max< item.getOrden()) 
+        max= item.getOrden();
+    } // for
+    if(this.imagenes.size()> 1) {
+      this.imagenes.get(this.imagenes.size()- 1).setOrden(max+ 1L);
+      this.imagenes.get(this.imagenes.size()- 1).setModelo("MODELO_"+ (max+ 1L));
+      this.imagenes.get(this.imagenes.size()- 1).setNombre("MODELO_"+ (max+ 1L));
+    } // if  
+    if(count== 0)
+      this.toSetImagePrincipal();
+  }
+  
+  public void toUpdatePrincipal(ArticuloImagen row) {
+    for (ArticuloImagen item : this.imagenes) {
+      if(!Objects.equals(row.getId(), item.getId()) && Objects.equals(item.getIdPrincipal(), 1L)) {
+        item.setPrincipal(false);
+        item.setIdPrincipal(2L);
+        if(!Objects.equals(item.getSqlAccion(), ESql.INSERT))
+          item.setSqlAccion(ESql.UPDATE);
+      } // if
+    } // for
+    if(!Objects.equals(row.getSqlAccion(), ESql.INSERT))
+      row.setSqlAccion(ESql.UPDATE);
+    row.setIdPrincipal(row.getPrincipal()? 1L: 2L);
+    if(!row.getPrincipal()) 
+      this.toSetImagePrincipal();
+  }
+  
+  public void toSetImagePrincipal() {
+    if(this.imagenes!= null && this.imagenes.size()> 0) {
+      for (ArticuloImagen item : this.imagenes) {
+        if(!item.getSqlAccion().equals(ESql.DELETE)) {
+          item.setPrincipal(true);
+          item.setIdPrincipal(1L);
+          if(!Objects.equals(item.getSqlAccion(), ESql.INSERT))
+            item.setSqlAccion(item.getAnterior());
+          break;
+        } // if  
+      } // for
+    } // if
+  }
+  
+  public void doDeleteImage(ArticuloImagen row) {
+    if(row.getSqlAccion().equals(ESql.INSERT)) {
+      // eliminar fisicamente el archivo porque no ya no es necesario que este en el servidor
+      this.doDeleteFile(row.getImportado());
+      this.imagenes.remove(row);
+      if(Objects.equals(row.getIdPrincipal(), 1L))
+        this.toSetImagePrincipal();
+    } // if  
+    else {
+      row.setSqlAccion(ESql.DELETE);
+      if(Objects.equals(row.getIdPrincipal(), 1L)) {
+        this.toSetImagePrincipal();
+        row.setPrincipal(false);
+        row.setIdPrincipal(2L);
+      } // if  
+    } // else
+  } 
+
+  public void doRecoverImage(ArticuloImagen row) {
+    row.setSqlAccion(row.getAnterior());
+    int count= 0;
+    for (ArticuloImagen item : this.imagenes) {
+      if(!item.getSqlAccion().equals(ESql.DELETE) && Objects.equals(item.getIdPrincipal(), 1L)) 
+        count++;
+    } // for
+    if(count== 0)
+      this.toSetImagePrincipal();
+  } 
+
+ 	public void doDeleteFile(Importado item) {
+		String path = null;		
+		File image  = null;
+		try {
+			if (item != null && !Cadena.isVacio(item.getName())) {
+				path= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
+				image= new File(path.concat(item.getName()));
+				if(image.exists())
+					image.delete();
+			} // if			
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+		finally{						
+			image  = null;			
+		} // finally
+	} // doDeleteFile
+
+  public void toCleanImages() {
+    if(this.imagenes!= null && this.imagenes.size()> 0) {
+      // eliminar fisicamente el archivo porque no ya no es necesario que este en el servidor
+      for (ArticuloImagen item: this.imagenes)
+        if(Objects.equals(item.getSqlAccion(), ESql.INSERT))
+          this.doDeleteFile(item.getImportado());
+    } // if  
+  }          
+  
 }

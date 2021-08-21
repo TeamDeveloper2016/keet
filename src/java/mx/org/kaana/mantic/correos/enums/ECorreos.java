@@ -1,5 +1,8 @@
 package mx.org.kaana.mantic.correos.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.TcConfiguraciones;
 
 /**
@@ -12,36 +15,78 @@ import mx.org.kaana.libs.recurso.TcConfiguraciones;
 
 public enum ECorreos {
 	
-  FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "facturas@cafuconstrucciones.com", "Facturas CAFU", ""), 
-	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@cafuconstrucciones.com", "Ventas CAFU", "compras2@cafuconstrucciones.com"),
-	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "compras@cafuconstrucciones.com", "Compras CAFU.", "compras2@cafuconstrucciones.com"),
-	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@cafuconstrucciones.com", "Ventas CAFU", ""),
+  FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Facturas"), 
+	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
+	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Compras"),
+	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
 	//cafu
-	VENTAS        ("/mx/org/kaana/keet/correos/templates/ventas.html", "resources/janal/img/sistema/", "correo.ventas.user.produccion", "correo.ventas.pass.produccion", "ventas@cafu.jvmhost.net", "Ventas CAFU.", ""),
-	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "resources/janal/img/sistema/", "correo.compras.user.produccion", "correo.compras.pass.produccion", "compras@cafu.jvmhost.net", "Compras CAFU.", ""),
-	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", "imox.soluciones.web@gmail.com"),
-	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafu.jvmhost.net", "Administración CAFU.", "imox.soluciones.web@gmail.com"),
-  DESTAJOS      ("/mx/org/kaana/keet/correos/templates/destajos.html", "resources/janal/img/sistema/", "correo.admin.user.produccion", "correo.admin.pass.produccion", "administracion@cafuconstrucciones.com", "Administración CAFU.", "imox.soluciones.web@gmail.com"),
-  PAGOS         ("/mx/org/kaana/keet/correos/templates/pagos.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "administracion@cafuconstrucciones.com", "Administración CAFU.", "imox.soluciones.web@gmail.com");
+	VENTAS        ("/mx/org/kaana/keet/correos/templates/ventas.html", "resources/janal/img/sistema/", "correo.ventas.user", "correo.ventas.pass", "Ventas"),
+	COMPRAS       ("/mx/org/kaana/keet/correos/templates/compras.html", "resources/janal/img/sistema/", "correo.compras.user", "correo.compras.pass", "Compras"),
+	ADMINISTRACION("/mx/org/kaana/keet/correos/templates/administracion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración"),
+	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración"),
+  DESTAJOS      ("/mx/org/kaana/keet/correos/templates/destajos.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración"),
+  PAGOS         ("/mx/org/kaana/keet/correos/templates/pagos.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración");
 	 
 	private String template;
 	private String images;
 	private String user;
 	private String password;
-	private String email;
 	private String alias;
-  private String backup;
+  private static Map<String, String> empresas;
+  
+  static {
+    empresas= new HashMap<>();
+    empresas.put("cafu.facturacion.email", "facturas@cafuconstrucciones.com");  
+    empresas.put("cafu.facturacion.backup", "");  
+    empresas.put("cafu.cotizaciones.email", "ventas@cafuconstrucciones.com");  
+    empresas.put("cafu.cotizaciones.backup", "compras2@cafuconstrucciones.com");  
+    empresas.put("cafu.ordenes_compra.email", "compras@cafuconstrucciones.com");  
+    empresas.put("cafu.ordenes_compra.backup", "compras2@cafuconstrucciones.com");  
+    empresas.put("cafu.cuentas.email", "ventas@cafuconstrucciones.com");  
+    empresas.put("cafu.cuentas.backup", "");  
+    empresas.put("cafu.ventas.email", "ventas@cafuconstrucciones.com");  
+    empresas.put("cafu.ventas.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("cafu.compras.email", "compras@cafuconstrucciones.com");  
+    empresas.put("cafu.compras.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("cafu.administracion.email", "administracion@cafuconstrucciones.com");  
+    empresas.put("cafu.administracion.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("cafu.residentes.email", "administracion@cafuconstrucciones.com");  
+    empresas.put("cafu.residentes.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("cafu.destajos.email", "administracion@cafuconstrucciones.com");  
+    empresas.put("cafu.destajos.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("cafu.pagos.email", "administracion@cafuconstrucciones.com");  
+    empresas.put("cafu.pagos.backup", "imox.soluciones.web@gmail.com");  
+    
+    empresas.put("gylvi.facturacion.email", "facturas@gylvi.com");  
+    empresas.put("gylvi.facturacion.backup", "");  
+    empresas.put("gylvi.cotizaciones.email", "ventas@gylvi.com");  
+    empresas.put("gylvi.cotizaciones.backup", "compras2@gylvi.com");  
+    empresas.put("gylvi.ordenes_compra.email", "compras@gylvi.com");  
+    empresas.put("gylvi.ordenes_compra.backup", "compras2@gylvi.com");  
+    empresas.put("gylvi.cuentas.email", "ventas@gylvi.com");  
+    empresas.put("gylvi.cuentas.backup", "");  
+    empresas.put("gylvi.ventas.email", "ventas@gylvi.com");  
+    empresas.put("gylvi.ventas.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("gylvi.compras.email", "compras@gylvi.com");  
+    empresas.put("gylvi.compras.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("gylvi.administracion.email", "administracion@gylvi.com");  
+    empresas.put("gylvi.administracion.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("gylvi.residentes.email", "administracion@gylvi.com");  
+    empresas.put("gylvi.residentes.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("gylvi.destajos.email", "administracion@gylvi.com");  
+    empresas.put("gylvi.destajos.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("gylvi.pagos.email", "administracion@gylvi.com");  
+    empresas.put("gylvi.pagos.backup", "imox.soluciones.web@gmail.com");     
+  }
 
-	private ECorreos(String template, String images, String user, String password, String email, String alias, String backup) {
+	private ECorreos(String template, String images, String user, String password, String alias) {
 		this.template= template;
 		this.images  = images;
 		this.user    = user;
 		this.password= password;
-		this.email   = email;
 		this.alias   = alias;
     // AQUI SE AGREGA LA CUENTA DE CORREO DE jimenez76@yahoo.com QUE ESTA REGISTRADA EN LA BASE DE DATOS 
 		// this.backup  = Cadena.isVacio(backup)? TcConfiguraciones.getInstance().getPropiedad(Constantes.EMAILS_@BACKUP_SYSTEM): backup.concat(",").concat(TcConfiguraciones.getInstance().getPropiedad(Constantes.EMAILS_BACKUP_SYSTEM));
-		this.backup  = backup;
 	}
 
 	public String getTemplate() {
@@ -61,15 +106,25 @@ public enum ECorreos {
 	}
 
 	public String getEmail() {
-		return email;
+    String regresar= Configuracion.getInstance().getEmpresa("corto").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("email");
+    if(empresas.containsKey(regresar))
+      regresar= empresas.get(regresar);
+    else
+      regresar= "";
+		return regresar;
 	}
 
 	public String getAlias() {
-		return alias;
+		return alias.concat(" ").concat(Configuracion.getInstance().getEmpresa("corto").toUpperCase());
 	}
 
   public String getBackup() {
-    return backup;
+    String regresar= Configuracion.getInstance().getEmpresa("corto").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("backup");
+    if(empresas.containsKey(regresar))
+      regresar= empresas.get(regresar);
+    else
+      regresar= "";
+		return regresar;
   }
   
 }

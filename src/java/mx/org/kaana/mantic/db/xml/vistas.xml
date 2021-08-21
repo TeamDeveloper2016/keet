@@ -4,6 +4,128 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaGaleriaDto">
+			<select id="porNombre">
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*') limit 0, 1) as propio,
+				  tc_mantic_articulos.fabricante,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.descripcion,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as original,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+				  tc_mantic_articulos.sat,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+          floor(rand()*(10-5+1))+4 as rating,
+				  ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png') as archivo
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+				where 
+					tc_mantic_empresas.id_empresa in (1, 2)
+				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
+				  and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*')
+          and {condicion}
+				{sortOrder}				
+			</select>			
+			<select id="porCodigo">
+				select 
+				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  tc_mantic_articulos.fabricante,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.descripcion,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as original,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+					tc_mantic_articulos.sat,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+          floor(rand()*(10-5+1))+4 as rating,
+				  ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png') as archivo
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa								
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+				where 
+					tc_mantic_empresas.id_empresa in (1, 2)
+				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
+				  and upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%'
+          and {condicion}
+        {sortOrder}				
+			</select>
+			<select id="porCodigoIgual">
+				select 
+				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  tc_mantic_articulos.fabricante,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.descripcion,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as original,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,					
+				  tc_mantic_articulos.mayoreo,
+					tc_mantic_articulos.sat,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+          floor(rand()*(10-5+1))+4 as rating,
+				  ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png') as archivo
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa								
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+				where 
+					tc_mantic_empresas.id_empresa in (1,2)
+				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
+				  and upper(tc_mantic_articulos_codigos.codigo)= '{codigo}'
+          and {condicion}
+        {sortOrder}
+			</select>		
+    </unit>      
 		<unit id="VistaAccesosDto">
 			<select id="lazy">
 				select
@@ -33,6 +155,102 @@
         {sortOrder}
 			</select>
 		</unit>
+		<unit id="VistaRefaccionesDto">
+      <select id="lazy">
+        select 
+          tc_mantic_refacciones.id_refaccion as id_key,
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_proveedores.razon_social,
+          tc_mantic_refacciones.*
+        from
+          tc_mantic_refacciones
+				inner join 
+					tc_mantic_empresas on tc_mantic_refacciones.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_proveedores on tc_mantic_refacciones.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where
+          tc_mantic_refacciones.id_empresa in ({idEmpresa})
+					and {condicion}
+        {sortOrder}        
+      </select>
+    </unit>   
+		<unit id="VistaServiciosDto">
+      <select id="lazy">
+        select 
+          tc_mantic_encargos.id_encargo as id_key,
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+          tc_mantic_encargos.*
+        from
+          tc_mantic_encargos
+				inner join 
+					tc_mantic_empresas on tc_mantic_encargos.id_empresa= tc_mantic_empresas.id_empresa
+        where
+          tc_mantic_encargos.id_empresa in ({idEmpresa})
+					and {condicion}
+        {sortOrder}        
+      </select>
+    </unit>       
+		<unit id="VistaCuentasPorCobrarDto">
+      <select id="lazy">
+				select
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+					tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_clientes.razon_social,
+					if(tc_mantic_clientes.saldo&lt; tc_mantic_clientes.limite_credito or tc_mantic_clientes.limite_credito= 0,  'ACTIVO', 'DETENIDO') as estatus,
+					sum(tc_mantic_clientes_deudas.importe) as deuda,
+					(sum(tc_mantic_clientes_deudas.importe)- sum(tc_mantic_clientes_deudas.saldo)) as pagado,
+					sum(if((datediff(tc_mantic_clientes_deudas.limite, now())* -1)&lt;= 0, tc_mantic_clientes_deudas.saldo, 0)) as saldo,
+					sum(if((datediff(tc_mantic_clientes_deudas.limite, now())* -1)&gt; 0,  tc_mantic_clientes_deudas.saldo, 0)) as vencido,
+					tc_mantic_clientes.limite_credito,
+					tc_mantic_clientes.saldo as saldo_global,
+					max(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias
+				from
+					tc_mantic_clientes_deudas
+				inner join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				inner join 
+					tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente = tc_mantic_clientes.id_cliente
+				where
+				  tc_mantic_ventas.id_empresa in ({idEmpresa})
+				  and tc_mantic_clientes_deudas.id_cliente_estatus in (1,2)
+					and {condicion}
+				group by
+					tc_mantic_clientes_deudas.id_cliente
+        {sortOrder}        
+      </select>  
+      <select id="porCodigo">
+        select      
+					distinct(tc_mantic_clientes.id_cliente) as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        inner join
+          tc_mantic_clientes_deudas on tc_mantic_clientes.id_cliente= tc_mantic_clientes_deudas.id_cliente
+        where 
+          tc_mantic_clientes.id_empresa in ({sucursales})
+          and upper(tc_mantic_clientes.clave) regexp '.*{codigo}.*'
+				order by
+				  tc_mantic_clientes.clave
+      </select>
+      <select id="porNombre">
+        select      
+					distinct(tc_mantic_clientes.id_cliente) as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        inner join
+          tc_mantic_clientes_deudas on tc_mantic_clientes.id_cliente= tc_mantic_clientes_deudas.id_cliente
+        where 
+          tc_mantic_clientes.id_empresa in ({sucursales})
+          and (
+				    upper(tc_mantic_clientes.razon_social) regexp '.*{codigo}.*'
+				    or
+				    upper(tc_mantic_clientes.rfc) regexp '.*{codigo}.*'
+				  )
+				order by
+				  tc_mantic_clientes.clave
+      </select>
+    </unit>     
 		<unit id="VistaPedidosDto">
 			<select id="row">
 				select
