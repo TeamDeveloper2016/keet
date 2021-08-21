@@ -150,7 +150,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("consecutivo", "");		
 					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
 					if(idCliente!= null && !idCliente.equals(-1L))
-						doAsignaClienteInicial(idCliente);
+						this.doAsignaClienteInicial(idCliente);
 					else
 						this.attrs.put("mostrarCorreos", true);
           break;
@@ -161,14 +161,14 @@ public class Accion extends IBaseVenta implements Serializable {
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					idCliente= ((TicketVenta)getAdminOrden().getOrden()).getIdCliente();
 					if(idCliente!= null && !idCliente.equals(-1L)){
-						doAsignaClienteInicial(idCliente);
-						doLoadSaldos(idCliente);
+						this.doAsignaClienteInicial(idCliente);
+						this.doLoadSaldos(idCliente);
 					} // if
-					loadCatalogs();
+					this.loadCatalogs();
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
-			toLoadCatalog();
+			this.toLoadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
