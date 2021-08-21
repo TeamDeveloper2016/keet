@@ -726,7 +726,7 @@ public class Transaccion extends Facturama {
           case INSERT:
             if(item.getIdImagen()== null || item.getIdImagen()<= 0L) {
               String name= item.getImportado().getName();
-              String file= Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length())), "IMG");
+              String file= Archivo.toFormatNameFile("IMG", idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length())));
 				      Long tipo  = ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+ 1, name.length()).toUpperCase()).getIdTipoImagen();
               TcManticImagenesDto imagen= new TcManticImagenesDto(
                 file, // String archivo, 

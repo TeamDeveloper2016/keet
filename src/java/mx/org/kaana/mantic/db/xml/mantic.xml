@@ -24,6 +24,21 @@
         where      
           id_imagen = {idImagen} and id_articulo = {idArticulo}
       </select>
+      <select id="photos">
+        select      
+          tc_mantic_articulos_imagenes.id_articulo_imagen as id_key,
+          tc_mantic_imagenes.tamanio,
+          tc_mantic_imagenes.archivo,
+          tc_mantic_articulos_imagenes.nombre
+        from      
+          tc_mantic_articulos_imagenes
+        inner join
+          tc_mantic_imagenes on tc_mantic_articulos_imagenes.id_imagen= tc_mantic_imagenes.id_imagen  
+        where      
+          id_articulo = {idArticulo}
+        order by
+          tc_mantic_articulos_imagenes.orden
+      </select>
       <select id="imagenes">
         select      
           tc_mantic_articulos_imagenes.id_articulo_imagen as id_key,
@@ -3515,6 +3530,15 @@
           tc_mantic_articulos_especificaciones
         where      
           id_articulo = {idArticulo} and nombre = '{nombre}'
+      </select>
+      <select id="detalle">
+        select      
+          tc_mantic_articulos_especificaciones.id_articulo_especificacion as id_key,
+					tc_mantic_articulos_especificaciones.*
+        from      
+          tc_mantic_articulos_especificaciones
+        where 
+          id_articulo= {idArticulo}
       </select>
 			<select id="maximo">
         select      

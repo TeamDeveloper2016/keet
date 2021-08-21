@@ -74,9 +74,9 @@ public class Galeria extends IBaseFilter implements Serializable {
       this.category= ECategorias.NINGUNA;
       
       this.images = new ArrayList<>();
-      for (int i= 1; i <= 10; i++) {
-        this.images.add(new Imagen(new Long(i), "cabo_"+ i+ ".jpg", "CABO PARA MARTILLO "+ i));
-      } // for
+//      for (int i= 1; i <= 10; i++) {
+//        this.images.add(new Imagen(new Long(i), "cabo_"+ i+ ".jpg", "CABO PARA MARTILLO "+ i));
+//      } // for
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -143,8 +143,9 @@ public class Galeria extends IBaseFilter implements Serializable {
   public void doViewDetail(Entity row) {
     this.attrs.put("viewDetail", true);
     this.attrs.put("item", row);
-    List<Columna> columns = null;    
-    Map<String, Object> params = null;
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
+    List<Entity> photos       = null;    
     try {      
       params = new HashMap<>();      
       params.put("idArticulo", row.toLong("idArticulo"));      
@@ -161,8 +162,12 @@ public class Galeria extends IBaseFilter implements Serializable {
         this.attributes= new ArrayList<>();
       else
         UIBackingUtilities.toFormatEntitySet(this.attributes, columns); 
-      this.images.remove(this.images.size()- 1);
-      this.images.add(new Imagen(new Long(this.images.size()), row.toString("archivo"), row.toString("nombre")));      
+      photos= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticArticulosImagenesDto", "photos", params);
+      this.images.clear();
+      if(photos!= null && !photos.isEmpty())
+        for (Entity item: photos) {
+          this.images.add(new Imagen(item.toLong("tamanio"), item.toString("archivo"), item.toString("nombre")));      
+        } // for
     } // try
     catch (Exception e) {
       Error.mensaje(e);
