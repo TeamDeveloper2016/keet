@@ -114,7 +114,7 @@ public class Detalle extends IBaseFilter implements Serializable {
 	private String toIcon(Entity lote) throws Exception {
 		String regresar          = null;
 		String imagen            = null;
-		String color             = null;
+		String color             = "red";
 		Map<String, Object>params= null;
 		Entity estatus           = null;
 		try {
