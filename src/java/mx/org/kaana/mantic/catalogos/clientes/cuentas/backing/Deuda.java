@@ -93,7 +93,6 @@ public class Deuda extends IBaseImportar implements Serializable {
 		Long idEmpresaInicial= -1L;
     try {			
       this.pago= new Pago();
-      this.attrs.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));         
 			idEmpresaInicial= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
 			this.attrs.put("idEmpresa", idEmpresaInicial);
@@ -267,7 +266,7 @@ public class Deuda extends IBaseImportar implements Serializable {
     try {  	  
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
-			params.put("sortOrder", "order by tc_mantic_ventas.ticket");			
+			params.put("sortOrder", "order by tc_mantic_ventas.registro desc");			
 			// params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_deuda_estatus in (1, 2)");			
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
       columns= new ArrayList<>();  
@@ -316,7 +315,7 @@ public class Deuda extends IBaseImportar implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
-			params.put("sortOrder", this.attrs.get("sortOrder"));			
+			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");			
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus in(1, 2)");			
 			this.pagosSegmento= (List<Cuenta>)DaoFactory.getInstance().toEntitySet(Cuenta.class, "VistaClientesDto", "cuentas", params);      
       UIBackingUtilities.resetDataTable("tablaSegmentos");		
@@ -490,10 +489,10 @@ public class Deuda extends IBaseImportar implements Serializable {
 		Double saldo    = 0D;
 		Entity deuda    = null;
 		try {
-			importe = (Double)this.attrs.get("pago");
-			deuda= (Entity)this.attrs.get("seleccionado");
-			if(importe > 0D && !deuda.toLong("idClienteDeudaEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())) {
-				saldo= Numero.toRedondearSat(deuda.toDouble("saldo"));
+			importe= (Double)this.attrs.get("pago");
+			deuda  = (Entity)this.attrs.get("seleccionado");
+			if(importe> 0D && !deuda.toLong("idClienteDeudaEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())) {
+				saldo   = Numero.toRedondearSat(deuda.toDouble("saldo"));
 				regresar= importe<= saldo;
 			} // if
 		} // try
@@ -526,8 +525,8 @@ public class Deuda extends IBaseImportar implements Serializable {
 		boolean regresar= false;
 		Double importe  = 0D;
 		try {
-			importe= (Double)this.attrs.get("pagoSegmento");
-  		regresar= importe> 0 && this.pago.getImporte()> 0 && importe<= this.pago.getImporte();
+			importe= Numero.toRedondearSat((Double)this.attrs.get("pagoSegmento"));
+  		regresar= importe> 0 && this.pago.getImporte()> 0 && this.pago.getImporte()<= importe;
 		} // try
 		catch (Exception e) {		
 			throw e;
@@ -729,7 +728,7 @@ public class Deuda extends IBaseImportar implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
-			params.put("sortOrder", this.attrs.get("sortOrder"));			
+			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");			
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus in(1, 2)");			
 			this.pagosCuenta= (List<Cuenta>)DaoFactory.getInstance().toEntitySet(Cuenta.class, "VistaClientesDto", "cuentas", params);      
       UIBackingUtilities.resetDataTable("tablaCuentas");		

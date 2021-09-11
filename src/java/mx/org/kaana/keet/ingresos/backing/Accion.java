@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.ingresos.beans.Factura;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.keet.ingresos.beans.Retencion;
 import mx.org.kaana.keet.ingresos.enums.EClaveCatalogo;
@@ -77,7 +78,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 
 	protected EAccion accion;	
   protected Ingreso ingreso;
-  protected TcManticFacturasDto comprobante;
+  protected Factura comprobante;
   protected TcManticClientesDto cliente;
   protected List<Articulo> articulos;
 	private UISelectEntity ikSerie;
@@ -92,7 +93,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     return ingreso;
   }
 
-  public TcManticFacturasDto getComprobante() {
+  public Factura getComprobante() {
     return comprobante;
   }
 
@@ -199,7 +200,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case AGREGAR:								
-          this.comprobante= new TcManticFacturasDto();
+          this.comprobante= new Factura();
           this.comprobante.setIdUsuario(JsfBase.getIdUsuario());
           this.comprobante.setIntentos(0L);
           this.ingreso= new Ingreso(
@@ -251,9 +252,9 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
         case CONSULTAR:					
           this.ingreso= (Ingreso)DaoFactory.getInstance().toEntity(Ingreso.class, "TcManticVentasDto", "detalle", Variables.toMap("idVenta".concat("~")+ this.attrs.get("idVenta")));
           if(!Cadena.isVacio(this.ingreso.getIdFactura()))
-            this.comprobante= (TcManticFacturasDto)DaoFactory.getInstance().findById(TcManticFacturasDto.class, this.ingreso.getIdFactura());
+            this.comprobante= (Factura)DaoFactory.getInstance().toEntity(Factura.class, "TcManticFacturasDto", "identically", Variables.toMap("idFactura~"+ this.ingreso.getIdFactura()));
           else
-            this.comprobante= new TcManticFacturasDto();
+            this.comprobante= new Factura();
           this.setIkSerie(this.toLeyendas(EClaveCatalogo.SERIES, this.ingreso.getIdSerie()));
           this.setIkTipoComprobante(this.toLeyendas(EClaveCatalogo.COMPROBANTES, this.ingreso.getIdTipoComprobante()));
           this.setIkEmpresa(new UISelectEntity(new Entity(this.ingreso.getIdEmpresa())));
@@ -275,6 +276,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
             this.ingreso.setRetencion6(deuda.getRetencion6());
             this.ingreso.setRetencion7(deuda.getRetencion7());
             this.toLoadBeanRetenciones(false);
+            this.comprobante.setVencimiento(deuda.getLimite());
             if(this.retenciones!= null && !this.retenciones.isEmpty())
               for (Retencion item : this.retenciones) {
                 Double importe= (Double)Methods.getValue(this.ingreso, item.getCampo());
@@ -467,6 +469,11 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
       else
         JsfBase.addMessage("El cliente ".concat(this.cliente.getRazonSocial()).concat(" no tiene un domicilio registrado !"), ETipoMensaje.ERROR);
 			this.doLoadContratos();
+      if(this.cliente!= null && Objects.equals(this.accion, EAccion.AGREGAR)) {
+        Long addDias = this.cliente.getPlazoDias();			
+        LocalDate now= LocalDate.now();
+        this.comprobante.setVencimiento(now.plusDays(addDias.intValue()));
+      } // if
 		} // try // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

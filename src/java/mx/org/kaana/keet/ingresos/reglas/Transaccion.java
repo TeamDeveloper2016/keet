@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.keet.ingresos.beans.Factura;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -54,7 +55,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private static final long serialVersionUID=-6069204157451117549L;
  
 	private Ingreso orden;	
-	private TcManticFacturasDto comprobante;	
+	private Factura comprobante;	
   private List<Articulo> articulos;
 	private Importado xml;
 	private Importado pdf;
@@ -70,7 +71,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		this.bitacora= bitacora;
 	}
 	
-	public Transaccion(Ingreso orden, TcManticFacturasDto comprobante, List<Articulo> articulos, Importado xml, Importado pdf) {
+	public Transaccion(Ingreso orden, Factura comprobante, List<Articulo> articulos, Importado xml, Importado pdf) {
 		this.orden      = orden;		
 		this.comprobante= comprobante;		
     this.articulos  = articulos;
@@ -138,7 +139,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
             // AGREGAR UNA CUENTA POR COBRAR 
 						if(this.bitacora.getIdVentaEstatus().equals(EEstatusVentas.TIMBRADA.getIdEstatusVenta())) {
-              this.comprobante= (TcManticFacturasDto)DaoFactory.getInstance().findById(TcManticFacturasDto.class, this.orden.getIdFactura());
+              this.comprobante= (Factura)DaoFactory.getInstance().findById(TcManticFacturasDto.class, this.orden.getIdFactura());
               if(this.comprobante!= null) {
                 this.comprobante.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
                 DaoFactory.getInstance().update(sesion, this.comprobante);
@@ -392,7 +393,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
       deuda.setRetencion5(this.orden.getRetencion5());
       deuda.setRetencion6(this.orden.getRetencion6());
       deuda.setRetencion7(this.orden.getRetencion7());
-      deuda.setLimite(this.toLimiteCredito(sesion));
+      //deuda.setLimite(this.toLimiteCredito(sesion));
+      deuda.setLimite(this.comprobante.getVencimiento());
       deuda.setIdClienteDeudaEstatus(EEstatusClientesDeudas.INICIAL.getIdClienteDeudaEstatus()); // INICIADA
       DaoFactory.getInstance().insert(sesion, deuda);		
       registro= new TcManticClientesDeudasBitacoraDto(-1L, deuda.getIdClienteDeudaEstatus(), "", JsfBase.getIdUsuario(), deuda.getIdClienteDeuda());

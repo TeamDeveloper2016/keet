@@ -4172,7 +4172,8 @@
 					tc_mantic_clientes.razon_social,
 					tc_mantic_clientes_deudas.id_cliente_deuda_estatus,
 					tc_mantic_ventas.id_venta,
-					tc_mantic_clientes_deudas_estatus.nombre as estatus
+					tc_mantic_clientes_deudas_estatus.nombre as estatus,
+          ifnull(tc_mantic_facturas.folio, ' ') as factura
 				from
 					tc_mantic_clientes_deudas
 				inner join
@@ -4189,6 +4190,8 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				inner join 
 					tc_mantic_clientes_deudas_estatus on tc_mantic_clientes_deudas.id_cliente_deuda_estatus = tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente}
 				  and {condicion}

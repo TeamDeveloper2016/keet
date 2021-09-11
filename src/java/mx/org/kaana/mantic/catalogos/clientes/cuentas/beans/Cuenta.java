@@ -42,12 +42,13 @@ public class Cuenta implements Serializable {
   private String estatus;
   private Double total;
   private Boolean activo;
+  private String factura;
 
   public Cuenta() {
-   this(-1L, -1L, -1L, null, null, null, -1L, null, null, null, -1L, 0D, 0D, null, LocalDate.now(), LocalDateTime.now(), 0L, null, -1L, -1L, null, 0D, Boolean.FALSE);
+   this(-1L, -1L, -1L, null, null, null, -1L, null, null, null, -1L, 0D, 0D, null, LocalDate.now(), LocalDateTime.now(), 0L, null, -1L, -1L, null, 0D, Boolean.FALSE, "");
   }
   
-  public Cuenta(Long idClienteDeuda, Long idCliente, Long idDesarrollo, String desarrollo, String ticket, String consecutivo, Long idContrato, String clave, String contrato, String tipo, Long idManual, Double importe, Double saldo, String persona, LocalDate limite, LocalDateTime registro, Long dias, String razonSocial, Long idClienteDeudaEstatus, Long idVenta, String estatus, Double total, Boolean activo) {
+  public Cuenta(Long idClienteDeuda, Long idCliente, Long idDesarrollo, String desarrollo, String ticket, String consecutivo, Long idContrato, String clave, String contrato, String tipo, Long idManual, Double importe, Double saldo, String persona, LocalDate limite, LocalDateTime registro, Long dias, String razonSocial, Long idClienteDeudaEstatus, Long idVenta, String estatus, Double total, Boolean activo, String factura) {
     this.idClienteDeuda = idClienteDeuda;
     this.idCliente = idCliente;
     this.idDesarrollo = idDesarrollo;
@@ -71,6 +72,7 @@ public class Cuenta implements Serializable {
     this.estatus = estatus;
     this.total = total;
     this.activo = activo;
+    this.factura= factura;
   }
 
   public Long getIdClienteDeuda() {
@@ -255,6 +257,14 @@ public class Cuenta implements Serializable {
 
   public void setActivo(Boolean activo) {
     this.activo = activo;
+  }
+
+  public String getFactura() {
+    return factura;
+  }
+
+  public void setFactura(String factura) {
+    this.factura = factura;
   }
 
   @Override
