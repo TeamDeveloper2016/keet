@@ -112,24 +112,26 @@ public class StackModel extends BaseBarModel implements Serializable {
   private void loadColors() {
     super.getColor().clear();
     for (Serie item : this.series) {
-      String color = item.getData().get(0).getItemStyle().getColor();
-      item.getLabel().getNormal().setFormatter("{a}\\n{c}");
-      item.getLabel().getNormal().setPosition("inside");
-      super.getColor().add(color);
-      if (this.getOrientation().equals(EBarOritentation.HORIZONTAL)) {
-        for (String element : this.getyAxis().getData()) {
-          if (!item.getData().contains(new Value(element))) {
-            item.getData().add(new Value(element, 0D, color));
-          } // if
-        } // for
+      if(item!= null) {
+        String color = item.getData().get(0).getItemStyle().getColor();
+        item.getLabel().getNormal().setFormatter("{a}\\n{c}");
+        item.getLabel().getNormal().setPosition("inside");
+        super.getColor().add(color);
+        if (this.getOrientation().equals(EBarOritentation.HORIZONTAL)) {
+          for (String element : this.getyAxis().getData()) {
+            if (!item.getData().contains(new Value(element))) {
+              item.getData().add(new Value(element, 0D, color));
+            } // if
+          } // for
+        } // if
+        else {
+          for (String element : this.getxAxis().getData()) {
+            if (!item.getData().contains(new Value(element))) {
+              item.getData().add(new Value(element, 0D, color));
+            } // if
+          } // for
+        } // else
       } // if
-      else {
-        for (String element : this.getxAxis().getData()) {
-          if (!item.getData().contains(new Value(element))) {
-            item.getData().add(new Value(element, 0D, color));
-          } // if
-        } // for
-      } // else
     } // for
     if (this.getOrientation().equals(EBarOritentation.VERTICAL))
       this.getxAxis().setData(SortNames.toSort(this.getxAxis().getData(), this.sequence));
@@ -138,16 +140,20 @@ public class StackModel extends BaseBarModel implements Serializable {
     this.sort(this.sequence);
     if (this.series != null && !this.series.isEmpty()) {
       try {
-        Serie serie = this.series.get(this.series.size() - 1).clone();
-        int count = 0;
-        serie.setName("Total");
-        serie.setData(new ArrayList<>());
-        for (Value item : this.series.get(this.series.size() - 1).getData()) {
-          serie.getData().add(new Value("KEET:" + this.calculate(count), 0.01D));
-          count++;
-        } // for
-        serie.getLabel().getNormal().setPosition(this.getOrientation().equals(EBarOritentation.VERTICAL) ? "top" : "right");
-        this.series.add(serie);
+        if(this.series.get(this.series.size() - 1)!= null) {
+          Serie serie = this.series.get(this.series.size() - 1).clone();
+          int count = 0;
+          serie.setName("Total");
+          serie.setData(new ArrayList<>());
+          if(this.series.get(this.series.size() - 1)!= null) {
+            for (Value item : this.series.get(this.series.size() - 1).getData()) {
+              serie.getData().add(new Value("KEET:" + this.calculate(count), 0.01D));
+              count++;
+            } // for
+          } // if  
+          serie.getLabel().getNormal().setPosition(this.getOrientation().equals(EBarOritentation.VERTICAL) ? "top" : "right");
+          this.series.add(serie);
+        } // if  
       } // try
       catch (Exception e) {
         Error.mensaje(e);
@@ -158,22 +164,26 @@ public class StackModel extends BaseBarModel implements Serializable {
   private Double calculate(int index) {
     Double regresar = 0D;
     for (Serie item : this.series) {
-      regresar += item.getData().get(index).getValue();
+      if(item!= null) {
+        regresar += item.getData().get(index).getValue();
+      } // if  
     }	// for	
     return regresar;
   }
 
   public void sort(final List<String> labels) {
     for (Serie item : this.series) {
-      List<Value> values = new ArrayList<>();
-      for (String name : labels) {
-        int index = item.getData().indexOf(new Value(name));
-        if (index >= 0) {
-          values.add(item.getData().get(index));
-        }
-      } // for
-      item.getData().clear();
-      item.setData(values);
+      if(item!= null) {
+        List<Value> values = new ArrayList<>();
+        for (String name : labels) {
+          int index = item.getData().indexOf(new Value(name));
+          if (index >= 0) {
+            values.add(item.getData().get(index));
+          }
+        } // for
+        item.getData().clear();
+        item.setData(values);
+      } // if  
     } // for
   }
 
@@ -188,43 +198,53 @@ public class StackModel extends BaseBarModel implements Serializable {
 
   public void toCustomFormatLabel(String format) {
     for (Serie item : this.series) {
-      item.getLabel().getNormal().setFormatter(format);
+      if(item!= null) {
+        item.getLabel().getNormal().setFormatter(format);
+      } // if  
     } // for
   }
 
   public void toCustomFontSize(Integer size) {
     for (Serie item : this.series) {
-      item.getLabel().getNormal().setFontSize(size);
-      if (item.getMarkLine() != null) {
-        item.getMarkLine().getLabel().getNormal().setFontSize(size);
-      }
+      if(item!= null) {
+        item.getLabel().getNormal().setFontSize(size);
+        if (item.getMarkLine() != null) {
+          item.getMarkLine().getLabel().getNormal().setFontSize(size);
+        } // for
+      } // if
     } // for
   }
 
   public void toCustomLabel(String color, Integer size) {
     for (Serie item : this.series) {
-      item.getLabel().getNormal().setColor(color);
-      item.getLabel().getNormal().setFontSize(size);
-      if (item.getMarkLine() != null) {
-        item.getMarkLine().getLabel().getNormal().setFontSize(size);
-      }
+      if(item!= null) {
+        item.getLabel().getNormal().setColor(color);
+        item.getLabel().getNormal().setFontSize(size);
+        if (item.getMarkLine() != null) {
+          item.getMarkLine().getLabel().getNormal().setFontSize(size);
+        } // if
+      } // if
     } // for
   }
 
   public void toCustomUniqueColorTopTotal(String color) {
     for (Serie item : this.series) {
-      item.getLabel().getNormal().setColor(color);
+      if(item!= null) {
+        item.getLabel().getNormal().setColor(color);
+      } // if  
     } // for
   }
 
   private void toCustomColorSerie() {
     int x = 0;
     for (mx.org.kaana.libs.echarts.bar.Serie item : this.series) {
-      for (Value value : item.getData()) {
-        if (x < this.getColor().size()) {
-          value.getItemStyle().setColor(this.getColor().get(x));
-        }
-      } // for
+      if(item!= null) {
+        for (Value value : item.getData()) {
+          if (x < this.getColor().size()) {
+            value.getItemStyle().setColor(this.getColor().get(x));
+          }
+        } // for
+      } // if
       x++;
     } // for
   }
@@ -242,20 +262,24 @@ public class StackModel extends BaseBarModel implements Serializable {
 
   public void removeMarks() {
     for (Serie item: this.series) {
-      item.setMarkPoint(null);
+      if(item!= null) 
+        item.setMarkPoint(null);
     } // for
   }
 
   public void removeLines() {
     for (Serie item: this.series) {
-      item.setMarkLine(null);
+      if(item!= null) 
+        item.setMarkLine(null);
     } // for
   }
 
   public void remove() {
     for (Serie item: this.series) {
-      item.setMarkLine(null);
-      item.setMarkLine(null);
+      if(item!= null) {
+        item.setMarkLine(null);
+        item.setMarkLine(null);
+      } // if
     } // for
   }
   

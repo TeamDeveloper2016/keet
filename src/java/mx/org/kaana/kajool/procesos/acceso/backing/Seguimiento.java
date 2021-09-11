@@ -433,6 +433,10 @@ public class Seguimiento extends Respaldos implements Serializable {
             this.nominasContratista.append(item.toLong("idNomina")).append(count< TOP_NOMINA- 1? ",": "");
             break;
         } // switch
+        if(this.nominasDesarrollo.length()> 1 && this.nominasDesarrollo.charAt(this.nominasDesarrollo.length()- 1)== ',')
+          this.nominasDesarrollo.delete(this.nominasDesarrollo.length()- 1, this.nominasDesarrollo.length());
+        if(this.nominasContratista.length()> 1 && this.nominasContratista.charAt(this.nominasContratista.length()- 1)== ',')
+          this.nominasContratista.delete(this.nominasContratista.length()- 1, this.nominasContratista.length());
         count++;
         if(count>= TOP_NOMINA)
           break;

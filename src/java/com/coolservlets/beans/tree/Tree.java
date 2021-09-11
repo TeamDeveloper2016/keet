@@ -83,9 +83,9 @@ public class Tree implements TreeInterface, Serializable {
   public List<TreeObject> loadChildren() {
     List<TreeObject> regresar = new ArrayList<>();
     try {
-      if (this.children.size() > 0) {
-        regresar = getChildren(((TreeNode) this.getChild(0)).getChildren());
-      }
+      if (this.children.size()> 0 && this.getChild(0) instanceof TreeNode) {
+        regresar = this.getChildren(((TreeNode) this.getChild(0)).getChildren());
+      } // if
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);

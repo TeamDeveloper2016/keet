@@ -193,7 +193,10 @@ public final class Catalogos {
 				sinContratista.put("nombres", new Value("nombres", "SIN CONTRATISTA"));
 				sinContratista.put("puesto", new Value("puesto", "POR EL DIA"));
 				// sinContratista
-				regresar.add(1, new UISelectEntity(sinContratista));
+        if(regresar.size()<= 0)
+				  regresar.add(new UISelectEntity(sinContratista));
+        else
+				  regresar.add(1, new UISelectEntity(sinContratista));
 			} // if
 		} // try
 		finally {

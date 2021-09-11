@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.TcConfiguraciones;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *@company KAANA
@@ -14,7 +16,7 @@ import mx.org.kaana.libs.recurso.TcConfiguraciones;
  */
 
 public enum ECorreos {
-	
+  
   FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Facturas"), 
 	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
 	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Compras"),
@@ -26,7 +28,9 @@ public enum ECorreos {
 	RESIDENTE     ("/mx/org/kaana/keet/correos/templates/residente.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración"),
   DESTAJOS      ("/mx/org/kaana/keet/correos/templates/destajos.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración"),
   PAGOS         ("/mx/org/kaana/keet/correos/templates/pagos.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Administración");
-	 
+	
+  private static final Log LOG = LogFactory.getLog(ECorreos.class);
+
 	private String template;
 	private String images;
 	private String user;
@@ -106,24 +110,22 @@ public enum ECorreos {
 	}
 
 	public String getEmail() {
-    String regresar= Configuracion.getInstance().getEmpresa("corto").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("email");
-    if(empresas.containsKey(regresar))
-      regresar= empresas.get(regresar);
-    else
-      regresar= "";
+    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("email");
+    String regresar= "";
+    if(empresas.containsKey(token))
+      regresar= empresas.get(token);
 		return regresar;
 	}
 
 	public String getAlias() {
-		return alias.concat(" ").concat(Configuracion.getInstance().getEmpresa("corto").toUpperCase());
+		return alias.concat(" ").concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toUpperCase());
 	}
 
   public String getBackup() {
-    String regresar= Configuracion.getInstance().getEmpresa("corto").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("backup");
-    if(empresas.containsKey(regresar))
-      regresar= empresas.get(regresar);
-    else
-      regresar= "";
+    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("backup");
+    String regresar= "";
+    if(empresas.containsKey(token))
+      regresar= empresas.get(token);
 		return regresar;
   }
   

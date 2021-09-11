@@ -355,7 +355,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public String doCancelar() {   
 		JsfBase.setFlashAttribute("idPersona", this.registroPersona.getPersona().getKey());
-    return this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+    return Cadena.isVacio(this.attrs.get("retorno"))? "filtro".concat(Constantes.REDIRECIONAR): this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
   } // doAccion
 	
 	private void loadTiposPersonas() throws Exception {

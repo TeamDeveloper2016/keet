@@ -159,6 +159,7 @@ public class IBaseMail implements Serializable {
       properties.put("mail.smtp.port", "26");			
 			session    = Session.getInstance(properties, this.authenticator);            
       message= new MimeMessage(session);
+      LOG.warn("alias: ".concat(this.alias).concat("; from: ").concat(this.from).concat("; to: ").concat(this.to));
 			if(Cadena.isVacio(this.alias))
         message.setFrom(new InternetAddress(this.from));
 			else
