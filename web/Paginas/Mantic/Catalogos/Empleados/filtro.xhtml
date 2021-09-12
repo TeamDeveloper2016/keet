@@ -183,7 +183,7 @@
               </f:facet>
               <h:outputText value="#{row['seguro']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">							
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-3">							
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo eq '2' ? 'circulo-rojo' : (row.idActivo eq '1' and row.idNomina eq '2' and row.idSeguro eq '2'? 'circulo-amarillo': (row.idActivo eq '1' and row.idNomina eq '2'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo eq '1' ? '': 'NO '}activo"/>
 						</p:column>												
             <f:facet name="footer">
