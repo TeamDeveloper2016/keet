@@ -74,7 +74,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			this.attrs.put("ikContratoLote", JsfBase.getFlashAttribute("idContratoLote"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_MASIVO);
-			this.attrs.put("idLimpiar", 1L);
+			this.attrs.put("idLimpiar", 2L);
 			this.attrs.put("procesados", 0L);
 			this.attrs.put("idTipoMasivo", JsfBase.getFlashAttribute("idTipoMasivo")!= null? JsfBase.getFlashAttribute("idTipoMasivo"): ECargaMasiva.ESTACIONES.getId());
 			if(ECargaMasiva.ESTACIONES.getId().equals((Long)this.attrs.get("idTipoMasivo")))

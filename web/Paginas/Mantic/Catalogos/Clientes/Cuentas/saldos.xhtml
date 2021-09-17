@@ -532,11 +532,17 @@
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">																	
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticCatalogosClientesCuentasSaldos.correos}" selection="#{manticCatalogosClientesCuentasSaldos.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
 						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Preferido" styleClass="descripcion tablaCorreosReenviar_selection janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
 						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreosReenviar_selection">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticCatalogosClientesCuentasSaldos.doAgregarCorreo}">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" action="#{manticCatalogosClientesCuentasSaldos.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosClientesCuentasSaldos.correo}" />
 							</p:commandButton>
 						</p:column>
@@ -544,7 +550,7 @@
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{manticCatalogosClientesCuentasSaldos.doSendMail}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoCorreos" actionListener="#{manticCatalogosClientesCuentasSaldos.doSendMail}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>

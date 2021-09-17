@@ -44,6 +44,8 @@ public final class Cafu implements Serializable {
   private static final String BODY_OPEN_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *12:30 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina (_soy un chatbot asociado al sistema_).\\n\\n{empresa}\"";
   private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos se vera reflejado para la siguiente nómina ó _semana_ (_soy un chatbot asociado al sistema_).\\n\\n{empresa}\"";
   private static final String PATH_REPORT     = "{numero}.- {contratista}; https://cafu.jvmhost.net/Temporal/Pdf/{reporte}\\n";
+  private static final String BODY_PROVEEDOR   = "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a las ordenes de compras que te haremos principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *compras@cafuconstrucciones.com* y/o al telefono/whatsup *4492784714*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\n{empresa}\"";
+  private static final String BODY_FACTURA     = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *ventas@cafuconstrucciones.com* y/o al telefono/whatsup *4492784714*, se tienen *24 hrs* para descargar todos los documentos.\\n\\n{empresa}\"";
   private static final int LENGTH_CELL_PHONE  = 10;
 
   private String token;
@@ -54,6 +56,8 @@ public final class Cafu implements Serializable {
   private String periodo;
   private String desarrollo;
   private String empresa;
+  private String ticket;
+  private String fecha;
   private Map<String, Object> contratistas;
 
   public Cafu(String nombre, String celular) {
@@ -70,17 +74,23 @@ public final class Cafu implements Serializable {
   }
   
   public Cafu(String nombre, String celular, String nomina, String periodo, Map<String, Object> contratistas) {
+    this(nombre, celular, nomina, periodo, "", "", contratistas);
+  }
+
+  public Cafu(String nombre, String celular, String nomina, String periodo, String ticket, String fecha, Map<String, Object> contratistas) {
     this.nombre = Cadena.nombrePersona(nombre);
     this.celular= this.clean(celular);
     this.nomina = nomina;
     this.periodo= periodo;
+    this.ticket = ticket;
+    this.fecha  = fecha;
     this.token  = System.getenv(IMOX_TOKEN);
     this.contratistas= contratistas;
     this.desarrollo= "";
     this.prepare();
     this.empresa= Configuracion.getInstance().getEmpresa("titulo");
   }
-
+  
   public String getNombre() {
     return nombre;
   }
@@ -94,9 +104,13 @@ public final class Cafu implements Serializable {
   }
 
   public void setCelular(String celular) {
-    this.celular = celular;
+    this.setCelular(celular, Boolean.TRUE);
   }
 
+  public void setCelular(String celular, Boolean clean) {
+    this.celular = clean? this.clean(celular): celular;
+  }
+  
   public String getReporte() {
     return reporte;
   }
@@ -119,6 +133,22 @@ public final class Cafu implements Serializable {
 
   public void setContratistas(Map<String, Object> contratistas) {
     this.contratistas = contratistas;
+  }
+
+  public String getTicket() {
+    return ticket;
+  }
+
+  public void setTicket(String ticket) {
+    this.ticket = ticket;
+  }
+
+  public String getFecha() {
+    return fecha;
+  }
+
+  public void setFecha(String fecha) {
+    this.fecha = fecha;
   }
 
   @Override
@@ -606,6 +636,137 @@ public final class Cafu implements Serializable {
         regresar= "Buenas noches";
     return regresar;
   }
+  
+  public void doSendProveedor(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Value value    = null; 
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("saludo", this.toSaludo());
+        params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
+        if(sesion!= null)
+          value= (Value)DaoFactory.getInstance().toField(sesion, "TcManticMensajesDto", "existe", params, "idKey");
+        else
+          value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
+        if(value== null) {
+          if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+            LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
+          else {  
+            HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+            .header("Content-Type", "application/json")
+            .header("Token", this.token)
+            .body("{"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}")
+            .asString();
+            if(Objects.equals(response.getStatus(), 201)) {
+              LOG.warn("Enviado: "+ response.getBody());
+              Gson gson= new Gson();
+              message  = gson.fromJson(response.getBody(), Message.class);
+              if(message!= null)
+                message.init();
+              else
+                message= new Message();
+            } // if  
+            else {
+              LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
+            } // else  
+            message.setTelefono(this.celular);
+            message.setIdSendStatus(new Long(response.getStatus()));
+            message.setSendStatus(response.getStatusText());
+            message.setIdTipoMensaje(ETypeMessage.BIENVENIDA.getId());
+            message.setIdUsuario(JsfBase.getIdUsuario());
+            if(sesion!= null)
+              DaoFactory.getInstance().insert(sesion, message);
+            else
+              DaoFactory.getInstance().insert(message);
+          } // else  
+        } // if  
+        else 
+          LOG.warn("[doSendProveedor] Ya había sido notificado este celular por whatsup ["+ this.celular+ "]");
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  }
+  
+  public void doSendFactura() {
+    this.doSendFactura(null);
+  }
+  
+  public static String toPathFiles(String pdf, String xml) {
+    StringBuilder regresar= new StringBuilder("(PDF) https://ferreteriabonanza.com/Temporal/Pdf/");
+    regresar.append(pdf);
+    regresar.append("\\n(XML) https://cafu.jvmhost.net/Temporal/Pdf/");
+    regresar.append(xml);
+    return regresar.toString();
+  }
+  
+  public void doSendFactura(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("saludo", this.toSaludo());
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendFactura] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.CONTRATISTA.getId());
+          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  } // doSendFactura  
 
   public void doSendSaludo() {
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {

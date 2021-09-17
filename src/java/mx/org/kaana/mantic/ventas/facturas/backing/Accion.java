@@ -1062,13 +1062,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				LOG.warn("Total de contactos" + contactos.size());
 				for(ClienteTipoContacto contacto: contactos){
 					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-						correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+						correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
 						this.correos.add(correoAdd);		
 						this.selectedCorreos.add(correoAdd);
 					} // if
 				} // for
 				LOG.warn("Agregando correo default");
-				this.correos.add(new Correo(-1L, ""));
+				this.correos.add(new Correo(-1L, "", 2L));
 				UIBackingUtilities.execute("PF('dlgCorreos').show();");
 			} // if
 			else{
@@ -1119,13 +1119,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				LOG.warn("Total de contactos: " + contactos.size());
 				for(ClienteTipoContacto contacto: contactos) {
 					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-						correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+						correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
 						this.correos.add(correoAdd);		
 						this.selectedCorreos.add(correoAdd);
 					} // if
 				} // for
 			LOG.warn("Agregando correo default");
-			this.correos.add(new Correo(-1L, ""));
+			this.correos.add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

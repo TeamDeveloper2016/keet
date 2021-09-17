@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.proveedores.reglas;
 
+import com.google.common.base.Objects;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import mx.org.kaana.keet.db.dto.TrKeetArticuloProveedorClienteDto;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorArticulo;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorArticuloCliente;
@@ -482,7 +484,12 @@ public class Transaccion extends IBaseTnx {
 					switch (sqlAccion) {
 						case INSERT:
 							dto.setIdProveedorTipoContacto(-1L);
-							validate = registrar(sesion, dto);
+							validate = this.registrar(sesion, dto);
+              // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
+              if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
+                Cafu cafu= new Cafu(this.registroProveedor.getProveedor().getRazonSocial(), dto.getValor());
+                cafu.doSendMessage(sesion);
+              } // if
 							break;
 						case UPDATE:
 							validate = actualizar(sesion, dto);

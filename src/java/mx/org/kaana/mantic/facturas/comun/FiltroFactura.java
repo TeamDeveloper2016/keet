@@ -9,9 +9,11 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -21,15 +23,20 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Cafu;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.correos.beans.Attachment;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.reglas.Transferir;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
+import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,6 +50,9 @@ public abstract class FiltroFactura extends IBaseTicket {
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
 	protected Reporte reporte;
+	private List<Correo> celulares;
+	private List<Correo> selectedCelulares;	
+	private Correo celular;
 	
 	public Reporte getReporte() {
 		return reporte;
@@ -77,7 +87,31 @@ public abstract class FiltroFactura extends IBaseTicket {
 		this.selectedCorreos= new ArrayList<>();
 	}
 	
-	public void doSendmail() {
+  public List<Correo> getCelulares() {
+    return celulares;
+  }
+
+  public void setCelulares(List<Correo> celulares) {
+    this.celulares = celulares;
+  }
+
+  public List<Correo> getSelectedCelulares() {
+    return selectedCelulares;
+  }
+
+  public void setSelectedCelulares(List<Correo> selectedCelulares) {
+    this.selectedCelulares = selectedCelulares;
+  }
+
+  public Correo getCelular() {
+    return celular;
+  }
+
+  public void setCelular(Correo celular) {
+    this.celular = celular;
+  }
+  
+public void doSendmail() {
 		try {
 			StringBuilder emails= new StringBuilder("");
 			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
@@ -89,7 +123,7 @@ public abstract class FiltroFactura extends IBaseTicket {
 			String idFacturama= ((Entity)this.attrs.get("seleccionado")).toString("idFacturama");
 			if(emails.length()> 0 && !Cadena.isVacio(idFacturama)){
   	    CFDIFactory.getInstance().toSendMail(emails.substring(0, emails.length()- 2), idFacturama);
-				JsfBase.addMessage("Reenviar factura", "Se realizo el reenvio de factura de forma correcta.");
+				JsfBase.addMessage("Reenviar factura", "Se realizó el reenvio de factura de forma correcta.");
 			} // if
 			else
 				JsfBase.addMessage("Reenviar factura", "Es necesario seleccionar un correo electronico.");
@@ -104,7 +138,7 @@ public abstract class FiltroFactura extends IBaseTicket {
 	}	// doSendmail
 	
 	public void doSendMail() {
-		File factura= null;
+		Entity factura  = null;
 		StringBuilder sb= new StringBuilder("");
 		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
 			for(Correo mail: this.selectedCorreos) {
@@ -123,20 +157,22 @@ public abstract class FiltroFactura extends IBaseTicket {
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Factura");			
 			params.put("razonSocial", seleccionado.toString("cliente"));
-			params.put("correo", ECorreos.FACTURACION.getEmail());	
-      params.put("solucion", Configuracion.getInstance().getEmpresa("titulo"));
-      params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
+			params.put("correo", ECorreos.FACTURACION.getEmail());			
+			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));			
 			factura= this.toXml(seleccionado.toLong("idFactura"));
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
-			files.add(new Attachment(factura, Boolean.FALSE));
-			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), Boolean.TRUE));
+      if(factura!= null) {
+        File file= new File(factura.toString("ruta").concat(factura.toString("nombre")));
+			  files.add(new Attachment(file, Boolean.FALSE));
+      } // if  
+			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "", Configuracion.getInstance().getEmpresa("titulo").concat(" - Factura"), params, files, ECorreos.FACTURACION.getAlias());
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Factura", params, files, ECorreos.FACTURACION.getAlias());
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	
@@ -148,12 +184,12 @@ public abstract class FiltroFactura extends IBaseTicket {
 				  } // if	
 				} // finally	
 			} // for
-	  	LOG.info("Se envio el correo de forma exitosa");
+	  	LOG.info("Se envió el correo de forma exitosa");
 			if(sb.length()> 0)
 		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
 			else
 		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
-		} // try // try
+		} // try
 		catch(Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
@@ -162,18 +198,18 @@ public abstract class FiltroFactura extends IBaseTicket {
 			Methods.clean(files);
 		} // finally
 	} // doSendMail	
-	
-	protected File toXml(Long idFactura) throws Exception{
-		File regresar            = null;
+  
+	protected Entity toXml(Long idFactura) throws Exception{
+		Entity regresar          = null;
 		List<Entity> facturas    = null;
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			params.put("idFactura", idFactura);
 			facturas= DaoFactory.getInstance().toEntitySet("VistaFicticiasDto", "importados", params);
-			for(Entity factura: facturas){
+			for(Entity factura: facturas) {
 				if(factura.toLong("idTipoArchivo").equals(1L))
-					regresar= new File(factura.toString("ruta").concat(factura.toString("nombre")));
+					regresar= factura;
 				else
 					this.attrs.put("nameFacturaPdf", factura.toString("nombre"));
 			} // for
@@ -311,6 +347,151 @@ public abstract class FiltroFactura extends IBaseTicket {
 		return regresar;		
 	} // toPrepare
 	
+  public void doSendWhatsup() {
+    StringBuilder sb= new StringBuilder();
+		Entity factura  = null;
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      Entity seleccionado= (Entity)this.attrs.get("seleccionado");			
+      if(this.selectedCelulares!= null && !this.selectedCelulares.isEmpty()) {
+        for(Correo phone: this.selectedCelulares) {
+          if(!Cadena.isVacio(phone.getDescripcion()))
+            sb.append(phone.getDescripcion()).append(", ");
+        } // for
+      } // if
+      if(sb.length()> 0) {
+        try {
+			    factura= this.toXml(seleccionado.toLong("idFactura"));
+			    this.doReporte("FACTURAS_FICTICIAS_DETALLE", true);          
+          String nombre= JsfBase.getRealPath().concat(EFormatos.PDF.toPath()).concat(factura.toString("nombre"));
+          File target= new File(nombre);
+          File source= new File(factura.toString("alias"));
+          if(source.exists()) {
+            if(!target.exists())
+              Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
+            Cafu notificar= new Cafu(seleccionado.toString("cliente"), "", Cafu.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
+            String[] phones= sb.substring(0, sb.length()- 2).split("[,]");
+            for (String phone: phones) {
+              notificar.setCelular(phone, Boolean.TRUE);
+              LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+              notificar.doSendFactura();
+            } // if  
+          } // if  
+        } // try
+        finally {
+          LOG.info("Eliminando archivo temporal: "+ this.reporte.getNombre());				  
+        } // finally	
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+	public void doLoadMails() {
+		Entity seleccionado               = null;
+		MotorBusquedaCatalogos motor      = null; 
+		List<ClienteTipoContacto>contactos= null;
+		Correo item                       = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			motor= new MotorBusqueda(seleccionado.toLong("idCliente"));
+			contactos= motor.toClientesTipoContacto();
+			this.correos.clear();
+			this.selectedCorreos.clear();
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
+					this.correos.add(item);		
+					this.selectedCorreos.add(item);
+				} // if
+			} // for
+			this.correos.add(new Correo(-1L, "", 2L, Boolean.TRUE));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(contactos);
+		} // finally
+	} // doLoadMails
+  
+	public void doLoadPhones() {
+		Entity seleccionado= null;
+		MotorBusqueda motor= null; 
+		List<ClienteTipoContacto>contactos= null;
+    Correo item                       = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");			
+			motor= new MotorBusqueda(seleccionado.toLong("idCliente"));
+			contactos= motor.toClientesTipoContacto();
+			this.celulares= new ArrayList<>();
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_PERSONAL.getKey())) {
+          item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
+					this.celulares.add(item);				
+          this.selectedCelulares.add(item);
+        } // if
+			} // for
+			this.celulares.add(new Correo(-1L, "", 2L, Boolean.TRUE));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+    finally {
+      Methods.clean(contactos);
+    } // finally
+	} // doLoadPhones
+  
+	public void doAgregarCorreo() {
+		Entity seleccionado    = null;
+		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.correo.getDescripcion())) {
+				seleccionado= (Entity)this.attrs.get("seleccionado");
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(seleccionado.toLong("idCliente"), seleccionado.toString("cliente"), this.correo);
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+					JsfBase.addMessage("Se agregó/modificó el correo electronico correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar/modificar el correo electronico");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un correo electronico !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCorreo
+  
+	public void doAgregarCelular() {
+		Entity seleccionado    = null;
+		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.celular.getDescripcion())){
+				seleccionado= (Entity)this.attrs.get("seleccionado");
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(seleccionado.toLong("idCliente"), seleccionado.toString("cliente"), this.celular);
+				if(transaccion.ejecutar(EAccion.COMPLETO))
+					JsfBase.addMessage("Se agregó/modificó el celular correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar/modificar el celular");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un celular !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCelular  
+  
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();

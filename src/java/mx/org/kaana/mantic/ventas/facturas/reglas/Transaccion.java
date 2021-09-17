@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.ventas.facturas.reglas;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
@@ -52,7 +52,14 @@ public class Transaccion extends Facturama {
 	private Long idCliente;
 	private Long idEstatusFactura;
 	private TcManticFacturasDto facturaPrincipal;
+	private String razonSocial;
 
+	public Transaccion(Long idCliente, String razonSocial, Correo correo) {
+		this.correo     = correo;
+		this.idCliente  = idCliente;
+    this.razonSocial= razonSocial;
+	}	// Transaccion		
+  
 	public Transaccion(Correo correo, Long idCliente) {
 		this.correo   = correo;
 		this.idCliente= idCliente;
@@ -134,8 +141,10 @@ public class Transaccion extends Facturama {
 					} // else if
 					break;												
 				case COMPLEMENTAR: 
-					regresar= agregarContacto(sesion);
+					regresar= this.agregarContacto(sesion, ETiposContactos.CORREO);
 					break;
+				case COMPLETO: 
+					regresar= this.agregarContacto(sesion, ETiposContactos.CELULAR);
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -178,36 +187,50 @@ public class Transaccion extends Facturama {
 		return regresar;
 	} // registrarFactura
 	
-	private boolean agregarContacto(Session sesion) throws Exception{
+	private boolean agregarContacto(Session sesion, ETiposContactos tipo) throws Exception{
 		boolean regresar                       = true;
 		List<ClienteTipoContacto> correos      = null;
 		TrManticClienteTipoContactoDto contacto= null;
 		int count                              = 0;
 		Long records                           = 1L;
 		try {
-			correos= toClientesTipoContacto();
-			if(!correos.isEmpty()){
-				for(ClienteTipoContacto tipoContacto: correos){
-					if(tipoContacto.getValor().equals(this.correo.getDescripcion()))
+			correos= this.toClientesTipoContacto();
+			if(!correos.isEmpty()) {
+				for(ClienteTipoContacto tipoContacto: correos) {
+					if(tipoContacto.getValor().equals(this.correo.getDescripcion())) {
 						count++;
+            tipoContacto.setIdPreferido(this.correo.getIdPreferido());
+            // NOTIFICAR AL CLIENTE SI ES QUE CAMBIO SU TIPO DE CONTACTO PREFERIDO
+            if(ETiposContactos.CELULAR.equals(tipo) && tipoContacto.getIdPreferido().equals(1L)) {
+              Cafu notificar= new Cafu(this.razonSocial, tipoContacto.getValor());
+              notificar.doSendMessage(sesion);
+            } // if  
+            regresar= DaoFactory.getInstance().update(sesion, tipoContacto)>= 1L;
+          } // if  
 				} // for				
-				records= correos.size() + 1L;
+				records= correos.size()+ 1L;
 			} // if
-			if(count== 0){
+			if(count== 0) {
 				contacto= new TrManticClienteTipoContactoDto();
 				contacto.setIdCliente(this.idCliente);
-				contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
+				contacto.setIdTipoContacto(tipo.getKey());
 				contacto.setIdUsuario(JsfBase.getIdUsuario());
 				contacto.setValor(this.correo.getDescripcion().toUpperCase());
+				contacto.setIdPreferido(this.correo.getIdPreferido());
 				contacto.setOrden(records);
 				regresar= DaoFactory.getInstance().insert(sesion, contacto)>= 1L;
-			} // else
+        // NOTIFICAR AL CLIENTE SI ES QUE CAMBIO SU TIPO DE CONTACTO PREFERIDO
+        if(ETiposContactos.CELULAR.equals(tipo) && contacto.getIdPreferido().equals(1L)) {
+          Cafu notificar= new Cafu(this.razonSocial, contacto.getValor());
+          notificar.doSendMessage(sesion);
+        } // if  
+			}
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
-	} // agregarContacto
+  } // agregarContacto
 	
 	public List<ClienteTipoContacto> toClientesTipoContacto() throws Exception {
 		List<ClienteTipoContacto> regresar= null;

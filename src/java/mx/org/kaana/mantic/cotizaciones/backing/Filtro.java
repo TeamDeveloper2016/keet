@@ -347,20 +347,20 @@ public class Filtro extends FiltroFactura implements Serializable {
 			allEstatus= UISelect.build("TcManticCotizacionesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());				
-			getCorreos().clear();
-			getSelectedCorreos().clear();
+			this.getCorreos().clear();
+			this.getSelectedCorreos().clear();
 			motor    = new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
 			contactos= motor.toClientesTipoContacto();
 			LOG.warn("Total de contactos asociados al proveedor" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
-					getCorreos().add(item);		
-					getSelectedCorreos().add(item);
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
+					this.getCorreos().add(item);		
+					this.getSelectedCorreos().add(item);
 				} // if
 			} // for
 			LOG.warn("Agregando un correo por defecto para la cotizacion");
-			getCorreos().add(new Correo(-1L, ""));
+			this.getCorreos().add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

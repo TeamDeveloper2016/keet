@@ -1097,13 +1097,13 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			LOG.warn("Total de contactos" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase());
-					getCorreos().add(correoAdd);		
-					getSelectedCorreos().add(correoAdd);
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
+					this.getCorreos().add(correoAdd);		
+					this.getSelectedCorreos().add(correoAdd);
 				} // if
 			} // for
 			LOG.warn("Agregando correo default");
-			getCorreos().add(new Correo(-1L, ""));
+			this.getCorreos().add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

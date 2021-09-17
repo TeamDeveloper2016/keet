@@ -236,7 +236,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 				LOG.warn("Total de contactos: " + contactosPersona.size());
 				for(PersonaTipoContacto contacto: contactosPersona) {
 					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_PERSONAL.getKey())) {
-						correo= new Correo(contacto.getIdPersonaTipoContacto(), contacto.getValor().toUpperCase());
+						correo= new Correo(contacto.getIdPersonaTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
 						this.getCorreos().add(correo);		
 						this.getSelectedCorreos().add(correo);
 					} // if
@@ -247,7 +247,7 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 				LOG.warn("Total de contactos: " + contactosProveedor.size());
 				for(ProveedorTipoContacto contacto: contactosProveedor){
 					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-						correo= new Correo(contacto.getIdProveedorTipoContacto(), contacto.getValor().toUpperCase());
+						correo= new Correo(contacto.getIdProveedorTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
 						this.getCorreos().add(correo);		
 						this.getSelectedCorreos().add(correo);
 					} // if
@@ -258,14 +258,14 @@ public abstract class IBaseReporteDestajos extends IBaseFilter implements Serial
 				LOG.warn("Total de residentes: " + contactosPersona.size());
 				for(PersonaTipoContacto contacto: contactosPersona) {
 					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_PERSONAL.getKey())) {
-						correo= new Correo(contacto.getIdPersonaTipoContacto(), contacto.getValor().toUpperCase());
+						correo= new Correo(contacto.getIdPersonaTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
 						this.getCorreos().add(correo);		
 						this.getSelectedCorreos().add(correo);
 					} // if
 				} // for
       } // if
 			LOG.warn("Agregando correo por defecto");
-			getCorreos().add(new Correo(-1L, ""));
+			this.getCorreos().add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -254,11 +254,17 @@
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">										
 					<p:dataTable id="tablaCorreos" var="row" value="#{keetComprasRequisicionesFiltro.correos}" selection="#{keetComprasRequisicionesFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
 						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Preferido" styleClass="descripcion tablaCorreos_selection janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
 						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreos_selection">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreos" icon="fa fa-check" title="Agregar" action="#{keetComprasRequisicionesFiltro.doAgregarCorreo}">
+							<p:commandButton update="tablaCorreos" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{keetComprasRequisicionesFiltro.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{keetComprasRequisicionesFiltro.correo}" />
 							</p:commandButton>
 						</p:column>
