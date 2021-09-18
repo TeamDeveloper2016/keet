@@ -44,8 +44,9 @@ public final class Cafu implements Serializable {
   private static final String BODY_OPEN_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *12:30 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina (_soy un chatbot asociado al sistema_).\\n\\n{empresa}\"";
   private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos se vera reflejado para la siguiente nómina ó _semana_ (_soy un chatbot asociado al sistema_).\\n\\n{empresa}\"";
   private static final String PATH_REPORT     = "{numero}.- {contratista}; {url}Temporal/Pdf/{reporte}\\n";
-  private static final String BODY_PROVEEDOR   = "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a las ordenes de compras que te haremos principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *compras@cafuconstrucciones.com* y/o al telefono/whatsup *4492784714*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\n{empresa}\"";
-  private static final String BODY_FACTURA     = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *ventas@cafuconstrucciones.com* y/o al telefono/whatsup *4492784714*, se tienen *24 hrs* para descargar todos los documentos.\\n\\n{empresa}\"";
+  private static final String BODY_PROVEEDOR   = "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a las ordenes de compras que te haremos principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *{correo}*.\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\n{empresa}\"";
+  private static final String BODY_FACTURA     = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *{correo}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\n{empresa}\"";
+  private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\n{url}Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *{correo}*.\\n\\n{empresa}.\"";
   private static final int LENGTH_CELL_PHONE  = 10;
 
   private String token;
@@ -60,6 +61,7 @@ public final class Cafu implements Serializable {
   private String fecha;
   private Map<String, Object> contratistas;
   private String url;
+  private String correo;
 
   public Cafu(String nombre, String celular) {
     this(nombre, celular, "", "", Collections.EMPTY_MAP);
@@ -93,6 +95,7 @@ public final class Cafu implements Serializable {
     this.url    = Configuracion.getInstance().getPropiedadServidor("sistema.dns");
     if(!this.url.endsWith("/"))
       this.url= this.url.concat("/");
+    this.correo = "";
   }
   
   public String getNombre() {
@@ -153,6 +156,10 @@ public final class Cafu implements Serializable {
 
   public void setFecha(String fecha) {
     this.fecha = fecha;
+  }
+
+  public void setCorreo(String correo) {
+    this.correo = correo;
   }
 
   @Override
@@ -653,6 +660,8 @@ public final class Cafu implements Serializable {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
         params.put("saludo", this.toSaludo());
+        params.put("url", this.url);
+        params.put("correo", this.correo);
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
         if(sesion!= null)
           value= (Value)DaoFactory.getInstance().toField(sesion, "TcManticMensajesDto", "existe", params, "idKey");
@@ -731,6 +740,8 @@ public final class Cafu implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
+        params.put("url", this.url);
+        params.put("correo", this.correo);
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}");
         else {  
@@ -825,6 +836,69 @@ public final class Cafu implements Serializable {
     else 
       LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
   }
+  
+  public void doSendOrdenCompra() {
+    this.doSendOrdenCompra(null);
+  }
+  
+  public void doSendOrdenCompra(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("saludo", this.toSaludo());
+        params.put("url", this.url);
+        params.put("correo", this.correo);
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendOrdenCompra] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
+          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendOrdenCompra]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  } // doSendOrdenCompra
   
   public static void main(String ... args) {
 //    String nombres[]  = {"Carlos Calderon Solano", "Juan José Fuentes Ramirez España", "Christopher Castro Jiménez"};

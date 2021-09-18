@@ -376,6 +376,7 @@ public void doSendmail() {
             for (String phone: phones) {
               notificar.setCelular(phone, Boolean.TRUE);
               LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+              notificar.setCorreo(ECorreos.FACTURACION.getEmail());
               notificar.doSendFactura();
             } // if  
             JsfBase.addMessage("Se envió correctamente la factura por whastup !");

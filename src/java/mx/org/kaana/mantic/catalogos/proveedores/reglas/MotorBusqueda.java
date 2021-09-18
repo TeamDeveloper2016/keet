@@ -21,6 +21,7 @@ import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDepartamento;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDomicilio;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorFamilia;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorMaterial;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
@@ -115,7 +116,24 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toProveedoresDepartamentos
-	
+
+public List<ProveedorTipoContacto> toAllProveedoresTipoContacto() throws Exception {
+		List<ProveedorTipoContacto> regresar= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put("idProveedor", this.idProveedor);
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorTipoContacto.class, "TrManticProveedorTipoContactoDto", "contacto", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toAllProveedoresTipoContacto  
+
 	public List<ProveedorContactoAgente> toAgentes() throws Exception{
 		List<ProveedorContactoAgente> regresar= null;
 		Map<String, Object>params             = null;

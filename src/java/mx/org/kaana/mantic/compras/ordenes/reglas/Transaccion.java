@@ -21,10 +21,12 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Cafu;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompraProcess;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenLoteFamilia;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
@@ -56,7 +58,14 @@ public class Transaccion extends Inventarios implements Serializable {
 	private List<UISelectEntity> lotes;
 	private List<UISelectEntity> familias;
   private TcManticOrdenesComprasDto cloneOrdenCompra;
+  private String razonSocial;	
 
+	public Transaccion(Long idProveedor, String razonSocial, Correo correo) {
+		super(-1L, idProveedor);
+		this.razonSocial= razonSocial;
+		this.correo= correo;
+	}	// Transaccion
+  
 	public Transaccion(Correo correo, Long idProveedor) {
 		super(-1L, idProveedor);
 		this.correo= correo;
@@ -193,7 +202,10 @@ public class Transaccion extends Inventarios implements Serializable {
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticFaltantesDto.class, this.idFaltante)>= 1L;
 					break;
 				case COMPLEMENTAR: 
-					regresar= this.agregarContacto(sesion);
+					regresar= this.agregarContacto(sesion, ETiposContactos.CORREO);
+					break;
+				case COMPLETO: 
+					regresar= this.agregarContacto(sesion, ETiposContactos.CELULAR);
 					break;
 			} // switch
 			if(!regresar)
@@ -259,29 +271,45 @@ public class Transaccion extends Inventarios implements Serializable {
 		return regresar;
 	}
 	
-	private boolean agregarContacto(Session sesion) throws Exception{
+	private boolean agregarContacto(Session sesion, ETiposContactos tipo) throws Exception {
 		boolean regresar                         = true;
 		List<ProveedorTipoContacto> correos      = null;
 		TrManticProveedorTipoContactoDto contacto= null;
 		int count                                = 0;
 		Long records                             = 1L;
 		try {
-			correos= toProveedoresTipoContacto();
+			correos= this.toProveedoresTipoContacto();
 			if(!correos.isEmpty()){
 				for(ProveedorTipoContacto tipoContacto: correos){
-					if(tipoContacto.getValor().equals(this.correo.getDescripcion()))
+					if(tipoContacto.getValor().equals(this.correo.getDescripcion())) {
 						count++;
+            tipoContacto.setIdPreferido(this.correo.getIdPreferido());
+            // NOTIFICAR AL PROVEEDOR SI ES QUE CAMBIO SU TIPO DE CONTACTO PREFERIDO
+            if(ETiposContactos.CELULAR.equals(tipo) && tipoContacto.getIdPreferido().equals(1L)) {
+              Cafu notificar= new Cafu(this.razonSocial, tipoContacto.getValor());
+              notificar.setCorreo(ECorreos.COMPRAS.getEmail());
+              notificar.doSendProveedor(sesion);
+            } // if  
+            regresar= DaoFactory.getInstance().update(sesion, tipoContacto)>= 1L;
+          } // if  
 				} // for				
 				records= correos.size() + 1L;
 			} // if
 			if(count== 0){
 				contacto= new TrManticProveedorTipoContactoDto();
 				contacto.setIdProveedor(this.idProveedor);
-				contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
+        contacto.setIdTipoContacto(tipo.getKey());
 				contacto.setIdUsuario(JsfBase.getIdUsuario());
 				contacto.setValor(this.correo.getDescripcion());
+				contacto.setIdPreferido(this.correo.getIdPreferido());
 				contacto.setOrden(records);
 				regresar= DaoFactory.getInstance().insert(sesion, contacto)>= 1L;
+        // NOTIFICAR AL PROVEEDOR SI ES QUE CAMBIO SU TIPO DE CONTACTO PREFERIDO
+        if(ETiposContactos.CELULAR.equals(tipo) && contacto.getIdPreferido().equals(1L)) {
+          Cafu notificar= new Cafu(this.razonSocial, contacto.getValor());
+          notificar.setCorreo(ECorreos.COMPRAS.getEmail());
+          notificar.doSendProveedor(sesion);
+        } // if  
 			} // else
 		} // try
 		catch (Exception e) {			
