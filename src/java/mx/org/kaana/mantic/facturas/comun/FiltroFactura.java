@@ -370,13 +370,15 @@ public void doSendmail() {
           if(source.exists()) {
             if(!target.exists())
               Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
-            Cafu notificar= new Cafu(seleccionado.toString("cliente"), "", Cafu.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
+            Cafu notificar= new Cafu(seleccionado.toString("cliente"), "", "", seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
+            notificar.setReporte(notificar.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")));
             String[] phones= sb.substring(0, sb.length()- 2).split("[,]");
             for (String phone: phones) {
               notificar.setCelular(phone, Boolean.TRUE);
               LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
               notificar.doSendFactura();
             } // if  
+            JsfBase.addMessage("Se envió correctamente la factura por whastup !");
           } // if  
         } // try
         finally {
@@ -400,12 +402,12 @@ public void doSendmail() {
 		Correo item                       = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			motor= new MotorBusqueda(seleccionado.toLong("idCliente"));
+			motor= new MotorBusqueda(seleccionado.toLong("idCliente"), seleccionado.toLong("idCliente"));
 			contactos= motor.toClientesTipoContacto();
 			this.correos.clear();
 			this.selectedCorreos.clear();
 			for(ClienteTipoContacto contacto: contactos) {
-				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_PERSONAL.getKey())) {
 					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
 					this.correos.add(item);		
 					this.selectedCorreos.add(item);
@@ -429,7 +431,7 @@ public void doSendmail() {
     Correo item                       = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");			
-			motor= new MotorBusqueda(seleccionado.toLong("idCliente"));
+			motor= new MotorBusqueda(seleccionado.toLong("idCliente"), seleccionado.toLong("idCliente"));
 			contactos= motor.toClientesTipoContacto();
 			this.celulares= new ArrayList<>();
 			for(ClienteTipoContacto contacto: contactos) {

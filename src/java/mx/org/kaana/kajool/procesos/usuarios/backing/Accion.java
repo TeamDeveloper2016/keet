@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -107,7 +106,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       if (transaccion.ejecutar(this.accion)) {
 				JsfBase.setFlashAttribute("idPersonaProcess", persona.getIdPersona());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Usuarios", this.accion.equals(EAccion.AGREGAR) ? "Se agregó el usuario con éxito." : "Se modificó el usuario con éxito.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Usuarios", this.accion.equals(EAccion.AGREGAR)? "Se agregó el usuario con éxito." : "Se modificó el usuario con éxito.", ETipoMensaje.INFORMACION);
       } // if
       else {
         String perfil= this.criteriosBusqueda.getListaPerfiles().get(this.criteriosBusqueda.getListaPerfiles().indexOf(new UISelectEntity(this.criteriosBusqueda.getPerfil().getKey().toString()))).toString("descripcion");
@@ -156,7 +155,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private void toValueDefault(TcManticPersonasDto persona) throws Exception {
 		String contrasenia= Cadena.isVacio(persona.getMaterno())? Cadena.isVacio(persona.getPaterno())? Constantes.CONTRASENIA_DEFAULT: persona.getPaterno(): persona.getMaterno();
 		if(Cadena.isVacio(persona.getContrasenia()))
-			contrasenia= BouncyEncryption.encrypt(contrasenia);
+			contrasenia= BouncyEncryption.encrypt(contrasenia.toLowerCase());
 		else
 		  contrasenia= persona.getContrasenia();
 		persona.setContrasenia(BouncyEncryption.decrypt(contrasenia));

@@ -7,6 +7,9 @@
 .ui-autocomplete-panel .ui-autocomplete-items .ui-state-highlight {
   background-color: #B0C4DE;
 }
+div[id='collapse-find']{
+  border: 1px solid lightgray;border-radius: 5px;
+}
 .ui-panel .ui-panel-content {
     padding: 0.2em .2em;
 }

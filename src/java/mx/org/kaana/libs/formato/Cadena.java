@@ -103,11 +103,13 @@ public final class Cadena {
     String token = null;
     while (st.hasMoreTokens()) {
       token = st.nextToken();
-      if (token.length() > 3) {
-        sb.append(letraCapital(token).concat(" "));
-      } else {
-        sb.append(token.toLowerCase().concat(" "));
-      }
+      if(Objects.equals(token,"SA") || Objects.equals(token,"CV") || Objects.equals(token,"S.A.") || Objects.equals(token,"C.V.")) 
+        sb.append(token.concat(" "));
+      else
+        if (token.length()> 3) 
+          sb.append(letraCapital(token).concat(" "));
+        else
+          sb.append(token.toLowerCase().concat(" "));
     } // while
     return sb.toString().trim();
   } // nombrePersona
