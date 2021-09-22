@@ -46,7 +46,7 @@ public final class Cafu implements Serializable {
   private static final String PATH_REPORT     = "{numero}.- {contratista}; {url}Temporal/Pdf/{reporte}\\n";
   private static final String BODY_PROVEEDOR   = "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a las ordenes de compras que te haremos principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *{correo}*.\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\n{empresa}\"";
   private static final String BODY_FACTURA     = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *{correo}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\n{empresa}\"";
-  private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\n{url}Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *{correo}*.\\n\\n{empresa}.\"";
+  private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\n{url}Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la dirección del almacen de entrega.\\n\\nPara cualquier duda o aclaración *{correo}*.\\n\\n{empresa}.\"";
   private static final int LENGTH_CELL_PHONE  = 10;
 
   private String token;
@@ -660,6 +660,7 @@ public final class Cafu implements Serializable {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
         params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
         params.put("url", this.url);
         params.put("correo", this.correo);
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
@@ -740,6 +741,7 @@ public final class Cafu implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
         params.put("url", this.url);
         params.put("correo", this.correo);
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
@@ -852,6 +854,7 @@ public final class Cafu implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("saludo", this.toSaludo());
+        params.put("empresa", this.empresa);
         params.put("url", this.url);
         params.put("correo", this.correo);
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
