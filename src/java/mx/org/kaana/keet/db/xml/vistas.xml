@@ -437,10 +437,15 @@
       <select id="detalleLotes">
         select
           tc_keet_estaciones.id_estacion as id_key,
+          '{lote}' as lote,
           tc_keet_estaciones.clave,
           tc_keet_estaciones.codigo,
           tc_keet_estaciones.nombre,
           tc_keet_estaciones.descripcion,
+          tc_keet_estaciones.nivel,
+          round(tc_keet_estaciones.costo, 2) costo,
+          round(tc_keet_estaciones.cargo, 2) cargo,
+          round(ifnull(tc_keet_estaciones.cargo* 100/ tc_keet_estaciones.costo, 0), 2) as porcentaje,
           tc_keet_estaciones_estatus.id_estacion_estatus,
           tc_keet_estaciones_estatus.nombre as estatus
         from 
@@ -450,6 +455,7 @@
         where
           tc_keet_estaciones.clave like '{clave}%'
           and tc_keet_estaciones.nivel>= 5
+          and tc_keet_estaciones.costo> 0
         order by
           tc_keet_estaciones.clave
       </select>  
@@ -6286,6 +6292,48 @@
           and tc_keet_estaciones.costo&gt; 0
 				) as final
 			</select>
+			<select id="estatusLote">
+				select
+					sum(iniciado) as iniciado,
+					sum(en_proceso) as en_proceso,
+					sum(terminado) as terminado,
+					(sum(iniciado)+ sum(en_proceso)+ sum(terminado)) as total
+				from(
+				select 
+					case when tc_keet_estaciones.id_estacion_estatus= 1 then 1 else 0 end iniciado,
+					case when tc_keet_estaciones.id_estacion_estatus= 2 then 1 else 0 end en_proceso,
+					case when (tc_keet_estaciones.id_estacion_estatus= 3 or tc_keet_estaciones.id_estacion_estatus= 4) then 1 else 0 end terminado  
+				from(  
+				select
+					tc_keet_puntos_paquetes.id_punto_grupo,  
+					tc_keet_puntos_grupos.id_departamento,
+					tc_keet_puntos_grupos.grupo,
+					tc_keet_puntos_grupos.descripcion,
+					tc_keet_rubros_grupos.id_rubro_grupo,
+					tc_keet_rubros_grupos.id_rubro,
+					tc_keet_rubros.codigo,
+					tc_keet_rubros.nombre,
+					tc_keet_rubros.orden
+				from 
+					tc_keet_puntos_paquetes
+				inner join
+					tc_keet_puntos_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_puntos_paquetes.id_punto_grupo
+				inner join
+					tc_keet_rubros_grupos on tc_keet_puntos_grupos.id_punto_grupo = tc_keet_rubros_grupos.id_punto_grupo
+				inner join
+					tc_keet_rubros on tc_keet_rubros_grupos.id_rubro = tc_keet_rubros.id_rubro
+				group by
+          tc_keet_puntos_paquetes.id_punto_grupo,
+          tc_keet_rubros_grupos.id_rubro_grupo,
+          tc_keet_rubros_grupos.id_rubro        
+				) as principal
+				inner join
+					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
+				where
+					tc_keet_estaciones.clave like '{clave}%'
+          and tc_keet_estaciones.costo&gt; 0
+				) as final
+			</select>
 			<select id="estatusControlManzanaLote">
 				select
 					sum(iniciado) as iniciado,
@@ -6636,6 +6684,37 @@
 				where				  
 					tc_keet_desarrollos.id_desarrollo= {idDesarrollo} and {condicion}
 				  and tc_keet_contratos_lotes.latitud is not null and tc_keet_contratos_lotes.longitud is not null
+				order by
+				  tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
+			</select>
+			<select id="lotesTodos">				
+        select 
+					tc_keet_contratos_lotes.id_contrato_lote as id_key,
+ 					tc_keet_contratos_lotes.*,
+				  tc_keet_contratos.id_empresa,
+					tc_keet_contratos.consecutivo,
+					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) codigo,
+					tc_keet_contratos.etapa,
+					tc_keet_contratos.ejercicio,
+					tc_keet_contratos.clave clave_contrato,
+          tc_keet_contratos.nombre nombre_contrato,
+					tc_keet_contratos.etapa etapa_contrato,
+					tc_keet_proyectos.clave clave_proyecto,
+					tc_keet_proyectos.etapa etapa_proyecto,
+					tc_keet_contratos.orden orden_contrato,
+          tc_keet_prototipos.nombre as prototipo
+				from 
+					tc_keet_contratos_lotes
+				inner join 
+					tc_keet_contratos on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+        inner join
+          tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo
+				inner join 
+					tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo = tc_keet_desarrollos.id_desarrollo
+				where				  
+					tc_keet_desarrollos.id_desarrollo= {idDesarrollo} and {condicion}
 				order by
 				  tc_keet_contratos_lotes.manzana, tc_keet_contratos_lotes.lote
 			</select>

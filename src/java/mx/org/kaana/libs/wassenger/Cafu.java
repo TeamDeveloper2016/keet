@@ -421,12 +421,13 @@ public final class Cafu implements Serializable {
       try {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
-        params.put("reporte", this.reporte);
         params.put("nomina", this.nomina);
         params.put("periodo", this.periodo);
         params.put("desarrollo", this.desarrollo);
         params.put("saludo", this.toSaludo());
         params.put("empresa", this.empresa);
+        params.put("url", this.url);
+        params.put("reporte", Cadena.replaceParams(this.reporte, params, true));
         if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
         else {  

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Revisar los destajos realizados por desarrollo" />
+  <ui:define name="librerias">
+		<style type="text/css">
+			.ui-commandlink {
+				color: transparent !important;
+				text-decoration: underline;
+				margin-right: 5px;
+			}
+			.manzana-lote-font {
+				font-size: 3.2vw !important;
+				font-weight: bold !important;
+			}
+      .keet-chart-footer { font-weight: normal !important; font-size: 12px; }
+		</style>
+	</ui:define> 
+  <ui:define name="contenido">    		
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="panelBusqueda" activeIndex="0" multiple="true">
+						<p:tab title="Busqueda [ #{keetAuditoriaFiltro.registroDesarrollo.desarrollo.clave} ] #{keetAuditoriaFiltro.registroDesarrollo.desarrollo.nombres}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+                <p:outputLabel for="contratos" value="Contratos:"/>
+                <p:selectOneMenu id="contratos" value="#{keetAuditoriaFiltro.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetAuditoriaFiltro.doLoadManzanas}" update="tabla manzanas lotes destajo" oncomplete="janal.desbloquear(); reloadManzanas(); reloadLotes();"/>
+                  <f:selectItems value="#{keetAuditoriaFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="manzanas" value="Manzanas:"/>
+                <p:selectOneMenu id="manzanas" value="#{keetAuditoriaFiltro.attrs.manzana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetAuditoriaFiltro.doLoadCasas}" update="tabla lotes destajo" oncomplete="janal.desbloquear(); reloadLotes();"/>
+                  <f:selectItems value="#{keetAuditoriaFiltro.attrs.manzanas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.manzana or element.manzana eq ''? '': '|'} #{element.manzana}"/>
+                  <p:column headerText="Contato">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                  <p:column headerText="Manzana">
+                    <h:outputText value="#{item.manzana}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="lotes" value="Lotes:"/>
+                <p:selectOneMenu id="lotes" value="#{keetAuditoriaFiltro.attrs.casa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetAuditoriaFiltro.doLoad}" update="tabla destajo" oncomplete="janal.desbloquear(); reload();"/>
+                  <f:selectItems value="#{keetAuditoriaFiltro.attrs.casas}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.prototipo or element.prototipo eq ''? '': '|'}#{element.prototipo}"/>
+                  <p:column headerText="Lote">
+                    <h:outputText value="#{item.codigo}"/>
+                  </p:column>   
+                  <p:column headerText="Prototipo">
+                    <h:outputText value="#{item.prototipo}"/>
+                  </p:column>   
+                  <p:column headerText="Etapa" styleClass="janal-wid-12">
+                    <h:outputText value="#{item.etapaProyecto}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+							</p:panelGrid>	
+              <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
+                <span style="display: inline-flex; vertical-align: middle;">
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-red.png" width="24" height="24"/>
+                  [ 0% ],
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-cyan.png" width="24" height="24"/>
+                  [ 1-20% ],
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-orange.png" width="24" height="24"/>
+                  [ 21-80% ],
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-yellow.png" width="24" height="24"/>
+                  [ 81-99% ],
+                  <p:graphicImage cache="false" library="janal" name="icon/mapa/home-green.png" width="24" height="24"/>
+                  [ 100% ]
+                </span>
+              </div>
+              <p:remoteCommand name="reloadManzanas" process="@this" update="manzanas"/>
+              <p:remoteCommand name="reloadLotes" process="@this" update="lotes"/>
+              <p:remoteCommand name="reload" process="@this" update="destajo"/>
+						</p:tab>					
+					</p:accordionPanel>						
+          <a id="hola" href="#tabla">Hola</a>
+					<p:spacer height="3px"/>
+					<p:dataGrid id="destajo" var="row" value="#{keetAuditoriaFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetAuditoriaFiltro.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{empty row.prototipo? '': '|'} #{row.prototipo}" style="text-align:center; border: 0px;">
+							<h:panelGrid columns="1" style="width:100%">
+                <p:commandLink process="@this" update="tabla @(.titular)" title="Ver detalle del lote" actionListener="#{keetAuditoriaFiltro.doDestajos(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();$('#hola').click();">
+									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" styleClass="manzana-lote-font janal-color-blue" style="cursor: pointer;"/>
+								</p:commandLink>																	
+								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
+                  <p:outputLabel value="&lt;b&gt;#{row.nombreContrato} | Avance: #{row.porcentaje} %&lt;/b&gt;" escape="false" styleClass="janal-color-orange"/>
+									<p:outputLabel value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false"/>
+									<p:outputLabel value="&lt;b&gt;Fecha termino:&lt;/b&gt; #{row.termino}" escape="false"/>
+                  <p:progressBar value="#{row.porcentaje.toInteger}" labelTemplate="{value}%" displayOnly="true"/>
+								</p:panelGrid>								
+							</h:panelGrid>
+							<f:facet name="footer">
+								<div class="janal-column-right">
+                  <span>Estatus: </span>
+                  <h:graphicImage library="janal" name="icon/semaforos/circulo-#{row.color}.png"/>
+								</div>	
+							</f:facet>
+						</p:panel>		
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetAuditoriaFiltro.lotes.size()}] lote(s)"/>
+            </f:facet>
+					</p:dataGrid>	 
+					<p:spacer height="3px"/>
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolDestajo" var="row" value="#{keetAuditoriaFiltro.lazyDestajo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetAuditoriaFiltro.attrs.destajo}" selectionMode="single" paginator="#{keetAuditoriaFiltro.lazyDestajo.rowCount gt keetAuditoriaFiltro.lazyDestajo.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetAuditoriaFiltro.doColor(row)}" style="display: #{keetAuditoriaFiltro.attrs.destajos? '': 'none'}">
+            <f:facet name="header">
+              <p:outputLabel id="titular" value="Destajos pagos en en lote [#{keetAuditoriaFiltro.attrs.seleccionado.codigo}]" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
+              <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:separator rendered="false"/>
+                <p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetAuditoriaFiltro.doReporte('DESARROLLO')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
+                <p:separator rendered="false"/>
+                <p:menuitem icon="fa fa-envelope-o" value="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetAuditoriaFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="false"/>
+                <p:menuitem icon="fa fa-whatsapp" value="Whatsup" actionListener="#{keetAuditoriaFiltro.doWhatsup()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="false"/>
+              </p:menuButton>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetAuditoriaFiltro.doReporte('DESARROLLO')}" oncomplete="janal.desbloquear();" update="descargar"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-envelope-o" title="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetAuditoriaFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+            </f:facet>												
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-6" rendered="#{not kajoolUtilAplicacion.isMobile}">
+              <f:facet name="header">
+                <h:outputText value="Lote"/>
+              </f:facet>
+              <h:outputText value="#{row['lote']}" styleClass="janal-color-blue janal-font-bold"/>
+            </p:column>														
+            <p:column styleClass="janal-wid-15 janal-column-left Responsive" sortBy="#{row.codigo}" rendered="#{not kajoolUtilAplicacion.isMobile}">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row['codigo']}"/>
+            </p:column>
+            <p:column styleClass="Responsive" sortBy="#{row.descripcion}">
+              <f:facet name="header">
+                <h:outputText value="Concepto"/>
+              </f:facet>
+              <h:outputText value="#{row['descripcion']}"/>
+            </p:column>
+            <p:column styleClass="janal-wid-18 Responsive" sortBy="#{row.estatus}" rendered="#{not kajoolUtilAplicacion.isMobile}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}" styleClass="janal-font-bold #{row.idEstacionEstatus eq '2'? 'janal-color-orange': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
+            </p:column>                    
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.porcentaje}">
+              <f:facet name="header">
+                <h:outputText value="Porcentaje"/>
+              </f:facet>
+              <h:outputText value="#{row['porcentaje']} %"/>
+            </p:column>	
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}" rendered="#{not kajoolUtilAplicacion.isMobile}">
+              <f:facet name="header">
+                <h:outputText value="Costo"/>
+              </f:facet>
+              <h:outputText value="#{row['costo']}"/>
+            </p:column>	
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cargo}">
+              <f:facet name="header">
+                <h:outputText value="Pagado"/>
+              </f:facet>
+              <h:outputText value="#{row['cargo']}"/>
+            </p:column>	
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{keetAuditoriaFiltro.lazyDestajo== null? 0: keetAuditoriaFiltro.lazyDestajo.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>							
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetAuditoriaFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetAuditoriaFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar correo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">													
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{keetAuditoriaFiltro.correos}" selection="#{keetAuditoriaFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del empleado">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{keetAuditoriaFiltro.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{keetAuditoriaFiltro.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{keetAuditoriaFiltro.doSendMail('DESARROLLO')}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

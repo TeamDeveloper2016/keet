@@ -20,8 +20,10 @@ public enum EOpcionesResidente {
 	//ALMACENISTA	
 	MATERIALES      ("Entrega de materiales", "c95ede7d8d92929da8df03", "/Paginas/Keet/Catalogos/Contratos/Materiales/filtro.jsf"),
 	AUTORIZACION    ("Autorización de vales especiales", "e661f7021e3dcf64e41a5392d5", "/Paginas/Keet/Catalogos/Contratos/Vales/Autorizacion/filtro.jsf"),
-	CONTROLES       ("Registrar un avance en el seguimiento a los lotes por los residentes de obra", "ec798999a2b940c249ae", "/Paginas/Keet/Controles/control.jsf");
-	
+	CONTROLES       ("Registrar un avance en el seguimiento a los lotes por los residentes de obra", "ec798999a2b940c249ae", "/Paginas/Keet/Controles/control.jsf"),
+	// DESTAJOS
+	AUDITORIA       ("Auditar trabajos realizados", "919bb1bb4ad36af27d8c", "/Paginas/Keet/Auditoria/filtro.jsf");
+  
 	private static final Map<Long, EOpcionesResidente> lookup= new HashMap<>();	
 	private String titulo;
 	private String cifrado;
