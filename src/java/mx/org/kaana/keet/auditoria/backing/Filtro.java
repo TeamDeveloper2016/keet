@@ -462,7 +462,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
   } // doReporte 	
 
 	public String doColor(Entity row) {
-		return Objects.equals(row.toLong("nivel"), 5L)? "janal-tr-nuevo": "";
+		return Objects.equals(row.toLong("nivel"), 5L)? "janal-tr-diferencias": "";
 	}
  
   public void doWhatsup() {

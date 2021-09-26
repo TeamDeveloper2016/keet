@@ -9,6 +9,12 @@
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Revisar los destajos realizados por desarrollo" />
   <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.Validations.prototype.onLoadCallBack= function() {
+				$janal.console('janal.onLoadCallBack.move:');
+				$('#hola').click();
+			};      
+    </script>  
 		<style type="text/css">
 			.ui-commandlink {
 				color: transparent !important;
@@ -31,7 +37,7 @@
 							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
                 <p:outputLabel for="contratos" value="Contratos:"/>
                 <p:selectOneMenu id="contratos" value="#{keetAuditoriaFiltro.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetAuditoriaFiltro.doLoadManzanas}" update="tabla manzanas lotes destajo" oncomplete="janal.desbloquear(); reloadManzanas(); reloadLotes();"/>
+                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetAuditoriaFiltro.doLoadManzanas}" update="tabla manzanas lotes destajo" oncomplete="janal.desbloquear(); reloadManzanas(); reloadLotes(); reload();"/>
                   <f:selectItems value="#{keetAuditoriaFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
@@ -42,7 +48,7 @@
                 </p:selectOneMenu>
                 <p:outputLabel for="manzanas" value="Manzanas:"/>
                 <p:selectOneMenu id="manzanas" value="#{keetAuditoriaFiltro.attrs.manzana}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetAuditoriaFiltro.doLoadCasas}" update="tabla lotes destajo" oncomplete="janal.desbloquear(); reloadLotes();"/>
+                  <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetAuditoriaFiltro.doLoadCasas}" update="tabla lotes destajo" oncomplete="janal.desbloquear(); reloadLotes(); reload();"/>
                   <f:selectItems value="#{keetAuditoriaFiltro.attrs.manzanas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} #{empty element.manzana or element.manzana eq ''? '': '|'} #{element.manzana}"/>
                   <p:column headerText="Contato">
                     <h:outputText value="#{item.nombre}"/>
@@ -61,7 +67,7 @@
                   <p:column headerText="Prototipo">
                     <h:outputText value="#{item.prototipo}"/>
                   </p:column>   
-                  <p:column headerText="Etapa" styleClass="janal-wid-12">
+                  <p:column headerText="Etapa">
                     <h:outputText value="#{item.etapaProyecto}"/>
                   </p:column>   
                 </p:selectOneMenu>
@@ -85,12 +91,12 @@
               <p:remoteCommand name="reload" process="@this" update="destajo"/>
 						</p:tab>					
 					</p:accordionPanel>						
-          <a id="hola" href="#tabla">Hola</a>
 					<p:spacer height="3px"/>
+          <a id="hola" href="#tabla" style="display:" class="janal-color-blue">Hola como estas</a>
 					<p:dataGrid id="destajo" var="row" value="#{keetAuditoriaFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetAuditoriaFiltro.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
 						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.claveContrato).concat(']')} #{empty row.prototipo? '': '|'} #{row.prototipo}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
-                <p:commandLink process="@this" update="tabla @(.titular)" title="Ver detalle del lote" actionListener="#{keetAuditoriaFiltro.doDestajos(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();$('#hola').click();">
+                <p:commandLink id="jump" process="@this" update="tabla @(.titular)" title="Ver detalle del lote" actionListener="#{keetAuditoriaFiltro.doDestajos(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" styleClass="hola">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}" styleClass="manzana-lote-font janal-color-blue" style="cursor: pointer;"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
@@ -126,8 +132,8 @@
               </p:menuButton>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
               <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetAuditoriaFiltro.doReporte('DESARROLLO')}" oncomplete="janal.desbloquear();" update="descargar"/>
-              <p:commandButton styleClass="xs-pantalla" icon="fa fa-envelope-o" title="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetAuditoriaFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetAuditoriaFiltro.doReporte('DESARROLLO')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-envelope-o" title="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetAuditoriaFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="false"/>
             </f:facet>												
             <p:column class="janal-column-left MarAuto Responsive janal-wid-6" rendered="#{not kajoolUtilAplicacion.isMobile}">
               <f:facet name="header">
@@ -153,19 +159,19 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}" styleClass="janal-font-bold #{row.idEstacionEstatus eq '2'? 'janal-color-orange': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
             </p:column>                    
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.porcentaje}">
+            <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-33': 'janal-fix-8'}" sortBy="#{row.porcentaje}">
               <f:facet name="header">
                 <h:outputText value="Porcentaje"/>
               </f:facet>
               <h:outputText value="#{row['porcentaje']} %"/>
             </p:column>	
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}" rendered="#{not kajoolUtilAplicacion.isMobile}">
+            <p:column class="janal-column-right MarAuto Responsive janal-fix-8" sortBy="#{row.costo}" rendered="#{not kajoolUtilAplicacion.isMobile}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
               <h:outputText value="#{row['costo']}"/>
             </p:column>	
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cargo}">
+            <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-25': 'janal-fix-8'}" sortBy="#{row.cargo}">
               <f:facet name="header">
                 <h:outputText value="Pagado"/>
               </f:facet>
