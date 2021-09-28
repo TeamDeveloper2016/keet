@@ -40,6 +40,11 @@ import mx.org.kaana.mantic.enums.ETiposContactos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDateTime;
+import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.model.map.DefaultMapModel;
+import org.primefaces.model.map.LatLng;
+import org.primefaces.model.map.MapModel;
+import org.primefaces.model.map.Marker;
 
 @Named(value = "keetAuditoriaFiltro")
 @ViewScoped
@@ -47,11 +52,14 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428872L;			
   private static final Log LOG = LogFactory.getLog(Filtro.class);
+	protected static final String COORDENADA_CENTRAL= "21.8818,-102.291";
   
 	private RegistroDesarrollo registroDesarrollo;		
 	private List<Entity> lotes;
 	private FormatLazyModel lazyDestajo;
 	private Nomina ultima;  
+	private MapModel model;
+  private Entity contrato;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
@@ -73,10 +81,10 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		return lazyDestajo;
 	}
 
-	public void setLazyDestajo(FormatLazyModel lazyDestajo) {
-		this.lazyDestajo=lazyDestajo;
+	public MapModel getModel() {
+		return model;
 	}
-	
+  
   @PostConstruct
   @Override
   protected void init() {		
@@ -252,7 +260,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     List<Columna> columns       = null;		
 		List<UISelectEntity> casas  = null;
     try {   
-      params  = new HashMap<>();
+      params = new HashMap<>();
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
       columns= new ArrayList<>();      
@@ -293,7 +301,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		    color     = "rojo";
         porcentaje= 0;
 				params.clear();
-				params.put("clave", this.toClaveEstacion(mzaLote));
+        String clave= Cadena.rellenar(mzaLote.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(mzaLote.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(mzaLote.toLong("ordenContrato").toString(), 3, '0', true)+ Cadena.rellenar(mzaLote.toLong("orden").toString(), 3, '0', true);
+				params.put("clave", clave);
 				estatus= (Entity) DaoFactory.getInstance().toEntity("VistaCapturaDestajosDto", "estatusLote", params);
 				if(estatus.toString("total")!= null) {
 					if(estatus.toLong("total").equals(estatus.toLong("terminado")))
@@ -330,21 +339,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		} // finally		
 	} // toEstatusManzanaLote
 	
-	private String toClaveEstacion(Entity lote) {
-		StringBuilder regresar= null;
-		try {			
-			regresar= new StringBuilder();
-			regresar.append(Cadena.rellenar(this.attrs.get("idEmpresa").toString(), 3, '0', true));
-			regresar.append(Fecha.getAnioActual());
-			regresar.append(Cadena.rellenar(lote.toString("ordenContrato"), 3, '0', true));
-			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar.toString();
-	} // toClaveEstacion
-	
 	public String doCancelar() {
     String regresar                   = null;    
 		EOpcionesResidente opcion         = null;		
@@ -374,6 +368,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 		Map<String, Object>params= new HashMap<>();
     try {
       this.attrs.put("seleccionado", seleccionado);
+      this.contrato= seleccionado;
       String clave= Cadena.rellenar(seleccionado.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(seleccionado.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(seleccionado.toLong("ordenContrato").toString(), 3, '0', true)+ Cadena.rellenar(seleccionado.toLong("orden").toString(), 3, '0', true);
       params.put("clave", clave);      
       params.put("lote", seleccionado.toString("codigo"));      
@@ -384,7 +379,7 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       this.lazyDestajo= new FormatCustomLazy("VistaTableroDto", "detalleLotes", params, columns);
       UIBackingUtilities.resetDataTable("tabla");
       this.attrs.put("destajos", true);
-      //UIBackingUtilities.scrollTo("tabla");
+      this.toLoadCoordenadas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -533,5 +528,106 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
       Methods.clean(params);
     } // finally
   }
+ 
+  private void toLoadCoordenadas() {
+		List<Entity> items        = null;
+		Marker marker             = null;
+		String icon               = null;
+		Map<String, Object> params= null;
+		List<Columna> columns     = null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+			this.model= new DefaultMapModel();
+			this.attrs.put("coordenadaCentral", COORDENADA_CENTRAL);
+			params= new HashMap<>();
+      if(this.contrato!= null && !this.contrato.isEmpty()) {
+        params.put("desarrollo", this.contrato.toString("desarrollo"));
+        params.put("contrato", this.contrato.toString("nombreContrato"));
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+        items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaTableroDto", "georreferencia", params, Constantes.SQL_TODOS_REGISTROS);
+        if(!items.isEmpty()) {
+          UIBackingUtilities.toFormatEntitySet(items, columns);
+          this.attrs.put("coordenadaCentral", null);
+          for(Entity lote: items) {
+            icon  = this.toIcon(lote);
+            marker= new Marker(new LatLng(Double.valueOf(lote.toString("latitud")), Double.valueOf(lote.toString("longitud"))), "Contrato: ".concat(lote.toString("nombre")).concat(", avance: ").concat(String.valueOf(lote.toInteger("porcentaje"))).concat("%, lote: ").concat(lote.toString("codigo")), lote, icon);
+            this.model.addOverlay(marker);
+          } // for
+          if(Cadena.isVacio(this.attrs.get("coordenadaCentral")))
+            this.attrs.put("coordenadaCentral", lotes.get(0).toString("latitud").concat(",").concat(lotes.get(0).toString("longitud")));
+        } // if
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  } // toLoadCoordenadas
+  
+  private String toIcon(Entity mzaLote) throws Exception {
+		String regresar          = null;
+		String imagen            = null;
+		String color             = "red";
+		Map<String, Object>params= null;
+		Entity estatus           = null;
+    Integer porcentaje       = 0;
+		try {
+			imagen= JsfBase.getContext().concat("/javax.faces.resource/icon/mapa/").concat("janal-{color}-{orden}.png").concat(".jsf?ln=janal");
+			params= new HashMap<>();			
+      String clave= Cadena.rellenar(mzaLote.toLong("idEmpresa").toString(), 3, '0', true)+ Cadena.rellenar(mzaLote.toLong("ejercicio").toString(), 4, '0', true)+ Cadena.rellenar(mzaLote.toLong("ordenContrato").toString(), 3, '0', true)+ Cadena.rellenar(mzaLote.toLong("orden").toString(), 3, '0', true);
+			params.put("clave", clave);
+			estatus= (Entity) DaoFactory.getInstance().toEntity("VistaGeoreferenciaLotesDto", "estatusManzanaLote", params);
+			if(estatus.toString("total")!= null) {
+        porcentaje= new Integer(String.valueOf((estatus.toLong("terminado") * 100)/estatus.toLong("total")));
+        /* AQUI COLOCAR LOS COLORES BASADOS EN EL PORCENTAJE DE AVANCE */
+				this.attrs.put("porcentaje", porcentaje);
+        if(Objects.equals(this.contrato.toString("codigo"), mzaLote.toString("codigo"))) { 
+  	  		color= "blue";
+          this.attrs.put("coordenadaCentral", mzaLote.toString("latitud").concat(",").concat(mzaLote.toString("longitud")));          
+        } // else  
+        else
+          if(porcentaje== 0)
+            color= "red";
+          else  
+            if(porcentaje> 0 && porcentaje<= 20)
+              color= "cyan";
+            else
+              if(porcentaje>= 21 && porcentaje<= 80)
+                color= "orange";
+              else
+                if(porcentaje>= 81 && porcentaje<= 99)
+                  color= "yellow";
+                else
+                  color= "green"; 
+			} // if	
+			params.clear();
+			params.put("color", color);
+			params.put("orden", mzaLote.toString("orden"));
+      mzaLote.put("color", new Value("color", color));
+      mzaLote.put("porcentaje", new Value("porcentaje", porcentaje));
+			regresar= Cadena.replaceParams(imagen, params);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally		
+		return regresar;
+	} // toIcon
+
+	public void onMarkerSelect(OverlaySelectEvent event) {
+		Marker marker= null;	
+		try {
+			marker= (Marker) event.getOverlay();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		                    
+  } // onMarkerSelect
   
 }

@@ -373,6 +373,7 @@
 					tc_keet_contratos.etapa,
 					tc_keet_contratos.ejercicio,
 					tc_keet_contratos.orden as contrato,
+					tc_keet_contratos.orden as orden_contrato,
 					tc_keet_contratos_lotes.orden,
 					tc_keet_contratos_lotes.latitud,
 					tc_keet_contratos_lotes.longitud,
@@ -6620,7 +6621,7 @@
 				select 
 					case when tc_keet_estaciones.id_estacion_estatus= 1 then 1 else 0 end iniciado,
 					case when tc_keet_estaciones.id_estacion_estatus= 2 then 1 else 0 end en_proceso,
-					case when tc_keet_estaciones.id_estacion_estatus= 3 then 1 else 0 end terminado  
+					case when (tc_keet_estaciones.id_estacion_estatus= 3 or tc_keet_estaciones.id_estacion_estatus= 4) then 1 else 0 end terminado  
 				from(  
 				select
 					tc_keet_puntos_paquetes.id_punto_grupo,  
@@ -6655,6 +6656,7 @@
 					tc_keet_estaciones on principal.codigo = tc_keet_estaciones.codigo
 				where
 					tc_keet_estaciones.clave like '{clave}%'
+          and tc_keet_estaciones.costo&gt; 0
 				)final
 			</select>
 			<select id="lotes">				
@@ -6702,7 +6704,8 @@
 					tc_keet_proyectos.clave clave_proyecto,
 					tc_keet_proyectos.etapa etapa_proyecto,
 					tc_keet_contratos.orden orden_contrato,
-          tc_keet_prototipos.nombre as prototipo
+          tc_keet_prototipos.nombre as prototipo,
+          tc_keet_desarrollos.nombres as desarrollo
 				from 
 					tc_keet_contratos_lotes
 				inner join 
@@ -7108,7 +7111,7 @@
 						1 cantidad,        
 						tc_mantic_articulos.precio,
 						tc_mantic_unidades_medidas.nombre unidad_medida,
-						'   ' AS origen,
+						'   ' as origen,
 						tc_mantic_articulos.descripcion,				  
 						tc_mantic_articulos.precio AS original,
 						tc_mantic_articulos.menudeo,
@@ -7119,7 +7122,7 @@
 						tc_mantic_articulos.limite_mayoreo,
 						tc_mantic_articulos.iva,
 						tc_mantic_articulos.id_redondear,
-						CONCAT(IFNULL(tc_mantic_articulos.descuento, '0'), ',', IFNULL(tc_mantic_articulos.extra, '0')) AS porcentajes
+						concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes
 					from
 						tc_keet_materiales
 					inner join 
@@ -7296,7 +7299,7 @@
 				select 
 					case when tc_keet_materiales.id_estacion_estatus= 1 then 1 else 0 end iniciado,
 					case when tc_keet_materiales.id_estacion_estatus= 2 then 1 else 0 end en_proceso,
-					case when tc_keet_materiales.id_estacion_estatus= 3 then 1 else 0 end terminado  
+					case when (tc_keet_estaciones.id_estacion_estatus= 3 or tc_keet_estaciones.id_estacion_estatus= 4) then 1 else 0 end terminado  
 				from(  
 				select
 					tc_keet_puntos_paquetes.id_punto_grupo,  

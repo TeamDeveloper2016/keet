@@ -925,7 +925,7 @@ public class Contratos extends Respaldos implements Serializable {
 		try {			
 			regresar= new StringBuilder();
 			regresar.append(Cadena.rellenar(lote.toString("idEmpresa"), 3, '0', true));
-			regresar.append(Fecha.getAnioActual());
+			regresar.append(lote.toLong("ejercicio"));
 			regresar.append(Cadena.rellenar(lote.toString("contrato"), 3, '0', true));
 			regresar.append(Cadena.rellenar(lote.toString("orden"), 3, '0', true));
 		} // try
