@@ -12,7 +12,7 @@
     <script type="text/javascript">
       Janal.Control.Validations.prototype.onLoadCallBack= function() {
 				$janal.console('janal.onLoadCallBack.move:');
-				$('#hola').click();
+				setTimeout("document.getElementById('hola').click()", 1000);
 			};      
     </script>  
 		<style type="text/css">
@@ -159,9 +159,9 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}" styleClass="janal-font-bold #{row.idEstacionEstatus eq '2'? 'janal-color-orange': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
             </p:column>                    
-            <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-33': 'janal-fix-8'}" sortBy="#{row.porcentaje}">
+            <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-fix-8'}" sortBy="#{row.porcentaje}">
               <f:facet name="header">
-                <h:outputText value="Porcentaje"/>
+                <h:outputText value="#{kajoolUtilAplicacion.isMobile? '( % )': 'Porcentaje'}"/>
               </f:facet>
               <h:outputText value="#{row['porcentaje']} %"/>
             </p:column>	
@@ -171,7 +171,7 @@
               </f:facet>
               <h:outputText value="#{row['costo']}"/>
             </p:column>	
-            <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-25': 'janal-fix-8'}" sortBy="#{row.cargo}">
+            <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-fix-8'}" sortBy="#{row.cargo}">
               <f:facet name="header">
                 <h:outputText value="Pagado"/>
               </f:facet>

@@ -222,7 +222,7 @@
                 <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle por estación
               </div>
               <p:dataTable lazy="false" id="tablaDetalleLotes" var="row" widgetVar="kajoolTableLote" rowIndexVar="index" value="#{kajoolContratos.attrs.tablaDetalleLotes}" paginator="#{kajoolContratos.attrs.tablaDetalleLotes.size() gt (kajoolUtilAplicacion.isMobile? 3: 10)}" rowsPerPageTemplate="#{kajoolUtilAplicacion.isMobile? 3: 10}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{kajoolUtilAplicacion.isMobile? 3: 10}" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}" rowStyleClass="#{kajoolContratos.doColor(row)}">
-                <p:column styleClass="janal-wid-15 janal-column-left Responsive">
+                <p:column styleClass="janal-wid-10 janal-column-left Responsive" rendered="#{not kajoolUtilAplicacion.isMobile}">
                   <f:facet name="header">
                     <h:outputText value="Código"/>
                   </f:facet>
@@ -234,12 +234,30 @@
                   </f:facet>
                   <h:outputText value="#{row.descripcion}" styleClass="janal-color-black"/>
                 </p:column>
-                <p:column styleClass="janal-wid-18 Responsive" >
+                <p:column styleClass="janal-wid-15 Responsive">
                   <f:facet name="header">
                     <h:outputText value="Estatus"/>
                   </f:facet>
                   <h:outputText value="#{row.estatus}" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-black': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
-                </p:column>                    
+                </p:column>            
+                <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-wid-15'}" sortBy="#{row.porcentaje}">
+                  <f:facet name="header">
+                    <h:outputText value="#{kajoolUtilAplicacion.isMobile? '( % )': 'Porcentaje'}"/>
+                  </f:facet>
+                  <h:outputText value="#{row['porcentaje']} %"/>
+                </p:column>	
+                <p:column class="janal-column-right MarAuto Responsive janal-fix-10" rendered="#{not kajoolUtilAplicacion.isMobile}">
+                  <f:facet name="header">
+                    <h:outputText value="Costo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['costo']}"/>
+                </p:column>	
+                <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-wid-10'}" rendered="false">
+                  <f:facet name="header">
+                    <h:outputText value="Pagado"/>
+                  </f:facet>
+                  <h:outputText value="#{row['cargo']}"/>
+                </p:column>	
                 <f:facet name="footer">
                   <p:outputLabel value="Total [#{kajoolContratos.attrs.tablaDetalleLotes.size()}] registros"/>
                 </f:facet>

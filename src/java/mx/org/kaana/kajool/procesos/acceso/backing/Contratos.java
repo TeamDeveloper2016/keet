@@ -175,7 +175,7 @@ public class Contratos extends Respaldos implements Serializable {
         params.put(Constantes.SQL_CONDICION, " and tc_keet_desarrollos.id_desarrollo is not null");      
       this.desarrollos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "nombresDesarrollos", params);
       if(this.desarrollos!= null && !this.desarrollos.isEmpty())
-        this.desarrollo = this.desarrollos.get(this.desarrollos.size()> 1? 1: 0);
+        this.desarrollo = this.desarrollos.get(0);
       params.put("idTipoNomina", "1");
       this.nominas= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaDto", "ultima", params, 12L);
       if(this.nominas!= null && !this.nominas.isEmpty()) {
@@ -871,7 +871,7 @@ public class Contratos extends Respaldos implements Serializable {
 			dns= Configuracion.getInstance().getPropiedad("sistema.dns.".concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()));			
 			importados= (List<Entity>) this.attrs.get("importados");
 			for(Entity importado: importados) {
-				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("archivo"));
+				url= dns.substring(0, dns.indexOf(JsfBase.getContext())).concat(this.attrs.get("pathPivote").toString()).concat(importado.toString("ruta")).concat(importado.toString("nombre").startsWith("sin-foto")? importado.toString("nombre"): importado.toString("archivo"));
 				importado.put("url", new Value("url", url));
 			} // for
 			this.attrs.put("importados", importados);
@@ -1160,7 +1160,7 @@ public class Contratos extends Respaldos implements Serializable {
   }
 
 	public String doColor(Entity row) {
-		return row.toString("codigo").startsWith("#")? "janal-tr-error janal-color-white": "";
+		return row.toString("codigo").startsWith("#")? "janal-tr-diferencias": "";
 	}
 
   private void toChagenIconColor(Entity entity) throws Exception {
