@@ -37,7 +37,7 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
   @Column (name="id_proyecto")
   private Long idProyecto;
   @Column (name="lote")
-  private Long lote;
+  private String lote;
   @Column (name="fecha_termino")
   private LocalDate fechaTermino;
   @Id
@@ -70,7 +70,7 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetProyectosLotesDto(String manzana, String clave, LocalDate fechaInicio, Long idProyecto, Long lote, LocalDate fechaTermino, Long idProyectoLote, Long idUsuario, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, Double costo) {
+  public TcKeetProyectosLotesDto(String manzana, String clave, LocalDate fechaInicio, Long idProyecto, String lote, LocalDate fechaTermino, Long idProyectoLote, Long idUsuario, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, Double costo) {
     setManzana(manzana);
     setClave(clave);
     setFechaInicio(fechaInicio);
@@ -120,11 +120,11 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
     return idProyecto;
   }
 
-  public void setLote(Long lote) {
+  public void setLote(String lote) {
     this.lote = lote;
   }
 
-  public Long getLote() {
+  public String getLote() {
     return lote;
   }
 

@@ -55,7 +55,7 @@
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                     <p:outputLabel for="contratos" value="Contratos:"/>
                     <p:selectOneMenu id="contratos" value="#{keetCatalogosContratosDestajosFiltro.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                      <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFiltro.doLoadManzanas}" update="tabla mientras manzanas departamento contratista lotes proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadContratista(); reloadLotes();"/>
+                      <p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{keetCatalogosContratosDestajosFiltro.doLoadManzanas}" update="tabla mientras manzanas departamento contratista lotes proveedor persona destajo reporteDestajos" oncomplete="janal.desbloquear(); reloadManzanas(); reloadContratista(); reloadLotes();"/>
                       <f:selectItems value="#{keetCatalogosContratosDestajosFiltro.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                       <p:column headerText="Clave">
                         <h:outputText value="#{item.clave}"/>
@@ -119,6 +119,7 @@
                 </p:panelGrid>  
               </p:panelGrid>										
               <p:remoteCommand name="reloadContratista" process="@this" update="contratista consultas"/>
+              <p:remoteCommand name="reloadManzanas" process="@this" update="manzanas"/>
               <p:remoteCommand name="reloadLotes" process="@this" update="lotes"/>
               <p:remoteCommand name="reload" process="@this" update="destajo"/>
 						</p:tab>

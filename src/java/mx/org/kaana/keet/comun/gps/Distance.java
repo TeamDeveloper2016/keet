@@ -2,6 +2,7 @@ package mx.org.kaana.keet.comun.gps;
 
 import java.io.Serializable;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Error;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,14 +38,22 @@ public final class Distance implements Serializable {
 
 	public double toKm() {
     //double earthRadio= 3958.75; // en millas  
-		double earthRadio = 6378.137; // en kilómetros  
-		double dLatitud   = Math.toRadians(two.getLatitud()- one.getLatitud());
-		double dLongitud  = Math.toRadians(two.getLongitud()- one.getLongitud());
-		double sinLatitud = Math.sin(dLatitud/ 2);
-		double sinLongitud= Math.sin(dLongitud/ 2);
-		double a= Math.pow(sinLatitud, 2)+ Math.pow(sinLongitud, 2)* Math.cos(Math.toRadians(one.getLatitud()))* Math.cos(Math.toRadians(two.getLatitud()));
-		double c= 2* Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-		return earthRadio* c;
+    double regresar= 0D;
+    try {
+      double earthRadio = 6378.137; // en kilómetros  
+      double dLatitud   = Math.toRadians(two.getLatitud()- one.getLatitud());
+      double dLongitud  = Math.toRadians(two.getLongitud()- one.getLongitud());
+      double sinLatitud = Math.sin(dLatitud/ 2);
+      double sinLongitud= Math.sin(dLongitud/ 2);
+      double a= Math.pow(sinLatitud, 2)+ Math.pow(sinLongitud, 2)* Math.cos(Math.toRadians(one.getLatitud()))* Math.cos(Math.toRadians(two.getLatitud()));
+      double c= 2* Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      regresar= earthRadio* c;
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      regresar= 0D;
+    } // catch
+    return regresar;
 	}
 
 	public double toKm(Point one, Point two) {

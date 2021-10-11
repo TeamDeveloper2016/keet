@@ -386,6 +386,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
               int index= familias.indexOf(new UISelectEntity(entity.toLong("idFamilia")));
               if(index>= 0)
                 list[count++]= familias.get(index);
+              else {
+                list[count++]= familias.get(0);
+                LOG.error("ESTA FAMILIA ["+ proveedor.getKey()+ "] NO EXISTE PARA ESTE PROVEEDOR ["+ entity.toLong("idFamilia")+ "],VERIFICAR PORQUE NO EXISTE");
+              } // else  
             } // for
           } // if  
         } // if  

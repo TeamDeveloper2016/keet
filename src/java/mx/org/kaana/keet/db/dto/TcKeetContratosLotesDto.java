@@ -35,7 +35,7 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
   @Column (name="inicio")
   private LocalDate inicio;
   @Column (name="lote")
-  private Long lote;
+  private String lote;
   @Column (name="termino")
   private LocalDate termino;
   @Column (name="registro")
@@ -84,11 +84,11 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, Long lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo) {
+  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, String lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo) {
     this(manzana, clave, inicio, lote, termino, idUsuario, idContrato, idContratoLoteEstatus, idContratoLote, idTipoFachada, diasConstruccion, idPrototipo, orden, atributos, latitud, longitud, arranque, idEstacion, costo, null, null);
   }
   
-  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, Long lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo, String calle, String numero) {
+  public TcKeetContratosLotesDto(String manzana, String clave, LocalDate inicio, String lote, LocalDate termino, Long idUsuario, Long idContrato, Long idContratoLoteEstatus, Long idContratoLote, Long idTipoFachada, Long diasConstruccion, Long idPrototipo, Long orden, String atributos, String latitud, String longitud, LocalDate arranque, Long idEstacion, Double costo, String calle, String numero) {
     setManzana(manzana);
     setClave(clave);
     setInicio(inicio);
@@ -137,11 +137,11 @@ public class TcKeetContratosLotesDto implements IBaseDto, Serializable {
     return inicio;
   }
 
-  public void setLote(Long lote) {
+  public void setLote(String lote) {
     this.lote = lote;
   }
 
-  public Long getLote() {
+  public String getLote() {
     return lote;
   }
 
