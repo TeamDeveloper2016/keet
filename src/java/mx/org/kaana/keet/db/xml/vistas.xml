@@ -4697,6 +4697,7 @@
 					tc_keet_deudores.disponible,
 					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) deudor,
 					ifnull(tc_keet_prestamos_pagos.numero_pagos, 0) numero_pagos,
+          tc_keet_prestamos.semanas,
 					tc_keet_prestamos_estatus.nombre estatus,
 				  tc_keet_prestamos_estatus.id_prestamo_estatus
 				from

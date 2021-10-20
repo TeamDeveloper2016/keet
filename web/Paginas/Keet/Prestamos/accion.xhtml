@@ -55,11 +55,12 @@
 									<p:outputLabel for="fecha" value="Fecha ingreso o re-ingreso:"/>
 									<p:outputLabel for="antiguedad" value="Antigüedad en días:"/>
 									<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.fecha}" readonly="true"/>																								
-									<p:inputText id="antiguedad" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.antiguedad}" readonly="true"/>																								
+									<p:inputText styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.dias}" readonly="true"/>																								
 									<p:outputLabel for="limite" value="Limite de crédito:"/>
 									<p:outputLabel for="saldo" value="Saldo:"/>
 									<p:inputText id="limite" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.limite}" readonly="true"/>																								
 									<p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.disponible}" readonly="true"/>																								
+									<p:inputText id="antiguedad" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.attrs.antiguedad}" style="display: none"/>
 								</p:panelGrid>
                 <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
   								<p:outputLabel for="importe" value="Importe del prestamo:"/>

@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import java.util.List;
 import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
@@ -584,9 +586,13 @@ public  class Fecha {
     long hours  = (long)(seconds/ 60/ 60);
     long minutes= (long)((seconds/ 60)- (hours* 60));
     seconds     = (long)(seconds- (hours* 60* 60)- (minutes* 60)); 
+    long years  = (long) (hours/ 8760);
+    hours       = (long) (hours- (years* 8760));
+    long months = (long) (hours/ 720);
+    hours       = (long) (hours- (months* 720));
 		long days   = (long) (hours/ 24);
 		hours       = (long) (hours- (days* 24));
-    return (days> 0? days+ " dias, ": "")+ Cadena.rellenar(String.valueOf(hours), 2, '0', Boolean.TRUE).concat(":").concat(Cadena.rellenar(String.valueOf(minutes), 2, '0', Boolean.TRUE)).concat(":").concat(Cadena.rellenar(String.valueOf(seconds), 2, '0', Boolean.TRUE));
+    return (years> 0? years+ " año(s)": "")+ (years>0 && months> 0? ", con ": "")+ (months> 0? months+ " mese(s)": "")+ (months>0 && days> 0? ", con ": "")+ (days> 0? days+ " dias": "")+ (days>0 && hours> 0? ", con ": "")+ (hours> 0? Cadena.rellenar(String.valueOf(hours), 2, '0', Boolean.TRUE)+ " horas": "")+ (hours>0 && minutes> 0? ", con ": "")+ (minutes> 0? Cadena.rellenar(String.valueOf(minutes), 2, '0', Boolean.TRUE)+ " minutos": "")+ (minutes>0 && seconds> 0? ", con ": "")+ (seconds> 0? Cadena.rellenar(String.valueOf(seconds), 2, '0', Boolean.TRUE)+ " segundos": "");
   }
 
   public static java.sql.Date toDateDefault(String fecha) {
@@ -741,9 +747,13 @@ public  class Fecha {
   } // getLocalTimeBD
 	
 	public static void main(String ... args) {
-    String value= "18/02/2021 17:15:19";
+    String value= "12/12/2017 17:15:19";
     LocalDateTime date= Instant.ofEpochMilli(Fecha.getFechaHora(value).getTimeInMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime();
 		LOG.info(date);
+		LOG.info(DAYS.between(date.toLocalDate(), LocalDate.now()));
+		LOG.info(SECONDS.between(date, LocalDateTime.now()));
+		LOG.info(Fecha.toFormatSecondsToHour(SECONDS.between(date, LocalDateTime.now())));
+		LOG.info(Fecha.toFormatSecondsToHour(DAYS.between(date.toLocalDate(), LocalDate.now())* 86400));
 	}
 	
 } // Fecha

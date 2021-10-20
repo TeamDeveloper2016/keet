@@ -163,7 +163,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 					if (transaccion.ejecutar(eaccion)){
 						JsfBase.addMessage("El prestamo se cancelo correctamente.");
 					} // if
-					doLoad();
+					this.doLoad();
 					break;
 			} // switch
     } // try

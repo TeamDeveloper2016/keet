@@ -6161,7 +6161,7 @@
 					tc_mantic_incidentes
 				where 
 					id_prestamo= {idPrestamo}
-          and id_incidente_estatus in (1,2)
+          and id_incidente_estatus in (1,2,6)
 			</select>
       <select id="incidente">
         select
@@ -6171,7 +6171,7 @@
         where
           now()&gt;= inicio
           and now()&lt;= termino
-          and id_incidente_estatus in (1, 2, 3, 5)
+          and id_incidente_estatus in (1, 2, 3, 5, 6)
           and id_tipo_incidente in (1, 2, 3, 4, 5, 6, 9)
           and id_empresa_persona= {idEmpresaPersona}        
         order by
