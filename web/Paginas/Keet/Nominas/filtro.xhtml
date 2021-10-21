@@ -32,6 +32,16 @@
 				} // if
 				return ok;
 			} // validaJustificacion			
+      
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
     </script>		
   </ui:define>
   <ui:define name="contenido">
@@ -112,12 +122,19 @@
 								<p:separator/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('LISTADO_NOMINA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('NOMINA_LISTADO')}" oncomplete="janal.desbloquear();" update="descargar"/>
-							</p:menuButton>
+								<p:separator/>
+                <p:menuitem icon="fa fa-user-times" value="Faltas" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+	  							<p:fileDownload value="#{keetNominasFiltro.faltas}" />
+  							</p:menuitem>
+  						</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" action="#{keetNominasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('LISTADO_NOMINA')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetNominasFiltro.doReporte('NOMINA_LISTADO')}" oncomplete="janal.desbloquear();" update="descargar"/>
+              <p:commandButton styleClass="xs-pantalla" icon="fa fa-user-times" title="Faltas" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+								<p:fileDownload value="#{keetNominasFiltro.faltas}" />
+							</p:commandButton>
             </f:facet>												
             <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">

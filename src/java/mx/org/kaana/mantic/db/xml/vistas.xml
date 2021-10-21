@@ -10636,8 +10636,7 @@
 					tc_keet_desarrollos on tc_mantic_incidentes.id_desarrollo = tc_keet_desarrollos.id_desarrollo
 				where 
 					{condicion}
-				and 
-					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
+				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
 				{sortOrder}
 			</select>
 			<select id="personalDesarrollo">

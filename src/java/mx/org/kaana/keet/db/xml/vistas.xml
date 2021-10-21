@@ -3329,6 +3329,36 @@
 			</select>
 		</unit>
 		<unit id="VistaIncidenciasDto">
+      <select id="faltas">
+				select
+				  tc_mantic_incidentes.id_incidente as id_key,
+				  tc_keet_desarrollos.nombres as desarrollo,
+          concat(tc_mantic_personas.nombres, ' ', if(tc_mantic_personas.paterno is null, '', tc_mantic_personas.paterno), ' ', if(tc_mantic_personas.materno is null, '', tc_mantic_personas.materno)) as empleado,
+          date_format(tc_mantic_incidentes.inicio, '%d/%m/%Y') as fecha,
+          tc_mantic_incidentes_estatus.nombre as estatus,
+          date_format(tc_mantic_incidentes.registro, '%d/%m/%Y %H%i%S') as registro
+				from 
+				  tc_mantic_incidentes
+				inner join
+ 				  tc_mantic_tipos_incidentes on tc_mantic_incidentes.id_tipo_incidente= tc_mantic_tipos_incidentes.id_tipo_incidente and tc_mantic_tipos_incidentes.id_afecta_nomina= 1
+				inner join 
+					tr_mantic_empresa_personal on tc_mantic_incidentes.id_empresa_persona = tr_mantic_empresa_personal.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona
+				inner join
+					tc_keet_desarrollos on tc_mantic_incidentes.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+				inner join
+					tc_mantic_incidentes_estatus on tc_mantic_incidentes.id_incidente_estatus= tc_mantic_incidentes_estatus.id_incidente_estatus
+			  where
+				  (tc_mantic_incidentes.id_nomina is null or tc_mantic_incidentes.id_nomina= -1)
+				  and tc_mantic_incidentes.id_incidente_estatus= 2
+				  and tc_mantic_incidentes.id_tipo_incidente= 1
+			  order by
+				  tc_keet_desarrollos.nombres, 
+          tc_mantic_personas.paterno,
+          tc_mantic_personas.materno,
+          tc_mantic_personas.nombres 
+      </select>
 			<select id="movimientos">				
 				select
 					tc_mantic_incidentes_bitacora.id_incidente_bitacora as id_key,

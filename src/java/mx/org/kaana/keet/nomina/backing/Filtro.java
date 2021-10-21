@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.nomina.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -8,13 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
@@ -24,6 +28,8 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -38,12 +44,16 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.enums.EReportes;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "keetNominasFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
-	private static final long serialVersionUID = 6319984968937774153L;
+	private static final long serialVersionUID= 6319984968937774153L;
+  private static final String DATA_FILE     = "DESARROLLO,EMPLEADO,FECHA,ESTATUS,REGISTRO";  
+  
 	private LocalDate fecha;
   protected Reporte reporte;
 
@@ -335,7 +345,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public void doNotifica() {
 		Entity seleccionado      = null;
-		Map<String, Object>params= null;
 		Transaccion transaccion  = null;
 	  try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
@@ -349,14 +358,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
   }
   
   public void doWhatsup() {
 		Entity seleccionado      = null;
-		Map<String, Object>params= null;
 		Transaccion transaccion  = null;
 	  try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
@@ -370,9 +375,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
   }
   
   public void doNotificar() {
@@ -384,6 +386,32 @@ public class Filtro extends IBaseFilter implements Serializable {
       message.setCelular(celulares[x]);
       message.doSendMessage();
     } // for
+  }
+  
+  public StreamedContent getFaltas() {
+		StreamedContent regresar= null;
+		Xls xls                 = null;
+		Map<String, Object>params= null;
+		String template         = "FALTAS";
+		try {
+	  	params=new HashMap<>();
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(params, "VistaIncidenciasDto", "faltas", template), DATA_FILE);	
+			if(xls.procesar()) {
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
   }
   
 }

@@ -89,23 +89,23 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton icon="fa fa-file-excel-o" title="Exportar" onstart="return janal.bloquear();" action="#{keetCatalogosContratosPersonalExportar.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>									
 							</f:facet>												
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
 									<h:outputText value="Consecutivo"/>
 								</f:facet>
 								<h:outputText value="#{row['consecutivo']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreDesarrollo}">
+								<f:facet name="header">
+									<h:outputText value="Desarrollo"/>
+								</f:facet>
+								<h:outputText value="#{row['nombreDesarrollo']}"/>
+							</p:column>																					
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
 								<f:facet name="header">
 									<h:outputText value="Nombre"/>
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
-							</p:column>																					
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{row.puesto}">
-								<f:facet name="header">
-									<h:outputText value="Puesto"/>
-								</f:facet>
-								<h:outputText value="#{row['puesto']}"/>
 							</p:column>																					
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.tipoInicidente}">
 								<f:facet name="header">
