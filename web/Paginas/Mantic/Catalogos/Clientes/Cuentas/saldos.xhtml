@@ -257,6 +257,13 @@
                   <i class="fa fa-fw fa-grip-vertical janal-color-orange" title="Clave: #{row['clave']}"></i>
                   <h:outputText value="#{row['contrato']}"/>
                 </p:column>											
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.factura}">
+                  <f:facet name="header">
+                    <h:outputText value="Factura"/>
+                  </f:facet>
+                  <i class="fa fa-fw fa-file-text-o janal-color-blue" title="Timbrado: #{row['timbrado']}"></i>
+                  <h:outputText value="#{row['factura']}"/>
+                </p:column>											
                 <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}" rendered="false">
                   <f:facet name="header">
                     <h:outputText value="Tipo"/>
@@ -269,19 +276,19 @@
                   </f:facet>
                   <h:outputText value="#{row['persona']}" rendered="false"/>
                 </p:column>											
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
                   <f:facet name="header">
                     <h:outputText value="Importe"/>
                   </f:facet>
                   <h:outputText value="#{row['importe']}"/>
                 </p:column>
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.saldo}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.saldo}">
                   <f:facet name="header">
                     <h:outputText value="Saldo"/>
                   </f:facet>
                   <h:outputText value="#{row['saldo']}"/>
                 </p:column>						
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.abonado}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.abonado}">
                   <f:facet name="header">
                     <h:outputText value="Abonado"/>
                   </f:facet>

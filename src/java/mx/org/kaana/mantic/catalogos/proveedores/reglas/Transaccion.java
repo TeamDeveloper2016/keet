@@ -69,13 +69,13 @@ public class Transaccion extends IBaseTnx {
     try {			
       switch (accion) {
         case AGREGAR:
-          regresar = procesarProveedor(sesion);
+          regresar = this.procesarProveedor(sesion);
           break;
         case MODIFICAR:
-          regresar = actualizarProveedor(sesion);
+          regresar = this.actualizarProveedor(sesion);
           break;
         case ELIMINAR:
-          regresar = eliminarProveedor(sesion);
+          regresar = this.eliminarProveedor(sesion);
           break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
@@ -177,7 +177,7 @@ public class Transaccion extends IBaseTnx {
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put("idProveedor", this.registroProveedor.getIdProveedor());
+      params.put("idProveedor", this.dto.getKey());
       if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorDomicilioDto.class, params) > -1L) {
 				if (DaoFactory.getInstance().deleteAll(sesion, TcKeetProveedoresMaterialesDto.class, params) > -1L) {
 					if (DaoFactory.getInstance().deleteAll(sesion, TcKeetArticulosProveedoresDto.class, params) > -1L) {
@@ -186,7 +186,7 @@ public class Transaccion extends IBaseTnx {
 								if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorTipoContactoDto.class, params) > -1L) {
 									if(DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorPagoDto.class, params)> -1L){
 										if(DaoFactory.getInstance().deleteAll(sesion, TcKeetProveedoresFamiliasDto.class, params)> -1L)
-											regresar = DaoFactory.getInstance().delete(sesion, TcManticProveedoresDto.class, this.registroProveedor.getIdProveedor()) >= 1L;
+											regresar = DaoFactory.getInstance().delete(sesion, TcManticProveedoresDto.class, this.dto.getKey()) >= 1L;
 									} // if
 								} // if
 							} // if

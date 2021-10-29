@@ -218,7 +218,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MILES_CON_DECIMALES));    
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "clientes", params, columns);
       UIBackingUtilities.resetDataTable();	
-      this.lazyModelDetalle= null;
+      this.lazyModelDetalle   = null;
       this.pagosRealizados    = null;
       this.lazyPagosRealizados= null;																	 
     } // try
@@ -787,6 +787,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
+      columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_HORA_CORTA));    
 			this.lazyModelDetalle = new FormatCustomLazy("VistaClientesDto", "detalle", params, columns);
       UIBackingUtilities.resetDataTable();		
     } // try

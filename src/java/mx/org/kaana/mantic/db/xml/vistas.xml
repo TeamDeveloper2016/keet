@@ -4280,11 +4280,15 @@
 					(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
 					tc_mantic_clientes.razon_social,
 					tc_mantic_ventas.id_venta,
-					tc_mantic_clientes_deudas_estatus.nombre estatus
+					tc_mantic_clientes_deudas_estatus.nombre estatus,
+          tc_mantic_facturas.folio as factura,
+          tc_mantic_facturas.timbrado
 				from
 					tc_mantic_clientes_deudas
 				inner join
 					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				left join
+					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_ventas.id_factura
 				inner join 
 					tc_keet_desarrollos on tc_mantic_ventas.id_desarrollo= tc_keet_desarrollos.id_desarrollo
 				left join 
