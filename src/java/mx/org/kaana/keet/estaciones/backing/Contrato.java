@@ -46,8 +46,8 @@ public class Contrato extends Filtro implements Serializable {
 				this.actualizarChildren(0, 3);
 				this.current.setNivel(3L);
 			} // if	
-		this.loadCombos();
-    this.attrs.put("filtroReporte","%");
+		  this.loadCombos();
+      this.attrs.put("filtroReporte","%");
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -63,6 +63,7 @@ public class Contrato extends Filtro implements Serializable {
 			if(this.attrs.get("idLote")!= null && ((UISelectEntity)this.attrs.get("idLote")).getKey()> 0L) {
 				lote= (TcKeetContratosLotesDto)DaoFactory.getInstance().findById(TcKeetContratosLotesDto.class, ((UISelectEntity)this.attrs.get("idLote")).getKey());
 			  nodo= estaciones.toCodeByIdContrato(lote.getIdContrato());
+        this.attrs.put("seleccionado", null);
 				this.current=new TcKeetEstacionesDto();
 				this.current.setClave(estaciones.toCode(nodo.concat(lote.getOrden().toString())));
 				this.current.setNivel(4L);
@@ -71,6 +72,7 @@ public class Contrato extends Filtro implements Serializable {
 			else 
         if(this.attrs.get("idContrato")!=null && ((UISelectEntity)this.attrs.get("idContrato")).getKey()> 0L) {
           nodo= estaciones.toCodeByIdContrato(((UISelectEntity)this.attrs.get("idContrato")).getKey());
+          this.attrs.put("seleccionado", null);
           this.current= new TcKeetEstacionesDto();
           this.current.setClave(nodo);
           this.current.setNivel(3L);
@@ -79,6 +81,7 @@ public class Contrato extends Filtro implements Serializable {
         else 
           if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
             nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
+            this.attrs.put("seleccionado", null);
             this.current= new TcKeetEstacionesDto();
             this.current.setClave(estaciones.toCode(nodo));
             this.current.setNivel(1L);
@@ -152,7 +155,7 @@ public class Contrato extends Filtro implements Serializable {
   				break;
 				case LISTAR:
 					JsfBase.setFlashAttribute("estacionPadre", this.current);
-					this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))== null? this.current: ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+					this.current=((Entity)this.attrs.get("seleccionado"))== null? this.current: (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, ((Entity)this.attrs.get("seleccionado")).toLong("idEstacion"));
 					regresar= "estructura".concat(Constantes.REDIRECIONAR);
 					JsfBase.setFlashAttribute("estacionProcess", this.current);
 					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
@@ -216,5 +219,5 @@ public class Contrato extends Filtro implements Serializable {
 			mx.org.kaana.libs.formato.Error.mensaje(e);			
 		} // catch		
   }
-
+  
 }

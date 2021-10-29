@@ -23,6 +23,7 @@ import mx.org.kaana.keet.estaciones.beans.RegistroEstacion;
 import mx.org.kaana.keet.estaciones.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -39,11 +40,12 @@ import mx.org.kaana.mantic.enums.EReportes;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
-	private List<TcKeetEstacionesDto> hijos;
-	private List<TcKeetEstacionesDto> visitados;
+	protected List<TcKeetEstacionesDto> hijos;
+	protected List<TcKeetEstacionesDto> visitados;
 	protected TcKeetEstacionesDto current;
 	protected Estaciones estaciones;
   protected Reporte reporte;
+  private List<Entity> children;
 
 	public Reporte getReporte() {
 		return reporte;
@@ -65,6 +67,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return this.current== null? "Nombre": this.estaciones.getNiveles().get(this.current.getNivel().intValue()).getDescripcion();
 	} // getVisitados
 
+  public List<Entity> getChildren() {
+    return children;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -83,7 +89,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.current.setNivel(3L);
 				this.actualizarChildren(1);
 			} // if	
-		loadCombos();
+		  this.loadCombos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -98,11 +104,13 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
 			if(this.attrs.get("idPrototipo")!=null && ((UISelectEntity)this.attrs.get("idPrototipo")).getKey()>0L){
 				prototipo= (TcKeetPrototiposDto)DaoFactory.getInstance().findById(TcKeetPrototiposDto.class, ((UISelectEntity)this.attrs.get("idPrototipo")).getKey());
+        this.attrs.put("seleccionado", null);
 				this.current= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, prototipo.getIdEstacion());
 				this.actualizarChildren(1);
 			} // if
 			else if(this.attrs.get("idEmpresa")!=null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>0L) {
 				nodo= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey().toString();
+        this.attrs.put("seleccionado", null);
 				this.current= new TcKeetEstacionesDto();
 				this.current.setClave(this.estaciones.toCode(nodo));
 				this.current.setNivel(1L);
@@ -122,11 +130,19 @@ public class Filtro extends IBaseFilter implements Serializable {
     EAccion eaccion        = null;
 		String regresar        = null;
 		Transaccion transaccion= null;
+    TcKeetEstacionesDto dto= null;
     try {
+      if(this.attrs.get("seleccionado")== null)
+        dto= this.current;
+      else
+        if(this.attrs.get("seleccionado") instanceof TcKeetEstacionesDto)
+          dto= (TcKeetEstacionesDto)this.attrs.get("seleccionado");
+        else 
+          dto= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, ((Entity)this.attrs.get("seleccionado")).toLong("idEstacion"));
       eaccion = EAccion.valueOf(accion.toUpperCase());
 			switch(eaccion) {
 				case REGISTRAR:
-				  this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null? this.current: ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+				  this.current= dto;
 					eaccion= EAccion.AGREGAR;
 				case AGREGAR:
 				case MODIFICAR:
@@ -135,14 +151,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 					JsfBase.setFlashAttribute("isEstacion", Boolean.TRUE);
 					JsfBase.setFlashAttribute("accion", eaccion);      
 					JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(eaccion.name()));      
-					JsfBase.setFlashAttribute("idEstacion", eaccion.equals(EAccion.AGREGAR) ? -1L : ((TcKeetEstacionesDto) this.attrs.get("seleccionado")).getKey());
+					JsfBase.setFlashAttribute("idEstacion", eaccion.equals(EAccion.AGREGAR) ? -1L : dto.getIdEstacion());
 					JsfBase.setFlashAttribute("estacionPadre", this.current);
 					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
 					break;
 				case SUBIR:
 				case BAJAR:
 				case ELIMINAR:
-					transaccion= new Transaccion(new RegistroEstacion(((TcKeetEstacionesDto) this.attrs.get("seleccionado")).getKey()));
+					transaccion= new Transaccion(new RegistroEstacion(dto.getIdEstacion()));
 					if (transaccion.ejecutar(eaccion)){
 					  this.actualizarChildren(0);
 						JsfBase.addMessage("La estación se ".concat(eaccion.getTitle()).concat(" correctamente."));
@@ -150,7 +166,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				break;
 				case LISTAR:
 					JsfBase.setFlashAttribute("estacionPadre", this.current);
-					this.current=((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+					this.current= dto;
 					regresar= "estructura".concat(Constantes.REDIRECIONAR);
 					JsfBase.setFlashAttribute("estacionProcess", this.current);
 					JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
@@ -170,13 +186,22 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	protected void actualizarChildren(int nivel, int incremento) throws Exception {
 		try {
-			this.current= ((TcKeetEstacionesDto)this.attrs.get("seleccionado"))==null ? this.current : ((TcKeetEstacionesDto)this.attrs.get("seleccionado"));
+      TcKeetEstacionesDto estacion= null;
+      if(this.attrs.get("seleccionado")== null)
+        estacion= this.current;
+      else
+        if(this.attrs.get("seleccionado") instanceof TcKeetEstacionesDto)
+          estacion= (TcKeetEstacionesDto)this.attrs.get("seleccionado");
+        else 
+          estacion= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, ((Entity)this.attrs.get("seleccionado")).toLong("idEstacion"));
+			this.current= estacion;
 			if((this.current.getNivel().intValue()+ nivel)<= (this.estaciones.getNiveles().size()- 1)) {
 				if(this.current!= null) {
 					Methods.clean(this.visitados);
 					this.visitados= this.estaciones.toFather(this.current.getClave());
 				} // if	
 			  this.hijos= this.estaciones.toChildren(incremento, this.current.getClave(), this.current.getNivel().intValue()+ nivel, 0);
+        this.children= this.estaciones.toEntity(Numero.getLong(this.estaciones.toValueKey(this.current.getClave(), 3)), incremento, this.current.getClave(), this.current.getNivel().intValue()+ nivel, 0);
 			} // if
 		} // try // try
 		catch (Exception e) {
@@ -185,11 +210,23 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // actualizarChildren
 
 	public void doActualizarChildren() {
-		this.doVisitado(((TcKeetEstacionesDto)this.attrs.get("seleccionado")));
+    try {
+      TcKeetEstacionesDto estacion= null;
+      if(this.attrs.get("seleccionado") instanceof TcKeetEstacionesDto)
+        estacion= (TcKeetEstacionesDto)this.attrs.get("seleccionado");
+      else 
+        estacion= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, ((Entity)this.attrs.get("seleccionado")).toLong("idEstacion"));
+      this.doVisitado(estacion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
 	} // doActualizar
 
 	public void doVisitado(TcKeetEstacionesDto estacion) {
 		try {
+      this.attrs.put("seleccionado", null);
 			this.current= estacion;
 			this.actualizarChildren(1);
 		} // try
@@ -200,6 +237,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doVisitado
 	
 	public void doInicio() {
+    this.attrs.put("seleccionado", null);
 		JsfBase.setFlashAttribute("current", null);
 		this.init();
 	} // doInicio
@@ -283,17 +321,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = null;    
     Map<String, Object>params    = null;
     Parametros comunes           = null;
-    Entity contratosLotes       = null;
-		try {		  
+    Entity contratosLotes        = null;
+    TcKeetEstacionesDto estacion = null;
+    try {
+      if(this.attrs.get("seleccionado")== null)
+        estacion= this.current;
+      else
+        if(this.attrs.get("seleccionado") instanceof TcKeetEstacionesDto)
+          estacion= (TcKeetEstacionesDto)this.attrs.get("seleccionado");
+        else 
+          estacion= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, ((Entity)this.attrs.get("seleccionado")).toLong("idEstacion"));
       params=new HashMap<>();
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       reporteSeleccion= EReportes.valueOf(nombre);
-      params.put("filtroReporte",((TcKeetEstacionesDto)this.attrs.get("seleccionado")).getClave()!= null? ((TcKeetEstacionesDto)this.attrs.get("seleccionado")).getClave().substring(0,13).concat("%"):"%");
+      params.put("filtroReporte", estacion== null? "%": estacion.getClave().substring(0,13).concat("%"));
       this.reporte= JsfBase.toReporte();
       contratosLotes = (Entity) DaoFactory.getInstance().toEntity("VistaReportesEstacionesDto", "manzanaLote", params);
       parametros= comunes.getComunes();
       if(reporteSeleccion.equals(EReportes.PROTOTIPOS))
-        parametros.put("PROTOTIPO", ((TcKeetEstacionesDto)this.attrs.get("seleccionado")).getNombre().toLowerCase());
+        parametros.put("PROTOTIPO", estacion== null? "": estacion.getNombre().toLowerCase());
       else{
         parametros.put("MZA", contratosLotes.toString("manzana"));
         parametros.put("LOTE", contratosLotes.toString("lote"));

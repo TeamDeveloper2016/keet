@@ -13,9 +13,13 @@ import mx.org.kaana.libs.cfg.Detalle;
 import mx.org.kaana.libs.cfg.IArbol;
 import mx.org.kaana.libs.cfg.Maestro;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import org.hibernate.Session;
 
@@ -83,6 +87,34 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
         regresar= (List) DaoFactory.getInstance().findViewCriteria(this.sesion, TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
       else
         regresar= (List) DaoFactory.getInstance().findViewCriteria(TcKeetEstacionesDto.class, params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+    return regresar;
+  }
+	
+ public List<Entity> toEntity(Long idContrato, int aumentarNivel, String value, int level, int child) throws Exception {
+  	List<Entity> regresar= null;
+    List<Columna> columns = null;    
+    Map<String, Object> params= new HashMap<>();
+		try {
+      columns = new ArrayList<>();
+      columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
+      params.put("idContrato", idContrato);
+      params.put("nivel", level+child+aumentarNivel);
+      if(this.sesion!= null)
+        regresar= (List<Entity>) DaoFactory.getInstance().toEntitySet(this.sesion, "VistaContratosDto", "detalle", params, Constantes.SQL_TODOS_REGISTROS);
+      else
+        regresar= (List<Entity>) DaoFactory.getInstance().toEntitySet("VistaContratosDto", "detalle", params, Constantes.SQL_TODOS_REGISTROS);
+      if(regresar!= null && !regresar.isEmpty())
+        UIBackingUtilities.toFormatEntitySet(regresar, columns);
+      else
+        regresar= new ArrayList<>();
 		} // try
 		catch (Exception e) {
 			throw e;

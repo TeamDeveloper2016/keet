@@ -94,13 +94,13 @@
 					<p:toolbar styleClass="janal-wid-100-txt" id="seguimiento">
 						<f:facet name="left">
               <p:outputLabel value="#{keetEstacionesContrato.visitados.size()}|#{keetEstacionesContrato.visitados.size() eq 1}" rendered="false"/>
-							<p:commandButton value="Inicio" icon="fa fa-caret-right" actionListener="#{keetEstacionesContrato.doInicio}"  update="tabla,seguimiento" id="visitados"/>
+							<p:commandButton value="Inicio" icon="fa fa-caret-right" actionListener="#{keetEstacionesContrato.doInicio}" update="panelBusqueda tabla seguimiento" id="visitados"/>
 							<ui:repeat var="visitado" value="#{keetEstacionesContrato.visitados}" >
-								<p:commandButton value="#{visitado.nombre}" icon="fa fa-caret-right" actionListener="#{keetEstacionesContrato.doVisitado(visitado)}" update="tabla,seguimiento" />
+								<p:commandButton value="#{visitado.nombre}" icon="fa fa-caret-right" actionListener="#{keetEstacionesContrato.doVisitado(visitado)}" update="tabla seguimiento" />
 							</ui:repeat>
 						</f:facet>
 					</p:toolbar>
-					<p:dataTable lazy="false" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesContrato.hijos}" rowKey="#{row.idEstacion}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesContrato.attrs.seleccionado}" selectionMode="single" paginator="true" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+					<p:dataTable lazy="false" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetEstacionesContrato.children}" rowKey="#{row.idEstacion}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetEstacionesContrato.attrs.seleccionado}" selectionMode="single" paginator="true" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowDblselect"  listener="#{keetEstacionesContrato.doActualizarChildren}" onstart="return janal.bloquear();" process="@this" update="tabla,seguimiento" oncomplete="janal.desbloquear();"/>
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
@@ -123,29 +123,29 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-cloud-upload" title="Importar estaciones" action="#{keetEstacionesContrato.doUpload()}" onstart="return janal.bloquear()"/>						
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-col-31">
+            <p:column class="MarAuto Responsive janal-wid-col-31" exportable="false">
 							<f:facet name="header">
 								<h:outputText value="No"/>
 							</f:facet>
-							<h:outputText value="#{index+ 1}.- #{keetEstacionesContrato.doUploadContrato(row)}"/>
+							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
 								<h:outputText value="Clave"/>
 							</f:facet>
-							<h:outputText value="#{keetEstacionesContrato.attrs.idContrato.numero}"/>
+							<h:outputText value="#{row['numero']}"/>
 						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-13">
 							<f:facet name="header">
 								<h:outputText value="Contrato"/>
 							</f:facet>
-							<h:outputText value="#{keetEstacionesContrato.attrs.idContrato.nombre}"/>
+							<h:outputText value="#{row['contrato']}"/>
 						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
 								<h:outputText value="Lote"/>
 							</f:facet>
-              <h:outputText value="#{keetEstacionesContrato.attrs.idContrato.lote}" styleClass="janal-color-blue janal-font-bold"/>
+              <h:outputText value="#{row['lote']}" styleClass="janal-color-blue janal-font-bold"/>
 						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-8">
 							<f:facet name="header">
@@ -159,17 +159,17 @@
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>			            
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10">
 							<f:facet name="header">
 								<h:outputText value="Inicio"/>
 							</f:facet>
-							<h:outputText value="#{keetEstacionesContrato.doFecha(row['inicio'])}"/>
+							<h:outputText value="#{row['inicio']}"/>
 						</p:column>	      
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-10">
 							<f:facet name="header">
 								<h:outputText value="Termino"/>
 							</f:facet>
-							<h:outputText value="#{keetEstacionesContrato.doFecha(row['termino'])}"/>
+							<h:outputText value="#{row['termino']}"/>
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 							<f:facet name="header">
@@ -177,20 +177,26 @@
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}" title="Costo: $#{row['costo']}"/>
 						</p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-31">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-col-31" exportable="false">
 							<f:facet name="header">
                 <h:outputText value="Estatus" styleClass="xs-pantalla"/>
 							</f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1'? 'circulo-rojo': (row.idEstacionEstatus eq '2'? 'circulo-amarillo': (row.idEstacionEstatus eq '3'? 'circulo-verde': 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1'? 'SIN INICIAR': (row.idEstacionEstatus eq '2'? 'EN PROCESO': (row.idEstacionEstatus eq '3'? 'FINALIZADO': 'CANCELADO'))}"/>
 						</p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" rendered="false">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" style="display: none">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{row['estatus']}"/>
+						</p:column>
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" style="display: none">
 							<f:facet name="header">
 								<h:outputText value="costo"/>
 							</f:facet>
 							<h:outputText value="#{row['costo']}"/>
 						</p:column>
 						<f:facet name="footer">
-							<p:outputLabel value="Total [#{keetEstacionesContrato.hijos== null? 0: keetEstacionesContrato.hijos.size()}] registros"/>
+							<p:outputLabel value="Total [#{keetEstacionesContrato.children== null? 0: keetEstacionesContrato.children.size()}] registros"/>
 						</f:facet>
 					</p:dataTable>
 				</div>
