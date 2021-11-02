@@ -146,8 +146,8 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave"));
-			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("empresas")));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -400,7 +400,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       this.lazyDetalle= new FormatCustomLazy("VistaNominaConsultasDto", "persona", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
 			Long puesto= entity.toLong("idPuesto");
-			this.attrs.put("destajos", puesto== 6L);
+			this.attrs.put("destajo", puesto== 6L);
 			if(puesto== 6L)
 			  this.doLoadDestajo();
 			this.attrs.put("nomina", true);
@@ -427,6 +427,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 			params.put("nomina", entity.toString("nomina"));
 			params.put("nombreCompleto", entity.toString("nombreCompleto"));
 			params.put("idEmpresaPersona", entity.toLong("idEmpresaPersona"));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
 			this.attrs.put("idFiguraCorreo", entity.toLong("idPersona"));
 			this.attrs.put("figuraNombreCompletoCorreo", entity.toString("nombreCompleto"));
       columns= new ArrayList<>();

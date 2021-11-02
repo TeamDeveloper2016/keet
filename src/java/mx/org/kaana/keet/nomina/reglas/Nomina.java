@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
@@ -319,6 +320,24 @@ public class Nomina implements Serializable {
     } // catch
 	}
 	
+	private Double toSobreSueldoEmpleado(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
+		Double regresar           = 0D;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idEmpresaPersona", empleado.getIdEmpresaPersona());
+			Value sobreSueldo= (Value)DaoFactory.getInstance().toField(this.sesion, "TrManticEmpresaPersonalDto", "sobreSueldo", params, "sobreSueldo");
+      if(sobreSueldo!= null && sobreSueldo.getData()!= null) {
+        regresar= sobreSueldo.toDouble();
+        this.toLookUpConcepto(particulares, ECodigosIncidentes.SOBRESUELDO, regresar);
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  }
+
 	private Double toSueldoContratista(List<Concepto> particulares, TcKeetNominasPersonasDto empleado) throws Exception {
 		Double regresar           = 0D;
 		Map<String, Object> params= null;
@@ -360,6 +379,8 @@ public class Nomina implements Serializable {
 		// FIJAR EL SUELDO BASE DEPENDIENDO SI ES O NO CONTRATISTA
 		Double sueldo= this.toSueldoContratista(particulares, empleado);
 		this.constants.put("SUELDO", sueldo);
+		Double sobreSueldo= this.toSobreSueldoEmpleado(particulares, empleado);
+		this.constants.put("SOBRESUELDO", sobreSueldo);
 		for (Concepto concepto: particulares) {
 			concepto.setFormula(this.transform(concepto.getFormula()));
  			this.addCell(concepto.getColumna(), concepto.getFormula());

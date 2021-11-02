@@ -356,7 +356,7 @@
 				var val     = $(element)? $(element).val().trim(): value;
 				var text    = ''; 
 				var values  = '';
-				if(val=== 'undefined' || val.length=== 0)
+				if(typeof(val)=== 'undefined' || val.length=== 0)
 					$(element).val(value);
 				else {
 				  var items= val.split(',');
@@ -382,7 +382,7 @@
 		 },
 		 cantidad: function(element, value) {
 				var val= $(element)? $(element).val().trim(): value;
-				if(val=== 'undefined' || val.length=== 0) {
+				if(typeof(val)=== 'undefined' || val.length=== 0) {
 					$(element).val(value);
 				} // if	
 				else {
@@ -395,7 +395,7 @@
 		 },
 		 cantidadGarantia: function(element, value) {
 				var val= $(element)? $(element).val().trim(): value;
-				if(val=== 'undefined') {
+				if(typeof(val)=== 'undefined') {
 					$(element).val(value);
 				} // if	
 				else {
@@ -410,7 +410,7 @@
 				var val= $(element)? $(element).val().trim(): value;
 				if(typeof(decimal)=== 'undefined')
 					decimal= this.decimals;
-				if(val=== 'undefined' || val.length=== 0) {
+				if(typeof(val)=== 'undefined' || val.length=== 0) {
 					$(element).val(parseFloat(value).toFixed(decimal));
 				} // if	
 				else {
@@ -1617,7 +1617,7 @@
 			return this.distanceMt(pointA, pointB)<= 20;
 		},
 		escape: function(value) {
-			if(value=== 'undefined' || value=== null)
+			if(typeof(value)=== 'undefined' || value=== null)
 				value= '';
 			return value.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&#39;/g, "'");
 		},

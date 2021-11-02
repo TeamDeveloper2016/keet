@@ -23,9 +23,14 @@
         netoMenor   : {validaciones: 'libre', mascara: 'libre'},
         nombre      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };
+      
+      function movePage() {
+        setTimeout("$('a.janal-move-element')[0].click();", 500);
+      }      
     </script>		
   </ui:define>
   <ui:define name="contenido">
+    <a class="janal-move-element janal-color-black" href="#detalle" style="display:none"></a>
     <div class="janal-align-right xs-pantalla janal-wid-100">
       <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
     </div>			
@@ -219,7 +224,7 @@
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo.toLong eq '2'? 'circulo-rojo': (row.idActivo.toLong eq '1' and row.idPago.toLong eq '2' and row.idSeguro.toLong eq '2'? 'circulo-amarillo': (row.idActivo.toLong eq '1' and row.idNomina.toLong eq '2'? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo.toLong eq '1'? '': 'NO '}activo"/>
 						</p:column>	
 						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
-							<p:commandButton icon="fa fa-search" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+							<p:commandButton icon="fa fa-search" process="@this" update="detalle destajo" action="#{keetNominasPersonas.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();">
 								<f:setPropertyActionListener value="#{row}" target="#{keetNominasPersonas.attrs.seleccionado}" />
 							</p:commandButton>
 						</p:column>

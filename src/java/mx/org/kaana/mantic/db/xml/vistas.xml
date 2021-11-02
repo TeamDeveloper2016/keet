@@ -2385,6 +2385,8 @@
 				where
 				  tc_mantic_facturas.folio = '{factura}'
 				  and tc_mantic_ventas.id_cliente= {idCliente}
+          and tc_mantic_ventas.id_tipo_documento= 1
+          and tc_mantic_ventas.id_venta_estatus in (11, 12)
 				  and date_format(tc_mantic_facturas.registro, '%Y%m%d')&gt;= '{inicio}' and date_format(tc_mantic_facturas.registro, '%Y%m%d')&lt;= '{termino}'
 					and tc_mantic_ventas.id_venta&lt;&gt; {idVenta}
 				order by
@@ -4260,6 +4262,7 @@
 			<select id="detalle">	
 				select
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente_deuda,
 					tc_keet_desarrollos.id_desarrollo,
 					tc_mantic_clientes_deudas.id_cliente,
           tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus,

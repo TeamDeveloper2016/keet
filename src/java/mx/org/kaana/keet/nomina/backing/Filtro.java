@@ -52,7 +52,8 @@ import org.primefaces.model.StreamedContent;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID= 6319984968937774153L;
-  private static final String DATA_FILE     = "DESARROLLO,EMPLEADO,FECHA,ESTATUS,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_FALTAS= "DESARROLLO,EMPLEADO,FECHA,ESTATUS,REGISTRO";  
+  private static final String COLUMN_DATA_FILE_NOMINA= "NOMINA,CLAVE,NOMBRE COMPLETO,RFC,CURP,ACTIVO,REAL DEL SOL, CAPITTALA,MOLINO DEL REY,TOTAL";  
   
 	private LocalDate fecha;
   protected Reporte reporte;
@@ -397,7 +398,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  	params=new HashMap<>();
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-      xls= new Xls(fileName, new Modelo(params, "VistaIncidenciasDto", "faltas", template), DATA_FILE);	
+      xls= new Xls(fileName, new Modelo(params, "VistaIncidenciasDto", "faltas", template), COLUMN_DATA_FILE_FALTAS);	
 			if(xls.procesar()) {
 		    String contentType= EFormatos.XLS.getContent();
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
@@ -413,6 +414,36 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally
     return regresar;
   }
+  
+	public StreamedContent getDocumento() {
+		StreamedContent regresar = null;		
+		Entity seleccionado      = null;				
+		Xls xls                  = null;
+		Map<String, Object>params= null;
+		String template          = "CONTRATISTAS";
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");						
+	  	params=new HashMap<>();
+      params.put("idNomina", seleccionado.toLong("idNomina"));
+      params.put("idPuesto", 6L);
+      params.put("loNuevo", "");
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(params, "VistaNominaConsultasDto", "monitoreo", template), COLUMN_DATA_FILE_NOMINA);	
+			if(xls.procesar()) {
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;		
+	} // getDocumento
   
 }
 	

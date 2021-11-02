@@ -34,13 +34,15 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosControlesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
-import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.EEstatusFacturas;
+import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.facturas.beans.Documento;
@@ -733,8 +735,12 @@ public class Transaccion extends Facturama {
       cliente.setSaldo(Numero.toRedondearSat(cliente.getSaldo()- deuda.getImporte()));
       DaoFactory.getInstance().update(sesion, cliente);
       TcManticVentasDto venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, deuda.getIdVenta());
-      venta.setIdVentaEstatus(EEstatusVentas.CANCELADA.getIdEstatusVenta());
+      venta.setIdVentaEstatus(EEstatusFicticias.CANCELADA.getIdEstatusFicticia());
       DaoFactory.getInstance().update(sesion, venta);
+      TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, venta.getIdFactura());
+      factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
+      factura.setCancelada(LocalDateTime.now());
+      DaoFactory.getInstance().update(sesion, factura);
       TcManticVentasBitacoraDto movimiento= new TcManticVentasBitacoraDto(
         -1L, // Long idVentaBitacora, 
         this.referencia.concat(", SE CANCELO LA CUENTA POR COBRAR"), // String justificacion, 

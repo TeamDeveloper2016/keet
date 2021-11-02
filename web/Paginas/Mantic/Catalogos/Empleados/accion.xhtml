@@ -37,6 +37,7 @@
 				// 'contenedorGrupos\\:sueldoMensual': {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				// 'contenedorGrupos\\:diarioImss'   : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:mensualImss'  : {validaciones: 'libre|flotante', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:sobreSueldo'  : {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idNomina'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:entidad'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
@@ -200,6 +201,8 @@
 								<p:inputNumber id="sueldoSemanal" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoSemanal}"/>                    
 								<p:outputLabel for="mensualImss" value="Sueldo IMSS semanal:"/>								                 
 								<p:inputNumber id="mensualImss" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sueldoImss}"/>                    
+                <p:outputLabel for="sobreSueldo" value="Sobre sueldo semanal:" styleClass="janal-color-black"/>								                 
+								<p:inputNumber id="sobreSueldo" styleClass="janal-wid-100-txt janal-color-black" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.sobreSueldo}"/>                    
 								<p:spacer height="2px"/>
 								<p:outputLabel value="Infonavit" styleClass="janal-color-blue FontBold"/>
 								<p:separator/>

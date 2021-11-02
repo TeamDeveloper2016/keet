@@ -3013,6 +3013,15 @@
         where      
           clave = '{clave}'
       </select>
+      <select id="sobreSueldo">
+        select      
+          tr_mantic_empresa_personal.id_empresa_persona as id_key,
+          sobre_sueldo
+        from      
+          tr_mantic_empresa_personal
+        where      
+          id_empresa_persona = {idEmpresaPersona}
+      </select>
 			<delete id="rows">
 				delete from tr_mantic_empresa_personal where id_persona = {idPersona}
 			</delete>

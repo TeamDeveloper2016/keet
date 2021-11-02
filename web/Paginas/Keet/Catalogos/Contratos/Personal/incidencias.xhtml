@@ -54,7 +54,7 @@
 			function updateIndicencias() {
 				$.each($('.janal-incidencia'), function() {
 					var items= $(this).attr('class');
-					if(items!== 'undefined' &amp;&amp; items.length> 0)
+					if(typeof(items)!== 'undefined' &amp;&amp; items.length> 0)
 						$.each(items.split(' '), function(index, item) {
 							if(item.startsWith("incidencia-"))
 								janal.html('a.'+ item+' span.fc-title');

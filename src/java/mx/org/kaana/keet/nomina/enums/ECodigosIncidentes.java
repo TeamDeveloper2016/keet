@@ -26,7 +26,8 @@ public enum ECodigosIncidentes {
   COMPLEMENTO(-1L, "N1", Boolean.TRUE, -1),
   PERIODO(-1L, "G1", Boolean.TRUE, -1),
   APERTURACH(20L, "AN1", Boolean.TRUE, 3),
-  SALDOCH(21L, "AO1", Boolean.TRUE, 3);
+  SALDOCH(21L, "AO1", Boolean.TRUE, 3),
+  SOBRESUELDO(-1L, "AP1", Boolean.TRUE, -1);
 	
 	private Long idTipoIncidente;
 	private String codigos;

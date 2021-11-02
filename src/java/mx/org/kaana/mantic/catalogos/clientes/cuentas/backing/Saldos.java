@@ -777,7 +777,7 @@ public class Saldos extends IBaseFilter implements Serializable {
     try {
   	  params = this.toPrepare();
       Entity entity= this.attrs.get("seleccionado")== null? (Entity)this.attrs.get("rowSeleccionado"): (Entity)this.attrs.get("seleccionado");
-			params.put("sortOrder", "order by dias desc, tc_mantic_ventas.ticket desc");
+			params.put("sortOrder", "order by tc_mantic_ventas.ticket desc");
 			params.put("idCliente", entity.toLong("idCliente"));
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
