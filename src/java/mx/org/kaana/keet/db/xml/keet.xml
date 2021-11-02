@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKeetNominasDesarrollosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_nominas_desarrollos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_nominas_desarrollos
+        where      
+          id_desarrollo = {idDesarrollo} and id_empresa_persona = {idEmpresaPersona} and id_nomina = {idNomina}
+      </select>
+    </unit>    
     <unit id="TcKeetContratosRetencionesDto">
       <select id="row">
         select      
@@ -2526,6 +2544,15 @@
 				group by
 					tc_keet_nominas_personas.id_nomina				
 			</select>
+			<select id="desarrollo">
+				select 
+				  tc_keet_nominas_personas.id_empresa_persona as id_key,
+          tc_keet_nominas_personas.id_empresa_persona
+				from 
+				  tc_keet_nominas_personas
+				where 
+				  id_nomina= {idNomina}
+			</select>
 			<delete id="nomina">
 				delete 
 				  tc_keet_nominas_personas
@@ -3029,11 +3056,23 @@
       </select>
       <select id="existe">
         select      
-          *
+          tc_keet_contratos_personal.id_contrato_persona as id_key,
+          tc_keet_contratos_personal.*
         from      
           tc_keet_contratos_personal
         where      
           id_empresa_persona= {idEmpresaPersona}
+      </select>
+      <select id="desarrollo">
+        select      
+          tc_keet_contratos_personal.id_contratos_personal as id_key,
+          tc_keet_contratos_personal.*
+        from      
+          tc_keet_contratos_personal
+        where      
+          id_empresa_persona= {idEmpresaPersona}
+        order by
+          id_desarrollo desc
       </select>
 			<select id="maximo">
 				select      

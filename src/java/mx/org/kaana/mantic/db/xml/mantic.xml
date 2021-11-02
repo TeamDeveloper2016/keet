@@ -3025,6 +3025,12 @@
 			<delete id="rows">
 				delete from tr_mantic_empresa_personal where id_persona = {idPersona}
 			</delete>
+			<update id="rows">
+				update 
+				  tr_mantic_empresa_personal 
+				set 
+				  sobre_sueldo= 0 
+      </update>  
 			<update id="depuracionCambioPerfil">
 				update 
 				  tr_mantic_empresa_personal 

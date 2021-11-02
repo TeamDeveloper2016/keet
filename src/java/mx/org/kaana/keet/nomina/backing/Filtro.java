@@ -53,7 +53,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID= 6319984968937774153L;
   private static final String COLUMN_DATA_FILE_FALTAS= "DESARROLLO,EMPLEADO,FECHA,ESTATUS,REGISTRO";  
-  private static final String COLUMN_DATA_FILE_NOMINA= "NOMINA,CLAVE,NOMBRE COMPLETO,RFC,CURP,ACTIVO,REAL DEL SOL, CAPITTALA,MOLINO DEL REY,TOTAL";  
+  private static final String COLUMN_DATA_FILE_NOMINA= "NOMINA,CLAVE,NOMBRE COMPLETO,RFC,CURP,ACTIVO,DESARROLLO,CONTRATO,TOTAL";  
   
 	private LocalDate fecha;
   protected Reporte reporte;
@@ -285,7 +285,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("sortOrder", "order by tipo, nomina, clave");
 			params.put("idNomina", entity.toLong("idNomina"));
 			params.put("nombre", "");
-			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.NOMINA.getProceso(), EExportacionXls.NOMINA.getIdXml(), EExportacionXls.NOMINA.getNombreArchivo()), EExportacionXls.NOMINA, "SUCURSAL,NOMINA,TIPO,CLAVE,APODO,NOMBRE_COMPLETO,IMPORTE"));
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.NOMINA.getProceso(), EExportacionXls.NOMINA.getIdXml(), EExportacionXls.NOMINA.getNombreArchivo()), EExportacionXls.NOMINA, "SUCURSAL,NOMINA,TIPO,CLAVE,APODO,NOMBRE_COMPLETO,RFC,CURP,ACTIVO,IMPORTE"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);				
 		} // try

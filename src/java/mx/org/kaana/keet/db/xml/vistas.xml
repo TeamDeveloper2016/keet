@@ -2179,19 +2179,6 @@
 					and tr_mantic_empresa_personal.id_puesto= 6        
       </select>  
       <select id="monitoreo">
-        select
-				  tt_keet_temporal.id_empresa_persona as id_key,
-          tt_keet_temporal.nomina,
-				  tt_keet_temporal.clave,
-				  tt_keet_temporal.nombre_completo,
-				  tt_keet_temporal.rfc,
-				  tt_keet_temporal.curp,
-				  tt_keet_temporal.activo,
-				  sum(if(tt_keet_temporal.id_desarrollo= 1, tt_keet_temporal.destajo, 0)) as "REAL DEL SOL",
-				  sum(if(tt_keet_temporal.id_desarrollo= 4, tt_keet_temporal.destajo, 0)) as "CAPITTALA",
-				  sum(if(tt_keet_temporal.id_desarrollo= 11, tt_keet_temporal.destajo, 0)) as "MOLINO DEL REY",
-				  sum(tt_keet_temporal.destajo) as total
-				from (
         select 
 				  tr_mantic_empresa_personal.id_empresa_persona,
 				  tc_keet_desarrollos.id_desarrollo,
@@ -2202,7 +2189,8 @@
 					tc_mantic_personas.curp,
 					if(tr_mantic_empresa_personal.id_activo= 1, "SI", "NO") as activo,
 				  tc_keet_desarrollos.nombres as desarrollo,
-				  sum(tc_keet_contratos_destajos_contratistas.costo) as destajo
+				  tc_keet_contratos.nombre as contrato,
+				  sum(tc_keet_contratos_destajos_contratistas.costo) as total
 				from
 				  tc_keet_contratos_destajos_contratistas 
         inner join
@@ -2243,13 +2231,8 @@
 				  tc_keet_desarrollos.nombres
 				order by
 				  tr_mantic_empresa_personal.id_empresa_persona,
-				  tc_keet_desarrollos.id_desarrollo
-				) as tt_keet_temporal
-			  group by
-			    tt_keet_temporal.id_empresa_persona
-			  order by
-			    tt_keet_temporal.id_desarrollo,
-			    tt_keet_temporal.nombre_completo        
+				  tc_keet_desarrollos.id_desarrollo,
+				  tc_keet_contratos.nombre
       </select>
 			<select id="destajoPersona">
 				select 
@@ -2512,6 +2495,9 @@
 					tr_mantic_empresa_personal.clave,
 					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
 					tc_mantic_personas.apodo,
+          tc_mantic_personas.rfc,
+          tc_mantic_personas.curp,
+          if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,
 					tc_keet_nominas_personas.neto as importe,
 					tc_mantic_puestos.id_puesto,
 					tc_mantic_personas.id_persona

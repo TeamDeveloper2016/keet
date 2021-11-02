@@ -2,6 +2,7 @@ package mx.org.kaana.keet.nomina.reglas;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosContratistasDto;
 import mx.org.kaana.keet.db.dto.TcKeetContratosDestajosProveedoresDto;
 import mx.org.kaana.keet.db.dto.TcKeetEstacionesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetNominasDesarrollosDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.db.dto.TcKeetNominasPeriodosDto;
@@ -49,6 +51,7 @@ import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
+import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -177,6 +180,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 					break;
 				case JUSTIFICAR:
 				  if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
+            this.idNomina= this.nomina.getIdNomina();
 					  this.nomina.setIdNominaEstatus(this.bitacora.getIdNominaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.nomina)>= 1L;
             this.notificar(sesion);
@@ -185,7 +189,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 						// CAMBIAR EL ESTATUS A TODOS LOS INCIDENTES Y REGISTAR EN SUS RESPECTIVA BITACORA 
             this.closeIncidentes(sesion);	
 						this.toOpenNewNomina(sesion);
-						// FALTA HACER EL PROCESO DE MOVER LOS SALDOS A LA NUEVA SEMANA
+						// FALTA HACER EL PROCESO DE MOVER LOS SALDOS A LA NUEVA SEMANA (DE QUE NO RECUERDO)
+            
+            // QUITAR LOS SOBRE SUELDOS DE LOS EMPLEADOS
+            this.toCleanSobreSueldos(sesion);
+            // MOVER EL PERSONAL POR DESARROLLO A UNA TABLA HISTORICA
+            this.toMovePersonalDesarrollo(sesion);
 					} // if
 					break;
 				case COMPLEMENTAR:
@@ -820,7 +829,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		return regresar;
 	} // toProveedorTipoContacto
 
-  private void notificar(Session sesion) {
+  private void notificar(Session sesion) throws Exception {
     List<Columna> columns     = null;		
     Map<String, Object> params= new HashMap<>();
     StringBuilder sb          = new StringBuilder();
@@ -871,8 +880,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       } // if  
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
+     throw e;
     } // catch	
     finally {
       Methods.clean(params);
@@ -881,7 +889,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     } // finally
   }
   
-	public void toSendMail(Session sesion, Reporte jasper, String correos, Entity sujeto) {		
+	public void toSendMail(Session sesion, Reporte jasper, String correos, Entity sujeto) throws Exception {		
 		Map<String, Object> params= null;
 		String titulo             = "Destajos realizados de la nómina "+ sujeto.toString("nomina")+ " periodo "+ sujeto.toString("inicio")+ " al "+ sujeto.toString("termino");
 		List<Attachment> files    = null; 
@@ -920,8 +928,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
 		} // try // try
 		catch(Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
+			throw e;
 		} // catch
 		finally {
 			Methods.clean(files);
@@ -963,13 +970,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       LOG.info("Reporte generado: "+ name);
     } // try
     catch(Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);			
+     throw e;
     } // catch	
     return regresar;
   } // toReporte 	  
   
-  private void message(Session sesion) {
+  private void message(Session sesion) throws Exception {
     List<Columna> columns           = null;		
     Map<String, Object> params      = new HashMap<>();
     Map<String, Object> residentes  = new HashMap<>();
@@ -1027,8 +1033,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       } // if  
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
+      throw e;  
     } // catch	
     finally {
       Methods.clean(params);
@@ -1038,7 +1043,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
     } // finally
   }
 
-	public String toSendMessage(Session sesion, Reporte jasper, String contratista, Entity sujeto) {		
+	public String toSendMessage(Session sesion, Reporte jasper, String contratista, Entity sujeto) throws Exception {		
     String regresar= "";
 		Cafu notificar = null;
 		try {
@@ -1059,13 +1064,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       } // if  
 		} // try // try
 		catch(Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
+			throw e;
 		} // catch
     return regresar;
 	} // toSendWessage
   
-	public void toNotificarResidentes(Session sesion, Map<String, Object> residentes, Map<String, Object> contratistas, Entity sujeto, String desarrollo) {		
+	public void toNotificarResidentes(Session sesion, Map<String, Object> residentes, Map<String, Object> contratistas, Entity sujeto, String desarrollo) throws Exception {		
 		Cafu notificar = null;
 		try {
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
@@ -1087,12 +1091,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       } // if  
 		} // try 
 		catch(Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
+			throw e;
 		} // catch
 	} // toNotificarResidentes
 
-  public void grupo(Session sesion) {
+  public void grupo(Session sesion) throws Exception {
     try {
 			Semanas semanas= new Semanas();
 			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
@@ -1107,12 +1110,11 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       notificar.doSendCorteNomina(sesion);
 		} // try 
 		catch(Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
+			throw e;
 		} // catch
   }
   
-  public void cierre(Session sesion) {
+  public void cierre(Session sesion) throws Exception {
     try {
 			Semanas semanas= new Semanas();
 			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
@@ -1127,9 +1129,43 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       notificar.doSendCierreNomina(sesion);
 		} // try 
 		catch(Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
+			throw e;
 		} // catch
   }
+
+  private void toCleanSobreSueldos(Session sesion) throws Exception {
+    try {
+      DaoFactory.getInstance().updateAll(sesion, TrManticEmpresaPersonalDto.class, Collections.EMPTY_MAP);
+		} // try 
+		catch(Exception e) {
+			throw e;
+		} // catch
+  }  
+  
+  private void toMovePersonalDesarrollo(Session sesion) throws Exception {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+			params.put("idNomina", this.idNomina);
+      List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "TcKeetNominasPersonasDto", "desarrollo", params);
+			if(personal!= null && !personal.isEmpty()) {      
+        for (Entity item : personal) {
+          Long idDesarrollo= null;
+    			params.put("idEmpresaPersona", item.toLong("idEmpresaPersona"));
+          Entity existe= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKeetContratosPersonalDto", "desarrollo", params);
+          if(existe!= null && !existe.isEmpty()) 
+            idDesarrollo= existe.toLong("idDesarrollo");
+          TcKeetNominasDesarrollosDto persona= new TcKeetNominasDesarrollosDto(idDesarrollo, item.toLong("idEmpresaPersona"), -1L, this.idNomina);
+          DaoFactory.getInstance().insert(sesion, persona);
+        } // for
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }  
   
 }
