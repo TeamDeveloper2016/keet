@@ -3030,6 +3030,8 @@
 				  tr_mantic_empresa_personal 
 				set 
 				  sobre_sueldo= 0 
+        where
+          id_limpiar= 1
       </update>  
 			<update id="depuracionCambioPerfil">
 				update 

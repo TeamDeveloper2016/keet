@@ -52,7 +52,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			switch(accion){
 				case REGISTRAR:
-					pago= calcularPago(sesion, this.prestamosPagos.getIdPrestamo(), this.prestamosPagos.getPago(), EEstatusPrestamos.LIQUIDADA);
+					pago= this.calcularPago(sesion, this.prestamosPagos.getIdPrestamo(), this.prestamosPagos.getPago(), EEstatusPrestamos.LIQUIDADA);
 					deudoresDto= (TcKeetDeudoresDto)DaoFactory.getInstance().findById(sesion, TcKeetDeudoresDto.class, this.idDeudor);
 					deudoresDto.setSaldo(deudoresDto.getSaldo()- pago.getAbono());
 					deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
