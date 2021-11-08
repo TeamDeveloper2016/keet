@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @Named(value = "manticComprasOrdenesFiltro")
-@ViewScoped
+@ViewScoped 
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Filtro.class);
@@ -246,7 +246,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;		
 	}
 	
-	private void toLoadCatalog() {
+	protected void toLoadCatalog() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {

@@ -125,10 +125,13 @@ public class Sueldo extends Filtro implements Serializable {
 
   public void toUpdateSueldo() {
     try {
+      double sueldo= 0D;
       if(this.chalanes!= null && !this.chalanes.isEmpty())
         for (Empleado item: this.chalanes) {
           item.setSueldo((Double)this.attrs.get("importe"));
+          sueldo+= item.getSueldo();
         } // for
+      this.attrs.put("totalSueldo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, sueldo));
       this.attrs.put("importe", 0D);
 		} // try
 		catch (Exception e) {
@@ -139,10 +142,13 @@ public class Sueldo extends Filtro implements Serializable {
 
   public void toUpdateSobre() {
     try {
+      double sobre = 0D;
       if(this.chalanes!= null && !this.chalanes.isEmpty())
         for (Empleado item: this.chalanes) {
           item.setSobre((Double)this.attrs.get("importe"));
+          sobre+= item.getSobre();
         } // for
+      this.attrs.put("totalSobre", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, sobre));
       this.attrs.put("importe", 0D);
 		} // try
 		catch (Exception e) {
