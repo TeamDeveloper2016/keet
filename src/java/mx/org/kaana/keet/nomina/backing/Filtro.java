@@ -14,6 +14,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.hibernate.SessionFactoryFacade;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -44,6 +46,11 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.enums.EReportes;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.ScrollableResults;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -52,6 +59,8 @@ import org.primefaces.model.StreamedContent;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID= 6319984968937774153L;
+  private static final Log LOG = LogFactory.getLog(Filtro.class);
+  
   private static final String COLUMN_DATA_FILE_FALTAS= "DESARROLLO,EMPLEADO,FECHA,ESTATUS,REGISTRO";  
   private static final String COLUMN_DATA_FILE_NOMINA= "NOMINA,CLAVE,NOMBRE COMPLETO,RFC,CURP,ACTIVO,DESARROLLO,CONTRATO,TOTAL";  
   
@@ -415,6 +424,157 @@ public class Filtro extends IBaseFilter implements Serializable {
     return regresar;
   }
   
+  private void toExecute() throws Exception {
+    Session sesion         = null;
+    Transaction transaction= null;
+		try {
+			sesion= SessionFactoryFacade.getInstance().getSession(-1L);
+			transaction= sesion.beginTransaction();
+			sesion.clear();
+      DaoFactory.getInstance().execute(sesion, "set @sql = null");
+      DaoFactory.getInstance().execute(sesion, "select\n" +
+"  group_concat(distinct\n" +
+"    concat(\n" +
+"      'ifnull(sum(case when contrato= ''',\n" +
+"      contrato,\n" +
+"      ''' then destajo end), 0) as `',\n" +
+"      contrato, '`'\n" +
+"    )\n" +
+"  ) into @sql\n" +
+"from (\n" +
+"		select \n" +
+"			tr_mantic_empresa_personal.id_empresa_persona,\n" +
+"			tc_keet_desarrollos.id_desarrollo,\n" +
+"			concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden< 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,\n" +
+"			tr_mantic_empresa_personal.clave,\n" +
+"			concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,\n" +
+"			tc_mantic_personas.rfc,\n" +
+"			tc_mantic_personas.curp,\n" +
+"			if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,\n" +
+"			concat(tc_keet_desarrollos.nombres, '-', tc_keet_contratos.nombre) as contrato,\n" +
+"			sum(tc_keet_contratos_destajos_contratistas.costo) as destajo\n" +
+"		from\n" +
+"			tc_keet_contratos_destajos_contratistas \n" +
+"		inner join\n" +
+"			tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista     \n" +
+"		inner join\n" +
+"			tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratos_lotes_contratistas.id_empresa_persona\n" +
+"		inner join \n" +
+"			tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona\n" +
+"		inner join\n" +
+"			tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote     \n" +
+"		inner join\n" +
+"			tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo\n" +
+"		inner join\n" +
+"			tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato     \n" +
+"		inner join\n" +
+"			tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto     \n" +
+"		inner join\n" +
+"			tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo     \n" +
+"		inner join\n" +
+"			tc_keet_estaciones on tc_keet_contratos_destajos_contratistas.id_estacion= tc_keet_estaciones.id_estacion     \n" +
+"		inner join\n" +
+"			tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo\n" +
+"		inner join\n" +
+"			tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro\n" +
+"		inner join\n" +
+"			tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento\n" +
+"		left join\n" +
+"			tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     \n" +
+"		left join\n" +
+"			tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo      \n" +
+"		where \n" +
+"			(tc_keet_contratos_destajos_contratistas.id_nomina= 54)\n" +
+"			and tc_keet_contratos_destajos_contratistas.id_estacion_estatus in (2, 3)\n" +
+"			and tr_mantic_empresa_personal.id_puesto= 6\n" +
+"		group by\n" +
+"			tr_mantic_empresa_personal.id_empresa_persona,\n" +
+"			tc_keet_desarrollos.id_desarrollo,\n" +
+"			tc_keet_desarrollos.nombres\n" +
+"		order by\n" +
+"			tr_mantic_empresa_personal.id_empresa_persona,\n" +
+"			tc_keet_desarrollos.id_desarrollo,\n" +
+"			tc_keet_contratos.nombre\n" +
+") as tt_keet_temporal");
+      DaoFactory.getInstance().execute(sesion, "set @sql = concat(\"select nomina, clave, nombre_completo, rfc, curp, activo, \", @sql, \" from (\n" +
+"select \n" +
+"			tr_mantic_empresa_personal.id_empresa_persona,\n" +
+"			tc_keet_desarrollos.id_desarrollo,\n" +
+"			concat(tc_keet_nominas_periodos.ejercicio, '-', if(tc_keet_nominas_periodos.orden< 10, '0', ''), tc_keet_nominas_periodos.orden) as nomina,\n" +
+"			tr_mantic_empresa_personal.clave,\n" +
+"			concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,\n" +
+"			tc_mantic_personas.rfc,\n" +
+"			tc_mantic_personas.curp,\n" +
+"			if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,\n" +
+"			concat(tc_keet_desarrollos.nombres, ' ', tc_keet_contratos.nombre) as contrato,\n" +
+"			sum(tc_keet_contratos_destajos_contratistas.costo) as destajo\n" +
+"		from\n" +
+"			tc_keet_contratos_destajos_contratistas \n" +
+"		inner join\n" +
+"			tc_keet_contratos_lotes_contratistas on tc_keet_contratos_destajos_contratistas.id_contrato_lote_contratista= tc_keet_contratos_lotes_contratistas.id_contrato_lote_contratista     \n" +
+"		inner join\n" +
+"			tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_empresa_persona= tc_keet_contratos_lotes_contratistas.id_empresa_persona\n" +
+"		inner join \n" +
+"			tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona\n" +
+"		inner join\n" +
+"			tc_keet_contratos_lotes on tc_keet_contratos_lotes_contratistas.id_contrato_lote= tc_keet_contratos_lotes.id_contrato_lote     \n" +
+"		inner join\n" +
+"			tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo= tc_keet_prototipos.id_prototipo\n" +
+"		inner join\n" +
+"			tc_keet_contratos on tc_keet_contratos_lotes.id_contrato= tc_keet_contratos.id_contrato     \n" +
+"		inner join\n" +
+"			tc_keet_proyectos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto     \n" +
+"		inner join\n" +
+"			tc_keet_desarrollos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo     \n" +
+"		inner join\n" +
+"			tc_keet_estaciones on tc_keet_contratos_destajos_contratistas.id_estacion= tc_keet_estaciones.id_estacion     \n" +
+"		inner join\n" +
+"			tc_keet_rubros on tc_keet_estaciones.codigo= tc_keet_rubros.codigo\n" +
+"		inner join\n" +
+"			tc_keet_rubros_grupos on tc_keet_rubros.id_rubro= tc_keet_rubros_grupos.id_rubro\n" +
+"		inner join\n" +
+"			tc_keet_puntos_grupos on tc_keet_rubros_grupos.id_punto_grupo= tc_keet_puntos_grupos.id_punto_grupo and tc_keet_puntos_grupos.id_departamento= tr_mantic_empresa_personal.id_departamento\n" +
+"		left join\n" +
+"			tc_keet_nominas on tc_keet_contratos_destajos_contratistas.id_nomina= tc_keet_nominas.id_nomina     \n" +
+"		left join\n" +
+"			tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo      \n" +
+"		where \n" +
+"			(tc_keet_contratos_destajos_contratistas.id_nomina= 54)\n" +
+"			and tc_keet_contratos_destajos_contratistas.id_estacion_estatus in (2, 3)\n" +
+"			and tr_mantic_empresa_personal.id_puesto= 6\n" +
+"		group by\n" +
+"			tr_mantic_empresa_personal.id_empresa_persona,\n" +
+"			tc_keet_desarrollos.id_desarrollo,\n" +
+"			tc_keet_desarrollos.nombres\n" +
+"		order by\n" +
+"			tr_mantic_empresa_personal.id_empresa_persona,\n" +
+"			tc_keet_desarrollos.id_desarrollo,\n" +
+"			tc_keet_contratos.nombre) as tt_keet_temporal\n" +
+" group by id_empresa_persona order by curp\")");     
+      DaoFactory.getInstance().execute(sesion, "prepare stmt from @sql");
+      DaoFactory.getInstance().execute(sesion, "execute stmt");
+      ScrollableResults list= DaoFactory.getInstance().toSqlScrollable(sesion, "execute stmt", Constantes.SQL_MAXIMO_REGISTROS);
+      if(list!= null)
+        while(list.next()) {
+          LOG.info(list.get(0));
+        } // for
+      DaoFactory.getInstance().execute(sesion, "deallocate prepare stmt");
+			transaction.commit();
+		} // try
+		catch (Exception e) {
+			if (transaction!= null)
+				transaction.rollback();
+			throw e;
+		} // catch
+		finally {
+			if (sesion!= null) {
+				sesion.close();
+			} // if
+			transaction= null;
+			sesion     = null;
+		} // finally    
+  }
+  
 	public StreamedContent getDocumento() {
 		StreamedContent regresar = null;		
 		Entity seleccionado      = null;				
@@ -422,6 +582,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
 		String template          = "CONTRATISTAS";
 		try {
+      // this.toExecute();
 			seleccionado= (Entity) this.attrs.get("seleccionado");						
 	  	params=new HashMap<>();
       params.put("idNomina", seleccionado.toLong("idNomina"));

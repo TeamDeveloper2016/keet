@@ -179,30 +179,40 @@ public final class Catalogos {
     } // finally
 	} // toLoadPuestos
 	
-	public static List<UISelectEntity> toContratistasPorElDia() throws Exception {
+	public static List<UISelectEntity> toContratistasPorElDia(boolean seleccione) throws Exception {
 		List<Columna> columns        = null;
 		List<UISelectEntity> regresar= null;
 		try {
 			columns= new ArrayList<>();
 			columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-		  regresar= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS, "nombre");
-			if(regresar!= null) {
-				Entity sinContratista=  new Entity(999L);
-				sinContratista.put("nombre", new Value("nombre", "POR EL DIA"));
-				sinContratista.put("nombres", new Value("nombres", "SIN CONTRATISTA"));
-				sinContratista.put("puesto", new Value("puesto", "POR EL DIA"));
-				// sinContratista
+      if(seleccione) 
+		    regresar= UIEntity.seleccione("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS, "nombre");
+      else
+		    regresar= UIEntity.build("VistaPersonasDto", "contratistas", Collections.EMPTY_MAP, columns, Constantes.SQL_TODOS_REGISTROS);
+      if(regresar!= null) {
+        Entity sinContratista=  new Entity(999L);
+        sinContratista.put("nombre", new Value("nombre", "POR EL DIA"));
+        sinContratista.put("nombres", new Value("nombres", "SIN CONTRATISTA"));
+        sinContratista.put("puesto", new Value("puesto", "POR EL DIA"));
+        // sinContratista
         if(regresar.size()<= 0)
-				  regresar.add(new UISelectEntity(sinContratista));
+          regresar.add(new UISelectEntity(sinContratista));
         else
-				  regresar.add(1, new UISelectEntity(sinContratista));
-			} // if
+          if(seleccione)
+            regresar.add(1, new UISelectEntity(sinContratista));
+          else
+            regresar.add(new UISelectEntity(sinContratista));
+      } // if
 		} // try
 		finally {
 			Methods.clean(columns);
 		} // finally
 		return regresar;
+	}
+
+	public static List<UISelectEntity> toContratistasPorElDia() throws Exception {
+		return toContratistasPorElDia(Boolean.TRUE);
 	}
 
 	public static void toLoadContratistas(Map<String, Object> attrs) throws Exception {

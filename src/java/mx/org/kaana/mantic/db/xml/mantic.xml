@@ -3039,6 +3039,15 @@
 				where 
 				  id_empresa_persona= {idEmpresaPersona}
 			</update>
+			<update id="sueldo">
+				update 
+				  tr_mantic_empresa_personal 
+				set 
+				  sueldo_semanal= {sueldoSemanal},
+          sobre_sueldo= {sobreSueldo}
+				where 
+				  id_empresa_persona= {idEmpresaPersona}
+      </update>  
     </unit>    
     <unit id="TrManticEmpresaTipoContactoDto">
       <select id="row">

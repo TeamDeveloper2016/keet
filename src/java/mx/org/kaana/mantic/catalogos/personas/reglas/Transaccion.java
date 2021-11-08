@@ -1,10 +1,10 @@
 package mx.org.kaana.mantic.catalogos.personas.reglas;
 
-import com.google.common.base.Objects;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -25,6 +25,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Cafu;
+import mx.org.kaana.mantic.catalogos.empleados.beans.Empleado;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBanco;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaBeneficiario;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
@@ -52,6 +53,7 @@ public class Transaccion extends IBaseTnx {
 	private String messageAlert;
 	private String cuenta;	
 	private Long idPersonaAdicional;
+  private List<Empleado> empleados;
 
 	public Transaccion(IBaseDto dto) {
 		this.dto = dto;
@@ -66,6 +68,10 @@ public class Transaccion extends IBaseTnx {
 		this.idPersonaAdicional= idPersonaAdicional;
 	} // Transaccion
 
+	public Transaccion(List<Empleado> empleados) {
+		this.empleados = empleados;
+	}
+  
 	public String getCuenta() {
 		return cuenta;
 	}		
@@ -91,6 +97,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
+					break;
+				case MOVIMIENTOS:
+					regresar= this.toUpdateSueldos(sesion);
 					break;
 			} // switch
 			if(!regresar)
@@ -369,7 +378,7 @@ public class Transaccion extends IBaseTnx {
 			old= empresaPersonalOld.toMap();
 			tmp= empresaPersonal.toMap();
 			for(String key: old.keySet()) {
-				if(!Objects.equal(old.get(key),tmp.get(key))) {
+				if(!Objects.equals(old.get(key),tmp.get(key))) {
 					if(key.equals("idActivo")){
 						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "REINGRESO DEL EMPLEADO" : "BAJA DEL EMPLEADO");						
 						if(empresaPersonal.getIdActivo().equals(1L))
@@ -492,7 +501,7 @@ public class Transaccion extends IBaseTnx {
             dto.setIdPersonaTipoContacto(-1L);
             validate = registrar(sesion, dto);
             // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
-            if(Objects.equal(dto.getIdPreferido(), 1L) && (Objects.equal(dto.getIdTipoContacto(), 6L) || Objects.equal(dto.getIdTipoContacto(), 7L) || Objects.equal(dto.getIdTipoContacto(), 8L))) {
+            if(Objects.equals(dto.getIdPreferido(), 1L) && (Objects.equals(dto.getIdTipoContacto(), 6L) || Objects.equals(dto.getIdTipoContacto(), 7L) || Objects.equals(dto.getIdTipoContacto(), 8L))) {
               Cafu cafu= new Cafu(this.persona.getPersona().getNombres()+ " "+ (this.persona.getPersona().getPaterno()!= null? this.persona.getPersona().getPaterno(): "")+ " "+ (this.persona.getPersona().getMaterno()!= null? this.persona.getPersona().getMaterno(): ""), dto.getValor());
               cafu.doSendMessage(sesion);
             } // if
@@ -767,5 +776,28 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // clearPersonalAsignado
+ 
+  private Boolean toUpdateSueldos(Session sesion) throws Exception {
+    boolean regresar= Boolean.FALSE;
+    Map<String, Object> params= null;
+    try {      
+      params = new HashMap<>();      
+      for(Empleado item: this.empleados) {
+        if(!Objects.equals(item.getSueldo(), item.getSueldoSemanal()) || !Objects.equals(item.getSobre(), item.getSobreSueldo())) {
+          params.put("sueldoSemanal", item.getSueldo());      
+          params.put("sobreSueldo", item.getSobre());      
+          params.put("idEmpresaPersona", item.getIdEmpresaPersona());      
+          regresar= DaoFactory.getInstance().updateAll(sesion, TrManticEmpresaPersonalDto.class, params, "sueldo")> 0L;
+        } // if  
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
   
 }

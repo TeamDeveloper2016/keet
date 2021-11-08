@@ -34,7 +34,7 @@ public class Contrato extends Filtro implements Serializable {
     try {
 			this.estaciones= new Estaciones();
 			this.estaciones.cleanLevels();
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
 			if(JsfBase.getFlashAttribute("estacionProcess")!= null){
 				this.current= (TcKeetEstacionesDto)JsfBase.getFlashAttribute("estacionProcess");
 				this.actualizarChildren(1);

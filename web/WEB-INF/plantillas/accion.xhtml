@@ -88,7 +88,7 @@
 									<br/>
 									<br/>
                 </div>
-                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
+                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}" appendTo="@(body)">
                   <h:outputText value="#{textoConfirmacion}" escape="false"/>
                   <ui:insert name="detalleConfirmacion" />
                   <hr class="ui-widget-content"/>

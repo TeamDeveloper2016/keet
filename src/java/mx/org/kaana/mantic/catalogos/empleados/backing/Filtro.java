@@ -37,7 +37,7 @@ import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 
-@Named(value = "manticCatalogosEmpleadosFiltro")
+@Named(value = "manticCatalogosEmpleadosFiltro") 
 @ViewScoped
 public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtro implements Serializable {
 
@@ -63,9 +63,9 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
       this.attrs.put("idTipoPersona", ETipoPersona.EMPLEADO.getIdTipoPersona());			
 			this.attrs.put("selectDepartamentos", new String[]{});
 			this.attrs.put("selectPuestos", new String[]{});
-			this.loadEmpresas();
-			this.loadTiposPersonas();
-			this.loadContratistas();
+			this.toLoadEmpresas();
+			this.toLoadTiposPersonas();
+			this.toLoadContratistas();
 			if(JsfBase.getFlashAttribute("idPersona")!= null){
 				this.attrs.put("idPersona", JsfBase.getFlashAttribute("idPersona"));
 				this.doLoad();
@@ -79,7 +79,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
   } // init
   
 	@Override
-	protected void loadTiposPersonas() throws Exception {
+	protected void toLoadTiposPersonas() throws Exception {
     Gestor gestor = new Gestor();
     gestor.loadTiposPersonas();
     this.attrs.put("tiposPersonas", gestor.getTiposPersonas());
@@ -91,9 +91,9 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
     this.attrs.put("idTipoGasto", idTipoGasto);
     this.attrs.put("departamentos", gestor.loadDepartamentosSimple(idTipoGasto));
     this.attrs.put("departamento", UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>)this.attrs.get("departamentos")));
-  } // loadTiposPersonas  
+  } // toLoadTiposPersonas  
 	
-	private void loadEmpresas() {
+	protected void toLoadEmpresas() {
 		Map<String, Object>params= null;
 		List<Columna> columns    = null;
 		try {
@@ -111,7 +111,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		} // catch				
 	} // loadEmpresas
 	
-	private void loadContratistas() {
+	protected void toLoadContratistas() {
 		List<UISelectEntity>contratistas= null;		
 		try {
 			contratistas= Catalogos.toContratistasPorElDia();
@@ -122,23 +122,23 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // loadContratistas
+	} // toLoadContratistas
 	
 	@Override
   public void doLoad() {
-    List<Columna> campos     = null;
+    List<Columna> columns    = null;
 		Map<String, Object>params= null;
     try {
 			params= this.toPrepare();
-      campos = new ArrayList<>();
-      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("tipoPersona", EFormatoDinamicos.MAYUSCULAS));           
-      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "filter", params, campos);
+      columns = new ArrayList<>();
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("tipoPersona", EFormatoDinamicos.MAYUSCULAS));           
+      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "filter", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -146,12 +146,12 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(columns);
       Methods.clean(params);
     } // finally		
   } // doLoad
 
-	private Map<String, Object> toPrepare(){
+	protected Map<String, Object> toPrepare(){
 		StringBuilder sb= new StringBuilder("");	
 		String[] selectPuestos= (String[]) this.attrs.get("selectPuestos");
 		String[] selectDepartamentos= (String[]) this.attrs.get("selectDepartamentos");
