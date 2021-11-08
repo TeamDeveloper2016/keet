@@ -779,13 +779,16 @@ public class Transaccion extends IBaseTnx {
  
   private Boolean toUpdateSueldos(Session sesion) throws Exception {
     boolean regresar= Boolean.FALSE;
+    Long idLimpiar  = 1L;
     Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
       for(Empleado item: this.empleados) {
-        if(!Objects.equals(item.getSueldo(), item.getSueldoSemanal()) || !Objects.equals(item.getSobre(), item.getSobreSueldo())) {
+        idLimpiar= item.getLimpiar()? 1L: 2L;
+        if(!Objects.equals(item.getSueldo(), item.getSueldoSemanal()) || !Objects.equals(item.getSobre(), item.getSobreSueldo()) || !Objects.equals(idLimpiar, item.getIdLimpiar())) {
           params.put("sueldoSemanal", item.getSueldo());      
           params.put("sobreSueldo", item.getSobre());      
+          params.put("idLimpiar", idLimpiar);      
           params.put("idEmpresaPersona", item.getIdEmpresaPersona());      
           regresar= DaoFactory.getInstance().updateAll(sesion, TrManticEmpresaPersonalDto.class, params, "sueldo")> 0L;
         } // if  

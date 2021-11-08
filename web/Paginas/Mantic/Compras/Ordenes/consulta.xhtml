@@ -161,6 +161,7 @@
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['total']}"/>
+              <i class="fa fa-fw fa-lastfm janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
@@ -168,7 +169,7 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.usuario}">
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.usuario}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>

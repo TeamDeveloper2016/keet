@@ -65,20 +65,7 @@ public class Sueldo extends Filtro implements Serializable {
     try {
 			params= this.toPrepare();
       this.chalanes= (List<Empleado>)DaoFactory.getInstance().toEntitySet(Empleado.class, "VistaPersonasDto", "chalanes", params);
-      if(this.chalanes!= null && !this.chalanes.isEmpty()) {
-        double sueldo= 0D;
-        double sobre = 0D;
-        for (Empleado item: this.chalanes) {
-          sueldo+= item.getSueldo();
-          sobre+= item.getSobre();
-        } // for
-        this.attrs.put("totalSueldo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, sueldo));
-        this.attrs.put("totalSobre", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, sobre));
-      } // if
-      else {
-        this.attrs.put("totalSueldo", 0D);
-        this.attrs.put("totalSobre", 0D);
-      } // if
+      this.doMakeNothing();
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -165,7 +152,21 @@ public class Sueldo extends Filtro implements Serializable {
   }
 
   public void doMakeNothing() {
-     
+    if(this.chalanes!= null && !this.chalanes.isEmpty()) {
+      double sueldo= 0D;
+      double sobre = 0D;
+      for (Empleado item: this.chalanes) {
+        item.setLimpiar(Objects.equals(item.getIdLimpiar(), 1L));
+        sueldo+= item.getSueldo();
+        sobre+= item.getSobre();
+      } // for
+      this.attrs.put("totalSueldo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, sueldo));
+      this.attrs.put("totalSobre", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, sobre));
+    } // if
+    else {
+      this.attrs.put("totalSueldo", 0D);
+      this.attrs.put("totalSobre", 0D);
+    } // if
   }
 
   public void doGlobalImporte(Double importe) {
@@ -178,10 +179,10 @@ public class Sueldo extends Filtro implements Serializable {
     try {					
 			transaccion = new Transaccion(this.chalanes);
 			if(transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
-				JsfBase.addMessage("Se actualizaron los sueldos y sobre sueldos", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se actualizó la información", ETipoMensaje.INFORMACION);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al actualizar los sueldos", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al actualizar la información", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);

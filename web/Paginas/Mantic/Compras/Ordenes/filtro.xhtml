@@ -173,8 +173,9 @@
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
+              <i class="fa fa-fw fa-lastfm janal-align-left janal-color-orange" title="Registro: #{row['usuario']}"></i>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.usuario}">
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.usuario}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>

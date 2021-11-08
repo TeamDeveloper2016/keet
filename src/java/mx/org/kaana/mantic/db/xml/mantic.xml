@@ -3044,7 +3044,8 @@
 				  tr_mantic_empresa_personal 
 				set 
 				  sueldo_semanal= {sueldoSemanal},
-          sobre_sueldo= {sobreSueldo}
+          sobre_sueldo= {sobreSueldo},
+          id_limpiar= {idLimpiar}
 				where 
 				  id_empresa_persona= {idEmpresaPersona}
       </update>  

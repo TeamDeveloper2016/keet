@@ -27,6 +27,7 @@ public class Empleado extends TrManticEmpresaPersonalDto implements Serializable
   private String seguro;
   private Double sueldo;
   private Double sobre;
+  private Boolean limpiar;
 
   public Empleado() {
     this(new Long((int)(Math.random()*-10000)));
@@ -123,6 +124,14 @@ public class Empleado extends TrManticEmpresaPersonalDto implements Serializable
 
   public void setSobre(Double sobre) {
     this.sobre = sobre;
+  }
+
+  public Boolean getLimpiar() {
+    return limpiar;
+  }
+
+  public void setLimpiar(Boolean limpiar) {
+    this.limpiar = limpiar;
   }
 
   @Override
