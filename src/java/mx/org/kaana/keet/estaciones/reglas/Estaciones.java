@@ -102,11 +102,13 @@ public class Estaciones extends Maestro implements IArbol, Serializable {
     List<Columna> columns = null;    
     Map<String, Object> params= new HashMap<>();
 		try {
+      value= this.toOnlyKey(value, level+child);
       columns = new ArrayList<>();
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       params.put("idContrato", idContrato);
       params.put("nivel", level+child+aumentarNivel);
+      params.put("clave", value);
       if(this.sesion!= null)
         regresar= (List<Entity>) DaoFactory.getInstance().toEntitySet(this.sesion, "VistaContratosDto", "detalle", params, Constantes.SQL_TODOS_REGISTROS);
       else

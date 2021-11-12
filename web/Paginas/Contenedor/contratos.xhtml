@@ -232,17 +232,17 @@
                   <f:facet name="header">
                     <h:outputText value="Concepto"/>
                   </f:facet>
-                  <h:outputText value="#{row.descripcion}" styleClass="janal-color-black"/>
+                  <h:outputText value="#{row.descripcion}" title="#{row.descripcion}" styleClass="janal-color-black" style="white-space: nowrap;"/>
                 </p:column>
-                <p:column styleClass="janal-wid-15 Responsive">
+                <p:column styleClass="janal-wid-15 Responsive" rendered="false">
                   <f:facet name="header">
                     <h:outputText value="Estatus"/>
                   </f:facet>
                   <h:outputText value="#{row.estatus}" styleClass="#{row.idEstacionEstatus eq '2'? 'janal-color-black': row.idEstacionEstatus eq '3'? 'janal-color-green': ''}"/>
                 </p:column>            
-                <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-wid-15'}" sortBy="#{row.porcentaje}">
+                <p:column class="janal-column-right MarAuto Responsive #{kajoolUtilAplicacion.isMobile? 'janal-fix-20': 'janal-wid-10'}" sortBy="#{row.porcentaje}">
                   <f:facet name="header">
-                    <h:outputText value="#{kajoolUtilAplicacion.isMobile? '( % )': 'Porcentaje'}"/>
+                    <h:outputText value="( % )"/>
                   </f:facet>
                   <h:outputText value="#{row['porcentaje']}"/>
                 </p:column>	
@@ -258,6 +258,9 @@
                   </f:facet>
                   <h:outputText value="#{row['cargo']}"/>
                 </p:column>	
+                <p:column styleClass="janal-wid-3 MarAuto Responsive janal-column-center">
+                  <h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '3' ? 'circulo-verde': row.idEstacionEstatus eq '2'? 'circulo-amarillo': row.idEstacionEstatus eq '4'? 'circulo-cafe': 'circulo-rojo'}.png" title="#{row.estatus}"/>
+                </p:column>  
                 <f:facet name="footer">
                   <p:outputLabel value="Total [#{kajoolContratos.attrs.tablaDetalleLotes.size()}] registros"/>
                 </f:facet>

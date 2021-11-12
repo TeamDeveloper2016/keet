@@ -3581,6 +3581,7 @@
           tc_keet_estaciones.termino,
           tc_keet_estaciones.cantidad,
           tc_keet_estaciones.costo,
+          tc_keet_estaciones.ultimo,
           tc_keet_estaciones.id_estacion_estatus,
           tc_keet_estaciones_estatus.nombre as estatus
         from
@@ -3596,8 +3597,8 @@
         inner join
           tc_keet_estaciones_estatus on tc_keet_estaciones.id_estacion_estatus= tc_keet_estaciones_estatus.id_estacion_estatus
         where
-          tc_keet_contratos_lotes.id_contrato= {idContrato}
-          or {idContrato}= 0
+          (tc_keet_contratos_lotes.id_contrato= {idContrato} or {idContrato}= 0)
+           and tc_keet_estaciones.clave like '{clave}%'
         order by
           tc_keet_estaciones.clave        
       </select>
@@ -5651,6 +5652,8 @@
 				where 
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
 				  and {condicion}
+        order by
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote)
 			</select>
 			<select id="lotesSubContratistas">
 				select 
@@ -5678,6 +5681,8 @@
 				where 
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_proveedores.id_proveedor={idFigura}
 				  and {condicion}
+        order by
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote)
 			</select>
 			<select id="lotesResidentes">
 				select 

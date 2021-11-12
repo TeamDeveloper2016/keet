@@ -219,5 +219,14 @@ public class Contrato extends Filtro implements Serializable {
 			mx.org.kaana.libs.formato.Error.mensaje(e);			
 		} // catch		
   }
+
+  @Override
+	public String doUpload() {
+		JsfBase.setFlashAttribute("ikContratoLote", -1L);
+		JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PLANTILLAS.getId());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/contrato");
+		return "/Paginas/Keet/Estaciones/Masivos/importar".concat(Constantes.REDIRECIONAR);
+	}
   
 }
+
