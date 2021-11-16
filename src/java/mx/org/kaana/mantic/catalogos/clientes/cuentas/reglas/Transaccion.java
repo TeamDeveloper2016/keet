@@ -597,7 +597,8 @@ public class Transaccion extends Facturama {
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // else
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
+        this.toCheckDeleteFile(sesion, this.file.getName());
+				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
 			} // if	
   	} // if	
 	} // toUpdateDeleteXml
@@ -611,7 +612,7 @@ public class Transaccion extends Facturama {
 				if(listado.indexOf(new Nombres(name))< 0) {
 				  File existe= new File(matched);
           if(existe.exists()) {
-            LOG.warn("Factura: delete file: ".concat(matched));
+            LOG.warn("Delete factura: ".concat(matched));
 				    // existe.delete();
           } // if   
 				} // if

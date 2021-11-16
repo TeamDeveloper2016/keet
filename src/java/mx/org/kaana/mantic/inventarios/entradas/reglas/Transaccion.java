@@ -197,7 +197,8 @@ public class Transaccion extends Inventarios implements Serializable {
 						bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 						this.toCheckOrden(sesion);
-       	    this.toDeleteXmlPdf();	
+            this.toCheckDeleteFile(sesion);
+       	    // this.toDeleteXmlPdf();	
             DaoFactory.getInstance().deleteAll(sesion, TcKeetNotasContratosLotesDto.class, this.orden.toMap());
 					} // if
 					else
@@ -463,7 +464,8 @@ public class Transaccion extends Inventarios implements Serializable {
 				  if(!file.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
+        this.toCheckDeleteFile(sesion, this.xml.getName());
+				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
 			if(this.pdf!= null) {
 				tmp= new TcManticNotasArchivosDto(
@@ -491,7 +493,8 @@ public class Transaccion extends Inventarios implements Serializable {
 				  if(!file.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+        this.toCheckDeleteFile(sesion, this.pdf.getName());
+				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	}

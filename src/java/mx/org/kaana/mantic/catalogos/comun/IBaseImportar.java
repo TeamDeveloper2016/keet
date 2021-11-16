@@ -589,6 +589,13 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		} // catch
 	} // doFileUpload	
 
+  /*
+   TcManticArchivosDto para el campo de idEliminar
+   1 SIGNIFICA QUE EL ARCHIVO SE DEBE DE QUEDAR
+   2 SIGNIFICA QUE EL ARCHIVO SE TIENE QUE ELIMINAR
+   3 SIGNIFICA QUE EL ARCHIVO YA FUE ELIMINADO
+   4 SIGNIFICA QUE EL ARCHIVO SE INTENTO ELIMINAR PERO NO EXISTE
+  */
   private Long toSaveFileRecord(String archivo, String ruta, String alias, String nombre, Long idEliminado) throws Exception {
 		Long regresar= -1L;
 		TcManticArchivosDto registro= new TcManticArchivosDto(
@@ -605,7 +612,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
 		return regresar;
 	}
-		
+
 	public static void main(String ... args) {
 		LOG.info(" $ 3,123.12 sin caracteres especiales: "+ " $ 3,123.12 ".replaceAll("[$, ]", ""));
 	}

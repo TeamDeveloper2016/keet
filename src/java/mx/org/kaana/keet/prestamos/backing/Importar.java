@@ -133,7 +133,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
-			idArchivo= toRegisterFile("prestamos");							
+			idArchivo= toSaveFileRecord("prestamos");							
       /*UPLOAD*/
 			this.setFile(new Importado(nameFile, event.getFile().getContentType(), getFileType(nameFile), event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), idArchivo));
   		this.attrs.put("file", this.getFile().getName());	

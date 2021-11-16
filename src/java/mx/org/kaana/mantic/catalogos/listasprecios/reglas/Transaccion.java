@@ -70,7 +70,8 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					break;
 				case ELIMINAR: 
-					this.toDeleteXmlPdf();
+          this.toCheckDeleteFile(sesion);
+					// this.toDeleteXmlPdf();
 					regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, this.lista.toMap())>-1L;
 					sesion.flush();
 					regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosArchivosDto.class, this.lista.toMap())>-1L;
@@ -134,7 +135,8 @@ public class Transaccion extends IBaseTnx {
 					} // for
 					monitoreo.terminar();
 					monitoreo.setProgreso(0L);
-					this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()), ".".concat(this.xls.getFormat().name()), this.toListFile(sesion, this.xls, 8L));
+          this.toCheckDeleteFile(sesion, this.xls.getName());
+					// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()), ".".concat(this.xls.getFormat().name()), this.toListFile(sesion, this.xls, 8L));
 				} // if	
 				if(this.pdf!= null) {
 					tmp= new TcManticListasPreciosArchivosDto(
@@ -153,7 +155,8 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().updateAll(sesion, TcManticListasPreciosArchivosDto.class, params);
 					DaoFactory.getInstance().insert(sesion, tmp);
 					sesion.flush();
-					this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+          this.toCheckDeleteFile(sesion, this.pdf.getName());
+					// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 				} // if	
 			} // if	
 		} // try

@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -185,7 +184,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			Archivo.toWriteFile(result, event.getFile().getInputStream());
 			fileSize= event.getFile().getSize();						
 			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase(), this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), nameFile, 1L));
-  		this.attrs.put("file", this.file.getName()); 			
+  		this.attrs.put("file", this.file.getName()); 		
+      this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName(), 1L); 
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -200,9 +200,9 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	} // toWriteFile
 	
 	private void toWriteFile(File result, InputStream upload, boolean xml) throws Exception {
-		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		InputStream inputStream          = upload;
-		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
+		FileOutputStream output= new FileOutputStream(result);
+		InputStream inputStream= upload;
+		byte[] buffer          = new byte[Constantes.BUFFER_SIZE];
 		int bulk;
 		while(true) {
 			if(xml)
@@ -213,16 +213,16 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 				break;        
 			if(xml) {
 				if(bulk!= 13 && bulk!= 10) {
-					fileOutputStream.write(bulk);
-					fileOutputStream.flush();
+					output.write(bulk);
+					output.flush();
 				} // if
 			} // if
 			else{
-			  fileOutputStream.write(buffer, 0, bulk);
-			  fileOutputStream.flush();
+			  output.write(buffer, 0, bulk);
+			  output.flush();
 			} // else
 		} // while
-		fileOutputStream.close();
+		output.close();
 		inputStream.close();
 	} // toWriteFile 
 
@@ -578,7 +578,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
     } // finally
   } 
 
-	protected Long toRegisterFile(String carpetaArchivo) throws Exception {
+	protected Long toSaveFileRecord(String carpetaArchivo) throws Exception {
 		Long regresar= -1L;
 		TcManticArchivosDto file= new TcManticArchivosDto(
 			this.getFile().getName(), // String archivo, 
@@ -593,8 +593,15 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		if(regresar <= 0)
 			throw new RuntimeException("Ocurrió un error al registrar el archivo.");
 		return regresar;
-	}	// toRegisterFile
+	}	// toSaveFileRecord
 
+  /*
+   TcManticArchivosDto para el campo de idEliminar
+   1 SIGNIFICA QUE EL ARCHIVO SE DEBE DE QUEDAR
+   2 SIGNIFICA QUE EL ARCHIVO SE TIENE QUE ELIMINAR
+   3 SIGNIFICA QUE EL ARCHIVO YA FUE ELIMINADO
+   4 SIGNIFICA QUE EL ARCHIVO SE INTENTO ELIMINAR PERO NO EXISTE
+  */
   private Long toSaveFileRecord(String archivo, String ruta, String alias, String nombre, Long idEliminado) throws Exception {
 		Long regresar= -1L;
 		TcManticArchivosDto registro= new TcManticArchivosDto(
@@ -638,5 +645,10 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
     } // if
     return regresar;
   }
+
+  public void reset() {
+    this.xml= null;  
+    this.pdf= null;  
+  } 
   
 }

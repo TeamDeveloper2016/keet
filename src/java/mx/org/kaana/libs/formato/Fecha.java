@@ -25,7 +25,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public  class Fecha {
+public class Fecha {
 	
 	private static final Log LOG=LogFactory.getLog(Fecha.class);
 	
@@ -281,6 +281,31 @@ public  class Fecha {
     return formatear(FECHA_EXTENDIDA);
   } // getHoy
 
+  private static String temporal(int patron, int dias) {
+    Calendar dia= Calendar.getInstance();
+    dia.add(Calendar.DATE, dias);
+    return formatear(patron, formatear("yyyyMMddHHmmssS", dia.getTime()));
+  } // formatear
+
+  public static String getHoy(int dias) {
+    return temporal(FECHA_CORTA, dias);
+  } // getHoy
+
+  public static String getHoyMesCorto(int dias) {
+    return temporal(FECHA_NOMBRE_MES_CORTO, dias);
+  } // getHoyMesCorto
+  
+  public static String getHoyEstandar(int dias) {
+    return temporal(FECHA_ESTANDAR, dias);
+  } // getHoyEstandar
+
+  public static String getFormatoHoras(int horas) {
+    Calendar dia= Calendar.getInstance();
+    dia.add(Calendar.HOUR, horas);
+    SimpleDateFormat formato = new SimpleDateFormat("yyyyMMddHH");
+    return formato.format(dia.getTime());
+  } // horas
+  
   public static int getDiasEnElMes(int anio, int mes) {
     int dias[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     if ((anio % 4 == 0 && !(anio % 100 == 0)) || anio % 400 == 0)

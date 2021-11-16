@@ -131,7 +131,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
           this.orden.setIdVentaEstatus(13L);
           bitacoraNota= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), 2L, this.orden.getCticket(), this.orden.getTotal());
           regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-          this.toDeleteXmlPdf();	
+          this.toCheckDeleteFile(sesion);
+          // this.toDeleteXmlPdf();	
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -300,7 +301,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				  if(!file.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.xml.getRuta()), this.xml.getName(), 1L));
+        this.toCheckDeleteFile(sesion, this.xml.getName());
+				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.xml.getRuta()), this.xml.getName(), 1L));
 			} // if	
 			if(this.pdf!= null) {
         tmp= new TcManticFacturasArchivosDto(
@@ -332,7 +334,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				  if(!file.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.pdf.getRuta()), this.pdf.getName(), 2L));
+        this.toCheckDeleteFile(sesion, this.pdf.getName());
+				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(this.pdf.getRuta()), this.pdf.getName(), 2L));
 			} // if	
   	} // if	
 	}
