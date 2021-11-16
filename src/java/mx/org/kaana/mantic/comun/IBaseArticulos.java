@@ -55,9 +55,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	private static final long serialVersionUID=-7378726801437171894L;
 	private static final Log LOG=LogFactory.getLog(IBaseArticulos.class);
 	
-  private IAdminArticulos adminOrden;
-	private StreamedContent detailImage;
-	private String precio;
+  protected IAdminArticulos adminOrden;
+	protected StreamedContent detailImage;
+	protected String precio;
 	protected String pathImage;
 
 	public IBaseArticulos() {

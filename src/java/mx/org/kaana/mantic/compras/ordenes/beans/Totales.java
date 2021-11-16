@@ -29,12 +29,14 @@ public final class Totales implements Serializable {
 	private double utilidad;
 	private double global;
 	private double cantidad;
+	private double esperados;
+	private double especial;
 
 	public Totales() {
-		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0);
+		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0, 0D, 0D);
 	}
 
-	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global, double cantidad, int parciales) {
+	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global, double cantidad, int parciales, double esperados, double especial) {
 		this.articulos= articulos;
 		this.importe  = importe; 
 		this.iva      = iva;
@@ -46,6 +48,7 @@ public final class Totales implements Serializable {
 		this.global   = global;
 		this.cantidad = cantidad;
     this.parciales= parciales;
+    this.especial = especial;
 	}
 
 	public int getArticulos() {
@@ -136,6 +139,22 @@ public final class Totales implements Serializable {
 		return Numero.toRedondearSat(this.descuento+ this.extra);
 	}
 
+  public double getEsperados() {
+    return esperados;
+  }
+
+  public void setEsperados(double esperados) {
+    this.esperados = esperados;
+  }
+
+  public double getEspecial() {
+    return especial;
+  }
+
+  public void setEspecial(double especial) {
+    this.especial = especial;
+  }
+
   public void addArticulo(Long idArticulo, double cantidad) {
 		this.articulos+= idArticulo> 0? 1: 0;
 		if(idArticulo> 0)
@@ -148,15 +167,18 @@ public final class Totales implements Serializable {
 		this.extra+= articulo.getImportes().getExtra();
 		this.iva+= articulo.getImportes().getIva();
 		this.subTotal+= articulo.getImportes().getSubTotal();		
+		this.especial+= articulo.getImportes().getEspecial();		
 		this.total+= articulo.getImportes().getTotal();
 		this.utilidad+= articulo.getUtilidad();
     this.cantidad+= articulo.getCantidad();
+    this.esperados+= articulo.getEsperados();
   	this.articulos+= 1;
 	}
 	
 	public void removeUltimo(Articulo articulo) {
 		articulo.setCuantos(0D);
 	  this.cantidad-= articulo.getCantidad();
+	  this.esperados-= articulo.getEsperados();
 	}
 	
 	public void removeArticulo(Articulo articulo) {
@@ -166,15 +188,19 @@ public final class Totales implements Serializable {
 		this.iva-= articulo.getImportes().getIva();
 		this.subTotal-= articulo.getImportes().getSubTotal();
 		this.total-= articulo.getImportes().getTotal();
+		this.especial-= articulo.getImportes().getEspecial();
 		this.utilidad-= articulo.getUtilidad();
 	  this.cantidad-= articulo.getCuantos();
+    this.esperados-= articulo.getEsperados();
 	  this.articulos-= 1;
 	}
 	
 	public void removeTotal() {
 		if(this.global> 0D)
-  		if(this.utilidad> this.global)
+  		if(this.utilidad> this.global) {
     		this.total-= this.global;
+        this.especial-= this.global;
+      }  
 		  else
 			  this.global= 0D;
 	}
@@ -307,14 +333,16 @@ public final class Totales implements Serializable {
 		this.iva      = 0;
 		this.subTotal = 0;
 		this.total    = 0;
+		this.especial = 0;
 		this.utilidad = 0;
 		this.cantidad = 0;
+		this.esperados= 0;
 		this.parciales= 0;
 	}
 
-	@Override
-	public String toString() {
-		return "Totales{"+"articulos="+articulos+", importe="+importe+", iva="+iva+", sinIva="+sinIva+", descuento="+descuento+", extra="+extra+", subTotal="+subTotal+", total="+total+", utilidad="+utilidad+", global="+global+", cantidad="+cantidad+'}';
-	}
+  @Override
+  public String toString() {
+    return "Totales{" + "articulos=" + articulos + ", parciales=" + parciales + ", importe=" + importe + ", iva=" + iva + ", sinIva=" + sinIva + ", descuento=" + descuento + ", extra=" + extra + ", subTotal=" + subTotal + ", total=" + total + ", utilidad=" + utilidad + ", global=" + global + ", cantidad=" + cantidad + ", esperados=" + esperados + ", especial=" + especial + '}';
+  }
 	
 }

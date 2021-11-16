@@ -38,9 +38,9 @@ public class ArticuloVenta extends Articulo {
 	}
 	
 	public ArticuloVenta(Long key, boolean costoLibre) {
-		super(key, costoLibre);
-		this.descuentoActivo  = false;
-		this.descuentoAsignado= false;
+		super(key, costoLibre, Boolean.FALSE);
+		this.descuentoActivo  = Boolean.FALSE;
+		this.descuentoAsignado= Boolean.FALSE;
 		this.listaPrecios     = new ArrayList<>();
 		this.precioLista      = new UISelectEntity(-1L);
 		this.aplicaCosto      = true;

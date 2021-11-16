@@ -5892,6 +5892,7 @@
           ifnull(tc_mantic_notas_detalles.codigo, (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 2 and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})) as codigo,
           tc_mantic_notas_detalles.sat,
           tc_mantic_notas_detalles.nombre,
+          tc_mantic_notas_detalles.esperados,
           tc_mantic_notas_detalles.cantidad,
           tc_mantic_notas_detalles.costo,
           tc_mantic_notas_detalles.descuento,

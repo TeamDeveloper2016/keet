@@ -722,7 +722,7 @@
 				  $(this.discount()).val(temp);
 				else {
 					this.set('');
-  				this.refresh();
+  				refresh(this.cursor.index);
 				} // if
 			  return ok.error;
 			} // if	
@@ -766,7 +766,7 @@
 				  $(this.price()).val(temp);
 				else {
 					this.set('');
-	 				this.refresh();
+	 				refresh(this.cursor.index);
 				} // if
 			  return ok.error;
 			} // if	
@@ -783,7 +783,7 @@
 				  $(this.additional()).val(temp);
 				else {
 					this.set('');
-	 				this.refresh();
+	 				refresh(this.cursor.index);
 				} // if
 		  return ok.error;
 			} // if	

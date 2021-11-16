@@ -63,7 +63,7 @@ public abstract class IAdminArticulos implements Serializable {
 		return totales;
 	}
 
-public List<IBaseDto> getPartidas() {
+  public List<IBaseDto> getPartidas() {
     List<IBaseDto> regresar= new ArrayList<>();
     if(this.articulos!= null && !this.articulos.isEmpty()) {
       int count= 0;

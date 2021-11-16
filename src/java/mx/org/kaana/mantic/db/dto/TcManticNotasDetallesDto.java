@@ -88,17 +88,20 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   private Double costoCalculado;
   @Column (name="origen")
   private String origen;
+  @Column (name="esperados")
+  private Double esperados;
+  
 
   public TcManticNotasDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticNotasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 2L, 0D, 0D, 0D, 0D, "");
+    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 2L, 0D, 0D, 0D, 0D, "", 0D);
     setKey(key);
   }
 
-  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Double cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Double cantidades, Double excedentes, Long idAplicar, Double declarados, Double diferencia, Double costoReal, Double costoCalculado, String origen) {
+  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Double cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Double cantidades, Double excedentes, Long idAplicar, Double declarados, Double diferencia, Double costoReal, Double costoCalculado, String origen, Double esperados) {
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
     setCosto(costo);
@@ -125,6 +128,7 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		this.costoReal= costoReal;
 		this.costoCalculado= costoCalculado;
 		this.origen= origen;
+    this.esperados= esperados;
   }
 	
   public void setCodigo(String codigo) {
@@ -334,6 +338,14 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 	public void setOrigen(String origen) {
 		this.origen=origen;
 	}
+
+  public Double getEsperados() {
+    return esperados;
+  }
+
+  public void setEsperados(Double esperados) {
+    this.esperados = esperados;
+  }
 	
   @Transient
   @Override
@@ -401,6 +413,8 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getCostoCalculado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrigen());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEsperados());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -434,13 +448,14 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("costoReal", getCostoReal());
 		regresar.put("costoCalculado", getCostoCalculado());
 		regresar.put("origen", getOrigen());
+		regresar.put("esperados", getEsperados());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getIdNotaEntrada(), getNombre(), getImporte(), getRegistro(), getIva(), getIdNotaDetalle(), getSubTotal(), getCantidad(), getIdArticulo(), getDescuentos(), getImpuestos(), getIdOrdenDetalle(), getCantidades(), getExcedentes(), getIdAplicar(), getDeclarados(), getDiferencia(), getCostoReal(), getCostoCalculado(), getOrigen()
+      getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getIdNotaEntrada(), getNombre(), getImporte(), getRegistro(), getIva(), getIdNotaDetalle(), getSubTotal(), getCantidad(), getIdArticulo(), getDescuentos(), getImpuestos(), getIdOrdenDetalle(), getCantidades(), getExcedentes(), getIdAplicar(), getDeclarados(), getDiferencia(), getCostoReal(), getCostoCalculado(), getOrigen(), getEsperados()
     };
     return regresar;
   }

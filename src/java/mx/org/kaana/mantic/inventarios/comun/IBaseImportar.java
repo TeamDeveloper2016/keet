@@ -286,7 +286,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 						concepto.getClaveProdServ(), // sat
 						concepto.getUnidad(), // unidadMedida
 						2L, // idAplicar
-						concepto.getDescripcion() // origen
+						concepto.getDescripcion(), // origen
+            Boolean.FALSE // especial
 					));
 			} // for
 			Collections.sort(faltantes);

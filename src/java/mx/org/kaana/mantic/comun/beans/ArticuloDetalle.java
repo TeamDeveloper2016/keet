@@ -58,28 +58,29 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	private Double utilidad;	
 	private String origen;	
 	private UISelectEntity ikAplicar;
+  private Double esperados;
 
   public ArticuloDetalle() {
     this(new Long(-1L));
   }
 
   public ArticuloDetalle(Long key) {
-		this(key, "", 0D, "", "", 0D, LocalDateTime.now(), "", 16D, 0D, 0D, 1D, 0D, "", "", "", 0D, 2L, "");
+		this(key, "", 0D, "", "", 0D, LocalDateTime.now(), "", 16D, 0D, 0D, 1D, 0D, "", "", "", 0D, 2L, "", 0D);
   }
 
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Double excedentes, Long idAplicar, String origen) {
-		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0D, 1L, -1L, excedentes, idAplicar, origen);
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Double excedentes, Long idAplicar, String origen, Double esperados) {
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0D, 1L, -1L, excedentes, idAplicar, origen, esperados);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, String origen) {
-		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, idOrdenDetalle, solicitados, idRedondear, idComodin, excedentes, idAplicar, 0D, 0D, origen);
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, String origen, Double esperados) {
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, idOrdenDetalle, solicitados, idRedondear, idComodin, excedentes, idAplicar, 0D, 0D, origen, esperados);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad, String origen) {
-		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, idOrdenDetalle, solicitados, idRedondear, idComodin, excedentes, idAplicar, precio, utilidad, null, origen);
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad, String origen, Double esperados) {
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, idOrdenDetalle, solicitados, idRedondear, idComodin, excedentes, idAplicar, precio, utilidad, null, origen, esperados);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad, String descuentoDescripcion, String origen) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, LocalDateTime registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Double solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad, String descuentoDescripcion, String origen, Double esperados) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -112,6 +113,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.cantidadGarantia= cantidad;
 	  this.origen= origen;
 		this.ikAplicar= new UISelectEntity(new Entity(0L));
+    this.esperados= esperados;
 	}
 	
   public void setCodigo(String codigo) {
@@ -345,6 +347,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	public void setOrigen(String origen) {
 		this.origen=origen;
 	}
+
+  public Double getEsperados() {
+    return esperados;
+  }
+
+  public void setEsperados(Double esperados) {
+    this.esperados = esperados;
+  }
 	
 	@Override
   public Long getKey() {
@@ -403,6 +413,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.append(getUtilidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuentoDescripcion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEsperados());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -432,6 +444,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.put("precio", getPrecio());
 		regresar.put("utilidad", getUtilidad());
 		regresar.put("descuentoDescripcion", getDescuentoDescripcion());
+		regresar.put("esperados", getEsperados());
   	return regresar;
   }
 

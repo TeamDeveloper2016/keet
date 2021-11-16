@@ -10,53 +10,56 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
+import static mx.org.kaana.kajool.enums.EAccion.CONSULTAR;
+import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
-import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
-import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
-import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import mx.org.kaana.mantic.comun.IBaseArticulos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Random;
-import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
-import mx.org.kaana.kajool.db.comun.sql.Value;
-import mx.org.kaana.kajool.enums.EFormatos;
-import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.libs.archivo.Archivo;
-import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.mantic.comun.IBaseEsperados;
 import mx.org.kaana.mantic.comun.IBaseStorage;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaProcess;
+import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
+import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -70,12 +73,12 @@ import org.primefaces.model.StreamedContent;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticInventariosEntradasAccion")
+@Named(value= "manticInventariosEntradasAlmacen")
 @ViewScoped
-public class Accion extends IBaseEsperados implements IBaseStorage, Serializable {
+public class Almacen extends IBaseArticulos implements IBaseStorage, Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Accion.class);
-  private static final long serialVersionUID= 327393488565639367L;
+	private static final Log LOG              = LogFactory.getLog(Almacen.class);
+  private static final long serialVersionUID= 327393488565639368L;
 	
 	private EAccion accion;	
 	private EOrdenes tipoOrden;
@@ -130,12 +133,12 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 			this.attrs.put("idTipoComparacion", 1);
 			this.aplicar=  false;
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
-			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+//			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
+//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.DIRECTA: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
-      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
-      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? 1L: JsfBase.getFlashAttribute("idNotaEntrada"));
+      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? 3004L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
@@ -162,6 +165,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
         case AGREGAR:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
           ordenCompra= this.attrs.get("idOrdenCompra").equals(-1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
+          this.attrs.put("idOrdenCompra", ordenCompra.getIdOrdenCompra());
 					if(this.tipoOrden.equals(EOrdenes.DIRECTA)) {
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
@@ -188,7 +192,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
 					ordenCompra   = (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, notaEntrada.getIdOrdenCompra());
-          this.attrs.put("idOrdenCompra", notaEntrada.getIdOrdenCompra());
+          this.attrs.put("idOrdenCompra", ordenCompra.getIdOrdenCompra());
 					this.tipoOrden= notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.DIRECTA: EOrdenes.PROVEEDOR;
           this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
@@ -198,10 +202,6 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 					this.toPrepareDisponibles(false);
           break;
       } // switch
-      if(this.getAdminOrden()!= null && this.getAdminOrden().getArticulos()!= null && !this.getAdminOrden().getArticulos().isEmpty()) 
-        for (Articulo item : this.getAdminOrden().getArticulos()) {
-          item.setEspecial(Boolean.TRUE);
-        } // for
 			this.attrs.put("ordenCompra", ordenCompra);
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			this.toLoadCatalog();
@@ -246,6 +246,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 			nota.setArticulos(this.getAdminOrden().getArticulos());
 			nota.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
 			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
+      
       if(Cadena.isVacio(this.attrs.get("folio"))) {
         if(!Cadena.isVacio(this.getXml())) {
           if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
@@ -482,14 +483,14 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
       if(items!= null && !items.isEmpty()) {
         list     = new Object[items.size()];
         int count= 0;
-        for (Entity entity: items) {
+        for (Entity entity : items) {
           int index= lotes.indexOf(new UISelectEntity(entity.toLong("idContratoLote")));
           if(index>= 0)
             list[count++]= lotes.get(index);
         } // for
       } // if  
       if(list== null)
-        list= new Object[] {};
+        list= new Object[]{};
       this.attrs.put("lotesSeleccion", list);
 		} // try
 		catch (Exception e) {
@@ -1052,31 +1053,19 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 	
 	@Override
 	public void toSaveRecord() {
-    NotaEntradaProcess nota= null;
     Transaccion transaccion= null;
     try {			
-      if(!Cadena.isVacio((String)this.attrs.get("observaciones"))) {
-        if(this.getXml()!= null && Cadena.isVacio(this.getXml().getObservaciones()))
-          this.getXml().setObservaciones((String)this.attrs.get("observaciones")); 
-        if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
-          this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
-      } // if
 			((NotaEntrada)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-      this.getAdminOrden().toAdjustArticulos();
-			nota= new NotaEntradaProcess();
-			nota.setNotaEntrada((NotaEntrada)this.getAdminOrden().getOrden());
-			nota.setArticulos(this.getAdminOrden().getArticulos());
-			nota.setFamilias(Arrays.asList((Object[])this.attrs.get("familiasSeleccion")));
-			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
-			transaccion = new Transaccion(nota, false, this.getXml(), this.getPdf());
+			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), false, this.getXml(), this.getPdf());
+			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
  			  UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				this.accion= EAccion.MODIFICAR;
-				this.getAdminOrden().getArticulos().add(new Articulo(-1L, Boolean.FALSE, Boolean.TRUE));
+				this.getAdminOrden().getArticulos().add(new Articulo(-1L, Boolean.FALSE, Boolean.FALSE));
 				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
 			} // if	
       if(Objects.equals(null, ((NotaEntrada)this.getAdminOrden().getOrden()).getIdBanco()))
@@ -1138,7 +1127,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 								concepto.getUnidad(), // unidadMedida
 								2L, // idAplicar
 								concepto.getDescripcion(), // origen
-                Boolean.FALSE  // especial    
+                Boolean.TRUE // especial
 							);
 						} // if
 						else {

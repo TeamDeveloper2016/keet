@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -63,6 +64,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private boolean facturado;
 	private long multiplo;
 	private long idAutomatico;
+  private boolean especial;
 
 	public Articulo() {
 		this(-1L);
@@ -71,10 +73,15 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	public Articulo(Long key) {
 		this(key, false);
 	}
+  
+	public Articulo(Long key, Boolean especial) {
+		this(key, false, especial);
+	}
 	
-	public Articulo(Long key, boolean costoLibre) {
+	public Articulo(Long key, Boolean costoLibre, Boolean especial) {
 		this(false, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1D, -1L, key, 0D, -1L, false, false, 0L, 0D, "", "");
-		this.costoLibre  = costoLibre;
+		this.costoLibre= costoLibre;
+    this.especial  = especial;
 	}
 
 	public Articulo(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida) {
@@ -82,11 +89,11 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public Articulo(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida, Long idAplicar) {
-	  this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida, 2L, "");
+	  this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida, 2L, "", true);
 	}
 	
-	public Articulo(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida, Long idAplicar, String origen) {
-		super(idArticulo, codigo, costo, descuento, extras, importe, LocalDateTime.now(), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, sat, unidadMedida, excedentes, idAplicar, origen);
+	public Articulo(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida, Long idAplicar, String origen, Boolean especial) {
+		super(idArticulo, codigo, costo, descuento, extras, importe, LocalDateTime.now(), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, sat, unidadMedida, excedentes, idAplicar, origen, 0D);
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
 		this.idProveedor = idProveedor;
 		this.sinIva      = sinIva;
@@ -108,6 +115,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.facturado   = false;
 		this.multiplo    = 1;
 		this.idAutomatico= 1;
+    this.especial    = especial;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -293,6 +301,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	public void setIdAutomatico(long idAutomatico) {
 		this.idAutomatico=idAutomatico;
 	}
+
+  public boolean isEspecial() {
+    return especial;
+  }
+
+  public void setEspecial(boolean especial) {
+    this.especial = especial;
+  }
 	
 	public String getImporte$() {
 		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte());
@@ -365,6 +381,13 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	protected void toCalculate() {
+    if(this.especial)
+      this.toCalculateEspecial();
+    else  
+      this.toCalculateNormal();
+  }
+  
+	protected void toCalculateNormal() {
 		double porcentajeIva = 1+ (this.getIva()/ 100);
 		double costoMoneda   = this.getCosto()* this.tipoDeCambio;
 		double costoReal     = this.getCantidad()* costoMoneda;
@@ -390,7 +413,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		else 
 	  	this.importes.setIva(Numero.toRedondearSat((this.importes.getSubTotal()* porcentajeIva)- this.importes.getSubTotal()));
 		this.importes.setTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getIva()));
-		
+    
 		// esto es para ajustar los importes quitando el descuento extra que se añade porque no debe de afecta el importe total de la factura
 		this.importes.setIva(Numero.toRedondearSat(this.importes.getIva()+ (this.importes.getExtra()* porcentajeIva- this.importes.getExtra())));
 		this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getExtra()));
@@ -414,10 +437,76 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		if(this.getCantidad()== null || this.getCantidad()<= 0)
 	    this.setIdAplicar(2L);
 	}
+  
+	protected void toCalculateEspecial() {
+		double porcentajeIva = 1+ (this.getIva()/ 100);
+		double costoMoneda   = this.getCosto()* this.tipoDeCambio;
+		double costoReal     = this.getEsperados()* costoMoneda;
+		this.importes.setImporte(Numero.toRedondearSat(costoReal));
+		
+		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
+		double temporal      = descuentos.toImporte();
+		this.importes.setSubTotal(Numero.toRedondearSat(temporal<= 0? this.importes.getImporte(): temporal));
+		
+		// la utilidad es calculada tomando como base el costo menos los descuento y a eso quitarle el precio de lista
+		double utilidad      = this.importes.getSubTotal()- (this.getPrecio()* this.getEsperados());
+	  
+		temporal= descuentos.toImporte(this.getDescuento());
+		this.importes.setDescuento(Numero.toRedondearSat(temporal> 0? this.importes.getImporte()- temporal: 0D));
+		
+		temporal= descuentos.toImporte(this.getExtras());
+		this.importes.setExtra(Numero.toRedondearSat(temporal> 0? (this.importes.getImporte()- this.importes.getSubTotal()): 0D));
+
+		if(this.sinIva) {
+	  	this.importes.setIva(Numero.toRedondearSat(this.importes.getSubTotal()- (this.importes.getSubTotal()/ porcentajeIva)));
+	  	this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()- this.importes.getIva()));
+		} // if	
+		else 
+	  	this.importes.setIva(Numero.toRedondearSat((this.importes.getSubTotal()* porcentajeIva)- this.importes.getSubTotal()));
+		this.importes.setTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getIva()));
+    
+		// esto es para ajustar los importes quitando el descuento extra que se añade porque no debe de afecta el importe total de la factura
+		this.importes.setIva(Numero.toRedondearSat(this.importes.getIva()+ (this.importes.getExtra()* porcentajeIva- this.importes.getExtra())));
+		this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getExtra()));
+		this.importes.setTotal(Numero.toRedondearSat(this.importes.getTotal()+ (this.importes.getExtra()* porcentajeIva)));
+    // termina aqui los ajustes de los descuentos extras que se asignaron a los articulos 		
+		
+		// verificar si la cantidad tiene decimales entonces realizar el procedimiento de calculo nuevamente tomando como base el precio unitario 
+		if(Numero.toRedondear(this.getEsperados()% 1)!= 0) 
+			this.toRecalculate(Numero.toRedondear(this.importes.getSubTotal()/ this.getEsperados()), porcentajeIva);
+		
+		this.setSubTotal(this.importes.getSubTotal());
+		this.setImpuestos(this.importes.getIva());
+		this.setDescuentos(this.importes.getDescuento());		
+		this.setDescuentoDescripcion(!Cadena.isVacio(this.getDescuento()) && !this.getDescuento().equals("0") ? this.getDescuento().concat("% [$").concat(String.valueOf(this.importes.getDescuento())).concat("]") : "0");
+		this.setExcedentes(this.importes.getExtra());
+		this.setImporte(Numero.toRedondearSat(this.importes.getTotal()));
+		this.setUtilidad(utilidad);
+		this.toDiferencia();
+	  this.setCuantos(this.getEsperados());
+		// esto es para ajustar el campo de aplicar el cambio de precio siempre y cuando la cantidad sea mayor a cero 
+		if(this.getEsperados()== null || this.getEsperados()<= 0)
+	    this.setIdAplicar(2L);
+	}
 
 	protected void toRecalculate(double precioUnitario, double porcentajeIva) {
+    if(this.especial)
+      this.toRecalculateEspecial(precioUnitario, porcentajeIva);
+    else  
+      this.toRecalculateNormal(precioUnitario, porcentajeIva);
+  }
+  
+	protected void toRecalculateNormal(double precioUnitario, double porcentajeIva) {
 		// Este procedimiento es para ajustar los decimales y los cualculos sean basados en con respecto al precio unitario
 		this.importes.setSubTotal(Numero.toRedondear(this.getCantidad()* precioUnitario));
+		this.importes.setIva(Numero.toRedondear((this.getImportes().getSubTotal()* porcentajeIva))- this.getImportes().getSubTotal());
+		this.importes.setImporte(Numero.toRedondear(this.getImportes().getSubTotal()+ this.getImportes().getIva()));
+		this.importes.setTotal(this.importes.getImporte());
+	}
+	
+	protected void toRecalculateEspecial(double precioUnitario, double porcentajeIva) {
+		// Este procedimiento es para ajustar los decimales y los cualculos sean basados en con respecto al precio unitario
+		this.importes.setSubTotal(Numero.toRedondear(this.getEsperados()* precioUnitario));
 		this.importes.setIva(Numero.toRedondear((this.getImportes().getSubTotal()* porcentajeIva))- this.getImportes().getSubTotal());
 		this.importes.setImporte(Numero.toRedondear(this.getImportes().getSubTotal()+ this.getImportes().getIva()));
 		this.importes.setTotal(this.importes.getImporte());
@@ -497,7 +586,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdOrdenDetalle()== null? this.getCantidad()- this.getSolicitados(): 0D,
 			this.real,
 			this.calculado,
-			this.getOrigen()
+			this.getOrigen(),
+      this.getEsperados()
 		);	
 	}
 

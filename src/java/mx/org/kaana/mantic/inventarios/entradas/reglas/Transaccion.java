@@ -162,10 +162,10 @@ public class Transaccion extends Inventarios implements Serializable {
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+          this.registrarFamiliasLotes(sesion);
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
-          this.registrarFamiliasLotes(sesion);
 					break;
 				case COMPLEMENTAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -180,11 +180,11 @@ public class Transaccion extends Inventarios implements Serializable {
 	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					} // if	
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+          this.registrarFamiliasLotes(sesion);
 					this.toRemoveOrdenDetalle(sesion);
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
-          this.registrarFamiliasLotes(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= this.toNotExistsArticulosBitacora(sesion);
@@ -519,7 +519,7 @@ public class Transaccion extends Inventarios implements Serializable {
             contratoLote.setIdFamilia(((UISelectEntity)familia).getKey());
             contratoLote.setIdNotaEntrada(this.orden.getIdNotaEntrada());
             contratoLote.setIdUsuario(JsfBase.getIdUsuario());
-            NotaLoteFamilia existe= new NotaLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdOrdenCompra());
+            NotaLoteFamilia existe= new NotaLoteFamilia(-1L, ((UISelectEntity)familia).getKey(), ((UISelectEntity)lote).getKey(), this.orden.getIdNotaEntrada());
             int index= items.indexOf(existe);
             if(index< 0) {
               DaoFactory.getInstance().insert(sesion, contratoLote);
