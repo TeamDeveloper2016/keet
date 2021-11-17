@@ -240,7 +240,7 @@
 										</p:commandLink>		              										
                   </f:facet>
                 </p:dataList>
-                <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-130, janal-wid-100-txt">
+                <p:panelGrid id="formularioDomicilio" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
 									<p:outputLabel for="domicilio" value="Domicilio:"/>
                   <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-92, janal-wid-8">
 										<p:selectOneMenu id="domicilio" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
@@ -261,7 +261,7 @@
 										</p:selectOneMenu>	
   									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
 									</p:panelGrid>
-									<p:spacer height="1px"/>
+                  <p:separator/>
 									<p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();"/>

@@ -87,7 +87,7 @@ public class Seguimiento extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception(e);
+			throw new Exception((e!= null? e.getCause().toString(): ""));
 		} // catch		
 		finally{
 			Methods.clean(params);

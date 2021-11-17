@@ -106,12 +106,12 @@ public class Transaccion extends IBaseTnx {
         throw new Exception("");
 		} // try
 		catch (Exception e) {			
-			throw new Exception(this.messageError.concat("<br/>")+ e);
+			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
 		return regresar;
 	}	// ejecutar
 	
-	private void toCuenta(){
+	private void toCuenta() {
 		RandomCuenta random= null;
 		try {
 			random= new RandomCuenta(this.persona.getPersona().getNombres(), this.persona.getPersona().getPaterno(), this.persona.getPersona().getMaterno(), -1L);

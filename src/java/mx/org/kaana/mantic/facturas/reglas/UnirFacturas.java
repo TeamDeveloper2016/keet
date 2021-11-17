@@ -115,7 +115,7 @@ public class UnirFacturas extends Facturama {
 		} // try
 		catch (Exception e) {		
 			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ e);
+			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
 		finally {
 			Methods.clean(params);

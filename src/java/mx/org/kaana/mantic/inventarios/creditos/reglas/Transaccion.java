@@ -141,7 +141,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);			
-			throw new Exception(this.messageError.concat("<br/>")+ e);
+			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
 		LOG.info("Se genero de forma correcta la nota de crédito: "+ this.orden.getConsecutivo());
 		return regresar;

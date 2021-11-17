@@ -7,9 +7,9 @@
   <!-- XULHA
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/keetDS" username="cafujvmh_tester" password="20tester20" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/cafujvmh_training?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
    -->
-  <!-- KEET -->
+  <!-- KEET
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/keetDS" username="cafujvmh_track" password="20track20" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/cafujvmh_testing?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
-	 
+	 -->
   <!-- DEVELOMENT 
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/keetDS" username="keet_admin" password="admin_keet" type="javax.sql.DataSource" url="jdbc:mariadb://localhost:3306/keet?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
 	 -->

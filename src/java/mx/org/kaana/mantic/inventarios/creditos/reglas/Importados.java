@@ -40,7 +40,7 @@ public class Importados extends Transaccion implements Serializable {
 		catch (Exception e) {
 			regresar= false;
       Error.mensaje(e);			
-			throw new Exception(this.getMessageError().concat("\n\n")+ e.getMessage());
+			throw new Exception(this.getMessageError().concat("\n\n")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
 		LOG.info("Se importaron de forma correcta los archivos !");
 		return regresar;

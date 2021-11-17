@@ -109,7 +109,7 @@ public class Transaccion extends IBaseTnx {
       // throw new RuntimeException("Hola!");
 		} // try
 		catch (Exception e) {			
-			throw new Exception(e);
+			throw new Exception((e!= null? e.getCause().toString(): ""));
 		} // catch	
 		finally {
 			Methods.clean(params);

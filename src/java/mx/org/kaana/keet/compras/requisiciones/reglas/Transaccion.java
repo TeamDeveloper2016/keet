@@ -124,7 +124,7 @@ public class Transaccion extends IBaseTnx {
 		} // try
 		catch (Exception e) {		
 			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ e);
+			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
 		if(this.requisicion!= null)
 			LOG.info("Se genero de forma correcta la requsición: "+ this.requisicion.getRequisicion().getConsecutivo());
