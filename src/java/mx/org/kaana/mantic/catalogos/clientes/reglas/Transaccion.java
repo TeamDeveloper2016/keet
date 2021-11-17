@@ -613,6 +613,7 @@ public class Transaccion extends Facturama {
 				  if(!reference.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
+        this.toSaveFile(this.file.getIdArchivo());
         this.toCheckDeleteFile(sesion, this.file.getName());
 				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("clientes").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
 			} // if	
@@ -646,6 +647,7 @@ public class Transaccion extends Facturama {
 				  if(!reference.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
+        this.toSaveFile(this.file.getIdArchivo());
         this.toCheckDeleteFile(sesion, this.file.getName());
 				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
 			} // if	

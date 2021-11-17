@@ -454,6 +454,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					1L,
 					this.xml.getOriginal()
 				);
+        this.toSaveFile(this.xml.getIdArchivo());
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
 				File file= new File(tmp.getAlias());
 				if(exists== null && file.exists()) {
@@ -483,6 +484,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					1L,
 					this.pdf.getOriginal()
 				);
+        this.toSaveFile(this.pdf.getIdArchivo());
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
 				File file= new File(tmp.getAlias());
 				if(exists== null && file.exists()) {

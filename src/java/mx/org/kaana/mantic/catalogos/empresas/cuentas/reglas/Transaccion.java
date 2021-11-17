@@ -307,6 +307,7 @@ public class Transaccion extends IBaseTnx {
 					this.idTipoComprobante,
 					this.fecha
 				);
+        this.toSaveFile(this.xml.getIdArchivo());
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
 				if(exists== null && reference.exists()) {
@@ -338,6 +339,7 @@ public class Transaccion extends IBaseTnx {
 					this.idTipoComprobante,
 					this.fecha
 				);
+        this.toSaveFile(this.pdf.getIdArchivo());
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
 				if(exists== null && reference.exists()) {

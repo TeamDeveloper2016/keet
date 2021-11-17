@@ -179,6 +179,7 @@ public class Transaccion extends IBaseTnx {
 					this.xml.getRuta(), //ruta
 					this.xml.getOriginal()
 				);
+        this.toSaveFile(this.xml.getIdArchivo());
 				TcManticEgresosArchivosDto exists= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "TcManticEgresosArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
 				if(exists== null && reference.exists()) {
@@ -208,6 +209,7 @@ public class Transaccion extends IBaseTnx {
 					this.pdf.getRuta(), //ruta										
 					this.pdf.getOriginal()
 				);
+        this.toSaveFile(this.xml.getIdArchivo());
 				TcManticEgresosArchivosDto exists= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "TcManticEgresosArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
 				if(exists== null && reference.exists()) {

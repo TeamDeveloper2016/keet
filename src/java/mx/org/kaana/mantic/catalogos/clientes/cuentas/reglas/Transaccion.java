@@ -597,6 +597,7 @@ public class Transaccion extends Facturama {
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // else
 				sesion.flush();
+        this.toSaveFile(this.file.getIdArchivo());
         this.toCheckDeleteFile(sesion, this.file.getName());
 				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
 			} // if	

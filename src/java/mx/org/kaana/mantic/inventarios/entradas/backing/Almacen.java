@@ -248,8 +248,8 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
 			nota.setLotes(Arrays.asList((Object[])this.attrs.get("lotesSeleccion")));
       
       if(Cadena.isVacio(this.attrs.get("folio"))) {
-        if(!Cadena.isVacio(this.getXml())) {
-          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc())) {
+        if(!Cadena.isVacio(this.getXml()) && !this.getIsDirecta()) {
+          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc()) && !this.getIsDirecta()) {
             transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
             if (transaccion.ejecutar(this.accion)) {
               if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {

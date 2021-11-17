@@ -19,8 +19,9 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 
 	private static final Log LOG              = LogFactory.getLog(Transaccion.class);
-	private static final Long FILE_DEPURACION= 1L;
+	private static final Long FILE_DEPURACION= 2L;
 	private static final Long FILE_ELIMINADO = 3L;
+	private static final Long FILE_NO_ENCONTRAADO = 4L;
 	public List<TcManticArchivosDto> files;
 
 	public Transaccion() {
@@ -75,23 +76,24 @@ public class Transaccion extends IBaseTnx {
 	} // toArchivos
 	
 	public void depuracion(Session sesion) throws Exception {
-		File file= null;
+		File eliminar= null;
 		try {
-			for(TcManticArchivosDto fileDepuracion: this.files) {
-				file= new File(fileDepuracion.getAlias());
+			for(TcManticArchivosDto item: this.files) {
+				eliminar= new File(item.getAlias());
 				try {
-					if(file.exists()) {
-						if(file.delete()) {					
-							fileDepuracion.setIdEliminado(FILE_ELIMINADO);
-							DaoFactory.getInstance().update(sesion, fileDepuracion);
-						} // if
+					if(eliminar.exists()) {
+						if(eliminar.delete())
+							item.setIdEliminado(FILE_ELIMINADO);
+            else
+							item.setIdEliminado(FILE_NO_ENCONTRAADO);
+					  DaoFactory.getInstance().update(sesion, item);
 					} // if
 					else
-						LOG.info("No se encontró el archivo: " + fileDepuracion.getAlias());
+						LOG.info("No se encontró el archivo: " + item.getAlias());
 				} // try
 				catch (Exception e) {					
 					Error.mensaje(e);					
-					LOG.info("Ocurrió un error al eliminar el archivo: " + fileDepuracion.getAlias());
+					LOG.info("Ocurrió un error al eliminar el archivo: " + item.getAlias());
 				} // catch				
 			} // for
 		} // try

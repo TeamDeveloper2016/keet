@@ -132,7 +132,7 @@ public abstract class IBaseTnx {
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idEliminado", 2L);
+			params.put("idEliminado", 1L);
 			regresar= DaoFactory.getInstance().update(this.sesion, TcManticArchivosDto.class, idKey, params)>= 1L;
 		} // try
 		catch (Exception e) {			

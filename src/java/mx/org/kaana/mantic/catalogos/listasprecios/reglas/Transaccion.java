@@ -135,6 +135,7 @@ public class Transaccion extends IBaseTnx {
 					} // for
 					monitoreo.terminar();
 					monitoreo.setProgreso(0L);
+          this.toSaveFile(this.xls.getIdArchivo());
           this.toCheckDeleteFile(sesion, this.xls.getName());
 					// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()), ".".concat(this.xls.getFormat().name()), this.toListFile(sesion, this.xls, 8L));
 				} // if	
@@ -155,6 +156,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().updateAll(sesion, TcManticListasPreciosArchivosDto.class, params);
 					DaoFactory.getInstance().insert(sesion, tmp);
 					sesion.flush();
+          this.toSaveFile(this.pdf.getIdArchivo());
           this.toCheckDeleteFile(sesion, this.pdf.getName());
 					// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 				} // if	
