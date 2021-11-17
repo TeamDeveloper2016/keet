@@ -197,7 +197,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return "/Paginas/Mantic/Inventarios/Entradas/almacen?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs".concat(Constantes.REDIRECIONAR_AMPERSON);
-  } // doNotas  
+  } // doNotasEntradas  
 	
   public void doEliminar() {
 		Transaccion transaccion = null;

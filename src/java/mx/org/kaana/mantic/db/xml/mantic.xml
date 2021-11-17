@@ -2687,7 +2687,7 @@
         from
           tc_mantic_personas
         where
-          1=2
+          rfc= '{rfc}' or curp='{curp}'
       </select>
       <select id="curp">
         select
