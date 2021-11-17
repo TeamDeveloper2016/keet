@@ -225,7 +225,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);			
-			throw new Exception(this.messageError.concat("<br/>")+ e);
+			throw new Exception(this.messageError.concat("<br/>")+ (e!= null? e.getCause().toString(): ""));
 		} // catch		
 		LOG.info("Se genero de forma correcta la nota de entrada: "+ this.orden.getConsecutivo());
 		return regresar;
