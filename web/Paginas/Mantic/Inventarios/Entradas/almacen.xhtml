@@ -477,7 +477,7 @@
 													<f:facet name="header">
 														<h:outputText value="No."/>
 													</f:facet>
-													<p:commandLink process="@this" update="@(.importado) @(.filas) @(.recalculo)" actionListener="#{manticInventariosEntradasAlmacen.doDesasociarArticulo(row, index)}" title="Clic para desvincular un articulo de la factura (XML)" styleClass="filas" rendered="#{not row.disponible}">
+													<p:commandLink process="@this" update="@(.importado) @(.filas) @(.recalculo)" styleClass="filas" rendered="#{not row.disponible}">
 													  <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
 													</p:commandLink>
                           <h:graphicImage library="janal" name="icon/semaforos/#{row.facturado? 'circulo-azul.png': 'circulo-rojo.png'}" styleClass="janal-icons-header" rendered="#{row.disponible}"/>

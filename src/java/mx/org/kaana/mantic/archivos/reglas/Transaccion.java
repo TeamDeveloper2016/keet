@@ -64,7 +64,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params= new HashMap<>();
 			params.put("idEliminado", FILE_DEPURACION);
-			regresar= DaoFactory.getInstance().toEntitySet(sesion, TcManticArchivosDto.class, "TcManticArchivosDto", "depuracion", params, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, TcManticArchivosDto.class, "TcManticArchivosDto", "eliminar", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {			
 			throw e;

@@ -70,11 +70,11 @@
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla');" oncomplete="janal.desbloquear();"/>								
                 <p:separator style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}" styleClass="notificar"/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Reporte" actionListener="#{keetCajaChicaPagar.doReporte()}" process="@this tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}" styleClass="notificar"/>
-                <p:menuitem icon="fa fa-whatsapp" value="Whatsup" actionListener="#{keetCajaChicaPagar.doWhatsup()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}" styleClass="notificar"/>
+                <p:menuitem icon="fa fa-whatsapp" value="Whatsapp" actionListener="#{keetCajaChicaPagar.doWhatsup()}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}" styleClass="notificar"/>
 							</p:menuButton>							
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla');" oncomplete="janal.desbloquear();"/>							
 							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doReporte()}" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}"/>
-							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-whatsapp" title="Whatsup" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doWhatsup()}" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}"/>
+							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-whatsapp" title="Whatsapp" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doWhatsup()}" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}"/>
             </f:facet>
             <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">
@@ -210,7 +210,7 @@
 							</p:menuButton>							
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlx', 'tablaResidentes');" oncomplete="janal.desbloquear();"/>							
 							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-file-pdf-o" title="Reporte" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doReporte()}" oncomplete="janal.desbloquear();"/>
-							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-whatsapp" title="Whatsup" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doWhatsup()}" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}"/>
+							<p:commandButton styleClass="xs-pantalla notificar" icon="fa fa-whatsapp" title="Whatsapp" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{keetCajaChicaPagar.doWhatsup()}" oncomplete="janal.desbloquear();" style="display: #{keetCajaChicaPagar.costoTotal ne ''? '': 'none'}"/>
             </f:facet>
             <p:column class="MarAuto Responsive janal-wid-3">
               <f:facet name="header">
