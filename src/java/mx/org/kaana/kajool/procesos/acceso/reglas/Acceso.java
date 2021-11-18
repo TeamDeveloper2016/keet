@@ -76,13 +76,12 @@ public class Acceso implements Serializable {
     autentifica.getCredenciales().setCuentaInicial(getCliente().getCuenta());
     LOG.info("cuenta[".concat(getCliente().getCuenta()).concat("]"));
     if (autentifica.tieneAccesoBD(getCliente().getCuenta(), getCliente().getContrasenia(), JsfBase.getRequest().getRemoteAddr())) {
-      if (JsfBase.isLockUsers()) {
+      if (JsfBase.isLockUsers()) 
         throw new BloqueoSitioException();
-      }
       registro= new RegistroPerfil(autentifica);
       session = JsfBase.getSession();
       registro.addAutentifica(session);
-      agregarUsuariosSitio(session, autentifica);
+      this.agregarUsuariosSitio(session, autentifica);
       if (!autentifica.getRedirect().equals(EPaginasPrivilegios.PERFILES)) {
         registro.addMenuSesion(session);
         registro.addTopMenuSesion(session);

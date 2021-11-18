@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -310,6 +309,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
     this.especial = especial;
   }
 	
+	public String getSubTotal$() {
+		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getSubTotal());
+	}
+
 	public String getImporte$() {
 		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte());
 	}
@@ -342,6 +345,15 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public String getCantidadMayorMenor() {
 		double difieren  = this.getCantidad()- this.getSolicitados();
+		String color     = difieren< -5? "janal-color-orange": difieren> 5? "janal-color-blue": "janal-color-green";
+		boolean display  = difieren!= 0D;
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Cantidad solicitada: ").concat(
+			Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, this.getSolicitados())
+		).concat("\n\nDiferencia: ").concat(Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, difieren)).concat("'></i>");
+	}
+	
+	public String getEsperadosMayorMenor() {
+		double difieren  = this.getEsperados()- this.getSolicitados();
 		String color     = difieren< -5? "janal-color-orange": difieren> 5? "janal-color-blue": "janal-color-green";
 		boolean display  = difieren!= 0D;
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Cantidad solicitada: ").concat(

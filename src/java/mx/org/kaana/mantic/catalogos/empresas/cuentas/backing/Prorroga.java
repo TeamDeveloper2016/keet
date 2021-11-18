@@ -69,6 +69,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
 			params.put("sortOrder", this.attrs.get("sortOrder"));
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "cuentas", params);
 			this.prorroga= deuda.toDate("limite");
+      this.attrs.put("idRevisado", deuda.toLong("idRevisado"));       
 			this.attrs.put("deuda", deuda);
 		} // try
 		catch (Exception e) {
@@ -107,7 +108,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
 		try {
 			if(validaImporte()){
 				deuda= (Entity) this.attrs.get("deuda");
-				transaccion= new Transaccion(deuda, this.prorroga);
+				transaccion= new Transaccion(deuda, this.prorroga, (Long)this.attrs.get("idRevisado"));
 				if(transaccion.ejecutar(EAccion.MODIFICAR)) {
 					JsfBase.addMessage("Modificar cuenta por pagar", "Se realizó la modificación de forma correcta", ETipoMensaje.INFORMACION);
        		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));

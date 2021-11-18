@@ -27,6 +27,7 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
@@ -380,11 +381,19 @@ public class Transaccion extends Inventarios implements Serializable {
 
 			// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
 			TcManticEmpresasDeudasDto deuda= null;
-			if(this.orden.getDiasPlazo()> 1) 
-				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), (this.orden.getDeuda()- this.orden.getExcedentes())* -1, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
+			if(Objects.equals(1L, this.orden.getIdTipoMedioPago())) 
+				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, 1L);
 			else
-				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
+				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), (this.orden.getDeuda()- this.orden.getExcedentes())* -1, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, 1L);
 			DaoFactory.getInstance().insert(sesion, deuda);
+      TcManticEmpresasBitacoraDto movimiento= new TcManticEmpresasBitacoraDto(
+        "SE REGISTRO LA CUENTA POR PAGAR", // String justificacion, 
+        deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        deuda.getIdEmpresaDeuda(), // Long idEmpresaDeuda
+        -1L // Long idEmpresaBitacora, 
+      );
+      DaoFactory.getInstance().insert(sesion, movimiento);
 			params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 			params.put("idNotaEstatus", this.orden.getIdNotaEstatus());
 			TcManticNotasBitacoraDto registro= (TcManticNotasBitacoraDto)DaoFactory.getInstance().findFirst(TcManticNotasBitacoraDto.class, "igual", params);

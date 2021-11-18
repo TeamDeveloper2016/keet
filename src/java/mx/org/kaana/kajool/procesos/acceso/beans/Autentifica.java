@@ -140,7 +140,7 @@ public class Autentifica implements Serializable {
       privilegios = new Privilegios(this.persona);
       this.credenciales.setPerfilesDelega(privilegios.verificarDelega());
       this.credenciales.setPerfiles(privilegios.verificarPerfiles());
-      validaRedirect();
+      this.validaRedirect();
     }// try
     catch (Exception e) {
       throw e;
@@ -157,12 +157,13 @@ public class Autentifica implements Serializable {
         this.credenciales.setGrupoPerfiles(true);
         this.credenciales.setMenuEncabezado(false);
       } // if
-      else if (this.credenciales.getPerfiles().equals(1L)) {
-        loadSucursales();
-      } else {
-        this.credenciales.setAccesoDelega(true);
-        this.redirect = EPaginasPrivilegios.PERFILES;
-      } // else			
+      else 
+        if (this.credenciales.getPerfiles().equals(1L)) 
+          this.loadSucursales();
+        else {
+          this.credenciales.setAccesoDelega(true);
+          this.redirect= EPaginasPrivilegios.PERFILES;
+        } // else			
     } // try
     catch (Exception e) {
       throw e;
@@ -203,16 +204,15 @@ public class Autentifica implements Serializable {
       this.persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
       if (this.persona != null) {
         regresar = isAdministrador() || verificaCredencial();
-        if (regresar) {
-          procesarPermisos();
-        } // if
+        if (regresar) 
+          this.procesarPermisos();
 				else {
           this.persona = null;
           LOG.info(" No tiene acceso al sistema, favor de verificar esta situación ");
         } // else
       } // if
       else {
-        regresar = isDelegaActivo();
+        regresar = this.isDelegaActivo();
       } // else
       if (regresar) {
         this.ultimoAcceso= Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona!= null && this.persona.getUltimoAcceso()== null? LocalDateTime.now(): this.persona.getUltimoAcceso());        

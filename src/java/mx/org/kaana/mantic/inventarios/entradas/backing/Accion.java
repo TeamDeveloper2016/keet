@@ -181,6 +181,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 	  					((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoMedioPago(new UISelectEntity(new Entity(ordenCompra.getIdTipoMedioPago())));
             if(ordenCompra.getIdTipoPago()!= null) 
 						  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoPago(new UISelectEntity(new Entity(ordenCompra.getIdTipoPago())));
+						((NotaEntrada)this.getAdminOrden().getOrden()).setReferencia(ordenCompra.getReferencia());
 						this.fechaEstimada.setTimeInMillis(ordenCompra.getRegistro().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 					} // else	
           break;
@@ -864,7 +865,8 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
  		disponible.setSat(faltante.getSat());
 		disponible.setCodigo(faltante.getCodigo());
 		disponible.setCosto(faltante.getCosto());
-		disponible.setCantidad(faltante.getCantidad());
+		// disponible.setCantidad(faltante.getCantidad());
+		disponible.setEsperados(faltante.getCantidad());
 		disponible.setDescuento("0");
 		disponible.setIva(faltante.getIva());
 		disponible.setUnidadMedida(faltante.getUnidadMedida());
@@ -1244,7 +1246,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
       if(!tiposMediosPagos.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR))
+        if(this.accion.equals(EAccion.AGREGAR) && Objects.equals(-1L, ((NotaEntrada)this.getAdminOrden().getOrden()).getIkTipoMedioPago()))
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoMedioPago(tiposMediosPagos.get(0));
         else  
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoMedioPago(tiposMediosPagos.get(tiposMediosPagos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkTipoMedioPago())));
@@ -1292,7 +1294,7 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 			tiposPagos= UIEntity.seleccione("TcManticTiposPagosDto", "row", params, "nombre");
 			this.attrs.put("tiposPagos", tiposPagos);
       if(!tiposPagos.isEmpty()) 
-        if(this.accion.equals(EAccion.AGREGAR))
+        if(this.accion.equals(EAccion.AGREGAR) && Objects.equals(-1L, ((NotaEntrada)this.getAdminOrden().getOrden()).getIkTipoPago()))
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoPago(tiposPagos.get(0));
         else  
           ((NotaEntrada)this.getAdminOrden().getOrden()).setIkTipoPago(tiposPagos.get(tiposPagos.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkTipoPago())));

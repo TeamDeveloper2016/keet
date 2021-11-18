@@ -425,10 +425,10 @@
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-      							<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-12, janal-wid-15, janal-wid-15">
-											<p:outputLabel for="sinIva" value="Los precios son &lt;strong&gt;Netos&lt;/strong&gt;:" escape="false"/>
-											<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-40, janal-wid-20, janal-wid-30">
-												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticInventariosEntradasAccion.attrs.sinIva}" onLabel="SI" offLabel="NO" styleClass="filas">
+      							<p:panelGrid id="datosArticulos" columns="5" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-15, janal-wid-15">
+                      <p:outputLabel for="sinIva" value="Los precios son &lt;strong&gt;Netos&lt;/strong&gt;:" escape="false" rendered="false"/>
+											<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50 janal-column-center, janal-wid-50 janal-column-center">
+												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticInventariosEntradasAccion.attrs.sinIva}" onLabel="SI" offLabel="NO" styleClass="filas" rendered="false">
 													 <p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateIvaTipoDeCambio()}" process="@this" update="@(.filas) @(.recalculo)"/>
 												</p:inputSwitch>
 												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="janal.bloquear(); recover(jsArticulos.cursor.index);" style="float:right;"/>
@@ -547,8 +547,8 @@
 															<p:inputText id="cantidades" value="#{row['esperados']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 														</div>
 														<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
-															<h:outputText value="#{row['cantidadMayorMenor']}" escape="false"/>
-														 </div>
+															<h:outputText value="#{row['esperadosMayorMenor']}" escape="false"/>
+														</div>
 													</div>
 												</p:column>		
 												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-5" rendered="false">
@@ -565,7 +565,7 @@
 												</p:column>	
 												<p:column class="precios janal-column-right MarAuto Responsive janal-wid-13">
 													<f:facet name="header">
-														<h:outputText value="Costo calculado"/>
+														<h:outputText value="Precio unitario"/>
 													</f:facet>
 													<div class="ui-grid-row janal-grid-row">
 														<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
@@ -604,7 +604,7 @@
 													<f:facet name="header">
 														<h:outputText value="Precio"/>
 													</f:facet>
-													<p:outputLabel value="#{row['importe$']}" styleClass="filas"/>
+													<p:outputLabel value="#{row['subTotal$']}" styleClass="filas"/>
 												</p:column>		
 												<p:column class="janal-column-center MarAuto Responsive janal-wid-col-40" rendered="#{manticInventariosEntradasAccion.isAplicar}">
 													<f:facet name="header">
@@ -786,17 +786,17 @@
 											</div>	
   									</f:facet>
 										<p:column selectionMode="single" style="width:16px;text-align:center"/>
-										<p:column class="MarAuto Responsive janal-wid-12">
-											<f:facet name="header">
-												<h:outputText value="SAT"/>
-											</f:facet>
-											<h:outputText value="#{row['sat']}"/>
-										</p:column>		
 										<p:column  class="MarAuto Responsive janal-wid-13">
 											<f:facet name="header">
 												<h:outputText value="Código"/>
 											</f:facet>
 											<h:outputText value="#{row['codigo']}"/>
+										</p:column>		
+										<p:column class="MarAuto Responsive janal-wid-12">
+											<f:facet name="header">
+												<h:outputText value="SAT"/>
+											</f:facet>
+											<h:outputText value="#{row['sat']}"/>
 										</p:column>		
 										<p:column  class="MarAuto Responsive">
 											<f:facet name="header">
@@ -859,17 +859,17 @@
 												</div>
   										</f:facet>
 											<p:column selectionMode="single" style="width:16px;text-align:center"/>
-											<p:column class="MarAuto Responsive janal-wid-10">
-												<f:facet name="header">
-													<h:outputText value="SAT"/>
-												</f:facet>
-												<h:outputText value="#{row['sat']}"/>
-											</p:column>		
 											<p:column  class="MarAuto Responsive janal-wid-13">
 												<f:facet name="header">
 													<h:outputText value="Código"/>
 												</f:facet>
 												<h:outputText value="#{row['codigo']}"/>
+											</p:column>		
+											<p:column class="MarAuto Responsive janal-wid-10">
+												<f:facet name="header">
+													<h:outputText value="SAT"/>
+												</f:facet>
+												<h:outputText value="#{row['sat']}"/>
 											</p:column>		
 											<p:column  class="MarAuto Responsive janal-wid-13">
 												<f:facet name="header">

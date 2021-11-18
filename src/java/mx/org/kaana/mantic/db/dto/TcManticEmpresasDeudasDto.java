@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.db.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -53,17 +52,21 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
   private Double importe;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="id_revisado")
+  private Long idRevisado;
+  @Column (name="id_completo")
+  private Long idCompleto;
 
   public TcManticEmpresasDeudasDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasDeudasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, LocalDate.now(), null, 0D);
+    this(null, null, new Long(-1L), null, null, null, null, LocalDate.now(), null, 0D, 2L, 1L);
     setKey(key);
   }
 
-  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, LocalDate limite, Double importe, Double pagar) {
+  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, LocalDate limite, Double importe, Double pagar, Long idRevisado, Long idCompleto) {
     setIdEmpresaEstatus(idEmpresaEstatus);
     setIdUsuario(idUsuario);
     setIdEmpresaDeuda(idEmpresaDeuda);
@@ -75,6 +78,8 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
     setImporte(importe);
     setRegistro(LocalDateTime.now());
 		this.pagar= pagar;
+    this.idRevisado= idRevisado;
+    this.idCompleto= idCompleto;
   }
 	
   public void setIdEmpresaEstatus(Long idEmpresaEstatus) {
@@ -165,6 +170,22 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		this.pagar=pagar;
 	}
 
+  public Long getIdRevisado() {
+    return idRevisado;
+  }
+
+  public void setIdRevisado(Long idRevisado) {
+    this.idRevisado = idRevisado;
+  }
+
+  public Long getIdCompleto() {
+    return idCompleto;
+  }
+
+  public void setIdCompleto(Long idCompleto) {
+    this.idCompleto = idCompleto;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -198,9 +219,13 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPagar());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdRevisado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCompleto());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -217,15 +242,17 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		regresar.put("idNotaEntrada", getIdNotaEntrada());
 		regresar.put("limite", getLimite());
 		regresar.put("importe", getImporte());
-		regresar.put("registro", getRegistro());
 		regresar.put("pagar", getPagar());
+		regresar.put("idRevisado", getIdRevisado());
+		regresar.put("idCompleto", getIdCompleto());
+		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdEmpresaEstatus(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresa(), getSaldo(), getIdNotaEntrada(), getLimite(), getImporte(), getRegistro(), getPagar()
+      getIdEmpresaEstatus(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresa(), getSaldo(), getIdNotaEntrada(), getLimite(), getImporte(), getPagar(), getIdRevisado(), getIdCompleto(), getRegistro()
     };
     return regresar;
   }

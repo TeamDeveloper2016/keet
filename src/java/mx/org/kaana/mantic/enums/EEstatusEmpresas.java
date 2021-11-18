@@ -9,7 +9,8 @@ public enum EEstatusEmpresas {
   INICIADA    (1L),
   PROGRAMADA  (2L),
   PARCIALIZADA(3L),
-  LIQUIDADA   (4L);
+  LIQUIDADA   (4L),
+  CANCELADA   (5L);
 
   private Long idEstatusEmpresa;
 	private static final Map<Long, EEstatusEmpresas> lookup= new HashMap<>();
@@ -30,4 +31,5 @@ public enum EEstatusEmpresas {
 	public static EEstatusEmpresas fromIdEstatusEmpresa(Long idEstatusEmpresa) {
     return lookup.get(idEstatusEmpresa);
   } 
+  
 }

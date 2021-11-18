@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcManticEmpresasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_bitacora
+        where      
+          id_empresa_bitacora = {idEmpresaBitacora}
+      </select>
+    </unit>    
+    <unit id="TcManticEmpresasPagosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>           
     <unit id="TcManticArticulosImagenesDto">
       <select id="row">
         select      
