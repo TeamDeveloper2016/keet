@@ -305,17 +305,18 @@
           tc_mantic_archivos
         where      
           nombre= '{nombre}'
-				and
-				  alias='{alias}'
       </select>
-      <select id="depuracion">
+      <select id="eliminar">
         select      
           tc_mantic_archivos.id_archivo as id_key,
-					tc_mantic_archivos.*
+          tc_mantic_archivos.*
         from      
           tc_mantic_archivos
         where      
-          id_eliminado = {idEliminado}
+          date_format(registro,'%Y%m%d%H')&lt;= '{registro}'
+          and id_eliminado= 2
+        order by
+          registro desc  
       </select>
     </unit>		
 		<unit id="TrManticArticuloPresentacionDto">

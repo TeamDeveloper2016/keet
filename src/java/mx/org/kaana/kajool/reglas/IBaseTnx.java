@@ -193,6 +193,7 @@ public abstract class IBaseTnx {
       } // if
       else
         regresar= true;
+      sesion.flush();
     } // try
     catch (Exception e) {
       throw e;
