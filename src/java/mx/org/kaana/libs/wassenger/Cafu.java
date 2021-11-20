@@ -218,7 +218,7 @@ public final class Cafu implements Serializable {
                 message= new Message();
             } // if  
             else {
-              LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
               message.setMessage(" {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
             } // else  
@@ -234,7 +234,7 @@ public final class Cafu implements Serializable {
           } // else  
         } // if  
         else 
-          LOG.warn("[doSendMessage] Ya había sido notificado este celular por whatsup ["+ this.celular+ "]");
+          LOG.warn("[doSendMessage] Ya había sido notificado este celular por whatsapp ["+ this.celular+ "]");
       } // try
       catch(Exception e) {
         Error.mensaje(e);
@@ -244,7 +244,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
 
   public void doSendCorteNomina(Session sesion) {
@@ -276,7 +276,7 @@ public final class Cafu implements Serializable {
             message= new Message();
         } // if  
         else {
-          LOG.error("[doSendCorteNomina] No se puedo enviar el mensaje por whatsup al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+          LOG.error("[doSendCorteNomina] No se puedo enviar el mensaje por whatsapp al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
           message= new Message();
           message.setMessage(" {"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}");
         } // else  
@@ -328,7 +328,7 @@ public final class Cafu implements Serializable {
             message= new Message();
         } // if  
         else {
-          LOG.error("[doSendCirreNomina] No se puedo enviar el mensaje por whatsup al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+          LOG.error("[doSendCirreNomina] No se puedo enviar el mensaje por whatsapp al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
           message= new Message();
           message.setMessage(" {"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}");
         } // else  
@@ -388,7 +388,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendDestajo] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendDestajo] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_DESTAJO, params, true)+ "}");
           } // if  
@@ -411,7 +411,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendDestajo]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendDestajo]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
 
   public void doSendResidentes(Session sesion) {
@@ -448,7 +448,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
           } // if  
@@ -471,7 +471,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
 
   public void doSendGasto(Session sesion) {
@@ -506,7 +506,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
           } // if  
@@ -529,7 +529,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
   
   public void doSendCajaChica(Session sesion) {
@@ -565,7 +565,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
           } // if  
@@ -588,7 +588,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
   
   private void prepare() {
@@ -688,7 +688,7 @@ public final class Cafu implements Serializable {
                 message= new Message();
             } // if  
             else {
-              LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
               message.setMessage(" {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
             } // else  
@@ -704,7 +704,7 @@ public final class Cafu implements Serializable {
           } // else  
         } // if  
         else 
-          LOG.warn("[doSendProveedor] Ya había sido notificado este celular por whatsup ["+ this.celular+ "]");
+          LOG.warn("[doSendProveedor] Ya había sido notificado este celular por whatsapp ["+ this.celular+ "]");
       } // try
       catch(Exception e) {
         Error.mensaje(e);
@@ -714,7 +714,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
   
   public void doSendFactura() {
@@ -765,7 +765,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendFactura] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendFactura] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}");
           } // if  
@@ -788,7 +788,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   } // doSendFactura  
 
   public void doSendSaludo() {
@@ -819,7 +819,7 @@ public final class Cafu implements Serializable {
               message= new Message();
           } // if  
           else {
-            LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
           } // else  
@@ -837,7 +837,7 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
   
   public void doSendOrdenCompra() {
@@ -878,7 +878,7 @@ public final class Cafu implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendOrdenCompra] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendOrdenCompra] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
           } // if  
@@ -901,12 +901,12 @@ public final class Cafu implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendOrdenCompra]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendOrdenCompra]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   } // doSendOrdenCompra
   
   public static void main(String ... args) {
-//    String nombres[]  = {"Carlos Calderon Solano", "Juan José Fuentes Ramirez España", "Christopher Castro Jiménez"};
-//    String celulares[]= {"4491813810", "4491152255", "4491087126"};
+//    String nombres[]  = {"Carlos Calderon Solano", "Juan José Fuentes Ramirez España", "Irma de Lourdes Hernandez Romo"};
+//    String celulares[]= {"4491813810", "4491152255", "4491285890"};
     Cafu message= new Cafu("Alejandro Jiménez García", "449-209-05-86", "holix.pdf", "2021-20", "15/06/2021 al 30/06/2021");
     message.doSendSaludo();
 //    for (int x= 0; x < nombres.length; x++) {

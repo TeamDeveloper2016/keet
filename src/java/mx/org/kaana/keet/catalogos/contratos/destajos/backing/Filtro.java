@@ -724,14 +724,14 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
               semana.toString("nomina"), 
               "*"+ semana.toString("inicio")+ "* al *"+ semana.toString("termino")+ "*"
             );
-            LOG.info("Enviando mensaje por whatsup al celular: "+ contratista);
+            LOG.info("Enviando mensaje por whatsapp al celular: "+ contratista);
             notificar.doSendDestajo();
           } // try
           finally {
             LOG.info("Eliminando archivo temporal: "+ this.reporte.getNombre());				  
           } // finally	
           if(contratista.length()> 0)
-            JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa ["+ contratista+ "] !", ETipoMensaje.INFORMACION);
+            JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ contratista+ "] !", ETipoMensaje.INFORMACION);
           else
             JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
         } // if  

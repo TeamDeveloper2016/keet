@@ -32,7 +32,7 @@ public class Consulta extends Filtro implements Serializable {
       switch(idNotaTipo.intValue()) {
         case -1:// NORMAL
         case 2: // NORMAL
-          JsfBase.setFlashAttribute("almacen", eaccion);	
+          JsfBase.setFlashAttribute("accion", eaccion);	
           if((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && idNotaTipo.equals(2L)) 
             regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
           else

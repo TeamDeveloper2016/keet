@@ -139,7 +139,7 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "consulta": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
@@ -191,12 +191,12 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
         case MODIFICAR:					
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
+          this.attrs.put("deuda", notaEntrada.getDeuda());
 					ordenCompra   = (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, notaEntrada.getIdOrdenCompra());
           this.attrs.put("idOrdenCompra", ordenCompra.getIdOrdenCompra());
 					this.tipoOrden= notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.DIRECTA: EOrdenes.PROVEEDOR;
           this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
-					
           // ESTO ES PARA CARGAR LOS ARTICULOS DE LA FACTURA CUANDO SE ENTRA POR LA OPCION DE MODIFICAR Y VUELVA A HACER LA COMPARACION DE LOS ARTICULOS
 					this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
 					this.toPrepareDisponibles(false);
@@ -249,7 +249,7 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
       
       if(Cadena.isVacio(this.attrs.get("folio"))) {
         if(!Cadena.isVacio(this.getXml()) && !this.getIsDirecta()) {
-          if(this.getReceptor().getRfc().equals(this.proveedor.getRfc()) && !this.getIsDirecta()) {
+          if(this.getEmisor().getRfc().equals(this.proveedor.getRfc()) && !this.getIsDirecta()) {
             transaccion = new Transaccion(nota, this.aplicar, this.getXml(), this.getPdf());
             if (transaccion.ejecutar(this.accion)) {
               if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {

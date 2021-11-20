@@ -77,8 +77,8 @@
 					jsArticulos.cursor.index= index;
   				$(jsArticulos.amount()).removeClass('ignore');
 	  			$(jsArticulos.price()).removeClass('ignore');
-					janal.desbloquear();
 				} // else	
+  			janal.desbloquear();
 				return ok;
 			}
 			
@@ -159,7 +159,7 @@
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) @(.importado)" actionListener="#{manticInventariosEntradasAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);">  
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) @(.importado)" actionListener="#{manticInventariosEntradasAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process(PF('widgetPaginator')!== undefined? $(PF('widgetPaginator').input.selector+ ':checked').length=== 1: false);">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
@@ -487,7 +487,7 @@
 														<p:inputText id="filterCode" value="#{manticInventariosEntradasAccion.attrs.filterCode}" styleClass="janal-wid-70 key-filter-event"/>
 													</f:facet>
 													<div class="ui-grid-row janal-grid-row">
-														<div class="ui-grid-col-12" style="padding-right: 14px;">
+														<div class="ui-grid-col-12" style="padding-right: 20px;">
 															<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 															<p:inputText id="locks" value="#{row['idOrdenDetalle']}" style="display:none"/>
 															<p:inputText id="origins" value="#{row['origen']}" style="display:none"/>

@@ -375,7 +375,7 @@ public void doSendmail() {
             String[] phones= sb.substring(0, sb.length()- 2).split("[,]");
             for (String phone: phones) {
               notificar.setCelular(phone, Boolean.TRUE);
-              LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+              LOG.info("Enviando mensaje por whatsapp al celular: "+ celular);
               notificar.setCorreo(ECorreos.FACTURACION.getEmail());
               notificar.doSendFactura();
             } // if  

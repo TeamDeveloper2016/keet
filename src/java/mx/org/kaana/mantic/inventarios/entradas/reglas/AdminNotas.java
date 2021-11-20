@@ -50,7 +50,7 @@ public class AdminNotas extends IAdminArticulos implements Serializable {
 	public AdminNotas(NotaEntrada orden, EOrdenes tipoOrden) throws Exception {
 		this.orden= orden;
 		if(this.orden.isValid()) {
-			if(this.orden.getIdNotaTipo().equals(1L))
+			if(this.orden.getIdNotaTipo().equals(1L)) // DIRECTA
   	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap(), -1L));
 			else	
   	    this.setArticulos(this.toLoadOrdenDetalle());
@@ -162,7 +162,7 @@ public class AdminNotas extends IAdminArticulos implements Serializable {
 				if(index< 0) 
 					regresar.add(item);
 				else {
-					// ((Articulo)regresar.get(index)).setValor(item.getValor());
+					((Articulo)regresar.get(index)).setSolicitados(item.getSolicitados());
 					((Articulo)regresar.get(index)).setStock(stock== null? 0D: stock.toDouble());
 				} // else	
 			} // for

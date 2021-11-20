@@ -71,14 +71,14 @@
 					var total= parseFloat($('#contenedorGrupos\\:total').val(), 10);
 					var diferencia= (deuda* 100/ total)- 100;
 					if(!((diferencia&gt;= -5.0) &amp;&amp; (diferencia&lt;= 5.0))) 
-						ok= confirm('\u00BF La diferencia del total de la nota de entrada con respecto a la deuda capturada es del '+ diferencia.toFixed(4)+ '% desea continuar con el registro ?');
+						ok= confirm('\u00BF La diferencia del total de la nota de entrada ['+ deuda+ '] con respecto a la deuda ['+ total+ '] capturada es del '+ diferencia.toFixed(4)+ '% desea continuar con el registro ?');
 				} // if	
 				else {
 					jsArticulos.cursor.index= index;
   				$(jsArticulos.amount()).removeClass('ignore');
 	  			$(jsArticulos.price()).removeClass('ignore');
-					janal.desbloquear();
 				} // else	
+				janal.desbloquear();
 				return ok;
 			}
 			
@@ -165,7 +165,7 @@
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) @(.importado)" actionListener="#{manticInventariosEntradasAlmacen.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);">  
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) @(.importado)" actionListener="#{manticInventariosEntradasAlmacen.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process(PF('widgetPaginator')!== undefined? $(PF('widgetPaginator').input.selector+ ':checked').length=== 1: false);">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
@@ -276,6 +276,8 @@
                   <p:ajax event="change" listener="#{manticInventariosEntradasAlmacen.doEraseArticulos}" update="datosArticulos registros tabla" process="@this"/>
 									<f:selectItems value="#{manticInventariosEntradasAlmacen.attrs.lotes}" var="two" itemValue="#{two.key}" itemLabel="#{two.descripcionLote}"/>
 								</p:selectCheckboxMenu>
+								<p:outputLabel for="deuda" value="Deuda:"/>
+								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="#{manticInventariosEntradasAlmacen.attrs.deuda}"/>
               </p:panelGrid>
 							<p:outputLabel for="observaciones" value="Observaciones:"/>							
               <p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAlmacen.adminOrden.orden.observaciones}"/>
@@ -334,8 +336,8 @@
   								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-86" styleClass="janal-wid-100 janal-color-blue involucrados" value="#{manticInventariosEntradasAlmacen.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-  								<p:outputLabel for="deuda" value="Deuda:"/>
-  								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-color-blue" value="#{manticInventariosEntradasAlmacen.adminOrden.orden.deuda}"/>
+  								<p:outputLabel value="Deuda:"/>
+  								<p:inputText styleClass="recalculo janal-wid-100-txt janal-color-blue" value="#{manticInventariosEntradasAlmacen.adminOrden.orden.deuda}"/>
                 </p:panelGrid>  
               </p:panelGrid>               
 							<p:separator/>
@@ -471,15 +473,13 @@
 												</p:inputText>
 											</p:panelGrid>	 
 										</p:panelGrid>	
-										<p:panelGrid id="registros" columns="1" layout="grid" styleClass="janal-wid-99" style="height: 285px !important;overflow-y: auto" columnClasses="janal-wid-100" >						
+										<p:panelGrid id="registros" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 											<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosEntradasAlmacen.adminOrden.filtrados}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticInventariosEntradasAlmacen.attrs.paginator}" rows="#{manticInventariosEntradasAlmacen.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">
 												<p:column styleClass="MarAuto Responsive janal-wid-col-50">
 													<f:facet name="header">
 														<h:outputText value="No."/>
 													</f:facet>
-													<p:commandLink process="@this" update="@(.importado) @(.filas) @(.recalculo)" styleClass="filas" rendered="#{not row.disponible}">
-													  <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
-													</p:commandLink>
+												  <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png" rendered="#{not row.disponible}"/>
                           <h:graphicImage library="janal" name="icon/semaforos/#{row.facturado? 'circulo-azul.png': 'circulo-rojo.png'}" styleClass="janal-icons-header" rendered="#{row.disponible}"/>
 													<h:outputText value="#{index+ 1}.-"/>
 												</p:column>		
@@ -497,7 +497,7 @@
 													</f:facet>
 													<div class="ui-grid-row janal-grid-row">
                             <div style="display: flex;">
-                              <div class="ui-grid-col-12" style="padding-right: 14px; flex: 80% 0 #{kajoolUtilAplicacion.isMobile? '20%': '100%'} !important">
+                              <div class="ui-grid-col-12" style="padding-right: 20px; flex: 0 0 #{kajoolUtilAplicacion.isMobile? '70%': '60%'} !important">
                                 <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                                 <p:inputText id="locks" value="#{row['idOrdenDetalle']}" style="display:none"/>
                                 <p:inputText id="origins" value="#{row['origen']}" style="display:none"/>
@@ -526,10 +526,10 @@
                                 <h:outputText value="#{row['estaSolicitado']}" escape="false" styleClass="filas"/>
                                 <h:outputText value="#{row['precioSugerido']}" escape="false" styleClass="filas"/>
                               </div>
-                              <div style="flex: 1; text-align: right;">  
-                                <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
-                                <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
-                                <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{kajoolUtilAplicacion.isMobile}"/>
+                              <div style="text-align: right;">  
+                                <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary"/>
+                                <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary" rendered="#{row.disponible}"/>
+                                <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{row.disponible}"/>
                               </div>  
                             </div>
 													</div>	
@@ -625,7 +625,7 @@
 														<h:outputText value="Precio"/>
 													</f:facet>
                           <span class="janal-wid-100-txt">
-													  <p:outputLabel value="#{row['importe$']}" styleClass="filas"/>
+													  <p:outputLabel value="#{row['subTotal$']}" styleClass="filas"/>
                           </span>
 												</p:column>		
 												<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-40" rendered="#{false and manticInventariosEntradasAlmacen.isAplicar}">
@@ -673,13 +673,13 @@
 								</div>
 							</div>
               <p:separator/>
-              <p:panelGrid layout="grid" columns="#{kajoolUtilAplicacion.isMobile? 2: 6}" columnClasses="#{kajoolUtilAplicacion.isMobile? 'janal-fix-5, janal-fix-95': 'janal-fix-5, janal-fix-95, janal-fix-5, janal-fix-95, janal-fix-5, janal-fix-95'}">
+              <p:panelGrid columns="6" styleClass="janal-wid-100-txt" columnClasses="janal-fix-5, janal-fix-30 #{kajoolUtilAplicacion.isMobile? 'janal-column-center': ''}, janal-fix-5, janal-fix-25 #{kajoolUtilAplicacion.isMobile? 'janal-column-center': ''}, janal-fix-5, janal-fix-30 #{kajoolUtilAplicacion.isMobile? 'janal-column-center': ''}">
                 <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
-                <p:outputLabel value="El articulo se encuentra asociado a una partida de la factura"/>
+                <p:outputLabel value="#{kajoolUtilAplicacion.isMobile? 'Asociado': 'El articulo se encuentra asociado a una partida de la factura'}"/>
                 <h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
-                <p:outputLabel value="El articulo se encuentra solamente en la nota de entrada"/>
+                <p:outputLabel value="#{kajoolUtilAplicacion.isMobile? 'Nota entrada': 'El articulo se encuentra solamente en la nota de entrada'}"/>
                 <h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
-                <p:outputLabel value="El articulo esta en la factura y no en la orden de compra"/>
+                <p:outputLabel value="#{kajoolUtilAplicacion.isMobile? 'Factura': 'El articulo esta en la factura y no en la orden de compra'}"/>
               </p:panelGrid>
 							<p:spacer height="10" style="display: #{empty manticInventariosEntradasAlmacen.attrs.ultimo and empty manticInventariosEntradasAlmacen.attrs.sugeridos and empty manticInventariosEntradasAlmacen.attrs.solicitado? 'none': ''}"/>
 							<p:fieldset styleClass="informacion" legend="Datos del articulo [#{not empty manticInventariosEntradasAlmacen.attrs.ultimo? manticInventariosEntradasAlmacen.attrs.ultimo.nombre: not empty manticInventariosEntradasAlmacen.attrs.sugeridos? manticInventariosEntradasAlmacen.attrs.sugeridos.nombre: not empty manticInventariosEntradasAlmacen.attrs.solicitado? manticInventariosEntradasAlmacen.attrs.solicitado.nombre: ''}]" style="display: #{empty manticInventariosEntradasAlmacen.attrs.ultimo and empty manticInventariosEntradasAlmacen.attrs.sugeridos and empty manticInventariosEntradasAlmacen.attrs.solicitado? 'none': ''}">

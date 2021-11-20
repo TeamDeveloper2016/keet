@@ -1051,14 +1051,14 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       if(contratista!= null) {
         try {
           notificar= new Cafu(sujeto.toString("contratista"), contratista, regresar, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
-          LOG.info("Enviando mensaje por whatsup al celular: "+ contratista);
+          LOG.info("Enviando mensaje por whatsapp al celular: "+ contratista);
           notificar.doSendDestajo(sesion);
         } // try
         finally {
           LOG.info("Eliminando archivo temporal: "+ jasper.getNombre());				  
         } // finally	
         if(contratista.length()> 0)
-          JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa ["+ contratista+ "] !", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ contratista+ "] !", ETipoMensaje.INFORMACION);
         else
           JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
@@ -1075,17 +1075,18 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       if(residentes!= null && !residentes.isEmpty()) {
         residentes.put("Alejandro Jiménez García", "4492090586");
-        residentes.put("Christopher Castro Jiménez", "4491087126");
+        if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu"))
+          residentes.put("Irma de Lourdes Hernandez Romo", "4491285890");
         notificar= new Cafu(sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", contratistas);
         notificar.setDesarrollo(desarrollo);
         for (String residente: residentes.keySet()) {
           notificar.setNombre(Cadena.nombrePersona(residente));
           notificar.setCelular((String)residentes.get(residente));
-          LOG.info("Enviando mensaje de whatsup al celular: "+ residente);
+          LOG.info("Enviando mensaje de whatsapp al celular: "+ residente);
           notificar.doSendResidentes(sesion);
         } // for
         if(!residentes.isEmpty())
-          JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa ["+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ residentes.toString()+ "] !", ETipoMensaje.INFORMACION);
         else
           JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
@@ -1106,7 +1107,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         "* al *"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
         "*");
-      LOG.info("Enviando mensaje por whatsup al grupo de CAFU");
+      LOG.info("Enviando mensaje por whatsapp al grupo de CAFU");
       notificar.doSendCorteNomina(sesion);
 		} // try 
 		catch(Exception e) {
@@ -1125,7 +1126,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
         "* al *"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getTermino())+ 
         "*");
-      LOG.info("Enviando mensaje por whatsup al grupo de CAFU");
+      LOG.info("Enviando mensaje por whatsapp al grupo de CAFU");
       notificar.doSendCierreNomina(sesion);
 		} // try 
 		catch(Exception e) {

@@ -596,7 +596,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         String[] phones= sb.substring(0, sb.length()- 2).split("[,]");
         for (String phone: phones) {
           notificar.setCelular(phone, Boolean.TRUE);
-          LOG.info("Enviando mensaje por whatsup al celular: "+ phone);
+          LOG.info("Enviando mensaje por whatsapp al celular: "+ phone);
           notificar.setCorreo(ECorreos.COMPRAS.getEmail());
           notificar.doSendOrdenCompra();
         } // for

@@ -804,10 +804,10 @@ public class Transaccion extends IBaseTnx {
 		try {
       if(residente!= null) {
         notificar= new Cafu(sujeto.toString("residente"), residente, sujeto.toString("total"), sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
-        LOG.info("Enviando mensaje por whatsup al celular: "+ residente);
+        LOG.info("Enviando mensaje por whatsapp al celular: "+ residente);
         notificar.doSendGasto(sesion);
         if(residente.length()> 0)
-          JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa ["+ residente+ "] !", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ residente+ "] !", ETipoMensaje.INFORMACION);
         else
           JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
@@ -826,7 +826,8 @@ public class Transaccion extends IBaseTnx {
       if(administradores!= null && !administradores.isEmpty()) {
   			String nombre= this.toReporte(sesion, jasper, sujeto, idNominaPeriodo);
         administradores.put("Alejandro Jiménez García", "4492090586");
-        administradores.put("Christopher Castro Jiménez", "4491087126");
+        if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu"))
+          administradores.put("Irma de Lourdes Hernandez Romo", "4491285890");
         notificar= new Cafu("", "", nombre, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
         for (String administrador: administradores.keySet()) {
           notificar.setNombre(Cadena.nombrePersona(administrador));
@@ -835,7 +836,7 @@ public class Transaccion extends IBaseTnx {
           notificar.doSendCajaChica(sesion);
         } // for
         if(!administradores.isEmpty())
-          JsfBase.addMessage("Se envió el mensaje de whatsup de forma exitosa ["+ administradores.toString()+ "] !", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Se envió el mensaje de whatsapp de forma exitosa ["+ administradores.toString()+ "] !", ETipoMensaje.INFORMACION);
         else
           JsfBase.addMessage("No se selecciono ningún celular, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
       } // if  
