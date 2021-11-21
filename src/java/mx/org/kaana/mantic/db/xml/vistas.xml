@@ -5870,19 +5870,26 @@
 					tc_mantic_notas_archivos.id_principal,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_mantic_notas_archivos.observaciones,
-					tc_mantic_notas_archivos.registro
+					tc_mantic_notas_archivos.registro,
+          tt_mantic_tipos_archivos.nombre as documento,
+ 					tc_mantic_notas_archivos.id_eliminado
 				from
 					tc_mantic_notas_archivos
 				inner join
 					tc_mantic_tipos_archivos on tc_mantic_notas_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
+				inner join
+					tc_mantic_tipos_archivos as tt_mantic_tipos_archivos on tc_mantic_notas_archivos.id_tipo_documento= tt_mantic_tipos_archivos.id_tipo_archivo
 				inner join
 					tc_janal_usuarios on tc_mantic_notas_archivos.id_usuario= tc_janal_usuarios.id_usuario          
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					tc_mantic_notas_archivos.id_nota_entrada= {idNotaEntrada}
+          and (tc_mantic_notas_archivos.id_tipo_documento= {idTipoDocumento} or {idTipoDocumento}= -1)
 				order by
-					tc_mantic_notas_archivos.id_tipo_archivo, tc_mantic_notas_archivos.registro desc				
+					tc_mantic_notas_archivos.id_tipo_documento, 
+          tc_mantic_notas_archivos.id_tipo_archivo, 
+          tc_mantic_notas_archivos.registro desc				
 			</select>
       <select id="detalle">
         select      
@@ -7707,9 +7714,11 @@
 					tc_mantic_empresas_deudas.id_empresa_estatus,
 				  tc_mantic_notas_entradas.id_nota_entrada,
 					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_notas_entradas.factura,
 					tc_mantic_empresas_deudas.importe,
 					tc_mantic_empresas_deudas.saldo as debe,
 					tc_mantic_empresas_deudas.saldo,
+          tc_mantic_empresas_deudas.id_revisado,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_empresas_deudas.limite,
 					tc_mantic_empresas_deudas.registro,
@@ -7726,7 +7735,7 @@
 				inner join 
 					tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
 				inner join 
-					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor and tc_mantic_proveedores.id_subcontratista=2
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
 				inner join 
 					tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
 				inner join 
@@ -7737,7 +7746,7 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona				
 				where
 					tc_mantic_empresas_deudas.id_empresa_deuda = {idEmpresaDeuda}								
-				{sortOrder}						
+				{sortOrder}							
 			</select>		
 			<select id="cuentasProveedor">
 				select
@@ -7773,7 +7782,8 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona				
 				where
 					{condicion}
-				  and tc_mantic_proveedores.id_proveedor = {idProveedor}								
+				  and tc_mantic_proveedores.id_proveedor = {idProveedor}
+          and tc_mantic_proveedores.id_subcontratista=2
 				{sortOrder}						
 			</select>		
 			<select id="pagosDeuda">
@@ -7811,8 +7821,8 @@
 				where
 					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}									
 				order by
-					tc_mantic_empresas_pagos.registro desc					
-			</select>
+					tc_mantic_empresas_pagos.registro desc	
+      </select>
 			<select id="pagosBusqueda">				
 				select
 					tc_mantic_empresas_pagos.id_empresa_pago as id_key,

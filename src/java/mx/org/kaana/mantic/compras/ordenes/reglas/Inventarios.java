@@ -22,6 +22,7 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
@@ -183,10 +184,16 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				DaoFactory.getInstance().insert(sesion, registro);
         
 				// Afectar todas las notas de entrada que ya fueron aceptadas para agregarlas como cuentas por pagar
-				TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), nota.getDeuda()* -1L, nota.getIdNotaEntrada(), nota.getFechaPago(), nota.getDeuda()- nota.getExcedentes(), nota.getDeuda()- nota.getExcedentes(), 2L, 1L);
+				TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), nota.getDeuda(), nota.getIdNotaEntrada(), nota.getFechaPago(), nota.getDeuda()- nota.getExcedentes(), nota.getDeuda()- nota.getExcedentes(), 2L, 1L);
 				DaoFactory.getInstance().insert(sesion, deuda);
-        // FALTA VERIFICAR SI FUE EN EFECTIVO AGREGAR EL PAGO CORRESPONDIENTE SI APLICA Y SI NO YA ESTA COMPLETO CON ESTO
-				// *pendiente*
+        TcManticEmpresasBitacoraDto movimiento= new TcManticEmpresasBitacoraDto(
+          "SE REGISTRO LA CUENTA POR PAGAR", // String justificacion, 
+          deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          deuda.getIdEmpresaDeuda(), // Long idEmpresaDeuda
+          -1L // Long idEmpresaBitacora, 
+        );
+        DaoFactory.getInstance().insert(sesion, movimiento);
         
     		// Recuperar el detalle de las notas de entrada para afectar inventarios 
     		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaNotasEntradasDto", "detalle", nota.toMap());

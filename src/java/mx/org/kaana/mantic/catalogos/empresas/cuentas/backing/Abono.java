@@ -254,7 +254,7 @@ public class Abono extends IBasePagos implements Serializable {
 				params.put("idTipoArchivo", 2L);
 				tmp= (TcManticEmpresasArchivosDto) DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "VistaEmpresasDto", "exists", params); 
 				if(tmp!= null) {
-					setFile(new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones(), -1L));
+					this.setFile(new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones(), -1L));
   				this.attrs.put("file", getFile().getName()); 
 				} // if	
 			} // try
@@ -361,8 +361,8 @@ public class Abono extends IBasePagos implements Serializable {
 	
 	public void doLoadCuentas() {
 		try {
-			doLoadNotasEntradas();
-			doLoadNotasCredito();
+			this.doLoadNotasEntradas();
+			this.doLoadNotasCredito();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -473,9 +473,10 @@ public class Abono extends IBasePagos implements Serializable {
 	@Override
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
-			doLoadImportados();
-		else if(event.getTab().getTitle().equals("Importar")) 
-			doLoadPagosArchivos();					
+			this.doLoadImportados();
+		else 
+      if(event.getTab().getTitle().equals("Importar")) 
+			  this.doLoadPagosArchivos();					
 	}	// doTabChange
 	
 	public void doEliminar(UISelectEntity item) {
@@ -484,7 +485,7 @@ public class Abono extends IBasePagos implements Serializable {
 			transaccion= new Transaccion(item.getKey());
 			if(transaccion.ejecutar(EAccion.ELIMINAR)) {
 				JsfBase.addMessage("Eliminar documento", "El documento se eliminó de forma correcta", ETipoMensaje.INFORMACION);
-				doLoadImportados();
+				this.doLoadImportados();
 			} // if
 			else
 				JsfBase.addMessage("Eliminar documento", "Ocurrió un error al eliminar el documento", ETipoMensaje.ERROR);

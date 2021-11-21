@@ -109,11 +109,25 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doLoad
 
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoadImportados("VistaNotasEntradasDto", "importados", this.orden.toMap());
-		//else
-		//	if(event.getTab().getTitle().equals("Importar")) 
-		//		this.doLoadFiles("TcManticNotasArchivosDto", this.orden.getIdNotaEntrada(), "idNotaEntrada");
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      if(event.getTab().getTitle().equals("Archivos")) {
+        params.put("idNotaEntrada", this.orden.getIdNotaEntrada());      
+        params.put("idTipoDocumento", 13L);      
+        this.doLoadImportados("VistaNotasEntradasDto", "importados", params);
+      } // if  
+      //else
+      //	if(event.getTab().getTitle().equals("Importar")) 
+      //		this.doLoadFiles("TcManticNotasArchivosDto", this.orden.getIdNotaEntrada(), "idNotaEntrada");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
 	} // doTabChange		
 
 	public void doFileUpload(FileUploadEvent event) {

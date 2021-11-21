@@ -28,6 +28,10 @@ public class Value implements Serializable, Comparable<Value> {
     this.field= field;
   }
 
+  public void setData(Object data) {
+    this.data = data;
+  }
+  
   public Object getData() {
     return data;
   }
@@ -43,10 +47,6 @@ public class Value implements Serializable, Comparable<Value> {
     else
       regresar = data.toString();
     return regresar;
-  }
-
-  public void setData(Object data) {
-    this.data = data;
   }
 
   public String getName() {

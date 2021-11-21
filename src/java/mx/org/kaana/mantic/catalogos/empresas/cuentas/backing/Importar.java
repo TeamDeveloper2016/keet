@@ -274,10 +274,25 @@ public class Importar extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoadImportados();		
-		else if(event.getTab().getTitle().equals("Facturas") && this.notaEntrada!= null && this.notaEntrada.isValid()) 
-			this.doLoadImportados("VistaNotasEntradasDto", "importados", this.notaEntrada.toMap());
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      if(event.getTab().getTitle().equals("Archivos")) 
+        this.doLoadImportados();		
+      else 
+        if(event.getTab().getTitle().equals("Facturas") && this.notaEntrada!= null && this.notaEntrada.isValid()) {
+          params.put("idNotaEntrada", this.notaEntrada.getIdNotaEntrada());      
+          params.put("idTipoDocumento", 13L);      
+          this.doLoadImportados("VistaNotasEntradasDto", "importados", params);
+        } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
 	}	// doTabChange	
 
 	protected void doLoadImportados(String proceso, String idXml, Map<String, Object> params) {

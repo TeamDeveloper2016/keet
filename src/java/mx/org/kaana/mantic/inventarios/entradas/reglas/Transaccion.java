@@ -389,10 +389,10 @@ public class Transaccion extends Inventarios implements Serializable {
 
 			// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
 			TcManticEmpresasDeudasDto deuda= null;
-			if(Objects.equals(1L, this.orden.getIdTipoMedioPago())) 
-				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, 1L);
+			if(Objects.equals(1L, this.orden.getIdTipoMedioPago())) // EFECTIVO 
+				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, 1L);
 			else
-				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), (this.orden.getDeuda()- this.orden.getExcedentes())* -1, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, 1L);
+				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, 1L);
 			DaoFactory.getInstance().insert(sesion, deuda);
       TcManticEmpresasBitacoraDto movimiento= new TcManticEmpresasBitacoraDto(
         "SE REGISTRO LA CUENTA POR PAGAR", // String justificacion, 
@@ -469,7 +469,9 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.xml.getObservaciones(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L,
-					this.xml.getOriginal()
+					this.xml.getOriginal(),
+          13L,
+          2L
 				);
         this.toSaveFile(this.xml.getIdArchivo());
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
@@ -499,7 +501,9 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.pdf.getObservaciones(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L,
-					this.pdf.getOriginal()
+					this.pdf.getOriginal(),
+          13L,
+          2L
 				);
         this.toSaveFile(this.pdf.getIdArchivo());
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());

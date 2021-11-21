@@ -60,7 +60,7 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticCatalogosEmpresasCuentasImportar.doTabChange}" process="@this" update="@(.importado)"/>						
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">		
 								<p:outputLabel for="consecutivo" value="No. orden:"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasImportar.notaEntrada.consecutivo}" readonly="true"/>								
 								<p:spacer width="1px"/><p:separator/>																
@@ -72,13 +72,13 @@
 								<p:outputLabel for="factura" value="Factura:"/>
 								<p:inputText id="factura" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasImportar.notaEntrada.factura}" readonly="true"/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasImportar.notaEntrada.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="true"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-95" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasImportar.notaEntrada.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="true"/>
 								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
 								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasCuentasImportar.notaEntrada.diasPlazo}" readonly="true"/>
 								<p:outputLabel for="deuda" value="Deuda:"/>
 								<p:inputText id="deuda" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasCuentasImportar.notaEntrada.deuda}" readonly="true"/>
 								<p:outputLabel for="fechaPago" value="Fecha pago:"/>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasImportar.notaEntrada.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="true"/>
+								<p:calendar id="fechaPago" inputStyleClass="janal-wid-95" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasImportar.notaEntrada.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="true"/>
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">
@@ -95,10 +95,10 @@
 								<p:column styleClass="janal-wid-15" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-15" headerText="Usuario">
+                <p:column styleClass="janal-wid-15" headerText="Usuario" rendered="false">
 									<h:outputText value="#{row.usuario}"/>
 								</p:column>   								
-								<p:column headerText="Observaciones">
+								<p:column headerText="Observaciones" rendered="false">
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
 								<p:column styleClass="janal-wid-8 janal-column-right" headerText="Pago">
@@ -110,20 +110,20 @@
 								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Registró">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
-								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+								<p:column style="text-align: center" styleClass="janal-wid-3">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 										<p:fileDownload value="#{manticCatalogosEmpresasCuentasImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
-								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+								<p:column style="text-align: center" styleClass="janal-wid-3">
 									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2}">
 									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>	
-									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idTipoArchivo.toLong() eq 1}">
+									<p:commandLink actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idTipoArchivo.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
 									</p:commandLink>	
 								</p:column>
-								<p:column style="text-align: center" styleClass="janal-wid-col-38">									
+								<p:column style="text-align: center" styleClass="janal-wid-3">									
 									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doEliminar(row)}" process="@this" update="contenedorGrupos importados" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
 									  <p:commandButton icon="fa fa-close" title="Eliminar documento" ajax="false" type="button"/>
 									</p:commandLink>										
@@ -138,13 +138,13 @@
 								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
 									<h:outputText value="#{row.tipo}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-15" headerText="Nombre">
+								<p:column styleClass="janal-wid-30" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-25" headerText="Usuario">
+								<p:column styleClass="janal-wid-20" headerText="Usuario">
 									<h:outputText value="#{row.usuario}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-15 janal-column-center" headerText="Fecha">
+								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
 								<p:column headerText="Observaciones">
@@ -168,7 +168,7 @@
 						<p:tab title="Importar">
 							<p:outputLabel for="pago" value="Pago:" styleClass="janal-wid-100-txt"/>
 							<p:selectOneMenu id="pago" value="#{manticCatalogosEmpresasCuentasImportar.attrs.pago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{manticCatalogosEmpresasCuentasImportar.attrs.pagos}"  var="element" itemValue="#{element.key}" itemLabel="$#{element.pago} - #{element.persona}"/>
+								<f:selectItems value="#{manticCatalogosEmpresasCuentasImportar.attrs.pagos}" var="element" itemValue="#{element.key}" itemLabel="$#{element.pago} #{empty element.persona or element.persona eq ''? '': '|'} #{element.persona}"/>
 								<p:column headerText="Pago" styleClass="janal-column-right">
 									<h:outputText value="#{item.pago}"/>
 								</p:column>   
@@ -184,12 +184,12 @@
 								<f:selectItems value="#{manticCatalogosEmpresasCuentasImportar.attrs.tiposDocumentos}"/>								
 							</p:selectOneMenu>
 							<p:outputLabel for="fecha" value="Fecha:" styleClass="janal-wid-100-txt"/><br/>
-							<p:calendar id="fecha" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasImportar.attrs.fecha}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fecha" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasImportar.attrs.fecha}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 							<br/>
 							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasImportar.attrs.observaciones}"/>
 							<p:spacer height="5px"/>
-							<p:fileUpload fileUploadListener="#{manticCatalogosEmpresasCuentasImportar.doFileUpload}" 
+							<p:fileUpload listener="#{manticCatalogosEmpresasCuentasImportar.doFileUpload}" 
 							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona archivo" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticCatalogosEmpresasCuentasImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosEmpresasCuentasImportar.attrs.formatos}"/>

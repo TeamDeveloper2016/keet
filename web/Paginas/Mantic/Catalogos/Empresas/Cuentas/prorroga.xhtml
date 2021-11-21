@@ -69,9 +69,9 @@
 								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.almacen}" styleClass="janal-wid-100-txt" readonly="true"/>						
 								<p:spacer/><p:separator/>
 								<p:outputLabel for="importe" value="Importe:"/>						
-                <p:inputNumber id="importe" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.importe}" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="2"/>
+                <p:inputNumber id="importe" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.importe.data}" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="2"/>
 								<p:outputLabel value="Saldo:"/>																								
-								<p:inputNumber value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.saldo}" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true" decimalPlaces="2"/>
+								<p:inputNumber value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.saldo.data}" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true" decimalPlaces="2"/>
 								<p:outputLabel for="fecha" value="Fecha limite:"/>																		
 								<p:calendar id="fecha" value="#{manticCatalogosEmpresasCuentasProrroga.prorroga}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right" converter="janal.convertidor.Calendario"/>																	
 								<p:outputLabel for="idRevisado" value="Doc. revisado:"/>																		
@@ -91,13 +91,13 @@
 								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
 									<h:outputText value="#{row.tipo}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-15" headerText="Nombre">
+								<p:column styleClass="janal-wid-30" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-25" headerText="Usuario">
+								<p:column styleClass="janal-wid-20" headerText="Usuario">
 									<h:outputText value="#{row.usuario}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-15 janal-column-center" headerText="Fecha">
+								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
 								<p:column headerText="Observaciones">
