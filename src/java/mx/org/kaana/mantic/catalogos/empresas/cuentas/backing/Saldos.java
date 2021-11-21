@@ -2,7 +2,6 @@ package mx.org.kaana.mantic.catalogos.empresas.cuentas.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +25,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -35,13 +35,11 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
-import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
-import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.EReportes;
-import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.event.TabChangeEvent;
+import org.jboss.weld.context.RequestContext;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 
@@ -49,7 +47,7 @@ import org.primefaces.model.Visibility;
 @ViewScoped
 public class Saldos extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;	
+private static final long serialVersionUID = 8793667741599428879L;	
   private static final Log LOG = LogFactory.getLog(Saldos.class);
   
   private Reporte reporte;
@@ -60,8 +58,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 	private List<Entity> seleccionadosNotas;
 	private List<Entity> seleccionadosCredito;
 	private Entity[] seleccionadosSegmento;
-  private LocalDate fechaInicio;
-  private LocalDate fechaTermino;
+	private List<Entity> pagosRealizados;
+  protected FormatLazyModel lazyPagosRealizados;
+  private EAccion pivote;
 
   public FormatLazyModel getLazyModelDetalle() {
     return lazyModelDetalle;
@@ -103,54 +102,31 @@ public class Saldos extends IBaseFilter implements Serializable {
     this.seleccionadosSegmento = seleccionadosSegmento;
   }
 
-  public LocalDate getFechaInicio() {
-    return fechaInicio;
+  public List<Entity> getPagosRealizados() {
+    return pagosRealizados;
   }
 
-  public void setFechaInicio(LocalDate fechaInicio) {
-    this.fechaInicio = fechaInicio;
+  public FormatLazyModel getLazyPagosRealizados() {
+    return lazyPagosRealizados;
   }
-
-  public LocalDate getFechaTermino() {
-    return fechaTermino;
-  }
-
-  public void setFechaTermino(LocalDate fechaTermino) {
-    this.fechaTermino = fechaTermino;
-  }
-
+  
   @PostConstruct
   @Override
   protected void init() {
- 		Long idEmpresaInicial= -1L;
     try {
+      this.pivote = EAccion.RESTAURAR;
 			this.attrs.put("empresa", "");
 			this.attrs.put("almacen", "");
 			this.attrs.put("vencidos", new Long(3));
-      this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa() : (Long)JsfBase.getFlashAttribute("idEmpresa"));     
+      this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getFlashAttribute("idEmpresa")== null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa() : (Long)JsfBase.getFlashAttribute("idEmpresa")));     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
-			this.seleccionadosSegmento= new Entity[0];
-			idEmpresaInicial= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
-			this.attrs.put("idEmpresaPago", idEmpresaInicial);
-			this.attrs.put("idEmpresaGeneral", idEmpresaInicial);
-			this.attrs.put("idEmpresaSegmento", idEmpresaInicial);
-			this.attrs.put("mostrarBancoSegmento", false);
-			this.attrs.put("mostrarBancoGeneral", false);
-			this.attrs.put("mostrarBanco", false);			
-			this.attrs.put("pago", 1D);
-			this.attrs.put("pagoGeneral", 1D);
-			this.attrs.put("pagoSegmento", 1D);
+      this.attrs.put("limitePago", "credenciales");
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				this.loadSucursales();
       if(this.attrs.get("idEmpresaDeuda")!= null) 
 			  this.doLoad();
       this.toLoadCatalog();
-			this.doLoadCajas();
-			this.doLoadCajasGeneral();
-      this.doLoadCajasSegmento();
-      this.loadBancos();
-			this.loadTiposPagos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -172,7 +148,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 			this.lazyModel = new FormatCustomLazy("VistaEmpresasDto", "proveedores", params, columns);
       UIBackingUtilities.resetDataTable();		
 			this.attrs.put("idEmpresaDeuda", null);
-      this.lazyModelDetalle= null;
+      this.lazyModelDetalle   = null;
+      this.pagosRealizados    = null;
+      this.lazyPagosRealizados= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -184,7 +162,7 @@ public class Saldos extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-	private Map<String, Object> toPrepare() {
+	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
@@ -203,10 +181,6 @@ public class Saldos extends IBaseFilter implements Serializable {
 		  sb.append("(date_format(tc_mantic_empresas_deudas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("(date_format(tc_mantic_empresas_deudas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
-		  sb.append("(tc_mantic_empresas_deudas.importe>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
-		  sb.append("(tc_mantic_empresas_deudas.importe<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("vencidos")))
 			switch(((Long)this.attrs.get("vencidos")).intValue()) {
 				case 1: // SI
@@ -259,102 +233,8 @@ public class Saldos extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	} // toLoadCatalog
-  
-  private void loadBancos() {
-		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> campos       = null;
-		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("bancos", bancos);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // loadBancos
-    
-	private void loadTiposPagos() {
-		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
-		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
-			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
-			this.attrs.put("tiposPagos", tiposPagos);
-			this.attrs.put("tipoPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // loadTiposPagos
-	  
-	public void doLoadCajas() {
-		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
-		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
-			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			cajas=(List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
-			this.attrs.put("cajas", cajas);
-			this.attrs.put("caja", cajas.get(0));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch	
-	} // loadCajas
-	
-	public void doLoadCajasGeneral() {
-		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
-		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
-			params.put("idEmpresa", this.attrs.get("idEmpresaGeneral"));
-			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			cajas=(List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
-			this.attrs.put("cajasGenerales", cajas);
-			this.attrs.put("cajaGeneral", cajas.get(0));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch	
-	} // doLoadCajasGeneral
-  
-	public void doLoadCajasSegmento() {
-		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
-		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
-			params.put("idEmpresa", this.attrs.get("idEmpresaSegmento"));
-			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			cajas=(List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
-			this.attrs.put("cajasSegmento", cajas);
-			this.attrs.put("cajaSegmento", cajas.get(0));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch	
-	} // doLoadCajasSegmento
   
 	public String doRegresar() {
 		return "filtro".concat(Constantes.REDIRECIONAR);
@@ -371,12 +251,12 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			sucursales=(List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
 			if(!sucursales.isEmpty()) {
 				for(UISelectEntity sucursal: sucursales)
 					allEmpresa= allEmpresa.concat(sucursal.getKey().toString()).concat(",");
 				this.attrs.put("allEmpresa", allEmpresa.substring(0, allEmpresa.length()-1));
-			} // 
+			} // if
 			this.attrs.put("sucursales", sucursales);						
 		} // try
 		catch (Exception e) {
@@ -408,7 +288,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
-		try{		
+		try {		
       params= this.toPrepare();
       params.put("empresa", this.attrs.get("empresa"));
 			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
@@ -419,11 +299,11 @@ public class Saldos extends IBaseFilter implements Serializable {
       if(reporteSeleccion.equals(EReportes.CUENTA_PAGAR_DETALLE)) {
         params.put("idEmpresaDeuda", seleccionado.toLong("idKey"));
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"), -1L);
-      }
+      } // if
       else{
         params.put("sortOrder", "order by	almacen,proveedor,registro desc");
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      }
+      } // else
       this.reporte= JsfBase.toReporte();	
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
@@ -567,28 +447,26 @@ public class Saldos extends IBaseFilter implements Serializable {
 	}
 
   public String toColor(Entity row) {
-		Double original= row.toDouble("original");
-		Double total   = row.toDouble("importe");
-		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": (original!= 0D && original> total)? "janal-tr-yellow": (original!= 0D && original< total)? "janal-tr-green": "";
+    Long idRevisado= row.toLong("idRevisado");
+		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": Objects.equals(idRevisado, 1L)? "": "janal-tr-yellow";
 	} 
 	
 	public String doCostos(Entity row) {
 		Double original= row.toDouble("original");
 		Double total   = row.toDouble("importe");
 		String regresar= "<i class='fa fa-fw fa-question-circle janal-color-green' style='float:right;' title='\n\nNota entrada: "+ Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, row.toDouble("importe"))+ 
-			"\n\nImporte factura: " + Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, row.toString("original"))+ 
-			"'\n\n'></i>";
+			"\nImporte factura: " + Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, row.toString("original"))+ 
+			"\nFecha factura: "+ row.toString("fecha")+ "'></i>";
 		return (original!= 0D && original> total) || (original!= 0D && original< total)? regresar: "";
 	}
 
   public void doLoadDetalle() {
     List<Columna> columns     = null;
 	  Map<String, Object> params= null;	
-		List<Entity> cuentas      = null;
     try {
   	  params = this.toPrepare();
 			Entity entity= (Entity)this.attrs.get("seleccionado");
-			params.put("sortOrder", "order by dias desc");
+			params.put("sortOrder", "order by consecutivo desc");
 			params.put("idProveedor", entity.toLong("idProveedor"));
 			this.attrs.put("idProveedor", entity.toLong("idProveedor"));
       columns= new ArrayList<>();
@@ -599,9 +477,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
 			this.lazyModelDetalle = new FormatCustomLazy("VistaEmpresasDto", "detalle", params, columns);
-			cuentas= DaoFactory.getInstance().toEntitySet("VistaEmpresasDto", "cuentasProveedor", params);
-      this.validaPagoGeneral(cuentas);
-      UIBackingUtilities.resetDataTable();		
+      UIBackingUtilities.resetDataTable("detalle");		
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -612,221 +488,8 @@ public class Saldos extends IBaseFilter implements Serializable {
       Methods.clean(columns);
     } // finally		   
   }
- 
-	public void doLoadCuentasAFavor() {
-		Entity seleccionado= null;		
-		try {
-			seleccionado= (Entity) this.attrs.get("seleccionadoDetalle");
-			this.attrs.put("pago", seleccionado.toDouble("saldo"));
-			this.doLoadNotasEntradas();
-			this.doLoadNotasCredito();
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // doLoadCuentasAFavor
-  
-  	public void doLoadCuentas() {
-		List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
-		try {
-			this.seleccionadosSegmento= new Entity[0];
-			params= new HashMap<>();
-			params.put("idProveedor", this.attrs.get("idProveedor"));      
-			params.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");			
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo < 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa().toString()).concat(")"));			
-      columns= new ArrayList<>();  
-			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
-			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
-			this.pagosSegmento= new FormatLazyModel("VistaEmpresasDto", "cuentasProveedor", params, columns);      
-      UIBackingUtilities.resetDataTable("tablaSegmentos");		
-		} // try 
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-		} // catch 		
-	} // doLoadCuentas
-	
-	private void doLoadNotasEntradas() {
-		List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
-		try {
-			this.seleccionadosNotas= new ArrayList<>();
-			params= new HashMap<>();
-			params.put("idProveedor", this.attrs.get("idProveedor"));      
-			params.put("idEmpresaEstatus", EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa());														
-      columns= new ArrayList<>();  
-			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
-			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
-			this.notasEntradaFavor= new FormatLazyModel("VistaEmpresasDto", "saldoFavorEntradas", params, columns);      
-      UIBackingUtilities.resetDataTable("tablaNotas");		
-		} // try 
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // doLoadNotasEntradas
-	
-	private void doLoadNotasCredito() {
-		List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
-		try {
-			this.seleccionadosCredito= new ArrayList<>();
-			params= new HashMap<>();
-			params.put("idProveedor", this.attrs.get("idProveedor"));      
-			params.put("idCreditoEstatus", EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa() + "," + EEstatusEmpresas.PROGRAMADA.getIdEstatusEmpresa());																	
-      columns= new ArrayList<>();  
-			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
-			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
-			this.notasCreditoFavor= new FormatLazyModel("VistaCreditosNotasDto", "saldoFavorCreditos", params, columns);      
-      UIBackingUtilities.resetDataTable("tablaCreditos");		
-		} // try 
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // doLoadNotasCredito  
 
-	private boolean validaPagoGeneral() {
-		boolean regresar= false;
-		Double pago     = 0D;
-		Double saldo    = 0D;
-		Entity deuda    = null;
-		try {
-			pago= Double.valueOf(this.attrs.get("pagoGeneral").toString());
-			if(pago > 0D){
-				deuda= (Entity) this.attrs.get("deuda");
-				saldo= Double.valueOf(deuda.toString("saldo"));
-				regresar= pago<= (saldo * -1);
-			} // if
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch
-		return regresar;
-	} // validaPagoGeneral
-  
-	private void validaPagoGeneral(List<Entity> cuentas) {
-		int count= 0;
-		try {
-			for(Entity cuenta: cuentas) {
-				if(!(cuenta.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa())))
-					count++;
-			} // for
-			this.attrs.put("activePagoGeneral", count > 0);
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-			throw e;
-		} // catch		
-	} // validaPagogeneral
- 
-  private boolean validaPago() {
-		boolean regresar= false;
-		Double pago     = 0D;
-		Double saldo    = 0D;
-		Entity deuda    = null;
-		try {
-			pago = Double.valueOf(this.attrs.get("pago").toString());
-			deuda= (Entity) this.attrs.get("seleccionadoDetalle");
-			if(pago> 0D && !deuda.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa())) {			
-				saldo= Double.valueOf(deuda.toString("saldo"));
-				regresar= pago<= (saldo * -1);
-			} // if
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch
-		return regresar;
-	} // validaPago
-
-	public void doRegistrarPago() {
-		mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion transaccion= null;
-		TcManticEmpresasPagosDto pago= null;
-		boolean tipoPago             = false;
-		try {
-			if(validaPago()) {
-				pago= new TcManticEmpresasPagosDto();
-				pago.setIdEmpresaDeuda(((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
-				pago.setIdUsuario(JsfBase.getIdUsuario());
-				pago.setObservaciones(this.attrs.get("observaciones").toString());
-				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
-				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
-				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-				transaccion= new mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion(pago, ((UISelectEntity)this.attrs.get("caja")).getKey(), -1L, ((UISelectEntity)this.attrs.get("idEmpresaPago")).getKey(), tipoPago ? -1L : ((UISelectEntity)this.attrs.get("banco")).getKey(), tipoPago ? "" : this.attrs.get("referencia").toString(), null, false, this.seleccionadosNotas, this.seleccionadosCredito);
-				if(transaccion.ejecutar(EAccion.AGREGAR)) {
-					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
-					this.doLoad();					
-				} // if
-				else
-					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
-			} // if
-			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0 o la cuenta ya se encuentra finalizada.", ETipoMensaje.ERROR);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch				
-	} // doRegistrarPago  
-  
-	public void doRegistrarPagoGeneral() {
-		Transaccion transaccion      = null;
-		TcManticEmpresasPagosDto pago= null;
-		boolean tipoPago             = false;
-		try {
-			if(validaPagoGeneral()) {
-				pago= new TcManticEmpresasPagosDto();
-				pago.setIdUsuario(JsfBase.getIdUsuario());
-				pago.setObservaciones(this.attrs.get("observacionesGeneral").toString());
-				pago.setPago(Double.valueOf(this.attrs.get("pagoGeneral").toString()));
-				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
-				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-				transaccion= new Transaccion(pago, ((UISelectEntity)this.attrs.get("cajaGeneral")).getKey(), ((UISelectEntity)this.attrs.get("idProveedor")).getKey(), ((UISelectEntity)this.attrs.get("idEmpresaGeneral")).getKey(), tipoPago ? -1L: ((UISelectEntity)this.attrs.get("bancoGeneral")).getKey(), tipoPago ? "" : this.attrs.get("referenciaGeneral").toString(), false);
-				if(transaccion.ejecutar(EAccion.PROCESAR)) {
-					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta");
-					this.doLoad();					
-				} // if
-				else
-					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
-			} // if
-			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0.", ETipoMensaje.ERROR);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch				
-	} // doRegistrarPagoGeneral
-  
-	public void onTabChangeSegmentos(TabChangeEvent event) {
-    Double saldo= 0D;
-		if(event.getTab().getTitle().equals("Registro pago")) {
-      if(this.seleccionadosSegmento!= null && this.seleccionadosSegmento.length> 0) {
-        for(Entity cuenta: this.seleccionadosSegmento)					
-					saldo= saldo+ Double.valueOf(cuenta.toString("saldo"));
-				this.attrs.put("pagoSegmento", saldo);
-      } // if
-    } // if
-  }  
-  
-  public void doCountCuentas() {
-    LOG.info(this.seleccionadosSegmento);
-  }
- 
-	public void onRowToggle(ToggleEvent event) {
+	public void doRowToggle(ToggleEvent event) {
 		try {
 			this.attrs.put("seleccionado", (Entity) event.getData());
 			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
@@ -836,13 +499,156 @@ public class Saldos extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // onRowToggle
+	} // doRowToggle
  
- 	public void doMontoUpdate() {
-	  if(this.attrs.get("montoInicio")!= null && this.attrs.get("montoTermino")== null)
-			this.attrs.put("montoTermino", this.attrs.get("montoInicio"));
-	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
-			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
+	public void doRowTogglePagosRealizados(ToggleEvent event) {
+		try {
+			this.attrs.put("pagoRealizado", (Entity) event.getData());
+			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
+				this.doLoadDetallePagosRealizados();
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doRowTogglePagosRealizados
+  
+  public void doLoadDetallePagosRealizados() {
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+    try {
+      params = new HashMap<>();      
+			Entity entity= (Entity)this.attrs.get("pagoRealizado");
+			params.put("sortOrder", "order by tc_mantic_empresas_pagos.registro desc");
+			params.put("idEmpresaPagoControl", entity.toLong("idEmpresaPagoControl"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("venta", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));      
+			this.lazyPagosRealizados= new FormatCustomLazy("VistaEmpresasDto", "detallePagosRealizados", params, columns);
+      UIBackingUtilities.resetDataTable();		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		   
+  }  
+  
+  public void doLoadPagosRealizados(Entity row) {
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
+    try {      
+      this.attrs.put("seleccionado", row);
+      params = new HashMap<>();      
+      params.put("idProveedor", row.toLong("idProveedor"));      
+      Periodo periodo= new Periodo();
+      periodo.addMeses(-12);
+      params.put("inicio", periodo.toString());      
+      columns = new ArrayList<>();
+      columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      this.pagosRealizados = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEmpresasDto", "pagosRealizados", params);
+      if(this.pagosRealizados!= null && !this.pagosRealizados.isEmpty()) {
+        UIBackingUtilities.toFormatEntitySet(this.pagosRealizados, columns);
+        this.pagosRealizados.get(0).getValue("eliminar").setData(1L);
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+ 
+  public void doDeletePago(Entity row) {
+    this.attrs.put("eliminarPagoRealizado", row);
+    this.attrs.put("limitePago", "credenciales");
+    this.pivote = EAccion.RESTAURAR;
+    this.attrs.put("msgAutorizacion", " la cancelación del pago con importe ".concat(row.toString("pago")));
+  }
+  
+  public void doDeleteCuenta(Entity row) {
+    this.attrs.put("seleccionadoDetalle", row);
+    this.attrs.put("limitePago", "credenciales");
+    this.pivote = EAccion.DEPURAR;
+    this.attrs.put("msgAutorizacion", " la cancelación de la CxP con nota de entrada ".concat(row.toString("ticket")));
+  }
+ 
+	public String doCheckUser() {
+		String regresar   = null;
+    String texto      = "";
+    String ticket     = null;
+		String cuenta     = (String)this.attrs.get("cuenta");
+		String contrasenia= (String)this.attrs.get("contrasenia");
+		try {
+			CambioUsuario	usuario= new CambioUsuario(cuenta, contrasenia);			
+			if(usuario.autorizaCancelacion()) {
+        String justificacion= (String)this.attrs.get("justificacion");
+				this.attrs.put("cuenta", "");
+				this.attrs.put("contrasenia", "");
+				this.attrs.put("justificacion", "");
+        // aqui se elimina el pago al que se hace referencia
+        switch(pivote) {
+          case RESTAURAR:
+            ticket= " [Folio: ".concat(((Entity)this.attrs.get("eliminarPagoRealizado")).toString("consecutivo")).concat("]");
+            break;
+          case DEPURAR:
+            ticket= " [Ticket: ".concat(((Entity)this.attrs.get("seleccionadoDetalle")).toString("ticket")).concat("]");
+            break;
+          case MODIFICAR:
+            ticket= " [Ticket: ".concat(((Entity)this.attrs.get("seleccionadoDetalle")).toString("ticket")).concat("]");
+            break;
+        } // switch
+        String proceso= EAccion.RESTAURAR.equals(pivote)? "eliminarPagoRealizado": "seleccionadoDetalle";
+        Entity entity = (Entity)this.attrs.get(proceso);
+        Transaccion transaccion= new Transaccion(EAccion.RESTAURAR.equals(pivote)? entity.toLong("idEmpresaPagoControl"): entity.toLong("idEmpresaDeuda"), justificacion);
+        if(transaccion.ejecutar(pivote)) {
+          switch(pivote) {
+            case RESTAURAR:
+              texto= "Se eliminó el pago con éxito ".concat(ticket);
+              break;
+            case DEPURAR:
+              texto= "Se eliminó la cuenta por pagar con éxito ".concat(ticket);
+              break;
+            case MODIFICAR:
+              texto= "Se ajusto la fecha de vencimiento con éxito ".concat(ticket);
+              break;
+          } // switch
+          this.doLoad();
+          UIBackingUtilities.update("tabla");
+          UIBackingUtilities.update("tablaPagosRealizados");
+        } // if
+        else 
+          switch(pivote) {
+            case RESTAURAR:
+              texto= "No se puedo eliminar el pago, intente nuevamente !";
+              break;
+            case DEPURAR:
+              texto= "No se puedo eliminar la cuenta por pagar intente nuevamente !";
+              break;
+            case MODIFICAR:
+              texto= "No se puedo modificar la fecha de vencimiento !";
+              break;
+          } // switch
+				this.attrs.put("ok", Boolean.FALSE);
+				UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");
+        UIBackingUtilities.execute("janal.show([{summary: 'Cuenta: ', detail: '"+ texto+ "'}], '"+ (texto.startsWith("Se")? "info": "warn")+ "');");
+			} // if
+			else
+				this.attrs.put("ok", Boolean.TRUE);
+	  } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");
+      JsfBase.addMessageError(e);
+    } // catch
+		return regresar;
 	}
   
 }

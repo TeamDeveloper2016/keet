@@ -21,12 +21,12 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{keetEstacionesFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{keetEstacionesFiltro.doLoadClientes()}" process="@this" update="idCliente idPrototipo" />
-								<f:selectItems value="#{keetEstacionesFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? ' ': '|'} #{element.titulo}"/>
+								<f:selectItems value="#{keetEstacionesFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? ' ': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
                 <p:column headerText="Nombre">
-                  <h:outputText value="#{item.titulo}"/>
+                  <h:outputText value="#{item.nombre}"/>
                 </p:column>
 							</p:selectOneMenu>
 							<p:outputLabel for="idCliente" value="Cliente:"/>

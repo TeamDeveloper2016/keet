@@ -163,7 +163,7 @@
 						<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasFacturasAccion.attrs.consecutivo}" readonly="true" disabled="true"/>								
 						<p:selectOneMenu id="idEmpresa" value="#{manticVentasFacturasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true"  rendered="#{manticVentasFacturasAccion.attrs.isMatriz}">
 							<p:ajax event="change" process="@this" listener="#{manticVentasFacturasAccion.doUpdateForEmpresa}" update="clientes cliente contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-							<f:selectItems value="#{manticVentasFacturasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+							<f:selectItems value="#{manticVentasFacturasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 							<p:column headerText="Clave">
 								<h:outputText value="#{item.clave}"/>
 							</p:column>   

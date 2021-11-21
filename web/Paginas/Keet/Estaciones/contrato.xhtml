@@ -31,12 +31,12 @@
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="false and #{keetEstacionesContrato.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{keetEstacionesContrato.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="false and #{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{keetEstacionesContrato.doLoadDesarrollos}" process="@this" update="idDesarrollo idContrato idLote" oncomplete="reloadDesarrollos(); reloadContratos();"/>
-								<f:selectItems value="#{keetEstacionesContrato.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '|'} #{element.titulo}"/>
+								<f:selectItems value="#{keetEstacionesContrato.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>
                 <p:column headerText="Nombre">
-                  <h:outputText value="#{item.titulo}"/>
+                  <h:outputText value="#{item.nombre}"/>
                 </p:column>
 							</p:selectOneMenu>
               <p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
