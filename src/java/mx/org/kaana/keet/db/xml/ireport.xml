@@ -131,6 +131,8 @@
 					tc_keet_nominas_rubros.lote,
 					tc_keet_nominas_rubros.codigo,
 					tc_keet_nominas_rubros.nombre,
+          tc_keet_nominas_rubros.cantidad,
+          tc_keet_nominas_rubros.fondo_garantia,
 					tc_keet_nominas_rubros.subtotal,
 					tc_keet_nominas_rubros.iva,
 					tc_keet_nominas_rubros.total,
@@ -179,25 +181,28 @@
 					departamentos.id_departamentos,
 					departamentos.departamento,
 				  tc_mantic_proveedores.id_proveedor,
-					tc_mantic_proveedores.clave cve_proveedor,
+					tc_mantic_proveedores.clave as cve_proveedor,
 					tc_mantic_proveedores.razon_social as proveedor,
 					tc_mantic_proveedores.rfc,
-					tc_keet_nominas_proveedores.subtotal subtotal_dpto,
-					tc_keet_nominas_proveedores.iva iva_dpto,
-					tc_keet_nominas_proveedores.total total_depto,
+          tc_keet_nominas_proveedores.fondo_garantia as fondo_dpto,
+					tc_keet_nominas_proveedores.subtotal as subtotal_dpto,
+					tc_keet_nominas_proveedores.iva as iva_dpto,
+					tc_keet_nominas_proveedores.total as total_depto,
 					tc_keet_nominas_rubros.id_nomina_rubro,
 				  tc_keet_contratos.consecutivo,
-				  tc_keet_contratos.clave cve_contrato,
+				  tc_keet_contratos.clave as cve_contrato,
 				  tc_keet_contratos.etapa,
 					tc_keet_nominas_rubros.lote,
 					tc_keet_nominas_rubros.codigo,
 					tc_keet_nominas_rubros.nombre,
+          tc_keet_nominas_rubros.cantidad,
+          tc_keet_nominas_rubros.fondo_garantia,
 					tc_keet_nominas_rubros.subtotal,
 					tc_keet_nominas_rubros.iva,
 					tc_keet_nominas_rubros.total,
 					tc_keet_nominas_rubros.registro
         from
-        		tc_keet_nominas
+        	tc_keet_nominas
 				inner join 
 					tc_keet_nominas_periodos on tc_keet_nominas.id_nomina_periodo= tc_keet_nominas_periodos.id_nomina_periodo
 				inner join 

@@ -18,6 +18,7 @@
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:nombreComercial': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:fondoGarantia': {validaciones: 'flotante|rango({"min":0,"max":5})', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:descuento': {validaciones: 'porcentaje', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
         'contenedorGrupos\\:idTipoDia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -71,7 +72,7 @@
           <p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
             <p:ajax event="tabChange" process="@this" update="tablaTipoPago tablaContactos" oncomplete="janal.refresh();janal.alignCp();"/>
             <p:tab id="general" title="General">
-              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-180, janal-wid-100-txt">								
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">								
                 <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosProveedoresAccion.attrs.isMatriz}"/>
 								<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosProveedoresAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.nombre eq ''? '': '|'} #{element.nombre}"/>
@@ -89,16 +90,18 @@
                 <p:inputText id="clave" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.clave}"/>                    
                 <p:outputLabel for="grupo" value="Grupo ó familia:"/>
                 <p:inputText id="grupo" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.grupo}"/>
-                <p:spacer width="1px"/><p:separator/>
+                <p:separator/>
                 <p:outputLabel for="rfc" value="RFC:"/>
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.rfc}"/>                    
                 <p:outputLabel for="razonSocial" value="Razón social:"/>
                 <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" maxlength="255" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.razonSocial}"/>                    
                 <p:outputLabel for="nombreComercial" value="Nombre comercial:"/>
                 <p:inputText id="nombreComercial" styleClass="janal-wid-100-txt" maxlength="255" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.nombreComercial}"/>                    
-                <p:spacer width="1px"/><p:separator/>
-                <p:outputLabel for="idTipoProveedor"  value="Tipo proveedor:"/>
-                <p:selectOneMenu  id="idTipoProveedor" value="#{manticCatalogosProveedoresAccion.attrs.tipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
+                <p:outputLabel for="fondoGarantia" value="Fondo de garantía:"/>
+                <p:inputText id="fondoGarantia" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.fondoGarantia}"/>                    
+                <p:separator/>
+                <p:outputLabel for="idTipoProveedor"  value="Tipo proveedor:" rendered="false"/>
+                <p:selectOneMenu id="idTipoProveedor" value="#{manticCatalogosProveedoresAccion.attrs.tipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="false">
                   <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposProveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                   <p:column>
                     <h:outputText value="#{item.nombre}"/>
@@ -107,18 +110,18 @@
                     <h:outputText value="#{item.dias}"/>
                   </p:column>   
                 </p:selectOneMenu>                
-                <p:outputLabel  for="diasEntrega" value="Tiempo de entrega (dias):"/>
-                <p:inputText id="diasEntrega" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.diasEntrega}"/> 
-                <p:outputLabel value="Tipo de dias de entrega:" for="idTipoDia"/>
-                <p:selectOneMenu id="idTipoDia" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoDia}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt">
+                <p:outputLabel  for="diasEntrega" value="Tiempo de entrega (dias):" rendered="false"/>
+                <p:inputText id="diasEntrega" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.diasEntrega}" rendered="false"/> 
+                <p:outputLabel value="Tipo de dias de entrega:" for="idTipoDia" rendered="false"/>
+                <p:selectOneMenu id="idTipoDia" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoDia}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt" rendered="false">
                   <f:selectItem itemLabel="NATURALES" itemValue="1"/>
                   <f:selectItem itemLabel="HÁBILES" itemValue="2"/>
                   <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
                 </p:selectOneMenu>
-                <p:outputLabel value="Descuento:" for="descuento"/>
-                <p:inputText id="descuento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.descuento}" /> 
-                <p:outputLabel value="Tipo de mondeda:" for="idTipoMoneda"/>
-                <p:selectOneMenu id="idTipoMoneda" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoMoneda}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt">
+                <p:outputLabel value="Descuento:" for="descuento" rendered="false"/>
+                <p:inputText id="descuento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.descuento}" rendered="false"/> 
+                <p:outputLabel value="Tipo de mondeda:" for="idTipoMoneda" rendered="false"/>
+                <p:selectOneMenu id="idTipoMoneda" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoMoneda}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt" rendered="false">
                   <f:selectItem itemLabel="PESOS" itemValue="1"/>
                   <f:selectItem itemLabel="DOLARES" itemValue="2"/>
                   <f:selectItem itemLabel="EUROS" itemValue="3"/>

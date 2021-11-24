@@ -5806,7 +5806,7 @@
     <unit id="TcManticClientesDeudasEstatusDto">
       <select id="row">
         select      
-          tc_mantic_clientes_deudas_estatus.id_cliente_estatus as id_key,
+          tc_mantic_clientes_deudas_estatus.id_cliente_deuda_estatus as id_key,
           tc_mantic_clientes_deudas_estatus.*
         from      
           tc_mantic_clientes_deudas_estatus

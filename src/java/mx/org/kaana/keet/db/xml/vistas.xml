@@ -2815,6 +2815,7 @@
 			<select id="proveedor">
 				select
 					distinct(tc_keet_contratos_lotes_proveedores.id_proveedor) as id_proveedor,
+          tc_mantic_proveedores.fondo_garantia,
 				  tc_mantic_proveedores.clave
 				from
 					tc_keet_contratos_destajos_proveedores
@@ -2831,6 +2832,7 @@
 			<select id="proveedores">
 				select
 					distinct(tc_keet_contratos_lotes_proveedores.id_proveedor) as id_proveedor,
+          tc_mantic_proveedores.fondo_garantia,
 				  tc_mantic_proveedores.clave
 				from
 					tc_keet_contratos_destajos_proveedores
@@ -3002,10 +3004,12 @@
 				  tc_keet_estaciones.codigo,
 				  '00111100' as sat,
 				  tc_keet_estaciones.nombre,
-				  0 as cantidad,
-				  round(sum(tc_keet_contratos_destajos_proveedores.costo), 2) as subtotal,
-				  round(sum(tc_keet_contratos_destajos_proveedores.costo* 0.16), 2) as iva,
-				  round(sum(tc_keet_contratos_destajos_proveedores.costo* 1.16), 2) as total
+				  max(tc_keet_contratos_destajos_proveedores.porcentaje) as cantidad,
+				  round(sum(tc_keet_contratos_destajos_proveedores.costo), 2) as destajo,
+				  0 as fondo_garantia,
+				  0 as subtotal,
+				  0 as iva,
+				  0 as total
 			  from
 				  tc_keet_contratos_lotes_proveedores
 			  inner join

@@ -456,7 +456,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 							-1L, // Long idNominaProveedor, 
 							0D, // Double iva, 
 							0D, // Double subtotal, 
-							this.idNomina // Long idNomina
+							this.idNomina, // Long idNomina
+              0D, // Double fondoGarantia,
+              0D, // Double destajo      
+              persona.toDouble("fondoGarantia") // Double porcentajeFondo
 						);
 						this.calculos(sesion, monitoreo, proveedor);
 					} // if
@@ -500,7 +503,10 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 							-1L, // Long idNominaProveedor, 
 							0D, // Double iva, 
 							0D, // Double subtotal, 
-							this.idNomina // Long idNomina
+							this.idNomina, // Long idNomina
+              0D, // Double fondoGarantia
+              0D, // Double destajo      
+              persona.toDouble("fondoGarantia") // Double porcentajeFondo
 						);
 						this.calculos(sesion, monitoreo, proveedor);
 					} // if
@@ -1098,9 +1104,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 
   public void grupo(Session sesion) throws Exception {
     try {
+      String group= Cafu.IMOX_GROUP_GYLVI;
+      if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu"))
+        group= Cafu.IMOX_GROUP_CAFU;
 			Semanas semanas= new Semanas();
 			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
-      Cafu notificar= new Cafu("compañero(s)", Cafu.IMOX_GROUP, this.texto, 
+      Cafu notificar= new Cafu("compañero(s)", group, this.texto, 
         periodo.getEjercicio()+ "-"+ periodo.getOrden(), 
         "*"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getInicio())+ 
@@ -1117,9 +1126,12 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
   
   public void cierre(Session sesion) throws Exception {
     try {
+      String group= Cafu.IMOX_GROUP_GYLVI;
+      if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu"))
+        group= Cafu.IMOX_GROUP_CAFU;
 			Semanas semanas= new Semanas();
 			TcKeetNominasPeriodosDto periodo= semanas.getSemanaEnCursoDto();
-      Cafu notificar= new Cafu("compañero(s)", Cafu.IMOX_GROUP, "", 
+      Cafu notificar= new Cafu("compañero(s)", group, "", 
         periodo.getEjercicio()+ "-"+ periodo.getOrden(), 
         "*"+ 
         Global.format(EFormatoDinamicos.FECHA_CORTA, periodo.getInicio())+ 

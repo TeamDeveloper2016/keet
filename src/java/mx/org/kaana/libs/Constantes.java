@@ -108,16 +108,16 @@ public final class Constantes {
   public static final String PERMITIR_ACCESO = "1";
 
   public static final String PROPIEDAD_SISTEMA_SERVIDOR = "sistema.servidor";
-  public static final String PROPIEDAD_SISTEMA = "sistema";
-  public static final String PROPIEDAD_TEMPORALES = "temporales";
-  public static final String SEPARADOR_PROPIEDADES = ".";
+  public static final String PROPIEDAD_SISTEMA       = "sistema";
+  public static final String PROPIEDAD_TEMPORALES    = "temporales";
+  public static final String SEPARADOR_PROPIEDADES   = ".";
 
   public static final String MENSAJE_SISTEMA = "Mensaje del sistema";
   //Atributo autentifica
-  public static final String ATRIBUTO_AUTENTIFICA = "autentifica";
+  public static final String ATRIBUTO_AUTENTIFICA     = "autentifica";
   //Atributo para usuarios del sitio
-  public static final String ATRIBUTO_USUARIOS_SITIO = "usuariosSitio";
-  public static final String ATRIBUTO_BLOQUEO_USUARIOS = "bloqueoUsuario";
+  public static final String ATRIBUTO_USUARIOS_SITIO  = "usuariosSitio";
+  public static final String ATRIBUTO_BLOQUEO_USUARIOS= "bloqueoUsuario";
 
   //Atributos utilizados para las tablas en las paginas de filtro
   public static final String NO_EXISTEN_REGISTROS = "No existen registros";
@@ -138,25 +138,15 @@ public final class Constantes {
   public static final String PAQUETE_TRANSFORMACION = "mx.org.kaana.kajool.procesos.";
   public static final String PAQUETE_MANAGED_BEAN_REGISTER = "mx.org.kaana.";
 
-  public static final int INTENTOS = 3;
-  public static final int DIAS_CORTE = 3;
+  public static final int INTENTOS  = 3;
+  public static final int DIAS_CORTE= 3;
 
-  public static final String GRAFICA_REFERENCIA = "_GRAFICA";
-
+  
   public static final String PASSWORD_ZIP = "oX561r#Yn2%4wp$v";
-  public static final String DIRECTORIO_WS_CLAVE_APPLICACION = "DGA_JAVA_";
+  public static final int MAX_OPCIONES_ULTIMO_NIVEL= 12;
+  
+  public static final double PORCENTAJE_IVA  = 0.16;
 
-  public static final String LANZADOR_INTERPRETE = "LANZADOR";
-  public static final String LANZADOR_PAGINA_INTERPRETE = "lanzador?faces-redirect=true";
-
-  public static final int MAX_OPCIONES_ULTIMO_NIVEL = 12;
-
-  // Constantes para mantenimiento de encuestas
-  public static final int MINDMAP_MIN_PERFILES = 2;
-  public static final int MINDMAP_MIN_OFICINAS = 7;
-  public static final int MINDMAP_MIN_MENUS = 3;
-  public static final int MINDMAP_MIN_USUARIOS = 1;
-  public static final int MINDMAP_MIN_USUARIOS_AGREGADOS = 0;
 	public static double PORCENTAJE_MENUDEO= 1.5;
 	public static double PORCENTAJE_MEDIO_MAYOREO= 1.4;
 	public static double PORCENTAJE_MAYOREO= 1.3;

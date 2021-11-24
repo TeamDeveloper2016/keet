@@ -202,10 +202,10 @@
               </f:facet>
               <h:outputText value="#{row['global']}" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]" />
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-30" exportable="false">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idNominaEstatus eq '1'? 'circulo-verde': row.idNominaEstatus eq '2' or row.idNominaEstatus eq '3'? 'circulo-amarillo' : 'circulo-rojo'}.png" title="Nómina personal: [${row.neto}] Nómina subcontratistas: [${row.total}]"/>
 						</p:column>
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-30" exportable="false">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">
 							<p:commandButton icon="fa fa-refresh" process="@this tabla" action="#{keetNominasFiltro.doAccion('CALCULAR')}" title="Re-procesar" disabled="#{not(row.idNominaEstatus.toLong() lt 4)}">
 							  <f:setPropertyActionListener value="#{row}" target="#{keetNominasFiltro.attrs.seleccionado}" />
 							</p:commandButton>

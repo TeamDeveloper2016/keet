@@ -43,17 +43,23 @@ public class TcKeetNominasProveedoresDto implements IBaseDto, Serializable {
   private Long idNomina;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="fondo_garantia")
+  private Double fondoGarantia;
+  @Column (name="destajo")
+  private Double destajo;
+  @Column (name="porcentaje_fondo")
+  private Double porcentajeFondo;
 
   public TcKeetNominasProveedoresDto() {
     this(new Long(-1L));
   }
 
   public TcKeetNominasProveedoresDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null);
+    this(null, null, new Long(-1L), null, null, null, 0D, 0D, 0.3D);
     setKey(key);
   }
 
-  public TcKeetNominasProveedoresDto(Long idProveedor, Double total, Long idNominaProveedor, Double iva, Double subtotal, Long idNomina) {
+  public TcKeetNominasProveedoresDto(Long idProveedor, Double total, Long idNominaProveedor, Double iva, Double subtotal, Long idNomina, Double fondoGarantia, Double destajo, Double porcentajeFondo) {
     setIdProveedor(idProveedor);
     setTotal(total);
     setIdNominaProveedor(idNominaProveedor);
@@ -61,6 +67,9 @@ public class TcKeetNominasProveedoresDto implements IBaseDto, Serializable {
     setSubtotal(subtotal);
     setIdNomina(idNomina);
     setRegistro(LocalDateTime.now());
+    this.fondoGarantia= fondoGarantia;
+    this.destajo= destajo;
+    this.porcentajeFondo= porcentajeFondo;
   }
 	
   public void setIdProveedor(Long idProveedor) {
@@ -119,6 +128,30 @@ public class TcKeetNominasProveedoresDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Double getFondoGarantia() {
+    return fondoGarantia;
+  }
+
+  public void setFondoGarantia(Double fondoGarantia) {
+    this.fondoGarantia = fondoGarantia;
+  }
+
+  public Double getDestajo() {
+    return destajo;
+  }
+
+  public void setDestajo(Double destajo) {
+    this.destajo = destajo;
+  }
+
+  public Double getPorcentajeFondo() {
+    return porcentajeFondo;
+  }
+
+  public void setPorcentajeFondo(Double porcentajeFondo) {
+    this.porcentajeFondo = porcentajeFondo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -146,6 +179,12 @@ public class TcKeetNominasProveedoresDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdNomina());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFondoGarantia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDestajo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPorcentajeFondo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -160,14 +199,17 @@ public class TcKeetNominasProveedoresDto implements IBaseDto, Serializable {
 		regresar.put("iva", getIva());
 		regresar.put("subtotal", getSubtotal());
 		regresar.put("idNomina", getIdNomina());
+		regresar.put("fondoGarantia", getFondoGarantia());
+		regresar.put("destajo", getDestajo());
+		regresar.put("porcentajeFondo", getPorcentajeFondo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdProveedor(), getTotal(), getIdNominaProveedor(), getIva(), getSubtotal(), getIdNomina(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdProveedor(), getTotal(), getIdNominaProveedor(), getIva(), getSubtotal(), getIdNomina(), getFondoGarantia(), getDestajo(), getPorcentajeFondo(), getRegistro()
     };
     return regresar;
   }
@@ -206,16 +248,13 @@ public class TcKeetNominasProveedoresDto implements IBaseDto, Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) {
+    if (obj == null) 
       return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (getClass() != obj.getClass()) 
       return false;
-    }
     final TcKeetNominasProveedoresDto other = (TcKeetNominasProveedoresDto) obj;
-    if (getIdNominaProveedor() != other.idNominaProveedor && (getIdNominaProveedor() == null || !getIdNominaProveedor().equals(other.idNominaProveedor))) {
+    if (getIdNominaProveedor() != other.idNominaProveedor && (getIdNominaProveedor() == null || !getIdNominaProveedor().equals(other.idNominaProveedor))) 
       return false;
-    }
     return true;
   }
 
