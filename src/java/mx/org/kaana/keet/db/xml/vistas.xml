@@ -2045,6 +2045,7 @@
 					tc_keet_nominas_rubros.lote,
 					tc_keet_nominas_rubros.codigo,
 					tc_keet_nominas_rubros.nombre as concepto,
+          tc_keet_nominas_rubros.fondo_garantia,
 					tc_keet_nominas_rubros.subtotal,
 					tc_keet_nominas_rubros.iva,
 					tc_keet_nominas_rubros.total,

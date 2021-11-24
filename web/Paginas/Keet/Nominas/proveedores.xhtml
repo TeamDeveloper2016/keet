@@ -209,7 +209,7 @@
 							</f:facet>
 							<h:outputText value="#{row['contrato']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}">
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.etapa}" rendered="false">
 							<f:facet name="header">
 								<h:outputText value="Etapa"/>
 							</f:facet>
@@ -233,6 +233,12 @@
 							</f:facet>
 							<h:outputText value="#{row['concepto']}"/>
 						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.fondoGarantia}">
+							<f:facet name="header">
+								<h:outputText value="Fondo garantia"/>
+							</f:facet>
+							<h:outputText value="#{row['fondoGarantia']}"/>
+						</p:column>	
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.subtotal}">
 							<f:facet name="header">
 								<h:outputText value="Subtotal"/>
