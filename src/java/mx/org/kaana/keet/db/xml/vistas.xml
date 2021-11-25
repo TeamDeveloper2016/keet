@@ -2406,7 +2406,7 @@
 				  tc_keet_contratos.consecutivo,
 				  tc_keet_desarrollos.nombres as desarrollo,
 				  tc_keet_contratos.clave,
-          ifnull(tc_keet_estaciones.descripcion, tc_keet_estaciones.nombre) as contrato,
+          tc_keet_contratos.nombre as contrato,
 				  tc_keet_contratos.etapa,
 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
 				  tc_keet_estaciones.codigo,
@@ -2496,9 +2496,6 @@
 					tr_mantic_empresa_personal.clave,
 					concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ' '), ' ', ifnull(tc_mantic_personas.materno, ' ')) as nombre_completo,
 					tc_mantic_personas.apodo,
-          tc_mantic_personas.rfc,
-          tc_mantic_personas.curp,
-          if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,
 					tc_keet_nominas_personas.neto as importe,
 					tc_mantic_puestos.id_puesto,
 					tc_mantic_personas.id_persona
