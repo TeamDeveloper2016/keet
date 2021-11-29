@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.keet.nomina.reglas.Transaccion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.db.dto.TcKeetNominasDto;
 import mx.org.kaana.keet.nomina.beans.Nomina;
 import mx.org.kaana.libs.formato.Error;
@@ -39,7 +40,13 @@ public class Accion extends IBaseFilter implements Serializable {
 
 	private static final Log LOG= LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 318633488565639323L;
+  
+	protected FormatLazyModel lazyMovimientos;
 
+  public FormatLazyModel getLazyMovimientos() {
+    return lazyMovimientos;
+  }
+  
 	public Boolean getActivar() {
 		Long idTipoNomina   = ((UISelectEntity)this.attrs.get("idTipoNomina")).getKey();
 		Long idNominaEstatus= ((Nomina)this.attrs.get("ultima")).getIdNominaEstatus();
@@ -62,6 +69,9 @@ public class Accion extends IBaseFilter implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Detalle")) 
 			this.doLoad();
+    else
+		  if(event.getTab().getTitle().equals("Movimientos")) 
+			  this.doMovimientos();
 	} // doTabChange		
 	
 	public String doCancelar() {   
@@ -290,5 +300,31 @@ public class Accion extends IBaseFilter implements Serializable {
     } // catch
     return regresar;
   } // doAccion
-	
+
+	private void doMovimientos() {
+    List<Columna> columns    = null;
+		Map<String, Object>params= null;
+    try {
+      params= this.toPrepare();	
+			params.put("sortOrder", "order by nomina, clave");
+      columns= new ArrayList<>();
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("garantia", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("iva", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      this.lazyMovimientos = new FormatCustomLazy("VistaNominaDto", "movimientos", params, columns);
+      UIBackingUtilities.resetDataTable();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+	}
+  
 }

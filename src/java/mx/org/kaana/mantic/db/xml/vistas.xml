@@ -1295,7 +1295,7 @@
 			<select id="horasTotales">
 				select if(sum(total) is null, 0, sum(total)) total from (
 				select
-            convert(concat(cast(hora as char), cast(empresa as char)),signed integer) as id_key,            
+            convert(concat(cast(hora as char), cast(empresa as char)), signed integer) as id_key,            
 					empresa,
 					nombre_empresa,
             (select count(*) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus}) 

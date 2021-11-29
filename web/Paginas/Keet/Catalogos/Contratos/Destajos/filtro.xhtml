@@ -9,6 +9,11 @@
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Destajos realizados hasta el momento" />
   <ui:define name="librerias">
+    <script type="text/javascript">
+      function movePage() {
+        setTimeout("$('a.janal-move-element')[0].click();", 500);
+      }      
+    </script>  
 		<style type="text/css">
 			.ui-commandlink {
 				color: transparent !important;
@@ -21,7 +26,8 @@
 			}
 		</style>
 	</ui:define> 
-  <ui:define name="contenido">    		
+  <ui:define name="contenido">    	
+    <a class="janal-move-element janal-color-black" href="#tabla" style="display:none"></a>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
@@ -101,10 +107,10 @@
 										</p:column>   
 									</p:selectOneMenu>	
 									<p:panelGrid id="consultas" columns="4" styleClass="janal-wid-100-txt">
-  									<p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar destajo" disabled="true" style="display: #{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
-	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajos}" process="@this contratista" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
-		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajos}" process="@this contratista" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
-                    <p:commandButton id="reporteDestajos" icon="fa fa-file-pdf-o" title="Destajos" action="#{keetCatalogosContratosDestajosFiltro.doReporte('COMPLETO')}" disabled="#{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor}" process="@this contratista" update="descargar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" />
+                    <p:commandButton id="mientras" icon="fa fa-dollar" title="Consultar destajo" disabled="true" style="display: #{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}" oncomplete="movePage();"/>
+	  								<p:commandButton id="persona" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajos}" process="@this contratista" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.persona? '': 'none'}"/>
+		  							<p:commandButton id="proveedor" icon="fa fa-dollar" title="Consultar destajo" action="#{keetCatalogosContratosDestajosFiltro.doDestajos}" process="@this contratista" update="tabla @(.titular)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();" style="display: #{keetCatalogosContratosDestajosFiltro.attrs.proveedor? '': 'none'}"/>
+                    <p:commandButton id="reporteDestajos" icon="fa fa-file-pdf-o" title="Destajos" action="#{keetCatalogosContratosDestajosFiltro.doReporte('COMPLETO')}" disabled="#{not keetCatalogosContratosDestajosFiltro.attrs.persona and not keetCatalogosContratosDestajosFiltro.attrs.proveedor}" process="@this contratista" update="descargar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();" />
 									</p:panelGrid>
 								</p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100" style="margin-top: -16px !important;">

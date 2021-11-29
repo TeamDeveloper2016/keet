@@ -31,8 +31,8 @@ import org.hibernate.Session;
 
 public final class Cafu implements Serializable {
 
-  private static final long serialVersionUID= -6510759858245467836L;
-  private static final Log LOG              = LogFactory.getLog(Cafu.class);
+  private static final long serialVersionUID  = -6510759858245467836L;
+  private static final Log LOG                = LogFactory.getLog(Cafu.class);
   
   private static final String IMOX_TOKEN      = "IMOX_TOKEN";
   public static final String  IMOX_GROUP_CAFU = "5214491813810-1598307650@g.us";

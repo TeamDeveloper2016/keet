@@ -60,7 +60,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{keetNominasAccion.doTabChange}" process="@this" update="contenedorGrupos:tabla @(.nominas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								            						            																																																
+            <p:ajax event="tabChange" listener="#{keetNominasAccion.doTabChange}" process="@this" update="contenedorGrupos:tabla contenedorGrupos:movimientos @(.nominas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								            						            																																																
             <p:tab title="Generales">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 								<p:outputLabel for="idTipoNomina" value="Tipo nómina:"/>
@@ -201,6 +201,87 @@
 								<p:menuitem id="proveedores" action="#{keetNominasAccion.doConsultar('LISTAR')}" icon="fa fa-truck" ajax="false" value="Subcontratistas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{keetNominasAccion.attrs.seleccionado.idTipoProceso eq '2'}"/>					
 						  </p:contextMenu>
 						</p:tab>
+						<p:tab title="Movimientos">
+              <p:dataTable lazy="true" id="movimientos" widgetVar="kajoolMovimientos" var="row" reflow="true" value="#{keetNominasAccion.lazyMovimientos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetNominasAccion.attrs.destajo}" selectionMode="single" paginator="#{keetNominasAccion.lazyMovimientos.rowCount gt keetNominasAccion.lazyMovimientos.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
+                <f:facet name="header">
+                  <p:menuButton styleClass="lg-pantalla" value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('exportPdf', 'movimientos')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('exportXls', 'movimientos')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('exportPdf', 'movimientos')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('exportXls', 'movimientos')" oncomplete="janal.desbloquear()"/>
+                </f:facet>												
+                <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
+                  <f:facet name="header">
+                    <h:outputText value="Razón social"/>
+                  </f:facet>
+                  <h:outputText value="#{row['razonSocial']}"/>
+                </p:column>														
+                <p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.desarrollo}">
+                  <f:facet name="header">
+                    <h:outputText value="Desarrollo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['desarrollo']}"/>
+                </p:column>														
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.contrato}">
+                  <f:facet name="header">
+                    <h:outputText value="Contrato"/>
+                  </f:facet>
+                  <h:outputText value="#{row['contrato']}"/>
+                </p:column>														
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.prototipo}">
+                  <f:facet name="header">
+                    <h:outputText value="Prototipo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['prototipo']}"/>
+                </p:column>														
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-6" sortBy="#{row.lote}">
+                  <f:facet name="header">
+                    <h:outputText value="Lote"/>
+                  </f:facet>
+                  <h:outputText value="#{row['lote']}" styleClass="janal-color-blue janal-font-bold"/>
+                </p:column>														
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+                  <f:facet name="header">
+                    <h:outputText value="Código"/>
+                  </f:facet>
+                  <h:outputText value="#{row['codigo']}"/>
+                </p:column>	
+                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+                  <f:facet name="header">
+                    <h:outputText value="Concepto"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}" styleClass="janal-color-black janal-font-bold"/>
+                </p:column>
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.porcentaje}">
+                  <f:facet name="header">
+                    <h:outputText value="%"/>
+                  </f:facet>
+                  <h:outputText value="#{row['porcentaje']} %"/>
+                </p:column>	
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
+                  <f:facet name="header">
+                    <h:outputText value="Costo"/>
+                  </f:facet>
+                  <h:outputText value="#{row['costo']}"/>
+                </p:column>	
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row['registro']}"/>
+                </p:column>	
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{keetNominasAccion.lazyMovimientos== null? 0: keetNominasAccion.lazyMovimientos.rowCount}] registros"/>
+                </f:facet>
+              </p:dataTable>	   
+              <h:commandLink id="exportPdf">
+                <pe:exporter type="pdf" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="movimientos" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="exportXls">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.spacer.Spacer,javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="movimientos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>			
+            </p:tab>
 					</p:tabView>
 				</div>
 			</div>
