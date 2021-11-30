@@ -511,14 +511,21 @@
 		</p:dialog> 
 		<p:dialog id="dialogoPagoSegmento" widgetVar="dlgPagoSegmento" header="Registrar pago sobre facturas" dynamic="true" resizable="false" closable="true" responsive="true" width="80%" onHide="janal.restore();janal.refresh();janal.desbloquear();" onShow="janal.change('formDialogoPagoSegmento', fieldsDialogSegmento);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoPagoSegmento" prependId="false">
-        <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-13 janal-column-left, janal-fix-87 janal-column-left">
+        <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-10 janal-column-left, janal-fix-90 janal-column-right">
           <p:outputLabel value="Importe acumulado:"/>
-          <p:outputLabel id="pagoSegmento" value="$ #{manticCatalogosClientesCuentasDeuda.doMiles(manticCatalogosClientesCuentasDeuda.pago.importe)}" styleClass="janal-wid-100-txt janal-color-blue"/>
+          <p:outputLabel id="pagoSegmento" value="$ #{manticCatalogosClientesCuentasDeuda.doMiles(manticCatalogosClientesCuentasDeuda.pago.importe)}" styleClass="janal-wid-100-txt janal-font-bold janal-color-blue"/>
         </p:panelGrid>
 				<p:tabView id="tabPagosSegmentos">
 					<p:tab title="Cuentas">												
+            <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-10 janal-column-left, janal-fix-90 janal-column-right">
+              <p:outputLabel value="Contratos:"/>
+							<p:selectOneMenu value="#{manticCatalogosClientesCuentasDeuda.attrs.contrato}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" process="@this" update="registros tablaSegmentos"/>
+								<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.contratos}"/>
+              </p:selectOneMenu>
+            </p:panelGrid>
             <p:panelGrid id="registros" columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">														
-              <p:dataTable id="tablaSegmentos" widgetVar="segmentosTable" var="row" value="#{manticCatalogosClientesCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 10001" paginator="#{manticCatalogosClientesCuentasDeuda.pagosSegmento.size() gt 10000}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idClienteDeuda}">
+              <p:dataTable id="tablaSegmentos" widgetVar="segmentosTable" var="row" value="#{manticCatalogosClientesCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10000, 10001" paginator="#{manticCatalogosClientesCuentasDeuda.pagosSegmento.size() gt 10000}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.idClienteDeuda}" rowStyleClass="#{manticCatalogosClientesCuentasDeuda.toColor(row)}">
                 <p:column styleClass="janal-column-center" style="width:30px">
                   <p:selectBooleanCheckbox value="#{row.activo}">
                     <p:ajax event="change" process="@this tablaSegmentos" update="pagoSegmento aceptarSegmento" listener="#{manticCatalogosClientesCuentasDeuda.doRowUpdateSegmento(row)}"/>
@@ -530,7 +537,7 @@
                   </f:facet>
                   <h:outputText value="#{row['ticket']}"/>
                 </p:column>					
-								<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10">
+								<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
 										<h:outputText value="Factura"/>
 									</f:facet>
@@ -544,7 +551,7 @@
                   <i class="fa fa-fw fa-grip-vertical janal-color-orange"></i>
                   <h:outputText value="#{row['contrato']}"/>
                 </p:column>											
-                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13">
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8">
                   <f:facet name="header">
                     <h:outputText value="Fecha"/>
                   </f:facet>
@@ -572,7 +579,7 @@
 									<f:facet name="header">
 										<h:outputText value="Pagar"/>
 									</f:facet>
-                  <p:inputText id="total" value="#{row['total']}" styleClass="janal-column-right janal-wid-90">
+                  <p:inputText id="total" value="#{row['total']}" styleClass="janal-column-right janal-wid-85">
                     <p:ajax event="change" process="@this tablaSegmentos" update="pagoSegmento aceptarSegmento" listener="#{manticCatalogosClientesCuentasDeuda.doRowUpdateSegmento(row)}" onstart="return valida('#tablaSegmentos\\:#{index}\\:total');"/>
                   </p:inputText>
 								</p:column>																				
@@ -597,7 +604,7 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="cajaSegmento" value="Caja:" rendered="false"/>
 							<p:selectOneMenu id="cajaSegmento" value="#{manticCatalogosClientesCuentasDeuda.attrs.cajaSegmento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
-								<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.cajasSegmento}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+								<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.cajasSegmento}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   

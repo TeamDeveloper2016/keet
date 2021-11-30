@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -61,6 +62,7 @@ public class Deuda extends IBaseImportar implements Serializable {
 	private FormatLazyModel detallePagos;
 	private List<Cuenta> pagosSegmento;
 	private List<Cuenta> pagosCuenta;
+	private List<SelectItem> contratos;
   private Pago pago;
 
 	public FormatLazyModel getDetallePagos() {
@@ -85,6 +87,10 @@ public class Deuda extends IBaseImportar implements Serializable {
 
   public void setCuentas(List<Cuenta> pagosCuenta) {
     this.pagosCuenta = pagosCuenta;
+  }
+
+  public List<SelectItem> getContratos() {
+    return contratos;
   }
 	
   @PostConstruct
@@ -305,9 +311,6 @@ public class Deuda extends IBaseImportar implements Serializable {
 			Error.mensaje(e);
 			throw e;
 		} // catch
-		finally {
-			
-		} // finally
 	} // validaPagogeneral
 	
 	public void doLoadCuentas() {
@@ -319,12 +322,21 @@ public class Deuda extends IBaseImportar implements Serializable {
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_deuda_estatus in(1, 2)");			
 			this.pagosSegmento= (List<Cuenta>)DaoFactory.getInstance().toEntitySet(Cuenta.class, "VistaClientesDto", "cuentas", params);      
       UIBackingUtilities.resetDataTable("tablaSegmentos");		
-      if(this.pagosSegmento== null)
-        this.pagosSegmento= new ArrayList<>();       
-      else
+      this.attrs.put("contrato", "TODOS");
+      this.contratos= new ArrayList<>();
+      this.contratos.add(new SelectItem("TODOS", "TODOS"));
+      if(this.pagosSegmento== null) 
+        this.pagosSegmento= new ArrayList<>();
+      else {
+        StringBuilder sb= new StringBuilder();
         for (Cuenta item: this.pagosSegmento) {
           item.setTotal(item.getSaldo());
+          if(sb.indexOf(item.getContrato())< 0) {
+            this.contratos.add(new SelectItem(item.getContrato(), item.getContrato())); 
+            sb.append(item.getContrato()).append(Constantes.SEPARADOR);
+          } // if  
         } // for
+      } // if
 		} // try 
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -838,5 +850,10 @@ public class Deuda extends IBaseImportar implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doValidaTipoPagoCuenta
+ 
+	public String toColor(Cuenta row) {
+    String contrato= (String)this.attrs.get("contrato");
+		return Objects.equals(contrato, row.getContrato()) || Objects.equals(contrato, "TODOS")? "": "janal-display-none";
+	} // toColor
   
 }

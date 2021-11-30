@@ -1466,6 +1466,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 									estacion.setCodigo(codigo);
 									estacion.setNombre(nombre);
 									estacion.setDescripcion(nombre);
+									estacion.setUnidad(sheet.getCell(6, fila).getContents().toUpperCase());
 									estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
 									estacion.setCantidad(cantidad);
 									estacion.setCosto(costo);
@@ -1592,6 +1593,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 											double diferencia= costo- concepto.getCosto();
 											concepto.setNombre(nombre);
 											concepto.setDescripcion(nombre);
+     									concepto.setUnidad(sheet.getCell(6, fila).getContents().toUpperCase());
 											concepto.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
 											concepto.setCantidad(cantidad);
 											concepto.setCosto(costo);

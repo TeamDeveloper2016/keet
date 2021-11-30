@@ -533,7 +533,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="true"/>
 					</textElement>
-					<text><![CDATA[CONTRATO]]></text>
+					<text><![CDATA[Contrato]]></text>
 				</staticText>
 			</frame>
 			<textField pattern="¤ #,##0.0000">

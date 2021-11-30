@@ -280,17 +280,19 @@ public class TcKeetMaterialesDto implements IBaseDto, Serializable {
   private Double abono28;
   @Column (name="abono_29")
   private Double abono29;
+  @Column (name="unidad")
+  private String unidad;
 
   public TcKeetMaterialesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetMaterialesDto(Long key) {
-    this(LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null);
+    this(LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, LocalDate.now(), null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKeetMaterialesDto(LocalDate inicio, Double abono50, Double abono51, Double abono52, Double abono53, Double abono54, Double cargo27, Double abono55, Double cargo28, Double cargo29, Double cargo20, Double cargo21, Double cargo22, Double cargo23, Double cargo24, Double cargo25, Double cargo26, Long ultimo, Double abono40, Double abono41, Double abono42, Double abono43, Double cargo16, Double abono44, Double cargo17, Double abono45, Double cargo18, Double abono46, Double cargo19, Double abono47, Double abono48, Double abono49, Double cargo10, Double cargo11, Double cargo12, Long nivel, Double cargo13, Double cargo14, Double cargo15, Double cargo50, Double cargo51, Double cargo49, Double cargo41, Double cargo42, Double cargo43, Double cargo44, Double cargo45, Double cargo46, Double cargo47, Double cargo48, Double abono7, Double abono6, String clave, Double abono5, Double abono4, Double abono3, Double abono2, Long idEmpaqueUnidadMedida, Double abono1, Double cargo40, Double cargo2, Double cargo1, Double abono9, Double abono8, Double cargo8, Double cargo38, Double cargo7, Double cargo39, Double cargo9, Double cargo4, Double cargo3, Long idUsuario, Double cargo6, Double cargo5, Double cargo30, Double cargo31, Double cargo32, Double cargo33, Double cargo34, Long idMaterial, Double cargo35, Double cargo36, Double cargo37, String descripcion, Double abono10, Double abono11, Double abono12, Double abono13, Double abono14, Double abono15, Double abono16, Double abono17, Double abono18, Double abono19, String codigo, Double cargo52, Double cargo53, Double cargo54, Double cantidad, Double cargo55, Long idEstacionEstatus, String nombre, Double abono30, Double abono31, Double abono32, Double abono33, Double abono34, Double abono35, Double abono36, Double abono37, Double abono38, Double abono39, LocalDate termino, Double costo, Double abono20, Double abono21, Double abono22, Double abono23, Double abono24, Double abono25, Double abono26, Double abono27, Double abono28, Double abono29) {
+  public TcKeetMaterialesDto(LocalDate inicio, Double abono50, Double abono51, Double abono52, Double abono53, Double abono54, Double cargo27, Double abono55, Double cargo28, Double cargo29, Double cargo20, Double cargo21, Double cargo22, Double cargo23, Double cargo24, Double cargo25, Double cargo26, Long ultimo, Double abono40, Double abono41, Double abono42, Double abono43, Double cargo16, Double abono44, Double cargo17, Double abono45, Double cargo18, Double abono46, Double cargo19, Double abono47, Double abono48, Double abono49, Double cargo10, Double cargo11, Double cargo12, Long nivel, Double cargo13, Double cargo14, Double cargo15, Double cargo50, Double cargo51, Double cargo49, Double cargo41, Double cargo42, Double cargo43, Double cargo44, Double cargo45, Double cargo46, Double cargo47, Double cargo48, Double abono7, Double abono6, String clave, Double abono5, Double abono4, Double abono3, Double abono2, Long idEmpaqueUnidadMedida, Double abono1, Double cargo40, Double cargo2, Double cargo1, Double abono9, Double abono8, Double cargo8, Double cargo38, Double cargo7, Double cargo39, Double cargo9, Double cargo4, Double cargo3, Long idUsuario, Double cargo6, Double cargo5, Double cargo30, Double cargo31, Double cargo32, Double cargo33, Double cargo34, Long idMaterial, Double cargo35, Double cargo36, Double cargo37, String descripcion, Double abono10, Double abono11, Double abono12, Double abono13, Double abono14, Double abono15, Double abono16, Double abono17, Double abono18, Double abono19, String codigo, Double cargo52, Double cargo53, Double cargo54, Double cantidad, Double cargo55, Long idEstacionEstatus, String nombre, Double abono30, Double abono31, Double abono32, Double abono33, Double abono34, Double abono35, Double abono36, Double abono37, Double abono38, Double abono39, LocalDate termino, Double costo, Double abono20, Double abono21, Double abono22, Double abono23, Double abono24, Double abono25, Double abono26, Double abono27, Double abono28, Double abono29, String unidad) {
     setInicio(inicio);
     setAbono50(abono50);
     setAbono51(abono51);
@@ -416,6 +418,7 @@ public class TcKeetMaterialesDto implements IBaseDto, Serializable {
     setAbono27(abono27);
     setAbono28(abono28);
     setAbono29(abono29);
+    this.unidad= unidad;
   }
 	
   public void setInicio(LocalDate inicio) {
@@ -1418,6 +1421,14 @@ public class TcKeetMaterialesDto implements IBaseDto, Serializable {
     return abono29;
   }
 
+  public String getUnidad() {
+    return unidad;
+  }
+
+  public void setUnidad(String unidad) {
+    this.unidad = unidad;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -1682,6 +1693,8 @@ public class TcKeetMaterialesDto implements IBaseDto, Serializable {
 		regresar.append(getAbono28());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getAbono29());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getUnidad());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -1814,13 +1827,14 @@ public class TcKeetMaterialesDto implements IBaseDto, Serializable {
 		regresar.put("abono27", getAbono27());
 		regresar.put("abono28", getAbono28());
 		regresar.put("abono29", getAbono29());
+		regresar.put("unidad", getUnidad());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getInicio(), getAbono50(), getAbono51(), getAbono52(), getAbono53(), getAbono54(), getCargo27(), getAbono55(), getCargo28(), getCargo29(), getCargo20(), getCargo21(), getCargo22(), getCargo23(), getCargo24(), getCargo25(), getCargo26(), getUltimo(), getAbono40(), getAbono41(), getAbono42(), getAbono43(), getCargo16(), getAbono44(), getCargo17(), getAbono45(), getCargo18(), getAbono46(), getCargo19(), getAbono47(), getAbono48(), getAbono49(), getCargo10(), getCargo11(), getCargo12(), getNivel(), getCargo13(), getCargo14(), getCargo15(), getCargo50(), getCargo51(), getCargo49(), getCargo41(), getCargo42(), getCargo43(), getCargo44(), getCargo45(), getCargo46(), getCargo47(), getCargo48(), getAbono7(), getAbono6(), getClave(), getAbono5(), getAbono4(), getAbono3(), getAbono2(), getIdEmpaqueUnidadMedida(), getAbono1(), getCargo40(), getCargo2(), getCargo1(), getAbono9(), getAbono8(), getCargo8(), getCargo38(), getCargo7(), getCargo39(), getCargo9(), getCargo4(), getCargo3(), getIdUsuario(), getCargo6(), getCargo5(), getCargo30(), getCargo31(), getCargo32(), getCargo33(), getCargo34(), getIdMaterial(), getCargo35(), getCargo36(), getCargo37(), getDescripcion(), getAbono10(), getAbono11(), getAbono12(), getAbono13(), getAbono14(), getAbono15(), getAbono16(), getAbono17(), getAbono18(), getAbono19(), getCodigo(), getCargo52(), getCargo53(), getCargo54(), getCantidad(), getCargo55(), getIdEstacionEstatus(), getNombre(), getAbono30(), getAbono31(), getAbono32(), getAbono33(), getAbono34(), getAbono35(), getAbono36(), getAbono37(), getAbono38(), getAbono39(), getTermino(), getCosto(), getAbono20(), getAbono21(), getRegistro(), getAbono22(), getAbono23(), getAbono24(), getAbono25(), getAbono26(), getAbono27(), getAbono28(), getAbono29()
+      getInicio(), getAbono50(), getAbono51(), getAbono52(), getAbono53(), getAbono54(), getCargo27(), getAbono55(), getCargo28(), getCargo29(), getCargo20(), getCargo21(), getCargo22(), getCargo23(), getCargo24(), getCargo25(), getCargo26(), getUltimo(), getAbono40(), getAbono41(), getAbono42(), getAbono43(), getCargo16(), getAbono44(), getCargo17(), getAbono45(), getCargo18(), getAbono46(), getCargo19(), getAbono47(), getAbono48(), getAbono49(), getCargo10(), getCargo11(), getCargo12(), getNivel(), getCargo13(), getCargo14(), getCargo15(), getCargo50(), getCargo51(), getCargo49(), getCargo41(), getCargo42(), getCargo43(), getCargo44(), getCargo45(), getCargo46(), getCargo47(), getCargo48(), getAbono7(), getAbono6(), getClave(), getAbono5(), getAbono4(), getAbono3(), getAbono2(), getIdEmpaqueUnidadMedida(), getAbono1(), getCargo40(), getCargo2(), getCargo1(), getAbono9(), getAbono8(), getCargo8(), getCargo38(), getCargo7(), getCargo39(), getCargo9(), getCargo4(), getCargo3(), getIdUsuario(), getCargo6(), getCargo5(), getCargo30(), getCargo31(), getCargo32(), getCargo33(), getCargo34(), getIdMaterial(), getCargo35(), getCargo36(), getCargo37(), getDescripcion(), getAbono10(), getAbono11(), getAbono12(), getAbono13(), getAbono14(), getAbono15(), getAbono16(), getAbono17(), getAbono18(), getAbono19(), getCodigo(), getCargo52(), getCargo53(), getCargo54(), getCantidad(), getCargo55(), getIdEstacionEstatus(), getNombre(), getAbono30(), getAbono31(), getAbono32(), getAbono33(), getAbono34(), getAbono35(), getAbono36(), getAbono37(), getAbono38(), getAbono39(), getTermino(), getCosto(), getAbono20(), getAbono21(), getRegistro(), getAbono22(), getAbono23(), getAbono24(), getAbono25(), getAbono26(), getAbono27(), getAbono28(), getAbono29(), getUnidad()
     };
     return regresar;
   }

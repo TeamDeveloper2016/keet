@@ -143,6 +143,7 @@ public class Material extends TcKeetMaterialesDto implements Cloneable, Serializ
 		this.setCargo52(0D);
 		this.setCargo53(0D);
 		this.setCargo54(0D);		
+		this.setUnidad("");		
 	}
 	
 	@Override
@@ -160,6 +161,7 @@ public class Material extends TcKeetMaterialesDto implements Cloneable, Serializ
 		clone.setCodigo(this.getCodigo());
 		clone.setNombre(this.getNombre());
 		clone.setDescripcion(this.getDescripcion());
+		clone.setUnidad(this.getUnidad());
 		clone.setIdEmpaqueUnidadMedida(this.getIdEmpaqueUnidadMedida());
 		clone.setCantidad(this.getCantidad());
 		clone.setIdEstacionEstatus(this.getIdEstacionEstatus());

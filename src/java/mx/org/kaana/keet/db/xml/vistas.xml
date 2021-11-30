@@ -3152,7 +3152,7 @@
 				select
 				  tc_keet_materiales.id_material as id_key,
 					tc_keet_materiales.*,
-					tc_mantic_unidades_medidas.nombre as unidad
+					tc_mantic_unidades_medidas.nombre as medida
 				from 
 					tc_keet_materiales
 				inner join
