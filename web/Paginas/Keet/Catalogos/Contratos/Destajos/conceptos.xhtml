@@ -186,7 +186,7 @@
                 <p:outputLabel value="Acciones" styleClass="xs-pantalla"/>
               </f:facet>
 							<p:commandButton icon="fa fa-cloud-upload" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doImportar(row)}" title="Importar evidencia" disabled="#{row.idEstacionEstatus eq '1'}"/>															
-							<p:commandButton icon="fa fa-check-square-o" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idEstacionEstatus eq '1'}"/>															
+							<p:commandButton icon="fa fa-arrows-alt" ajax="false" action="#{keetCatalogosContratosDestajosConceptos.doRechazarExtras(row)}" title="Rechazar" disabled="#{row.idEstacionEstatus eq '1'}"/>															
 						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{keetCatalogosContratosDestajosConceptos.lazyModelExtras== null? 0: keetCatalogosContratosDestajosConceptos.lazyModelExtras.rowCount}] registros"/>

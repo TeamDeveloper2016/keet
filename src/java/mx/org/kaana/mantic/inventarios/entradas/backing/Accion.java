@@ -691,7 +691,12 @@ public class Accion extends IBaseEsperados implements IBaseStorage, Serializable
 		if(this.proveedor!= null) {
 			this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
-				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
+        if(Cadena.isVacio(this.getFactura().getFolio())) {
+          String folio= this.getFactura().getTimbreFiscalDigital().getUuid();
+  				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(folio.indexOf("-")> 0? folio.substring(folio.lastIndexOf("-")+ 1): folio);
+        } // if  
+        else  
+  				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toLocalDateDefault(this.getFactura().getFecha()));
 				((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
 				if(this.tipoOrden.equals(EOrdenes.DIRECTA)) {

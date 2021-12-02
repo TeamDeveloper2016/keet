@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -133,7 +134,11 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
 			this.fechaInicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
-			this.fechaFin= LocalDate.of(Fecha.getAnioActual(), Fecha.getMesActual()+1, 15);
+      if(Objects.equals(Fecha.getMesActual(), 12))
+			  this.fechaFin= LocalDate.of(Fecha.getAnioActual()+ 1, 1, 15);
+      else
+        this.fechaFin= LocalDate.of(Fecha.getAnioActual(), Fecha.getMesActual()+ 1, 15);
+			this.fechaFin= LocalDate.of(Fecha.getAnioActual(), Objects.equals(Fecha.getMesActual(), 12)? 1: Fecha.getMesActual()+ 1, 15);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion"));      

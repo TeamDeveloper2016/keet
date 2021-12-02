@@ -1,6 +1,5 @@
 package mx.org.kaana.keet.cajachica.backing;
 
-import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -84,7 +84,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
 			this.fechaInicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
-			this.fechaFin= LocalDate.of(Fecha.getAnioActual(), Fecha.getMesActual()+1, 15);
+      if(Objects.equals(Fecha.getMesActual(), 12))
+			  this.fechaFin= LocalDate.of(Fecha.getAnioActual()+ 1, 1, 15);
+      else
+        this.fechaFin= LocalDate.of(Fecha.getAnioActual(), Fecha.getMesActual()+ 1, 15);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());   
 			this.attrs.put("pathPivote", (Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/").concat("gastos").concat("/"));						

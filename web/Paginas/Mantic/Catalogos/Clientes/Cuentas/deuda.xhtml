@@ -520,7 +520,7 @@
             <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-10 janal-column-left, janal-fix-90 janal-column-right">
               <p:outputLabel value="Contratos:"/>
 							<p:selectOneMenu value="#{manticCatalogosClientesCuentasDeuda.attrs.contrato}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <p:ajax event="change" process="@this" update="registros tablaSegmentos"/>
+                <p:ajax event="change" process="@this" update="registros tablaSegmentos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.contratos}"/>
               </p:selectOneMenu>
             </p:panelGrid>
