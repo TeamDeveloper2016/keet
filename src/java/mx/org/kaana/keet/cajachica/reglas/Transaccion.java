@@ -826,8 +826,16 @@ public class Transaccion extends IBaseTnx {
       if(administradores!= null && !administradores.isEmpty()) {
   			String nombre= this.toReporte(sesion, jasper, sujeto, idNominaPeriodo);
         administradores.put("Alejandro Jiménez García", "4492090586");
-        if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu"))
-          administradores.put("Irma de Lourdes Hernandez Romo", "4491285890");
+        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+          case "cafu":
+            administradores.put("Carlos Alberto Calderon Solano", "4491813810");
+            administradores.put("Irma de Lourdes Hernandez Romo", "4491285890");
+            break;
+          case "gylvi":
+            administradores.put("Luis Cesar Lopez Manzur", "4494644591");
+            administradores.put("Jordi Alfonso Fariña Quiroz", "4493526768");
+            break;
+        } // swtich
         notificar= new Cafu("", "", nombre, sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*");
         for (String administrador: administradores.keySet()) {
           notificar.setNombre(Cadena.nombrePersona(administrador));

@@ -1081,8 +1081,16 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       // CAMBIAR POR UNA COLECCION CON EL NOMBRE DEL RESIENTE Y SU CELULAR
       if(residentes!= null && !residentes.isEmpty()) {
         residentes.put("Alejandro Jiménez García", "4492090586");
-        if(Objects.equals(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"), "cafu"))
-          residentes.put("Irma de Lourdes Hernandez Romo", "4491285890");
+        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+          case "cafu":
+            residentes.put("Carlos Alberto Calderon Solano", "4491813810");
+            residentes.put("Irma de Lourdes Hernandez Romo", "4491285890");
+            break;
+          case "gylvi":
+            residentes.put("Luis Cesar Lopez Manzur", "4494644591");
+            residentes.put("Jordi Alfonso Fariña Quiroz", "4493526768");
+            break;
+        } // swtich
         notificar= new Cafu(sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", contratistas);
         notificar.setDesarrollo(desarrollo);
         for (String residente: residentes.keySet()) {
