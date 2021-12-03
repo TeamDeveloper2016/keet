@@ -15,12 +15,13 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
-import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
+import mx.org.kaana.keet.nomina.beans.Nomina;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -29,16 +30,17 @@ import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Named(value = "keetCatalogosContratosDestajosHistorial")
+@Named(value = "keetCatalogosContratosDestajosResumen")
 @ViewScoped
-public class Historial extends IBaseReporteDestajos implements Serializable {
+public class Resumen extends IBaseReporteDestajos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;			
-  private static final Log LOG = LogFactory.getLog(Historial.class);
+  private static final Log LOG = LogFactory.getLog(Resumen.class);
   
 	private RegistroDesarrollo registroDesarrollo;		
+	private Nomina ultima;  
 	private FormatLazyModel lazyResumen;
-  private List<Lote> fields;
+  private String costoResumen;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
@@ -52,8 +54,8 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
     return lazyResumen;
   }
 
-  public List<Lote> getFields() {
-    return fields;
+  public String getCostoResumen() {
+    return costoResumen;
   }
 
   @PostConstruct
@@ -63,7 +65,7 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
 		Long idDesarrollo        = null;
     try {
 			this.initBase();
-      this.fields = new ArrayList<>();
+      this.costoResumen= "$ 0.00";
 			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -88,6 +90,18 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
 			params= new HashMap<>();
 			this.registroDesarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));      
 			this.attrs.put("domicilio", this.toDomicilio());			
+      params.put("idTipoNomina", "1");
+      List<UISelectEntity> semanas= (List<UISelectEntity>)UIEntity.build("VistaNominaDto", "ultima", params, columns);
+      this.attrs.put("semanas", semanas);
+      if(semanas!= null && !semanas.isEmpty()) {
+        UISelectEntity semana= semanas.get(0);
+        this.ultima= new Nomina(semana.toLong("idNomina"), semana.toLong("idNominaEstatus"), 0L);			
+        this.attrs.put("semana", semanas.get(0));
+      } // if  
+      else {
+        this.attrs.put("semana", new UISelectEntity(-1L));
+        this.ultima= new Nomina();			
+      } // else
       this.toLoadContratos();
 		} // try
     finally {
@@ -146,41 +160,25 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
   public void doLoad() {
     List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
-    List<Entity> lotes       = null;
     try {
-      this.attrs.put("detalle", Boolean.FALSE);
-      this.fields.clear();
-      this.fields.add(new Lote("Código", "codigo", "", "janal-column-left MarAuto Responsive janal-wid-5"));
-      this.fields.add(new Lote("Nombre", "nombre", "", "janal-column-left MarAuto Responsive"));
-      this.fields.add(new Lote("Costo", "valor", "", "janal-column-right MarAuto Responsive janal-wid-6", "janal-font-bold janal-color-black"));
-      // this.fields.add(new Lote("( % )", "pagar", " %", "janal-column-center MarAuto Responsive janal-wid-5"));
-      // this.fields.add(new Lote("Pagado", "costo", "", "janal-column-right MarAuto Responsive janal-wid-6", "janal-font-bold janal-color-black"));
-      params.put("sortOrder", "order by tt_keet_semanas.codigo");
+      params.put("sortOrder", "order by tt_keet_temporal.id_persona, tt_keet_temporal.clave, tt_keet_temporal.lote");
+      params.put("loNuevoPersona", this.ultima.getIdCompleta()== 0L? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "");
+      params.put("loNuevoProveedor", this.ultima.getIdCompleta()== 0L? "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
+      params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-      StringBuilder semana= new StringBuilder();
-      StringBuilder maximo= new StringBuilder();
-      lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaConsultasDto", "lotesResumen", params);
-      if(lotes!= null && !lotes.isEmpty()) {
-        for (Entity item: lotes) {
-          semana.append("if(tt_keet_temporal.lote= '").append(item.toString("lote")).append("', tt_keet_temporal.nomina, '-') as ").append(item.toString("lote").toLowerCase()).append(", ");
-          maximo.append("max(tt_keet_semanas.").append(item.toString("lote")).append(") as ").append(item.toString("lote").toLowerCase()).append(", ");
-          this.fields.add(new Lote(item.toString("lote"), item.toString("lote").toLowerCase(), "", "janal-column-center MarAuto Responsive janal-wid-6"));
-        } // for
-        semana.delete(semana.length()- 2, semana.length());
-        maximo.delete(maximo.length()- 2, maximo.length());
-        params.put("semana", semana.toString());
-        params.put("maximo", maximo.toString());
-        columns= new ArrayList<>();
-        columns.add(new Columna("pagar", EFormatoDinamicos.MILES_CON_DECIMALES));
-        columns.add(new Columna("valor", EFormatoDinamicos.MILES_CON_DECIMALES));
-        columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
-        columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-        this.lazyResumen= new FormatCustomLazy("VistaNominaConsultasDto", "historial", params, columns);
-      } // if
-      else   
-        this.lazyResumen= null;
-      UIBackingUtilities.resetDataTable("tabla");
+      columns= new ArrayList<>();
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      this.lazyResumen= new FormatCustomLazy("VistaNominaConsultasDto", "destajoResumen", params, columns);
+      Entity costo= (Entity)DaoFactory.getInstance().toEntity("VistaNominaConsultasDto", "costoResumen", params);
+      if(costo!= null && !costo.isEmpty())
+        this.costoResumen= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
+      else
+        this.costoResumen= "$ 0.00";
+      UIBackingUtilities.resetDataTable("resumen");
+      this.attrs.put("resumen", true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -189,7 +187,7 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
     finally {
       Methods.clean(params);
       Methods.clean(columns);
-    } // finally				
+    } // finally	    
   } // doLoad	
 	
 	public String doCancelar() {
@@ -216,6 +214,25 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
     return regresar;
   } // doCancelar		
 	
+  public void doUpdateNomina() {
+    try {      
+      List<UISelectEntity> semanas= (List<UISelectEntity>)this.attrs.get("semanas");
+      if(semanas!= null && !semanas.isEmpty()) {
+        int index= semanas.indexOf((UISelectEntity)this.attrs.get("semana"));
+        if(index>= 0) {
+          UISelectEntity semana= semanas.get(index);
+          this.ultima= new Nomina(semana.toLong("idNomina"), semana.toLong("idNominaEstatus"), new Long(index));			
+          this.attrs.put("semana", semanas.get(index));
+        } // if  
+      } // if  
+      this.doLoad();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
 	@Override
   public void doReporte(String tipo, boolean sendMail) throws Exception {    
   } // doReporte 	
@@ -223,33 +240,5 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
 	public String doColorNomina(Entity row) {
 		return !row.toString("porcentaje").equals("100.00")? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
 	}
-  
-  public void doDetalle(Entity row) {
-    List<Columna> columns    = null;
-		Map<String, Object>params= new HashMap<>();
-    try {
-      params.put("sortOrder", "order by tt_keet_temporal.id_persona, tt_keet_temporal.clave, tt_keet_temporal.lote");
-      params.put("loNuevoPersona", "or tc_keet_estaciones.codigo= '".concat(row.toString("codigo")).concat("'"));
-      params.put("loNuevoProveedor", "or tc_keet_estaciones.codigo= '".concat(row.toString("codigo")).concat("'"));
-      params.put("idNomina", -1L);
-      params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-      params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-      columns= new ArrayList<>();
-      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyModel= new FormatCustomLazy("VistaNominaConsultasDto", "destajoResumen", params, columns);
-      UIBackingUtilities.resetDataTable("detalle");
-      this.attrs.put("detalle", Boolean.TRUE);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    finally {
-      Methods.clean(params);
-      Methods.clean(columns);
-    } // finally				
-	}
-
+ 
 }

@@ -55,10 +55,8 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 	private RegistroDesarrollo registroDesarrollo;		
 	private List<Entity> lotes;
 	private FormatLazyModel lazyDestajo;
-	private FormatLazyModel lazyResumen;
 	private Nomina ultima;  
   private String costoTotal;
-  private String costoResumen;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
 		return registroDesarrollo;
@@ -84,24 +82,14 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
     return this.costoTotal;
 	}
 
-  public FormatLazyModel getLazyResumen() {
-    return lazyResumen;
-  }
-
-  public String getCostoResumen() {
-    return costoResumen;
-  }
-	
   @PostConstruct
   @Override
   protected void init() {		
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
-		UISelectEntity figura    = new UISelectEntity(-1L);
     try {
 			this.initBase();
       this.costoTotal  = "$ 0.00";
-      this.costoResumen= "$ 0.00";
 			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
 			this.attrs.put("opcionResidente", opcion);
@@ -109,11 +97,10 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("idDesarrollo", idDesarrollo);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());				
       this.attrs.put("destajos", false);				
-      this.attrs.put("resumen", false);				
       this.attrs.put("persona", false);				
       this.attrs.put("proveedor", false);							
 			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null) {
-				figura        = (UISelectEntity) JsfBase.getFlashAttribute("figura");
+				UISelectEntity figura= (UISelectEntity) JsfBase.getFlashAttribute("figura");
 				this.attrs.put("idDepartamento", JsfBase.getFlashAttribute("idDepartamento"));
 				this.attrs.put("idFigura", figura);
       } // if
@@ -417,7 +404,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
 			this.attrs.put("persona", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(1L));
 			this.attrs.put("proveedor", figura== null || figura.size()== 1? false: figura.toLong("tipo").equals(2L));
 			this.attrs.put("destajos", false);
-			this.attrs.put("resumen", false);
 			this.attrs.put("figura", figura);
     } // try
     catch (Exception e) {
@@ -581,40 +567,6 @@ public class Filtro extends IBaseReporteDestajos implements Serializable {
         JsfBase.addMessage("No se puede consultar el destajo, no hay contratista ó sub-contratista !");
       } // else
       this.attrs.put("figura", figura);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    finally {
-      Methods.clean(params);
-      Methods.clean(columns);
-    } // finally				
-	}
-  
-	public void doResumen() {
-    List<Columna> columns    = null;
-		Map<String, Object>params= new HashMap<>();
-    try {
-      params.put("sortOrder", "order by tt_keet_temporal.id_persona, tt_keet_temporal.clave, tt_keet_temporal.lote");
-      params.put("loNuevoPersona", this.ultima.getIdCompleta()== 0L? "or tc_keet_contratos_destajos_contratistas.id_nomina is null": "");
-      params.put("loNuevoProveedor", this.ultima.getIdCompleta()== 0L? "or tc_keet_contratos_destajos_proveedores.id_nomina is null": "");
-      params.put("idNomina", this.ultima.getIdNominaEstatus()== 5L? -1: this.ultima.getIdNomina());
-      params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-      params.put("nomina", "PreNomina");
-      params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-      columns= new ArrayList<>();
-      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyResumen= new FormatCustomLazy("VistaNominaConsultasDto", "destajoResumen", params, columns);
-      Entity costo= (Entity)DaoFactory.getInstance().toEntity("VistaNominaConsultasDto", "costoResumen", params);
-      if(costo!= null && !costo.isEmpty())
-        this.costoResumen= Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, costo.toDouble("total"));
-      else
-        this.costoResumen= "$ 0.00";
-      UIBackingUtilities.resetDataTable("resumen");
-      this.attrs.put("resumen", true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
