@@ -22,7 +22,8 @@ public enum EOpcionesResidente {
 	AUTORIZACION    ("Autorización de vales especiales", "e661f7021e3dcf64e41a5392d5", "/Paginas/Keet/Catalogos/Contratos/Vales/Autorizacion/filtro.jsf"),
 	CONTROLES       ("Registrar un avance en el seguimiento a los lotes por los residentes de obra", "ec798999a2b940c249ae", "/Paginas/Keet/Controles/control.jsf"),
 	// DESTAJOS
-	AUDITORIA       ("Auditar trabajos realizados", "919bb1bb4ad36af27d8c", "/Paginas/Keet/Auditoria/filtro.jsf");
+	AUDITORIA       ("Auditar trabajos realizados", "919bb1bb4ad36af27d8c", "/Paginas/Keet/Auditoria/filtro.jsf"),
+	HISTORIAL       ("Historial de destajos realizados por lote", "919bb1bb4ad36af27d8c", "/Paginas/Keet/Catalogos/Contratos/Destajos/historial.jsf");
   
 	private static final Map<Long, EOpcionesResidente> lookup= new HashMap<>();	
 	private String titulo;

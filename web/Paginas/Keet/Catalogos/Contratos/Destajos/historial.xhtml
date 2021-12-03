@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Destajos realizados hasta el momento" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      function movePage(link) {
+        $('#janal-move-page').attr('href', link);
+        setTimeout("$('a.janal-move-element')[0].click();", 500);
+      }      
+    </script>  
+		<style type="text/css">
+			.ui-commandlink {
+				color: transparent !important;
+				text-decoration: underline;
+				margin-right: 5px;
+			}
+			.manzana-lote-font {
+				font-size: 3.2vw !important;
+				font-weight: bold !important;
+			}
+		</style>
+	</ui:define> 
+  <ui:define name="contenido">    	
+    <a id="janal-move-page" class="janal-move-element janal-color-black" href="#tabla" style="display:none"></a>
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+					<p:accordionPanel id="panelBusqueda" activeIndex="1" multiple="true">
+						<p:tab title="Desarrollo [ #{keetCatalogosContratosDestajosHistorial.registroDesarrollo.desarrollo.clave} ] #{keetCatalogosContratosDestajosHistorial.registroDesarrollo.desarrollo.nombres}">
+							<p:panelGrid id="panelDetalle" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
+                <p:outputLabel value="Descripcion:" rendered="false"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosHistorial.registroDesarrollo.desarrollo.descripcion}" styleClass="janal-wid-100-txt" readonly="true" rendered="false"/>
+                <p:outputLabel value="Domicilio:"/>
+								<p:inputText value="#{keetCatalogosContratosDestajosHistorial.attrs.domicilio}" styleClass="janal-wid-100-txt" readonly="true"/>
+							</p:panelGrid>										
+						</p:tab>					
+						<p:tab title="Busqueda">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                <p:outputLabel for="contratos" value="Contratos:"/>
+                <p:selectOneMenu id="contratos" value="#{keetCatalogosContratosDestajosHistorial.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{keetCatalogosContratosDestajosHistorial.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+              </p:panelGrid>										
+						</p:tab>
+					</p:accordionPanel>						
+					<p:spacer height="3px"/>
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolResumen" var="row" reflow="true" value="#{keetCatalogosContratosDestajosHistorial.lazyResumen}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosHistorial.lazyResumen.rowCount gt keetCatalogosContratosDestajosHistorial.lazyResumen.pageSize}" rowIndexVar="index" paginatorPosition="bottom" rowStyleClass="#{keetCatalogosContratosDestajosHistorial.doColorNomina(row)}">
+						<f:facet name="header">
+							<p:outputLabel id="titular" value="Resumen de conceptos por lotes y semana" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+						</f:facet>		
+            <p:columns value="#{keetCatalogosContratosDestajosHistorial.fields}" var="column" columnIndexVar="colIndex" sortBy="#{row[column.field]}" styleClass="#{column.style}">
+              <f:facet name="header">
+                <h:outputText value="#{column.name}"/>
+              </f:facet>
+              <h:outputText value="#{row[column.field]}#{column.symbol}" styleClass="#{column.font}"/>
+            </p:columns>            
+						<f:facet name="footer">
+							<p:outputLabel value="Total [#{keetCatalogosContratosDestajosHistorial.lazyResumen== null? 0: keetCatalogosContratosDestajosHistorial.lazyResumen.rowCount}] registros"/>
+						</f:facet>
+					</p:dataTable>				
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-rotate-left" accesskey="r" process="@this" action="#{keetCatalogosContratosDestajosHistorial.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return validateCriterios();" oncomplete="janal.desbloquear()" rendered="false"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-rotate-left" process="@this" action="#{keetCatalogosContratosDestajosHistorial.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar correo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">													
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{keetCatalogosContratosDestajosHistorial.correos}" selection="#{keetCatalogosContratosDestajosHistorial.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del empleado">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{keetCatalogosContratosDestajosHistorial.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosDestajosHistorial.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{keetCatalogosContratosDestajosHistorial.doSendMail('DESARROLLO')}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
