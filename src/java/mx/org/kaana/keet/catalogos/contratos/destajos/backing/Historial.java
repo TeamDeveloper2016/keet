@@ -155,7 +155,7 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
       this.fields.add(new Lote("Costo", "valor", "", "janal-column-right MarAuto Responsive janal-wid-6", "janal-font-bold janal-color-black"));
       // this.fields.add(new Lote("( % )", "pagar", " %", "janal-column-center MarAuto Responsive janal-wid-5"));
       // this.fields.add(new Lote("Pagado", "costo", "", "janal-column-right MarAuto Responsive janal-wid-6", "janal-font-bold janal-color-black"));
-      params.put("sortOrder", "order by tt_keet_semanas.codigo");
+      params.put("sortOrder", "order by tt_keet_semanas.orden");
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
       StringBuilder semana= new StringBuilder();
@@ -163,9 +163,10 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
       lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaConsultasDto", "lotesResumen", params);
       if(lotes!= null && !lotes.isEmpty()) {
         for (Entity item: lotes) {
-          semana.append("if(tt_keet_temporal.lote= '").append(item.toString("lote")).append("', tt_keet_temporal.nomina, '-') as ").append(item.toString("lote").toLowerCase()).append(", ");
-          maximo.append("max(tt_keet_semanas.").append(item.toString("lote")).append(") as ").append(item.toString("lote").toLowerCase()).append(", ");
-          this.fields.add(new Lote(item.toString("lote"), item.toString("lote").toLowerCase(), "", "janal-column-center MarAuto Responsive janal-wid-6"));
+          String lote= item.toString("lote").replaceAll("-", "");
+          semana.append("if(tt_keet_temporal.lote= '").append(item.toString("lote")).append("', tt_keet_temporal.nomina, '-') as ").append(lote.toLowerCase()).append(", ");
+          maximo.append("max(tt_keet_semanas.").append(lote).append(") as ").append(lote.toLowerCase()).append(", ");
+          this.fields.add(new Lote(lote, lote.toLowerCase(), "", "janal-column-center MarAuto Responsive janal-wid-6"));
         } // for
         semana.delete(semana.length()- 2, semana.length());
         maximo.delete(maximo.length()- 2, maximo.length());
@@ -251,5 +252,5 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
       Methods.clean(columns);
     } // finally				
 	}
-
+  
 }
