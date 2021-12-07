@@ -378,7 +378,7 @@
         </div>  
       </div>
       <div class="ContainerIndent">        					
-        <div class="Container20 Responsive overview-box">					
+        <div class="Container30 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">
@@ -388,19 +388,19 @@
                 <p:dataTable lazy="false" id="tablaNomina" var="row" widgetVar="kajoolTableNomina" rowIndexVar="index" value="#{kajoolContratos.nominas}" paginator="#{kajoolContratos.nominas.size() gt 5}" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolContratos.nomina}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
                   <p:ajax event="rowSelect" process="@this tablaNomina" listener="#{kajoolContratos.doUpdateNominaSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:ajax event="rowUnselect" process="@this tablaNomina" listener="#{kajoolContratos.doUpdateNominaUnSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                  <p:column styleClass="janal-column-left MarAuto Responsive">
+                  <p:column styleClass="janal-column-center MarAuto Responsive">
                     <f:facet name="header">
                       <h:outputText value="Nomina"/>
                     </f:facet>
                     <h:outputText value="#{row.nomina}"/>
                   </p:column>                    
-                  <p:column styleClass="janal-column-right janal-wid-30 MarAuto Responsive" >
+                  <p:column styleClass="janal-column-center janal-wid-30 MarAuto Responsive">
                     <f:facet name="header">
                       <h:outputText value="Inicio"/>
                     </f:facet>
                     <h:outputText value="#{row.inicio}"/>
                   </p:column>                    
-                  <p:column styleClass="janal-column-right janal-wid-30 MarAuto Responsive" >
+                  <p:column styleClass="janal-column-center janal-wid-30 MarAuto Responsive">
                     <f:facet name="header">
                       <h:outputText value="Termino"/>
                     </f:facet>
@@ -417,7 +417,7 @@
             </div>
           </div>  
         </div>  
-        <div class="Container50 Responsive overview-box">					
+        <div class="Container40 Responsive overview-box">					
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
               <p:panel styleClass="overview-inner-box">

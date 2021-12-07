@@ -340,13 +340,13 @@
                 <p:menuitem id="pago" icon="fa fa-money" value="Registrar un pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this detalle" rendered="false"/>					
                 <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Registar un pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this detalle"/>
                 <p:separator/>
-                <p:menuitem id="importar" icon="fa fa-external-link" value="Importar evidencia" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosClientesCuentasSaldos.doImportar}"/>
+                <p:menuitem id="importar" icon="fa fa-external-link" value="Importar evidencia" title="Importar identificación de representante" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosClientesCuentasSaldos.doImportar}"/>
                 <p:separator/>					
                 <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTA_COBRAR_DETALLE', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:menuitem id="reporteDetalle" icon="fa fa-file-pdf-o" value="Cuenta por cobrar" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('DEUDAS_CLIENTES_DETALLE', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
-                <p:menuitem id="estadoDeCuenta" icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
+                <p:menuitem id="estadoDeCuenta" icon="fa fa-file-pdf-o" value="Estado de cuenta" actionListener="#{manticCatalogosClientesCuentasSaldos.doUpdateDocumentos()}" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
                 <p:separator rendered="false"/>					
-                <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar por correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('seleccionadoDetalle', 'DEUDAS_CLIENTES_PENDIENTES', 'CREDITO')}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar por correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('seleccionadoDetalle', 'CLIENTE_ESTADO_CUENTA', 'CREDITO')}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                 <p:separator/>
                 <p:menuitem icon="fa fa-calendar" value="Ajustar vencimiento" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doUpdateFechaPago()}" update="dialogoAutorizacion"/>
               </p:contextMenu>
@@ -593,23 +593,33 @@
 				</div>
 			</h:form>
 		</p:dialog> 
-		<p:dialog id="dialogoPlazo" widgetVar="dlgPlazo" header="Seleccionar plazo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();janal.restore();" onShow="janal.change('formDialogoPlazo', fieldsPlazo);janal.refresh();">
+		<p:dialog id="dialogoPlazo" widgetVar="dlgPlazo" header="Seleccionar periodo del estado de cuenta" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear(); janal.restore();" onShow="janal.change('formDialogoPlazo', fieldsPlazo); janal.refresh();">
 			<h:form id="formDialogoPlazo" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="contrato" value="Contratos:"/>
+          <p:selectOneMenu id="contrato" value="#{manticCatalogosClientesCuentasSaldos.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+            <f:selectItems value="#{manticCatalogosClientesCuentasSaldos.attrs.documentos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.nombre or element.nombre eq ''? '': ' | '}#{element.nombre}"/>
+            <p:column headerText="Clave">
+              <h:outputText value="#{item.clave}"/>
+            </p:column>   
+            <p:column headerText="Nombre">
+              <h:outputText value="#{item.nombre}"/>
+            </p:column>                   
+          </p:selectOneMenu>              
 					<p:outputLabel for="plazo" value="Plazo:"/>
           <p:selectOneRadio id="plazo" value="#{manticCatalogosClientesCuentasSaldos.attrs.plazo}" columns="1">
-						<p:ajax event="change" listener="#{manticCatalogosClientesCuentasSaldos.doCalcularPlazo}" process="@this"  update="panelFechas"/>
+						<p:ajax event="change" listener="#{manticCatalogosClientesCuentasSaldos.doCalcularPlazo}" process="@this" update="panelFechas"/>
 						<f:selectItem itemLabel="Últimos 30 días" itemValue="1"/>
 						<f:selectItem itemLabel="De inicio de mes" itemValue="2"/>
 						<f:selectItem itemLabel="Periodo" itemValue="3"/>
 						<f:selectItem itemLabel="Cuentas pendientes" itemValue="4"/>
 					</p:selectOneRadio>
 				</h:panelGrid>	
-        <h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100"  id="panelFechas">
-					<h:outputLabel for="vigenciaIni" value="Inicio"/>
-          <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3)}"/>
-          <h:outputLabel for="vigenciaFin" value="Fin"/>
-          <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3)}"/>
+        <h:panelGrid id="panelFechas" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-40, janal-wid-5 janal-column-center, janal-wid-45">
+					<h:outputLabel for="vigenciaIni" value="Periodo:"/>
+          <p:calendar id="vigenciaIni" styleClass="Wid100" inputStyleClass="janal-wid-80" value="#{manticCatalogosClientesCuentasSaldos.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3)}"/>
+          <h:outputLabel for="vigenciaFin" value=" al "/>
+          <p:calendar id="vigenciaFin" styleClass="Wid100" inputStyleClass="janal-wid-80" value="#{manticCatalogosClientesCuentasSaldos.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3)}"/>
 				</h:panelGrid>
         <hr class="ui-widget-content"/>
 				<div class="janal-line-button">

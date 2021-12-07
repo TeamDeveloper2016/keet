@@ -596,7 +596,7 @@ public class Saldos extends IBaseFilter implements Serializable {
           inicio.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(Fecha.getHoy()));
         break;
         case 4:
-          this.attrs.put("tipoReporteEspecial", "DEUDAS_CLIENTES_PENDIENTES");
+          this.attrs.put("tipoReporteEspecial", "CLIENTE_ESTADO_CUENTA");
         break;
       }//switch
       this.attrs.put("vigenciaIni", new java.sql.Date(inicio.getTimeInMillis()));
@@ -622,8 +622,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       params.put("idClienteDeuda", seleccionado.getKey());
       params.put("fechaInicio", this.attrs.get("vigenciaIni"));
       params.put("fechaFin", this.attrs.get("vigenciaFin"));
-      // params.put("fechaInicio", this.vigenciaIni.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-      // params.put("fechaFin", this.vigenciaFin.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+      params.put("idContrato", ((UISelectEntity)this.attrs.get("contrato")).getKey());
       reporteSeleccion= EReportes.valueOf(this.attrs.get("tipoReporteEspecial").toString());
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
       parametros= comunes.getComunes();
@@ -1083,6 +1082,27 @@ public class Saldos extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		   
+  }
+ 
+  public void doUpdateDocumentos() {
+    Map<String, Object> params= null;
+    try {      
+      params = new HashMap<>();      
+      Entity seleccionado= (Entity)this.attrs.get("seleccionadoDetalle");
+ 			params.put("idDesarrollo", seleccionado.toLong("idDesarrollo"));
+			params.put("idCliente", seleccionado.toLong("idCliente"));
+			List<UISelectEntity> contratos= UIEntity.seleccione("VistaContratosDto", "findCliente", params, Collections.EMPTY_LIST, Constantes.SQL_TODOS_REGISTROS, "clave");
+      this.attrs.put("documentos", contratos);
+      this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  
   }
   
 }
