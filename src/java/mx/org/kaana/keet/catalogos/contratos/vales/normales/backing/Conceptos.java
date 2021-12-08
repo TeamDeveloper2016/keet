@@ -390,7 +390,7 @@ public class Conceptos extends IBaseFilter implements Serializable {
     try {								
 			if(this.materiales.size() > 0){
 				accion= (EAccion) this.attrs.get("accion");
-				transaccion= accion.equals(EAccion.AGREGAR) ? new Transaccion(loadVale()) : new Transaccion(loadVale(), Long.valueOf(this.attrs.get("idVale").toString()));
+				transaccion= accion.equals(EAccion.AGREGAR)? new Transaccion(this.loadVale()): new Transaccion(this.loadVale(), Long.valueOf(this.attrs.get("idVale").toString()));
 				if(transaccion.ejecutar(accion)){
 					JsfBase.addMessage("Captura de material", "Se realizó la captura de material de forma correcta.", ETipoMensaje.INFORMACION);
 					if(accion.equals(EAccion.AGREGAR)){

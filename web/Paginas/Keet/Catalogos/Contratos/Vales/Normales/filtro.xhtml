@@ -74,16 +74,16 @@
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
 					<p:dataGrid var="row" value="#{keetCatalogosContratosValesNormalesFiltro.lotes}" columns="4" layout="grid" rowIndexVar="index"
-											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosValesNormalesFiltro.lazyModel.rowCount gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
+											rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{keetCatalogosContratosValesNormalesFiltro.lotes.size() gt Constantes.REGISTROS_POR_PAGINA}" id="destajo"
 											emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
-						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.nombre).concat(']')} #{row.clave}" style="text-align:center; border: 0px;">
+						<p:panel header="#{row.claveContrato eq '' ? '' : '['.concat(row.prototipo).concat(']')} #{row.claveContrato}" style="text-align:center; border: 0px;">
 							<h:panelGrid columns="1" style="width:100%">
 								<p:commandLink process="@this" update="destajo" title="Ver detalle del articulo" action="#{keetCatalogosContratosValesNormalesFiltro.doConceptos}">
 									<p:outputLabel value="M#{row.manzana}L#{row.lote}" title="Manzana: #{row.manzana}, Lote: #{row.lote}, Click para generar vale de materiales" class="manzana-lote-font" style="cursor: pointer;"/>
 									<f:setPropertyActionListener value="#{row}" target="#{keetCatalogosContratosValesNormalesFiltro.attrs.seleccionado}"/>
 								</p:commandLink>																	
 								<p:panelGrid columns="1" layout="grid" columnClasses="janal-column-center">
-                  <h:outputText value="Contrato: &lt;b&gt;#{row.claveContrato}&lt;/b&gt;" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}" styleClass="janal-color-blue"/>
+                  <h:outputText value="Contrato: &lt;b&gt;#{row.clave}&lt;/b&gt;" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}" styleClass="janal-color-blue"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>
 									<h:outputText value="&lt;b&gt;Fecha inicio:&lt;/b&gt; #{row.inicio}" escape="false" style="display: #{row.inicio eq '-' ? 'none' : ''}"/>
 									<p:spacer style="display: #{row.inicio eq '-' ? '' : 'none'}"/>

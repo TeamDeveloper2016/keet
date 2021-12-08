@@ -7994,7 +7994,7 @@
 				select 
 					case when tc_keet_materiales.id_estacion_estatus= 1 then 1 else 0 end iniciado,
 					case when tc_keet_materiales.id_estacion_estatus= 2 then 1 else 0 end en_proceso,
-					case when (tc_keet_estaciones.id_estacion_estatus= 3 or tc_keet_estaciones.id_estacion_estatus= 4) then 1 else 0 end terminado  
+					case when (tc_keet_materiales.id_estacion_estatus= 3 or tc_keet_materiales.id_estacion_estatus= 4) then 1 else 0 end terminado  
 				from(  
 				select
 					tc_keet_puntos_paquetes.id_punto_grupo,  
@@ -8154,6 +8154,7 @@
 					tc_keet_contratos_lotes.id_contrato_lote id_key,
 					tc_keet_contratos_lotes.*,
 					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+          tc_keet_prototipos.nombre as prototipo,
 					tc_keet_contratos.clave as clave_contrato,
 					tc_keet_contratos.etapa as etapa_contrato,
 					tc_keet_proyectos.clave as clave_proyecto,
@@ -8169,6 +8170,8 @@
 				inner join 
 					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
 				inner join 
+					tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo = tc_keet_prototipos.id_prototipo
+				inner join 
 					tc_keet_contratos_lotes_contratistas on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_contratistas.id_contrato_lote
 				where 
 					tc_keet_proyectos.id_desarrollo={idDesarrollo} and tc_keet_contratos_lotes_contratistas.id_empresa_persona={idFigura}
@@ -8180,6 +8183,7 @@
 					tc_keet_contratos_lotes.id_contrato_lote id_key,
 					tc_keet_contratos_lotes.*,
 					concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as descripcion_lote,
+          tc_keet_prototipos.nombre as prototipo,
 					tc_keet_contratos.clave as clave_contrato,
 					tc_keet_contratos.etapa as etapa_contrato,
 					tc_keet_proyectos.clave as clave_proyecto,
@@ -8194,6 +8198,8 @@
 					tc_keet_contratos on tc_keet_proyectos.id_proyecto = tc_keet_contratos.id_proyecto
 				inner join 
 					tc_keet_contratos_lotes on tc_keet_contratos.id_contrato = tc_keet_contratos_lotes.id_contrato
+				inner join 
+					tc_keet_prototipos on tc_keet_contratos_lotes.id_prototipo = tc_keet_prototipos.id_prototipo
 				inner join 
 					tc_keet_contratos_lotes_proveedores on tc_keet_contratos_lotes.id_contrato_lote = tc_keet_contratos_lotes_proveedores.id_contrato_lote
 				where 

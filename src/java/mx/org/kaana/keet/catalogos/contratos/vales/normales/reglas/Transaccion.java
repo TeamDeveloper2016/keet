@@ -68,15 +68,15 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar         = true;
 		Map<String, Object>params= null;		
 		try {
-			switch(accion){
+			switch(accion) {
 				case AGREGAR:												
-					regresar= procesarVale(sesion);					
+					regresar= this.procesarVale(sesion);					
 					break;		
 				case MODIFICAR:
-					regresar= modificarVale(sesion);
+					regresar= this.modificarVale(sesion);
 					break;
 				case DEPURAR:
-					regresar= depurarVale(sesion);
+					regresar= this.depurarVale(sesion);
 					break;
 			} // switch
 		} // try
@@ -94,14 +94,14 @@ public class Transaccion extends IBaseTnx {
 		TcKeetValesDto valeDto= null;		
 		Siguiente siguiente    = null;
 		try {
-			siguiente= toSiguiente(sesion);			
-			valeDto= loadVale(sesion, siguiente);			
+			siguiente= this.toSiguiente(sesion);			
+			valeDto  = this.loadVale(sesion, siguiente);			
 			this.idVale= DaoFactory.getInstance().insert(sesion, valeDto);
-			if(this.idVale>= 1L){
-				if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
-					regresar= registrarDetalle(sesion, valeDto.getSemana().toString());				
-					generateQr(siguiente, valeDto.getRegistro());
-					registrarPadres(sesion);
+			if(this.idVale>= 1L) {
+				if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())) {
+					regresar= this.registrarDetalle(sesion, valeDto.getSemana().toString());				
+					this.generateQr(siguiente, valeDto.getRegistro());
+					this.registrarPadres(sesion);
 				} // if
 			} // if
 		} // try
@@ -121,9 +121,9 @@ public class Transaccion extends IBaseTnx {
 			regresar.setConsecutivo(siguiente.getConsecutivo());
 			regresar.setOrden(siguiente.getOrden());
 			regresar.setSemana(semana.getSemanaEnCurso());			
-			regresar.setIdAlmacen(toIdAlmacen(sesion));			
-			regresar.setCantidad(toCantidad());
-			regresar.setCosto(toCosto());
+			regresar.setIdAlmacen(this.toIdAlmacen(sesion));			
+			regresar.setCantidad(this.toCantidad());
+			regresar.setCosto(this.toCosto());
 			regresar.setIdTipoVale(this.vale.getIdTipoVale());
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
 			regresar.setIdValeContratista(this.vale.getTipoFigura());
@@ -140,18 +140,18 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // loadVale
 	
-	private Double toCantidad(){
-		Double regresar=0D;
-		for(MaterialVale material: this.vale.getMateriales()){
+	private Double toCantidad() {
+		Double regresar= 0D;
+		for(MaterialVale material: this.vale.getMateriales()) {
 			regresar= regresar + material.getCantidad();
 		} // for
 		return regresar;
 	} // toCantidad
 	
-	private Double toCosto(){
-		Double regresar=0D;
-		for(MaterialVale material: this.vale.getMateriales()){
-			regresar= regresar + (material.getCosto() * material.getCantidad());
+	private Double toCosto() {
+		Double regresar= 0D;
+		for(MaterialVale material: this.vale.getMateriales()) {
+			regresar= regresar+ (material.getCosto()* material.getCantidad());
 		} // for
 		return regresar;
 	} // toTotal
@@ -185,7 +185,7 @@ public class Transaccion extends IBaseTnx {
 			bitacora.setIdUsuario(JsfBase.getIdUsuario());
 			bitacora.setIdVale(this.idVale);
 			bitacora.setIdValeEstatus(idEstatus);
-			bitacora.setJustificacion(Cadena.isVacio(this.vale.getJustificacion()) ? "Registro de bitacora:" + EEstatusVales.fromId(idEstatus).getNombre() : this.vale.getJustificacion());
+			bitacora.setJustificacion(Cadena.isVacio(this.vale.getJustificacion())? "Registro de bitacora:"+ EEstatusVales.fromId(idEstatus).getNombre(): this.vale.getJustificacion());
 			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 		} // try
 		catch (Exception e) {			
@@ -198,7 +198,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar              = true;
 		TcKeetValesDetallesDto detalle= null;
 		try {
-			for(DetalleVale recordDetalle: this.vale.getDetalle()){
+			for(DetalleVale recordDetalle: this.vale.getDetalle()) {
 				detalle= new TcKeetValesDetallesDto();
 				detalle.setCantidad(recordDetalle.getCantidad());
 				detalle.setCodigo(recordDetalle.getCodigo());
@@ -227,9 +227,9 @@ public class Transaccion extends IBaseTnx {
 			params= new HashMap<>();
 			params.put("idEstacionEstatus", toIdEstacionEstatus(material, costo, alta));
 			if(alta)
-				params.put("cargo".concat(semana), (material.toValue("cargo".concat(semana)) != null ? ((Double)material.toValue("cargo".concat(semana))) : 0D) + costo);										
+				params.put("cargo".concat(semana), (material.toValue("cargo".concat(semana))!= null? ((Double)material.toValue("cargo".concat(semana))): 0D)+ costo);										
 			else
-				params.put("cargo".concat(semana), (material.toValue("cargo".concat(semana)) != null ? ((Double)material.toValue("cargo".concat(semana))) : 0D) - costo);										
+				params.put("cargo".concat(semana), (material.toValue("cargo".concat(semana))!= null? ((Double)material.toValue("cargo".concat(semana))): 0D)- costo);										
 			if(DaoFactory.getInstance().update(sesion, TcKeetMaterialesDto.class, idMaterial, params)>= 1L)
 				actualizaEstacionPadre(sesion, material, costo, semana, alta);
 		} // try
@@ -238,7 +238,7 @@ public class Transaccion extends IBaseTnx {
 		} // catch
 	} //actualizaMaterial
 	
-	private void generateQr(Siguiente siguiente, LocalDateTime registro){
+	private void generateQr(Siguiente siguiente, LocalDateTime registro) {
 		StringBuilder cadenaQr= new StringBuilder();
 		cadenaQr.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()).append("-");
 		cadenaQr.append(siguiente.getConsecutivo()).append("-");
@@ -257,12 +257,12 @@ public class Transaccion extends IBaseTnx {
 			params= new HashMap<>();
 			materiales= new Materiales();
 			padres= materiales.toFather(hijo.getClave());			
-			for(TcKeetMaterialesDto padre: padres){
+			for(TcKeetMaterialesDto padre: padres) {
 				params.put("idEstacionEstatus", toIdEstacionEstatus(padre, total, alta));
 				if(alta)
-					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana)) != null ? ((Double)padre.toValue("cargo".concat(semana))) : 0D) + total);								
+					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana))!= null? ((Double)padre.toValue("cargo".concat(semana))): 0D)+ total);								
 				else
-					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana)) != null ? ((Double)padre.toValue("cargo".concat(semana))) : 0D) - total);								
+					params.put("cargo".concat(semana), (padre.toValue("cargo".concat(semana))!= null? ((Double)padre.toValue("cargo".concat(semana))): 0D)- total);								
 				DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, padre.getIdMaterial(), params);
 			} // for
 		} // try
@@ -272,12 +272,12 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // actualizaEstacionPadre
 	
-	private Long toIdEstacionEstatus(TcKeetMaterialesDto material, Double costoActual, boolean alta){
+	private Long toIdEstacionEstatus(TcKeetMaterialesDto material, Double costoActual, boolean alta) {
 		Long regresar       = -1L;		
 		Double acumulado    = 0D;
 		Double cargoEstacion= 0D;
 		try {
-			for(int count=0; count<55; count++){
+			for(int count=0; count<55; count++) {
 				cargoEstacion= material.toValue("cargo".concat(String.valueOf(count+1)))!= null ? ((Double) material.toValue("cargo".concat(String.valueOf(count+1)))) : 0D;
 				acumulado= acumulado + cargoEstacion;
 			} // for
@@ -296,7 +296,7 @@ public class Transaccion extends IBaseTnx {
 	private void registrarPadres(Session sesion) throws Exception{
 		TcKeetValesMaterialesDto dto= null;
 		try {
-			for(DetalleVale detalleVale: this.vale.getPadres()){
+			for(DetalleVale detalleVale: this.vale.getPadres()) {
 				dto= new TcKeetValesMaterialesDto();
 				dto.setIdVale(this.idVale);
 				dto.setIdMaterial(detalleVale.getIdMaterial());
@@ -321,19 +321,19 @@ public class Transaccion extends IBaseTnx {
 			detalles= DaoFactory.getInstance().toEntitySet(sesion, TcKeetValesDetallesDto.class, "TcKeetValesDetallesDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			semanas= new Semanas();
 			semana= semanas.getSemanaEnCurso();
-			if(!detalles.isEmpty()){				
-				for(TcKeetValesDetallesDto detalle: detalles){
+			if(!detalles.isEmpty()) {				
+				for(TcKeetValesDetallesDto detalle: detalles) {
 					actualizaMaterial(sesion, detalle.getIdMaterial(), semana.toString(), detalle.getCosto(), false);														
 				} // fot
 			} // if
-			if(depurarDetalle(sesion)){
-				if(depurarPadres(sesion)){
+			if(depurarDetalle(sesion)) {
+				if(depurarPadres(sesion)) {
 					valeDto= (TcKeetValesDto) DaoFactory.getInstance().findById(sesion, TcKeetValesDto.class, this.idVale);
 					valeDto.setCantidad(toCantidad());
 					valeDto.setCosto(toCosto());
-					if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L){
+					if(DaoFactory.getInstance().update(sesion, valeDto)>= 1L) {
 						this.vale.setJustificacion("REGENERACION DEL VALE");
-						if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())){
+						if(registrarBitacora(sesion, EEstatusVales.DISPONIBLE.getKey())) {
 							regresar= registrarDetalle(sesion, semana.toString());					
 							registrarPadres(sesion);
 						} // if
@@ -404,9 +404,9 @@ public class Transaccion extends IBaseTnx {
 	private boolean depurarVale(Session sesion) throws Exception{
 		boolean regresar= false;
 		try {
-			if(depurarBitacora(sesion)){
-				if(depurarDetalle(sesion)){
-					if(depurarPadres(sesion)){
+			if(depurarBitacora(sesion)) {
+				if(depurarDetalle(sesion)) {
+					if(depurarPadres(sesion)) {
 						regresar= DaoFactory.getInstance().delete(sesion, TcKeetValesDto.class, this.idVale)>= 1L;
 					} // if
 				} // if
@@ -426,7 +426,10 @@ public class Transaccion extends IBaseTnx {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_desarrollo=" + this.vale.getIdDesarrollo());
 			almacen= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticAlmacenesDto", "row", params);
-			regresar= almacen.toLong("idAlmacen");
+      if(almacen!= null)
+			  regresar= almacen.toLong("idAlmacen");
+      else 
+        throw new RuntimeException("No se tiene asignado un almacen asociado al desarrollo");
 		} // try
 		catch (Exception e) {			
 			throw e;
