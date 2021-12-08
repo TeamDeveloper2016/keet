@@ -48,7 +48,7 @@
 						PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 						currentMarker = new google.maps.Marker({
 							position: new google.maps.LatLng(lat, lon),
-							icon:'/KEET/javax.faces.resource/icon/mapa/janal-red.png.jsf?ln=janal'
+							icon:'#{request.contextPath}/javax.faces.resource/icon/mapa/janal-red-1.png.jsf?ln=janal'
 						});
 						PF('wMapa').addOverlay(currentMarker);
 						updateInitGeo(lat,lon);
@@ -65,7 +65,7 @@
 					PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat,lon));
 					currentMarker = new google.maps.Marker({
 						position: new google.maps.LatLng(lat, lon),
-						icon: '/KEET/javax.faces.resource/icon/mapa/janal-green.png.jsf?ln=janal'
+						icon: '#{request.contextPath}/javax.faces.resource/icon/mapa/janal-green-1.png.jsf?ln=janal'
 					});
 					PF('wMapa').addOverlay(currentMarker);
 					updateGeoreferencia(lat, lon);
@@ -77,10 +77,10 @@
 
 			function updateLocalization(lat, lon) {
 				currentMarker.setMap(null);
-				PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat, lon));
+				// PF('wMapa').getMap().setCenter(new google.maps.LatLng(lat, lon));
 				currentMarker = new google.maps.Marker({
 					position: new google.maps.LatLng(lat, lon),
-					icon: '/KEET/javax.faces.resource/icon/mapa/janal-green.png.jsf?ln=janal'
+					icon: '#{request.contextPath}/javax.faces.resource/icon/mapa/janal-green-1.png.jsf?ln=janal'
 				});
 				PF('wMapa').addOverlay(currentMarker);
 				updateGeoreferencia(lat, lon);
@@ -120,7 +120,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-						<p:ajax event="tabChange" listener="#{keetCatalogosDesarrollosAccion.doTabChange}" process="@this contenedorGrupos" update="contenedorGrupos"/>						
+						<p:ajax event="tabChange" listener="#{keetCatalogosDesarrollosAccion.doTabChange}" process="@this contenedorGrupos"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
                 <p:outputLabel for="idCliente" value="Cliente:"/>
@@ -217,17 +217,14 @@
 						<p:tab id="panelGeoreferencia" title="Georeferencia">
 							<p:remoteCommand name="executeGeo" oncomplete="initLocalization();"/>
 							<p:remoteCommand name="executeExistGeo" process="@this contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAccion.doExistGeo}"/>		
-							<p:outputLabel value="Coordenada:"/>
-							<p:inputText id="coordenadas" styleClass="janal-wid-100-txt">
-								<p:ajax event="blur" onstart="return processGeo();" oncomplete="janal.desbloquear();"/>
-							</p:inputText>
-							<br/>
-							<div class="janal-line-button">
-								<div class="lg-pantalla janal-column-right">
-									<p:commandButton value="Aceptar" iconPos="left" styleClass="janal-text-white" accesskey="z" icon="fa fa-map-marker" process="@this contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAccion.doAceptarGeo}" update="contenedorGrupos"/>										
-								</div>
-							</div>				
-							<p:gmap id="mapa" widgetVar="wMapa" center="21.8818,-102.291" zoom="75" type="TERRAIN" style="width:100%;height:500px"  streetView="true" styleClass="style-panel">
+              <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-10, janal-fix-80, janal-fix-10 janal-column-center">
+							  <p:outputLabel value="Coordenada:"/>
+                <p:inputText id="coordenadas" styleClass="janal-wid-100-txt">
+                  <p:ajax event="blur" onstart="return processGeo();" oncomplete="janal.desbloquear();"/>
+                </p:inputText>
+  							<p:commandButton value="Aceptar" iconPos="left" styleClass="janal-text-white" accesskey="z" icon="fa fa-map-marker" process="@this contenedorGrupos" actionListener="#{keetCatalogosDesarrollosAccion.doAceptarGeo}"/>										
+              </p:panelGrid>
+							<p:gmap id="mapa" widgetVar="wMapa" center="21.8818,-102.291" zoom="75" type="TERRAIN" style="width:100%; height:500px" streetView="true" styleClass="style-panel">
 								<p:ajax event="pointSelect" listener="#{keetCatalogosDesarrollosAccion.onPointSelect}" />
 							</p:gmap>	
 						</p:tab>

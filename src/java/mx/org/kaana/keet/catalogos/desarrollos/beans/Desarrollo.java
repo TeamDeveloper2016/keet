@@ -1,9 +1,12 @@
 package mx.org.kaana.keet.catalogos.desarrollos.beans;
 
+import java.io.Serializable;
 import mx.org.kaana.keet.db.dto.TcKeetDesarrollosDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
-public class Desarrollo extends TcKeetDesarrollosDto{
+public class Desarrollo extends TcKeetDesarrollosDto implements Serializable {
+
+  private static final long serialVersionUID = 3714740442764839227L;
 
 	private UISelectEntity ikCliente;
 

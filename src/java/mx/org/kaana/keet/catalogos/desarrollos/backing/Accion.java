@@ -14,7 +14,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.keet.catalogos.desarrollos.beans.Desarrollo;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -68,8 +67,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      loadCatalogos();
-			doLoad();			
+      this.loadCatalogos();
+			this.doLoad();			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -77,7 +76,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void loadCatalogos(){
+	private void loadCatalogos() {
 		List<Columna>campos= null;
 		try {
 			this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
@@ -99,12 +98,13 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:					
         case CONSULTAR:					
 					this.desarrollo= new RegistroDesarrollo((Long)this.attrs.get("idDesarrollo"));
-					loadAtributosComplemento();					
+					this.loadAtributosComplemento();	
+          this.doExistGeo();
           break;
       } // switch
-			loadEntidades();		
-			loadMunicipios();		
-			loadLocalidades();
+			this.loadEntidades();		
+			this.loadMunicipios();		
+			this.loadLocalidades();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -146,8 +146,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doLoadAtributos(boolean all) {    
 		List<Entity> domicilios= null;
     try {
-			if(all){
-				if(!this.desarrollo.getDomicilio().getDomicilio().getKey().equals(-1L)){
+			if(all) {
+				if(!this.desarrollo.getDomicilio().getDomicilio().getKey().equals(-1L)) {
 					domicilios= (List<Entity>) this.attrs.get("domicilios");
 					this.desarrollo.getDomicilio().setDomicilio(domicilios.get(domicilios.indexOf(this.desarrollo.getDomicilio().getDomicilio())));
 					this.desarrollo.getDomicilio().setIdDomicilio(domicilios.get(domicilios.indexOf(this.desarrollo.getDomicilio().getDomicilio())).getKey());
@@ -181,9 +181,10 @@ public class Accion extends IBaseAttribute implements Serializable {
         this.desarrollo.getDomicilio().setEntreCalle(domicilio.getEntreCalle());
         this.desarrollo.getDomicilio().setYcalle(domicilio.getYcalle());
         this.desarrollo.getDomicilio().setCodigoPostal(domicilio.getCodigoPostal());
+        
       } // if
       else {
-        clearAtributos();
+        this.clearAtributos();
       } // else
 		} // try
 		catch (Exception e) {			
@@ -233,7 +234,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params= null;
 		List<Columna>campos= null;
     try {
-			if(!this.desarrollo.getDomicilio().getIdEntidad().getKey().equals(-1L)){
+			if(!this.desarrollo.getDomicilio().getIdEntidad().getKey().equals(-1L)) {
 				params = new HashMap<>();
 				params.put("idEntidad", this.desarrollo.getDomicilio().getIdEntidad().getKey());
 				campos= new ArrayList<>();
@@ -258,7 +259,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params= null;
 		List<Columna>campos= null;
     try {
-			if(!this.desarrollo.getDomicilio().getIdMunicipio().getKey().equals(-1L)){
+			if(!this.desarrollo.getDomicilio().getIdMunicipio().getKey().equals(-1L)) {
 				params = new HashMap<>();
 				params.put("idMunicipio", this.desarrollo.getDomicilio().getIdMunicipio().getKey());
 				campos= new ArrayList<>();
@@ -281,10 +282,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // loadLocalidades
 	 
-	  public void doActualizaMunicipios() {
+	public void doActualizaMunicipios() {
     try {
-      loadMunicipios();
-      loadLocalidades();      
+      this.loadMunicipios();
+      this.loadLocalidades();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -294,7 +295,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doActualizaLocalidades() {
     try {
-      loadLocalidades();      
+      this.loadLocalidades();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -331,7 +332,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // doLoadDomicilios
 
-	public void doAsignaDomicilio(){
+	public void doAsignaDomicilio() {
 		List<UISelectEntity> domicilios        = null;
 		List<UISelectEntity> domiciliosBusqueda= null;
 		UISelectEntity domicilio               = null;
@@ -343,12 +344,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("domicilios", domicilios);			
 			this.desarrollo.getDomicilio().setDomicilio(domicilio);
       this.desarrollo.getDomicilio().setIdDomicilio(domicilio.getKey());
-			toAsignaEntidad();
-			loadMunicipios();
-			toAsignaMunicipio();
-			loadLocalidades();
-			toAsignaLocalidad();			
-			loadAtributosComplemento();			
+			this.toAsignaEntidad();
+			this.loadMunicipios();
+			this.toAsignaMunicipio();
+			this.loadLocalidades();
+			this.toAsignaLocalidad();			
+			this.loadAtributosComplemento();			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -356,23 +357,23 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doAsignaDomicilio
 	
-	private void toAsignaCodigoPostal(){
+	private void toAsignaCodigoPostal() {
 		Entity domicilio= null;
 		List<UISelectItem>codigos= null;
 		int count=0;
 		try {
-			if(!this.desarrollo.getDomicilio().getIdDomicilio().equals(-1L)){
+			if(!this.desarrollo.getDomicilio().getIdDomicilio().equals(-1L)) {
 				domicilio= this.desarrollo.getDomicilio().getDomicilio();
 				codigos= (List<UISelectItem>) this.attrs.get("codigosPostales");
-				for(UISelectItem codigo: codigos){
-					if(codigo.getLabel().equals(domicilio.toString("codigoPostal"))){
+				for(UISelectItem codigo: codigos) {
+					if(codigo.getLabel().equals(domicilio.toString("codigoPostal"))) {
 						this.desarrollo.getDomicilio().setCodigoPostal(codigo.getLabel());
 						this.desarrollo.getDomicilio().setIdCodigoPostal((Long) codigo.getValue());
 						this.desarrollo.getDomicilio().setNuevoCp(true);
 						count++;
 					} // if
 				} // for
-				if(count==0){
+				if(count==0) {
 					this.desarrollo.getDomicilio().setNuevoCp(false);
 					this.desarrollo.getDomicilio().setIdCodigoPostal(-1L);
 					this.desarrollo.getDomicilio().setCodigoPostal("");
@@ -389,14 +390,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // toAsignaCodigoPostal
 	
-	private void toAsignaMunicipio(){
+	private void toAsignaMunicipio() {
 		Entity domicilio= null;
 		List<Entity>municipios= null;
 		try {
-			if(!this.desarrollo.getDomicilio().getIdMunicipio().getKey().equals(-1L)){
+			if(!this.desarrollo.getDomicilio().getIdMunicipio().getKey().equals(-1L)) {
 				domicilio= this.desarrollo.getDomicilio().getDomicilio();
 				municipios= (List<Entity>) this.attrs.get("municipios");
-				for(Entity municipio: municipios){
+				for(Entity municipio: municipios) {
 					if(municipio.getKey().equals(domicilio.toLong("idMunicipio")))
 						this.desarrollo.getDomicilio().setIdMunicipio(municipio);
 				} // for
@@ -407,15 +408,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // toAsignaMunicipio
 	
-	private void toAsignaLocalidad(){
+	private void toAsignaLocalidad() {
 		Entity domicilio= null;
 		List<Entity>localidades= null;
 		try {
-			if(!this.desarrollo.getDomicilio().getIdDomicilio().equals(-1L)){
+			if(!this.desarrollo.getDomicilio().getIdDomicilio().equals(-1L)) {
 				domicilio= this.desarrollo.getDomicilio().getDomicilio();
 				localidades= (List<Entity>) this.attrs.get("localidades");
-				for(Entity localidad: localidades){
-					if(localidad.getKey().equals(domicilio.toLong("idLocalidad"))){
+				for(Entity localidad: localidades) {
+					if(localidad.getKey().equals(domicilio.toLong("idLocalidad"))) {
 						this.desarrollo.getDomicilio().setIdLocalidad(localidad.getKey());
 						this.desarrollo.getDomicilio().setLocalidad(localidad);
 					} // if
@@ -427,14 +428,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // toAsignaLocalidad
 	
-		private void toAsignaEntidad(){
+	private void toAsignaEntidad() {
 		Entity domicilio= null;
 		List<Entity>entidades= null;
 		try {
-			if(!this.desarrollo.getDomicilio().getIdDomicilio().equals(-1L)){
+			if(!this.desarrollo.getDomicilio().getIdDomicilio().equals(-1L)) {
 				domicilio= this.desarrollo.getDomicilio().getDomicilio();
 				entidades= (List<Entity>) this.attrs.get("entidades");
-				for(Entity entidad: entidades){
+				for(Entity entidad: entidades) {
 					if(entidad.getKey().equals(domicilio.toLong("idEntidad")))
 						this.desarrollo.getDomicilio().setIdEntidad(entidad);
 				} // for
@@ -460,7 +461,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doExistGeo
 	
-	public void doInitGeo(String latitud, String longitud){		
+	public void doInitGeo(String latitud, String longitud) {		
 		try {
 			this.attrs.put("latitud", latitud);
 			this.attrs.put("longitud", longitud);		
@@ -475,17 +476,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void onBlurPointSelect(String geo) {
 		LatLng coordenadas    = null;
 		String[] georeferencia= null;
-		String latitud        = null;
-		String longitud       = null;
 		try {	
 			georeferencia= Cadena.eliminaCaracter(geo, '@').split(",");
-			if(georeferencia.length==2){
+			if(georeferencia.length== 2) {
 				coordenadas= new LatLng(Double.valueOf(georeferencia[0]), Double.valueOf(georeferencia[1]));
-				latitud= String.valueOf(coordenadas.getLat());
-				longitud= String.valueOf(coordenadas.getLng());
-				this.attrs.put("latitud", latitud);
-				this.attrs.put("longitud", longitud);			
-				this.attrs.put("coordenadas",  latitud.concat(",").concat(longitud));
+        this.desarrollo.getDesarrollo().setLatitud(String.valueOf(coordenadas.getLat()));
+        this.desarrollo.getDesarrollo().setLongitud(String.valueOf(coordenadas.getLng()));
+        this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
+        this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());						
+				this.attrs.put("coordenadas",  this.desarrollo.getDesarrollo().getLatitud().concat(",").concat(this.desarrollo.getDesarrollo().getLongitud()));
 				UIBackingUtilities.execute("updateLocalization('".concat(String.valueOf(coordenadas.getLat())).concat("','").concat(String.valueOf(coordenadas.getLng())).concat("');"));
 			} // if
 		} // try
@@ -497,15 +496,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void onPointSelect(PointSelectEvent event) {
 		LatLng coordenadas= null;
-		String latitud    = null;
-		String longitud   = null;
 		try {
 			coordenadas= event.getLatLng();                  
-			latitud= String.valueOf(coordenadas.getLat());
-			longitud= String.valueOf(coordenadas.getLng());
-			this.attrs.put("latitud", latitud);
-			this.attrs.put("longitud", longitud);						
-			this.attrs.put("coordenadas",  latitud.concat(",").concat(longitud));
+			this.desarrollo.getDesarrollo().setLatitud(String.valueOf(coordenadas.getLat()));
+			this.desarrollo.getDesarrollo().setLongitud(String.valueOf(coordenadas.getLng()));
+			this.attrs.put("latitud", this.desarrollo.getDesarrollo().getLatitud());
+			this.attrs.put("longitud", this.desarrollo.getDesarrollo().getLongitud());						
+			this.attrs.put("coordenadas",  this.desarrollo.getDesarrollo().getLatitud().concat(",").concat(this.desarrollo.getDesarrollo().getLongitud()));
 			UIBackingUtilities.execute("updateLocalization('".concat(String.valueOf(coordenadas.getLat())).concat("','").concat(String.valueOf(coordenadas.getLng())).concat("');"));
 		} // try
 		catch (Exception e) {
@@ -517,9 +514,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void doAceptarGeo() {
 		String[] coordenadas= null;
 		try {
-			if(!(Cadena.isVacio(this.attrs.get("coordenadas")))){
+			if(!(Cadena.isVacio(this.attrs.get("coordenadas")))) {
 				coordenadas= ((String)this.attrs.get("coordenadas")).split(",");
-				if(coordenadas.length==2){
+				if(coordenadas.length==2) {
 					this.desarrollo.getDesarrollo().setLatitud(coordenadas[0].replaceAll("@", "").trim());
 					this.desarrollo.getDesarrollo().setLongitud(coordenadas[1].replaceAll("@", "").trim());
 					UIBackingUtilities.execute("updateLocalization('".concat(this.desarrollo.getDesarrollo().getLatitud()).concat("','").concat(this.desarrollo.getDesarrollo().getLongitud()).concat("');"));
@@ -537,10 +534,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // doAceptarGeo	
 	
 	public void doCancelarGeo() {		
-		Desarrollo desarrollo= null;
 		try {
-			if(this.attrs.get("latitudAnterior")!= null && this.attrs.get("longitudAnterior")!= null){
-				desarrollo= (Desarrollo) this.attrs.get("desarrolloGeoreferencia");		
+			if(this.attrs.get("latitudAnterior")!= null && this.attrs.get("longitudAnterior")!= null) {
 				this.desarrollo.getDesarrollo().setLatitud(this.attrs.get("latitudAnterior").toString());
 				this.desarrollo.getDesarrollo().setLongitud(this.attrs.get("longitudAnterior").toString());			
 			} // if
@@ -553,6 +548,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Georeferencia"))
-			UIBackingUtilities.execute(Cadena.isVacio(this.desarrollo.getDesarrollo().getLatitud()) || Cadena.isVacio(this.desarrollo.getDesarrollo().getLongitud()) ? "executeGeo();" : "executeExistGeo();");		
+			UIBackingUtilities.execute(Cadena.isVacio(this.desarrollo.getDesarrollo().getLatitud()) || Cadena.isVacio(this.desarrollo.getDesarrollo().getLongitud())? "executeGeo();" : "executeExistGeo();");		
 	}	// doTabChange	
 }

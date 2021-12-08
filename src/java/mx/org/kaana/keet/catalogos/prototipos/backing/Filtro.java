@@ -123,33 +123,31 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-      JsfBase.setFlashAttribute("idPrototipo", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("idPrototipo", (!eaccion.equals(EAccion.AGREGAR))? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
       JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Catalogos/Prototipos/filtro");
-			switch (eaccion){
-				case SUBIR:
-				  regresar= "importar".concat(Constantes.REDIRECIONAR);	
-				break;
+			switch (eaccion) {
+				case AGREGAR:
+				  regresar= "accion".concat(Constantes.REDIRECIONAR);
+					break;
 				case CONSULTAR:
 				case MODIFICAR:
 				  regresar= "accion".concat(Constantes.REDIRECIONAR);
 					break;
+				case SUBIR:
+				  regresar= "importar".concat(Constantes.REDIRECIONAR);	
+				  break;
 				case COMPLEMENTAR:
 					if(((Entity) this.attrs.get("seleccionado")).toLong("idEstacion")!= null) {//agregar estacion
 						estacionDto= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, ((Entity) this.attrs.get("seleccionado")).toLong("idEstacion"));
 						JsfBase.setFlashAttribute("estacionProcess", estacionDto);
 						regresar= "/Paginas/Keet/Estaciones/filtro".concat(Constantes.REDIRECIONAR);
 					} // if
-          else {
+          else 
             JsfBase.addMessage("Prototipo", "No se tiene asignado una plantilla de estaciones / conceptos");
-//					  regresar= "/Paginas/Keet/Estaciones/accion".concat(Constantes.REDIRECIONAR);
-//						estacionDto= new TcKeetEstacionesDto();
-//						estacionDto.setNivel(3L);
-//						estacionDto.setClave("0012020999");//calcular
-//						JsfBase.setFlashAttribute("idEstacion",  -1L);
-//						JsfBase.setFlashAttribute("estacionPadre", estacionDto);
-//						JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Estaciones/filtro");
-					} // if
 					break;
+        default:  
+				  regresar= "accion".concat(Constantes.REDIRECIONAR);
+          break;
 			} // switch
     } // try
     catch (Exception e) {

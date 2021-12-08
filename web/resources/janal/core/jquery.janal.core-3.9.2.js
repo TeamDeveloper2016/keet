@@ -876,6 +876,7 @@
           $janal.growl(items, type);
           break;
       }; // switch
+      
     }, // show
     classic: function(items) {
       if(typeof(PF($janal.message))!== 'undefined') {
@@ -1024,8 +1025,10 @@
       var ok= $('#'+ $janal.form).valid() && $janal.errors.customs.length=== 0;
       if(ok) 
         $janal.cleanMarks();
-      else
+      else {
         $janal.show($janal.errors.inputs);
+        $janal.errors.inputs= [];
+      } // else  
       $janal.errors.customs= [];
       if((typeof(customs)!== 'undefined' && typeof(customs)=== 'boolean' && customs) || (typeof(blockui)!== 'undefined' && blockui))
         $janal.desbloquear();
@@ -1076,7 +1079,7 @@
                 }); // each                
 							} // try
 							catch(error) {
-								$janal.console('janal.revert: Error: '+ error);
+								$janal.console('janal.revert: error, '+ error);
 							} // catch	
 						});
 					} // if	
@@ -1109,7 +1112,7 @@
                 }); // each                
 							} // try
 							catch(error) {
-								$janal.console('janal.valid: Error: '+ error);
+								$janal.console('janal.valid: error, '+ error);
 							} // catch	
 						});
 					} // if	
@@ -1141,14 +1144,13 @@
 								$janal.rules(id, $(this), $janal.vector(complete, ['\\\|']), '');
 							} // try
 							catch(error) {
-								$janal.console('janal.element: Error: '+ error);
+								$janal.console('janal.element: error, '+ error);
 							} // catch	
 						});
 					} // if	
         } // if  
       }); // each
       $janal.programmer($janal.errors.validations);
-//      $janal.hide();
       if(typeof(blockui)!== 'undefined' && blockui)
         $janal.bloquear();
       var validator= $('#'+ $janal.form).validate();
@@ -1160,8 +1162,10 @@
       if(ok) 
         $janal.cleanMarks();
       else
-				if($janal.errors.inputs.length> 0)
+				if($janal.errors.inputs.length> 0) {
           $janal.show($janal.errors.inputs);
+          $janal.errors.inputs= [];
+        } // if  
       if(typeof(blockui)!== 'undefined' && blockui)
         $janal.desbloquear();
       $janal.reference= null;
