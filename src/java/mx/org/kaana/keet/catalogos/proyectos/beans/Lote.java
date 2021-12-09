@@ -1,5 +1,6 @@
 package mx.org.kaana.keet.catalogos.proyectos.beans;
 
+import java.util.Objects;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosLotesDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -52,15 +53,38 @@ public class Lote extends TcKeetProyectosLotesDto{
 		return !this.accion.equals(ESql.DELETE);
 	}
 
-	@Override
-	public int hashCode() {
-		int hash = 3;
-    hash = 41 * hash + (getManzana() != null ? getManzana().hashCode() : 0);
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 97 * hash + Objects.hashCode(this.getManzana());
+    hash = 97 * hash + Objects.hashCode(this.getLote());
     return hash;
-	}
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Lote other = (Lote) obj;
+    if (!Objects.equals(this.getManzana(), other.getManzana())) {
+      return false;
+    }
+    if (!Objects.equals(this.getLote(), other.getLote())) {
+      return false;
+    }
+    return true;
+  }
 	
 	@Override
   public Class toHbmClass() {
     return TcKeetProyectosLotesDto.class;
   }	
+  
 }

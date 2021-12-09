@@ -112,8 +112,8 @@ public class Proyecto extends TcKeetProyectosDto {
 		return regresar;
 	} // removeLote	
 	
-	public void doAddLote() throws Exception{
-		this.addLote(new Lote(ESql.INSERT, (this.lotes.size()+1)*(-1L)));
+	public void doAddLote() throws Exception {
+		this.addLote(new Lote(ESql.INSERT, (this.lotes.size()+1)* (-1L)));
 	}
 	
 	public boolean validaPrototipos(List<UISelectEntity> uISelectEntitys) throws Exception{
