@@ -59,7 +59,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("clientes", UIEntity.seleccione("TcManticClientesDto", "sucursales", this.attrs, "clave"));
-      this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", this.attrs, "nombre"));
+      this.attrs.put("desarrollos", UIEntity.seleccione("TcKeetDesarrollosDto", "row", this.attrs, "nombres"));
       this.attrs.put("tipoObras", UIEntity.seleccione("VistaTiposObrasDto", "catalogo", this.attrs, "tipoObra"));
       this.attrs.put("fachadas", UIEntity.seleccione("TcKeetTiposFachadasDto", "row", this.attrs, "nombre"));
     } // try

@@ -108,7 +108,9 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosPrototiposFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosPrototiposFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosPrototiposFiltro.lazyModel.rowCount gt keetCatalogosPrototiposFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosPrototiposFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosPrototiposFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosPrototiposFiltro.lazyModel.rowCount gt keetCatalogosPrototiposFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections(); PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header">
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem value="Agregar" action="#{keetCatalogosPrototiposFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" ajax="false"/>						
@@ -161,7 +163,7 @@
               <p:outputLabel value="Total [#{keetCatalogosPrototiposFiltro.lazyModel== null? 0: keetCatalogosPrototiposFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
-          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{keetCatalogosPrototiposFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
             <p:menuitem id="modificar" action="#{keetCatalogosPrototiposFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
@@ -175,7 +177,7 @@
       </div>
     </div>		           				
     <p:panelGrid id="estructura" columns="1" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100" style="display: #{empty keetCatalogosPrototiposFiltro.raiz? 'none': ''}">
-      <p:tree id="arbol" value="#{keetCatalogosPrototiposFiltro.raiz}" var="row" selectionMode="single" selection="#{keetCatalogosPrototiposFiltro.attrs.seleccionado}" dynamic="true" orientation="horizontal">
+      <p:tree id="arbol" value="#{keetCatalogosPrototiposFiltro.raiz}" var="row" selectionMode="single" selection="#{keetCatalogosPrototiposFiltro.attrs.nodo}" dynamic="true" orientation="horizontal">
         <p:ajax event="expand" process="@this" update="@this" listener="#{keetCatalogosPrototiposFiltro.doShowConceptos}"/>
         <p:ajax event="select" process="@this" update="@this" listener="#{keetCatalogosPrototiposFiltro.doSelectEstacion}"/>
         <p:treeNode styleClass="#{row.descripcion}">

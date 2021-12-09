@@ -118,7 +118,7 @@ public class Transaccion extends IBaseTnx {
 						this.proyecto.getProyecto().setIdProyectoEstatus(this.bitacora.getIdProyectoEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.proyecto.getProyecto())>= 1L;
 						if(this.bitacora.getIdProyectoEstatus().equals(7L))
-							crearContrato(sesion);
+							this.crearContrato(sesion);
 					} // if
 					break;
 			} // switch
@@ -225,9 +225,9 @@ public class Transaccion extends IBaseTnx {
 				lote.setIdContratoLoteEstatus(1L);
 				DaoFactory.getInstance().insert(sesion, lote);
 			} // for
-		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetProyectosArchivosDto", "toContratos", contratosDto.toMap()));
-		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosPresupuestosDto.class,"TcKeetProyectosPrespuestosDto", "toContratos", contratosDto.toMap()));
-		  cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosGeneradoresDto.class,"TcKeetProyectosGeneradoresDto", "toContratos", contratosDto.toMap()));
+		  this.cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosArchivosDto.class,"TcKeetProyectosArchivosDto", "toContratos", contratosDto.toMap()));
+		  this.cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosPresupuestosDto.class,"TcKeetProyectosPrespuestosDto", "toContratos", contratosDto.toMap()));
+		  this.cargarDocumentos(sesion, DaoFactory.getInstance().toEntitySet(TcKeetContratosGeneradoresDto.class,"TcKeetProyectosGeneradoresDto", "toContratos", contratosDto.toMap()));
 		} // try
 		catch (Exception e) {
 			throw e;

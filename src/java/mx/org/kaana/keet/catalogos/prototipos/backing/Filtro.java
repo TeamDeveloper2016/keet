@@ -137,7 +137,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				  regresar= "importar".concat(Constantes.REDIRECIONAR);	
 				  break;
 				case COMPLEMENTAR:
-					if(((Entity) this.attrs.get("seleccionado")).toLong("idEstacion")!= null) {//agregar estacion
+					if(((Entity)this.attrs.get("seleccionado")).toLong("idEstacion")!= null) {//agregar estacion
 						estacionDto= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, ((Entity) this.attrs.get("seleccionado")).toLong("idEstacion"));
 						JsfBase.setFlashAttribute("estacionProcess", estacionDto);
 						regresar= "/Paginas/Keet/Estaciones/filtro".concat(Constantes.REDIRECIONAR);
@@ -241,12 +241,16 @@ public class Filtro extends IBaseFilter implements Serializable {
  
   public void doShowEstaciones(Entity row) {
     try {
-      TcKeetEstacionesDto father= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, row.toLong("idEstacion"));
-      this.raiz= new DefaultTreeNode(father, null);
-      this.toLoadItemsEstacion(father, this.raiz);
-      for (TreeNode node: this.raiz.getChildren()) {
-        this.toLoadItemsEstacion((TcKeetEstacionesDto)node.getData(), node);
-      } // for
+      if(row.toLong("idEstacion")!= null) {
+        TcKeetEstacionesDto father= (TcKeetEstacionesDto)DaoFactory.getInstance().findById(TcKeetEstacionesDto.class, row.toLong("idEstacion"));
+        this.raiz= new DefaultTreeNode(father, null);
+        this.toLoadItemsEstacion(father, this.raiz);
+        for (TreeNode node: this.raiz.getChildren()) {
+          this.toLoadItemsEstacion((TcKeetEstacionesDto)node.getData(), node);
+        } // for
+      } // if
+      else 
+        JsfBase.addMessage("Prototipo", "No se tiene asignado una plantilla de estaciones / conceptos");
     } // try  
     catch (Exception e) {
       Error.mensaje(e);

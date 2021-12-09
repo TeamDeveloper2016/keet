@@ -35,23 +35,23 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90, janal-wid-col-38">		
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
                 <p:outputLabel for="clave" value="Clave:"/>
 								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.clave}" />											
                 <p:outputLabel for="etapa" value="Etapa:"/>
                 <p:inputText id="etapa" styleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.etapa}" />								
 								<p:outputLabel for="noViviendas" value="No. viviendas"/>
-                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.noViviendas}"/>                
+                <p:inputNumber id="noViviendas" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.noViviendas}" decimalPlaces="0"/>
 								<p:outputLabel for="idDesarrollo" value="Desarrollo:"/>
                 <p:selectOneMenu id="idDesarrollo" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.ikDesarrollo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.desarrollos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
+									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.desarrollos}" var="element" itemValue="#{element}" itemLabel="#{element.nombres}"/>
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombres}"/>
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="idTipoObra" value="Tipo de obra:"/>
                 <p:selectOneMenu id="idTipoObra" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.ikTipoObra}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.tipoObras}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.tipoObra} - #{element.tipoDivision}"/>
+									<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.tipoObras}"  var="element" itemValue="#{element}" itemLabel="[ #{element.clave} ] #{element.tipoObra}#{empty element.tipoDivision or element.tipoDivision eq ''? '': ' | '}#{element.tipoDivision}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -69,7 +69,7 @@
 						<p:tab title="Siembra" >	
 							<p:outputLabel for="idCliente" value="Cliente:"/>
 							<p:selectOneMenu id="idCliente" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+								<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.razonSocial or element.razonSocial eq ''? '': '|'}#{element.razonSocial}"/>
 								<p:ajax event="change" listener="#{keetCatalogosProyectosAccion.doLoadPrototipos}" process="@this" update="tablaLotes" />
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -84,7 +84,7 @@
 							<p:outputLabel value="*Selecciona el cliente para cargar sus prototipos"/>
 							<p:spacer/>
 							<p:dataTable id="tablaLotes" rowIndexVar="index" var="lote" value="#{keetCatalogosProyectosAccion.proyecto.proyecto.lotes}" rows="6" paginator="false" reflow="true" rowKey="#{lote.key}" emptyMessage=" " styleClass="paginated">																					
-								<p:column  headerText="Codigo" class="janal-wid-6">										
+								<p:column headerText="Codigo" class="janal-wid-6">										
 									<p:inputText rendered="#{lote.mostar}" value="#{lote.clave}" styleClass="janal-wid-100-txt"/>
 								</p:column>	
 								<p:column  headerText="Prototipo" class="janal-wid-30">										
@@ -96,7 +96,7 @@
 									  </p:column>  
 									</p:selectOneMenu>			
 								</p:column>	                  
-								<p:column  headerText="Fecha inicio" class="janal-wid-20">										
+								<p:column headerText="Fecha inicio" class="janal-wid-20">										
 									<p:calendar rendered="#{lote.mostar}" id="fechaInicial" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{lote.fechaInicio}"  mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" >
 									  <p:ajax event="dateSelect" listener="#{keetCatalogosProyectosAccion.proyecto.proyecto.doCalculateFecha(lote)}" process="@this tablaLotes" update="fechaTermino"/>
 									</p:calendar>
@@ -117,7 +117,7 @@
 								</p:column>	
                 <p:column  headerText="Tipo de fachada" class="janal-wid-30">										
 									<p:selectOneMenu rendered="#{lote.mostar}" value="#{lote.ikFachada}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
-										<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.fachadas}"  var="element" itemValue="#{element}" itemLabel="#{element.grupo} - #{element.nombre}"/>
+										<f:selectItems value="#{keetCatalogosProyectosAccion.attrs.fachadas}"  var="element" itemValue="#{element}" itemLabel="#{element.grupo}#{empty element.grupo or element.grupo eq ''? '': '|'}#{element.nombre}"/>
 										<p:column headerText="Nombre">
 										  <h:outputText value="#{item.nombre}"/>
 									  </p:column>  

@@ -48,8 +48,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      loadCatalogos();
-			doLoad();
+      this.loadCatalogos();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -82,7 +82,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-					this.prototipo= new RegistroPrototipo(Long.valueOf(this.attrs.get("idPrototipo").toString()));
+					this.prototipo= new RegistroPrototipo((Long)this.attrs.get("idPrototipo"));
 					this.prototipo.selectConstructivo((List<UISelectEntity>)this.attrs.get("constructivos"));
           break;
       } // switch

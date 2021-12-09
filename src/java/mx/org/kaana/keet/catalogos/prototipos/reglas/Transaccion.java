@@ -40,7 +40,7 @@ public class Transaccion extends IBaseTnx {
 					this.prototipo.getPrototipo().setIdUsuario(idUsuario);
 					this.prototipo.getPrototipo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 					regresar= DaoFactory.getInstance().insert(sesion, this.prototipo.getPrototipo())>= 1L;
-					registrarDias(sesion);
+					this.registrarDias(sesion);
 					for(SistemaConstructivo item: this.prototipo.getConstructivos()){
 						item.setIdUsuario(idUsuario);
 						item.setIdPrototipo(this.prototipo.getPrototipo().getIdPrototipo());
