@@ -66,7 +66,7 @@ public class TcKeetProyectosLotesDto implements IBaseDto, Serializable {
   }
 
   public TcKeetProyectosLotesDto(Long key) {
-    this(null, null, LocalDate.now(), null, null, LocalDate.now(), new Long(-1L), null, null, null, null, null, null, null);
+    this(null, null, LocalDate.now(), null, null, LocalDate.now(), new Long(-1L), null, null, null, null, -1L, null, null);
     setKey(key);
   }
 

@@ -337,7 +337,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params.put(Constantes.SQL_CONDICION, Objects.equals(this.nomina.getIdCompleta(), 2L)? " (tr_mantic_empresa_personal.id_contratista is null and tr_mantic_empresa_personal.id_puesto!= 6) ": Constantes.SQL_VERDADERO);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", proceso, params);
 			if(personal!= null && !personal.isEmpty()) {
-        this.texto= Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, personal.size())+ " persona(s) y ";
+        this.texto= Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, personal.size())+ " persona(s) ";
   			monitoreo.setTotal(new Long(personal.size()));
 	  		monitoreo.setId("NOMINA DEL PERSONAL");				
 				int count= 1;
@@ -445,7 +445,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params.put("idNomina", this.idNomina);
 			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", "proveedores", params, Constantes.SQL_TODOS_REGISTROS);
 			if(personal!= null && !personal.isEmpty()) {
-        this.texto= this.texto+ Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, personal.size())+ " proveedor(es)";
+        this.texto= this.texto+ " y "+ Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, personal.size())+ " proveedor(es)";
 				int count= 1;
 				for (Entity persona: personal) {
 					proveedor= this.existProveedor(sesion, persona.toLong("idProveedor"));
@@ -1088,7 +1088,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
             break;
           case "gylvi":
             residentes.put("Luis Cesar Lopez Manzur", "4494644591");
-            residentes.put("Jordi Alfonso Fariña Quiroz", "4493526768");
+            residentes.put("Jordi Alfonso Fariña Quiroz", "4495827455");
             break;
         } // swtich
         notificar= new Cafu(sujeto.toString("nomina"), "*"+ sujeto.toString("inicio")+ "* al *"+ sujeto.toString("termino")+ "*", contratistas);

@@ -5,7 +5,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.keet.db.dto.TcKeetProyectosLotesDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
-public class Lote extends TcKeetProyectosLotesDto{
+public class Lote extends TcKeetProyectosLotesDto {
 
 	private static final long serialVersionUID = 1088774352011658013L;	
 	private UISelectEntity ikPrototipo;

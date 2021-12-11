@@ -3354,6 +3354,7 @@
 				  tc_mantic_proveedores on tc_keet_contratos_lotes_proveedores.id_proveedor= tc_mantic_proveedores.id_proveedor
 				where
 					(tc_keet_contratos_destajos_proveedores.id_nomina is null or tc_keet_contratos_destajos_proveedores.id_nomina= {idNomina})
+          and tc_keet_contratos_destajos_proveedores.costo> 0
 				order by
 					tc_keet_contratos_lotes_proveedores.id_proveedor
 			</select>

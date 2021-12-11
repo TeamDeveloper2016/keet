@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -65,26 +66,29 @@ public class Transaccion extends IBaseTnx {
 		try {
 			switch(accion){
 				case AGREGAR:					
-					siguiente= toSiguiente(sesion);
+					siguiente= this.toSiguiente(sesion);
 					this.proyecto.getProyecto().setConsecutivo(siguiente.getConsecutivo());
 					this.proyecto.getProyecto().setOrden(siguiente.getOrden());
 					this.proyecto.getProyecto().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
 					this.proyecto.getProyecto().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 					this.proyecto.getProyecto().setIdProyectoEstatus(1L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.proyecto.getProyecto())>= 1L;
-					for(Lote item:this.proyecto.getProyecto().getLotes())
-						actualizarLote(sesion, item);
+          int count= 1;
+					for(Lote item:this.proyecto.getProyecto().getLotes()) {
+            item.setOrden(new Long(count++));
+						this.actualizarLote(sesion, item);
+          } // for
 					//crearContrato(sesion);
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.proyecto.getProyecto())>= 1L;
 					for(Lote item:this.proyecto.getProyecto().getLotes())
-						actualizarLote(sesion, item);
+						this.actualizarLote(sesion, item);
 					break;				
 				case ELIMINAR:
 					for(Lote item:this.proyecto.getProyecto().getLotes()){
 						item.setAccion(ESql.DELETE);
-						actualizarLote(sesion, item);
+						this.actualizarLote(sesion, item);
 					} // for
 					regresar= DaoFactory.getInstance().delete(sesion, this.proyecto.getProyecto())>= 1L;
 					break;
@@ -96,18 +100,18 @@ public class Transaccion extends IBaseTnx {
 						case DOCUMENTOS:
 							for(Documento dto: this.proyecto.getDocumentos()){
 								if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
-									toSaveFile(dto.getIdArchivo());
+									this.toSaveFile(dto.getIdArchivo());
 							} // for
 							break;
 						case GENERADORES:
 							for(Generador dto: this.proyecto.getGeneradores())
 								if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
-									toSaveFile(dto.getIdArchivo());
+									this.toSaveFile(dto.getIdArchivo());
 							break;
 						case PRESUPUESTOS:
 							for(Presupuesto dto: this.proyecto.getPresupuestos()){
 								if(DaoFactory.getInstance().insert(sesion, dto)>= 1L)
-									toSaveFile(dto.getIdArchivo());
+									this.toSaveFile(dto.getIdArchivo());
 							} // for
 							break;
 					} // switch
@@ -154,15 +158,21 @@ public class Transaccion extends IBaseTnx {
 	private void actualizarLote(Session sesion, Lote item) throws Exception {
 		Value orden= null;
 		try {
-			switch(item.getAccion()){
+			switch(item.getAccion()) {
 				case INSERT:
           item.setIdProyectoLote(-1L);
 					item.setIdProyecto(this.proyecto.getProyecto().getIdProyecto());
 					item.setIdUsuario(JsfBase.getIdUsuario());
-					orden= DaoFactory.getInstance().toField("TcKeetProyectosLotesDto", "getOrden", item.toMap(), "maxOrden");
-					item.setOrden(orden.toLong(1L));
+          if(item.getOrden()== null || Objects.equals(item.getOrden(), -1L)) {
+					  orden= DaoFactory.getInstance().toField("TcKeetProyectosLotesDto", "getOrden", item.toMap(), "maxOrden");
+            if(orden!= null && orden.getData()!= null)
+					    item.setOrden(orden.toLong());
+            else
+              item.setOrden(1L);
+          } // if  
 					DaoFactory.getInstance().insert(sesion, item);
-					cargarPlanos(sesion, (List<TcKeetProyectosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetProyectosArchivosDto.class,"TcKeetPrototiposArchivosDto", "toProyectos", item.toMap()));
+					this.cargarPlanos(sesion, (List<TcKeetProyectosArchivosDto>)DaoFactory.getInstance().toEntitySet(TcKeetProyectosArchivosDto.class, "TcKeetPrototiposArchivosDto", "toProyectos", item.toMap()));
+          sesion.flush();
 					break;
 				case UPDATE:
 					DaoFactory.getInstance().update(sesion, item);
