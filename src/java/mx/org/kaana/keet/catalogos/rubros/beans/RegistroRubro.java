@@ -18,7 +18,7 @@ public class RegistroRubro implements Serializable {
 	}
 	
   public RegistroRubro(Long idRubro) {
-		init(idRubro);
+		this.init(idRubro);
 	}
 
 	public List<RubroGrupo> getRubrosGrupos() {
@@ -82,8 +82,5 @@ public class RegistroRubro implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch			
 	} // doEliminarRubroGrupo
-	
-
-	
 
 }

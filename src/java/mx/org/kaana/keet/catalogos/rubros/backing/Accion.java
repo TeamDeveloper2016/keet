@@ -26,6 +26,8 @@ import mx.org.kaana.libs.reflection.Methods;
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
+  private static final long serialVersionUID = -4359690122139300162L;
+
 	private RegistroRubro rubro;
 	
 	public RegistroRubro getRubro() {
@@ -46,8 +48,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idRubro", JsfBase.getFlashAttribute("idRubro"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales()); 
-      loadCatalogos();
-			doLoad();
+      this.loadCatalogos();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -56,7 +58,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // init
 
 	private void loadCatalogos(){
-		Map<String, Object>params              = null;
+		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);

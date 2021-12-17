@@ -1835,7 +1835,8 @@ public class Transaccion extends IBaseTnx {
 										JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 										nombre, // String nombreComercial
                     2L, // Long idSubcontratita
-                    0D // Double porcentajeFondo
+                    0D, // Double porcentajeFondo
+                    0D // Double saldo
 									);
 									DaoFactory.getInstance().insert(sesion, proveedor);
 

@@ -3850,6 +3850,12 @@
         where      
           codigo = '{codigo}' and id_rubro = {idRubro}
       </select>
+      <select id="siguiente">
+        select      
+          max(orden)+ 1 as siguiente
+        from      
+          tc_keet_rubros
+      </select>
     </unit>
 		<unit id="TcKeetRubrosGruposDto">
       <select id="row">
@@ -3869,6 +3875,8 @@
           tc_keet_rubros_grupos
         where 
           id_rubro = {idRubro}
+        order by
+          id_punto_grupo
       </select>
       <select id="identically">
         select      
@@ -3879,7 +3887,7 @@
           id_rubro_grupo = {idRubroGrupo} and id_punto_grupo = {idPuntoGrupo} and id_rubro = {idRubro}
       </select>
     </unit>
-		    <unit id="TcKeetPartidasDto">
+		<unit id="TcKeetPartidasDto">
       <select id="row">
         select    
 				  tc_keet_partidas.id_partida id_key,  

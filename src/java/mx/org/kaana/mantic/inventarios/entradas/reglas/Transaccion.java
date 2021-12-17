@@ -37,6 +37,7 @@ import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntradaProcess;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaLoteFamilia;
@@ -394,6 +395,7 @@ public class Transaccion extends Inventarios implements Serializable {
 			else
 				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, 1L);
 			DaoFactory.getInstance().insert(sesion, deuda);
+      this.addSaldoProveedor(sesion, this.orden.getIdProveedor(), deuda.getSaldo());
       TcManticEmpresasBitacoraDto movimiento= new TcManticEmpresasBitacoraDto(
         "SE REGISTRO LA CUENTA POR PAGAR", // String justificacion, 
         deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
@@ -567,5 +569,18 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // catch	
 		return regresar;
 	} // registrarFamiliasLotes  
+  
+  private void addSaldoProveedor(Session sesion, Long idProveedor, Double saldo) throws Exception {
+    try {      
+      TcManticProveedoresDto proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(sesion, TcManticProveedoresDto.class, idProveedor);
+      if(proveedor!= null) {
+        proveedor.setSaldo(proveedor.getSaldo()+ saldo);
+        DaoFactory.getInstance().update(sesion, proveedor);
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+  }
   
 } 

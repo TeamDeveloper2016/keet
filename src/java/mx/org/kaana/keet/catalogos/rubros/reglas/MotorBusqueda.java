@@ -24,7 +24,7 @@ public class MotorBusqueda implements Serializable{
 	
 	public Rubro toRubro() throws Exception {
 		Rubro regresar= null;
-	  Map<String, Object>params              = null;
+	  Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_rubro=".concat(this.idRubro.toString()));

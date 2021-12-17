@@ -164,6 +164,8 @@ public class Transaccion extends IBaseTnx {
 					observaciones= Cadena.isVacio(deudaReabrir.getObservaciones()) ? this.deuda.getObservaciones() : deudaReabrir.getObservaciones().concat("; ").concat(this.deuda.getObservaciones());
 					deudaReabrir.setObservaciones(observaciones);
 					regresar= DaoFactory.getInstance().update(sesion, deudaReabrir)>= 1L;
+          TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, deudaReabrir.getIdNotaEntrada());
+          this.actualizarSaldoCatalogoProveedor(sesion, nota.getIdProveedor(), deudaReabrir.getSaldo(), Boolean.TRUE);
 					break;
 				case ELIMINAR:
 					regresar= this.eliminarPago(sesion);
@@ -893,6 +895,8 @@ public class Transaccion extends IBaseTnx {
       TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, item.getIdNotaEntrada());
       nota.setIdNotaEstatus(4L);// CANCELADA
       DaoFactory.getInstance().update(sesion, nota);
+      // AJUSTAR EL SALDO GLOBAL DEL PROVEEDOR
+      this.actualizarSaldoCatalogoProveedor(sesion, nota.getIdProveedor(), item.getSaldo(), false);
       //Long idNotaBitacora, String justificacion, Long idUsuario, Long idNotaEntrada, Long idNotaEstatus, String consecutivo, Double importe
       TcManticNotasBitacoraDto movimiento= new TcManticNotasBitacoraDto(
         -1L, // Long idNotaBitacora, 
@@ -971,9 +975,9 @@ public class Transaccion extends IBaseTnx {
 	protected void actualizarSaldoCatalogoProveedor(Session sesion, Long idProveedor, Double cantidad, boolean sumar) throws Exception{
 		TcManticProveedoresDto proveedor= null;
 		try {
-//			proveedor= (TcManticProveedoresDto) DaoFactory.getInstance().findById(sesion, TcManticProveedoresDto.class, idProveedor);
-//			proveedor.setSaldo(sumar ? (proveedor.getSaldo() + cantidad) : (proveedor.getSaldo() - cantidad));
-//			DaoFactory.getInstance().update(sesion, proveedor);
+			proveedor= (TcManticProveedoresDto) DaoFactory.getInstance().findById(sesion, TcManticProveedoresDto.class, idProveedor);
+			proveedor.setSaldo(sumar? (proveedor.getSaldo()+ cantidad): (proveedor.getSaldo()- cantidad));
+			DaoFactory.getInstance().update(sesion, proveedor);
 		} // try
 		catch (Exception e) {			
 			throw e;

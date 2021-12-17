@@ -5368,8 +5368,10 @@
 					tc_mantic_unidades_medidas.nombre medida
 				from
 				  tr_mantic_empaque_unidad_medida
-				inner join tc_mantic_unidades_medidas on tc_mantic_unidades_medidas.id_unidad_medida= tr_mantic_empaque_unidad_medida.id_unidad_medida
-				inner join tc_mantic_empaques on tc_mantic_empaques.id_empaque= tr_mantic_empaque_unidad_medida.id_empaque
+				inner join 
+          tc_mantic_unidades_medidas on tc_mantic_unidades_medidas.id_unidad_medida= tr_mantic_empaque_unidad_medida.id_unidad_medida
+				inner 
+          join tc_mantic_empaques on tc_mantic_empaques.id_empaque= tr_mantic_empaque_unidad_medida.id_empaque
 		 	  order by
 				  tc_mantic_empaques.nombre,
 				  tc_mantic_unidades_medidas.nombre

@@ -39,7 +39,6 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.weld.context.RequestContext;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 

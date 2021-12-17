@@ -3,6 +3,7 @@ package mx.org.kaana.keet.catalogos.rubros.reglas;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
@@ -29,11 +30,13 @@ public class Transaccion extends IBaseTnx {
 			switch(accion){
 				case AGREGAR:			
 					this.registroRubro.getRubro().setIdUsuario(JsfBase.getIdUsuario());
-					this.registroRubro.getRubro().setOrden(1L);
+          this.registroRubro.getRubro().setIdDestajo(1L);
+          this.registroRubro.getRubro().setIdAjuste(2L);
+					this.registroRubro.getRubro().setOrden(this.toSiguiente(sesion));
 					DaoFactory.getInstance().insert(sesion, this.registroRubro.getRubro());
-					verficaPaqueteExtra(sesion);
+					this.verficaPaqueteExtra(sesion);
 					for(RubroGrupo item: this.registroRubro.getRubrosGrupos())
-				    actualizarRubroGrupo(sesion, item);
+				    this.actualizarRubroGrupo(sesion, item);
 					break;
 				case MODIFICAR:
 					DaoFactory.getInstance().update(sesion, this.registroRubro.getRubro());
@@ -101,8 +104,27 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 	} // verficaPaqueteExtra
+ 
+  private Long toSiguiente(Session sesion) throws Exception {
+    Long regresar= 1L;
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      Value value= DaoFactory.getInstance().toField(sesion, "TcKeetRubrosDto", "siguiente", params, "siguiente");
+      if(value!= null && value.getData()!= null)
+        regresar= value.toLong();
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
 }

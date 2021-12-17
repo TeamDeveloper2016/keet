@@ -848,8 +848,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaTableroDto", "notificar", params);
       if(items!= null && !items.isEmpty()) {
         UIBackingUtilities.toFormatEntitySet(items, columns);
-        Long idDesarrollo = -1L;
-        jasper            = new Reporte();	
+        Long idDesarrollo= -1L;
+        jasper           = new Reporte();	
         jasper.init();      
         for (Entity item : items) {
           if(Objects.equals(idDesarrollo, -1L) || !Objects.equals(idDesarrollo, item.toLong("idDesarrollo"))) {
@@ -861,7 +861,8 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
                 if(Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO.getKey()) || Objects.equals(email.toLong("idTipoContacto"), ETiposContactos.CORREO_PERSONAL.getKey())) 
                   sb.append(email.toString("valor")).append(", ");
               } // for
-            sb.delete(sb.length()- 2, sb.length());
+            if(sb.length()> 2)
+              sb.delete(sb.length()- 2, sb.length());
             idDesarrollo= item.toLong("idDesarrollo");
           } // for
           List<Entity> correos= null;

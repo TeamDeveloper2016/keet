@@ -53,17 +53,21 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   private String criterio;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="id_destajo")
+  private Long idDestajo;
+  @Column (name="id_ajuste")
+  private Long idAjuste;
 
   public TcKeetRubrosDto() {
     this(new Long(-1L));
   }
 
   public TcKeetRubrosDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null, null, 2L, null);
+    this(null, null, null, null, null, null, new Long(-1L), null, 6L, 2L, null, 1L, 2L);
     setKey(key);
   }
 
-  public TcKeetRubrosDto(String descripcion, String codigo, Long idExtra, Long idUsuario, Long idEmpaqueUnidadMedida, Long orden, Long idRubro, String nombre, Long nivel, Long idEvidencia, String criterio) {
+  public TcKeetRubrosDto(String descripcion, String codigo, Long idExtra, Long idUsuario, Long idEmpaqueUnidadMedida, Long orden, Long idRubro, String nombre, Long nivel, Long idEvidencia, String criterio, Long idDestajo, Long idAjuste) {
     setDescripcion(descripcion);
     setCodigo(codigo);
     setIdExtra(idExtra);
@@ -76,10 +80,12 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
     setRegistro(LocalDateTime.now());
     this.idEvidencia= idEvidencia;
     this.criterio= criterio;
+    this.idDestajo= idDestajo;
+    this.idAjuste= idAjuste;
   }
 	
   public void setDescripcion(String descripcion) {
-    this.descripcion = descripcion;
+    this.descripcion = descripcion!= null? descripcion.toUpperCase(): descripcion;
   }
 
   public String getDescripcion() {
@@ -87,7 +93,7 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   }
 
   public void setCodigo(String codigo) {
-    this.codigo = codigo;
+    this.codigo = codigo!= null? codigo.toUpperCase(): codigo;
   }
 
   public String getCodigo() {
@@ -135,7 +141,7 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
   }
 
   public void setNombre(String nombre) {
-    this.nombre = nombre;
+    this.nombre = nombre!= null? nombre.toUpperCase(): nombre;
   }
 
   public String getNombre() {
@@ -172,6 +178,22 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
 
   public LocalDateTime getRegistro() {
     return registro;
+  }
+
+  public Long getIdDestajo() {
+    return idDestajo;
+  }
+
+  public void setIdDestajo(Long idDestajo) {
+    this.idDestajo = idDestajo;
+  }
+
+  public Long getIdAjuste() {
+    return idAjuste;
+  }
+
+  public void setIdAjuste(Long idAjuste) {
+    this.idAjuste = idAjuste;
   }
 
   @Transient
@@ -211,6 +233,10 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCriterio());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdDestajo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAjuste());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -230,14 +256,16 @@ public class TcKeetRubrosDto implements IBaseDto, Serializable {
 		regresar.put("nivel", getNivel());
 		regresar.put("idEvidencia", getIdEvidencia());
 		regresar.put("criterio", getCriterio());
+		regresar.put("idDestajo", getIdDestajo());
+		regresar.put("idAjuste", getIdAjuste());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-      getDescripcion(), getCodigo(), getIdExtra(), getIdUsuario(), getIdEmpaqueUnidadMedida(), getOrden(), getIdRubro(), getNombre(), getNivel(), getRegistro(), getIdEvidencia(), getCriterio()
+    Object[] regresar = new Object[] {
+      getDescripcion(), getCodigo(), getIdExtra(), getIdUsuario(), getIdEmpaqueUnidadMedida(), getOrden(), getIdRubro(), getNombre(), getNivel(), getRegistro(), getIdEvidencia(), getCriterio(), getIdDestajo(), getIdAjuste()
     };
     return regresar;
   }

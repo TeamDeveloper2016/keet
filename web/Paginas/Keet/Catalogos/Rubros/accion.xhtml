@@ -14,9 +14,10 @@
 				'contenedorGrupos\\:codigo': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:nombre': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idEmpaqueUnidadMedida': {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:idExtra': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idEvidencia' : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idExtra'     : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:departamento': {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+				'contenedorGrupos\\:descripcion' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
 
 			$(document).ready(function () {
@@ -40,13 +41,20 @@
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-col-120, janal-wid-100-txt">		
                 <p:outputLabel for="codigo" value="Codigo:"/>
-								<p:inputText id="codigo" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.codigo}" />			
+								<p:inputText id="codigo" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.codigo}">			
+                  <p:ajax event="change" process="@this"/>
+                </p:inputText>  
 								<p:outputLabel for="nombre" value="Nombre:"/>
-                <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.nombre}" />
+                <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.nombre}">
+                  <p:ajax event="change" process="@this"/>
+                </p:inputText>  
                 <p:outputLabel for="descripcion" value="Descripción:"/>
-                <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.descripcion}" />								
+                <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{keetCatalogosRubrosAccion.rubro.rubro.descripcion}">
+                  <p:ajax event="change" process="@this"/>
+                </p:inputText>  
 								<p:outputLabel for="idEmpaqueUnidadMedida" value="Unidad:"/>
 								<p:selectOneMenu id="idEmpaqueUnidadMedida" value="#{keetCatalogosRubrosAccion.rubro.rubro.ikEmpaqueUnidadMedida}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this"/>
 									<f:selectItems value="#{keetCatalogosRubrosAccion.attrs.unidades}" var="element" itemValue="#{element}" itemLabel="#{element.empaque} #{empty element.medida or element.medida eq ''? '': '|'} #{element.medida}"/>
 									<p:column headerText="Presentación">
 										<h:outputText value="#{item.empaque}"/>
@@ -55,20 +63,28 @@
 										<h:outputText value="#{item.medida}"/>
 									</p:column>   
 								</p:selectOneMenu>
+								<p:outputLabel for="idEvidencia" value="Evidencia:"/>
+							  <p:selectOneMenu id="idEvidencia" value="#{keetCatalogosRubrosAccion.rubro.rubro.idEvidencia}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+                  <p:ajax event="change" process="@this"/>
+									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
+									<f:selectItem itemValue="1" itemLabel="SI"/>
+									<f:selectItem itemValue="2" itemLabel="NO"/>
+								</p:selectOneMenu>
 								<p:outputLabel for="idExtra" value="Extra:"/>
 							  <p:selectOneMenu id="idExtra" value="#{keetCatalogosRubrosAccion.rubro.rubro.idExtra}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<p:ajax event="change"  process="@this" listener="#{keetCatalogosRubrosAccion.doLimpiaRubrosGrupos}" update="contenedorGrupos"/>
+                  <p:ajax event="change" process="@this" listener="#{keetCatalogosRubrosAccion.doLimpiaRubrosGrupos}" update="contenedorGrupos" oncomplete="janal.refresh()"/>
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItem itemValue="1" itemLabel="SI"/>
 									<f:selectItem itemValue="2" itemLabel="NO"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="departamento" value="Departamento:" rendered="#{keetCatalogosRubrosAccion.rubro.rubro.idExtra eq 1}"/>
-								<p:selectOneMenu id="departamento" value="#{keetCatalogosRubrosAccion.rubro.rubro.departamento}" rendered="#{keetCatalogosRubrosAccion.rubro.rubro.idExtra eq 1}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{keetCatalogosPuntosControlFiltro.attrs.departamentos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-								<p:column headerText="Nombre">
-									<h:outputText value="#{item.nombre}"/>
-								</p:column>   
-							</p:selectOneMenu>
+								<p:selectOneMenu id="departamento" value="#{keetCatalogosRubrosAccion.rubro.rubro.departamento}" rendered="#{keetCatalogosRubrosAccion.rubro.rubro.idExtra eq 1}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+  				        <p:ajax event="change" process="@this"/>
+				          <f:selectItems value="#{keetCatalogosPuntosControlFiltro.attrs.departamentos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+	  							<p:column headerText="Nombre">
+		  							<h:outputText value="#{item.nombre}"/>
+			  					</p:column>   
+				  			</p:selectOneMenu>
               </p:panelGrid>
 						</p:tab>
 						<p:tab title="Puntos de control" rendered="#{keetCatalogosRubrosAccion.rubro.rubro.idExtra gt 1}">		

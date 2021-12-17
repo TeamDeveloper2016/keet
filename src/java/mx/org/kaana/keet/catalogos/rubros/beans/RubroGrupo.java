@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.keet.db.dto.TcKeetPuntosGruposDto;
 import mx.org.kaana.keet.db.dto.TcKeetRubrosGruposDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -45,11 +43,9 @@ public class RubroGrupo extends TcKeetRubrosGruposDto{
 		this.accion = accion;
 	}
 	
-	
 	public boolean isVisible(){
 		return !this.accion.equals(ESql.DELETE);
 	}
-	
 		
 	public UISelectEntity getIkPuntoGrupo() {
 		return ikPuntoGrupo;
