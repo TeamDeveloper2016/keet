@@ -152,7 +152,7 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
       this.fields.clear();
       this.fields.add(new Lote("Código", "codigo", "", "janal-column-left MarAuto Responsive janal-wid-5"));
       this.fields.add(new Lote("Nombre", "nombre", "", "janal-column-left MarAuto Responsive"));
-      this.fields.add(new Lote("Costo", "valor", "", "janal-column-right MarAuto Responsive janal-wid-6", "janal-font-bold janal-color-black"));
+      this.fields.add(new Lote("Costo", "valor", "", "janal-column-right MarAuto Responsive janal-wid-5", "janal-font-bold janal-color-black"));
       // this.fields.add(new Lote("( % )", "pagar", " %", "janal-column-center MarAuto Responsive janal-wid-5"));
       // this.fields.add(new Lote("Pagado", "costo", "", "janal-column-right MarAuto Responsive janal-wid-6", "janal-font-bold janal-color-black"));
       params.put("sortOrder", "order by tt_keet_semanas.orden");
@@ -166,7 +166,7 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
           String lote= item.toString("lote").replaceAll("-", "");
           semana.append("if(tt_keet_temporal.lote= '").append(item.toString("lote")).append("', tt_keet_temporal.nomina, '-') as ").append(lote.toLowerCase()).append(", ");
           maximo.append("max(tt_keet_semanas.").append(lote).append(") as ").append(lote.toLowerCase()).append(", ");
-          this.fields.add(new Lote(lote, lote.toLowerCase(), "", "janal-column-center MarAuto Responsive janal-wid-6"));
+          this.fields.add(new Lote(lote, lote.toLowerCase(), "", "janal-column-center MarAuto Responsive janal-wid-5"));
         } // for
         semana.delete(semana.length()- 2, semana.length());
         maximo.delete(maximo.length()- 2, maximo.length());

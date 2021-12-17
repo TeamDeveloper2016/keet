@@ -2292,7 +2292,20 @@
           {maximo}
         from (
 				select
-          tt_keet_temporal.*,
+          tt_keet_temporal.id_key,
+          max(tt_keet_temporal.orden) as orden,
+          tt_keet_temporal.id_persona,
+          tt_keet_temporal.razon_social,
+          tt_keet_temporal.clave,
+          tt_keet_temporal.contrato,
+          tt_keet_temporal.etapa,
+          tt_keet_temporal.prototipo,
+          tt_keet_temporal.codigo,
+          tt_keet_temporal.nombre,
+          tt_keet_temporal.concepto,
+          tt_keet_temporal.registro,
+          tt_keet_temporal.valor,
+          tt_keet_temporal.costo,
           max(tt_keet_temporal.porcentaje) as pagar,
           {semana}
         from (

@@ -72,7 +72,7 @@
 							<f:facet name="header">
 								<h:outputText value=""/>
 							</f:facet>
-              <p:commandLink process="@this" update="detalle" title="Ver detalle" actionListener="#{keetCatalogosContratosDestajosHistorial.doDetalle(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage('#detalle')">
+              <p:commandLink process="@this" update="detalle" title="#{row['nombre']}" actionListener="#{keetCatalogosContratosDestajosHistorial.doDetalle(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage('#detalle')">
                 <i class="fa fa-fw fa-user janal-color-orange"></i>
               </p:commandLink>
 						</p:column>		
