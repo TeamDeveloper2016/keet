@@ -122,7 +122,7 @@ public class Transaccion extends IBaseTnx {
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+			throw new Exception(e!= null? e.getCause().toString(): "");
 		} // catch		
 		finally{
 			Methods.clean(params);
@@ -579,7 +579,10 @@ public class Transaccion extends IBaseTnx {
 			estacion  = (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.conceptoExtra.getIdEstacion());
 			estaciones= new Estaciones(sesion);			
 			list      = estaciones.toAllChildren(estacion.getClave(), estacion.getNivel().intValue()+1);			
-			clave     = estaciones.toNextKey(list.get(list.size()-1).getClave(), estacion.getNivel().intValue()+1);
+      if(list!= null && !list.isEmpty())
+			  clave   = estaciones.toNextKey(list.get(list.size()-1).getClave(), estacion.getNivel().intValue()+1);
+      else
+			  clave   = estaciones.toNextKey(estacion.getClave(), estacion.getNivel().intValue()+1);
 			clon= (TcKeetEstacionesDto) estacion.clone();
 			clon.setIdEstacion(-1L);
 			clon.setClave(clave);

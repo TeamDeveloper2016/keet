@@ -3240,7 +3240,7 @@
         where 
           {condicion} 
 				order by
-				  inicio, clave, manzana, lote
+				  inicio, manzana, convert(lote, unsigned integer)
       </select>
       <select id="identically">
         select      
@@ -3267,7 +3267,7 @@
         where 
           id_contrato= {idContrato} 
 				order by
-				  inicio, clave, manzana, lote
+				  inicio, manzana, convert(lote, unsigned integer)
       </select>
 			<select id="byContratoContratistas">
         select      
@@ -3284,7 +3284,7 @@
         where 
           id_contrato= {idContrato} 
 				order by
-				  clave, manzana, lote
+				  manzana, convert(lote, unsigned integer)
       </select>
 			<select id="byContratoResidentes">
         select      
@@ -3300,7 +3300,7 @@
         where 
           id_contrato= {idContrato} 
 				order by
-				  clave, manzana, lote
+				  manzana, convert(lote, unsigned integer)
       </select>
 			<select id="siguiente">
         select      

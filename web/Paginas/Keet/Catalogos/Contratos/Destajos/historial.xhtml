@@ -58,7 +58,7 @@
 						</p:tab>
 					</p:accordionPanel>						
 					<p:spacer height="3px"/>
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolResumen" var="row" reflow="true" value="#{keetCatalogosContratosDestajosHistorial.lazyResumen}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOTAL_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosHistorial.lazyResumen.rowCount gt keetCatalogosContratosDestajosHistorial.lazyResumen.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolResumen" var="row" reflow="true" value="#{keetCatalogosContratosDestajosHistorial.lazyResumen}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="60" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{keetCatalogosContratosDestajosHistorial.lazyResumen.rowCount gt keetCatalogosContratosDestajosHistorial.lazyResumen.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
 						<f:facet name="header">
 							<p:outputLabel id="titular" value="Resumen de conceptos por lotes y semana" styleClass="janal-text-white titular" style="float: left; text-align: left;"/>
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">

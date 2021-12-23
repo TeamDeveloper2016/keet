@@ -41,8 +41,8 @@ import org.primefaces.event.SelectEvent;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-  private RegistroProveedor registroProveedor;
-	private UISelectEntity domicilioBusqueda;
+  protected RegistroProveedor registroProveedor;
+	protected UISelectEntity domicilioBusqueda;
 
 	public RegistroProveedor getRegistroProveedor() {
 		return registroProveedor;
@@ -76,7 +76,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // initload
   
-	private void loadCollections() {
+	protected void loadCollections() {
 		this.loadEmpresas();
 		this.loadFamilias();
 		this.loadDepartamentos();
@@ -118,7 +118,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:
           this.registroProveedor = new RegistroProveedor();
-          this.registroProveedor.getProveedor().setIdSubcontratista(1L);
+          this.registroProveedor.getProveedor().setIdSubcontratista(2L);
 					this.loadCollections();
           break;
         case MODIFICAR:
@@ -280,6 +280,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       formatos.add(new Columna("dias", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       tiposProveedores= UIEntity.build("TcManticTiposProveedoresDto", params, formatos);
 			this.attrs.put("tiposProveedores", tiposProveedores);
+      this.attrs.put("tipoProveedor", new UISelectEntity(1L));
     } // try
     catch (Exception e) {
       throw e;

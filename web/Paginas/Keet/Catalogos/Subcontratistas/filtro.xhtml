@@ -114,13 +114,13 @@
               </f:facet>
               <h:outputText value="#{row['rfc']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.razonSocial}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="Razón social"/>
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>	      						
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.agente}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.agente}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Agente"/>
               </f:facet>
