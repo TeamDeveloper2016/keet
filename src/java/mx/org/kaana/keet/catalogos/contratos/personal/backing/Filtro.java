@@ -61,6 +61,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				opcionResidente= EOpcionesResidente.EMPLEADOS;		
 			this.attrs.put("titulo", opcionResidente.getTitulo());
 			this.attrs.put("opcionResidente", opcionResidente);
+      this.attrs.put("idContratoEstatus", opcionResidente.getIdContratoEstatus());
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getFlashAttribute("idDesarrolloProcess")!= null) {
 				this.attrs.put("idDesarrolloProcess", JsfBase.getFlashAttribute("idDesarrolloProcess"));
@@ -82,6 +83,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
+      params.put("idContratoEstatus", this.attrs.get("idContratoEstatus"));
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));

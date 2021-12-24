@@ -165,7 +165,7 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
         for (Entity item: lotes) {
           String lote= item.toString("lote").replaceAll("-", "");
           semana.append("if(tt_keet_temporal.lote= '").append(item.toString("lote")).append("', tt_keet_temporal.nomina, '-') as ").append(lote.toLowerCase()).append(", ");
-          maximo.append("max(tt_keet_semanas.").append(lote).append(") as ").append(lote.toLowerCase()).append(", ");
+          maximo.append("max(ifnull(tt_keet_semanas.").append(lote).append(", '-')) as ").append(lote.toLowerCase()).append(", ");
           this.fields.add(new Lote(lote, lote.toLowerCase(), "", "janal-column-center MarAuto Responsive janal-wid-5"));
         } // for
         semana.delete(semana.length()- 2, semana.length());

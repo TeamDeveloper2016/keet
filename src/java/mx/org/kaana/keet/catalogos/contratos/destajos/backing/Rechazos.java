@@ -126,7 +126,7 @@ public class Rechazos extends IBaseFilterMultiple implements Serializable {
     try {						
 			if(this.selecteds.length>= 1) {
 				transaccion= new Transaccion(this.loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
-				if(transaccion.ejecutar(EAccion.REPROCESAR)){
+				if(transaccion.ejecutar(EAccion.REPROCESAR)) {
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= this.doCancelar();
 				} // if

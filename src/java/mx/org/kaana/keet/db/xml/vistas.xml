@@ -2201,9 +2201,13 @@
       </select>
 			<select id="lotesResumen">
         select 
-          distinct(tt_keet_temporal.lote) as lote
+          tt_keet_temporal.manzana,
+          tt_keet_temporal.numero,
+          tt_keet_temporal.lote
         from (
 				select 
+          tc_keet_contratos_lotes.manzana,
+          tc_keet_contratos_lotes.lote as numero,
 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote
 				from
 				  tc_keet_contratos_destajos_contratistas 
@@ -2239,6 +2243,8 @@
           and {condicion}
         union all 
         select 
+          tc_keet_contratos_lotes.manzana,
+          tc_keet_contratos_lotes.lote as numero,
 				  concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote
 				from
 				  tc_keet_contratos_destajos_proveedores 
@@ -2269,8 +2275,11 @@
 				  and tc_keet_proyectos.id_desarrollo= {idDesarrollo}
           and {condicion}
         ) as tt_keet_temporal
+        group by
+          tt_keet_temporal.lote  
         order by
-          tt_keet_temporal.lote                
+          convert(tt_keet_temporal.manzana, unsigned integer),
+          convert(tt_keet_temporal.numero, unsigned integer)
       </select>  
 			<select id="historial">
         select
@@ -3867,7 +3876,8 @@
 				inner join 
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio= tc_keet_desarrollos.id_domicilio
 				where
-					{condicion}
+          tc_keet_contratos.id_contrato_estatus&lt; 8
+					and {condicion}
 				order by 
 					tc_keet_desarrollos.nombres, 
           tc_keet_contratos.registro desc
@@ -3925,7 +3935,8 @@
 				inner join 
 					tc_janal_usuarios on tr_mantic_empresa_personal.id_persona = tc_janal_usuarios.id_persona and tr_mantic_empresa_personal.id_persona= {idPersona}												
 				where
-					{condicion}
+          tc_keet_contratos.id_contrato_estatus&lt; 8
+					and {condicion}
 				order by 
 					tc_keet_desarrollos.nombres, tc_keet_contratos.registro desc
 			</select>
@@ -5180,14 +5191,23 @@
           tc_keet_desarrollos.descripcion,
           tc_mantic_clientes.id_cliente,
           tc_mantic_clientes.razon_social,
-          concat(tc_mantic_domicilios.calle, ', ', tc_mantic_domicilios.numero_exterior, if(tc_mantic_domicilios.numero_interior is NULL, '', concat(',', tc_mantic_domicilios.numero_interior)), if(tc_mantic_domicilios.codigo_postal is NULL, '', concat(', C.P.', tc_mantic_domicilios.codigo_postal))) domicilio,
+          concat(tc_mantic_domicilios.calle, ', ', tc_mantic_domicilios.numero_exterior, if(tc_mantic_domicilios.numero_interior is null, '', concat(',', tc_mantic_domicilios.numero_interior)), if(tc_mantic_domicilios.codigo_postal is NULL, '', concat(', C.P.', tc_mantic_domicilios.codigo_postal))) domicilio,
 					tc_mantic_clientes.id_empresa
         from
           tc_keet_desarrollos
-        inner join tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_desarrollos.id_cliente
-        inner join tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio= tc_keet_desarrollos.id_domicilio
+        inner join 
+          tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_desarrollos.id_cliente
+        inner join 
+          tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio= tc_keet_desarrollos.id_domicilio
+        inner join 
+          tc_keet_proyectos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        inner join 
+          tc_keet_contratos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 				where
-          {condicion}
+          tc_keet_contratos.id_contrato_estatus&lt; {idContratoEstatus}
+          and {condicion}
+        group by
+          tc_keet_desarrollos.id_desarrollo
 		    order by
 		      tc_keet_desarrollos.nombres
 			</select>	
@@ -5211,9 +5231,17 @@
 				inner join 
 					tc_mantic_clientes on tc_mantic_clientes.id_cliente= tc_keet_desarrollos.id_cliente         
 				inner join
-					tc_mantic_domicilios  on tc_mantic_domicilios.id_domicilio= tc_keet_desarrollos.id_domicilio     
+					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio= tc_keet_desarrollos.id_domicilio     
+        inner join 
+          tc_keet_proyectos on tc_keet_proyectos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
+        inner join 
+          tc_keet_contratos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
+				where
+          tc_keet_contratos.id_contrato_estatus&lt; {idContratoEstatus}
 				where
 					{condicion}      
+        group by
+          tc_keet_desarrollos.id_desarrollo
 				order by
 					tc_keet_desarrollos.nombres				
 			</select>			
