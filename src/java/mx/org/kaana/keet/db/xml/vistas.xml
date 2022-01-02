@@ -5204,7 +5204,7 @@
         inner join 
           tc_keet_contratos on tc_keet_contratos.id_proyecto= tc_keet_proyectos.id_proyecto
 				where
-          tc_keet_contratos.id_contrato_estatus&lt; {idContratoEstatus}
+          tc_keet_contratos.id_contrato_estatus&lt; 11
           and {condicion}
         group by
           tc_keet_desarrollos.id_desarrollo

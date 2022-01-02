@@ -397,7 +397,8 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
     Map<String, Object> params      = null;		
 		List<UISelectEntity> desarrollos= null;
     try {
-			params= new HashMap<>();						
+			params= new HashMap<>();					
+      params.put("idContratoEstatus", 11L);
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + this.getIkEmpresa().getKey());
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));

@@ -380,7 +380,8 @@ public class Almacen extends IBaseArticulos implements IBaseStorage, Serializabl
         params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((NotaEntrada)this.getAdminOrden().getOrden()).getIdEmpresa());
 			else
 				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
-			columns= new ArrayList<>();
+			params.put("idContratoEstatus", 11L);
+      columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
 			desarrollos= (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "clave");

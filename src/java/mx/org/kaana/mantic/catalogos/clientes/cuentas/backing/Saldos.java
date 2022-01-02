@@ -997,7 +997,8 @@ public class Saldos extends IBaseFilter implements Serializable {
         params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + empresa.getKey());
 			else
 				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
-			columns= new ArrayList<>();
+			params.put("idContratoEstatus", 11L);
+      columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("desarrollos", (List<UISelectEntity>) UIEntity.seleccione("VistaDesarrollosDto", "lazy", params, columns, "nombres"));			

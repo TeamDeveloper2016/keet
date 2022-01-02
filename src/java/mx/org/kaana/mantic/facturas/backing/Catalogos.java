@@ -696,7 +696,8 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
     Map<String, Object> params      = null;		
 		List<UISelectEntity> desarrollos= null;
     try {
-			params= new HashMap<>();						
+			params= new HashMap<>();
+      params.put("idContratoEstatus", 11L);
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((FacturaFicticia)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));

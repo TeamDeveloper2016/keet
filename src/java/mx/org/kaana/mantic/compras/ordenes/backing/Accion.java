@@ -186,6 +186,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     try {
 			params= new HashMap<>();						
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
+			params.put("idContratoEstatus", 11L);
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));

@@ -262,7 +262,8 @@ public class Consulta extends IBaseFilter implements Serializable {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {
-			params= new HashMap<>();			
+			params= new HashMap<>();	
+      params.put("idContratoEstatus", 11L);
   		params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
