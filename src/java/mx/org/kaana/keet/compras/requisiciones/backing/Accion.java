@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.compras.requisiciones.beans.RegistroRequisicion;
 import mx.org.kaana.keet.compras.requisiciones.reglas.AdminRequisicion;
 import mx.org.kaana.keet.compras.requisiciones.reglas.Transaccion;
@@ -90,7 +91,7 @@ public class Accion extends mx.org.kaana.mantic.facturas.backing.Catalogos imple
 		UISelectEntity desarrollo       = null;
     try {
 			params= new HashMap<>();		
-      params.put("idContratoEstatus", 11L);
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));

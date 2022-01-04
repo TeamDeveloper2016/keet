@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -697,7 +698,7 @@ public class Catalogos extends IBaseVenta implements IBaseStorage, Serializable 
 		List<UISelectEntity> desarrollos= null;
     try {
 			params= new HashMap<>();
-      params.put("idContratoEstatus", 11L);
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((FacturaFicticia)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));

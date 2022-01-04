@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.keet.cajachica.beans.ArchivoGasto;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.enums.EEstatusGastos;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
@@ -93,7 +94,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		Map<String, Object>params= null;		
 		try {
 			params= new HashMap<>();
-      params.put("idContratoEstatus", 11L);
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);
 			this.attrs.put("desarrollo", desarrollo);

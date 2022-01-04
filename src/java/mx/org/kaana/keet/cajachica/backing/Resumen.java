@@ -18,6 +18,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.enums.EEstatusGastos;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
@@ -70,7 +71,7 @@ public class Resumen extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;		
 		try {
 			params= new HashMap<>();
-      params.put("idContratoEstatus", 11L);
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_keet_desarrollos.id_desarrollo=".concat(this.attrs.get("idDesarrollo").toString()));
 			desarrollo= (Entity) DaoFactory.getInstance().toEntity("VistaDesarrollosDto", "lazy", params);
 			this.attrs.put("desarrollo", desarrollo);

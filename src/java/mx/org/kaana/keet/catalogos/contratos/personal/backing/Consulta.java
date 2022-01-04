@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.keet.comun.Catalogos;
@@ -263,7 +264,7 @@ public class Consulta extends IBaseFilter implements Serializable {
     Map<String, Object> params= null;
     try {
 			params= new HashMap<>();	
-      params.put("idContratoEstatus", 11L);
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
   		params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));

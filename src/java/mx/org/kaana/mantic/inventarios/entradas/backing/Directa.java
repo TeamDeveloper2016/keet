@@ -47,6 +47,7 @@ import mx.org.kaana.kajool.db.comun.operation.Select;
 import mx.org.kaana.kajool.db.comun.operation.Update;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -322,7 +323,7 @@ public class Directa extends IBaseArticulos implements IBaseStorage, Serializabl
 				params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa in (" + JsfBase.getAutentifica().getEmpresa().getSucursales() + ")");			
 			else
         params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + ((NotaEntradaDirecta)this.getAdminOrden().getOrden()).getIdEmpresa());
-			params.put("idContratoEstatus", 11L);
+			params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
       columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));

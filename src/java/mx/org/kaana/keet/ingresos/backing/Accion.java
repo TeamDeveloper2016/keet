@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
 import mx.org.kaana.keet.ingresos.beans.Factura;
 import mx.org.kaana.keet.ingresos.beans.Ingreso;
 import mx.org.kaana.keet.ingresos.beans.Retencion;
@@ -398,7 +399,7 @@ public class Accion extends IBaseImportar implements IBaseStorage, Serializable 
 		List<UISelectEntity> desarrollos= null;
     try {
 			params= new HashMap<>();					
-      params.put("idContratoEstatus", 11L);
+      params.put("idContratoEstatus", EContratosEstatus.TERMINADO.getKey());
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_empresa=" + this.getIkEmpresa().getKey());
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
