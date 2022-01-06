@@ -833,7 +833,7 @@
 				from 
 				  tc_keet_gastos 
 				group by 
-				  ejercicio
+				  ejercicio desc
 			</select>
 			<update id="disponibles">
 				update 

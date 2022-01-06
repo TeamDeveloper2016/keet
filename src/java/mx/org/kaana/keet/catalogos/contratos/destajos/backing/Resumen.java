@@ -116,7 +116,7 @@ public class Resumen extends IBaseReporteDestajos implements Serializable {
     try {      
       params = new HashMap<>();      
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-			contratos= UIEntity.build("VistaTableroDto", "contratos", params);
+			contratos= UIEntity.todos("VistaTableroDto", "contratos", params, "clave");
 			this.attrs.put("contratos", contratos);
 			this.attrs.put("contrato", UIBackingUtilities.toFirstKeySelectEntity(contratos));
       this.doLoad();

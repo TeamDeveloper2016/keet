@@ -325,8 +325,11 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		try {
 			params=new HashMap<>();
 			params.put("clave", estaciones.toKey(4));
-			if(Objects.equals(this.idLimpiar, 1L))
+  		params.put("orden", "");
+			if(Objects.equals(this.idLimpiar, 1L)) 
 	  		DaoFactory.getInstance().deleteAll(sesion, TcKeetEstacionesDto.class, params);
+      else
+  			params.put("orden", "desc");
   		regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "estaciones", params);
 			if(regresar!= null)
 				regresar.setCosto(0D);
@@ -336,7 +339,27 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			} // else
 		} // try
     catch(Exception e) {
-      throw new KajoolBaseException("No se pueden eliminar las estaciones ya tiene avance registrado !");
+      throw new KajoolBaseException("No se pueden eliminar las estaciones ya tiene avance registrado !"+ e);
+    } // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	private Estacion toUltimaEstacion(Session sesion, Estaciones estaciones) throws Exception {
+		Estacion regresar         = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("clave", estaciones.toKey(4));
+  		regresar= (Estacion)DaoFactory.getInstance().toEntity(sesion, Estacion.class, "VistaContratosLotesDto", "ultima", params);
+			if(regresar!= null)
+				regresar.setCosto(0D);
+      sesion.flush();
+		} // try
+    catch(Exception e) {
+      throw new KajoolBaseException("No se pueden encontro ninguna estacion ! "+ e);
     } // catch
 		finally {
 			Methods.clean(params);
@@ -747,8 +770,38 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
   									} // if
 									} // if
                   else 
-                    if(item!= null && !item.isEmpty() && item.toLong("nivel")== 5L)
+                    if(item!= null && !item.isEmpty() && item.toLong("nivel")== 5L) {
                       estacion= this.toConcepto(sesion, estaciones.toKey(4), codigo, 5L);
+                      // SE TIENE QUE INSERTAR LA ESTACION PORQUE NO EXISTE
+                      if(estacion== null) {
+                        // SE TIENE QUE BUSCAR LA ULTIMA ESTACION PORQUE PUEDE NO HABER NINGUNA CARGADA
+                        raiz= this.toUltimaEstacion(sesion, estaciones);
+                        if(raiz!= null) {
+                          estacion= raiz.clone();
+                          estacion.setKey(-1L);
+                          estacion.setNivel(item.toLong("nivel"));
+                          estacion.setUltimo(item.toLong("ultimo"));
+                          estacion.setClave(estaciones.toNextKey(estacion.getClave(), estacion.getNivel().intValue(), 1));
+                          estacion.setCodigo(codigo);
+                          estacion.setNombre(nombre);
+                          estacion.setDescripcion(nombre);
+                          estacion.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(6, fila).getContents()));
+                          estacion.setCantidad(cantidad);
+                          estacion.setCosto(0D);
+                          Methods.setValueSubClass(estacion, "abono"+ semana, new Object[] {costo});
+                          if(Cadena.isVacio(inicio))
+                            estacion.setInicio(contrato.toDate("inicio"));
+                          else
+                            estacion.setInicio(Fecha.toLocalDate(inicio));
+                          if(Cadena.isVacio(termino))
+                            estacion.setTermino(contrato.toDate("termino"));
+                          else
+                            estacion.setTermino(Fecha.toLocalDate(termino));
+                          estacion.setIdUsuario(JsfBase.getIdUsuario());
+                          DaoFactory.getInstance().insert(sesion, estacion);                          
+                        } // if
+                      } // if
+                    } // if  
 									monitoreo.incrementar();
 								} // if
 								else {

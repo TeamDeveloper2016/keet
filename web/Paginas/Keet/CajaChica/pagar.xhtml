@@ -38,7 +38,7 @@
 							<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">																
 								<p:outputLabel value="Ejercicio:"/>
                 <p:selectOneMenu id="ejercicio" value="#{keetCajaChicaPagar.attrs.ejercicio}" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this ejercicio" update="semana tabla nomina tablaResidentes" listener="#{keetCajaChicaPagar.doLoadSemanas}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <p:ajax event="change" process="@this ejercicio" update="semana tabla nomina tablaResidentes" listener="#{keetCajaChicaPagar.doLoadSemanas}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); reloadSemanas();"/>
                   <f:selectItems value="#{keetCajaChicaPagar.attrs.ejercicios}"/>                
                 </p:selectOneMenu>
 								<p:outputLabel value="Semana:"/>
@@ -59,6 +59,7 @@
                   </p:column>   
                 </p:selectOneMenu>
 							</p:panelGrid>										
+              <p:remoteCommand name="reloadSemanas" process="@this" update="semana"/>
 						</p:tab>			
           </p:accordionPanel>  
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCajaChicaPagar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCajaChicaPagar.attrs.seleccionado}" selectionMode="single" paginator="#{keetCajaChicaPagar.lazyModel.rowCount gt keetCajaChicaPagar.lazyModel.pageSize}" rowIndexVar="index" reflow="true">            

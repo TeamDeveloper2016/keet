@@ -71,6 +71,7 @@
               </p:selectOneMenu>
 							<p:outputLabel for="ejercicio" value="Ejercicio:"/>
               <p:selectOneMenu id="ejercicio" value="#{keetCajaChicaFiltro.attrs.ejercicio}" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" process="@this" update="semana" listener="#{keetCajaChicaFiltro.doLoadSemanas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 <f:selectItems value="#{keetCajaChicaFiltro.attrs.ejercicios}"/>                
               </p:selectOneMenu>
 							<p:outputLabel for="semana" value="Semana:"/>

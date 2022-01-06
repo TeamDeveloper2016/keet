@@ -64,7 +64,7 @@
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                 <p:outputLabel for="contratos" value="Contratos:"/>
                 <p:selectOneMenu id="contratos" value="#{keetCatalogosContratosDestajosResumen.attrs.contrato}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this" listener="#{keetCatalogosContratosDestajosResumen.doLoad}" update="tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="change" process="@this semana" listener="#{keetCatalogosContratosDestajosResumen.doLoad}" update="tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <f:selectItems value="#{keetCatalogosContratosDestajosResumen.attrs.contratos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
