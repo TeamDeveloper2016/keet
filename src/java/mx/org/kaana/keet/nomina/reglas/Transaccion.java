@@ -335,7 +335,7 @@ public class Transaccion extends mx.org.kaana.keet.prestamos.pagos.reglas.Transa
 			params.put("sucursales", this.autentifica.getEmpresa().getSucursales());
 			params.put("idNomina", this.idNomina);
 			params.put(Constantes.SQL_CONDICION, Objects.equals(this.nomina.getIdCompleta(), 2L)? " (tr_mantic_empresa_personal.id_contratista is null and tr_mantic_empresa_personal.id_puesto!= 6) ": Constantes.SQL_VERDADERO);
-			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", proceso, params);
+			List<Entity> personal= DaoFactory.getInstance().toEntitySet(sesion, "VistaNominaDto", proceso, params, Constantes.SQL_TODOS_REGISTROS);
 			if(personal!= null && !personal.isEmpty()) {
         this.texto= Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, personal.size())+ " persona(s) ";
   			monitoreo.setTotal(new Long(personal.size()));

@@ -3173,7 +3173,8 @@
 					and tc_mantic_personas.id_tipo_persona!= 1
           and {condicion}
 				order by
-					tr_mantic_empresa_personal.id_empresa, tr_mantic_empresa_personal.clave
+					tr_mantic_empresa_personal.id_empresa, 
+          tr_mantic_empresa_personal.id_empresa_persona
 			</select>
 			<select id="algunos">
         select
