@@ -30,7 +30,7 @@ public class RechazosExtras extends Rechazos implements Serializable {
 			for(int count=0; count<puntos.size(); count++)
 				this.selecteds[count]= puntos.get(count);
 			if(this.selecteds.length>=1){				
-				transaccion= new Transaccion(loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
+				transaccion= new Transaccion(this.loadRevision(), EEstacionesEstatus.EN_PROCESO.getKey());
 				if(transaccion.ejecutar(EAccion.ELIMINAR)){
 					JsfBase.addMessage("Rechazo de puntos de revisión", "Se realizó el rechazo de los puntos de revision de forma correcta.", ETipoMensaje.INFORMACION);
 					regresar= doCancelar();

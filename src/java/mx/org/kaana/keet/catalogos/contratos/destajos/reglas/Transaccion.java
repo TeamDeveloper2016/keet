@@ -103,7 +103,7 @@ public class Transaccion extends IBaseTnx {
 					} // for
 					break;
 				case AGREGAR:					
-					regresar= agregarConceptoExtra(sesion);					
+					regresar= this.agregarConceptoExtra(sesion);					
 					break;
 				case ELIMINAR:
 					idUsuario= JsfBase.getIdUsuario();
@@ -774,7 +774,7 @@ public class Transaccion extends IBaseTnx {
 				costo= dto.getCosto()!= null ? dto.getCosto() : 0D;				
 				if(this.processRechazosContratistas(sesion, idUsuario, puntoRevision, dto.getIdContratoDestajoContratista(), false)) {
 					estacion= (TcKeetEstacionesDto) DaoFactory.getInstance().findById(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion());										
-					if(this.actualizaEstacionPadre(sesion, estacion, costo, dto.getSemana().toString(), false, this.conceptoExtra.getIdContratoLote())) {
+					if(this.actualizaEstacionPadre(sesion, estacion, costo, dto.getSemana().toString(), false, this.revision.getIdContratoLote())) {
 						if(DaoFactory.getInstance().delete(sesion, dto)>= 1L) {						
 							regresar= DaoFactory.getInstance().delete(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion())>= 1L;
 						} // if				
