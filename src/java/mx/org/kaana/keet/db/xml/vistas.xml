@@ -448,7 +448,9 @@
           round(tc_keet_estaciones.cargo, 2) cargo,
           round(ifnull(tc_keet_estaciones.cargo* 100/ tc_keet_estaciones.costo, 0), 2) as porcentaje,
           tc_keet_estaciones_estatus.id_estacion_estatus,
-          tc_keet_estaciones_estatus.nombre as estatus
+          tc_keet_estaciones_estatus.nombre as estatus,
+          if(tc_keet_estaciones.entrega is null, 0, if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, 1, if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 2, 3))) as semaforo,
+          if(tc_keet_estaciones.entrega is null, 'NO HA INICIADO', if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.inicio, tc_keet_estaciones.entrega), ' DIAS ANTES'), if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 'TERMINO EN TIEMPO', concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.termino, tc_keet_estaciones.entrega), ' DIAS DESPUÉS')))) as dias
         from 
           tc_keet_estaciones
         inner join
@@ -2320,7 +2322,7 @@
         from (
 				select 
 				  convert(concat('1', tc_keet_contratos_destajos_contratistas.id_contrato_destajo_contratista), unsigned integer) as id_key,
-          tc_keet_estaciones.clave as orden,
+          tc_keet_rubros.orden,
           tc_keet_contratos_lotes_contratistas.id_empresa_persona as id_persona,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as razon_social,          
 				  tc_keet_contratos.clave,
@@ -2373,7 +2375,7 @@
         union all 
         select 
 				  convert(concat('2', tc_keet_contratos_destajos_proveedores.id_contrato_destajo_proveedor), unsigned integer) as id_key,
-          tc_keet_estaciones.clave as orden,
+          tc_keet_rubros.orden,
           tc_keet_contratos_lotes_proveedores.id_proveedor as id_persona,
           tc_mantic_proveedores.razon_social,
 				  tc_keet_contratos.clave,
@@ -6315,6 +6317,8 @@
 					tc_keet_estaciones.costo,
           tc_keet_estaciones.costo as importe,
           ifnull(tc_keet_contratos_contratistas_archivos.codigo, ifnull(tc_keet_contratos_proveedores_archivos.codigo, '0')) as imagen,
+          if(tc_keet_estaciones.entrega is null, 0, if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, 1, if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 2, 3))) as semaforo,
+          if(tc_keet_estaciones.entrega is null, 'NO HA INICIADO', if(tc_keet_estaciones.entrega&lt; tc_keet_estaciones.inicio, concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.inicio, tc_keet_estaciones.entrega), ' DIAS ANTES'), if(tc_keet_estaciones.entrega&lt;= tc_keet_estaciones.termino, 'TERMINO EN TIEMPO', concat('TERMINO ', timestampdiff(day, tc_keet_estaciones.termino, tc_keet_estaciones.entrega), ' DIAS DESPUÉS')))) as dias,
 					principal.*
 				from(  
 				select

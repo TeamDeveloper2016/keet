@@ -248,10 +248,11 @@ public class Transaccion extends IBaseTnx {
 					dto.setIdEstacionEstatus(dto.getCosto()<= 0D? EEstacionesEstatus.CANCELADO.getKey(): EEstacionesEstatus.EN_PROCESO.getKey());
 					if(DaoFactory.getInstance().update(sesion, dto)>= 1L) {
 						params.clear();
-						params.put("idEstacionEstatus", toIdEstacionEstatus());
+						params.put("idEstacionEstatus", this.toIdEstacionEstatus());
             String columna= "cargo".concat(dto.getSemana().toString());
             params.put("cargo", estacion.getCargo()- calculo);
             params.put(columna, (Double)estacion.toValue(columna)- calculo);										
+            params.put("entrega", LocalDate.now());
 						if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
 							regresar= this.actualizaEstacionPadre(sesion, estacion, calculo, dto.getSemana().toString(), false, this.revision.getIdContratoLote());											
 					} // if				
@@ -540,6 +541,9 @@ public class Transaccion extends IBaseTnx {
           if(row!= null && !row.isEmpty()) {
             idEstacionEstatus= Objects.equals(row.toLong("terminados"), row.toLong("total"))? EEstacionesEstatus.TERMINADO.getKey(): Objects.equals(row.toLong("iniciados"), row.toLong("total"))? EEstacionesEstatus.INICIAR.getKey(): EEstacionesEstatus.EN_PROCESO.getKey();
             padre.setIdEstacionEstatus(idEstacionEstatus);
+            // SI SE CANCELA EL DESTAJO O EL EXTRA DEL CONCEPTO YA NO SE ACTUALIZA LA FECHA DE LOS PADRES Y SE MANTEIENE LA ANTERIOR
+            if(alta)
+              padre.setEntrega(LocalDate.now());
             String columna= "cargo".concat(semana);
             value= (padre.toValue(columna)!= null? ((Double)padre.toValue(columna)): 0D)+ (alta? total* 1D: total* -1D);
             Methods.setValue(padre, columna, new Object[] {value});
@@ -599,6 +603,7 @@ public class Transaccion extends IBaseTnx {
 			concepto= this.toConcepto(sesion);
 			clon.setCodigo(concepto.toString("codigo"));
 			clon.setIdEstacionEstatus(EEstacionesEstatus.TERMINADO.getKey());
+      clon.setEntrega(LocalDate.now());
 			clon.setCosto(this.conceptoExtra.getImporte());
 			semana= this.toSemana().toString();
   		clon.setCargo(this.conceptoExtra.getImporte());

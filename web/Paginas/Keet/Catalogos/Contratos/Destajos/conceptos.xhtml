@@ -129,6 +129,12 @@
               </f:facet>
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '1'? 'circulo-rojo': (row.idEstacionEstatus eq '2' ? 'circulo-amarillo' : (row.idEstacionEstatus eq '3'? 'circulo-verde' : 'circulo-gris'))}.png" title="#{row.idEstacionEstatus eq '1' ? 'SIN INICIAR': (row.idEstacionEstatus eq '2' ? 'EN PROCESO' : (row.idEstacionEstatus eq '3' ? 'FINALIZADO' : 'CANCELADO'))}"/>
 						</p:column>
+            <p:column class="janal-wid-col-31 janal-column-center" rendered="false">
+              <f:facet name="header">
+                <p:outputLabel value="Semaforo" styleClass="xs-pantalla"/>
+              </f:facet>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.semaforo eq '1'? 'circulo-amarillo': row.semaforo eq '2'? 'circulo-verde': row.semaforo eq '3'? 'circulo-rojo': 'circulo-gris'}.png" title="#{row.dias}"/>
+						</p:column>
 						<p:column class="janal-wid-col-116 janal-column-center">
               <f:facet name="header">
                 <p:outputLabel value="Acciones" styleClass="xs-pantalla"/>

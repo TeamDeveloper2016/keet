@@ -150,8 +150,8 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
     try {
       this.attrs.put("detalle", Boolean.FALSE);
       this.fields.clear();
-      this.fields.add(new Lote("Código", "codigo", "", "janal-column-left MarAuto Responsive janal-wid-5"));
-      this.fields.add(new Lote("Nombre", "nombre", "", "janal-column-left MarAuto Responsive"));
+      // this.fields.add(new Lote("Código", "codigo", "", "janal-column-left MarAuto Responsive janal-wid-5"));
+      // this.fields.add(new Lote("Nombre", "nombre", "", "janal-column-left MarAuto Responsive"));
       this.fields.add(new Lote("Costo", "valor", "", "janal-column-right MarAuto Responsive janal-wid-5", "janal-font-bold janal-color-black"));
       // this.fields.add(new Lote("( % )", "pagar", " %", "janal-column-center MarAuto Responsive janal-wid-5"));
       // this.fields.add(new Lote("Pagado", "costo", "", "janal-column-right MarAuto Responsive janal-wid-6", "janal-font-bold janal-color-black"));

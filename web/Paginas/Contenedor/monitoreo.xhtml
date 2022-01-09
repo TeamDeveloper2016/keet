@@ -24,17 +24,17 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryEchart}"/>
     <script type="text/javascript">
 			Janal.Control.Echarts.names= {
-				items       : {json: {hoy: '#{kajoolContratos.attrs.hoy}', nombreDesarrollo: '#{kajoolContratos.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolContratos.attrs.nombreContrato}', fechaPivote: '#{kajoolContratos.fechaPivote}', nombreResidentePivote: '#{kajoolContratos.attrs.nombreResidentePivote}', nombreNomina: '#{kajoolContratos.attrs.nombreNomina}', totalContratistas: '#{kajoolContratos.attrs.totalContratistas}', totalProveedores: '#{kajoolContratos.attrs.totalProveedores}', totalContratoContratistas: '#{kajoolContratos.attrs.totalContratoContratistas}', totalContratoProveedores: '#{kajoolContratos.attrs.totalContratoProveedores}'}},
-				contratos   : {json: #{kajoolContratos.attrs.contratos}},
-				global      : {json: #{kajoolContratos.attrs.global}},
-				residentes  : {json: #{kajoolContratos.attrs.residentes}},
-				lotes       : {json: #{kajoolContratos.attrs.lotes}},
-				contratistas: {json: #{kajoolContratos.attrs.contratistas}},
-				proveedores : {json: #{kajoolContratos.attrs.proveedores}},
-				contratoContratistas: {json: #{kajoolContratos.attrs.contratoContratistas}},
-				contratoProveedores : {json: #{kajoolContratos.attrs.contratoProveedores}},
-				nominaContratistas: {json: #{kajoolContratos.attrs.nominaContratistas}},
-				nominaProveedores : {json: #{kajoolContratos.attrs.nominaProveedores}}
+				items       : {json: {hoy: '#{kajoolMonitoreo.attrs.hoy}', nombreDesarrollo: '#{kajoolMonitoreo.attrs.nombreDesarrollo}', nombreContrato: '#{kajoolMonitoreo.attrs.nombreContrato}', fechaPivote: '#{kajoolMonitoreo.fechaPivote}', nombreResidentePivote: '#{kajoolMonitoreo.attrs.nombreResidentePivote}', nombreNomina: '#{kajoolMonitoreo.attrs.nombreNomina}', totalContratistas: '#{kajoolMonitoreo.attrs.totalContratistas}', totalProveedores: '#{kajoolMonitoreo.attrs.totalProveedores}', totalContratoContratistas: '#{kajoolMonitoreo.attrs.totalContratoContratistas}', totalContratoProveedores: '#{kajoolMonitoreo.attrs.totalContratoProveedores}'}},
+				contratos   : {json: #{kajoolMonitoreo.attrs.contratos}},
+				global      : {json: #{kajoolMonitoreo.attrs.global}},
+				residentes  : {json: #{kajoolMonitoreo.attrs.residentes}},
+				lotes       : {json: #{kajoolMonitoreo.attrs.lotes}},
+				contratistas: {json: #{kajoolMonitoreo.attrs.contratistas}},
+				proveedores : {json: #{kajoolMonitoreo.attrs.proveedores}},
+				contratoContratistas: {json: #{kajoolMonitoreo.attrs.contratoContratistas}},
+				contratoProveedores : {json: #{kajoolMonitoreo.attrs.contratoProveedores}},
+				nominaContratistas: {json: #{kajoolMonitoreo.attrs.nominaContratistas}},
+				nominaProveedores : {json: #{kajoolMonitoreo.attrs.nominaProveedores}}
 			};
 			$(function() {
 				 'use strict'			
@@ -69,20 +69,20 @@
     </style>
   </ui:define>
   <ui:define name="contenido">
-		<pe:remoteCommand name="next" process="@this" actionListener="#{kajoolContratos.doNextNomina}" oncomplete="janal.desbloquear();">  
+		<pe:remoteCommand name="next" process="@this" actionListener="#{kajoolMonitoreo.doNextNomina}" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="type"/>  
 		</pe:remoteCommand>
-		<pe:remoteCommand name="back" process="@this" actionListener="#{kajoolContratos.doBackNomina}" oncomplete="janal.desbloquear();">  
+		<pe:remoteCommand name="back" process="@this" actionListener="#{kajoolMonitoreo.doBackNomina}" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="type"/>  
 		</pe:remoteCommand>
-		<pe:remoteCommand name="refreshEChartSingle" process="@this" actionListener="#{kajoolContratos.doRefreshEChartSingle}" oncomplete="janal.desbloquear();">  
+		<pe:remoteCommand name="refreshEChartSingle" process="@this" actionListener="#{kajoolMonitoreo.doRefreshEChartSingle}" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
 			<pe:methodParam name="id"/>  
 			<pe:methodParam name="group"/>  
 		</pe:remoteCommand>
-    <pe:remoteCommand name="refreshEChartFrame" process="@this" actionListener="#{kajoolContratos.doRefreshEChartWith}" oncomplete="janal.desbloquear();">  
+    <pe:remoteCommand name="refreshEChartFrame" process="@this" actionListener="#{kajoolMonitoreo.doRefreshEChartWith}" oncomplete="janal.desbloquear();">  
       <pe:methodSignature parameters="mx.org.kaana.libs.echarts.json.ItemSelected" />  
       <pe:methodParam name="itemSelected">  
         <pe:convertJson />  
@@ -109,9 +109,9 @@
                 <div class="Container100 Responsive keet-chart-title janal-box-title-purple">
                   <i class="fa fa-city Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Desarrollos disponibles
                 </div>
-                <p:dataTable lazy="false" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolContratos.desarrollos}" paginator="#{kajoolContratos.desarrollos.size() gt (kajoolUtilAplicacion.isMobile? 3: 5)}" rowsPerPageTemplate="#{kajoolUtilAplicacion.isMobile? 3: 5}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{kajoolUtilAplicacion.isMobile? 3: 5}" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolContratos.desarrollo}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
-                  <p:ajax event="rowSelect" process="@this tabla" listener="#{kajoolContratos.doUpdateDesarrolloSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); onOffSwitchTable('mapa', false);"/>
-                  <p:ajax event="rowUnselect" process="@this tabla" listener="#{kajoolContratos.doUpdateDesarrolloUnSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <p:dataTable lazy="false" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolMonitoreo.desarrollos}" paginator="#{kajoolMonitoreo.desarrollos.size() gt (kajoolUtilAplicacion.isMobile? 3: 5)}" rowsPerPageTemplate="#{kajoolUtilAplicacion.isMobile? 3: 5}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{kajoolUtilAplicacion.isMobile? 3: 5}" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolMonitoreo.desarrollo}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
+                  <p:ajax event="rowSelect" process="@this tabla" listener="#{kajoolMonitoreo.doUpdateDesarrolloSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); onOffSwitchTable('mapa', false);"/>
+                  <p:ajax event="rowUnselect" process="@this tabla" listener="#{kajoolMonitoreo.doUpdateDesarrolloUnSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:column styleClass="janal-column-left Responsive">
                     <f:facet name="header">
                       <h:outputText value="Desarrollo"/>
@@ -125,7 +125,7 @@
                     <h:outputText value="#{row.empleados}"/>
                   </p:column>                    
                   <f:facet name="footer">
-                    <p:outputLabel value="Total [#{kajoolContratos.desarrollos.size()}] registros"/>
+                    <p:outputLabel value="Total [#{kajoolMonitoreo.desarrollos.size()}] registros"/>
                   </f:facet>
                 </p:dataTable>                
               </p:panel>  
@@ -204,7 +204,7 @@
                   <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Porcentaje de avance
                 </div>
                 <div class="keet-gauge-panel">
-	  							<p:progressBar id="avanceLote" value="#{kajoolContratos.attrs.porcentaje}" labelTemplate="{value}%" displayOnly="true"/>
+	  							<p:progressBar id="avanceLote" value="#{kajoolMonitoreo.attrs.porcentaje}" labelTemplate="{value}%" displayOnly="true"/>
                 </div>  
               </p:panel>
               <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
@@ -221,7 +221,7 @@
               <div class="Container100 Responsive keet-chart-title janal-box-title-cyan">
                 <i class="fa fa-address-book Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Detalle por estación
               </div>
-              <p:dataTable lazy="false" id="tablaDetalleLotes" var="row" widgetVar="kajoolTableLote" rowIndexVar="index" value="#{kajoolContratos.attrs.tablaDetalleLotes}" paginator="#{kajoolContratos.attrs.tablaDetalleLotes.size() gt (kajoolUtilAplicacion.isMobile? 3: 10)}" rowsPerPageTemplate="#{kajoolUtilAplicacion.isMobile? 3: 10}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{kajoolUtilAplicacion.isMobile? 3: 10}" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}" rowStyleClass="#{kajoolContratos.doColor(row)}">
+              <p:dataTable lazy="false" id="tablaDetalleLotes" var="row" widgetVar="kajoolTableLote" rowIndexVar="index" value="#{kajoolMonitoreo.attrs.tablaDetalleLotes}" paginator="#{kajoolMonitoreo.attrs.tablaDetalleLotes.size() gt (kajoolUtilAplicacion.isMobile? 3: 10)}" rowsPerPageTemplate="#{kajoolUtilAplicacion.isMobile? 3: 10}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{kajoolUtilAplicacion.isMobile? 3: 10}" styleClass="janal-content-table" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}" rowStyleClass="#{kajoolMonitoreo.doColor(row)}">
                 <p:column styleClass="janal-wid-10 janal-column-left Responsive" rendered="#{not kajoolUtilAplicacion.isMobile}">
                   <f:facet name="header">
                     <h:outputText value="Código"/>
@@ -233,7 +233,6 @@
                     <h:outputText value="Concepto"/>
                   </f:facet>
                   <h:outputText value="#{row.descripcion}" title="#{row.descripcion}" styleClass="janal-color-black" style="white-space: nowrap;"/>
-                  <h:graphicImage styleClass="janal-align-right" library="janal" name="icon/semaforos/#{row.semaforo eq '1'? 'circulo-amarillo': row.semaforo eq '2'? 'circulo-verde': row.semaforo eq '3'? 'circulo-rojo': 'circulo-gris'}.png" title="#{row.dias}"/>
                 </p:column>
                 <p:column styleClass="janal-wid-15 Responsive" rendered="false">
                   <f:facet name="header">
@@ -263,7 +262,7 @@
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.idEstacionEstatus eq '3' ? 'circulo-verde': row.idEstacionEstatus eq '2'? 'circulo-amarillo': row.idEstacionEstatus eq '4'? 'circulo-cafe': 'circulo-rojo'}.png" title="#{row.estatus}"/>
                 </p:column>  
                 <f:facet name="footer">
-                  <p:outputLabel value="Total [#{kajoolContratos.attrs.tablaDetalleLotes.size()}] registros"/>
+                  <p:outputLabel value="Total [#{kajoolMonitoreo.attrs.tablaDetalleLotes.size()}] registros"/>
                 </f:facet>
               </p:dataTable>                
             </p:panel>
@@ -275,7 +274,7 @@
         <div class="Container35 Responsive overview-box">
 					<div class="Container100 Responsive">					
 						<div class="ContainerIndent card">
-              <p:carousel id="evidencias" value="#{kajoolContratos.attrs.importados}" headerText="Galería de foto(s) de los destajos" var="item" circular="true" responsive="true" style="margin-top: 6px; height: 433px;" effect="explode" easing="easeOutBounce" styleClass="overview-map-box" numVisible="1">
+              <p:carousel id="evidencias" value="#{kajoolMonitoreo.attrs.importados}" headerText="Galería de foto(s) de los destajos" var="item" circular="true" responsive="true" style="margin-top: 6px; height: 433px;" effect="explode" easing="easeOutBounce" styleClass="overview-map-box" numVisible="1">
                 <div class="janal-column-center janal-wid-100-txt">
                   <a class="janal-control-imagen" data-magnify="gallery" data-caption="#{item.nombre}" data-group="icon-image" href="#{item.url}" title="Click para ver más grande la imagen">
                     <p:graphicImage cache="false" url="#{item.url}" width="280" height="200" style="cursor:zoom-in;"/>
@@ -305,17 +304,17 @@
               </div>
               <p:panelGrid id="detalleLote" layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                 <p:outputLabel value="Manzana:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.manzana}" styleClass="janal-wid-100-txt janal-color-black" readonly="true"/>
+                <p:inputText value="#{kajoolMonitoreo.attrs.loteSeleccionado.manzana}" styleClass="janal-wid-100-txt janal-color-black" readonly="true"/>
                 <p:outputLabel value="Lote:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.lote}" styleClass="janal-wid-100-txt janal-color-black" readonly="true"/>
+                <p:inputText value="#{kajoolMonitoreo.attrs.loteSeleccionado.lote}" styleClass="janal-wid-100-txt janal-color-black" readonly="true"/>
                 <p:outputLabel value="Inicio:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.inicio}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+                <p:inputText value="#{kajoolMonitoreo.attrs.loteSeleccionado.inicio}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
                 <p:outputLabel value="Termino:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.termino}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+                <p:inputText value="#{kajoolMonitoreo.attrs.loteSeleccionado.termino}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
                 <p:outputLabel value="Prototipo:"/>
-                <p:inputText value="#{kajoolContratos.attrs.loteSeleccionado.prototipo}" styleClass="janal-wid-100-txt" readonly="true"/>
+                <p:inputText value="#{kajoolMonitoreo.attrs.loteSeleccionado.prototipo}" styleClass="janal-wid-100-txt" readonly="true"/>
                 <p:outputLabel value="Coordenadas"/>
-                <p:inputText value="@#{kajoolContratos.attrs.loteSeleccionado.latitud},#{kajoolContratos.attrs.loteSeleccionado.longitud}" styleClass="janal-wid-100-txt" readonly="true"/>																		
+                <p:inputText value="@#{kajoolMonitoreo.attrs.loteSeleccionado.latitud},#{kajoolMonitoreo.attrs.loteSeleccionado.longitud}" styleClass="janal-wid-100-txt" readonly="true"/>																		
               </p:panelGrid>
             </p:panel>  
             <div class="Container100 Responsive TexAlCenter janal-color-black keet-chart-footer">
@@ -333,8 +332,8 @@
                   <i class="fa fa-laptop-house Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Estatus de los lote(s) con su georreferencia
                 </div>
                 <div class="keet-map-panel">
-                  <p:gmap id="mapa" widgetVar="wMapa" model="#{kajoolContratos.model}" center="#{kajoolContratos.attrs.coordenadaCentral}" zoom="19" type="ROADMAP" style="width:100%; height:500px" streetView="true">
-                    <p:ajax event="overlaySelect" listener="#{kajoolContratos.onMarkerSelect}"/>
+                  <p:gmap id="mapa" widgetVar="wMapa" model="#{kajoolMonitoreo.model}" center="#{kajoolMonitoreo.attrs.coordenadaCentral}" zoom="19" type="ROADMAP" style="width:100%; height:500px" streetView="true">
+                    <p:ajax event="overlaySelect" listener="#{kajoolMonitoreo.onMarkerSelect}"/>
                   </p:gmap>						
                 </div>  
               </p:panel>
@@ -386,9 +385,9 @@
                 <div class="Container100 Responsive keet-chart-title janal-box-title-blue">
                   <i class="fa fa-dollar Fs16 janal-color-orange"></i><p:spacer width="8px" height="1px"/>Nóminas disponibles
                 </div>
-                <p:dataTable lazy="false" id="tablaNomina" var="row" widgetVar="kajoolTableNomina" rowIndexVar="index" value="#{kajoolContratos.nominas}" paginator="#{kajoolContratos.nominas.size() gt 5}" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolContratos.nomina}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
-                  <p:ajax event="rowSelect" process="@this tablaNomina" listener="#{kajoolContratos.doUpdateNominaSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                  <p:ajax event="rowUnselect" process="@this tablaNomina" listener="#{kajoolContratos.doUpdateNominaUnSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <p:dataTable lazy="false" id="tablaNomina" var="row" widgetVar="kajoolTableNomina" rowIndexVar="index" value="#{kajoolMonitoreo.nominas}" paginator="#{kajoolMonitoreo.nominas.size() gt 5}" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINA_TABLERO}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolMonitoreo.nomina}" reflow="true" paginatorPosition="bottom" rowKey="#{row.idKey}">
+                  <p:ajax event="rowSelect" process="@this tablaNomina" listener="#{kajoolMonitoreo.doUpdateNominaSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:ajax event="rowUnselect" process="@this tablaNomina" listener="#{kajoolMonitoreo.doUpdateNominaUnSelect}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <p:column styleClass="janal-column-center MarAuto Responsive">
                     <f:facet name="header">
                       <h:outputText value="Nomina"/>
@@ -408,7 +407,7 @@
                     <h:outputText value="#{row.termino}"/>
                   </p:column>                    
                   <f:facet name="footer">
-                    <p:outputLabel value="Total [#{kajoolContratos.nominas.size()}] registros"/>
+                    <p:outputLabel value="Total [#{kajoolMonitoreo.nominas.size()}] registros"/>
                   </f:facet>
                 </p:dataTable>                
               </p:panel>  
@@ -547,7 +546,7 @@
 			<p:panelGrid layout="grid" columns="1" style="background: transparent;">
 				<h:outputText value="Administrador Web" styleClass="Fs20"/>
 				<p:spacer height="3px"/>
-				<h:outputText value="#{kajoolContratos.attrs.messageBackup}" escape="false" styleClass="Fs14"/>
+				<h:outputText value="#{kajoolMonitoreo.attrs.messageBackup}" escape="false" styleClass="Fs14"/>
 			</p:panelGrid>
 		</p:notificationBar>
   </ui:define>

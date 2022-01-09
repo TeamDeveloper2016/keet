@@ -18,11 +18,11 @@ public final class FieldDto {
   // este metodo seria reemplazado por el actual
   // Recibe el dto y el mapa de valores actualizar y solo recorre el mapa
   public static String updateFields(IBaseDto dto, Map fields) {
-    Object value=null;
-    Field field=null;
-    Class typeField=null;
+    Object value   = null;
+    Field field    = null;
+    Class typeField= null;
     StringBuilder regresar=new StringBuilder();
-    for (Object key : fields.keySet()) {
+    for (Object key: fields.keySet()) {
       try {
         if (!key.toString().equals("key")) {
           value=fields.get(key);

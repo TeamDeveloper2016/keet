@@ -36,6 +36,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.keet.cajachica.reglas.Transaccion;
 import mx.org.kaana.keet.catalogos.contratos.enums.EContratosEstatus;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -211,6 +212,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  semanas= new ArrayList<>();
 			this.attrs.put("semanas", semanas);
 			this.attrs.put("semana", UIBackingUtilities.toFirstKeySelectItem(semanas));
+      this.fechaInicio= LocalDate.of(((Long)this.attrs.get("ejercicio")).intValue(), 1, 1);  
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
