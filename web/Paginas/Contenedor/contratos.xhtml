@@ -228,12 +228,14 @@
                   </f:facet>
                   <h:outputText value="#{row.codigo}" styleClass="janal-color-black"/>
                 </p:column>
+                <p:column styleClass="janal-wid-3 MarAuto Responsive janal-column-center">
+                  <h:graphicImage library="janal" name="icon/semaforos/#{row.semaforo eq '1'? 'circulo-amarillo': row.semaforo eq '2'? 'circulo-verde': row.semaforo eq '3'? 'circulo-rojo': 'circulo-gris'}.png" title="#{row.dias}"/>
+                </p:column>
                 <p:column styleClass="Responsive" >
                   <f:facet name="header">
                     <h:outputText value="Concepto"/>
                   </f:facet>
                   <h:outputText value="#{row.descripcion}" title="#{row.descripcion}" styleClass="janal-color-black" style="white-space: nowrap;"/>
-                  <h:graphicImage styleClass="janal-align-right" library="janal" name="icon/semaforos/#{row.semaforo eq '1'? 'circulo-amarillo': row.semaforo eq '2'? 'circulo-verde': row.semaforo eq '3'? 'circulo-rojo': 'circulo-gris'}.png" title="#{row.dias}"/>
                 </p:column>
                 <p:column styleClass="janal-wid-15 Responsive" rendered="false">
                   <f:facet name="header">
