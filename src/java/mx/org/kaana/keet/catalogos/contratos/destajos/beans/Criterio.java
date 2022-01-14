@@ -3,7 +3,6 @@ package mx.org.kaana.keet.catalogos.contratos.destajos.beans;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.Objects;
 import mx.org.kaana.libs.formato.Fecha;
@@ -114,7 +113,7 @@ public class Criterio implements Serializable {
           this.titulo= "FALTAN "+ dias+ " DIAS PARA INICIAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus;
         } // if
         else {
-          long dias    = this.dias(this.inicio, this.hoy);
+          long dias    = DAYS.between(this.inicio, this.hoy);
           this.semaforo= "circulo-rojo.png";
           this.titulo  = "ESTA RETRASADO CON "+ dias+ " DIAS\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus;
         } // else
@@ -128,12 +127,12 @@ public class Criterio implements Serializable {
             } // if
             else {
               if(this.inicio.isEqual(this.entrega) || this.inicio.isAfter(this.entrega)) {
-                long dias    = this.dias(this.entrega, this.inicio);
+                long dias    = DAYS.between(this.entrega, this.inicio);
                 this.semaforo= "circulo-azul.png";
                 this.titulo  = "SE TERMINO CON "+ dias+ " DIAS ANTES\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rPAGADO: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.entrega);
               } // if
               else {
-                long dias    = this.dias(this.termino, this.entrega);
+                long dias    = DAYS.between(this.termino, this.entrega);
                 this.semaforo= "circulo-rojo.png";
                 this.titulo  = "SE TERMINO CON "+ dias+ " DIAS DESPUES\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rPAGADO: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.entrega);
               } // else  
@@ -141,13 +140,13 @@ public class Criterio implements Serializable {
           } // if
           else {
             if(this.entrega.isEqual(this.inicio) || this.entrega.isBefore(this.inicio)) {
-              long dias= this.dias(this.entrega, this.inicio);
+              long dias= DAYS.between(this.entrega, this.inicio);
               this.semaforo= "circulo-naranja.png";
               this.titulo  = "ESTA EN TIEMPO, "+ dias+ " DIAS PARA TERMINAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rPAGADO: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.entrega);
             } // if
             else {
               if(this.entrega.isAfter(this.termino)) {
-                long dias= this.dias(this.termino, this.entrega);
+                long dias= DAYS.between(this.termino, this.entrega);
                 this.semaforo= "circulo-rojo.png";
                 this.titulo  = "ESTA RETRASADO CON "+ dias+ " DIAS PARA TERMINAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rPAGADO: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.entrega);
               } // if
@@ -163,7 +162,7 @@ public class Criterio implements Serializable {
                     this.titulo  = "ESTA A "+ dias+ " DIAS PARA TERMINAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rHOY ES: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.hoy);
                 } // if
                 else {
-                  long dias= this.dias(this.termino, this.hoy);
+                  long dias= DAYS.between(this.termino, this.hoy);
                   this.semaforo= "circulo-rojo.png";
                   this.titulo  = "ESTA RETRASADO CON "+ dias+ " DIAS PARA TERMINAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rHOY ES: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.hoy);
                 } // else
