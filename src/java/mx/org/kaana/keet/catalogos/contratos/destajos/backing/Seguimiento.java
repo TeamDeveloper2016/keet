@@ -1,7 +1,9 @@
 package mx.org.kaana.keet.catalogos.contratos.destajos.backing;
 
+import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,8 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Concepto;
+import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Criterio;
 import mx.org.kaana.keet.catalogos.contratos.destajos.beans.Lote;
 import mx.org.kaana.keet.catalogos.contratos.destajos.comun.IBaseReporteDestajos;
 import mx.org.kaana.keet.catalogos.desarrollos.beans.RegistroDesarrollo;
@@ -29,15 +33,15 @@ import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Named(value = "keetCatalogosContratosDestajosHistorial")
+@Named(value = "keetCatalogosContratosDestajosSeguimiento")
 @ViewScoped
-public class Historial extends IBaseReporteDestajos implements Serializable {
+public class Seguimiento extends IBaseReporteDestajos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;			
-  private static final Log LOG = LogFactory.getLog(Historial.class);
+  private static final Log LOG = LogFactory.getLog(Seguimiento.class);
   
 	private RegistroDesarrollo registroDesarrollo;		
-	private FormatLazyModel lazyResumen;
+  private List<Concepto> model;
   private List<Lote> fields;
 	
 	public RegistroDesarrollo getRegistroDesarrollo() {
@@ -48,8 +52,8 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
 		this.registroDesarrollo = registroDesarrollo;
 	}			
 
-  public FormatLazyModel getLazyResumen() {
-    return lazyResumen;
+  public List<Concepto> getModel() {
+    return model;
   }
 
   public List<Lote> getFields() {
@@ -62,10 +66,13 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
     EOpcionesResidente opcion= null;
 		Long idDesarrollo        = null;
     try {
+      this.model  = new ArrayList<>();
 			this.initBase();
       this.fields = new ArrayList<>();
-			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
+//			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
+//			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
+			opcion      = EOpcionesResidente.DESTAJOS;
+			idDesarrollo= 1L;			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
@@ -142,43 +149,57 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
     return regresar.length()> 0? regresar.substring(0, regresar.length()- 4): Constantes.SQL_VERDADERO;
   }
 
+  public String toTokenClave() {
+    StringBuilder regresar = new StringBuilder();
+		UISelectEntity contrato= (UISelectEntity)this.attrs.get("contrato");
+    if(contrato!= null && contrato.getKey()> 0L) {
+		  regresar.append(Cadena.rellenar(String.valueOf(contrato.toLong("idEmpresa")), 3, '0', true)).
+              append(contrato.toLong("ejercicio")).
+              append(Cadena.rellenar(String.valueOf(contrato.getKey()), 3, '0', true));
+    } // else  
+    else
+      regresar.append(Cadena.rellenar("", 25, '9', true));
+    return regresar.toString();
+  }
+
   @Override
   public void doLoad() {
     List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
     List<Entity> lotes       = null;
+    List<Entity> codigos     = null;
+    String anterior          = "";
     try {
       this.attrs.put("detalle", Boolean.FALSE);
+      params.put("clave", this.toTokenClave());
+      codigos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "codigos", params);
+      if(codigos!= null && !codigos.isEmpty()) {
+        int count= 0;
+        for (Entity codigo: codigos) {
+          Concepto concepto= new Concepto(count++, codigo.toString("codigo"), codigo.toString("nombre"));
+          this.model.add(concepto);
+        } // for
+      } // if
       this.fields.clear();
-      this.fields.add(new Lote("Costo", "valor", "", "janal-column-right MarAuto Responsive janal-wid-5", "janal-font-bold janal-color-black"));
-      // this.fields.add(new Lote("( % )", "pagar", " %", "janal-column-center MarAuto Responsive janal-wid-5"));
-      // this.fields.add(new Lote("Pagado", "costo", "", "janal-column-right MarAuto Responsive janal-wid-6", "janal-font-bold janal-color-black"));
-      params.put("sortOrder", "order by tt_keet_semanas.orden");
-      params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
-      params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
-      StringBuilder semana= new StringBuilder();
-      StringBuilder maximo= new StringBuilder();
-      lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaNominaConsultasDto", "lotesResumen", params);
+      lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "lotes", params, Constantes.SQL_TODOS_REGISTROS);
       if(lotes!= null && !lotes.isEmpty()) {
         for (Entity item: lotes) {
           String lote= item.toString("lote").replaceAll("-", "");
-          semana.append("if(tt_keet_temporal.lote= '").append(item.toString("lote")).append("', tt_keet_temporal.nomina, '-') as ").append(lote.toLowerCase()).append(", ");
-          maximo.append("max(ifnull(tt_keet_semanas.").append(lote).append(", '-')) as ").append(lote.toLowerCase()).append(", ");
-          this.fields.add(new Lote(lote, lote.toLowerCase(), "", "janal-column-center MarAuto Responsive janal-wid-5"));
+          int index= this.model.indexOf(new Concepto(item.toString("codigo")));
+          if(index>= 0) {
+            Concepto concepto= this.model.get(index);
+            concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toDate("entrega"), item.toLong("idEstacionEstatus"), item.toString("estatus")));
+            if(!Objects.equal(lote, anterior)) {
+              this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-wid-5"));
+              anterior= lote;
+            } // if  
+          } // if
+          else
+            throw new RuntimeException("El concepto ["+ item.toString("codigo")+ "] no existe en la consulta!");
         } // for
-        semana.delete(semana.length()- 2, semana.length());
-        maximo.delete(maximo.length()- 2, maximo.length());
-        params.put("semana", semana.toString());
-        params.put("maximo", maximo.toString());
-        columns= new ArrayList<>();
-        columns.add(new Columna("pagar", EFormatoDinamicos.MILES_CON_DECIMALES));
-        columns.add(new Columna("valor", EFormatoDinamicos.MILES_CON_DECIMALES));
-        columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
-        columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-        this.lazyResumen= new FormatCustomLazy("VistaNominaConsultasDto", "historial", params, columns);
       } // if
       else   
-        this.lazyResumen= null;
+        this.model= null;
       UIBackingUtilities.resetDataTable("tabla");
     } // try
     catch (Exception e) {
@@ -223,13 +244,13 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
 		return !row.toString("porcentaje").equals("100.00")? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
 	}
   
-  public void doDetalle(Entity row) {
+  public void doDetalle(Concepto row) {
     List<Columna> columns    = null;
 		Map<String, Object>params= new HashMap<>();
     try {
       params.put("sortOrder", "order by tt_keet_temporal.id_persona, tt_keet_temporal.clave, tt_keet_temporal.lote");
-      params.put("loNuevoPersona", "or tc_keet_estaciones.codigo= '".concat(row.toString("codigo")).concat("'"));
-      params.put("loNuevoProveedor", "or tc_keet_estaciones.codigo= '".concat(row.toString("codigo")).concat("'"));
+      params.put("loNuevoPersona", "or tc_keet_estaciones.codigo= '".concat(row.getCodigo()).concat("'"));
+      params.put("loNuevoProveedor", "or tc_keet_estaciones.codigo= '".concat(row.getCodigo()).concat("'"));
       params.put("idNomina", -1L);
       params.put("idDesarrollo", this.attrs.get("idDesarrollo"));
       params.put(Constantes.SQL_CONDICION, this.toLoadCondicion());
@@ -249,6 +270,10 @@ public class Historial extends IBaseReporteDestajos implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally				
+	}
+ 
+	public String doColor(Concepto row) {
+		return ((String)row.get("codigo")).startsWith("#")? "janal-tr-diferencias": "";
 	}
   
 }

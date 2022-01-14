@@ -4,6 +4,54 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaSeguimientoDto">
+      <select id="codigos">
+        select
+         tc_keet_estaciones.id_estacion as id_key,
+         tc_keet_estaciones.codigo,
+         tc_keet_estaciones.nombre
+        from
+          tc_keet_estaciones
+        where
+         tc_keet_estaciones.clave like '{clave}%'   
+         and tc_keet_estaciones.nivel&gt;= 5 
+         and tc_keet_estaciones.nivel&lt;= 6
+        group by
+         tc_keet_estaciones.codigo
+        order by
+         tc_keet_estaciones.clave        
+      </select>        
+      <select id="lotes">
+        select
+          concat('M', tc_keet_contratos_lotes.manzana, 'L', tc_keet_contratos_lotes.lote) as lote,
+          tc_keet_estaciones.codigo,
+          tc_keet_estaciones.nombre,
+          tc_keet_estaciones.inicio,
+          tc_keet_estaciones.termino,
+          tc_keet_estaciones.entrega,
+          tc_keet_estaciones.id_estacion_estatus,
+          tc_keet_estaciones_estatus.nombre as estatus,
+          count(*)
+        from
+          tc_keet_estaciones
+        inner join    
+          tc_keet_contratos_lotes on tc_keet_contratos_lotes.id_contrato= convert(substring(tc_keet_estaciones.clave, 8, 3), unsigned integer) and tc_keet_contratos_lotes.orden= convert(substring(tc_keet_estaciones.clave, 11, 3), unsigned integer)
+        inner join    
+          tc_keet_estaciones_estatus on tc_keet_estaciones.id_estacion_estatus= tc_keet_estaciones_estatus.id_estacion_estatus
+        where
+          tc_keet_estaciones.clave like '{clave}%'   
+          and tc_keet_estaciones.nivel&gt;= 5 
+          and tc_keet_estaciones.nivel&lt;= 6
+        group by
+          tc_keet_contratos_lotes.manzana,
+          tc_keet_contratos_lotes.lote,
+          tc_keet_estaciones.codigo
+        order by
+          convert(tc_keet_contratos_lotes.manzana, unsigned integer),
+          convert(tc_keet_contratos_lotes.lote, unsigned integer),
+          tc_keet_estaciones.clave;
+      </select>        
+    </unit>  
 		<unit id="VistaTableroDto">
       <select id="notificar">
       select
@@ -466,6 +514,8 @@
         select
           tc_keet_contratos.id_contrato as id_key,
           tc_keet_contratos.id_contrato,
+          tc_keet_contratos.id_empresa,
+          tc_keet_contratos.ejercicio,
           tc_keet_contratos.clave,
           tc_keet_contratos.nombre
         from
@@ -524,6 +574,7 @@
         where
           tc_keet_desarrollos.nombres= '{desarrollo}'
           and tc_keet_contratos.nombre not like '%MUESTRA%'
+          and tc_keet_contratos.id_contrato_estatus&lt; 10
         group by
           category, serie with rollup         
       </select>

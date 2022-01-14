@@ -12,11 +12,11 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.reflection.Methods;
 
 /**
- * @company INEGI
- * @project IKTAN (Sistema de seguimiento y control de proyectos)
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
  * @date 8/01/2022
  * @time 02:45:23 PM
- * @author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Fechas {
 
@@ -26,9 +26,10 @@ public class Fechas {
   public static void main(String[] args) {
     Map<String, Object> params = null;
     try {      
-      List<String> sentencias= new ArrayList<String>();
+      // 001,2021,002,001001001000000
+      List<String> sentencias= new ArrayList<>();
       params = new HashMap<>();      
-      List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("select id_contrato as id_key, ejercicio, orden, no_viviendas as viviendas from tc_keet_contratos order by orden desc");
+      List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("select id_contrato as id_key, ejercicio, orden, no_viviendas as viviendas from tc_keet_contratos where id_contrato in (28, 29, 35, 36) order by orden desc");
       if(contratos!= null)
         for (Entity contrato: contratos) {
           for (int x = 1; x<= contrato.toInteger("viviendas"); x++) {
