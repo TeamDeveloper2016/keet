@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Historial de conceptos pagados hasta el momento" />
+  <ui:param name="titulo" value="Seguimiento de conceptos pagados hasta el momento" />
   <ui:define name="librerias">
     <script type="text/javascript">
       function movePage(link) {
@@ -86,7 +86,7 @@
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
-              <h:outputText value="#{row.nombre}"/>
+              <h:outputText value="#{row.nombre}" title="#{row.nombre}" style="white-space: nowrap;"/>
             </p:column>  
             <p:columns value="#{keetCatalogosContratosDestajosSeguimiento.fields}" var="column" columnIndexVar="colIndex" styleClass="#{column.style}">
               <f:facet name="header">

@@ -238,7 +238,7 @@ public class Resumen extends IBaseReporteDestajos implements Serializable {
   } // doReporte 	
 
 	public String doColorNomina(Entity row) {
-		return !row.toString("porcentaje").equals("100.00")? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "": "janal-tr-diferencias";
+		return !row.toString("porcentaje").equals("100.00")? "janal-tr-error": Cadena.isVacio(row.toLong("idNomina"))? "janal-tr-diferencias": "";
 	}
  
 }

@@ -117,7 +117,7 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
-			params.put("sortOrder", "order by nomina desc");
+			params.put("sortOrder", "order by nomina desc, desarrollo, nombre_completo");
       columns= new ArrayList<>();
       columns.add(new Columna("percepciones", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("deducciones", EFormatoDinamicos.MILES_CON_DECIMALES));

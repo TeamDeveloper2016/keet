@@ -24,7 +24,7 @@ public enum EOpcionesResidente {
 	// DESTAJOS
 	AUDITORIA       ("Auditar trabajos realizados", "919bb1bb4ad36af27d8c", "/Paginas/Keet/Auditoria/filtro.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 11L),
 	HISTORIAL       ("Historial de destajos realizados por lote", "2e3fc953e8758e999bd5", "/Paginas/Keet/Catalogos/Contratos/Destajos/historial.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L),
-	SEGUIMIENTO     ("Seguimiento a los destajos realizados por lote", "c451d751e97e82858beb708f", "/Paginas/Keet/Catalogos/Contratos/Destajos/seguimiento.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 11L),
+	SEGUIMIENTO     ("Seguimiento a los destajos realizados por lote", "c451d751e97e82858beb708f", "/Paginas/Keet/Catalogos/Contratos/Destajos/seguimiento.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L),
 	RESUMEN         ("Detalle de los destajos realizados", "ba44c852e87b8999", "/Paginas/Keet/Catalogos/Contratos/Destajos/resumen.jsf", "/Paginas/Keet/Catalogos/Contratos/Personal/filtro.jsf?opcion=", 8L);
   
 	private static final Map<Long, EOpcionesResidente> lookup= new HashMap<>();	

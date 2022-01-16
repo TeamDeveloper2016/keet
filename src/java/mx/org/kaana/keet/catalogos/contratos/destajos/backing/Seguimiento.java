@@ -69,6 +69,8 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
       this.fields = new ArrayList<>();
 			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
 			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
+			//opcion      = EOpcionesResidente.SEGUIMIENTO;
+			//idDesarrollo= 1L;			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
@@ -149,9 +151,13 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
     StringBuilder regresar = new StringBuilder();
 		UISelectEntity contrato= (UISelectEntity)this.attrs.get("contrato");
     if(contrato!= null && contrato.getKey()> 0L) {
-		  regresar.append(Cadena.rellenar(String.valueOf(contrato.toLong("idEmpresa")), 3, '0', true)).
-              append(contrato.toLong("ejercicio")).
-              append(Cadena.rellenar(String.valueOf(contrato.getKey()), 3, '0', true));
+      List<UISelectEntity> contratos= (List<UISelectEntity>)this.attrs.get("contratos");
+      if(contratos!= null) {
+        contrato= contratos.get(contratos.indexOf(contrato));
+		    regresar.append(Cadena.rellenar(String.valueOf(contrato.toLong("idEmpresa")), 3, '0', true)).append(contrato.toLong("ejercicio")).append(Cadena.rellenar(String.valueOf(contrato.getKey()), 3, '0', true));
+      } // if
+      else
+        regresar.append(Cadena.rellenar("", 25, '9', true));
     } // else  
     else
       regresar.append(Cadena.rellenar("", 25, '9', true));
@@ -166,6 +172,7 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
     List<Entity> codigos     = null;
     String anterior          = "";
     try {
+      this.model.clear();
       this.attrs.put("detalle", Boolean.FALSE);
       params.put("clave", this.toTokenClave());
       codigos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "codigos", params);
@@ -195,7 +202,7 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
         } // for
       } // if
       else   
-        this.model= null;
+        this.model= new ArrayList<>();
       UIBackingUtilities.resetDataTable("tabla");
     } // try
     catch (Exception e) {

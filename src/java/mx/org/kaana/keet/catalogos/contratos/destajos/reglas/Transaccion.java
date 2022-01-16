@@ -163,6 +163,7 @@ public class Transaccion extends IBaseTnx {
           String columna= "cargo".concat(dto.getSemana().toString());
 					params.put("cargo", estacion.getCargo()+ dto.getCosto());										
 					params.put(columna, (Double)estacion.toValue(columna)+ dto.getCosto());										
+					params.put("entrega", LocalDate.now());										
 					if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
 						regresar= this.actualizaEstacionPadre(sesion, estacion, dto.getCosto(), dto.getSemana().toString(), true, this.revision.getIdContratoLote());											
 				} // if				
@@ -208,6 +209,7 @@ public class Transaccion extends IBaseTnx {
           String columna= "cargo".concat(dto.getSemana().toString());
 					params.put("cargo", estacion.getCargo()+ dto.getCosto());
 					params.put(columna, (Double)estacion.toValue(columna)+ dto.getCosto());										
+					params.put("entrega", LocalDate.now());										
 					if(DaoFactory.getInstance().update(sesion, TcKeetEstacionesDto.class, this.revision.getIdEstacion(), params)>= 1L)
 						regresar= this.actualizaEstacionPadre(sesion, estacion, dto.getCosto(), dto.getSemana().toString(), true, this.revision.getIdContratoLote());											
 				} // if

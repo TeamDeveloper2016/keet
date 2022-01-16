@@ -177,6 +177,12 @@
 							</f:facet>
 							<h:outputText value="#{row['nomina']}"/>
 						</p:column>														
+						<p:column class="MarAuto Responsive janal-wid-10 janal-display-none" sortBy="#{row.desarrollo}">
+							<f:facet name="header">
+								<h:outputText value="Desarrollo"/>
+							</f:facet>
+							<h:outputText value="#{row['desarrollo']}"/>
+						</p:column>														
 						<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.contratista}" rendered="false">
 							<f:facet name="header">
 								<h:outputText value="Contratista"/>
@@ -193,8 +199,8 @@
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
-							<h:outputText value="#{row['nombreCompleto']}" title="Departamento o contratista: #{row.contratista}"/>
-              <p:outputLabel value="#{keetNominasPersonas.doCheckIncidente(row)}" styleClass="janal-font-bold janal-color-orange janal-align-right" escape="false"/>
+							<h:outputText value="#{row['nombreCompleto']}" title="Desarrollo: #{row.desarrollo}"/>
+              <!--p:outputLabel value="#{keetNominasPersonas.doCheckIncidente(row)}" styleClass="janal-font-bold janal-color-orange janal-align-right" escape="false"/-->
 						</p:column>
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.apodo}" rendered="false">
 							<f:facet name="header">

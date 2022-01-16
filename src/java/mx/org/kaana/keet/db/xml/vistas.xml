@@ -8,6 +8,7 @@
       <select id="codigos">
         select
          tc_keet_estaciones.id_estacion as id_key,
+         min(tc_keet_estaciones.clave) as consecutivo,
          tc_keet_estaciones.codigo,
          tc_keet_estaciones.nombre
         from
@@ -19,7 +20,7 @@
         group by
          tc_keet_estaciones.codigo
         order by
-         tc_keet_estaciones.clave        
+         consecutivo        
       </select>        
       <select id="lotes">
         select
@@ -1942,6 +1943,7 @@
 			<select id="personas">
 				select
 				  principal.*,
+          tc_keet_desarrollos.nombres as desarrollo,
 				  concat(if(principal.id_contratista is null, principal.departamento, concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')))) as contratista
 				from(
 				select
@@ -1992,6 +1994,10 @@
 			    tr_mantic_empresa_personal on principal.id_contratista= tr_mantic_empresa_personal.id_empresa_persona
 			  left join
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1				
+        left join
+          tc_keet_nominas_desarrollos on principal.id_nomina= tc_keet_nominas_desarrollos.id_nomina and principal.id_empresa_persona= tc_keet_nominas_desarrollos.id_empresa_persona
+        left join
+          tc_keet_desarrollos on tc_keet_nominas_desarrollos.id_desarrollo= tc_keet_desarrollos.id_desarrollo
         {sortOrder}
 			</select>
 			<select id="proveedores">

@@ -29,7 +29,7 @@ public class Fechas {
       // 001,2021,002,001001001000000
       List<String> sentencias= new ArrayList<>();
       params = new HashMap<>();      
-      List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("select id_contrato as id_key, ejercicio, orden, no_viviendas as viviendas from tc_keet_contratos where id_contrato in (28, 29, 35, 36) order by orden desc");
+      List<Entity> contratos= (List<Entity>)DaoFactory.getInstance().toEntitySet("select id_contrato as id_key, ejercicio, orden, no_viviendas as viviendas from tc_keet_contratos where id_contrato in (2,3,4) order by orden desc");
       if(contratos!= null)
         for (Entity contrato: contratos) {
           for (int x = 1; x<= contrato.toInteger("viviendas"); x++) {

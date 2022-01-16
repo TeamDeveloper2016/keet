@@ -94,88 +94,82 @@ public class Criterio implements Serializable {
     final long days = DAYS.between(uno, dos);
     final long daysWithoutWeekends= days- 2* ((days+ startW.getValue())/ 7);
     //adjust for starting and ending on a Sunday:
-    return daysWithoutWeekends + (startW == DayOfWeek.SUNDAY ? 1 : 0) + (endW == DayOfWeek.SUNDAY ? 1 : 0);
+    return daysWithoutWeekends+ (startW== DayOfWeek.SUNDAY? 1: 0)+ (endW== DayOfWeek.SUNDAY? 1: 0);
+  }
+  
+  private String toPeriodo(String text, LocalDate fecha) {
+    return "\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\r "+ text+ ": "+ Fecha.formatear(Fecha.FECHA_CORTA, fecha);
   }
   
   private void toCalulate() {
-    if(Objects.equals(this.idEstacionEstatus, 4L)) {
-      this.semaforo= "circulo-magenta.png";
-      this.titulo  = "NO APLICA POR ESTAR CANCELADO";
-    } // if
-    else {
-      if(Objects.equals(this.idEstacionEstatus, 1L)) {
-        if(this.inicio.isEqual(this.hoy) || this.inicio.isAfter(this.hoy)) {
+    switch(this.idEstacionEstatus.intValue()) {
+      case 1: // SIN INICIAR
+        if(this.hoy.isBefore(this.hoy)) {
           long dias= this.dias(this.hoy, this.inicio);
-          if(dias>= 5) 
-            this.semaforo= "circulo-cafe.png";
+          if(dias<= 2) 
+            this.semaforo= "circulo-amarillo.png";
           else 
             this.semaforo= "circulo-gris.png";
-          this.titulo= "FALTAN "+ dias+ " DIAS PARA INICIAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus;
+          this.titulo= "FALTAN "+ dias+ " DIAS PARA INICIAR".concat(this.toPeriodo("HOY ES", this.hoy));
         } // if
-        else {
-          long dias    = DAYS.between(this.inicio, this.hoy);
-          this.semaforo= "circulo-rojo.png";
-          this.titulo  = "ESTA RETRASADO CON "+ dias+ " DIAS\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus;
-        } // else
-      } // if
-      else {
-        if(this.entrega!= null) {
-          if(Objects.equals(this.idEstacionEstatus, 3L)) {
-            if((this.entrega.isEqual(this.inicio) || this.entrega.isAfter(this.inicio)) && (this.entrega.isEqual(this.termino) || this.entrega.isBefore(this.termino))) {
-              this.semaforo= "circulo-verde.png";
-              this.titulo  = "SE TERMINO EN TIEMPO\rPAGADO: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.entrega);
-            } // if
-            else {
-              if(this.inicio.isEqual(this.entrega) || this.inicio.isAfter(this.entrega)) {
-                long dias    = DAYS.between(this.entrega, this.inicio);
-                this.semaforo= "circulo-azul.png";
-                this.titulo  = "SE TERMINO CON "+ dias+ " DIAS ANTES\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rPAGADO: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.entrega);
-              } // if
-              else {
-                long dias    = DAYS.between(this.termino, this.entrega);
-                this.semaforo= "circulo-rojo.png";
-                this.titulo  = "SE TERMINO CON "+ dias+ " DIAS DESPUES\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rPAGADO: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.entrega);
-              } // else  
-            } // else  
+        else 
+          if(this.hoy.isAfter(this.termino)) {
+            long dias    = DAYS.between(this.inicio, this.hoy);
+            this.semaforo= "circulo-rojo.png";
+            this.titulo  = "ESTA RETRASADO CON "+ dias+ " DIAS".concat(this.toPeriodo("HOY ES", this.hoy));
           } // if
           else {
-            if(this.entrega.isEqual(this.inicio) || this.entrega.isBefore(this.inicio)) {
-              long dias= DAYS.between(this.entrega, this.inicio);
-              this.semaforo= "circulo-naranja.png";
-              this.titulo  = "ESTA EN TIEMPO, "+ dias+ " DIAS PARA TERMINAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rPAGADO: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.entrega);
+            long dias    = DAYS.between(this.inicio, this.hoy);
+            this.semaforo= "circulo-rojo.png";
+            this.titulo  = "DEBIO INICIAR HACE "+ dias+ " DIAS".concat(this.toPeriodo("HOY ES", this.hoy));
+          } // else
+        break;
+      case 2: // EN PROCESO
+        if((this.hoy.isEqual(this.inicio) || this.hoy.isAfter(this.inicio)) && (this.hoy.isEqual(this.termino) || this.hoy.isBefore(this.termino))) {
+          long dias= this.dias(this.hoy, this.termino);
+          this.semaforo= "circulo-naranja.png";
+          this.titulo= "ESTA A "+ dias+ " DIAS PARA TERMINAR".concat(this.toPeriodo("HOY ES", this.hoy));
+        } // if
+        else 
+          if(this.hoy.isBefore(this.inicio)) {
+            long dias    = DAYS.between(this.hoy, this.inicio);
+            this.semaforo= "circulo-azul.png";
+            this.titulo  = "INICIO ANTES, CON "+ dias+ " DIAS".concat(this.toPeriodo("HOY ES", this.hoy));
+          } // if
+          else {
+            long dias    = DAYS.between(this.inicio, this.hoy);
+            this.semaforo= "circulo-rojo.png";
+            this.titulo  = "ESTA RETRASADO, CON "+ dias+ " DIAS".concat(this.toPeriodo("HOY ES", this.hoy));
+          } // else            
+        break;
+      case 3: // TERMINADO
+        if(this.entrega!= null) {        
+          if((this.entrega.isEqual(this.inicio) || this.entrega.isAfter(this.inicio)) && (this.entrega.isEqual(this.termino) || this.entrega.isBefore(this.termino))) {
+            this.semaforo= "circulo-verde.png";
+            this.titulo  = "SE TERMINO EN TIEMPO".concat(this.toPeriodo("PAGADO", this.entrega));
+          } // if
+          else 
+            if(this.entrega.isBefore(this.inicio)) {
+              long dias    = DAYS.between(this.entrega, this.inicio);
+              this.semaforo= "circulo-azul.png";
+              this.titulo  = "SE TERMINO CON "+ dias+ " DIAS ANTES".concat(this.toPeriodo("PAGADO", this.entrega));
             } // if
             else {
-              if(this.entrega.isAfter(this.termino)) {
-                long dias= DAYS.between(this.termino, this.entrega);
-                this.semaforo= "circulo-rojo.png";
-                this.titulo  = "ESTA RETRASADO CON "+ dias+ " DIAS PARA TERMINAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rPAGADO: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.entrega);
-              } // if
-              else {
-                if(this.hoy.isBefore(this.termino)) {
-                  long dias= this.dias(this.hoy, this.termino);
-                  if(dias<= 2) {
-                    this.semaforo= "circulo-amarillo.png";
-                  } // if
-                  else {
-                    this.semaforo= "circulo-naranja.png";
-                  } // else
-                    this.titulo  = "ESTA A "+ dias+ " DIAS PARA TERMINAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rHOY ES: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.hoy);
-                } // if
-                else {
-                  long dias= DAYS.between(this.termino, this.hoy);
-                  this.semaforo= "circulo-rojo.png";
-                  this.titulo  = "ESTA RETRASADO CON "+ dias+ " DIAS PARA TERMINAR\r("+ Fecha.formatear(Fecha.FECHA_CORTA, this.inicio)+ " a "+ Fecha.formatear(Fecha.FECHA_CORTA, this.termino)+ ") "+ this.estatus+ "\rHOY ES: "+ Fecha.formatear(Fecha.FECHA_CORTA, this.hoy);
-                } // else
-              } // else
+              long dias    = DAYS.between(this.termino, this.entrega);
+              this.semaforo= "circulo-cafe.png";
+              this.titulo  = "SE TERMINO CON "+ dias+ " DIAS DESPUES".concat(this.toPeriodo("PAGADO", this.entrega));
             } // else  
-          } // else
         } // if
         else {
           this.semaforo= "circulo-turquesa.png";
-          this.titulo  = "REVISAR PORQUE ESTA VACIO LA FECHA DE ENTREGA";
-        } // else  
-      } // else
-    } // else
+          this.titulo  = "REVISAR PORQUE ESTA VACIO LA FECHA DE ENTREGA".concat(this.toPeriodo("HOY ES", this.hoy));
+        } // else
+        break;
+      case 4: // CANCELADO
+        this.semaforo= "circulo-magenta.png";
+        this.titulo  = "NO APLICA POR ESTAR CANCELADO".concat(this.toPeriodo("HOY ES", this.hoy));
+        break;
+    } // switch
   }
 
   public String getSemaforo() {

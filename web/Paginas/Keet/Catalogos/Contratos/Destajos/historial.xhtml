@@ -86,7 +86,7 @@
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
-              <h:outputText value="#{row['nombre']}"/>
+              <h:outputText value="#{row['nombre']}" style="white-space: nowrap;"/>
             </p:column>  
             <p:columns value="#{keetCatalogosContratosDestajosHistorial.fields}" var="column" columnIndexVar="colIndex" sortBy="#{row[column.field]}" styleClass="#{column.style}">
               <f:facet name="header">
