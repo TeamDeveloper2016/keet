@@ -478,6 +478,6 @@ public class Personas extends IBaseReporteDestajos implements Serializable {
       Methods.clean(columns);
     } // finally
     return regresar;
-  } // 
+  } 
   
 }

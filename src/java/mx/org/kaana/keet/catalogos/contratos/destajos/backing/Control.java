@@ -31,12 +31,12 @@ import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Named(value = "keetCatalogosContratosDestajosSeguimiento")
+@Named(value = "keetCatalogosContratosDestajosControl")
 @ViewScoped
-public class Seguimiento extends IBaseReporteDestajos implements Serializable {
+public class Control extends IBaseReporteDestajos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;			
-  private static final Log LOG = LogFactory.getLog(Seguimiento.class);
+  private static final Log LOG = LogFactory.getLog(Control.class);
   
 	private RegistroDesarrollo registroDesarrollo;		
   private List<Concepto> model;
@@ -67,10 +67,10 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
       this.model  = new ArrayList<>();
 			this.initBase();
       this.fields = new ArrayList<>();
-			opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
-			idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
-			//opcion      = EOpcionesResidente.SEGUIMIENTO;
-			//idDesarrollo= 1L;			
+			// opcion      = (EOpcionesResidente)JsfBase.getFlashAttribute("opcionResidente");
+			// idDesarrollo= (Long)JsfBase.getFlashAttribute("idDesarrollo");			
+			opcion      = EOpcionesResidente.CONTROL;
+		  idDesarrollo= 2L;			
 			this.attrs.put("opcionResidente", opcion);
 			this.attrs.put("opcionAdicional", JsfBase.getFlashAttribute("opcionAdicional"));
 			this.attrs.put("idDesarrollo", idDesarrollo);
@@ -175,6 +175,12 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
       this.model.clear();
       this.attrs.put("detalle", Boolean.FALSE);
       params.put("clave", this.toTokenClave());
+      params.put("idTipoNomina", "1");
+      Entity semana= (Entity)DaoFactory.getInstance().toEntity("VistaNominaDto", "ultima", params);
+      if(semana!= null)
+        params.put("semana", semana.toString("semana"));
+      else
+        params.put("semana", "2000-0");
       codigos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "codigos", params);
       if(codigos!= null && !codigos.isEmpty()) {
         int count= 0;
@@ -184,14 +190,14 @@ public class Seguimiento extends IBaseReporteDestajos implements Serializable {
         } // for
       } // if
       this.fields.clear();
-      lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "lotes", params, Constantes.SQL_TODOS_REGISTROS);
+      lotes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaSeguimientoDto", "control", params, Constantes.SQL_TODOS_REGISTROS);
       if(lotes!= null && !lotes.isEmpty()) {
         for (Entity item: lotes) {
           String lote= item.toString("lote").replaceAll("-", "");
           int index= this.model.indexOf(new Concepto(item.toString("codigo")));
           if(index>= 0) {
             Concepto concepto= this.model.get(index);
-            concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toDate("entrega"), item.toLong("idEstacionEstatus"), item.toString("estatus")));
+            concepto.put(lote, new Criterio(lote, item.toDate("inicio"), item.toDate("termino"), item.toDate("entrega"), item.toLong("idEstacionEstatus"), item.toString("estatus"), item.toLong("idNomina"), item.toString("semana"), item.toLong("actual")));
             if(!Objects.equal(lote, anterior)) {
               this.fields.add(new Lote(lote, lote, "", "janal-column-center MarAuto Responsive janal-wid-5"));
               anterior= lote;

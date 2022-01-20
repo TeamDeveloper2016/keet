@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
-import java.util.Objects;
 import mx.org.kaana.libs.formato.Fecha;
 
 /**
@@ -26,6 +25,9 @@ public class Criterio implements Serializable {
   private LocalDate hoy;
   private Long idEstacionEstatus;
   private String estatus;
+  private Long idNomina;
+  private String semana;
+  private Long actual;
   private String semaforo;
   private String titulo;
 
@@ -38,6 +40,20 @@ public class Criterio implements Serializable {
     this.idEstacionEstatus= idEstacionEstatus;
     this.estatus= estatus;
     this.toCalulate();
+  }
+  
+  public Criterio(String lote, LocalDate inicio, LocalDate termino, LocalDate entrega, Long idEstacionEstatus, String estatus, Long idNomina, String semana, Long actual) {
+    this.lote   = lote; 
+    this.inicio = inicio;
+    this.termino= termino;
+    this.entrega= entrega;
+    this.hoy    = LocalDate.now();
+    this.idEstacionEstatus= idEstacionEstatus;
+    this.estatus= estatus;
+    this.idNomina= idNomina;
+    this.semana = semana;
+    this.actual = actual;
+    this.toControl();
   }
 
   public String getLote() {
@@ -86,6 +102,30 @@ public class Criterio implements Serializable {
 
   public String getEstatus() {
     return estatus;
+  }
+
+  public Long getIdNomina() {
+    return idNomina;
+  }
+
+  public void setIdNomina(Long idNomina) {
+    this.idNomina = idNomina;
+  }
+
+  public String getSemana() {
+    return semana;
+  }
+
+  public void setSemana(String semana) {
+    this.semana = semana;
+  }
+
+  public Long getActual() {
+    return actual;
+  }
+
+  public void setActual(Long actual) {
+    this.actual = actual;
   }
 
   private long dias(LocalDate uno, LocalDate dos) {
@@ -172,6 +212,27 @@ public class Criterio implements Serializable {
     } // switch
   }
 
+  private void toControl() {
+    switch(this.actual.intValue()) {
+      case 1: // NOMINA ACTUAL
+        this.semaforo= "circulo-azul.png";
+        this.titulo  = this.semana;
+        break;
+      case 2: // NOMINA NO ACTUAL
+        this.semaforo= "circulo-verde.png";
+        this.titulo  = "*";
+        break;
+      case 3: // COCEPTO NO PAGADO
+        this.semaforo= "";
+        this.titulo  = "";
+        break;
+      case 4: // ES UNA ESTACION
+        this.semaforo= "";
+        this.titulo  = "";
+        break;
+    } // switch
+  }   
+  
   public String getSemaforo() {
     return semaforo;
   }
@@ -179,10 +240,10 @@ public class Criterio implements Serializable {
   public String getTitulo() {
     return titulo;
   }
-  
+
   @Override
   public String toString() {
-    return "Criterio{" + "lote=" + lote + ", inicio=" + inicio + ", termino=" + termino + ", entrega=" + entrega + ", hoy=" + hoy + ", idEstatusEstacion=" + idEstacionEstatus + '}';
+    return "Criterio{" + "lote=" + lote + ", inicio=" + inicio + ", termino=" + termino + ", entrega=" + entrega + ", hoy=" + hoy + ", idEstacionEstatus=" + idEstacionEstatus + ", estatus=" + estatus + ", idNomina=" + idNomina + ", semana=" + semana + ", actual=" + actual + ", semaforo=" + semaforo + ", titulo=" + titulo + '}';
   }
 
 }
