@@ -7,6 +7,286 @@
   </model>
 
   <dml>
+    <unit id="TcKeetMorososDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_morosos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_morosos
+        where      
+          id_proveedor = {idProveedor}
+      </select>
+    </unit>    
+    <unit id="TcKeetIncidentesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_incidentes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_incidentes
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+			<select id="siguiente">
+        select
+					max(orden) + 1 as siguiente
+				from 
+					tc_keet_incidentes
+				where
+				  ejercicio= {ejercicio} 				  
+				  and orden {operador} 900000
+			</select>		
+			<select id="existente">
+				select 
+					tc_keet_incidentes.id_incidente as id_key,
+					tc_keet_incidentes.*
+				from 
+					tc_keet_incidentes
+				where 
+					id_proveedor= {idProveedor}
+				  and id_tipo_incidente={idTipoIncidente}
+				  and id_incidente_estatus in ({estatus})
+				  and ('{fecha}' between tc_keet_incidentes.inicio and tc_keet_incidentes.termino)
+			</select>
+			<select id="prestamos">
+				select 
+					tc_keet_incidentes.id_incidente as id_key,
+					tc_keet_incidentes.*
+				from 
+					tc_keet_incidentes
+				where 
+					id_anticipo= {idAnticipo}
+          and id_incidente_estatus in (1,2,6)
+			</select>
+      <select id="incidente">
+        select
+          id_tipo_incidente, id_incidente_estatus, inicio, termino
+        from  
+          tc_keet_incidentes
+        where
+          now()&gt;= inicio
+          and now()&lt;= termino
+          and id_incidente_estatus in (1, 2, 3, 5, 6)
+          and id_tipo_incidente in (1, 2, 3, 4, 5, 6, 9)
+          and id_proveedor= {idProveedor}        
+        order by
+          id_tipo_incidente
+      </select>  
+			<delete id="rows">
+				delete tc_keet_incidentes from tc_keet_incidentes where id_incidente= {idIncidente}
+			</delete>
+			<update id="nomina">
+				update 
+				  tc_keet_incidentes 
+				set 
+				  id_nomina= null 
+				where 
+				  id_nomina= {idNomina}
+			</update>
+			<update id="persona">
+				update 
+				  tc_keet_incidentes 
+				set 
+				  id_nomina= null 
+				where 
+				 id_nomina= {idNomina}
+				 and id_proveedor= {idProveedor}
+			</update>
+			<delete id="persona">
+				delete 
+          tc_keet_incidentes
+        from 
+          tc_keet_incidentes
+        inner join  
+          tc_mantic_proveedores on tc_keet_incidentes.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where 
+          tc_mantic_proveedores.id_proveedor= {idProveedor}
+			</delete>      
+    </unit>    
+    <unit id="TcKeetIncidentesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_incidentes_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_incidentes_bitacora
+        where      
+          id_incidente_bitacora = {idIncidenteBitacora}
+      </select>
+    </unit>    
+    <unit id="TcKeetIncidentesEstatusDto">
+			<select id="estatus">
+        select      
+				  tc_keet_incidentes_estatus.id_incidente_estatus as id_key,
+          tc_keet_incidentes_estatus.*
+        from      
+          tc_keet_incidentes_estatus
+        where 				  
+				  id_incidente_estatus in ({estatusAsociados})
+				order by 
+				  id_incidente_estatus
+      </select>
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_incidentes_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_incidentes_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKeetAnticiposDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_anticipos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_anticipos
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="byId">
+        select      
+          tc_keet_anticipos.id_anticipo as id_key,
+					tc_keet_anticipos.*
+        from      
+          tc_keet_anticipos
+        where 
+          id_anticipo= {idAnticipo} 
+				order by
+				  registro
+      </select>
+      <select id="activosByIdDeudor">
+        select      
+          tc_keet_anticipos.id_anticipo as id_key,
+					tc_keet_anticipos.*
+        from      
+          tc_keet_anticipos
+        where 
+          id_anticipo= {idAnticipo} 
+				  and id_anticipo_estatus in (1,2)
+				order by
+				  registro
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_anticipos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>	      
+    </unit>    
+    <unit id="TcKeetAnticiposArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_anticipos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_anticipos_archivos
+        where      
+          id_anticipo_pago = {idAnticipoPago} and nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKeetAnticiposBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_anticipos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_anticipos_bitacora
+        where      
+          id_anticipo_bitacora = {idAnticipoBitacora}
+      </select>
+    </unit>  
+    <unit id="TcKeetAnticiposEstatusDto">
+      <select id="row">
+        select      
+          tc_keet_anticipos_estatus.id_anticipo_estatus as id_key,
+				  tc_keet_anticipos_estatus.*
+        from      
+          tc_keet_anticipos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_anticipos_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>  
+    <unit id="TcKeetAnticiposPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_anticipos_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_anticipos_pagos
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+    </unit>        
     <unit id="TcKeetNominasDesarrollosDto">
       <select id="row">
         select      
@@ -3397,7 +3677,7 @@
 		<unit id="TcKeetPrestamosEstatusDto">
       <select id="row">
         select      
-          tc_keet_prestamos_estatus.id_prestamo_estatus id_key,
+          tc_keet_prestamos_estatus.id_prestamo_estatus as id_key,
 				  tc_keet_prestamos_estatus.*
         from      
           tc_keet_prestamos_estatus
@@ -3416,7 +3696,7 @@
 		<unit id="TcKeetPrestamosPagosDto">
       <select id="row">
         select      
-          tc_keet_prestamos_pagos.id_prestamo_pago id_key,
+          tc_keet_prestamos_pagos.id_prestamo_pago as id_key,
 				  tc_keet_prestamos_pagos.*
         from      
           tc_keet_prestamos_pagos
@@ -3425,7 +3705,7 @@
       </select>
       <select id="byIdPrestamo">
         select      
-          tc_keet_prestamos_pagos.id_prestamo_pago id_key,
+          tc_keet_prestamos_pagos.id_prestamo_pago as id_key,
 				  tc_keet_prestamos_pagos.*
         from      
           tc_keet_prestamos_pagos

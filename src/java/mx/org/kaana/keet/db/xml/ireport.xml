@@ -52,6 +52,45 @@
           tc_keet_desarrollos.id_desarrollo
       </select>
     </unit>
+    <unit id="VistaReportesAnticiposDto">
+			<select id="anticiposPagos">
+        select
+					tc_keet_anticipos_pagos.id_anticipo_pago id_key,
+				  tc_keet_anticipos.consecutivo as prestamo,
+				  tc_mantic_proveedores.razon_social as deudor,
+				  tc_keet_anticipos.importe as importe_prestamo,
+					tc_keet_anticipos.saldo as saldo_prestamo,
+          tc_keet_anticipos.observaciones as observaciones_prestamo,
+          tc_keet_anticipos.registro as fecha_prestamo,
+          tc_keet_anticipos.saldo,
+					tc_keet_morosos.saldo as saldo_total_deudor,
+					tc_keet_morosos.limite as limite_deudor,
+					tc_keet_morosos.disponible as disponible_deudor,
+					tc_keet_anticipos_pagos.consecutivo,
+					tc_keet_anticipos_pagos.pago,
+					tc_keet_anticipos_pagos.abono,
+         (tc_keet_anticipos.saldo-tc_keet_anticipos_pagos.pago) as saldo_despues_abono,
+					tc_keet_anticipos_pagos.abono as total_abonos,
+					tc_keet_anticipos_pagos.cambio,
+          tc_keet_anticipos_pagos.observaciones as observaciones_pago,
+					tc_keet_anticipos_pagos.registro as fecha_pago
+				from
+					tc_keet_anticipos
+				left join 
+				  tc_keet_anticipos_pagos on tc_keet_anticipos.id_anticipo = tc_keet_anticipos_pagos.id_anticipo
+				inner join 
+				  tc_keet_morosos on tc_keet_anticipos.id_moroso= tc_keet_morosos.id_moroso
+				inner join 
+				  tc_mantic_proveedores on tc_keet_morosos.id_proveedor= tc_mantic_proveedores.id_proveedor
+				where
+					tc_keet_anticipos.id_anticipo_estatus in (1, 2) 
+					and {condicion}
+				order by 
+          tc_mantic_proveedores.id_proveedor, 
+          tc_keet_anticipos.consecutivo, 
+          tc_keet_anticipos_pagos.consecutivo
+			</select>				
+    </unit>  
     <unit id="VistaReportesPrestamosDto">
       <select id="resumenPrestamos">
         select
@@ -113,11 +152,10 @@
 				where
 					tc_keet_prestamos.id_prestamo_estatus in (1,2) and
           {condicion}
-          /*
-				  tc_keet_deudores.id_deudor= {idDeudor}
-				  tc_keet_prestamos_pagos.id_prestamo= {idPrestamo}
-				  */
-				order by tc_mantic_personas.id_persona, tc_keet_prestamos.consecutivo, tc_keet_prestamos_pagos.consecutivo
+				order by 
+          tc_mantic_personas.id_persona, 
+          tc_keet_prestamos.consecutivo, 
+          tc_keet_prestamos_pagos.consecutivo
 			</select>				
 		</unit>
     <unit id="VistaNominaReportesDto">

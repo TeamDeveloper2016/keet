@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.incidentes.backing;
+package mx.org.kaana.keet.catalogos.contratos.proveedor.backing;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -9,20 +9,22 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.procesos.comun.Comun;
+import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.keet.comun.Catalogos;
 import mx.org.kaana.keet.enums.EOpcionesResidente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -32,41 +34,44 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
-import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
+import mx.org.kaana.mantic.enums.EExportacionXls;
+import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.incidentes.beans.Incidente;
+import mx.org.kaana.keet.catalogos.contratos.personal.reglas.Transaccion;
 
-@Named(value = "manticIncidentesFiltro")
+@Named(value= "keetCatalogosContratosProveedorExportar")
 @ViewScoped
-public class Filtro extends Comun implements Serializable {
+public class Exportar extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;
-	private LocalDate inicio;
-	private LocalDate termino;
+	private static final long serialVersionUID = 6445195086151257263L;  
+	private LocalDate fechaInicio;
+	private LocalDate fechaFin;
 
-	public LocalDate getInicio() {
-		return inicio;
+	public LocalDate getFechaInicio() {
+		return fechaInicio;
 	}
 
-	public void setInicio(LocalDate inicio) {
-		this.inicio = inicio;
+	public void setFechaInicio(LocalDate fechaInicio) {
+		this.fechaInicio = fechaInicio;
 	}
 
-	public LocalDate getTermino() {
-		return termino;
+	public LocalDate getFechaFin() {
+		return fechaFin;
 	}
 
-	public void setTermino(LocalDate termino) {
-		this.termino = termino;
-	}
+	public void setFechaFin(LocalDate fechaFin) {
+		this.fechaFin = fechaFin;
+	}	
+	
   @PostConstruct
   @Override
   protected void init() {
     try {    	
-      this.attrs.put("codigo", "");         
-			this.inicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
-			this.termino= LocalDate.now();
+      this.attrs.put("codigo", "");                  
+			this.fechaInicio= LocalDate.of(Fecha.getAnioActual(), 1, 1);
+			this.fechaFin   = LocalDate.now();
+      this.attrs.put("idTipoIncidente", 18L);
 			this.toLoadCatalog();
-			this.loadContratistas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -86,8 +91,8 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("inicio", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("termino", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      params.put("sortOrder", "order by tc_mantic_incidentes.consecutivo desc");
-      this.lazyModel = new FormatCustomLazy("VistaIncidentesDto", "principal", params, columns);
+      params.put("sortOrder", "order by tc_keet_incidentes.id_desarrollo, tc_keet_incidentes.consecutivo desc");
+      this.lazyModel = new FormatCustomLazy("VistaAnticiposDto", "principal", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -117,58 +122,35 @@ public class Filtro extends Comun implements Serializable {
 			estatus.add(0, new UISelectItem(-1L, "TODOS"));
 			this.attrs.put("estatus", estatus);
 			this.attrs.put("idEstatus", UIBackingUtilities.toFirstKeySelectItem(estatus));
-			this.loadTiposIncidentes();
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
 	}
 
-	private void loadContratistas() {
-		List<UISelectEntity>contratistas= null;		
-		try {
-			contratistas= Catalogos.toContratistasPorElDia();
-			this.attrs.put("contratistas", contratistas);
-			this.attrs.put("idContratista", UIBackingUtilities.toFirstKeySelectEntity(contratistas));
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // loadContratistas
-
 	private Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= new HashMap<>();
-		StringBuilder sb            = new StringBuilder("");						
+		StringBuilder sb= new StringBuilder("");						
 		if(this.attrs.get("idEstatus")!= null && Long.valueOf(this.attrs.get("idEstatus").toString())>0L)
-			sb.append("tc_mantic_incidentes.id_incidente_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
+			sb.append("tc_keet_incidentes.id_incidente_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
 		if(this.attrs.get("idTipoIncidente")!= null && Long.valueOf(this.attrs.get("idTipoIncidente").toString())>0L)
-			sb.append("tc_mantic_incidentes.id_tipo_incidente=").append(this.attrs.get("idTipoIncidente")).append(" and ");						
+			sb.append("tc_keet_incidentes.id_tipo_incidente=").append(this.attrs.get("idTipoIncidente")).append(" and ");						
 		if(!Cadena.isVacio(JsfBase.getParametro("orden_input")))
-			sb.append("upper(tc_mantic_incidentes.orden) like upper('%").append(JsfBase.getParametro("orden_input")).append("%') and ");						
+			sb.append("upper(tc_keet_incidentes.orden) like upper('%").append(JsfBase.getParametro("orden_input")).append("%') and ");						
 		if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
-			sb.append("tc_mantic_incidentes.id_empresa_persona=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
-		else 
-			if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-				sb.append("(tc_mantic_personas.nombre regexp '.*").append(nombre).append(".*') and ");				
-			} // if			  			
-		if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey()>= 1L)
-			if(((UISelectEntity)this.attrs.get("idContratista")).getKey()== 999L)		
-				sb.append("tr_mantic_empresa_personal.id_contratista is null and ");
-			else
-				sb.append("tr_mantic_empresa_personal.id_contratista=").append(((UISelectEntity)this.attrs.get("idContratista")).getKey()).append(" and ");
-		sb.append("(date_format(tc_mantic_incidentes.inicio, '%Y%m%d')>= date_format('").append(this.inicio.toString()).append("', '%Y%m%d')) and ");					
-		sb.append("(date_format(tc_mantic_incidentes.termino, '%Y%m%d')<= date_format('").append(this.termino.toString()).append("', '%Y%m%d')) and ");						
+			sb.append("tc_keet_incidentes.id_proveedor=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
+		else if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
+			String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+			sb.append("((upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) regexp '.*").append(nombre).append(".*') or (tc_mantic_personas.apodo regexp '.*").append(nombre).append(".*')) and ");				
+		} // else if			  						
+		sb.append("(date_format(tc_keet_incidentes.inicio, '%Y%m%d')>= date_format('").append(this.fechaInicio.toString()).append("', '%Y%m%d')) and ");					
+		sb.append("(date_format(tc_keet_incidentes.termino, '%Y%m%d')<= date_format('").append(this.fechaFin.toString()).append("', '%Y%m%d')) and ");			
 		if(Cadena.isVacio(sb.toString()))
 			regresar.put("condicion", Constantes.SQL_VERDADERO);
 		else
 			regresar.put("condicion", sb.substring(0, sb.length()- 4));			
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && this.attrs.get("idEmpresa").toString().equals("-1"))
 			regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 		else
 			regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
@@ -207,27 +189,27 @@ public class Filtro extends Comun implements Serializable {
     } // finally
 	}	// doUpdateCodigos
 	
-	public List<UISelectEntity> doCompleteNombreEmpleado(String query) {
-		this.attrs.put("nombreEmpleado", query);
-    this.doUpdateNombresEmpleados();		
+	public List<UISelectEntity> doCompleteProveedor(String query) {
+		this.attrs.put("razonSocial", query);
+    this.doUpdateProveedor();		
 		return (List<UISelectEntity>)this.attrs.get("nombres");
 	}	// doCompleteNombreEmpleado
 	
-	public void doUpdateNombresEmpleados() {
+	public void doUpdateProveedor() {
 		List<Columna> columns       = null;
     Map<String, Object> params  = new HashMap<>();
 		List<UISelectEntity> nombres= null;		
     try {
 			columns= new ArrayList<>();      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
-			String nombreEmpleado= (String)this.attrs.get("nombreEmpleado"); 
+			String nombreEmpleado= (String)this.attrs.get("razonSocial"); 
 			nombreEmpleado= !Cadena.isVacio(nombreEmpleado) ? nombreEmpleado.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";		
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales()); 
-			params.put("nombreEmpleado", nombreEmpleado);	
-      nombres= (List<UISelectEntity>) UIEntity.build("VistaPersonasDto", "autoCompletar", params, columns, 20L);
+			params.put("razonSocial", nombreEmpleado);	
+      nombres= (List<UISelectEntity>) UIEntity.build("VistaProveedoresDto", "autoCompletar", params, columns, 20L);
       this.attrs.put("nombres", nombres);
 		} // try
 	  catch (Exception e) {
@@ -238,21 +220,7 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
-	}	// doUpdateArticulos
-	
-  public String doAccion(String accion) {
-    EAccion eaccion = null;
-    try {
-      eaccion = EAccion.valueOf(accion.toUpperCase());
-      JsfBase.setFlashAttribute("eaccion", eaccion);
-      JsfBase.setFlashAttribute("idIncidente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    return "accion".concat(Constantes.REDIRECIONAR);
-  } // doAccion	
+	}	// doUpdateArticulo	
 	
 	public void doLoadEstatus() {
 		Entity seleccionado          = null;
@@ -262,7 +230,7 @@ public class Filtro extends Comun implements Serializable {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();			
 			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
-			allEstatus= UISelect.build("TcManticIncidentesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			allEstatus= UISelect.build("TcKeetIncidentesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatusDlg", UIBackingUtilities.toFirstKeySelectItem(allEstatus));		
 		} // try
@@ -285,7 +253,7 @@ public class Filtro extends Comun implements Serializable {
 			dto= (TcManticIncidentesDto) DaoFactory.getInstance().findById(TcManticIncidentesDto.class, seleccionado.getKey());
 			incidente= new Incidente(dto);
 			incidente.setIdIncidenteEstatus(Long.valueOf(this.attrs.get("estatusDlg").toString()));
-			transaccion= new Transaccion(incidente);
+			transaccion= new Transaccion(incidente, (String)this.attrs.get("justificacion"));
 			if(transaccion.ejecutar(EAccion.ASIGNAR)) 			
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);			
 			else
@@ -300,14 +268,53 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
 	
-	private void loadTiposIncidentes() {
-		Map<String, Object> params= new HashMap<>();
-		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		List<UISelectItem> tiposIncidentes= UISelect.build("TcManticTiposIncidentesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
-		tiposIncidentes.add(0, new UISelectItem(-1L, "TODOS"));
-		this.attrs.put("incidentes", tiposIncidentes);
-	} // loadTiposInicidentes	
+	public String doExportar() {
+		String regresar          = null;				
+		Map<String, Object>params= null;
+		try {									   
+			params= new HashMap<>();						  
+			params.put("idEmpresa", !Cadena.isVacio(this.attrs.get("idEmpresa")) && this.attrs.get("idEmpresa").toString().equals("-1") ? JsfBase.getAutentifica().getEmpresa().getDependencias() : ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+			params.put(Constantes.SQL_CONDICION, toCondicionExporter());
+			params.put("sortOrder", "order by tr_mantic_empresa_personal.id_empresa, tc_keet_incidentes.inicio");
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ANTICIPOS), EExportacionXls.ANTICIPOS, 
+				"EJERCICIO,CONSECUTIVO,VIGENCIA_INICIO,VIGENCIA_FIN,NOMBRE,TIPO_INCIDENTE,ESTATUS,CLAVE_DESARROLLO,NOMBRE_DESARROLLO,REGISTRO"));
+			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
+			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e){
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // doExportar  
 	
+	private String toCondicionExporter(){
+		StringBuilder regresar= new StringBuilder("");
+		regresar.append("tc_keet_incidentes.id_incidente_estatus in (");
+		regresar.append(EEstatusIncidentes.REGISTRADA.getIdEstatusInicidente());
+		regresar.append(",");
+		regresar.append(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
+		regresar.append(")");
+		return regresar.toString();
+	} // toCondicionExporter
+	
+	public String doMovimientos() {
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("tipo", ETipoMovimiento.INCIDENCIAS);
+			JsfBase.setFlashAttribute(ETipoMovimiento.INCIDENCIAS.getIdKey(), seleccionado.getKey());
+			JsfBase.setFlashAttribute("regreso", "/Paginas/Keet/Catalogos/Contratos/Personal/exportar");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
+	}
+
 	public String doImportar() {
 		String regresar= null;
 		try {
@@ -315,17 +322,17 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.setFlashAttribute("opcionResidente", EOpcionesResidente.INCIDENCIAS);
 			JsfBase.setFlashAttribute("idDesarrollo", seleccionado.get("idDesarrollo").getData()!= null ? seleccionado.toLong("idDesarrollo") : -1L);
 			JsfBase.setFlashAttribute("idEmpresaPersona", seleccionado.toLong("idEmpresaPersona"));			
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Incidentes/filtro");			
-			regresar= "/Paginas/Keet/Catalogos/Contratos/Personal/importar".concat(Constantes.REDIRECIONAR);
+			JsfBase.setFlashAttribute("retorno", "exportar");			
+			regresar= "importar".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
 		return regresar;
-	} // doImportar
+	} // doImportar	
 	
-	public void doEliminar(){		
+	public void doEliminar(){
 		Transaccion transaccion  = null;
 		List<Incidente>incidentes= null;
 		Incidente dto            = null;

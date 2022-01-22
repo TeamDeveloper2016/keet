@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Prestamos al otorgrados a los empleados" />
+  <ui:param name="titulo" value="Prestamos al personal" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -37,7 +37,7 @@
               </p:selectOneMenu>
 							<p:outputLabel for="consecutivo" value="Folio:"/>
               <p:inputText id="consecutivo" value="#{keetPrestamosFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
-							<p:outputLabel for="deudor" value="Deudor:"/>
+							<p:outputLabel for="deudor" value="Empleado:"/>
 							<p:autoComplete id="deudor" var="custom" placeholder="ejemplo: JUAN GARCIA" itemLabel="#{custom.deudor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetPrestamosFiltro.attrs.deudor}" completeMethod="#{keetPrestamosFiltro.doCompleteDeudor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
@@ -75,16 +75,17 @@
 							<p:menuButton styleClass="lg-pantalla" value="Opciones">
 								<p:menuitem value="Agregar" action="#{keetPrestamosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" ajax="false"/>						
 								<p:separator/>
-								<p:menuitem id="prestamosPdf" icon="fa fa-file-pdf-o" value="Reporte préstamos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
-								<p:menuitem id="resumenPdf" icon="fa fa-file-pdf-o" value="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('RESUMEN_PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:separator/>
+								<p:menuitem id="prestamosPdf" icon="fa fa-file-pdf-o" value="Préstamos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:menuitem id="resumenPdf" icon="fa fa-file-pdf-o" value="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('RESUMEN_PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</p:menuButton>
 							<p:commandButton styleClass="xs-pantalla" action="#{keetPrestamosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>	
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Reporte préstamos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('RESUMEN_PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Préstamos" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetPrestamosFiltro.doReporte('RESUMEN_PRESTAMOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
             </f:facet>												
             <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.folio}">
               <f:facet name="header">

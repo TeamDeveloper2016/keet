@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-	<ui:param name="titulo" value="Listado de incidentes registrados" />
+	<ui:param name="titulo" value="Listado de anticipos de los subcontatistas" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
@@ -15,7 +15,6 @@
 				nombre         : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         fechaInicio    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaFin       : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        idTipoIncidente: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         estatus        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
 			};					
 			
@@ -42,8 +41,8 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:"/>
-              <p:selectOneMenu id="idEmpresa" value="#{keetCatalogosContratosPersonalExportar.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
-                <f:selectItems value="#{keetCatalogosContratosPersonalExportar.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{keetCatalogosContratosProveedorExportar.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
+                <f:selectItems value="#{keetCatalogosContratosProveedorExportar.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -52,30 +51,30 @@
                 </p:column>   
               </p:selectOneMenu>                            
 							<p:outputLabel for="nombre" value="Nombre:"/>							
-							<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosPersonalExportar.attrs.nombre}" completeMethod="#{keetCatalogosContratosPersonalExportar.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
+							<p:autoComplete id="nombre" var="custom" placeholder="Subcontratista" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{keetCatalogosContratosProveedorExportar.attrs.nombre}" completeMethod="#{keetCatalogosContratosProveedorExportar.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
               <p:outputLabel for="fechaInicio" value="Vigencia inicio:"/>
-							<p:calendar id="fechaInicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetCatalogosContratosPersonalExportar.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>							
+							<p:calendar id="fechaInicio" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetCatalogosContratosProveedorExportar.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>							
               <p:outputLabel for="fechaFin" value="Vigencia termino:"/>
-							<p:calendar id="fechaFin" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetCatalogosContratosPersonalExportar.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
-							<p:outputLabel for="idTipoIncidente" value="Tipo incidente:"/>
-							<p:selectOneMenu id="idTipoIncidente" value="#{keetCatalogosContratosPersonalExportar.attrs.idTipoIncidente}" styleClass="janal-wid-100-txt">
-								<f:selectItems value="#{keetCatalogosContratosPersonalExportar.attrs.incidentes}"/>
+							<p:calendar id="fechaFin" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-81" value="#{keetCatalogosContratosProveedorExportar.fechaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es"/>
+							<p:outputLabel for="idTipoIncidente" value="Tipo incidente:" rendered="false"/>
+							<p:selectOneMenu id="idTipoIncidente" value="#{keetCatalogosContratosProveedorExportar.attrs.idTipoIncidente}" styleClass="janal-wid-100-txt" rendered="false">
+								<f:selectItems value="#{keetCatalogosContratosProveedorExportar.attrs.incidentes}"/>
 							</p:selectOneMenu>																		
 							<p:outputLabel for="estatus" value="Estatus:"/>
-              <p:selectOneMenu id="estatus" value="#{keetCatalogosContratosPersonalExportar.attrs.idEstatus}" styleClass="janal-wid-100-txt" effect="fade">																
-                <f:selectItems value="#{keetCatalogosContratosPersonalExportar.attrs.estatus}"/>                
+              <p:selectOneMenu id="estatus" value="#{keetCatalogosContratosProveedorExportar.attrs.idEstatus}" styleClass="janal-wid-100-txt" effect="fade">																
+                <f:selectItems value="#{keetCatalogosContratosProveedorExportar.attrs.estatus}"/>                
               </p:selectOneMenu> 
 						</p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="@form" actionListener="#{keetCatalogosContratosPersonalExportar.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="@form" actionListener="#{keetCatalogosContratosPersonalExportar.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="@form" actionListener="#{keetCatalogosContratosProveedorExportar.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="@form" actionListener="#{keetCatalogosContratosProveedorExportar.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
 					</p:panel>
 				</div>
 				<p:spacer width="5px"/>
 				<div id="collapse-content" class="ui-grid-col-9">										
 					<div class="ui-grid-row janal-grid-row">
-						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosPersonalExportar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosPersonalExportar.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosContratosPersonalExportar.lazyModel.rowCount gt keetCatalogosContratosPersonalExportar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">														
+						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetCatalogosContratosProveedorExportar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetCatalogosContratosProveedorExportar.attrs.seleccionado}" selectionMode="single" paginator="#{keetCatalogosContratosProveedorExportar.lazyModel.rowCount gt keetCatalogosContratosProveedorExportar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">														
 							<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 							<f:facet name="header">								
@@ -83,11 +82,11 @@
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar" onstart="return janal.bloquear();" action="#{keetCatalogosContratosPersonalExportar.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar" onstart="return janal.bloquear();" action="#{keetCatalogosContratosProveedorExportar.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar" onstart="return janal.bloquear();" action="#{keetCatalogosContratosPersonalExportar.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>									
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar" onstart="return janal.bloquear();" action="#{keetCatalogosContratosProveedorExportar.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>									
 							</f:facet>												
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
@@ -103,13 +102,13 @@
 							</p:column>																					
 							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
 								<f:facet name="header">
-									<h:outputText value="Nombre"/>
+									<h:outputText value="Razón social"/>
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
 							</p:column>																					
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.tipoInicidente}">
 								<f:facet name="header">
-									<h:outputText value="Incidente"/>
+									<h:outputText value="Anticipo"/>
 								</f:facet>
 								<h:outputText value="#{row['tipoIncidente']}"/>
 							</p:column>					
@@ -144,16 +143,16 @@
 								<h:outputText value="#{row['registro']}"/>
 							</p:column>												
 							<f:facet name="footer">
-								Total [#{keetCatalogosContratosPersonalExportar.lazyModel== null ? 0: keetCatalogosContratosPersonalExportar.lazyModel.rowCount}] registros
+								Total [#{keetCatalogosContratosProveedorExportar.lazyModel== null ? 0: keetCatalogosContratosProveedorExportar.lazyModel.rowCount}] registros
 							</f:facet>
 						</p:dataTable>						
 						<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">														
-							<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosPersonalExportar.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(keetCatalogosContratosPersonalExportar.attrs.seleccionado.idIncidenteEstatus eq '4')}"/>
-							<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" update="tabla" rendered="#{(keetCatalogosContratosPersonalExportar.attrs.seleccionado.idIncidenteEstatus eq '1')}" oncomplete="PF('dlgEliminacion').show();"/>
+							<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{keetCatalogosContratosProveedorExportar.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(keetCatalogosContratosProveedorExportar.attrs.seleccionado.idIncidenteEstatus eq '4')}"/>
+							<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" update="tabla" rendered="#{(keetCatalogosContratosProveedorExportar.attrs.seleccionado.idIncidenteEstatus eq '1')}" oncomplete="PF('dlgEliminacion').show();"/>
   						<p:separator/>
-              <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetCatalogosContratosPersonalExportar.doMovimientos}"/>
+              <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{keetCatalogosContratosProveedorExportar.doMovimientos}"/>
   						<p:separator/>
-              <p:menuitem id="evidencia" icon="fa fa-cloud-upload" value="Evidencias" onstart="return janal.bloquear()" process="@this tabla" action="#{keetCatalogosContratosPersonalExportar.doImportar}"/>
+              <p:menuitem id="evidencia" icon="fa fa-cloud-upload" value="Evidencias" onstart="return janal.bloquear()" process="@this tabla" action="#{keetCatalogosContratosProveedorExportar.doImportar}"/>
 						</p:contextMenu>		
 					</div>	
 				</div>
@@ -165,15 +164,15 @@
 			<h:form id="formDialogoEstatus" prependId="false">
 				<p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-					<p:selectOneMenu id="estatusDlg" value="#{keetCatalogosContratosPersonalExportar.attrs.estatusDlg}" styleClass="janal-wid-100-txt">															
-						<f:selectItems value="#{keetCatalogosContratosPersonalExportar.attrs.allEstatus}"/>					
+					<p:selectOneMenu id="estatusDlg" value="#{keetCatalogosContratosProveedorExportar.attrs.estatusDlg}" styleClass="janal-wid-100-txt">															
+						<f:selectItems value="#{keetCatalogosContratosProveedorExportar.attrs.allEstatus}"/>					
 					</p:selectOneMenu>				
 					<p:outputLabel for="justificacion" value="Justificación"/>
-					<p:inputTextarea id="justificacion" value="#{keetCatalogosContratosPersonalExportar.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="4"/>
+					<p:inputTextarea id="justificacion" value="#{keetCatalogosContratosProveedorExportar.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="4"/>
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" actionListener="#{keetCatalogosContratosPersonalExportar.doActualizarEstatus}" onstart="return validaJustificacion();" oncomplete="janal.desbloquear();"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" actionListener="#{keetCatalogosContratosProveedorExportar.doActualizarEstatus}" onstart="return validaJustificacion();" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();janal.restore();janal.refresh();"/>
 				</div>
 			</h:form>
@@ -184,7 +183,7 @@
 			</h:panelGrid>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" process="@this dialogoEliminacion" update="tabla" value="Aceptar" actionListener="#{keetCatalogosContratosPersonalExportar.doEliminar}" onstart="return PF('dlgEliminacion').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-check" process="@this dialogoEliminacion" update="tabla" value="Aceptar" actionListener="#{keetCatalogosContratosProveedorExportar.doEliminar}" onstart="return PF('dlgEliminacion').hide();" oncomplete="janal.desbloquear();"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEliminacion').hide();" oncomplete="janal.desbloquear();"/>
 			</div>			
 		</p:dialog>

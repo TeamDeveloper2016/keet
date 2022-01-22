@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 
-public class Incidente implements Serializable{
+public class Incidente implements Serializable {
 
 	private static final long serialVersionUID= 5491973442869961621L;	
 	private Long idIncidente;

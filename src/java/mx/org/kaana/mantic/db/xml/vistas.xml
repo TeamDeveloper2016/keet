@@ -3794,6 +3794,25 @@
 			</select>
 		</unit>
 		<unit id="VistaProveedoresDto">
+			<select id="autoCompletar">
+				select 
+				  tc_mantic_proveedores.id_provedor as id_key,
+				  tc_mantic_proveedores.clave,
+				  tc_mantic_proveedores.grupo,
+				  tc_mantic_proveedores.razon_social,
+				  tc_mantic_proveedores.nombre_comercial,
+				  tc_mantic_proveedores.rfc,
+					tc_mantic_empresas.nombre as sucursal
+				from 
+					tc_mantic_proveedores
+				inner join 
+					tc_mantic_empresas on tc_mantic_proveedores.id_empresa = tc_mantic_empresas.id_empresa
+				where 
+					(tc_mantic_proveedores.razon_social like '%{razonSocial}%')
+				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})	
+          and tc_mantic_proveedores.id_activo= 1	
+          and tc_mantic_proveedores.id_subcontratista= 1
+			</select>          
 			<select id="lazy">
 				select 
 					tc_mantic_proveedores.id_proveedor as id_key,
@@ -4889,7 +4908,7 @@
 				  tc_mantic_personas.nombres,
 				  tc_mantic_personas.paterno,
 				  tc_mantic_personas.materno,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
 				  tc_mantic_personas.rfc,
 				  tc_mantic_personas.curp,
 				  tc_janal_tipos_sexos.id_tipo_sexo,
@@ -4923,7 +4942,7 @@
 			<select id="contratistas">
 				select 
 					tr_mantic_empresa_personal.id_empresa_persona as id_key,
-					concat(nombres, ' ', paterno, ' ', materno) nombres,  
+					concat(nombres, ' ', paterno, ' ', materno) as nombres,  
 					tc_keet_departamentos.nombre,
 				  tc_mantic_puestos.nombre as puesto
 				from 
@@ -4936,8 +4955,7 @@
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto= tc_mantic_puestos.id_puesto
 				where 
 					tc_mantic_puestos.nombre= 'CONTRATISTA'
-				and 
-					tr_mantic_empresa_personal.id_activo= 1
+				  and tr_mantic_empresa_personal.id_activo= 1
 			  order by
 				  tc_mantic_puestos.nombre
 			</select>
@@ -4947,7 +4965,7 @@
 				  tc_mantic_personas.nombres,
 				  tc_mantic_personas.paterno,
 				  tc_mantic_personas.materno,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_completo,
 				  tc_mantic_personas.rfc,
 				  tc_mantic_personas.curp,
 				  tc_mantic_personas.fecha_nacimiento,
@@ -5076,7 +5094,7 @@
 					{condicion}									
 				{sortOrder}  
 			</select>              
-			<select id="rowAutocomplete">
+			<select id="autoCompletar">
 				select 
 				  tr_mantic_empresa_personal.id_empresa_persona as id_key,
 				  tc_mantic_personas.nombres,
@@ -5103,23 +5121,20 @@
 				inner join
 					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
 				inner join
-					tc_mantic_tipos_personas  on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
+					tc_mantic_tipos_personas on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
 				inner join
-					tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+					tc_janal_tipos_sexos on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
 				left join
-					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
 				left join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				where 
 					(tc_mantic_personas.nombres like '%{nombreEmpleado}%' 
-				or
-					tc_mantic_personas.paterno like '%{nombreEmpleado}%'
-				or
-					tc_mantic_personas.materno  like '%{nombreEmpleado}%')
-				and
-					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
+				  or tc_mantic_personas.paterno like '%{nombreEmpleado}%'
+				  or tc_mantic_personas.materno  like '%{nombreEmpleado}%')
+				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
 			</select>              
-			<select id="rowAutocompleteAccion">
+			<select id="autoCompletarAccion">
 				select 
 				  tc_mantic_personas.id_persona as id_key,
 				  tc_mantic_personas.nombres,
@@ -5150,38 +5165,34 @@
 				inner join
 					tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
 				left join
-					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
 				left join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				where 
 					(tc_mantic_personas.nombres like '%{nombreEmpleado}%' 
-				or
-					tc_mantic_personas.paterno like '%{nombreEmpleado}%'
-				or
-					tc_mantic_personas.materno  like '%{nombreEmpleado}%'
-				or 
-					tc_mantic_personas.id_persona = {idPersona})
-				and
-					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
+				  or tc_mantic_personas.paterno like '%{nombreEmpleado}%'
+				  or tc_mantic_personas.materno  like '%{nombreEmpleado}%'
+				  or tc_mantic_personas.id_persona = {idPersona})
+				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
 			</select>              
 			<select id="tipoPersona">
 				select 
-					tc_mantic_personas.*,tc_mantic_personas.id_persona as id_key
+          tc_mantic_personas.id_persona as id_key,
+					tc_mantic_personas.*
 				from
 					tc_mantic_personas
 				inner join
 					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
 				where 
 					tc_mantic_personas.id_tipo_persona= {idTipoPersona}
-				and 
-					tr_mantic_empresa_personal.id_empresa= {idEmpresa}
+				  and tr_mantic_empresa_personal.id_empresa= {idEmpresa}
 				order by
 					paterno,materno,nombres
 			</select>
 			<select id="exportar">
 				select
 				  principal.*,
-				  concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) contratista
+				  concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) as contratista
 				from (
 					select 
 						tc_mantic_personas.id_persona as id_key,
@@ -5233,7 +5244,10 @@
 			  left join
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
 				order by 
-					principal.sucursal, principal.departamento, concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno), principal.rfc, principal.puesto
+					principal.sucursal, principal.departamento, 
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno), 
+          principal.rfc, 
+          principal.puesto
 			</select>              
     </unit>   
 		<unit id="VistaGruposClientesDto">

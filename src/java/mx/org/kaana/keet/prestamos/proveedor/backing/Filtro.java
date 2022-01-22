@@ -1,4 +1,4 @@
-package mx.org.kaana.keet.prestamos.backing;
+package mx.org.kaana.keet.prestamos.proveedor.backing;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -33,11 +33,12 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
 
-@Named(value = "keetPrestamosFiltro")
+@Named(value = "keetPrestamosProveedorFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID = 6319984968937774153L;
+  
 	private LocalDate inicio, termino;
   protected Reporte reporte;
 	
@@ -67,10 +68,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			cargaCatalogos();
-			if(JsfBase.getFlashAttribute("idPrestamoProcess")!= null){
-				this.attrs.put("idPrestamoProcess", JsfBase.getFlashAttribute("idPrestamoProcess"));
+			if(JsfBase.getFlashAttribute("idAnticipoProcess")!= null) {
+				this.attrs.put("idAnticipoProcess", JsfBase.getFlashAttribute("idAnticipoProcess"));
 				this.doLoad();
-				this.attrs.put("idPrestamoProcess", null);
+				this.attrs.put("idAnticipoProcess", null);
 			} // if
     } // try
     catch (Exception e) {
@@ -85,7 +86,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
-			params.put("sortOrder", "order by tc_keet_prestamos.consecutivo desc");
+			params.put("sortOrder", "order by tc_keet_anticipos.consecutivo desc");
       columns= new ArrayList<>();
       columns.add(new Columna("deudor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
@@ -94,7 +95,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("saldoTotal", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("limite", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
-      this.lazyModel = new FormatCustomLazy("VistaPrestamosDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaAnticiposDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -136,9 +137,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-      JsfBase.setFlashAttribute("idPrestamo", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
-      JsfBase.setFlashAttribute("idDeudor", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).toLong("idDeudor") : -1L);
-      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Prestamos/filtro");
+      JsfBase.setFlashAttribute("idAnticipo", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("idMoroso", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).toLong("idMoroso") : -1L);
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Prestamos/Proveedor/filtro");
       JsfBase.setFlashAttribute("isLiquidar", true);
 			switch (eaccion){
 				case SUBIR:
@@ -152,15 +153,15 @@ public class Filtro extends IBaseFilter implements Serializable {
 				case REGISTRAR:
 					JsfBase.setFlashAttribute("isLiquidar", false);
 				case COMPLETO:
-				  regresar= "/Paginas/Keet/Prestamos/Pagos/accion".concat(Constantes.REDIRECIONAR);
+				  regresar= "/Paginas/Keet/Prestamos/Proveedor/Pagos/accion".concat(Constantes.REDIRECIONAR);
 					break;
 				case MOVIMIENTOS:
-				  regresar= "/Paginas/Keet/Prestamos/Pagos/filtro".concat(Constantes.REDIRECIONAR);
+				  regresar= "/Paginas/Keet/Prestamos/Proveedor/Pagos/filtro".concat(Constantes.REDIRECIONAR);
 					break;
 				case DESACTIVAR:
 					transaccion= new Transaccion(new RegistroPrestamo(((Entity) this.attrs.get("seleccionado")).getKey()));
 					if (transaccion.ejecutar(eaccion)){
-						JsfBase.addMessage("El prestamo se cancelo correctamente.");
+						JsfBase.addMessage("El anticipo se canceló correctamente.");
 					} // if
 					this.doLoad();
 					break;
@@ -174,27 +175,26 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion
 
   public void doEliminar() {
-		doAccion(EAccion.DESACTIVAR.name()); //cancelar prestamo
+		doAccion(EAccion.DESACTIVAR.name()); // cancelar anticipo
   } // doEliminar
-	
 	
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar  = new HashMap<>();	
 		StringBuilder sb              = new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)				
-			sb.append("(tr_mantic_empresa_personal.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
+			sb.append("(tc_mantic_proveedores.id_empresa in (").append(((UISelectEntity)this.attrs.get("idEmpresa")).getKey()).append(")) and ");
 		else
-			sb.append("(tr_mantic_empresa_personal.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
+			sb.append("(tc_mantic_proveedores.id_empresa in (").append(JsfBase.getAutentifica().getEmpresa().getSucursales()).append(")) and ");
 		if(!Cadena.isVacio(this.attrs.get("deudor")) && ((UISelectEntity)this.attrs.get("deudor")).getKey()>= 1L)				
-			sb.append("tc_keet_prestamos.id_deudor=").append(this.attrs.get("deudor")).append(" and ");
-		if(this.attrs.get("idPrestamoProcess")!= null && !Cadena.isVacio(this.attrs.get("idPrestamoProcess")))
-			sb.append("tc_keet_prestamos.id_prestamo=").append(this.attrs.get("idPrestamoProcess")).append(" and ");
+			sb.append("tc_keet_anticipos.id_moroso=").append(this.attrs.get("deudor")).append(" and ");
+		if(this.attrs.get("idAnticipoProcess")!= null && !Cadena.isVacio(this.attrs.get("idAnticipoProcess")))
+			sb.append("tc_keet_anticipos.id_anticipo=").append(this.attrs.get("idAnticipoProcess")).append(" and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-			sb.append("(tc_keet_prestamos.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
-		sb.append("date_format(tc_keet_prestamos.registro, '%Y%m%d')>= '").append(inicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
-		sb.append("date_format(tc_keet_prestamos.registro, '%Y%m%d')<= '").append(termino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+			sb.append("(tc_keet_anticipos.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+		sb.append("date_format(tc_keet_anticipos.registro, '%Y%m%d')>= '").append(inicio.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
+		sb.append("date_format(tc_keet_anticipos.registro, '%Y%m%d')<= '").append(termino.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).append("' and ");
 		if(!Cadena.isVacio(this.attrs.get("estatus")) && ((UISelectEntity)this.attrs.get("estatus")).getKey()>= 1L)				
-			sb.append("tc_keet_prestamos.id_prestamo_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
+			sb.append("tc_keet_anticipos.id_anticipo_estatus = ").append(((UISelectEntity)this.attrs.get("estatus")).getKey()).append(" and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -206,7 +206,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			this.loadEmpresas();
 			this.loadEstatus();
-			inicio= LocalDate.of(Fecha.getAnioActual(),1, 1);
+			inicio = LocalDate.of(Fecha.getAnioActual(),1, 1);
       termino= LocalDate.now();
 		} // try
 		catch (Exception e) {
@@ -216,13 +216,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // cargaCatalogos
 	
 	
-	private void loadEstatus(){
+	private void loadEstatus() {
 		Map<String, Object>params= null;
 	  try {
 			params = new HashMap<>();
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		  params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("catalogo", UIEntity.seleccione("TcKeetPrestamosEstatusDto", "row", params, "nombre"));
+      this.attrs.put("catalogo", UIEntity.seleccione("TcKeetAnticiposEstatusDto", "row", params, "nombre"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -247,7 +247,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("deudor", deudor.toUpperCase() );
-      this.attrs.put("deudores", UIEntity.seleccione("VistaDeudoresDto", "complete", params, "deudor"));
+      this.attrs.put("deudores", UIEntity.seleccione("VistaMorososDto", "complete", params, "deudor"));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -268,9 +268,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {		  
       reporteSeleccion= EReportes.valueOf(nombre);
       params= this.toPrepare();
-      if(reporteSeleccion.equals(EReportes.PRESTAMOS_PAGOS))
-        params.put(Constantes.SQL_CONDICION,"tc_keet_prestamos_pagos.id_prestamo=".concat(((Entity) this.attrs.get("seleccionado")).getKey().toString()));
-      params.put("sortOrder", "order by tc_keet_prestamos.consecutivo desc");
+      if(reporteSeleccion.equals(EReportes.ANTICIPOS_PAGOS)) 
+        params.put(Constantes.SQL_CONDICION,"tc_keet_anticipos_pagos.id_anticipo=".concat(((Entity) this.attrs.get("seleccionado")).getKey().toString()));
+      params.put("sortOrder", "order by tc_keet_anticipos.consecutivo desc");
       this.reporte= JsfBase.toReporte();
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= comunes.getComunes();
@@ -298,4 +298,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // else
     return regresar;
 	} // doVerificarReporte	
+  
 }

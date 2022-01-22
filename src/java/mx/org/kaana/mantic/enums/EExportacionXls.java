@@ -9,6 +9,7 @@ public enum EExportacionXls implements IExportacionXls {
 	PERSONAS    ("VistaPersonasDto", "exportar", "Pesonal", "/Paginas/Mantic/Catalogos/Empleados/filtro", ""),
 	ESTACIONES  ("VistaContratosLotesDto", "exportar", "Estaciones", "/Paginas/Keet/Estaciones/Masivos/importar", ""),
 	INCIDENCIAS ("VistaIncidentesDto", "principal", "Incidencias", "/Paginas/Keet/Catalogos/Contratos/Personal/exportar", ""),
+	ANTICIPOS   ("VistaAnticiposDto", "principal", "Incidencias", "/Paginas/Keet/Catalogos/Contratos/Proveedor/exportar", ""),
 	NOMINA      ("VistaNominaDto", "detalle", "Nomina", "/Paginas/Keet/Nominas/filtro", ""),
 	NOMINA_PERSONA   ("VistaNominaConsultasDto", "persona", "Personas", "/Paginas/Keet/Nominas/personas", ""),
 	DESTAJO_PERSONA  ("VistaNominaConsultasDto", "destajo", "Contratista", "/Paginas/Keet/Nominas/personas", ""),

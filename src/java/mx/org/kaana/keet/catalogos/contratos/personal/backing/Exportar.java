@@ -15,7 +15,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
@@ -210,7 +209,7 @@ public class Exportar extends IBaseFilter implements Serializable {
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales()); 
 			params.put("nombreEmpleado", nombreEmpleado);	
-      nombres= (List<UISelectEntity>) UIEntity.build("VistaPersonasDto", "rowAutocomplete", params, columns, 20L);
+      nombres= (List<UISelectEntity>) UIEntity.build("VistaPersonasDto", "autoCompletar", params, columns, 20L);
       this.attrs.put("nombres", nombres);
 		} // try
 	  catch (Exception e) {

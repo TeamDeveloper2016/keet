@@ -115,7 +115,7 @@ public class Accion extends Comun implements Serializable {
       campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));      
-      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "rowAutocompleteAccion", params, campos);
+      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "autoCompletarAccion", params, campos);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -174,7 +174,7 @@ public class Accion extends Comun implements Serializable {
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales()); 
 			params.put("nombreEmpleado", nombreEmpleado);	
-      nombres= (List<UISelectEntity>) UIEntity.build("VistaPersonasDto", "rowAutocomplete", params, columns, 20L);
+      nombres= (List<UISelectEntity>) UIEntity.build("VistaPersonasDto", "autoCompletar", params, columns, 20L);
       this.attrs.put("nombres", nombres);
 		} // try
 	  catch (Exception e) {
