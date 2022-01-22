@@ -60,7 +60,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void setTermino(LocalDate termino) {
 		this.termino = termino;
 	}
-
+	
   @PostConstruct
   @Override
   protected void init() {

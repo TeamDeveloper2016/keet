@@ -45,9 +45,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		TcKeetAnticiposBitacoraDto bitacoraDto= null;
 		try {
 			idUsuario= JsfBase.getIdUsuario();
-			switch(accion){
+			switch(accion) {
 				case AGREGAR:
-					siguiente= toSiguiente(sesion);
+					siguiente= this.toSiguiente(sesion);
 					this.prestamo.getPrestamo().setConsecutivo(siguiente.getConsecutivo());
 					this.prestamo.getPrestamo().setOrden(siguiente.getOrden());
 					this.prestamo.getPrestamo().setEjercicio(Long.parseLong(String.valueOf(this.getCurrentYear())));
@@ -141,8 +141,8 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	private List<Incidente> toLoadIncidente(Long idProveedor) throws Exception {
     List<Incidente> regresar= new ArrayList<>();
     double total  = this.prestamo.getPrestamo().getImporte();
-    double importe= (int)(total / this.prestamo.getPrestamo().getSemanas());
-    double residuo= this.prestamo.getPrestamo().getImporte() % this.prestamo.getPrestamo().getSemanas();
+    double importe= (int)(total/ this.prestamo.getPrestamo().getSemanas());
+    double residuo= this.prestamo.getPrestamo().getImporte()% this.prestamo.getPrestamo().getSemanas();
     double suma   = 0D;
     for(int x= 1; x<= this.prestamo.getPrestamo().getSemanas().intValue(); x++) {
       if(residuo!= 0D && x== this.prestamo.getPrestamo().getSemanas().intValue()) 
@@ -158,7 +158,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
       item.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
       item.setIdEmpresaPersona(idProveedor);
       item.setIdPrestamo(this.prestamo.getPrestamo().getIdAnticipo());
-      item.setObservaciones("FOLIO ("+ x+ ") PRESTAMO[".concat(this.prestamo.getPrestamo().getConsecutivo()).concat("] [").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA, this.prestamo.getPrestamo().getRegistro())).concat("]"));
+      item.setObservaciones("FOLIO ("+ x+ ") ANTICIPO[".concat(this.prestamo.getPrestamo().getConsecutivo()).concat("] [").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA, this.prestamo.getPrestamo().getRegistro())).concat("]"));
       regresar.add(item);
     } // for
     return regresar;

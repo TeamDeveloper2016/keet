@@ -53,6 +53,31 @@
       </select>
     </unit>
     <unit id="VistaReportesAnticiposDto">
+      <select id="resumenAnticipos">
+        select
+          tc_keet_anticipos.id_moroso,
+					tc_keet_anticipos.consecutivo as folio,
+					sum(tc_keet_anticipos.importe) as importe,
+					sum(tc_keet_anticipos.saldo) as saldo,
+					tc_keet_morosos.saldo saldo_total,
+					tc_keet_morosos.limite,
+					tc_keet_morosos.disponible,
+					tc_mantic_proveedores.razon_social as deudor
+				from
+				  tc_keet_anticipos
+				inner join 
+				  tc_keet_morosos on tc_keet_anticipos.id_moroso= tc_keet_morosos.id_moroso
+				inner join 
+				  tc_mantic_proveedores on tc_keet_morosos.id_proveedor= tc_mantic_proveedores.id_proveedor
+				left join 
+				  (select count(*) numero_pagos, id_prestamo from tc_keet_anticipos_pagos group by id_anticipo) tc_keet_anticipos_pagos on tc_keet_anticipos.id_anticipo= tc_keet_anticipos_pagos.id_anticipo
+				inner join 
+				  tc_keet_anticipos_estatus on tc_keet_anticipos.id_anticipo_estatus= tc_keet_anticipos_estatus.id_anticipo_estatus
+				where
+				  {condicion}
+				group by 	
+          tc_keet_anticipos.id_moroso
+      </select>      
 			<select id="anticiposPagos">
         select
 					tc_keet_anticipos_pagos.id_anticipo_pago id_key,

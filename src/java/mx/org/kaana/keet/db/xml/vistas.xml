@@ -4,6 +4,58 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaAnticiposPagosDto">
+			<select id="lazy">
+				select
+					tc_keet_anticipos_pagos.id_anticipo_pago as id_key,
+				  tc_keet_prestamos.consecutivo as prestamo,
+					tc_keet_anticipos_pagos.consecutivo,
+					tc_keet_anticipos_pagos.pago,
+					tc_keet_anticipos_pagos.abono,
+					tc_keet_anticipos_pagos.abono as abonos,
+					tc_keet_anticipos_pagos.cambio,
+				  tc_keet_prestamos.saldo,
+					tc_keet_anticipos_pagos.observaciones,
+					tc_keet_anticipos_pagos.registro,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) as usuario
+				from
+					tc_keet_anticipos_pagos
+				inner join 
+				  tc_keet_anticipos on tc_keet_anticipos_pagos.id_anticipo= tc_keet_prestamos.id_anticipo
+				inner join 
+					tc_janal_usuarios on tc_keet_anticipos_pagos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  tc_keet_anticipos_pagos.id_anticipo= {idAnticipo}
+				{sortOrder}
+			</select>
+			<select id="persona">
+				select
+					tc_keet_anticipos_pagos.id_anticipo_pago as id_key,
+				  tc_keet_anticipos.consecutivo as prestamo,
+					tc_keet_anticipos_pagos.consecutivo,
+					tc_keet_anticipos_pagos.pago,
+					tc_keet_anticipos_pagos.abono,
+					tc_keet_anticipos_pagos.abono as abonos,
+					tc_keet_anticipos_pagos.cambio,
+				  tc_keet_anticipos.saldo,
+					tc_keet_anticipos_pagos.observaciones,
+					tc_keet_anticipos_pagos.registro,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) as usuario
+				from
+					tc_keet_anticipos_pagos
+				inner join 
+				  tc_keet_anticipos on tc_keet_anticipos_pagos.id_anticipo= tc_keet_anticipos.id_anticipo
+				inner join 
+					tc_janal_usuarios on tc_keet_anticipos_pagos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  tc_keet_anticipos.id_moroso= {idMoroso}
+				{sortOrder}	
+			</select>
+		</unit>	    
 		<unit id="VistaAnticiposDto">
 			<select id="lazy">
 				select
@@ -34,8 +86,67 @@
 				  {condicion}	
         {sortOrder}	
 			</select>
+			<select id="byIdAnticipo">
+				select 
+				  tc_keet_anticipos.id_anticipo as id_key,
+          tc_keet_anticipos.importe as prestamo,
+          tc_keet_anticipos.saldo,
+          ifnull(tc_keet_anticipos_pagos.numero_pagos, 0) as pagos,
+				  tc_keet_morosos.limite,
+				  tc_mantic_proveedores.razon_social as empleado,
+				  tc_keet_morosos.disponible,
+				  date(tc_mantic_proveedores.registro) as ingreso,
+				  1 as numero_prestamos,
+				  tc_keet_morosos.id_proveedor
+				from
+				  tc_keet_anticipos
+        inner join 
+				  tc_keet_morosos on tc_keet_morosos.id_moroso= tc_keet_anticipos.id_moroso
+        inner join 
+				  tc_mantic_proveedores on tc_keet_morosos.id_proveedor= tc_mantic_proveedores.id_proveedor
+        left join 
+				  (select count(*) numero_pagos, id_anticipo from tc_keet_anticipos_pagos group by id_anticipo) tc_keet_anticipos_pagos on tc_keet_anticipos.id_anticipo= tc_keet_anticipos_pagos.id_anticipo
+				where
+				  tc_keet_anticipos.id_anticipo= {idAnticipo}
+			</select>
+			<select id="byIdDeudor">
+				select 
+				  tc_keet_morosos.id_moroso as id_key,
+          tc_mantic_proveedores.razon_social as empleado,
+          sum(tc_keet_anticipos.importe) as prestamo,
+          tc_keet_morosos.saldo,
+          sum(ifnull(tc_keet_anticipos_pagos.numero_pagos, 0)) as pagos,
+				  count(*) as numero_prestamos
+				from
+				  tc_keet_anticipos
+        inner join 
+				  tc_keet_morosos on tc_keet_morosos.id_moroso= tc_keet_anticipos.id_moroso
+        inner join 
+				  tc_mantic_proveedores on tc_keet_morosos.id_proveedor= tc_mantic_proveedores.id_proveedor
+        left join 
+				  (select count(*) numero_pagos, id_anticipo from tc_keet_anticipos_pagos group by id_anticipo) tc_keet_anticipos_pagos on tc_keet_anticipos.id_anticipo= tc_keet_anticipos_pagos.id_anticipo
+        where
+          tc_keet_anticipos.id_anticipo_estatus in (1,2)
+          and tc_keet_morosos.id_moroso= {idDeudor}
+        group by
+          tc_keet_morosos.id_moroso,
+          tc_mantic_proveedores.razon_social,
+          tc_keet_morosos.saldo		
+			</select>      
     </unit>      
 		<unit id="VistaMorososDto">
+			<select id="byEmpresa">
+				select 
+				  tc_keet_morosos.id_moroso id_key,
+				  tc_mantic_proveedores.razon_social as deudor,
+				  tc_keet_deudores.disponible
+				from
+				  tc_keet_morosos
+        inner join 
+				  tc_mantic_proveedores on tc_keet_morosos.id_proveedor= tc_mantic_proveedores.id_proveedor
+				where
+				  tc_mantic_proveedores.id_empresa in ({sucursales})
+			</select>      
 			<select id="complete">
 				select 
 				  tc_keet_morosos.id_moroso as id_key,
@@ -69,6 +180,45 @@
 			</select>      
     </unit>  
 		<unit id="VistaAnticiposDto">
+			<select id="importados">
+				select
+					tc_keet_anticipos_archivos.id_anticipo_archivo as id_key,
+					tc_keet_anticipos_archivos.nombre,
+					tc_keet_anticipos_archivos.archivo,
+					tc_keet_anticipos_archivos.ruta,
+					tc_keet_anticipos_archivos.alias,
+					tc_keet_anticipos_archivos.observaciones,
+					tc_keet_anticipos_archivos.registro,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
+          tc_keet_anticipos_pagos.consecutivo,
+          tc_keet_anticipos_pagos.abono
+				from
+					tc_keet_anticipos_archivos
+				inner join
+          tc_keet_anticipos_pagos on tc_keet_anticipos_pagos.id_anticipo_pago= tc_keet_anticipos_archivos.id_anticipo_pago
+				inner join 
+					tc_janal_usuarios on tc_keet_anticipos_archivos.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where
+				  tc_keet_anticipos_pagos.id_anticipo= {idAnticipo}
+        order by
+          tc_keet_anticipos_pagos.registro, 
+					tc_keet_anticipos_archivos.registro
+			</select>      
+			<select id="pagos">
+				select 
+					tc_keet_incidentes.id_incidente as id_key,
+          tc_keet_incidentes.costo 
+        from
+          tc_keet_incidentes
+        inner join
+          tc_keet_anticipos on tc_keet_incidentes.id_anticipo= tc_keet_anticipos.id_anticipo  
+        where
+          tc_keet_incidentes.id_anticipo= {idAnticipo}
+        order by
+          tc_keet_incidentes.orden
+      </select>  
 			<select id="principal">
 				select 
 					tc_keet_incidentes.id_incidente as id_key,
@@ -5692,14 +5842,14 @@
 			</select>
 			<select id="importados">
 				select
-					tc_keet_prestamos_archivos.id_prestamo_archivo id_key,
+					tc_keet_prestamos_archivos.id_prestamo_archivo as id_key,
 					tc_keet_prestamos_archivos.nombre,
 					tc_keet_prestamos_archivos.archivo,
 					tc_keet_prestamos_archivos.ruta,
 					tc_keet_prestamos_archivos.alias,
 					tc_keet_prestamos_archivos.observaciones,
 					tc_keet_prestamos_archivos.registro,
-					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) usuario,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
           tc_keet_prestamos_pagos.consecutivo,
           tc_keet_prestamos_pagos.abono
 				from
@@ -5713,19 +5863,20 @@
 				where
 				  tc_keet_prestamos_pagos.id_prestamo= {idPrestamo}
         order by
-          tc_keet_prestamos_pagos.registro, tc_keet_prestamos_archivos.registro
+          tc_keet_prestamos_pagos.registro, 
+          tc_keet_prestamos_archivos.registro
 			</select>
 			<select id="byIdPrestamo">
 				select 
-				  tc_keet_prestamos.id_prestamo id_key,
-          tc_keet_prestamos.importe prestamo,
+				  tc_keet_prestamos.id_prestamo as id_key,
+          tc_keet_prestamos.importe as prestamo,
           tc_keet_prestamos.saldo,
-          ifnull(tc_keet_prestamos_pagos.numero_pagos, 0) pagos,
+          ifnull(tc_keet_prestamos_pagos.numero_pagos, 0) as pagos,
 				  tc_keet_deudores.limite,
-				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) empleado,
-				  disponible,
-				  ifnull(tr_mantic_empresa_personal.ingreso, tr_mantic_empresa_personal.contratacion) ingreso,
-				  1 numero_prestamos,
+				  concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
+				  tc_keet_deudores.disponible,
+				  ifnull(tr_mantic_empresa_personal.ingreso, tr_mantic_empresa_personal.contratacion) as ingreso,
+				  1 as numero_prestamos,
 				  tc_keet_deudores.id_empresa_persona
 				from
 				  tc_keet_prestamos
@@ -5742,12 +5893,12 @@
 			</select>
 			<select id="byIdDeudor">
 				select 
-				  tc_keet_deudores.id_deudor id_key,
-          concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) empleado,
-          sum(tc_keet_prestamos.importe) prestamo,
+				  tc_keet_deudores.id_deudor as id_key,
+          concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
+          sum(tc_keet_prestamos.importe) as prestamo,
           tc_keet_deudores.saldo,
-          sum(ifnull(tc_keet_prestamos_pagos.numero_pagos, 0)) pagos,
-				  count(*) numero_prestamos
+          sum(ifnull(tc_keet_prestamos_pagos.numero_pagos, 0)) as pagos,
+				  count(*) as numero_prestamos
 				from
 				  tc_keet_prestamos
         inner join 
@@ -5759,12 +5910,13 @@
         left join 
 				  (select count(*) numero_pagos, id_prestamo from tc_keet_prestamos_pagos group by id_prestamo) tc_keet_prestamos_pagos on tc_keet_prestamos.id_prestamo= tc_keet_prestamos_pagos.id_prestamo
         where
-          tc_keet_prestamos.id_prestamo_estatus in (1,2)
-        and
-          tc_keet_deudores.id_deudor= {idDeudor}
+          tc_keet_prestamos.id_prestamo_estatus in (1, 2)
+          and tc_keet_deudores.id_deudor= {idDeudor}
         group by
           tc_keet_deudores.id_deudor,
-          tc_mantic_personas.nombres, tc_mantic_personas.paterno, tc_mantic_personas.materno,
+          tc_mantic_personas.nombres, 
+          tc_mantic_personas.paterno, 
+          tc_mantic_personas.materno,
           tc_keet_deudores.saldo
 			</select>
 		</unit>	

@@ -201,7 +201,7 @@
           tc_keet_anticipos
         where 
           id_anticipo= {idAnticipo} 
-				  and id_anticipo_estatus in (1,2)
+				  and id_anticipo_estatus in (1, 2)
 				order by
 				  registro
       </select>
@@ -286,6 +286,23 @@
         where      
           consecutivo = '{consecutivo}'
       </select>
+      <select id="byIdAnticipo">
+        select      
+          tc_keet_anticipos_pagos.id_anticipo_pago as id_key,
+				  tc_keet_anticipos_pagos.*
+        from      
+          tc_keet_anticipos_pagos
+        where 
+          id_anticipo= {idAnticipo} 
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_keet_anticipos_pagos
+				where				  
+				  ejercicio = {ejercicio}			
+			</select>      
     </unit>        
     <unit id="TcKeetNominasDesarrollosDto">
       <select id="row">

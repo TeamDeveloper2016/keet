@@ -1,9 +1,12 @@
 package mx.org.kaana.keet.prestamos.reglas;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.keet.prestamos.beans.Prestamo;
 import mx.org.kaana.keet.prestamos.proveedor.beans.Anticipo;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -43,7 +46,7 @@ public class MotorBusqueda implements Serializable{
 		try {
 		  params= new HashMap<>();
 			params.put("idAnticipo", this.idPrestamo);
-			regresar= (Anticipo) DaoFactory.getInstance().toEntity(Prestamo.class, "TcKeetAnticiposDto", "byId", params);
+			regresar= (Anticipo) DaoFactory.getInstance().toEntity(Anticipo.class, "TcKeetAnticiposDto", "byId", params);
 			if(regresar!= null && regresar.isValid())
 				regresar.setIkDeudor(new UISelectEntity(regresar.getIdMoroso()));
 		} // try
@@ -55,5 +58,25 @@ public class MotorBusqueda implements Serializable{
 		} // finally
 		return regresar;
 	} // toPrestamo
+	
+	public List<Double> toPagos() throws Exception {
+		List<Double> regresar    = new ArrayList<>();
+		Map<String, Object>params= null;
+		try {
+		  params= new HashMap<>();
+			params.put("idAnticipo", this.idPrestamo);
+			List<Entity> pagos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaAnticiposDto", "pagos", params);
+      if(pagos!= null && !pagos.isEmpty())
+        for (Entity pago: pagos) 
+          regresar.add(pago.toDouble("costo"));  
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPagos
 	
 }

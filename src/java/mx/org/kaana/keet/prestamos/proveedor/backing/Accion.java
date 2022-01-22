@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -61,6 +62,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("limite", 0);
       this.attrs.put("calculo", 500D);
       this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, LocalDate.now()));      
+      this.attrs.put("error", Boolean.FALSE);
       this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.loadCatalogos();
 			this.doLoad();
@@ -95,13 +97,15 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.prestamo= new RegistroAnticipo();
-          this.prestamo.getPrestamo().setIdAfectaNomina(-1L);
+          this.prestamo.getPrestamo().setIdAfectaNomina(1L);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
 					this.prestamo= new RegistroAnticipo((Long)this.attrs.get("idAnticipo"));
+          this.doLoadDisponible();
           break;
       } // switch
+      this.doCalculo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -114,15 +118,19 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
 		EAccion eaccion        = null;
     try {			
-			eaccion= (EAccion) this.attrs.get("accion");      
-			transaccion = new Transaccion(this.prestamo);
-			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.setFlashAttribute("idAnticipoProcess", this.prestamo.getPrestamo().getIdAnticipo());
-				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);				
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el anticipo de forma correcta."), ETipoMensaje.INFORMACION);
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el proyecto.", ETipoMensaje.ERROR);      			
+      if(!(Boolean)this.attrs.get("error")) {
+        eaccion= (EAccion) this.attrs.get("accion");      
+        transaccion = new Transaccion(this.prestamo);
+        if (transaccion.ejecutar(eaccion)) {
+          JsfBase.setFlashAttribute("idAnticipoProcess", this.prestamo.getPrestamo().getIdAnticipo());
+          regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);				
+          JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el anticipo de forma correcta."), ETipoMensaje.INFORMACION);
+        } // if
+        else 
+          JsfBase.addMessage("Ocurrió un error al registrar el proyecto", ETipoMensaje.ERROR);      			
+      } // if
+      else 
+        JsfBase.addMessage("Los importes de los pagos semanales no coincide con el anticipo", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -130,7 +138,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch
     return regresar;
   } // doAccion
-	
 	
   public void doLoadDisponible() {  
 		Entity entity = null;
@@ -142,6 +149,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, entity.toDate("ingreso")));		
 			this.attrs.put("antiguedad", DAYS.between(entity.toDate("ingreso"), LocalDate.now()));	
 			this.attrs.put("dias", Fecha.toFormatSecondsToHour(DAYS.between(entity.toDate("ingreso"), LocalDate.now())* 86400));	
+      this.getPrestamo().getPrestamo().setIkDeudor(new UISelectEntity(entity));
 			UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ entity.toString("disponible") + "})', mascara: 'libre'});");
     } // try
     catch (Exception e) {
@@ -188,7 +196,22 @@ public class Accion extends IBaseAttribute implements Serializable {
     if(this.getPrestamo().getPrestamo().getImporte()<= 0)
       this.getPrestamo().getPrestamo().setImporte(1D);
     double calculo= Numero.toRedondear(this.getPrestamo().getPrestamo().getImporte()/ this.getPrestamo().getPrestamo().getSemanas());
-    this.attrs.put("calculo", calculo);  
+    this.attrs.put("calculo", calculo); 
+    if(Objects.equals((EAccion) this.attrs.get("accion"), EAccion.AGREGAR)) {
+      this.getPrestamo().getPagos().clear();
+      for (int x= 0; x< this.getPrestamo().getPrestamo().getSemanas().intValue(); x++) {
+        this.getPrestamo().getPagos().add(calculo);
+      } // for
+      this.checkCalculos();
+    } // if  
+  }
+ 
+  public void checkCalculos() {
+    double suma= 0D;
+    for (Double pago: this.getPrestamo().getPagos()) 
+      suma+= pago;      
+    this.attrs.put("diferencia", (this.getPrestamo().getPrestamo().getImporte()- suma));  
+    this.attrs.put("error", suma< this.getPrestamo().getPrestamo().getImporte() || suma> this.getPrestamo().getPrestamo().getImporte());  
   }
   
 }

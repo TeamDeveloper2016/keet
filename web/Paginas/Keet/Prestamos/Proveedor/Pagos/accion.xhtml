@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Ingresar un pago al anticipo" />
+	<ui:param name="titulo" value="Ingresar un pago al prestamo otorgado" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
@@ -16,7 +16,7 @@
 			};
 
 			$(document).ready(function () {
-				janal.readingMode('#{keetPrestamosProveedorPagosAccion.attrs.nombreAccion}');
+				janal.readingMode('#{keetPrestamosPagosAccion.attrs.nombreAccion}');
 			});
 		</script>   
 		<style type="text/css">
@@ -35,33 +35,35 @@
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">		
-								<p:outputLabel for="empleado" value="Subcontratista:"/>
-                <p:inputText id="empleado" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorPagosAccion.attrs.empleado}" readonly="true"/>																								
+								<p:outputLabel for="empleado" value="Nombre del empelado:"/>
+                <p:inputText id="empleado" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.empleado}" readonly="true"/>																								
   							<p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-column-center">		
-									<p:outputLabel for="prestamo" value="Anticipo ($):"/>
+									<p:outputLabel for="prestamo" value="Prestamo ($):"/>
 									<p:outputLabel for="saldo" value="Saldo ($):"/>
-									<p:inputText id="prestamo" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorPagosAccion.attrs.prestamo}" readonly="true"/>																								
-									<p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorPagosAccion.attrs.saldo}"  readonly="true"/>	
+									<p:inputText id="prestamo" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.prestamo}" readonly="true"/>																								
+									<p:inputText id="saldo" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.saldo}"  readonly="true"/>	
 								</p:panelGrid>
 								<p:outputLabel for="pagos" value="Pagos realizados:"/>
-                <p:inputText id="pagos" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorPagosAccion.attrs.pagos}" readonly="true"/>	
-								<p:outputLabel for="numeroPrestamos" value="Numero de prestamos:" rendered="#{keetPrestamosProveedorPagosAccion.attrs.isLiquidar}"/>
-                <p:inputText id="numeroPrestamos" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorPagosAccion.attrs.numeroPrestamos}" rendered="#{keetPrestamosProveedorPagosAccion.attrs.isLiquidar}" readonly="true"/>	
+                <p:inputText id="pagos" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.pagos}" readonly="true"/>	
+								<p:outputLabel for="numeroPrestamos" value="Numero de prestamos:" rendered="#{keetPrestamosPagosAccion.attrs.isLiquidar}"/>
+                <p:inputText id="numeroPrestamos" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.attrs.numeroPrestamos}" rendered="#{keetPrestamosPagosAccion.attrs.isLiquidar}" readonly="true"/>	
 								<p:separator/>
 								<p:outputLabel for="pago" value="Importe del pago:"/>
-                <p:inputText id="pago" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosProveedorPagosAccion.pagoDto.pago}"/>
+                <p:inputText id="pago" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosPagosAccion.pagoDto.pago}" >
+									<!--p:ajax event="valueChange" listener="refreshValidateObs();"  -->
+								</p:inputText>
                 <p:outputLabel for="idAfectaNomina" value="Con cargo a la nómina:" rendered="false"/>
-								<p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosProveedorPagosAccion.pagoDto.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
+								<p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosPagosAccion.pagoDto.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 									<f:selectItem itemValue="1" itemLabel="SI"/>
 									<f:selectItem itemValue="2" itemLabel="NO"/>
 								</p:selectOneMenu>						
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
-								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorPagosAccion.pagoDto.observaciones}" />
+								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosPagosAccion.pagoDto.observaciones}" />
               </p:panelGrid>
 						</p:tab>
             <p:tab title="Pagos">
-							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetPrestamosProveedorPagosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetPrestamosProveedorPagosAccion.attrs.seleccionado}" selectionMode="single" paginator="#{keetPrestamosProveedorPagosAccion.lazyModel.rowCount gt keetPrestamosProveedorPagosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetPrestamosPagosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{keetPrestamosPagosAccion.attrs.seleccionado}" selectionMode="single" paginator="#{keetPrestamosPagosAccion.lazyModel.rowCount gt keetPrestamosPagosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<f:facet name="header">
 									<p:menuButton styleClass="lg-pantalla" value="Opciones">
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -72,7 +74,7 @@
 								</f:facet>												
 								<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.prestamo}">
 									<f:facet name="header">
-										<h:outputText value="Anticipo"/>
+										<h:outputText value="Prestamo"/>
 									</f:facet>
 									<h:outputText value="#{row['prestamo']}"/>
 								</p:column>														
@@ -113,8 +115,8 @@
 									<h:outputText value="#{row['registro']}"/>
 								</p:column>	      
 								<f:facet name="footer">
-									<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.calculate}&lt;span class='janal-color-blue'&gt;Saldo: &lt;strong&gt;[#{keetPrestamosProveedorPagosAccion.attrs.saldo}]&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-orange'&gt;Abonos: &lt;strong&gt;[#{keetPrestamosProveedorPagosAccion.attrs.abonos}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
-									<p:outputLabel value="Total [#{keetPrestamosProveedorPagosAccion.lazyModel==null?0:keetPrestamosProveedorPagosAccion.lazyModel.rowCount}] registros"/>
+									<p:outputLabel value="#{keetPrestamosPagosAccion.calculate}&lt;span class='janal-color-blue'&gt;Saldo: &lt;strong&gt;[#{keetPrestamosPagosAccion.attrs.saldo}]&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-orange'&gt;Abonos: &lt;strong&gt;[#{keetPrestamosPagosAccion.attrs.abonos}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+									<p:outputLabel value="Total [#{keetPrestamosPagosAccion.lazyModel==null?0:keetPrestamosPagosAccion.lazyModel.rowCount}] registros"/>
 								</f:facet>
 							</p:dataTable>
 						</p:tab>	
@@ -125,26 +127,26 @@
 		<p:dialog id="dialogoPago" widgetVar="dialogoPago" header="Resumen de pago." resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="35%">			
 			<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 				<p:outputLabel value="Pagado(s):"/>
-				<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.attrs.numeroPrestamos}"/>
+				<p:outputLabel value="#{keetPrestamosPagosAccion.attrs.numeroPrestamos}"/>
 				<p:outputLabel value="Importe:"/>
-				<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.pagoDto.pago}"/>
+				<p:outputLabel value="#{keetPrestamosPagosAccion.pagoDto.pago}"/>
 				<p:outputLabel value="Cambio:"/>
-				<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.attrs.cambio}"/>
+				<p:outputLabel value="#{keetPrestamosPagosAccion.attrs.cambio}"/>
 			</h:panelGrid>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" process="@this" value="Aceptar" action="#{keetPrestamosProveedorPagosAccion.doCancelar}" onstart="return PF('dialogoPago').hide();" oncomplete="janal.desbloquear();" ajax="false"/>
+				<p:commandButton icon="fa fa-check" process="@this" value="Aceptar" action="#{keetPrestamosPagosAccion.doCancelar}" onstart="return PF('dialogoPago').hide();" oncomplete="janal.desbloquear();" ajax="false"/>
 			</div>			
 		</p:dialog>		
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetPrestamosProveedorPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear(); PF('dialogoPago').show();" update="dialogoPago"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetPrestamosProveedorPagosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{keetPrestamosPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear(); PF('dialogoPago').show();" update="dialogoPago"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{keetPrestamosPagosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetPrestamosProveedorPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear(); PF('dialogoPago').show();" update="dialogoPago"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetPrestamosProveedorPagosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{keetPrestamosPagosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear(); PF('dialogoPago').show();" update="dialogoPago"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{keetPrestamosPagosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

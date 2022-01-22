@@ -25,7 +25,7 @@ public class Anticipo extends TcKeetAnticiposDto {
 	public void setIkDeudor(UISelectEntity ikDeudor) {
 		this.ikDeudor = ikDeudor;
 		if(this.ikDeudor!= null)
-			setIdAnticipo(this.ikDeudor.getKey());
+			setIdMoroso(this.ikDeudor.getKey());
 	}	
 
 }

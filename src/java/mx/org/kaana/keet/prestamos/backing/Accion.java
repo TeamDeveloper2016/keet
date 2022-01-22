@@ -101,6 +101,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:					
         case CONSULTAR:					
 					this.prestamo= new RegistroPrestamo((Long)this.attrs.get("idPrestamo"));
+          this.doLoadDisponible();
           break;
       } // switch
     } // try
@@ -143,6 +144,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, entity.toDate("ingreso")));		
 			this.attrs.put("antiguedad", DAYS.between(entity.toDate("ingreso"), LocalDate.now()));	
 			this.attrs.put("dias", Fecha.toFormatSecondsToHour(DAYS.between(entity.toDate("ingreso"), LocalDate.now())* 86400));	
+      this.getPrestamo().getPrestamo().setIkDeudor(new UISelectEntity(entity));
 			UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ entity.toString("disponible") + "})', mascara: 'libre'});");
     } // try
     catch (Exception e) {
