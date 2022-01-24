@@ -101,7 +101,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:					
         case CONSULTAR:					
 					this.prestamo= new RegistroPrestamo((Long)this.attrs.get("idPrestamo"));
-          this.doLoadDisponible();
+          this.toLoadDisponible();
           break;
       } // switch
     } // try
@@ -133,8 +133,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     return regresar;
   } // doAccion
 	
-	
-  public void doLoadDisponible() {  
+  private void toLoadDisponible() {  
 		Entity entity = null;
     try {			
 			this.attrs.put("idDeudor", this.prestamo.getPrestamo().getIkDeudor().getKey());
@@ -151,7 +150,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-  } // doLoadSaldo
+  } // doLoadDisponible
 
   public String doCancelar() {   
 		JsfBase.setFlashAttribute("idPrestamoProcess", this.prestamo.getPrestamo().getIdPrestamo());

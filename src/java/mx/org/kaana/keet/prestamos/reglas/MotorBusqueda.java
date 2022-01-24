@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.keet.prestamos.beans.Prestamo;
 import mx.org.kaana.keet.prestamos.proveedor.beans.Anticipo;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
@@ -65,6 +66,7 @@ public class MotorBusqueda implements Serializable{
 		try {
 		  params= new HashMap<>();
 			params.put("idAnticipo", this.idPrestamo);
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			List<Entity> pagos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaAnticiposDto", "pagos", params);
       if(pagos!= null && !pagos.isEmpty())
         for (Entity pago: pagos) 

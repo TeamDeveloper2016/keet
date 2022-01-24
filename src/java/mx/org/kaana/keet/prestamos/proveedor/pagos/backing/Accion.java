@@ -81,11 +81,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {
 				this.attrs.put("numeroPrestamos", transaccion.getPagos());
 				this.attrs.put("cambio", transaccion.getCambio());
-				JsfBase.addMessage("Se registró el pago de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se registró el pago de forma correcta", ETipoMensaje.INFORMACION);
 				//JsfBase.
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el pago.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -94,8 +94,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     return regresar;
   } // doAccion
 	
-	
-   public String doCancelar() {   
+  public String doCancelar() {   
 		JsfBase.setFlashAttribute("idAnticipoProcess", this.attrs.get("idAnticipo"));
     return (String) this.attrs.get("retorno");
   } // doCancelar	
@@ -111,6 +110,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		this.attrs.put("pagos", entity.toString("pagos"));
 		this.attrs.put("numeroPrestamos", entity.toString("numeroPrestamos"));
 		this.attrs.put("sortOrder", entity.toString("numeroPrestamos"));
+    this.pagoDto.setConsecutivo(entity.toString("consecutivo"));
 		this.pagoDto.setPago(Numero.getDouble(entity.toString("saldo"), 0D));
 	}
 	
@@ -157,6 +157,21 @@ public class Accion extends IBaseAttribute implements Serializable {
 	  this.attrs.put("abonos", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, abonos));
 	  this.attrs.put("saldo", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, saldo));
 		return "";
-	}	
+  }	
+   
+  public void doDelete(Entity item) {
+    Transaccion transaccion= null;
+    try {			
+			transaccion = new Transaccion(item.getKey());
+			if (transaccion.ejecutar(EAccion.ELIMINAR)) 
+ 				JsfBase.addMessage("Se eliminó el pago de forma correcta", ETipoMensaje.INFORMACION);
+      else
+				JsfBase.addMessage("Ocurrió un error al eliminar el pago", ETipoMensaje.ERROR);      			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  }   
 	
 }

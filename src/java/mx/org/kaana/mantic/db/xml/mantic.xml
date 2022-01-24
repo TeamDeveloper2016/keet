@@ -6210,7 +6210,16 @@
         from      
           tc_mantic_incidentes
         where      
-          consecutivo = '{consecutivo}' and id_incidente = {idIncidente}
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="igual">
+        select      
+          tc_mantic_incidentes.id_incidente as id_key,
+          tc_mantic_incidentes.*
+        from      
+          tc_mantic_incidentes
+        where      
+          id_incidente = {idIncidente}
       </select>
 			<select id="siguiente">
         select

@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.keet.db.dto.TcKeetArticulosProveedoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetMorososDto;
 import mx.org.kaana.keet.db.dto.TcKeetProveedoresDepartamentosDto;
 import mx.org.kaana.keet.db.dto.TcKeetProveedoresFamiliasDto;
 import mx.org.kaana.keet.db.dto.TcKeetProveedoresMaterialesDto;
@@ -109,8 +110,10 @@ public class Transaccion extends IBaseTnx {
                       if(registraProveedoresFamilias(sesion, idProveedor)){
                         if(registraProveedoresFormaPago(sesion, idProveedor)){
                           this.registroProveedor.getPortal().setIdProveedor(idProveedor);
-                          if(this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina()) && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia()))
+                          if(this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal().getPagina()) && !Cadena.isVacio(this.registroProveedor.getPortal().getCuenta()) && !Cadena.isVacio(this.registroProveedor.getPortal().getContrasenia())) {
                             regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;					
+                            this.toInsertMoroso(sesion);
+                          } // if  
                           else
                             regresar= true;
                         } // if
@@ -811,4 +814,23 @@ public class Transaccion extends IBaseTnx {
     } // finally
     return regresar;
   } // registraProveedoresFamilias
+  
+  private void toInsertMoroso(Session sesion) throws Exception {
+    try {      
+      TcKeetMorososDto moroso= new TcKeetMorososDto(
+        this.registroProveedor.getIdProveedor(), // Long idProveedor, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        -1L, // Long idMoroso, 
+        null, // String observaciones, 
+        0D, // Double saldo, 
+        50000D, // Double limite, 
+        50000D // Double disponible
+      );
+      DaoFactory.getInstance().insert(sesion, moroso);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
 }

@@ -67,10 +67,13 @@
 						</f:facet>
 						<h:outputText value="#{row['registro']}"/>
 					</p:column>	      
+          <p:column class="janal-column-center MarAuto Responsive janal-wid-3">
+            <p:commandButton icon="fa fa-trash" process="@this" update="tabla" actionListener="#{keetPrestamosProveedorPagosFiltro.doDelete(row)}" title="Eliminar"/>
+          </p:column>
 					<f:facet name="footer">
 						<p:outputLabel value="#{keetPrestamosProveedorPagosFiltro.calculate}&lt;span class='janal-color-blue'&gt;Saldo: &lt;strong&gt;[#{keetPrestamosProveedorPagosFiltro.attrs.saldo}]&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-orange'&gt;Abonos: &lt;strong&gt;[#{keetPrestamosProveedorPagosFiltro.attrs.abonos}]&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
-						<p:outputLabel value="Total [#{keetPrestamosProveedorPagosFiltro.lazyModel==null?0:keetPrestamosProveedorPagosFiltro.lazyModel.rowCount}] registros"/>
-					</f:facet>
+						<p:outputLabel value="Total [#{keetPrestamosProveedorPagosFiltro.lazyModel== null? 0: keetPrestamosProveedorPagosFiltro.lazyModel.rowCount}] registros"/>
+					</f:facet> 
 				</p:dataTable>
 			</div>
     </div>	

@@ -112,6 +112,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		this.attrs.put("pagos", entity.toString("pagos"));
 		this.attrs.put("numeroPrestamos", entity.toString("numeroPrestamos"));
 		this.attrs.put("sortOrder", entity.toString("numeroPrestamos"));
+    this.pagoDto.setConsecutivo(entity.toString("consecutivo"));
 		this.pagoDto.setPago(Numero.getDouble(entity.toString("saldo"), 0D));
 	}
 	

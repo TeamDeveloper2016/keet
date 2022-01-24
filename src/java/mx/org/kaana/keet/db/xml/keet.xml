@@ -7,6 +7,96 @@
   </model>
 
   <dml>
+    <unit id="TcKeetPrestamosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_prestamos_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_detalles
+        where      
+          id_prestamo_detalle = {idPrestamoDetalle}
+      </select>
+      <select id="incidentes">
+        select      
+          tc_keet_prestamos_detalles.id_prestamo_detalle as id_key,
+          tc_keet_prestamos_detalles.*
+        from      
+          tc_keet_prestamos_detalles
+        where      
+          id_prestamo_pago = {idPrestamoPago}
+      </select>
+    </unit>    
+    <unit id="TcKeetPrestamosControlesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_prestamos_controles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_prestamos_controles
+        where      
+          id_prestamo_control = {idPrestamoControl}
+      </select>
+    </unit>    
+    <unit id="TcKeetAnticiposDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_anticipos_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_anticipos_detalles
+        where      
+          id_anticipo_detalle = {idAnticipoDetalle}
+      </select>
+      <select id="incidentes">
+        select      
+          tc_keet_anticipos_detalles.id_anticipo_detalle as id_key,
+          tc_keet_anticipos_detalles.*
+        from      
+          tc_keet_anticipos_detalles
+        where      
+          id_anticipo_pago = {idAnticipoPago}
+      </select>
+    </unit>    
+    <unit id="TcKeetAnticiposControlesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_keet_anticipos_controles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_keet_anticipos_controles
+        where      
+          id_anticipo_control = {idAnticipoControl}
+      </select>
+    </unit>    
     <unit id="TcKeetMorososDto">
       <select id="row">
         select      
@@ -41,6 +131,15 @@
           tc_keet_incidentes
         where      
           consecutivo = '{consecutivo}'
+      </select>
+      <select id="igual">
+        select      
+          tc_keet_incidentes.id_incidente as id_key,
+          tc_keet_incidentes.*
+        from      
+          tc_keet_incidentes
+        where      
+          id_incidente= {idIncidente}
       </select>
 			<select id="siguiente">
         select

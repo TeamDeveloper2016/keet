@@ -2,11 +2,15 @@ package mx.org.kaana.keet.prestamos.proveedor.backing;
 
 import java.io.File;
 import java.io.Serializable;
+import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -25,6 +29,8 @@ import mx.org.kaana.keet.prestamos.proveedor.beans.RegistroAnticipo;
 import mx.org.kaana.keet.prestamos.proveedor.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import org.primefaces.event.FileUploadEvent;
@@ -61,7 +67,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.setFile(new Importado());
 			this.attrs.put("file", ""); 
 			this.loadCombos();
-			this.prestamo= new RegistroAnticipo((Long)this.attrs.get("idAnticipo"));						
+			this.prestamo= new RegistroAnticipo((Long)this.attrs.get("idAnticipo"));
+      this.toLoadDisponible();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -110,6 +117,27 @@ public class Importar extends IBaseImportar implements Serializable {
     }// finally
 	} // doLoad
 	
+  private void toLoadDisponible() {  
+		Entity entity = null;
+    try {			
+			this.attrs.put("idMoroso", this.prestamo.getPrestamo().getIkDeudor().getKey());
+			entity= (Entity)DaoFactory.getInstance().toEntity("VistaMorososDto", "byIdDeudor", this.attrs);
+			this.attrs.put("disponible", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("disponible"))));	
+			this.attrs.put("limite", Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(entity.toString("limite"))));	
+			this.attrs.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, entity.toDate("ingreso")));		
+			this.attrs.put("antiguedad", DAYS.between(entity.toDate("ingreso"), LocalDate.now()));	
+			this.attrs.put("dias", Fecha.toFormatSecondsToHour(DAYS.between(entity.toDate("ingreso"), LocalDate.now())* 86400));	
+      this.getPrestamo().getPrestamo().setIkDeudor(new UISelectEntity(entity));
+      List<UISelectEntity> deudores= new ArrayList<>();
+      deudores.add(this.getPrestamo().getPrestamo().getIkDeudor());
+      this.attrs.put("deudores", deudores); 
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } // doLoadDisponible
+  
 	public void doFileUpload(FileUploadEvent event) {				
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  

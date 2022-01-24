@@ -352,5 +352,26 @@ public class TcManticIncidentesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdIncidente() != null ? getIdIncidente().hashCode() : 0);
     return hash;
   }
-	
+
+  public TcManticIncidentesDto toClon() {
+    TcManticIncidentesDto regresar= new TcManticIncidentesDto(
+      this.consecutivo, // String consecutivo, 
+      this.idTipoIncidente, // Long idTipoIncidente, 
+      this.idEmpresaPersona, // Long idEmpresaPersona, 
+      -1L, // Long idIncidente, 
+      this.inicio, // LocalDate inicio, 
+      this.idUsuario, // Long idUsuario, 
+      this.idIncidenteEstatus, // Long idIncidenteEstatus, 
+      this.observaciones, // String observaciones, 
+      this.orden, // Long orden, 
+      this.termino, // LocalDate termino, 
+      this.ejercicio, // Long ejercicio, 
+      this.idDesarrollo, // Long idDesarrollo, 
+      this.costo, // Double costo, 
+      this.idNomina, // Long idNomina, 
+      this.idPrestamo // Long idPrestamo            
+    );
+    return regresar;
+  }
+  
 }

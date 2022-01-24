@@ -353,6 +353,27 @@ public class TcKeetIncidentesDto implements IBaseDto, Serializable {
     return hash;
   }
 
+  public TcKeetIncidentesDto toClon() {
+    TcKeetIncidentesDto regresar= new TcKeetIncidentesDto(
+      this.idTipoIncidente, // Long idTipoIncidente, 
+      this.idAnticipo, // Long idAnticipo, 
+      this.idProveedor, // Long idProveedor, 
+      -1L, // Long idIncidente, 
+      this.idDesarrollo, // Long idDesarrollo, 
+      this.idIncidenteEstatus, // Long idIncidenteEstatus, 
+      this.inicio, // LocalDate inicio, 
+      this.ejercicio, // Long ejercicio, 
+      this.idNomina, // Long idNomina, 
+      this.consecutivo, // String consecutivo, 
+      this.idUsuario, // Long idUsuario, 
+      this.observaciones, // String observaciones, 
+      this.termino, // LocalDate termino, 
+      this.orden, // Long orden, 
+      this.costo // Double costo            
+    );
+    return regresar;
+  }
+  
 }
 
 

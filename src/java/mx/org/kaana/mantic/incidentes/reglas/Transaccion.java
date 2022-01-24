@@ -263,7 +263,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 	
-	private Siguiente toContinuar(Session sesion) throws Exception {
+	protected Siguiente toContinuar(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
@@ -321,7 +321,7 @@ public class Transaccion extends IBaseTnx {
 			dto.setObservaciones(this.incidente.getObservaciones());
 			dto.setInicio(this.incidente.getVigenciaInicio());
 			dto.setTermino(this.incidente.getVigenciaFin());		
-			if(DaoFactory.getInstance().update(sesion, dto)>= 1L){
+			if(DaoFactory.getInstance().update(sesion, dto)>= 1L) { 
 				this.incidente.setObservaciones(this.observaciones);
 				this.bitacoraAnticipo(sesion, this.incidente.getIdIncidente(), dto.getIdIncidenteEstatus());
 			} // if

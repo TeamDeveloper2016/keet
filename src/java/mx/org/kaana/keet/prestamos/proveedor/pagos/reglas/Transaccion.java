@@ -1,22 +1,26 @@
 package mx.org.kaana.keet.prestamos.proveedor.pagos.reglas;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.keet.db.dto.TcKeetAnticiposBitacoraDto;
+import mx.org.kaana.keet.db.dto.TcKeetAnticiposControlesDto;
+import mx.org.kaana.keet.db.dto.TcKeetAnticiposDetallesDto;
 import mx.org.kaana.keet.db.dto.TcKeetAnticiposDto;
 import mx.org.kaana.keet.db.dto.TcKeetAnticiposPagosDto;
 import mx.org.kaana.keet.db.dto.TcKeetDeudoresDto;
+import mx.org.kaana.keet.db.dto.TcKeetIncidentesDto;
 import mx.org.kaana.keet.db.dto.TcKeetMorososDto;
-import mx.org.kaana.keet.db.dto.TcKeetPrestamosPagosDto;
-import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.keet.prestamos.enums.EEstatusPrestamos;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -27,11 +31,16 @@ import org.hibernate.Session;
 public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transaccion {
 
 	protected TcKeetAnticiposPagosDto prestamosPagos;
+  private Long idAnticipoPago;	
   private Long idMoroso;	
   private int pagos;	
   private Double cambio;	
 
-
+	public Transaccion(Long idAnticipoPago) {
+    super(new Incidente());
+    this.idAnticipoPago= idAnticipoPago;
+  }
+  
 	public Transaccion(TcKeetAnticiposPagosDto prestamosPagos) {
 		super(new Incidente());
 		this.prestamosPagos= prestamosPagos;	
@@ -52,7 +61,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		TcKeetMorososDto deudoresDto= null;
 		TcKeetAnticiposPagosDto pago= null;
 		try {
-			switch(accion){
+			switch(accion) {
 				case REGISTRAR:
 					pago= this.calcularPago(sesion, this.prestamosPagos.getIdAnticipo(), this.prestamosPagos.getPago(), EEstatusPrestamos.LIQUIDADA);
 					deudoresDto= (TcKeetMorososDto)DaoFactory.getInstance().findById(sesion, TcKeetMorososDto.class, this.idMoroso);
@@ -60,7 +69,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 					deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
 					DaoFactory.getInstance().update(sesion, deudoresDto);
 					regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
-					this.pagos= 1;
+					this.toCheckIncidentes(sesion, this.prestamosPagos.getIdAnticipo(), pago.getIdAnticipoPago(), this.prestamosPagos.getConsecutivo(), pago.getAbono());
 //					if(this.prestamosPagosDto.getIdAfectaNomina().equals(1L)) {
 //						this.toLoadIncidente(deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
 //						super.ejecutar(sesion, EAccion.DESTRANSFORMACION);
@@ -77,6 +86,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 						deudoresDto.setDisponible(deudoresDto.getDisponible()+ pago.getAbono());
 						DaoFactory.getInstance().update(sesion, deudoresDto);
 						regresar= DaoFactory.getInstance().insert(sesion, pago)>= 1L;
+            this.toCheckIncidentes(sesion, item.getIdAnticipo(), pago.getIdAnticipoPago(), this.prestamosPagos.getConsecutivo(), pago.getAbono());
 						this.pagos++;
 //						if(keetPrestamosPagosDto.getIdAfectaNomina().equals(1L)){
 //							this.toLoadIncidente(sesion, deudoresDto.getIdEmpresaPersona(), keetPrestamosPagosDto);
@@ -86,6 +96,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 							break;
 					} // for
 					break;
+				case ELIMINAR:
+          regresar= this.toDeletePago(sesion);
+          break;
 			} // switch	
 			this.cambio= pago!= null? pago.getCambio(): 0D;
 		} // try // try // try // try
@@ -126,14 +139,14 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			prestamosDto= (TcKeetAnticiposDto) DaoFactory.getInstance().findById(sesion, TcKeetAnticiposDto.class, idAnticipo);
 			this.idMoroso= prestamosDto.getIdMoroso();
 			siguiente= this.toSiguiente(sesion);
-			if((prestamosDto.getSaldo()-pago)>= 0) { //sin cambio
+			if((prestamosDto.getSaldo()-pago)>= 0) { // sin cambio
 				abono= pago;
 				restante= 0D;
 			} // if
-			else{
+      else {
 				abono= prestamosDto.getSaldo();
 				restante= pago- prestamosDto.getSaldo();
-			}// else
+			} // else
 			prestamosDto.setSaldo(prestamosDto.getSaldo()-abono);
 			if(prestamosDto.getSaldo()== 0D)
 				prestamosDto.setIdAnticipoEstatus(tipoFinalizar.getIdEstatusPrestamo());
@@ -162,14 +175,119 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		return regresar;
 	}
 	
-	private void toLoadIncidente(Long idEmpresaPersona, TcKeetPrestamosPagosDto prestamoPagoDto) throws Exception{
-		this.getIncidente().setCosto(prestamoPagoDto.getAbono());
-		this.getIncidente().setTipoIncidente(ETiposIncidentes.ABONO_NOMINA.name());
-		this.getIncidente().setIdTipoIncidente(ETiposIncidentes.ABONO_NOMINA.getKey());
-		this.getIncidente().setVigenciaInicio(LocalDate.now());
-		this.getIncidente().setVigenciaFin(LocalDate.now());
-		this.getIncidente().setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
-		this.getIncidente().setIdEmpresaPersona(idEmpresaPersona);
-	}
-	
+  private void toCheckIncidentes(Session sesion, Long idAnticipo, Long idAnticipoPago, String consecutivo, Double abono) throws Exception {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idAnticipo", idAnticipo);      
+      params.put(Constantes.SQL_CONDICION, "tc_keet_incidentes.id_nomina is null and tc_keet_incidentes.id_incidente_estatus in (2)");
+      List<TcKeetIncidentesDto> items= (List<TcKeetIncidentesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKeetIncidentesDto.class, "VistaAnticiposDto", "pagos", params);
+      if(items!= null && !items.isEmpty()) {
+        for (TcKeetIncidentesDto pago: items) {
+          if(pago.getCosto()<= abono) {
+            pago.setIdIncidenteEstatus(EEstatusIncidentes.APLICADA.getIdEstatusInicidente());
+            DaoFactory.getInstance().update(sesion, pago);
+            abono-= pago.getCosto();
+            TcKeetAnticiposDetallesDto detalle= new TcKeetAnticiposDetallesDto(
+              pago.getIdIncidente(), // Long idIncidente, 
+              null, // Long idComplemento, 
+              idAnticipoPago, // Long idAnticipoPago, 
+              -1L // Long idAnticipoDetalle
+            );
+            DaoFactory.getInstance().insert(sesion, detalle);
+          } // if
+          else
+            if(abono> 0D) {
+              TcKeetIncidentesDto adicional= pago.toClon();
+              pago.setIdIncidenteEstatus(EEstatusIncidentes.APLICADA.getIdEstatusInicidente());
+              adicional.setCosto(Numero.toRedondearSat(pago.getCosto()- abono));
+              pago.setCosto(abono);
+              DaoFactory.getInstance().update(sesion, pago);
+              Siguiente siguientes= this.toContinuar(sesion);			
+              adicional.setConsecutivo(siguientes.getConsecutivo());			
+              adicional.setOrden(siguientes.getOrden());			
+              adicional.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
+              adicional.setObservaciones("FOLIO (N) ANTICIPO[".concat(consecutivo).concat("] [").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA, LocalDateTime.now())).concat("]"));
+              DaoFactory.getInstance().insert(sesion, adicional);
+              abono= 0D;
+              TcKeetAnticiposDetallesDto detalle= new TcKeetAnticiposDetallesDto(
+                pago.getIdIncidente(), // Long idIncidente, 
+                adicional.getIdIncidente(), // Long idComplemento, 
+                idAnticipoPago, // Long idAnticipoPago, 
+                -1L // Long idAnticipoDetalle
+              );
+              DaoFactory.getInstance().insert(sesion, detalle);
+            } // if
+        } // for
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+
+  private Boolean toDeletePago(Session sesion) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idAnticipoPago", this.idAnticipoPago);
+      List<TcKeetAnticiposDetallesDto> incidentes= (List<TcKeetAnticiposDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKeetAnticiposDetallesDto.class, "TcKeetAnticiposDetallesDto", "incidentes", params);
+      if(incidentes!= null && !incidentes.isEmpty()) {
+        // RECUPERAR LOS INCIDENTES DEL PAGO PARA CAMBIARLOS DE ESTATUS DE APLICADO A ACEPTADO
+        for (TcKeetAnticiposDetallesDto item: incidentes) {
+          if(item.getIdComplemento()!= null) {
+            params.put("idIncidente", item.getIdComplemento());
+            TcKeetIncidentesDto complemento= (TcKeetIncidentesDto)DaoFactory.getInstance().toEntity(sesion, TcKeetIncidentesDto.class, "TcKeetIncidentesDto", "igual", params);
+            if(complemento!= null && complemento.getIdNomina()!= null) 
+              throw new RuntimeException("No se puede eliminar el pago, porque ya se pago una parte en la nómina "+ complemento.getIdNomina());
+            params.put("idIncidente", item.getIdIncidente());
+            TcKeetIncidentesDto movimiento= (TcKeetIncidentesDto)DaoFactory.getInstance().toEntity(sesion, TcKeetIncidentesDto.class, "TcKeetIncidentesDto", "igual", params);
+            movimiento.setCosto(Numero.toRedondearSat(movimiento.getCosto()+ (complemento!= null? complemento.getCosto(): 0D)));
+            movimiento.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
+            DaoFactory.getInstance().update(sesion, movimiento);
+            DaoFactory.getInstance().delete(sesion, complemento);
+          } // if
+          else {
+            params.put("idIncidente", item.getIdIncidente());
+            TcKeetIncidentesDto movimiento= (TcKeetIncidentesDto)DaoFactory.getInstance().toEntity(sesion, TcKeetIncidentesDto.class, "TcKeetIncidentesDto", "igual", params);
+            movimiento.setIdIncidenteEstatus(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
+            DaoFactory.getInstance().update(sesion, movimiento);
+          } // if
+        } // for
+        // ESTE REGISTRO ES PARA LLEVAR EL CONTROL DE QUIENES HAN BORRRADOS LOS PAGOS
+        TcKeetAnticiposControlesDto control= new TcKeetAnticiposControlesDto(
+          "EL PAGO SE ELIMINO PORQUE HUBO UN ERROR", // String justificacion, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          this.idAnticipoPago, // Long idAnticipoPago, 
+          -1L // Long idAnticipoControl
+        );
+        DaoFactory.getInstance().insert(sesion, control);
+      } // if
+      // ELIMINAR EL PAGO Y ACTUALIZAR EL ESTATUS DEL ANTICIPO
+      TcKeetAnticiposPagosDto pago= (TcKeetAnticiposPagosDto)DaoFactory.getInstance().findById(sesion, TcKeetAnticiposPagosDto.class, this.idAnticipoPago);
+      if(pago!= null) {
+        TcKeetAnticiposDto anticipo= (TcKeetAnticiposDto)DaoFactory.getInstance().findById(sesion, TcKeetAnticiposDto.class, pago.getIdAnticipo());
+        anticipo.setSaldo(Numero.toRedondearSat(anticipo.getSaldo()+ pago.getAbono()));
+        if(Objects.equals(anticipo.getSaldo(), anticipo.getImporte()))
+          anticipo.setIdAnticipoEstatus(EEstatusPrestamos.INICIALIZADA.getIdEstatusPrestamo());
+        else
+          anticipo.setIdAnticipoEstatus(EEstatusPrestamos.PARCIALIZADA.getIdEstatusPrestamo());
+        DaoFactory.getInstance().update(sesion, anticipo);
+      } // if
+      DaoFactory.getInstance().delete(sesion, pago);
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }  
+  
 }

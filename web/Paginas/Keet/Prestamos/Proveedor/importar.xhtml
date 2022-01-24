@@ -59,7 +59,7 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">		
 								<p:outputLabel for="deudor" value="Subcontratista:" />
 								<p:selectOneMenu disabled="true" id="deudor" value="#{keetPrestamosProveedorImportar.prestamo.prestamo.ikDeudor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{keetPrestamosProveedorImportar.attrs.deudores}"  var="element" itemValue="#{element}" itemLabel="#{element.deudor} - #{element.disponible}"/>
+									<f:selectItems value="#{keetPrestamosProveedorImportar.attrs.deudores}" var="element" itemValue="#{element}" itemLabel="#{element.deudor} - #{element.disponible}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.deudor}"/>
 									</p:column>   

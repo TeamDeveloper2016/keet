@@ -122,14 +122,14 @@
 				</div>
 			</div>
 		</div>
-		<p:dialog id="dialogoPago" widgetVar="dialogoPago" header="Resumen de pago." resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="35%">			
+		<p:dialog id="dialogoPago" widgetVar="dialogoPago" header="Resumen de pago" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="35%">			
 			<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 				<p:outputLabel value="Pagado(s):"/>
-				<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.attrs.numeroPrestamos}"/>
+				<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.attrs.numeroPrestamos}" styleClass="janal-font-bold janal-color-black"/>
 				<p:outputLabel value="Importe:"/>
-				<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.pagoDto.pago}"/>
+				<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.pagoDto.pago}" styleClass="janal-font-bold janal-color-black"/>
 				<p:outputLabel value="Cambio:"/>
-				<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.attrs.cambio}"/>
+				<p:outputLabel value="#{keetPrestamosProveedorPagosAccion.attrs.cambio}" styleClass="janal-font-bold janal-color-black"/>
 			</h:panelGrid>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">

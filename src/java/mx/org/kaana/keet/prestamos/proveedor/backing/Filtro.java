@@ -18,8 +18,8 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
-import mx.org.kaana.keet.prestamos.beans.RegistroPrestamo;
-import mx.org.kaana.keet.prestamos.reglas.Transaccion;
+import mx.org.kaana.keet.prestamos.proveedor.beans.RegistroAnticipo;
+import mx.org.kaana.keet.prestamos.proveedor.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -141,7 +141,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.setFlashAttribute("idMoroso", (!eaccion.equals(EAccion.AGREGAR)) ? ((Entity) this.attrs.get("seleccionado")).toLong("idMoroso") : -1L);
       JsfBase.setFlashAttribute("retorno", "/Paginas/Keet/Prestamos/Proveedor/filtro");
       JsfBase.setFlashAttribute("isLiquidar", true);
-			switch (eaccion){
+			switch (eaccion) {
 				case SUBIR:
 				  regresar= "importar".concat(Constantes.REDIRECIONAR);	
 				break;
@@ -159,7 +159,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				  regresar= "/Paginas/Keet/Prestamos/Proveedor/Pagos/filtro".concat(Constantes.REDIRECIONAR);
 					break;
 				case DESACTIVAR:
-					transaccion= new Transaccion(new RegistroPrestamo(((Entity) this.attrs.get("seleccionado")).getKey()));
+					transaccion= new Transaccion(new RegistroAnticipo(((Entity) this.attrs.get("seleccionado")).getKey()));
 					if (transaccion.ejecutar(eaccion)){
 						JsfBase.addMessage("El anticipo se canceló correctamente.");
 					} // if
@@ -175,7 +175,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion
 
   public void doEliminar() {
-		doAccion(EAccion.DESACTIVAR.name()); // cancelar anticipo
+		this.doAccion(EAccion.DESACTIVAR.name()); // cancelar anticipo
   } // doEliminar
 	
 	private Map<String, Object> toPrepare() {
