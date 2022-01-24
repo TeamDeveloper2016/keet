@@ -39,22 +39,25 @@ public class TcKeetAnticiposControlesDto implements IBaseDto, Serializable {
   private Long idAnticipoControl;
   @Column (name="registro")
   private LocalDateTime registro;
+  @Column (name="importe")
+  private Double importe;
 
   public TcKeetAnticiposControlesDto() {
     this(new Long(-1L));
   }
 
   public TcKeetAnticiposControlesDto(Long key) {
-    this(null, null, null, new Long(-1L));
+    this(null, null, null, new Long(-1L), 0D);
     setKey(key);
   }
 
-  public TcKeetAnticiposControlesDto(String justificacion, Long idUsuario, Long idAnticipoPago, Long idAnticipoControl) {
+  public TcKeetAnticiposControlesDto(String justificacion, Long idUsuario, Long idAnticipoPago, Long idAnticipoControl, Double importe) {
     setJustificacion(justificacion);
     setIdUsuario(idUsuario);
     setIdAnticipoPago(idAnticipoPago);
     setIdAnticipoControl(idAnticipoControl);
     setRegistro(LocalDateTime.now());
+    setImporte(importe);
   }
 	
   public void setJustificacion(String justificacion) {
@@ -97,6 +100,14 @@ public class TcKeetAnticiposControlesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Double getImporte() {
+    return importe;
+  }
+
+  public void setImporte(Double importe) {
+    this.importe = importe;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -121,6 +132,8 @@ public class TcKeetAnticiposControlesDto implements IBaseDto, Serializable {
 		regresar.append(getIdAnticipoControl());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImporte());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -133,13 +146,14 @@ public class TcKeetAnticiposControlesDto implements IBaseDto, Serializable {
 		regresar.put("idAnticipoPago", getIdAnticipoPago());
 		regresar.put("idAnticipoControl", getIdAnticipoControl());
 		regresar.put("registro", getRegistro());
+		regresar.put("importe", getImporte());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getJustificacion(), getIdUsuario(), getIdAnticipoPago(), getIdAnticipoControl(), getRegistro()
+      getJustificacion(), getIdUsuario(), getIdAnticipoPago(), getIdAnticipoControl(), getRegistro(), getImporte()
     };
     return regresar;
   }

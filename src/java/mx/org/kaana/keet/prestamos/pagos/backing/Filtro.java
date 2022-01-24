@@ -8,11 +8,13 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.keet.prestamos.pagos.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -84,5 +86,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idPrestamoProcess", this.attrs.get("idPrestamo"));
     return (String) this.attrs.get("retorno");
   } // doCancelar	
-	
+
+  public void doDelete(Entity item) {
+    Transaccion transaccion= null;
+    try {			
+			transaccion = new Transaccion(item.getKey());
+			if (transaccion.ejecutar(EAccion.ELIMINAR)) 
+ 				JsfBase.addMessage("Se eliminó el pago de forma correcta", ETipoMensaje.INFORMACION);
+      else
+				JsfBase.addMessage("Ocurrió un error al eliminar el pago", ETipoMensaje.ERROR);      			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  }   
+  
 }

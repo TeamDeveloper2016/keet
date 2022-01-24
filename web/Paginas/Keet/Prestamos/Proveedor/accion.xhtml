@@ -63,7 +63,7 @@
 									<p:inputText id="antiguedad" styleClass="janal-wid-100-txt" value="#{keetPrestamosProveedorAccion.attrs.antiguedad}" style="display: none"/>
 								</p:panelGrid>
                 <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
-  								<p:outputLabel for="importe" value="Importe del prestamo:"/>
+  								<p:outputLabel for="importe" value="Importe del anticipo:"/>
   								<p:outputLabel value="Pago(s):"/>
 	  							<p:inputText id="importe" styleClass="janal-wid-100-txt janal-color-blue" value="#{keetPrestamosProveedorAccion.prestamo.prestamo.importe}">	
                     <p:ajax event="blur" process="@this" update="pagos" listener="#{keetPrestamosProveedorAccion.doCalculo}"/>

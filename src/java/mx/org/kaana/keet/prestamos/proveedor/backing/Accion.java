@@ -118,19 +118,22 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
 		EAccion eaccion        = null;
     try {			
-      if(!(Boolean)this.attrs.get("error")) {
-        eaccion= (EAccion) this.attrs.get("accion");      
-        transaccion = new Transaccion(this.prestamo);
-        if (transaccion.ejecutar(eaccion)) {
-          JsfBase.setFlashAttribute("idAnticipoProcess", this.prestamo.getPrestamo().getIdAnticipo());
-          regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);				
-          JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el anticipo de forma correcta."), ETipoMensaje.INFORMACION);
-        } // if
-        else 
-          JsfBase.addMessage("Ocurrió un error al registrar el proyecto", ETipoMensaje.ERROR);      			
-      } // if
+      if((Boolean)this.attrs.get("error")) 
+        JsfBase.addMessage("Los importes de los pagos semanales no coincide con el anticipo", ETipoMensaje.ERROR);
       else 
-        JsfBase.addMessage("Los importes de los pagos semanales no coincide con el anticipo", ETipoMensaje.ERROR);      			
+        if((Boolean)this.attrs.get("ceros")) 
+          JsfBase.addMessage("El importe de un pago semanal es cero, favor de corregir !", ETipoMensaje.ERROR);
+        else {
+          eaccion= (EAccion) this.attrs.get("accion");      
+          transaccion = new Transaccion(this.prestamo);
+          if (transaccion.ejecutar(eaccion)) {
+            JsfBase.setFlashAttribute("idAnticipoProcess", this.prestamo.getPrestamo().getIdAnticipo());
+            regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);				
+            JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el anticipo de forma correcta."), ETipoMensaje.INFORMACION);
+          } // if
+          else 
+            JsfBase.addMessage("Ocurrió un error al registrar el proyecto", ETipoMensaje.ERROR);      			
+        } // else
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -208,8 +211,12 @@ public class Accion extends IBaseAttribute implements Serializable {
  
   public void checkCalculos() {
     double suma= 0D;
-    for (Double pago: this.getPrestamo().getPagos()) 
+    this.attrs.put("ceros", Boolean.FALSE);  
+    for (Double pago: this.getPrestamo().getPagos()) {
       suma+= pago;      
+      if(pago<= 0D)
+        this.attrs.put("ceros", Boolean.TRUE);  
+    } // if  
     this.attrs.put("diferencia", (this.getPrestamo().getPrestamo().getImporte()- suma));  
     this.attrs.put("error", suma< this.getPrestamo().getPrestamo().getImporte() || suma> this.getPrestamo().getPrestamo().getImporte());  
   }

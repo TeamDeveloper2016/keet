@@ -18,14 +18,6 @@ public class RegistroAnticipo implements Serializable {
 		this(-1L);
 	}
 
-  public List<Double> getPagos() {
-    return pagos;
-  }
-
-  public void setPagos(List<Double> pagos) {
-    this.pagos = pagos;
-  }
-
 	public RegistroAnticipo(Long idAnticipo) {	
 		this.idAnticipo= idAnticipo;
 		this.documentos= new ArrayList<>();
@@ -39,7 +31,7 @@ public class RegistroAnticipo implements Serializable {
 			if(idAnticipo> 0L) {
 			  motor= new MotorBusqueda(idAnticipo);
 				this.prestamo= motor.toAnticipo();
-				this.pagos   = motor.toPagos();
+				this.pagos   = motor.toPagosAnticipos();
 			} // if
       else {
 				this.prestamo= new Anticipo();
@@ -76,5 +68,13 @@ public class RegistroAnticipo implements Serializable {
 	public void setDocumentos(List<Documento> documentos) {
 		this.documentos = documentos;
 	}
+
+  public List<Double> getPagos() {
+    return pagos;
+  }
+
+  public void setPagos(List<Double> pagos) {
+    this.pagos = pagos;
+  }
 
 }

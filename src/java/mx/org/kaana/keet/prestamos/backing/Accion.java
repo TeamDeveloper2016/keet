@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -116,15 +117,22 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
 		EAccion eaccion        = null;
     try {			
-			eaccion= (EAccion) this.attrs.get("accion");      
-			transaccion = new Transaccion(this.prestamo);
-			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.setFlashAttribute("idPrestamoProcess", this.prestamo.getPrestamo().getIdPrestamo());
-				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);				
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el prestamo de forma correcta."), ETipoMensaje.INFORMACION);
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el proyecto.", ETipoMensaje.ERROR);      			
+      if((Boolean)this.attrs.get("error")) 
+        JsfBase.addMessage("Los importes de los pagos semanales no coincide con el prestamo", ETipoMensaje.ERROR);
+      else 
+        if((Boolean)this.attrs.get("ceros")) 
+          JsfBase.addMessage("El importe de un pago semanal es cero, favor de corregir !", ETipoMensaje.ERROR);
+        else {
+          eaccion= (EAccion) this.attrs.get("accion");      
+          transaccion = new Transaccion(this.prestamo);
+          if (transaccion.ejecutar(eaccion)) {
+            JsfBase.setFlashAttribute("idPrestamoProcess", this.prestamo.getPrestamo().getIdPrestamo());
+            regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);				
+            JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el prestamo de forma correcta."), ETipoMensaje.INFORMACION);
+          } // if
+          else 
+            JsfBase.addMessage("Ocurrió un error al registrar el proyecto.", ETipoMensaje.ERROR);      			
+        } // else  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -190,7 +198,26 @@ public class Accion extends IBaseAttribute implements Serializable {
     if(this.getPrestamo().getPrestamo().getImporte()<= 0)
       this.getPrestamo().getPrestamo().setImporte(1D);
     double calculo= Numero.toRedondear(this.getPrestamo().getPrestamo().getImporte()/ this.getPrestamo().getPrestamo().getSemanas());
-    this.attrs.put("calculo", calculo);  
+    this.attrs.put("calculo", calculo); 
+    if(Objects.equals((EAccion) this.attrs.get("accion"), EAccion.AGREGAR)) {
+      this.getPrestamo().getPagos().clear();
+      for (int x= 0; x< this.getPrestamo().getPrestamo().getSemanas().intValue(); x++) {
+        this.getPrestamo().getPagos().add(calculo);
+      } // for
+      this.checkCalculos();
+    } // if  
+  }
+ 
+  public void checkCalculos() {
+    double suma= 0D;
+    this.attrs.put("ceros", Boolean.FALSE);  
+    for (Double pago: this.getPrestamo().getPagos()) {
+      suma+= pago;      
+      if(pago<= 0D)
+        this.attrs.put("ceros", Boolean.TRUE);  
+    } // if  
+    this.attrs.put("diferencia", (this.getPrestamo().getPrestamo().getImporte()- suma));  
+    this.attrs.put("error", suma< this.getPrestamo().getPrestamo().getImporte() || suma> this.getPrestamo().getPrestamo().getImporte());  
   }
   
 }

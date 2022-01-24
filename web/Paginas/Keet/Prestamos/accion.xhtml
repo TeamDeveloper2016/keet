@@ -74,19 +74,37 @@
                   <p:outputLabel for="idAfectaNomina" value="Con cargo a la nómina:"/>
                   <p:outputLabel for="semanas" value="Semanas:"/>
                   <p:selectOneMenu id="idAfectaNomina" value="#{keetPrestamosAccion.prestamo.prestamo.idAfectaNomina}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-                    <p:ajax event="change" process="@this" update="semanas pagos" listener="#{keetPrestamosAccion.doCalculo}"/>
-                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                    <p:ajax event="change" process="@this" update="semanas pagos contenedorGrupos:tabla" listener="#{keetPrestamosAccion.doCalculo}"/>
                     <f:selectItem itemValue="1" itemLabel="SI"/>
                     <f:selectItem itemValue="2" itemLabel="NO"/>
                   </p:selectOneMenu>				
                   <p:inputText id="semanas" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.semanas}" disabled="#{not(keetPrestamosAccion.prestamo.prestamo.idAfectaNomina eq 1)}">
-                    <p:ajax event="blur" process="@this" update="pagos" listener="#{keetPrestamosAccion.doCalculo}"/>
+                    <p:ajax event="blur" process="@this" update="pagos contenedorGrupos:tabla" listener="#{keetPrestamosAccion.doCalculo}"/>
                   </p:inputText>  
                 </p:panelGrid>  
 								<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{keetPrestamosAccion.prestamo.prestamo.observaciones}" />
               </p:panelGrid>
-						</p:tab>										
+						</p:tab>			
+            <p:tab title="Pagos">			
+              <p:dataTable lazy="false" id="tabla" widgetVar="kajoolTable" var="row" value="#{keetPrestamosAccion.prestamo.pagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" rowIndexVar="index" paginatorPosition="bottom">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-5">
+                  <f:facet name="header">
+                    <h:outputText value="No"/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>														
+                <p:column class="janal-column-center MarAuto Responsive">
+                  <f:facet name="header">
+                    <h:outputText value="Pago semanal"/>
+                  </f:facet>
+                  <p:inputNumber value="#{keetPrestamosAccion.prestamo.pagos[index]}" styleClass="janal-wid-99" converter="javax.faces.Double" decimalPlaces="0">
+                    <p:ajax event="change" process="@this" update="@(.error)" listener="#{keetPrestamosAccion.checkCalculos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  </p:inputNumber>  
+                </p:column>														
+              </p:dataTable> 
+              <p:outputLabel value="La suma de los pagos semanales no coincide con el prestamo (diferencia: #{keetPrestamosAccion.attrs.diferencia})" styleClass="error janal-font-bold janal-color-orange" style="display: #{keetPrestamosAccion.attrs.error? '': 'none'}"/>
+						</p:tab>            
 					</p:tabView>
 				</div>
 			</div>

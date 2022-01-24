@@ -12,15 +12,16 @@ public class RegistroPrestamo implements Serializable {
 	private Prestamo prestamo;
 	private Long idPrestamo;
 	private List<Documento> documentos;
+  private List<Double> pagos;
 
 	public RegistroPrestamo() {
 		this(-1L);
 	}
 
-
 	public RegistroPrestamo(Long idPrestamo){	
 		this.idPrestamo= idPrestamo;
-		this.documentos = new ArrayList<>();
+		this.documentos= new ArrayList<>();
+    this.pagos     = new ArrayList<>();
 		this.initCollections(idPrestamo);
 	} // RegistroPrototipo
 	
@@ -30,9 +31,13 @@ public class RegistroPrestamo implements Serializable {
 			if(idPrestamo> 0L){
 			  motor= new MotorBusqueda(idPrestamo);
 				this.prestamo= motor.toPrestamo();
+				this.pagos   = motor.toPagosPrestamos();
 			} // if
-			else{
+      else {
 				this.prestamo= new Prestamo();
+        for (int x= 0; x< this.prestamo.getSemanas().intValue(); x++) {
+          this.pagos.add(0D);
+        } // for
 			} // else
 		} // try
 		catch (Exception e) {			
@@ -64,5 +69,12 @@ public class RegistroPrestamo implements Serializable {
 		this.documentos = documentos;
 	}
 
+  public List<Double> getPagos() {
+    return pagos;
+  }
 
+  public void setPagos(List<Double> pagos) {
+    this.pagos = pagos;
+  }
+  
 }

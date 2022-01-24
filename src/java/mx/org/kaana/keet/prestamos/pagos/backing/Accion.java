@@ -160,5 +160,20 @@ public class Accion extends IBaseAttribute implements Serializable {
 	  this.attrs.put("saldo", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, saldo));
 		return "";
 	}	
-	
+
+  public void doDelete(Entity item) {
+    Transaccion transaccion= null;
+    try {			
+			transaccion = new Transaccion(item.getKey());
+			if (transaccion.ejecutar(EAccion.ELIMINAR)) 
+ 				JsfBase.addMessage("Se eliminó el pago de forma correcta", ETipoMensaje.INFORMACION);
+      else
+				JsfBase.addMessage("Ocurrió un error al eliminar el pago", ETipoMensaje.ERROR);      			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  }   
+   
 }

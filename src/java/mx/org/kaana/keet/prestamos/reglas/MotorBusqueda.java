@@ -60,7 +60,28 @@ public class MotorBusqueda implements Serializable{
 		return regresar;
 	} // toPrestamo
 	
-	public List<Double> toPagos() throws Exception {
+	public List<Double> toPagosPrestamos() throws Exception {
+		List<Double> regresar    = new ArrayList<>();
+		Map<String, Object>params= null;
+		try {
+		  params= new HashMap<>();
+			params.put("idPrestamo", this.idPrestamo);
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			List<Entity> pagos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaPrestamosDto", "pagos", params);
+      if(pagos!= null && !pagos.isEmpty())
+        for (Entity pago: pagos) 
+          regresar.add(pago.toDouble("costo"));  
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPagosPrestamos
+	
+	public List<Double> toPagosAnticipos() throws Exception {
 		List<Double> regresar    = new ArrayList<>();
 		Map<String, Object>params= null;
 		try {
@@ -79,6 +100,6 @@ public class MotorBusqueda implements Serializable{
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toPagos
+	} // toPagosAnticipos
 	
 }

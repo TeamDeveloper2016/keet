@@ -150,7 +150,9 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
       else 
         suma+= importe; 
       Incidente item= new Incidente();
-      item.setCosto(importe);
+      //item.setCosto(importe);
+      // SE TOMA EL IMPORTE QUE SE DEJO EN LA LISTA DE PAGOS POR SEMANA
+      item.setCosto(this.prestamo.getPagos().get(x));
       item.setTipoIncidente(ETiposIncidentes.ABONO_NOMINA.name());
       item.setIdTipoIncidente(ETiposIncidentes.ABONO_NOMINA.getKey());
       item.setVigenciaInicio(LocalDate.now());

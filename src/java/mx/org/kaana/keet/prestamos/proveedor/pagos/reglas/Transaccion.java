@@ -258,14 +258,6 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
             DaoFactory.getInstance().update(sesion, movimiento);
           } // if
         } // for
-        // ESTE REGISTRO ES PARA LLEVAR EL CONTROL DE QUIENES HAN BORRRADOS LOS PAGOS
-        TcKeetAnticiposControlesDto control= new TcKeetAnticiposControlesDto(
-          "EL PAGO SE ELIMINO PORQUE HUBO UN ERROR", // String justificacion, 
-          JsfBase.getIdUsuario(), // Long idUsuario, 
-          this.idAnticipoPago, // Long idAnticipoPago, 
-          -1L // Long idAnticipoControl
-        );
-        DaoFactory.getInstance().insert(sesion, control);
       } // if
       // ELIMINAR EL PAGO Y ACTUALIZAR EL ESTATUS DEL ANTICIPO
       TcKeetAnticiposPagosDto pago= (TcKeetAnticiposPagosDto)DaoFactory.getInstance().findById(sesion, TcKeetAnticiposPagosDto.class, this.idAnticipoPago);
@@ -277,9 +269,20 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
         else
           anticipo.setIdAnticipoEstatus(EEstatusPrestamos.PARCIALIZADA.getIdEstatusPrestamo());
         DaoFactory.getInstance().update(sesion, anticipo);
+        TcKeetAnticiposBitacoraDto bitacora= new TcKeetAnticiposBitacoraDto(anticipo.getIdAnticipo(), anticipo.getIdAnticipoEstatus(), "SE CANCELO UN PAGO ["+ pago.getAbono()+ "]", JsfBase.getIdUsuario(), -1L);
+			  DaoFactory.getInstance().insert(sesion, bitacora);        
+        DaoFactory.getInstance().delete(sesion, pago);
+        // ESTE REGISTRO ES PARA LLEVAR EL CONTROL DE QUIENES HAN BORRRADOS LOS PAGOS
+        TcKeetAnticiposControlesDto control= new TcKeetAnticiposControlesDto(
+          "EL PAGO SE ELIMINO PORQUE HUBO UN ERROR", // String justificacion, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          this.idAnticipoPago, // Long idAnticipoPago, 
+          -1L, // Long idAnticipoControl
+          pago.getAbono() // Double importe      
+        );
+        DaoFactory.getInstance().insert(sesion, control);
+        regresar= Boolean.TRUE;
       } // if
-      DaoFactory.getInstance().delete(sesion, pago);
-      regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
       throw e;
